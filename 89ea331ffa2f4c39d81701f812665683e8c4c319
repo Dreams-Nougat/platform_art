@@ -11,3 +11,13 @@ doesn't this just mean we fucked up the mips syscall.S in bionic? the other arch
 
 (is __NR_syscall even implemented? i can't find it in the kernel source.)
 
+26
+Wed Nov 13 20:56:59 2013 +0000
+Author: Chris Dearman <1003284@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9eb471df_039b148b
+UUID: 3ea8e58f_2f9e4909
+Bytes: 302
+Yes, you're right that the current bionic implementation of syscall() for MIPS is prone to error on unpatched kernels. I'll make a patch for bionic to shift the arguments around in userland as is done for the other architectures.
+
+The NR_syscall code is in arch/mips/kernel/scall32-o32.S:sys_syscall().
+

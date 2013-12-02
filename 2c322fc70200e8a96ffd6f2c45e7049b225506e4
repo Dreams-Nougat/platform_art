@@ -9,6 +9,14 @@ UUID: 832b3ac2_ac734b78
 Bytes: 33
 why static? because its so small?
 
+348
+Mon Dec 02 19:35:26 2013 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 832b3ac2_ac734b78
+UUID: 63ae4695_9b222f02
+Bytes: 102
+Yes, that was the reasoning. Note that libz is used outside zip parsing, so i have to include it here.
+
 File: runtime/native/java_lang_VMClassLoader.cc
 
 83
@@ -17,6 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 832b3ac2_6c6313a2
 Bytes: 45
 new warning? does it happen booting a device?
+
+83
+Mon Dec 02 19:35:26 2013 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 832b3ac2_6c6313a2
+UUID: 23c8ce74_f67500e3
+Bytes: 69
+No, but I've removed it from this patchset (to minimize changes here)
 
 File: runtime/zip_archive.cc
 
@@ -28,6 +44,19 @@ Bytes: 322
 for some of these we lost useful context. for example, here we lost the filename. for most of them it doesn't matter, but one of the main reasons Ian changed to have error_msg was so the message could be included in IOExceptions. 
 
 can we just add this extra info back where it seems appropriate? like the entry name here?
+
+45
+Mon Dec 02 19:35:26 2013 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4325c2ed_0a851bf2
+UUID: 63d566ff_06c95e3e
+Bytes: 376
+Done. It looks like I had removed higher level code in dex2oat and dex_file that augmented this message with entry / filename details. I've reverted those changes.
+
+For example, see users of ExtractToMemMap :
+
+https://cs.corp.google.com/#android/art/dex2oat/dex2oat.cc&q=EXtractToMemMap&l=222
+https://cs.corp.google.com/#android/art/runtime/dex_file.cc&q=ExtractToMemMap&l=248
 
 67
 Mon Dec 02 18:24:10 2013 +0000
@@ -52,6 +81,14 @@ UUID: 632006df_0855273c
 Bytes: 39
 do we need zlib.h include here anymore?
 
+21
+Mon Dec 02 19:35:26 2013 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 632006df_0855273c
+UUID: 63ae4695_db1ca7c4
+Bytes: 4
+Done
+
 File: runtime/zip_archive_test.cc
 
 37
@@ -60,4 +97,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4325c2ed_6a5db729
 Bytes: 31
 ASSERT_TRUE(error_msg.empty());
+
+37
+Mon Dec 02 19:35:26 2013 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4325c2ed_6a5db729
+UUID: 63d566ff_26d742df
+Bytes: 4
+Done
 

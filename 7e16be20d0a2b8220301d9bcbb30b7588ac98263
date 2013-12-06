@@ -17,6 +17,14 @@ Related factors are:
 
 - The current way of ahead-of-time compilation precludes embedding pointers to classes that are not created at image creation time, without patching the compiled code (which we don't want to do.)
 
+9
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03d10a3f_692a8dab
+UUID: 03d10a3f_dee71454
+Bytes: 143
+It should be possible before too, but you can only do that for classes that are in the image. It would require adding a bunch more entrypoints.
+
 File: compiler/image_test.cc
 
 160
@@ -25,6 +33,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3cdd6a7_bdbb43ca
 Bytes: 92
 Would it be reasonable to expect that the klass is outside the image in the else block here?
+
+160
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_bdbb43ca
+UUID: e3cdd6a7_e3135cb7
+Bytes: 26
+What do you mean by block?
 
 File: runtime/class_linker.cc
 
@@ -35,12 +51,29 @@ UUID: e3cdd6a7_3da97374
 Bytes: 106
 Was this fixing an oversight that it needed an exclusive lock here, or is this so because we move classes?
 
+1137
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_3da97374
+UUID: e3cdd6a7_a30d6490
+Bytes: 185
+Since we are modifying the data structure when objects get moved, its probably good to have a WriterMutex. Before we didn't have one which happened to work since we never moved classes.
+
 1286
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 23d44e2d_aaf41742
 Bytes: 123
 Would it make sense to let EnsureResolved to take a SirtRef as well as (or instead of) a raw Class* a la EnsureInitialized?
+
+1286
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_aaf41742
+UUID: 23d44e2d_eb29f119
+Bytes: 130
+Considered doing that, but the usage is always
+return EnsureResolved(...). So no point in having a SirtRef as the input parameter.
 
 1303
 Fri Dec 06 01:09:08 2013 +0000
@@ -49,12 +82,28 @@ UUID: 23d44e2d_8a8cbbda
 Bytes: 28
 Is this down_cast necessary?
 
+1303
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_8a8cbbda
+UUID: 23d44e2d_2bf7e973
+Bytes: 8
+Deleted.
+
 2428
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 03d10a3f_c41f4841
 Bytes: 81
 The same comment on using const reference if it's an in parameter (not modified).
+
+2428
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03d10a3f_c41f4841
+UUID: 03d10a3f_5e2ae491
+Bytes: 4
+Done
 
 2974
 Fri Dec 06 01:09:08 2013 +0000
@@ -63,12 +112,28 @@ UUID: e3cdd6a7_1d5477b0
 Bytes: 76
 const reference for the 'klass' parameter or use a pointer if it's modified?
 
+2974
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_1d5477b0
+UUID: 03d10a3f_1e558c14
+Bytes: 4
+Done
+
 3179
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 03d10a3f_043f80a1
 Bytes: 31
 a const reference or a pointer?
+
+3179
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03d10a3f_043f80a1
+UUID: e3cdd6a7_23af1411
+Bytes: 4
+Done
 
 3229
 Fri Dec 06 01:09:08 2013 +0000
@@ -77,6 +142,14 @@ UUID: 23d44e2d_4ab2237d
 Bytes: 107
 Optional: using shorter names might make it a bit cleaner such as loader1, loader2, or cl1, cl2. Up to you.
 
+3229
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_4ab2237d
+UUID: e3cdd6a7_832dc8c3
+Bytes: 4
+Done
+
 3256
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,12 +157,28 @@ UUID: 03d10a3f_244a7c3c
 Bytes: 84
 Update the comment by replacing klass1 -> class_loader1 and klass2 -> class_loader2?
 
+3256
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03d10a3f_244a7c3c
+UUID: 03d10a3f_3e6e08d4
+Bytes: 4
+Done
+
 3266
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3cdd6a7_7df00b7d
 Bytes: 80
 Optional: not necessary, but for symmetry, wrap found2 in a SirtRef like found1?
+
+3266
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_7df00b7d
+UUID: 03d10a3f_ded15440
+Bytes: 64
+I considered that, but I figure no reason to add extra SirtRefs.
 
 3275
 Fri Dec 06 01:09:08 2013 +0000
@@ -111,6 +200,14 @@ UUID: e3cdd6a7_dd9f1f4a
 Bytes: 157
 I think if a reference is used as a parameter, it should be const and an in parameter. If it's modified, then it should be a pointer, as per the style guide.
 
+3278
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_dd9f1f4a
+UUID: e3cdd6a7_eee22346
+Bytes: 50
+Done, I fixed all of these up in the current file.
+
 3302
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -118,12 +215,28 @@ UUID: 23d44e2d_2a9da7d4
 Bytes: 102
 We are only moving classes, not fields with this CL? Is the plan to move fields as well in the future?
 
+3302
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_2a9da7d4
+UUID: 03d10a3f_bef218c5
+Bytes: 120
+Supporting moving fields would add a lot of a code and there are some performance concerns for the jfieldID + jmethodID.
+
 3549
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 23d44e2d_ca599377
 Bytes: 253
 I think the lifetime of ClassHelper is shortened compared to the original code by putting into a nested block since ClassHelper does not use SirtRef internally. Have you considered letting ClassHelper use SirtRef internally now that we may move classes?
+
+3549
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_ca599377
+UUID: e3cdd6a7_0eb1df14
+Bytes: 112
+I think it may be worth moving the class helper functionality directly into the class.h structure in the future.
 
 File: runtime/class_linker.h
 
@@ -134,6 +247,14 @@ UUID: 23d44e2d_8a2ddbc3
 Bytes: 140
 I wonder if we will eventually end up always passing Class'es wrapped in SirtRef's in this class for robustness against future code changes.
 
+448
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_8a2ddbc3
+UUID: e3cdd6a7_ce3887b8
+Bytes: 36
+Maybe, SirtRefs aren't free however.
+
 File: runtime/class_linker_test.cc
 
 109
@@ -143,12 +264,28 @@ UUID: 03d10a3f_24c95c3f
 Bytes: 42
 const for 'array' like 'array_descripter'?
 
+109
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03d10a3f_24c95c3f
+UUID: 03d10a3f_9eaf5c7a
+Bytes: 4
+Done
+
 183
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 03d10a3f_04d780de
 Bytes: 18
 const for 'klass'?
+
+183
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03d10a3f_04d780de
+UUID: 03d10a3f_be99f866
+Bytes: 4
+Done
 
 File: runtime/gc/collector/semi_space.cc
 
@@ -158,6 +295,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3cdd6a7_bd08e380
 Bytes: 108
 Just a side comment: if this marking phase was (or is going to be made) concurrent, this would not be valid?
+
+186
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_bd08e380
+UUID: 23d44e2d_bd246098
+Bytes: 19
+I'll add a comment.
 
 File: runtime/globals.h
 
@@ -177,6 +322,14 @@ UUID: 23d44e2d_a588c857
 Bytes: 253
 Just to confirm the rationale (though probably obvious), is it the case that since EnsureInitilized() call below might trigger GC and we are not wrapping the method (inside the MethodHelper) in a SirtRef, this code would break if we move methods, right?
 
+337
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_a588c857
+UUID: 23d44e2d_9d2ac461
+Bytes: 16
+That is correct.
+
 File: runtime/mirror/array.h
 
 155
@@ -188,6 +341,14 @@ Is this reinterpret_cast necessary?
 
 Also, the rationale is that now that we move classes, the array_class_ was a new root that was previously not treated as a root, right?
 
+155
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_0563fcf4
+UUID: c34d3211_9ee73955
+Bytes: 53
+Needed to move the VisitRoots function to .inl, done.
+
 File: runtime/mirror/art_field.cc
 
 59
@@ -196,6 +357,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 23d44e2d_45c69482
 Bytes: 81
 Looks like the indentation of line 59 (the closing brace of the if block) is off.
+
+59
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_45c69482
+UUID: c34d3211_7e1d8d75
+Bytes: 4
+Done
 
 File: runtime/mirror/stack_trace_element.h
 
@@ -206,6 +375,14 @@ UUID: 23d44e2d_e51a4053
 Bytes: 184
 I'm curious. Why is this SHARED_LOCKS_REQUIRED as opposed to EXCLUSIVE_LOCKS_REQUIRED? This might be equivalent to asking the same question to MarkSweep::MarkRoots() and ReMarkRoots().
 
+62
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_e51a4053
+UUID: a31cbefb_fa376966
+Bytes: 124
+We mark the roots concurrently at the start of the GC to reduce pauses. If we miss roots, they will get marked in the pause.
+
 File: runtime/mirror/string.cc
 
 174
@@ -214,6 +391,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 03d10a3f_642074fa
 Bytes: 28
 const reference for 'array'?
+
+174
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03d10a3f_642074fa
+UUID: a31cbefb_7a8919c8
+Bytes: 4
+Done
 
 File: runtime/object_utils.h
 
@@ -224,6 +409,14 @@ UUID: 23d44e2d_ea29ef19
 Bytes: 63
 Is T always mirror::Object? If so, hardcode T = mirror::Object?
 
+37
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23d44e2d_ea29ef19
+UUID: c34d3211_7e74ada7
+Bytes: 120
+Since we pass in SirtRefs now, it can be either mirror::Object or mirror::Class. I don't see any cleaner way to do this.
+
 File: runtime/reflection.cc
 
 43
@@ -232,4 +425,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3cdd6a7_1d2477da
 Bytes: 246
 A side thought: I wonder if there's a way to declare certain functions to be MIGHT_TRIGGER_GC and statically check that they do not take raw Class pointers as parameters, etc. sort of like the thread annotation analysis. But I guess there's none.
+
+43
+Fri Dec 06 18:42:41 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_1d2477da
+UUID: c34d3211_dec70182
+Bytes: 19
+That would be nice.
 

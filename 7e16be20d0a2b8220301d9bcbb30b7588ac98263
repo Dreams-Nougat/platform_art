@@ -1,0 +1,235 @@
+Revision: 7e16be20d0a2b8220301d9bcbb30b7588ac98263
+Patch-set: 4
+File: /COMMIT_MSG
+
+9
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d10a3f_692a8dab
+Bytes: 510
+Would it be safe/possible to embed class pointers into compiled code (eg, for faster allocation paths) after this change?
+
+The classes that are in the image file don't move and can be embedded, I suppose.
+
+Related factors are:
+
+- We don't currently scan compiled code for roots at a GC (which we could in theory.)
+
+- The current way of ahead-of-time compilation precludes embedding pointers to classes that are not created at image creation time, without patching the compiled code (which we don't want to do.)
+
+File: compiler/image_test.cc
+
+160
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_bdbb43ca
+Bytes: 92
+Would it be reasonable to expect that the klass is outside the image in the else block here?
+
+File: runtime/class_linker.cc
+
+1137
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_3da97374
+Bytes: 106
+Was this fixing an oversight that it needed an exclusive lock here, or is this so because we move classes?
+
+1286
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_aaf41742
+Bytes: 123
+Would it make sense to let EnsureResolved to take a SirtRef as well as (or instead of) a raw Class* a la EnsureInitialized?
+
+1303
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_8a8cbbda
+Bytes: 28
+Is this down_cast necessary?
+
+2428
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d10a3f_c41f4841
+Bytes: 81
+The same comment on using const reference if it's an in parameter (not modified).
+
+2974
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_1d5477b0
+Bytes: 76
+const reference for the 'klass' parameter or use a pointer if it's modified?
+
+3179
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d10a3f_043f80a1
+Bytes: 31
+a const reference or a pointer?
+
+3229
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_4ab2237d
+Bytes: 107
+Optional: using shorter names might make it a bit cleaner such as loader1, loader2, or cl1, cl2. Up to you.
+
+3256
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d10a3f_244a7c3c
+Bytes: 84
+Update the comment by replacing klass1 -> class_loader1 and klass2 -> class_loader2?
+
+3266
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_7df00b7d
+Bytes: 80
+Optional: not necessary, but for symmetry, wrap found2 in a SirtRef like found1?
+
+3275
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_7d192b03
+Bytes: 488
+Is the intention to rename can_init_parents to can_run_clinit and reorder the two bool parameters?
+
+It seems odd that can_init_fields is passed as the 3rd param to the other EnsureInitialized which has its 2nd param named can_init_fields? Any bug here?
+
+On a related note, we should probably match the param names with the .h file (the SirtRef version of EnsureInitialized().)
+
+Finally, do we still need the raw Class* version of EnsureInitialized(), not that I checked all the call site?
+
+3278
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_dd9f1f4a
+Bytes: 157
+I think if a reference is used as a parameter, it should be const and an in parameter. If it's modified, then it should be a pointer, as per the style guide.
+
+3302
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_2a9da7d4
+Bytes: 102
+We are only moving classes, not fields with this CL? Is the plan to move fields as well in the future?
+
+3549
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_ca599377
+Bytes: 253
+I think the lifetime of ClassHelper is shortened compared to the original code by putting into a nested block since ClassHelper does not use SirtRef internally. Have you considered letting ClassHelper use SirtRef internally now that we may move classes?
+
+File: runtime/class_linker.h
+
+448
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_8a2ddbc3
+Bytes: 140
+I wonder if we will eventually end up always passing Class'es wrapped in SirtRef's in this class for robustness against future code changes.
+
+File: runtime/class_linker_test.cc
+
+109
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d10a3f_24c95c3f
+Bytes: 42
+const for 'array' like 'array_descripter'?
+
+183
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d10a3f_04d780de
+Bytes: 18
+const for 'klass'?
+
+File: runtime/gc/collector/semi_space.cc
+
+186
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_bd08e380
+Bytes: 108
+Just a side comment: if this marking phase was (or is going to be made) concurrent, this would not be valid?
+
+File: runtime/globals.h
+
+87
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_c54e2484
+Bytes: 110
+Oh, I see that we are not moving fields and methods but classes only (referring to one of my earlier comment.)
+
+File: runtime/interpreter/interpreter_common.h
+
+337
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_a588c857
+Bytes: 253
+Just to confirm the rationale (though probably obvious), is it the case that since EnsureInitilized() call below might trigger GC and we are not wrapping the method (inside the MethodHelper) in a SirtRef, this code would break if we move methods, right?
+
+File: runtime/mirror/array.h
+
+155
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_0563fcf4
+Bytes: 172
+Is this reinterpret_cast necessary?
+
+Also, the rationale is that now that we move classes, the array_class_ was a new root that was previously not treated as a root, right?
+
+File: runtime/mirror/art_field.cc
+
+59
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_45c69482
+Bytes: 81
+Looks like the indentation of line 59 (the closing brace of the if block) is off.
+
+File: runtime/mirror/stack_trace_element.h
+
+62
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_e51a4053
+Bytes: 184
+I'm curious. Why is this SHARED_LOCKS_REQUIRED as opposed to EXCLUSIVE_LOCKS_REQUIRED? This might be equivalent to asking the same question to MarkSweep::MarkRoots() and ReMarkRoots().
+
+File: runtime/mirror/string.cc
+
+174
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d10a3f_642074fa
+Bytes: 28
+const reference for 'array'?
+
+File: runtime/object_utils.h
+
+37
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23d44e2d_ea29ef19
+Bytes: 63
+Is T always mirror::Object? If so, hardcode T = mirror::Object?
+
+File: runtime/reflection.cc
+
+43
+Fri Dec 06 01:09:08 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3cdd6a7_1d2477da
+Bytes: 246
+A side thought: I wonder if there's a way to declare certain functions to be MIGHT_TRIGGER_GC and statically check that they do not take raw Class pointers as parameters, etc. sort of like the thread annotation analysis. But I guess there's none.
+

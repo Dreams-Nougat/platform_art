@@ -1,0 +1,47 @@
+Revision: a1bfaad1b01e553ae946925ad728ce7c4d6965b5
+Patch-set: 2
+File: runtime/gc/collector/semi_space.cc
+
+81
+Sat Dec 07 23:18:38 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3df5e7e_6b01b15f
+Bytes: 68
+Might be nice to move this to its own file as new garbage collector?
+
+180
+Sat Dec 07 23:18:38 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83e41a52_b50b183d
+Bytes: 50
+!from_space_->HasAddress(last_space_to_space_end_)
+
+332
+Sat Dec 07 23:18:38 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 43eea235_08010b1d
+Bytes: 72
+Move this check into the else and remove the forward_address == nullptr?
+
+343
+Sat Dec 07 23:18:38 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3df5e7e_ab13b9b7
+Bytes: 275
+Might be nice to have this as a parameter like the to_space_ and from_space_. Maybe promotion_space_?
+Also, one issue with putting everything in the non moving space is that it makes it impossible to do background compaction since the GC can't know what is and isn't movable.
+
+351
+Sat Dec 07 23:18:38 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3df5e7e_cb0efd8d
+Bytes: 113
+GetContinuousSpaceBitmap is pretty slow, but as long as the number of objects promoted is low, this should be OK.
+
+358
+Sat Dec 07 23:18:38 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83e41a52_1501241d
+Bytes: 179
+Since you are searching for the live and mark bitmaps, it would probably be faster to use heap->FindContinuousSpaceFromObject. And then space->GetLiveBitmap, space->GetMarkBitmap.
+

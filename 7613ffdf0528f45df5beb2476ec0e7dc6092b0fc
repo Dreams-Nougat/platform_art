@@ -17,3 +17,13 @@ UUID: e3cdd6a7_6e5053f0
 Bytes: 84
 It was visiting classes twice since we no longer mask the bit in the reference word.
 
+72
+Sat Dec 07 00:29:57 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_6e5053f0
+UUID: 83e41a52_24ed1ca1
+Bytes: 812
+I assume you mean that when VisitOtherReferences() will iterate over the reference word, the bit for the class would be set and the class will be visited then, whereas VisitObjectArrayReferences() won't visit the class. Hence, we need to leave the visitor() call for the array case (IsArrayClass() == true).
+
+With this understanding, how about getting rid of the visit_class parameter from this function (as it is no longer respected at least partially) and hardcode for the visit_class == true case? My grepping indicates that all the call sites pass visit_class == true except the one in semi-space.cc (which passes kMovingClasses, but maybe safe to unconditionally pass true there?) I understand it'd be a bit more work to make this change :( but it seems to avoid confusions for future maintenance/evolution?
+

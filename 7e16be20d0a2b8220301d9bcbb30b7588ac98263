@@ -42,6 +42,25 @@ UUID: e3cdd6a7_e3135cb7
 Bytes: 26
 What do you mean by block?
 
+160
+Sat Dec 07 00:29:57 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_e3135cb7
+UUID: a3df5e7e_054f3481
+Bytes: 621
+I mean, would it make sense to add an else block to the if statement in line 156 and insert EXPECT(...) that asserts the 'klass' is outside of the image if it's not an image class, that is, something like:
+
+if (image_classes.find(descriptor) != image_classes.end()) {
+  // Image classes should be located inside the image. 
+  EXPECT_LT(image_begin, reinterpret_cast<byte*>(klass)) << descriptor;
+  EXPECT_LT(reinterpret_cast<byte*>(klass), image_end) << descriptor;
+} else {
+  EXPECT_LE(image_end, reinterpret_cast<byte*>(klass)) << descriptor;
+  EXPECT_LT(reinterpret_cast<byte*>(klass), image_begin) << descriptor;
+}
+
+?
+
 File: runtime/class_linker.cc
 
 1137
@@ -193,6 +212,14 @@ On a related note, we should probably match the param names with the .h file (th
 
 Finally, do we still need the raw Class* version of EnsureInitialized(), not that I checked all the call site?
 
+3275
+Sat Dec 07 00:29:57 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_7d192b03
+UUID: 83e41a52_24507cef
+Bytes: 43
+I believe this comment is addressed. Right?
+
 3278
 Fri Dec 06 01:09:08 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -207,6 +234,14 @@ Parent: e3cdd6a7_dd9f1f4a
 UUID: e3cdd6a7_eee22346
 Bytes: 50
 Done, I fixed all of these up in the current file.
+
+3278
+Sat Dec 07 00:29:57 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3cdd6a7_eee22346
+UUID: 43eea235_1fce63f1
+Bytes: 7
+Thanks.
 
 3302
 Fri Dec 06 01:09:08 2013 +0000
@@ -382,6 +417,14 @@ Parent: 23d44e2d_e51a4053
 UUID: a31cbefb_fa376966
 Bytes: 124
 We mark the roots concurrently at the start of the GC to reduce pauses. If we miss roots, they will get marked in the pause.
+
+62
+Sat Dec 07 00:29:57 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a31cbefb_fa376966
+UUID: 43eea235_a2e800d6
+Bytes: 232
+OK. Just to paraphrase, as VisitRoots() is used by both the concurrent root scan and the non-concurrent root scan, it has to use the weaker of SHARED_LOCKS_REQUIRED and EXCLUSIVE_LOCKS_REQUIRED. Hence, it uses SHARED_LOCKS_REQUIRED.
 
 File: runtime/mirror/string.cc
 

@@ -9,6 +9,18 @@ UUID: a3df5e7e_6b01b15f
 Bytes: 68
 Might be nice to move this to its own file as new garbage collector?
 
+81
+Tue Dec 10 20:48:30 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3df5e7e_6b01b15f
+UUID: 43eea235_d4069a36
+Bytes: 461
+I currently feel that it's not very clear how things will be laid out until it gets developed more. It could be an independent collector or a mode of operation on top of the other collectors, I don't know yet.
+
+As this simple promo thing currently has most of the code in this file, it seems a little awkward to have just kEnableSimplePromo in a separate file. As we go and find more things appropriate to put in new file, we could add a new file?
+
+Left a TODO.
+
 180
 Sat Dec 07 23:18:38 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +28,28 @@ UUID: 83e41a52_b50b183d
 Bytes: 50
 !from_space_->HasAddress(last_space_to_space_end_)
 
+180
+Tue Dec 10 20:48:30 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83e41a52_b50b183d
+UUID: 430782cb_bab14def
+Bytes: 4
+Done
+
 332
 Sat Dec 07 23:18:38 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43eea235_08010b1d
 Bytes: 72
 Move this check into the else and remove the forward_address == nullptr?
+
+332
+Tue Dec 10 20:48:30 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43eea235_08010b1d
+UUID: 6302c6bc_7bd05b07
+Bytes: 4
+Done
 
 343
 Sat Dec 07 23:18:38 2013 +0000
@@ -31,6 +59,22 @@ Bytes: 275
 Might be nice to have this as a parameter like the to_space_ and from_space_. Maybe promotion_space_?
 Also, one issue with putting everything in the non moving space is that it makes it impossible to do background compaction since the GC can't know what is and isn't movable.
 
+343
+Tue Dec 10 20:48:30 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3df5e7e_ab13b9b7
+UUID: 6302c6bc_fb890b0d
+Bytes: 1603
+Not sure what you mean by "as a parameter like the to_space_ and from_space_". What are they parameters to?
+
+I thought about this some more and realize that the "impossible to do background compaction" issue has a larger scope and is somewhat orthogonal to this feature because it also exists similarly in the CMS/MS collector (if we add background compaction to the foreground CMS/MS collector.) It seems that we'd need to split the current non-moving space into a "truly-non-moving" space (classes if not moving, fields, methods, non-moving arrays) and a "non-moving-but-could-be-compacted" space for the rest (movable objects that happen to be in a non-moving space) where we treat the truly-non-moving space as a special case like the LOS. But we'd likely want to do this split only after a zygote fork because 1) otherwise we'd need to manage two zygote spaces, one for truly-non-moving and another for the rest, to maximize the inter-process sharing of the classes, fields, etc. a lot of which are likely be allocated before a zygote fork, and because 2) we probably aren't going to do background compaction for the zygote space.
+
+Does this make sense? Any better/simpler idea?
+
+If you feel we should solve this problem now before this CL, then we should solve it likely in a separate CL. Otherwise I think we can defer it and submit this CL in its current form (note the feature is disabled behind a flag) and tackle the problem.
+
+Either way, if we actually go down this route, let me know if you'd like to work on this (as it's a prerequisite for background compaction). Or, I could have a look.
+
 351
 Sat Dec 07 23:18:38 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -38,10 +82,26 @@ UUID: a3df5e7e_cb0efd8d
 Bytes: 113
 GetContinuousSpaceBitmap is pretty slow, but as long as the number of objects promoted is low, this should be OK.
 
+351
+Tue Dec 10 20:48:30 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3df5e7e_cb0efd8d
+UUID: 6302c6bc_de3a35e5
+Bytes: 102
+Used GetHeap()->GetNonMovingSpace()->GetLiveBitmap() instead as we know that forward_address is in it.
+
 358
 Sat Dec 07 23:18:38 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 83e41a52_1501241d
 Bytes: 179
 Since you are searching for the live and mark bitmaps, it would probably be faster to use heap->FindContinuousSpaceFromObject. And then space->GetLiveBitmap, space->GetMarkBitmap.
+
+358
+Tue Dec 10 20:48:30 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83e41a52_1501241d
+UUID: 231c4e1e_9cb60de3
+Bytes: 25
+See the previous comment.
 

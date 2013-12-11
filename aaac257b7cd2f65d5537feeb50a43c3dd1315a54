@@ -41,6 +41,18 @@ UUID: a332fed0_d0323427
 Bytes: 54
 i didn't think parameter_type can ever be NULL though?
 
+2715
+Wed Dec 11 18:36:06 2013 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a332fed0_d0323427
+UUID: a8101b3f_1decf738
+Bytes: 371
+I meant even with IsAssignableFrom, we'd still need to check "argument" is null: 
+
+"if (argument != nullptr && !parameter_type->IsAssignableFrom(argument->GetClass())) { return JDWP::ERR_ILLEGAL_ARGUMENT }". 
+
+InstanceOf is just a shortcut here. There is no version of Class::IsAssignableFrom taking an Object* and dealing with NULL. Maybe this is what you'd expect here?
+
 File: runtime/jdwp/object_registry.cc
 
 122

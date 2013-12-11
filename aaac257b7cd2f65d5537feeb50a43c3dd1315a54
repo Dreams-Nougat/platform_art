@@ -9,6 +9,14 @@ UUID: 43eea235_e1067d36
 Bytes: 42
 or should this have been IsAssignableFrom?
 
+2715
+Wed Dec 11 09:15:55 2013 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43eea235_e1067d36
+UUID: 08f84737_1d03d326
+Bytes: 42
+InstanceOf calls IsAssignableFrom already.
+
 File: runtime/jdwp/object_registry.cc
 
 122
@@ -17,4 +25,14 @@ Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 83809a7a_906c424c
 Bytes: 72
 why is this necessary? none of the other getters have this special case.
+
+122
+Wed Dec 11 09:15:55 2013 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83809a7a_906c424c
+UUID: 08f84737_7d2f77aa
+Bytes: 252
+The "null" object is not registered in the id_to_entry_ map. It is also handled in ObjectRegistry::Get.
+
+I can move this to Dbg::InvokeMethod if you prefer. The other use of GetJObject is the ScopedThreadSuspension constructor for a non-null thread ID.
 

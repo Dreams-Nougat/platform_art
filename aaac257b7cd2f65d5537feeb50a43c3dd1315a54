@@ -17,6 +17,14 @@ UUID: 08f84737_1d03d326
 Bytes: 42
 InstanceOf calls IsAssignableFrom already.
 
+2715
+Wed Dec 11 15:50:12 2013 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08f84737_1d03d326
+UUID: 8337bac2_4c278fe1
+Bytes: 64
+yeah, but would remove the need for special handing of null, no?
+
 File: runtime/jdwp/object_registry.cc
 
 122
@@ -35,4 +43,14 @@ Bytes: 252
 The "null" object is not registered in the id_to_entry_ map. It is also handled in ObjectRegistry::Get.
 
 I can move this to Dbg::InvokeMethod if you prefer. The other use of GetJObject is the ScopedThreadSuspension constructor for a non-null thread ID.
+
+122
+Wed Dec 11 15:50:12 2013 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08f84737_7d2f77aa
+UUID: 632c867b_ab6d558e
+Bytes: 196
+ah, i'd only looked at InternalGet. that's okay then.
+
+i do wonder about DisableCollection and EnableCollection though. presumably you can crash us by sending ObjectId 0 in those JDWP packets too?
 

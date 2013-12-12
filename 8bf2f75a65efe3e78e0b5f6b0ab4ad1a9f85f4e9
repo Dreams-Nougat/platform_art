@@ -1,0 +1,22 @@
+Revision: 8bf2f75a65efe3e78e0b5f6b0ab4ad1a9f85f4e9
+Patch-set: 1
+File: compiler/driver/compiler_driver.cc
+
+1677:15-1677:26
+Thu Dec 12 17:30:52 2013 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e8a77388_2467923f
+Bytes: 144
+From what I could tell, if a class is Erroneous at compile time, it will fail never pass verification at run time. Is that assumption accurate ?
+
+1681:32-1681:48
+Thu Dec 12 17:30:52 2013 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6839c300_a02a3aaa
+Bytes: 525
+AddRejectedClass used to be private in MethodVerifier.
+
+The compilation pass will ignore all classes that have hard verification failure, but subclasses of classes with such failures are never marked as rejected.
+
+The complication here is that decision is made by ClassLinker and not MethodVerifier (which only performs very basic super-class checks). Perhaps the "clean" solution is to share a rejection list between MethodVerifier and ClassLinker and not make it the MethodVerifier's job to keep track of rejected classes ?
+

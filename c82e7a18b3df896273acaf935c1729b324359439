@@ -1,0 +1,238 @@
+Revision: c82e7a18b3df896273acaf935c1729b324359439
+Patch-set: 3
+File: /COMMIT_MSG
+
+13:6-13:12
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_2334aaf8
+Bytes: 65
+Better to use the same term as line 12 above (region -> buffer) ?
+
+File: runtime/arch/quick_alloc_entrypoints.S
+
+39
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c8be2fc6_b614665a
+Bytes: 100
+_TLAB -> _tlab  and 
+_TLAB_instrumented -> _tlab_instrumented
+
+to be consistent with the lower case?
+
+File: runtime/gc/collector/garbage_collector.cc
+
+86:0-86:4
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48b31ffa_5a0971bd
+Bytes: 240
+I guess for MS/CMS with rosalloc it does not make a difference where RevokeAllThreadLocalBuffers() is called as long as it's between SuspendAll() and ResumeAll() (during the pause.) But it made a different for the TLAB allocator, I suppose?
+
+File: runtime/gc/collector/semi_space.cc
+
+324:15-324:30
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28c8ab74_19838ff1
+Bytes: 59
+This still isn't used (ignored) and is just renamed, right?
+
+File: runtime/gc/heap-inl.h
+
+46:6-46:23
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c8be2fc6_96a5aace
+Bytes: 32
+One more constant folding. Nice.
+
+92:6-92:34
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28c8ab74_39876bb5
+Bytes: 74
+Is there a situation where "if (concurrent_gc_) { ... }" isn't sufficient?
+
+222:9-222:37
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c8be2fc6_361a1653
+Bytes: 6
+Ditto.
+
+File: runtime/gc/heap.cc
+
+337:0-337:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c8be2fc6_d649e24b
+Bytes: 205
+Do the removal of the use of SirtRef's and the addition of StartAssertNoThreadSuspension() call mean that we don't need them as we expect there would be no GC during the life time of a VisitObjects() call?
+
+342:0-342:6
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_e32452df
+Bytes: 68
+Why do we call UpdateMainBlockHeader() here (before calling Walk())?
+
+855:4-855:6
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_e340d24e
+Bytes: 44
+Why do we call UpdateMainBlockHeader() here?
+
+928:0-928:4
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8973b5d_a202fe1f
+Bytes: 185
+To confirm the intention: we skip temp_space_ because it does not have objects in it and BumpPointerSpace::GetObjectsAllocated() isn't free as it would have to iterate over the threads?
+
+936:0-936:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_23a02a46
+Bytes: 383
+This is interesting. Since the heap keeps track of the total total objects/bytes freed (ever), each space does not have to keep track of them. Is this correct?
+
+If so, MallocSpace/DlMallocSpace/RosAllocSpace could drop GetTotalBytesAllocated() and GetTotalObjectsAllocated() (and the associated internal variables) as well, which would mean a small optimization opportunity for them?
+
+1292:0-1292:4
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28ab4b9f_be821939
+Bytes: 98
+optional: DCHECK that if the collector type is SS, then the allocator must be BumpPointer or TLAB?
+
+File: runtime/gc/heap.h
+
+513:9-513:22
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28c8ab74_b9161bd0
+Bytes: 33
+GCC wasn't inlining this? Bummer.
+
+515
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48b31ffa_ba8b6dc3
+Bytes: 59
+Might "allocator_type >= kAllocatorTypeFreeList" be faster?
+
+File: runtime/gc/space/bump_pointer_space.cc
+
+47:0-47:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_c3e116b7
+Bytes: 206
+It looks like the end of the space is shifted by the size of the header. Is there any worry about buffer/space overrun here? We could DCHECK that limit_ - end_ >= sizeof(ContinuousBlockHeader) just in case?
+
+102:0-102:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28ab4b9f_3e4a8940
+Bytes: 41
+Lock the runtime_shutdown_lock_ here too?
+
+109:0-109:4
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28ab4b9f_9e687d7f
+Bytes: 301
+So, the 'main' block means that the block at the beginning of the space, right? And what this function does is to reset the space so that the entire space is a single block? Does this imply that all thread-local buffers/blocks are already revoked?
+
+Is there a way to rename it to clarify what it does?
+
+138:0-138:4
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_03688e0f
+Bytes: 149
+Is the reason that we don't know how many objects are allocated in the current block is that accessing the Thread::thread_local_pos_ pointer is racy?
+
+151:0-151:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8973b5d_42c9f291
+Bytes: 136
+Acquire the runtime_shutdown_lock_ as well so that we don't have a race against a new thread being created or a thread being terminated?
+
+152:0-152:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8973b5d_82a6dad6
+Bytes: 137
+Also, since we are not suspending threads here, the accesses to thread_local_pos_ and thread_local_start_ can be racy but it's ok, right?
+
+File: runtime/gc/space/bump_pointer_space.h
+
+111:2-111:4
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c8be2fc6_d6a5629b
+Bytes: 64
+This comment does not have much info. Remove it or elaborate it?
+
+112:7-112:28
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_0356ce1e
+Bytes: 36
+What's the "main" block header mean?
+
+145:0-145:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8973b5d_8276da1c
+Bytes: 100
+Optional: Is it simpler/ok to call it BlockHeader as there's no such thing as 'discontinuous block'?
+
+146:0-146:4
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_23874ab5
+Bytes: 77
+This size_ includes the size of the header, correct? Add this to the comment?
+
+File: runtime/mirror/array-inl.h
+
+86:0-86:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_06041c2f
+Bytes: 107
+If we pass 'true' to kCheckLarge, then how about inserting a DCHECK that allocator_type isn't the LOS type?
+
+File: runtime/mirror/class-inl.h
+
+364:0-364:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86c6f4a_4650d41f
+Bytes: 87
+Passing false because we only do large object allocation for (primitive) arrays, right?
+
+File: runtime/mirror/class.cc
+
+146:0-146:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8973b5d_45fb3cee
+Bytes: 31
+Is this fixing a moving GC bug?
+
+File: runtime/native/dalvik_system_VMDebug.cc
+
+250:0-250:2
+Sat Dec 14 00:24:22 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28ab4b9f_5e1795cd
+Bytes: 112
+This causes the mutator lock to be shared-held during the life time of this function call. Is this fixing a bug?
+

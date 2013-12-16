@@ -113,6 +113,14 @@ UUID: 28ab4b9f_c1b624c0
 Bytes: 319
 concurrent_gc_ isn't known at compile time so we can optimize by not checking it for BumpPointer or TLAB allocators. This is nice since it allows the entire if statement to be optimized out. And for the other allocators, AllocatorMayHaveConcurrentGC is a constant since the allocator_type should be constant propagated.
 
+92
+Mon Dec 16 23:44:24 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28ab4b9f_c1b624c0
+UUID: c86c6f4a_ac4fa250
+Bytes: 46
+Got it. Can you leave a comment on this point?
+
 222:9-222:37
 Sat Dec 14 00:24:22 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -206,6 +214,14 @@ Parent: c86c6f4a_23a02a46
 UUID: c86c6f4a_c9ce956b
 Bytes: 128
 I believe so, this may break down if we start adding or removing spaces during runtime in the future but it seems sound for now.
+
+936
+Mon Dec 16 23:44:24 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c86c6f4a_c9ce956b
+UUID: 28ab4b9f_8df96d39
+Bytes: 136
+OK. I will attempt to remove GetTotalBytesAllocated() and GetTotalObjectsAllocated() from MallocSpace/DlMallocSpace/RosAllocSpace later.
 
 1292:0-1292:4
 Sat Dec 14 00:24:22 2013 +0000
@@ -303,6 +319,14 @@ UUID: 28ab4b9f_614190c2
 Bytes: 77
 The main block is used by the bump pointer allocator and during semispace GC.
 
+109
+Mon Dec 16 23:44:24 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28ab4b9f_614190c2
+UUID: 28ab4b9f_b8022920
+Bytes: 70
+OK. How about adding DCHECK(num_of_blocks_ == 0) in UpdateMainBlock()?
+
 138:0-138:4
 Sat Dec 14 00:24:22 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -347,6 +371,14 @@ Parent: a8973b5d_82a6dad6
 UUID: c86c6f4a_e910b1d4
 Bytes: 15
 Fixed the race.
+
+152
+Mon Dec 16 23:44:24 2013 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c86c6f4a_e910b1d4
+UUID: c86c6f4a_ec135ade
+Bytes: 83
+What prevents the race newly in patch set 4? block_lock_? But it was locked before.
 
 File: runtime/gc/space/bump_pointer_space.h
 

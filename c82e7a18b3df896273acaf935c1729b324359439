@@ -121,6 +121,14 @@ UUID: c86c6f4a_ac4fa250
 Bytes: 46
 Got it. Can you leave a comment on this point?
 
+92
+Tue Dec 17 00:57:42 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c86c6f4a_ac4fa250
+UUID: 28ab4b9f_b30a4a79
+Bytes: 4
+Done
+
 222:9-222:37
 Sat Dec 14 00:24:22 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -327,6 +335,14 @@ UUID: 28ab4b9f_b8022920
 Bytes: 70
 OK. How about adding DCHECK(num_of_blocks_ == 0) in UpdateMainBlock()?
 
+109
+Tue Dec 17 00:57:42 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28ab4b9f_b8022920
+UUID: 28ab4b9f_b3f36a57
+Bytes: 4
+Done
+
 138:0-138:4
 Sat Dec 14 00:24:22 2013 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -379,6 +395,14 @@ Parent: c86c6f4a_e910b1d4
 UUID: c86c6f4a_ec135ade
 Bytes: 83
 What prevents the race newly in patch set 4? block_lock_? But it was locked before.
+
+152
+Tue Dec 17 00:57:42 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c86c6f4a_ec135ade
+UUID: c86c6f4a_456521f6
+Bytes: 263
+Yes, but before I wasn't holding the block lock when I did thread->SetTLAB. This had a race where you could set the start but not the end of the TLAB then have a racy read from the thread doing GetBytesAllocated. This would have returned some very strange values.
 
 File: runtime/gc/space/bump_pointer_space.h
 

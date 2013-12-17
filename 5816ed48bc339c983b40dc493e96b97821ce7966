@@ -9,10 +9,25 @@ UUID: 68ef0300_9324de41
 Bytes: 120
 In call_arm.cc, Byte and Boolean are using kUnsignedByte. Is this a bug? (At least for Byte as the Java byte is signed?)
 
+279
+Tue Dec 17 19:09:24 2013 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68ef0300_9324de41
+UUID: 08a847a1_635ab6b8
+Bytes: 370
+Yes, I believe you're correct. We should be using kSignedByte. In practice, though, it hasn't mattered. Historically (to simply the interpreter and make volatile support easier) Dalvik stores sub-word data types in word-size instance field buckets. The "size" argument to GenIGet only cares about whether it's a 64-bit data type or not. We should get this right, though.
+
 292
 Tue Dec 17 18:28:38 2013 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a8e57b1d_f580b275
 Bytes: 97
 In call_arm.cc, Byte and Boolean are using kUnsignedByte. For IPUT, the difference is irrelevant.
+
+618
+Tue Dec 17 19:09:24 2013 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 08a847a1_a30d5ecb
+Bytes: 101
+Yes - this comes up a lot.  I'd intended to add this to the specials, but hadn't gotten around to it.
 

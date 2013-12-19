@@ -1,0 +1,22 @@
+Revision: 368fd5888bc98690c3fc5ecc9b3b5fefeda25cdc
+Patch-set: 3
+File: compiler/dex/quick/arm/int_arm.cc
+
+148
+Thu Dec 19 18:50:06 2013 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48631fc4_57038c6a
+Bytes: 194
+It doesn't necessarily have to be part of this CL, but any compiler bug fixes should, if practical, include a regression test.  A good place to put this one is art/test/083-compiler-regressions.
+
+File: compiler/dex/quick/arm/utility_arm.cc
+
+213
+Thu Dec 19 18:50:06 2013 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e871338d_d4cddc4b
+Bytes: 667
+My fault here for not adding a comment previously, but this should be a kThumb2BCond for compilation time reasons.  It originally was a kThumbBCond, but the reach of a 16-bit Thumb1 conditional branch is tiny and failure to reach at assembly time causes another assembly pass.  Statistics showed that something on the order of 20% of assembly retries were because of kThumbBConds failing to reach, while the number of reaching kThumbBConds was relatively small.  The reduction in compile time easily outweighed the very small reduction of code size.
+
+Could you restore the kThumb2BCond, and add the command I should have added about the compile time savings?  Thanks.
+

@@ -1,0 +1,46 @@
+Revision: d748621cd66c6d88afaf498b25ebeab0acaa845c
+Patch-set: 2
+File: runtime/gc/collector/semi_space.cc
+
+220
+Fri Dec 20 23:52:12 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48631fc4_860fb445
+Bytes: 289
+Add some bitmap scanning logic in here? The logic should be as follows: For each immune space: If have a mod union table, use that, or else assert that the bitmaps are bound and scan the live bitmap of said space. If the immune space is a bump pointer space, I guess we can do space->Walk?
+
+265
+Fri Dec 20 23:52:12 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e871338d_684a6b41
+Bytes: 119
+This won't be correct after the background compaction CL since the non_moving_space and main alloc space are different.
+
+271
+Fri Dec 20 23:52:12 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e871338d_c8eb7fd3
+Bytes: 149
+Since classes can move, don't you need to scan large objects update their classes? Even thought the classes never get collected, they can still move.
+
+311
+Fri Dec 20 23:52:12 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86e2fb0_42ee6c31
+Bytes: 155
+Might be worth refactoring the sweep logic to ignore immune spaces, this way you don't need this special logic assuming you immune all of the right spaces.
+
+430
+Fri Dec 20 23:52:12 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e871338d_28db133d
+Bytes: 99
+I think you could bind the bitmaps earlier to avoid needing to mark both the live and mark bitmaps?
+
+667
+Fri Dec 20 23:52:12 2013 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c86e2fb0_42158c53
+Bytes: 130
+We probably want to copy somewhere other than the non_moving_space in the future, since these objects will never get copied again.
+

@@ -9,12 +9,29 @@ UUID: c8438f32_6b2521d8
 Bytes: 8
 dmb ish?
 
+82
+Fri Dec 20 15:48:30 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_6b2521d8
+UUID: a8649bc8_b40dc006
+Bytes: 4
+Done
+
 106
 Fri Dec 20 15:24:03 2013 +0000
 Author: David Butcher <1002185@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c8438f32_aee1d744
 Bytes: 10
 dmb ishst?
+
+106
+Fri Dec 20 15:48:30 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_aee1d744
+UUID: a8649bc8_d4123421
+Bytes: 104
+Done. Presumably LoadLoad and StoreLoad should also be ish too.
+http://g.oswego.edu/dl/jmm/cookbook.html
 
 File: runtime/atomic_integer.h
 
@@ -25,4 +42,12 @@ UUID: a8649bc8_291a39f8
 Bytes: 141
 These were lower case to match std::atomic since we are going to do the transition eventually.
 http://en.cppreference.com/w/cpp/atomic/atomic
+
+43
+Fri Dec 20 15:48:30 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8649bc8_291a39f8
+UUID: 685e23ff_67a0dcba
+Bytes: 416
+Unfortunately std::atomic lacks an Address method (or operator) which we require for the use of AtomicInteger in the Mutex/Futex code to pass the address of the inner integer to the futex system call. This change normalizes the names to the compiler builtins and the regular coding convention. We're waiting on stlport enhancements or libc++ for std::atomic and that doesn't appear to be happening in the short-term.
 

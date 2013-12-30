@@ -17,3 +17,11 @@ UUID: c86c6f4a_d2cb9ae1
 Bytes: 193
 Brian said Ian might have had a reason to leave the const off mirror object pointers. This line is the same as the old code, just moved, so I'll leave it as is, and make sure Ian is ok with it.
 
+98
+Mon Dec 30 22:33:53 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c86c6f4a_d2cb9ae1
+UUID: 8dec497b_27f55eac
+Bytes: 431
+const is ok on local variables but not for fields. The particular problem is that const for C++ differs from Java, where a pointer may move because of moving GC. If you make fields constant then repeated loads may be cached by C++ and this may mean a stale pointer gets used even if the code attempts to explicitly reload it. Were the code below to have a safe point then we should place the mirror::Class* into a handle (SirtRef).
+

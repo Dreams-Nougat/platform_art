@@ -1,0 +1,65 @@
+Revision: c528dba35b5faece51ca658fc008b688f8b690ad
+Patch-set: 7
+File: runtime/class_linker.cc
+
+4103:46-4103:51
+Tue Dec 31 07:16:03 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 886997a4_73cc20fb
+Bytes: 331
+I find adding the consts here odd. The point is that klass could move, or be collected, if it weren't for the handle (SirtRef). The SirtRef means over a safepoint the value could change and so a different value be loaded, which the const doesn't tend to imply. For clarity I'd prefer not to have the consts, like the original code.
+
+File: runtime/class_linker.h
+
+48:0-49:0
+Tue Dec 31 07:16:03 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e89853f7_83fb1ded
+Bytes: 68
+aside from this, I think you should revert the changes to this file.
+
+File: runtime/gc/accounting/mod_union_table.cc
+
+85:13-85:24
+Tue Dec 31 07:16:03 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 886997a4_93c9b4ec
+Bytes: 55
+comment that we use SetFieldPtr to avoid the card mark.
+
+File: runtime/object_utils.h
+
+66:0-67:0
+Tue Dec 31 07:16:03 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 886997a4_d385ec83
+Bytes: 61
+SirtRef<T>* const
+I'm paranoid about the const on the SirtRef
+
+File: runtime/runtime.h
+
+446:0-447:0
+Tue Dec 31 07:16:03 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e89853f7_23032927
+Bytes: 61
+LOCKS_EXCLUDED(method_verifiers_lock_)
+on both Add and Remove
+
+532:0-533:0
+Tue Dec 31 07:16:03 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e89853f7_03fe2dd9
+Bytes: 28
+DEFAULT_MUTEX_ACQUIRED_AFTER
+
+File: runtime/verifier/reg_type.h
+
+288:0-289:0
+Tue Dec 31 07:16:03 2013 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c8954fbe_1524a497
+Bytes: 57
+comment that this is only non-const due to moving classes
+

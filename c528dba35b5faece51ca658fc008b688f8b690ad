@@ -9,6 +9,14 @@ UUID: 886997a4_73cc20fb
 Bytes: 331
 I find adding the consts here odd. The point is that klass could move, or be collected, if it weren't for the handle (SirtRef). The SirtRef means over a safepoint the value could change and so a different value be loaded, which the const doesn't tend to imply. For clarity I'd prefer not to have the consts, like the original code.
 
+4103
+Mon Jan 06 19:27:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 886997a4_73cc20fb
+UUID: edcea54a_32dee8a4
+Bytes: 314
+It is const in this context though since it is only modified through another context (thread SIRT list by the GC). I believe adding const here is the correct move which matches the cpp style guide. I'll leave this here until we determine whether or not the  const will enable loads to incorrectly be optimized out.
+
 File: runtime/class_linker.h
 
 48:0-49:0
@@ -18,6 +26,14 @@ UUID: e89853f7_83fb1ded
 Bytes: 68
 aside from this, I think you should revert the changes to this file.
 
+49
+Mon Jan 06 19:27:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e89853f7_83fb1ded
+UUID: edcea54a_d2d20497
+Bytes: 95
+Comment in .cpp file. Will revert if we determine there is a correctness issue caused by const.
+
 File: runtime/gc/accounting/mod_union_table.cc
 
 85:13-85:24
@@ -26,6 +42,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 886997a4_93c9b4ec
 Bytes: 55
 comment that we use SetFieldPtr to avoid the card mark.
+
+85
+Mon Jan 06 19:27:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 886997a4_93c9b4ec
+UUID: 6ddb9506_138ace92
+Bytes: 4
+Done
 
 File: runtime/object_utils.h
 
@@ -37,6 +61,14 @@ Bytes: 61
 SirtRef<T>* const
 I'm paranoid about the const on the SirtRef
 
+67
+Mon Jan 06 19:27:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 886997a4_d385ec83
+UUID: 6ddb9506_338fd2a3
+Bytes: 79
+Need to const to make it compile, I can add do const SirtRef<T>* const however.
+
 File: runtime/runtime.h
 
 446:0-447:0
@@ -47,12 +79,28 @@ Bytes: 61
 LOCKS_EXCLUDED(method_verifiers_lock_)
 on both Add and Remove
 
+447
+Mon Jan 06 19:27:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e89853f7_23032927
+UUID: edcea54a_f2cf00ee
+Bytes: 4
+Done
+
 532:0-533:0
 Tue Dec 31 07:16:03 2013 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e89853f7_03fe2dd9
 Bytes: 28
 DEFAULT_MUTEX_ACQUIRED_AFTER
+
+533
+Mon Jan 06 19:27:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e89853f7_03fe2dd9
+UUID: 0dc2191e_73e1d842
+Bytes: 4
+Done
 
 File: runtime/verifier/reg_type.h
 
@@ -62,4 +110,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c8954fbe_1524a497
 Bytes: 57
 comment that this is only non-const due to moving classes
+
+289
+Mon Jan 06 19:27:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8954fbe_1524a497
+UUID: edcea54a_92cc7cfb
+Bytes: 4
+Done
 

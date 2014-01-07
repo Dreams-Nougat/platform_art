@@ -9,6 +9,14 @@ UUID: 8dec497b_07c01a17
 Bytes: 44
 So cmov isn't just microcoded into a branch?
 
+9:0-10:0
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dec497b_07c01a17
+UUID: 8d2b69c2_e92b7594
+Bytes: 393
+Cmov is not microcoded into a branch. It is generally better to use cmov than jcc+mov because it takes up less space. Additionally, using cmov can be beneficial if there is possibility of mispredict because it won't cause speculative instruction fetching that may cause a stall on mispredict. Also it is good because it won't take up slot in branch target buffer which in rare cases may alias.
+
 File: compiler/dex/quick/mir_to_lir.h
 
 756:35-756:36
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a8649bc8_d1c6b880
 Bytes: 39
 that when true will perform the opcode.
+
+756:35-756:36
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8649bc8_d1c6b880
+UUID: ad266df6_0ab51bd6
+Bytes: 4
+Done
 
 File: compiler/dex/quick/x86/assemble_x86.cc
 
@@ -27,6 +43,14 @@ UUID: c8438f32_ce1f03e8
 Bytes: 57
 Add the 0x66 prefix. (Or remove this unused instruction.)
 
+180
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_ce1f03e8
+UUID: ad266df6_8a72ab70
+Bytes: 26
+Removed. But good catch :)
+
 181
 Thu Dec 26 10:42:31 2013 +0000
 Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,12 +58,28 @@ UUID: c8438f32_8e25fb41
 Bytes: 64
 Also REG_USE0 as the value is used when the condition isn't met.
 
+181
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_8e25fb41
+UUID: ad266df6_0a4d1b03
+Bytes: 244
+Actually I am not sure the value is used when condition isn't met. The specifications for Cmovcc in Intel's Software Developer's Manual show that the DEST is always defined and never used. But I can always oblige if you believe I should add it.
+
 873
 Thu Dec 26 10:42:31 2013 +0000
 Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a832dbd0_adbba959
 Bytes: 123
 I'd prefer less code. Use EmitPrefixAndOpcode() above and add the condition to code_buffer_.back() as in EmitOpRegOpcode().
+
+873
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a832dbd0_adbba959
+UUID: 8d2b69c2_4998c15e
+Bytes: 4
+Done
 
 File: compiler/dex/quick/x86/codegen_x86.h
 
@@ -66,6 +106,14 @@ UUID: 6df1d54f_06aa5e04
 Bytes: 76
 Agreed, we do try to pull apart base and index registers in Emit* functions.
 
+209:0-210:0
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6df1d54f_06aa5e04
+UUID: ad266df6_4af39358
+Bytes: 87
+Agreed with Vladimir that the names used here are consistent with the rest of the file.
+
 File: compiler/dex/quick/x86/int_x86.cc
 
 301:2-301:8
@@ -75,6 +123,14 @@ UUID: c8438f32_ae2ab70e
 Bytes: 77
 Unnecessary, IMO. Use DCHECK_GE or CHECK_GE if you really want to check this.
 
+301:2-301:8
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_ae2ab70e
+UUID: 8d2b69c2_09b1a9c9
+Bytes: 8
+Removed.
+
 309
 Thu Dec 26 10:42:31 2013 +0000
 Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -82,12 +138,28 @@ UUID: 884ef754_747346fc
 Bytes: 109
 This comment doesn't add any value here. A proper documentation of InlineTarget/EvalLoc would be more useful.
 
+309
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 884ef754_747346fc
+UUID: 8d2b69c2_e9c9b542
+Bytes: 21
+Okay, I will do that.
+
 324
 Thu Dec 26 10:42:31 2013 +0000
 Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c8438f32_0e1aebf7
 Bytes: 110
 This comment doesn't add any value here. A proper documentation of the StoreValue itself would be more useful.
+
+324
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_0e1aebf7
+UUID: 4d25f1ed_47b26e15
+Bytes: 21
+Okay, I will do that.
 
 File: compiler/dex/quick/x86/utility_x86.cc
 
@@ -98,10 +170,42 @@ UUID: c8438f32_ee24bf42
 Bytes: 60
 Drop the switch. Just CHECK/DCHECK the op and return NewLIR.
 
+207
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_ee24bf42
+UUID: 4d25f1ed_c79dbe7c
+Bytes: 4
+Done
+
+207
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_ee24bf42
+UUID: 8d2b69c2_e9e255ba
+Bytes: 4
+Done
+
+207
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8438f32_ee24bf42
+UUID: 4d25f1ed_27149a26
+Bytes: 4
+Done
+
 209
 Thu Dec 26 10:42:31 2013 +0000
 Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 884ef754_547642ed
 Bytes: 59
 Remove the space between function name and opening bracket.
+
+209
+Tue Jan 07 01:42:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 884ef754_547642ed
+UUID: 8d2b69c2_89e599c6
+Bytes: 4
+Done
 

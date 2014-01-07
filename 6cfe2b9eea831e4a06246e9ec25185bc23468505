@@ -90,6 +90,19 @@ UUID: 0d17798c_88247799
 Bytes: 419
 Assuming my understanding of movcc is correct, reg0 is either defined or not defined by this instruction, but it is not used as a source (unless, of course, it also shows up in the reg1 slot).  With current usage of these flags, a USE0 is not required.   Vladimir may be thinking ahead to some future optimization passes he intends to add - in that case, we'll need to revisit all of the use/def encodings at that time.
 
+181
+Tue Jan 07 18:41:28 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d17798c_88247799
+UUID: 4db331fa_f7b0a071
+Bytes: 190
+This is about potentially eliminating the instruction that loads the register _before_ the CMOV:
+
+    mov eax, 0
+    cmovz eax, ebx
+
+REG_DEF0 without REG_USE0 means the `mov eax, 0` is dead.
+
 873
 Thu Dec 26 10:42:31 2013 +0000
 Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>

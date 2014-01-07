@@ -1,0 +1,29 @@
+Revision: 5a2ced515a456f15dcf194843c024e835eda7dbe
+Base-for-patch-set: 4
+File: runtime/gc/collector/semi_space.cc
+
+483:23-483:28
+Tue Jan 07 01:56:05 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d80bdc3_6531f071
+Bytes: 130
+This IsMallocSpace() call was redundant because of line 474 above, and it does not imply that we sweep a non-MallocSpace, correct?
+
+File: runtime/gc/collector/semi_space.h
+
+276:0-276:2
+Tue Jan 07 01:56:05 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d7db99f_6461f4eb
+Bytes: 82
+I see that these lists were dead code (should have been removed in a previous CL).
+
+File: runtime/instrumentation.cc
+
+434:2-434:4
+Tue Jan 07 01:56:05 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d2b69c2_895bd9e0
+Bytes: 171
+I guess the changes in this file is a refactoring. I think the IsStarted() check was necessary for some compiler test to pass (and not to crash). How about adding it back?
+

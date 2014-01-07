@@ -82,6 +82,14 @@ UUID: ad266df6_3314da26
 Bytes: 136
 Well technically if the result of cmov is not used, then it IS dead code. I do not believe that REG_USE0 is necessary but I will add it.
 
+181
+Tue Jan 07 18:35:44 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad266df6_3314da26
+UUID: 0d17798c_88247799
+Bytes: 419
+Assuming my understanding of movcc is correct, reg0 is either defined or not defined by this instruction, but it is not used as a source (unless, of course, it also shows up in the reg1 slot).  With current usage of these flags, a USE0 is not required.   Vladimir may be thinking ahead to some future optimization passes he intends to add - in that case, we'll need to revisit all of the use/def encodings at that time.
+
 873
 Thu Dec 26 10:42:31 2013 +0000
 Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>

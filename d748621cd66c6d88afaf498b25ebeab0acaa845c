@@ -9,12 +9,32 @@ UUID: 48631fc4_860fb445
 Bytes: 289
 Add some bitmap scanning logic in here? The logic should be as follows: For each immune space: If have a mod union table, use that, or else assert that the bitmaps are bound and scan the live bitmap of said space. If the immune space is a bump pointer space, I guess we can do space->Walk?
 
+220
+Wed Jan 08 02:00:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48631fc4_860fb445
+UUID: 8d2b69c2_5d57db90
+Bytes: 544
+Do you mean moving the live bitmap scanning code from below MarkReachableObjects() (lines 261-274) up here and combine it with the mod union table scan of the other immune spaces here?
+
+As we'd need to scan the objects on the live (allocation) stack as well, the current code scans the live bitmap after the objects on the live stack are marked in the live bitmap (the MarkAllocStackAslive() call in MarkReachableObjects().)
+
+I added another loop over the continuous space list and scan the live bitmap in MarkReachableObjects() to handle this.
+
 265
 Fri Dec 20 23:52:12 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e871338d_684a6b41
 Bytes: 119
 This won't be correct after the background compaction CL since the non_moving_space and main alloc space are different.
+
+265
+Wed Jan 08 02:00:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e871338d_684a6b41
+UUID: 4d25f1ed_bb753f5d
+Bytes: 225
+Right. We'd need to scan the live bitmaps of both the main space and the non-moving space (if they are not the same space, for example, pre-zygote fork). I leave a TODO for now (before the background compaction CL is merged.)
 
 271
 Fri Dec 20 23:52:12 2013 +0000
@@ -23,12 +43,28 @@ UUID: e871338d_c8eb7fd3
 Bytes: 149
 Since classes can move, don't you need to scan large objects update their classes? Even thought the classes never get collected, they can still move.
 
+271
+Wed Jan 08 02:00:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e871338d_c8eb7fd3
+UUID: 8d2b69c2_fdb32f7b
+Bytes: 4
+Done
+
 311
 Fri Dec 20 23:52:12 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c86e2fb0_42ee6c31
 Bytes: 155
 Might be worth refactoring the sweep logic to ignore immune spaces, this way you don't need this special logic assuming you immune all of the right spaces.
+
+311
+Wed Jan 08 02:00:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c86e2fb0_42ee6c31
+UUID: 8d2b69c2_18e1f143
+Bytes: 170
+Done. I added is_large_object_space_immune_ to indicate whether we are collecting the large object space. When it's false, we won't call SweepLargeObjects() from Sweep().
 
 430
 Fri Dec 20 23:52:12 2013 +0000
@@ -37,10 +73,26 @@ UUID: e871338d_28db133d
 Bytes: 99
 I think you could bind the bitmaps earlier to avoid needing to mark both the live and mark bitmaps?
 
+430
+Wed Jan 08 02:00:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e871338d_28db133d
+UUID: 8d2b69c2_f86e9dd5
+Bytes: 567
+Here's my thinking: Here (in the else block of this if statement), the non-moving space (the destination of the promotion) is not immune (i.e., it's being collected) and its live/mark bitmaps aren't bound (or, they don't point to the same bit map). In addition, the promoted object is sort of a special-case allocation for the non-moving space, that is, it does not go through the allocation stack and is not marked in the live bitmap at this point, but it should be for it to be handled (swept) in future collections. So, I think we can't avoid marking both bitmaps.
+
 667
 Fri Dec 20 23:52:12 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c86e2fb0_42158c53
 Bytes: 130
 We probably want to copy somewhere other than the non_moving_space in the future, since these objects will never get copied again.
+
+667
+Wed Jan 08 02:00:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c86e2fb0_42158c53
+UUID: 8d2b69c2_d8c4797c
+Bytes: 210
+Yes, after the background compaction CL, we should copy (promote) to the main free-list space (as the objects in the bump pointer space (the from space) is by definition movable.) I left a TODO in MarkObject().
 

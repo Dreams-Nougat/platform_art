@@ -9,6 +9,20 @@ UUID: ed6f8539_a4a98278
 Bytes: 34
 Should you rename this entrypoint?
 
+385
+Wed Jan 08 16:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed96a557_0ce43794
+Bytes: 298
+To avoid having to switch on target architecture in the target independent code, it might be best just to the OpRegCopy in all cases.  OpRegCopy is smart enough to nop identity copies, so you'll end up with the good pattern (though a comment on fixed register usage here would still be called for).
+
+483
+Wed Jan 08 16:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd93a168_0b9a5d12
+Bytes: 11
+As above...
+
 File: compiler/llvm/gbc_expander.cc
 
 1882:7-1882:21
@@ -17,4 +31,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed6f8539_84ac8689
 Bytes: 67
 Could you actually do the optimization, but did not bother for gbc?
+
+File: runtime/mirror/dex_cache.cc
+
+45
+Wed Jan 08 16:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed96a557_8cf74743
+Bytes: 247
+If we're going to switch from NULL to nullptr, I'd think it would be best to do it all at once with a single CL whose sole purpose is to convert NULL to nullptr.  Piecemeal conversion just adds noise to CLs unrelated to the real purpose of the CL.
 

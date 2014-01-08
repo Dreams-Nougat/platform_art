@@ -9,6 +9,14 @@ UUID: ad974d5d_426fb2d2
 Bytes: 99
 IS_TERTIARY_OP since the condition code counts as well (assertion failing at mir_to_lir-inl.cc#102)
 
+180
+Wed Jan 08 19:45:26 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad974d5d_426fb2d2
+UUID: 6da395b3_b3154258
+Bytes: 18
+Good catch! Fixed.
+
 File: compiler/dex/quick/x86/int_x86.cc
 
 309
@@ -23,6 +31,14 @@ That should fix the obviously broken
     cmp     ebx, ebp
     cmovl/nge ebp, ebp
 
+309
+Wed Jan 08 19:45:26 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad974d5d_02b08ae5
+UUID: 4da89190_15dc3485
+Bytes: 399
+I believed that asking for a temp for the result would give a unique one. I should have realized that since requesting a temp gives a physical register instead of an actual temp out of an unlimited pool, then we can run into this case. Anyway, great catch and I did create a case that confirms your analysis. And your solution works. Thanks for the detailed explanation of the issue with this patch!
+
 310
 Wed Jan 08 12:39:15 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +48,14 @@ You should use OpRegCopy() which may mark the insn as nop.
 
 You may want to fix the X86 OpRegCopyNoInsert() to check !(cu_->disable_opt & (1 << kSafeOptimizations)) like the arm and mips versions do.
 
+310
+Wed Jan 08 19:45:26 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad974d5d_42a7b2a3
+UUID: 6da395b3_364dc003
+Bytes: 94
+I am using OpRegCopy now and added the check to OpRegCopyNoInsert to match arm implementation.
+
 File: disassembler/disassembler_x86.cc
 
 323
@@ -40,4 +64,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d73f924_e5c4567c
 Bytes: 12
 load = true;
+
+323
+Wed Jan 08 19:45:26 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d73f924_e5c4567c
+UUID: 4da89190_2f856984
+Bytes: 4
+Done
 

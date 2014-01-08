@@ -9,3 +9,26 @@ UUID: ad974d5d_426fb2d2
 Bytes: 99
 IS_TERTIARY_OP since the condition code counts as well (assertion failing at mir_to_lir-inl.cc#102)
 
+File: compiler/dex/quick/x86/int_x86.cc
+
+309
+Wed Jan 08 12:15:37 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad974d5d_02b08ae5
+Bytes: 231
+Avoid overwriting rl_src2.low_reg by the kOpMov below:
+    if (rl_result.low_reg == rl_src2.low_reg) std::swap(rl_src1, rl_src2);
+That should fix the obviously broken
+    mov     ebp, ebx
+    cmp     ebx, ebp
+    cmovl/nge ebp, ebp
+
+File: disassembler/disassembler_x86.cc
+
+323
+Wed Jan 08 12:15:37 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d73f924_e5c4567c
+Bytes: 12
+load = true;
+

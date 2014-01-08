@@ -23,6 +23,15 @@ That should fix the obviously broken
     cmp     ebx, ebp
     cmovl/nge ebp, ebp
 
+310
+Wed Jan 08 12:39:15 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad974d5d_42a7b2a3
+Bytes: 199
+You should use OpRegCopy() which may mark the insn as nop.
+
+You may want to fix the X86 OpRegCopyNoInsert() to check !(cu_->disable_opt & (1 << kSafeOptimizations)) like the arm and mips versions do.
+
 File: disassembler/disassembler_x86.cc
 
 323

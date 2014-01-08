@@ -9,12 +9,28 @@ UUID: adb4adde_ba5b71e0
 Bytes: 137
 Isn't CHECK_EQ just for assertion purposes? So am I understanding correctly that you're taking a lock even if the CHECK_EQ is just a nop?
 
+537
+Wed Jan 08 13:25:55 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adb4adde_ba5b71e0
+UUID: ed6f8539_c4cd9e6f
+Bytes: 135
+No, CHECK (and variants like CHECK_EQ) are always executed. We also have DCHECK (and variants) which are only executed in debug builds.
+
 2442:2-2442:3
 Wed Jan 08 09:46:31 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6dae3595_d8e2edba
 Bytes: 13
 Extra braces?
+
+2442:2-2442:3
+Wed Jan 08 13:25:55 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6dae3595_d8e2edba
+UUID: 0d73f924_85ac8289
+Bytes: 4
+Done
 
 File: runtime/instrumentation.cc
 
@@ -25,12 +41,35 @@ UUID: ad974d5d_621f566e
 Bytes: 96
 How does this method know if EnableDeoptimization has been called? Or is that not a requirement?
 
+492:5-492:20
+Wed Jan 08 13:25:55 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad974d5d_621f566e
+UUID: ed6f8539_e4ca9a54
+Bytes: 36
+By design, it must be called once...
+
+499:2-499:29
+Wed Jan 08 13:25:55 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed6f8539_04997665
+Bytes: 69
+... and here we ensure we're not trying to deoptimize a method twice.
+
 521:52-521:63
 Wed Jan 08 09:46:31 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d73f924_2533ce13
 Bytes: 49
 if we not deoptimized -> if we did not deoptimize
+
+521:52-521:63
+Wed Jan 08 13:25:55 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d73f924_2533ce13
+UUID: 0d73f924_a5a97e78
+Bytes: 4
+Done
 
 File: runtime/jdwp/jdwp_event.cc
 
@@ -40,4 +79,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed6f8539_8418068f
 Bytes: 16
 Why this change?
+
+968:29-968:31
+Wed Jan 08 13:25:55 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed6f8539_8418068f
+UUID: ad974d5d_c264e2ac
+Bytes: 83
+Some artifact from an old PS. Thanks for catching this, will remove the others too.
 

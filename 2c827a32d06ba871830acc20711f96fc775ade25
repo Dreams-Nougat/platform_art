@@ -9,6 +9,14 @@ UUID: ed6f8539_a4a98278
 Bytes: 34
 Should you rename this entrypoint?
 
+383:53-383:77
+Wed Jan 08 16:59:42 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed6f8539_a4a98278
+UUID: 2d76fd12_468c521e
+Bytes: 102
+I think it is still where the statics are held. There should be a clean-up of our static terminology..
+
 385
 Wed Jan 08 16:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: ed96a557_0ce43794
 Bytes: 298
 To avoid having to switch on target architecture in the target independent code, it might be best just to the OpRegCopy in all cases.  OpRegCopy is smart enough to nop identity copies, so you'll end up with the good pattern (though a comment on fixed register usage here would still be called for).
 
+385
+Wed Jan 08 16:59:42 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed96a557_0ce43794
+UUID: 6da395b3_9044b4d6
+Bytes: 4
+Done
+
 483
 Wed Jan 08 16:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cd93a168_0b9a5d12
 Bytes: 11
 As above...
+
+483
+Wed Jan 08 16:59:42 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd93a168_0b9a5d12
+UUID: 6da395b3_b041b8c5
+Bytes: 4
+Done
 
 File: compiler/llvm/gbc_expander.cc
 
@@ -32,6 +56,14 @@ UUID: ed6f8539_84ac8689
 Bytes: 67
 Could you actually do the optimization, but did not bother for gbc?
 
+1882:7-1882:21
+Wed Jan 08 16:59:42 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed6f8539_84ac8689
+UUID: 2d76fd12_268756fe
+Bytes: 88
+You could do the optimization, as GBC is going away I wanted to keep the change minimal.
+
 File: runtime/mirror/dex_cache.cc
 
 45
@@ -40,4 +72,12 @@ Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed96a557_8cf74743
 Bytes: 247
 If we're going to switch from NULL to nullptr, I'd think it would be best to do it all at once with a single CL whose sole purpose is to convert NULL to nullptr.  Piecemeal conversion just adds noise to CLs unrelated to the real purpose of the CL.
+
+45
+Wed Jan 08 16:59:42 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed96a557_8cf74743
+UUID: 2d76fd12_06825aed
+Bytes: 175
+We've been doing the transition piecemeal to avoid a large CL. I was modifying DexCache::Init hence doing a piecemeal clean-up here. Agreed the DexCache::Fixup wasn't touched.
 

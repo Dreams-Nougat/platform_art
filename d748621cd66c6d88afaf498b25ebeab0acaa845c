@@ -21,6 +21,14 @@ As we'd need to scan the objects on the live (allocation) stack as well, the cur
 
 I added another loop over the continuous space list and scan the live bitmap in MarkReachableObjects() to handle this.
 
+220
+Wed Jan 08 19:04:30 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d2b69c2_5d57db90
+UUID: 6da395b3_d3fba65a
+Bytes: 76
+Forgot about the allocation stack, the current approach should be fine then.
+
 265
 Fri Dec 20 23:52:12 2013 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -80,6 +88,14 @@ Parent: e871338d_28db133d
 UUID: 8d2b69c2_f86e9dd5
 Bytes: 567
 Here's my thinking: Here (in the else block of this if statement), the non-moving space (the destination of the promotion) is not immune (i.e., it's being collected) and its live/mark bitmaps aren't bound (or, they don't point to the same bit map). In addition, the promoted object is sort of a special-case allocation for the non-moving space, that is, it does not go through the allocation stack and is not marked in the live bitmap at this point, but it should be for it to be handled (swept) in future collections. So, I think we can't avoid marking both bitmaps.
+
+430
+Wed Jan 08 19:04:30 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d2b69c2_f86e9dd5
+UUID: 6da395b3_932e7ebf
+Bytes: 32
+Nevermind, I think you're right.
 
 667
 Fri Dec 20 23:52:12 2013 +0000

@@ -190,6 +190,14 @@ UUID: 8d2b69c2_cffe711b
 Bytes: 505
 Without hardcoding the maximum number of allocation spaces, the approach of iterating over the spaces for each reference would be significantly slower than the current approach. In the new CL i make sure the spaces are sorted in the manner that the spaces most likely to contain more references are processed first. Keep in mind that references get deleted from the stack once we have found a space which contains them. So the allocation stack should get smaller each iteration. Added a few more comments.
 
+1187
+Thu Jan 09 02:25:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d2b69c2_cffe711b
+UUID: 2dd43d2d_aa03f725
+Bytes: 150
+OK. Certainly, it's more convenient to code this way when we don't know how many allocation spaces we have. I didn't notice that 'count' gets updated.
+
 File: runtime/gc/collector/semi_space.cc
 
 103:0-103:6
@@ -224,6 +232,14 @@ Parent: 8dd609da_859e724c
 UUID: 4d25f1ed_cd7cbd45
 Bytes: 78
 I was just matching the return types, might as well change to uint64_t though.
+
+228
+Thu Jan 09 02:25:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d25f1ed_cd7cbd45
+UUID: 2dd43d2d_6a1f1f6e
+Bytes: 51
+Thanks. I think this is better for the 64-bit mode.
 
 237:0-237:2
 Tue Jan 07 01:56:05 2014 +0000
@@ -385,6 +401,14 @@ UUID: 4d25f1ed_edfb815a
 Bytes: 24
 Saves a bit more memory.
 
+344
+Thu Jan 09 02:25:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d25f1ed_edfb815a
+UUID: 2dd43d2d_2a93678a
+Bytes: 234
+I assume that there's no situation where a no-op state update callback (process_state_ == process_state) gets called repeatedly because it would cause unnecessary full GC invocations. I don't know enough about process states, however.
+
 386:0-386:2
 Tue Jan 07 01:56:05 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -399,6 +423,14 @@ Parent: 0d7db99f_2a0983f5
 UUID: ad266df6_53f50eab
 Bytes: 91
 No, they can both be non-null. I might end up deleting the allocation stacks in the future.
+
+386
+Thu Jan 09 02:25:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad266df6_53f50eab
+UUID: cdcac190_79949fb2
+Bytes: 232
+Isn't it the case that we use only one of rosalloc_space_ and dlmalloc_space_ based on the (compile-time constant) value of kUseRosAlloc (and the non-moving space is a separate dlmalloc space that dlmalloc_space_ does not point to)?
 
 908:0-908:4
 Tue Jan 07 01:56:05 2014 +0000
@@ -561,4 +593,12 @@ Parent: 4d25f1ed_a7a6cad7
 UUID: 8d2b69c2_92d66211
 Bytes: 39
 Probably not, 63 bits should be enough.
+
+441
+Thu Jan 09 02:25:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d2b69c2_92d66211
+UUID: 0dd1393f_a9eae51b
+Bytes: 513
+I think we will eventually need to add back the size_t version because otherwise the existing call sites of PrettySize with a parameter of type size_t would not probably compile in 64-bit mode because of the signed/unsigned compiler warnings. I don't think it'd make sense to go add casts to PrettySize call sites, as in "PrettySize(s)" -> PrettySize(static_cast<int64_t>(s))" to lose precision, either. I think in 32-bit mode they compile as size_t (32-bit unsigned) gets auto-converted to int64 (signed 64-bit.)
 

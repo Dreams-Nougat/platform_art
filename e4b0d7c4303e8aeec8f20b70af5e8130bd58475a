@@ -27,12 +27,48 @@ It would make reasoning about the thread-safety of passes a lot simpler if this 
 
 File: compiler/dex/pass_driver.cc
 
+72:14-72:15
+Thu Jan 09 00:04:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2dd43d2d_3c8059de
+Bytes: 41
+this is another case of s/Pass */Pass* /g
+
 73:0-73:23
 Wed Jan 08 23:46:34 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2dd43d2d_fcc9c198
 Bytes: 87
 Currently no passes are freed so this is a memory leak. Is the intent to use the arena?
+
+73:0-73:23
+Thu Jan 09 00:04:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dd43d2d_fcc9c198
+UUID: cdcac190_36b4f663
+Bytes: 171
+Ah, static. I'd prefer that the passes were immutable given we're sharing them across threads then. As this is a leak can you use UniquePtr to ensure valgrind cleanliness.
+
+101:45-101:46
+Thu Jan 09 00:04:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_db2bab12
+Bytes: 9
+s/ */* /g
+
+102:19-102:20
+Thu Jan 09 00:04:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdcac190_16ca1ade
+Bytes: 8
+s/ */* /
+
+113:20-113:21
+Thu Jan 09 00:04:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_9b253340
+Bytes: 14
+use the arena?
 
 File: compiler/dex/pass_driver.h
 

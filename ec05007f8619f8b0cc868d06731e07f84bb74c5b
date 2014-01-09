@@ -1,0 +1,18 @@
+Revision: ec05007f8619f8b0cc868d06731e07f84bb74c5b
+Patch-set: 1
+File: runtime/gc/space/malloc_space.cc
+
+261:14-261:19
+Thu Jan 09 02:57:10 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdcac190_9c552912
+Bytes: 139
+I think this Clear call (in SweepCallback) is new in the new code. I don't understand the rationale (the above comment). Can you elaborate?
+
+295:2-295:4
+Thu Jan 09 02:57:10 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_a9b1c511
+Bytes: 210
+We won't sweep if the live/mark bitmaps are bound. I think this takes case of the partial collection where we won't sweep zygote and replaces the logic w.r.t. 'sweep_space' and 'partial' in the old code. Right?
+

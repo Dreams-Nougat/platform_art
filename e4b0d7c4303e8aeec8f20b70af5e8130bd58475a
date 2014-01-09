@@ -9,6 +9,14 @@ UUID: 2dd43d2d_25f71802
 Bytes: 323
 note, the virtual here can be lost and will benefit calling from one member function in CodeLayout to another. C++ lacks a final keyword, so removing the virtual on an overriding member function means its final and can't be overridden. Its general style in ART to lose the virtual unless we think there will be a sub-class.
 
+40:2-40:9
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dd43d2d_25f71802
+UUID: cdcac190_5c431185
+Bytes: 4
+Done
+
 File: compiler/dex/pass.cc
 
 31:0-31:53
@@ -25,6 +33,22 @@ UUID: cdcac190_36663688
 Bytes: 44
 arguments shouldn't be camel case but c_unit
 
+31:39-31:44
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cdcac190_36663688
+UUID: cdcac190_59168363
+Bytes: 4
+Done
+
+31:0-31:53
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dd1393f_fbe54701
+UUID: 2dd43d2d_a560c81e
+Bytes: 122
+I moved all functions that are one line and the constructors in the .h; let me know if you want me to move the others then
+
 File: compiler/dex/pass.h
 
 108:0-108:25
@@ -34,6 +58,14 @@ UUID: 0dd1393f_bbefcfdd
 Bytes: 135
 It would make reasoning about the thread-safety of passes a lot simpler if this data were immutable. I don't see a reason why it isn't.
 
+108:0-108:25
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dd1393f_bbefcfdd
+UUID: cdcac190_795fffce
+Bytes: 4
+Done
+
 File: compiler/dex/pass_driver.cc
 
 72:14-72:15
@@ -42,6 +74,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2dd43d2d_3c8059de
 Bytes: 41
 this is another case of s/Pass */Pass* /g
+
+72:14-72:15
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dd43d2d_3c8059de
+UUID: 0dd1393f_7b213700
+Bytes: 4
+Done
 
 73:0-73:23
 Wed Jan 08 23:46:34 2014 +0000
@@ -58,12 +98,36 @@ UUID: cdcac190_36b4f663
 Bytes: 171
 Ah, static. I'd prefer that the passes were immutable given we're sharing them across threads then. As this is a leak can you use UniquePtr to ensure valgrind cleanliness.
 
+73:0-73:23
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dd43d2d_fcc9c198
+UUID: 0dd1393f_de139925
+Bytes: 101
+As you saw they are static, so it should be fine like this, I'll fix it as the comment below requests
+
+73:0-73:23
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cdcac190_36b4f663
+UUID: 2dd43d2d_9f699f83
+Bytes: 91
+Done for the immutable (I believe, let me know if I missed something); and I used UniquePtr
+
 101:45-101:46
 Thu Jan 09 00:04:10 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0dd1393f_db2bab12
 Bytes: 9
 s/ */* /g
+
+101:45-101:46
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dd1393f_db2bab12
+UUID: 0dd1393f_5b1e7bba
+Bytes: 4
+Done
 
 102:19-102:20
 Thu Jan 09 00:04:10 2014 +0000
@@ -72,12 +136,28 @@ UUID: cdcac190_16ca1ade
 Bytes: 8
 s/ */* /
 
+102:19-102:20
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cdcac190_16ca1ade
+UUID: 0dd1393f_dbba8b55
+Bytes: 130
+done, though I really did for each case I could because that sed would mess up the copyright as well (and any other non related *)
+
 113:20-113:21
 Thu Jan 09 00:04:10 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0dd1393f_9b253340
 Bytes: 14
 use the arena?
+
+113:20-113:21
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dd1393f_9b253340
+UUID: cdcac190_47133e72
+Bytes: 117
+I wasn't sure we cared because it was getting killed at the end of the function, done in case you preferred anyway :)
 
 File: compiler/dex/pass_driver.h
 
@@ -88,4 +168,12 @@ UUID: cdcac190_d635c25e
 Bytes: 65
 Argument naming convention: create_default_passes
 Here and below.
+
+32:54-32:73
+Thu Jan 09 21:24:26 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cdcac190_d635c25e
+UUID: 2dd43d2d_bcd8e9b8
+Bytes: 4
+Done
 

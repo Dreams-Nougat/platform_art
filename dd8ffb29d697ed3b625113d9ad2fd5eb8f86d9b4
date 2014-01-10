@@ -1,5 +1,14 @@
 Revision: dd8ffb29d697ed3b625113d9ad2fd5eb8f86d9b4
 Patch-set: 1
+File: compiler/dex/mir_graph.h
+
+333
+Fri Jan 10 18:50:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2dd43d2d_479e9178
+Bytes: 240
+Rearrange to place the bit fields together.  We are sensitive to the size of the RegLocation struct - it needs to stay 64 bits to allow it to be passed in registers when possible (which is why you see it passed by value all over the place).
+
 File: compiler/dex/quick/gen_common.cc
 
 1843
@@ -8,6 +17,15 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cdcac190_3f2f2273
 Bytes: 36
 Is there a better location for this?
+
+File: compiler/dex/quick/gen_loadstore.cc
+
+274
+Fri Jan 10 18:50:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_92bbcdf5
+Bytes: 10
+use DCHECK
 
 File: compiler/dex/quick/mir_to_lir.cc
 
@@ -26,4 +44,44 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0dd1393f_f741d328
 Bytes: 20
 Is DCHECK_NE better?
+
+605
+Fri Jan 10 18:50:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dd1393f_f741d328
+UUID: 2dd43d2d_a77565a4
+Bytes: 4
+Yes.
+
+File: compiler/dex/quick/x86/fp_x86.cc
+
+358
+Fri Jan 10 18:50:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_f208c1f3
+Bytes: 314
+The "fp" field says nothing about what register class is being used to store the value (that is inferred from the physical register number).  Rather, it specifies what type being used.  So, do not change it here.  It's perfectly reasonable to have .fp set in a regloc, but the value is contained in core registers.
+
+369
+Fri Jan 10 18:50:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdcac190_122e9dac
+Bytes: 41
+As above, don't change the .fp flag here.
+
+File: compiler/dex/quick/x86/utility_x86.cc
+
+337
+Fri Jan 10 18:50:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_b20369d5
+Bytes: 9
+DCHECK_EQ
+
+567
+Fri Jan 10 18:50:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdcac190_b23c89df
+Bytes: 50
+If this is a placeholder, use UNIMPLEMENTED(FATAL)
 

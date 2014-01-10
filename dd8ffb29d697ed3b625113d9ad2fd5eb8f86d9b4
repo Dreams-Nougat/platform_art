@@ -114,6 +114,13 @@ Made into a sentence.   I am just following the rest of the file :-)
 
 File: compiler/dex/quick/gen_loadstore.cc
 
+267
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_8d5cccd9
+Bytes: 618
+This might be the right time to rethink the "pair" notion at a higher level.  I don't much like the "low != high" test here (though given the current setup it isn't unreasonable).  Rather than change that all in this CL, though, I should do it in a new CL.  Something like reworking MarkLive() and MarkPair to operate on RegLocations rather than individual registers so we can hide the physical storage.  The original notion behind RegLocations was to abstract away the physical location of a value, and it may make life cleaner for everyone if we also use it to hide more of the architecture-dependent storage quirks.
+
 268:0-268:44
 Fri Jan 10 20:10:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -211,6 +218,14 @@ UUID: 2dd43d2d_c255ef10
 Bytes: 4
 Done
 
+605
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cdcac190_d5d36f44
+UUID: 0dd1393f_cd97642f
+Bytes: 157
+The compiler generally goes with DCHECK.  We get decent coverage with host cross builds using dex2oatd, and want to avoid the extra on-device cost of CHECKs.
+
 811:0-811:38
 Fri Jan 10 20:10:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -289,6 +304,13 @@ As above, don't change the .fp flag here.
 
 File: compiler/dex/quick/x86/target_x86.cc
 
+564
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdcac190_f52b0b12
+Bytes: 687
+Don't try to use the fp flag in a RegLocation to determine the register class of the physical storage.  Again, that tells how the value is being used - not how it is being held.  Use IsFpReg() on the physical register in question to determine its register class.  UpdateLoc's job is to determine if the Dalvik value in question currently exists in valid physical registers.  It's perfectly reasonable for a Dalvik int value to be held in an fp register, or a double value to be held in a pair of core registers.  UpdateLoc just finds the nearest valid location for the value - other code is responsible for making sure that the value is in the right kind of register, and correct if not.
+
 570:0-570:37
 Fri Jan 10 20:10:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -304,6 +326,27 @@ UUID: cdcac190_95adf785
 Bytes: 4
 Done
 
+647
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2dd43d2d_c20baf7c
+Bytes: 97
+As above, don't use loc.fp in this manner.  I think you probably just want to use reg_class here.
+
+676
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_4d4d94ab
+Bytes: 24
+ditto - lose the loc.fp.
+
+721
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dd1393f_2805a62c
+Bytes: 237
+Add a TODO to unify the EvalLoc and UpdateLoc routines.  I think it should be doable once I clean up the pair mess, and historically these routines have been the source of subtle bugs.  I'm a bit queasy at having multiple copies of them.
+
 743:23-743:26
 Fri Jan 10 20:10:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -318,6 +361,20 @@ Parent: 2dd43d2d_02ebe7d4
 UUID: 2dd43d2d_62597be7
 Bytes: 43
 Where is that assert, so that I can fix it?
+
+743
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2dd43d2d_e2622b2f
+Bytes: 127
++1.  I really don't like this - but it's the fault of the "pair" mechanism.  Add a TODO to revisit this after the pair cleanup.
+
+749
+Fri Jan 10 21:25:20 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdcac190_359bc3e1
+Bytes: 250
+Invalid use of rl.fp.  Also add a TODO to reunify this with the main routine.  As far as I can tell, the only significant difference is the DCHECK that makes sure pair is set on the high reg.  That should cease to be an issue with the pair reworking.
 
 File: compiler/dex/quick/x86/utility_x86.cc
 

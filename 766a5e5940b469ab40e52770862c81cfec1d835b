@@ -9,3 +9,11 @@ UUID: 2dd43d2d_182c7729
 Bytes: 68
 You cannot use the fp flag to determine the physical register class.
 
+564:16-564:17
+Sat Jan 11 21:02:46 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dd43d2d_182c7729
+UUID: 4d4251dd_a506aa75
+Bytes: 666
+To explain further, the various flavors of UpdateLoc must determine whether the requested Dalvik value is located in any class of physical register.  It matters not at all whether that class matches the expected usage of the value (which is what the fp flag in the RegLocation signifies).  Callers of UpdateLoc are responsible for ensuring that the register class is appropriate for the target instructions being used.  For example, if you are doing a series of logical operations on a floating point value in core registers, you want the Dalvik value to stay in core registers.  UpdateLoc  as designed will allow that.  The use of loc.fp here breaks that capbility.
+

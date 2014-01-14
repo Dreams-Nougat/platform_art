@@ -26,6 +26,14 @@ UUID: cd7ba135_2b103963
 Bytes: 24
 GetNumUsedCompilerTemps?
 
+580:9-580:28
+Tue Jan 14 19:08:58 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd7ba135_2b103963
+UUID: 4d1b3107_d1b12411
+Bytes: 34
+Sure, I will fix it in next patch.
+
 File: compiler/dex/mir_optimization.cc
 
 247
@@ -34,6 +42,23 @@ Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d1635de_ac369bc7
 Bytes: 253
 And, this "negative value" for compiler temps makes life a bit ugly elsewhere in the code.  I've probably flushed out the bulk of the issues by getting the method pointer special working - but beware of code that expects to index an array based on vreg.
+
+247
+Tue Jan 14 19:08:58 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d1635de_ac369bc7
+UUID: 4d1b3107_519e7478
+Bytes: 82
+Agreed. I will seek out if there are any other instances of this possible problem.
+
+File: compiler/dex/quick/codegen_util.cc
+
+1072:31-1072:50
+Tue Jan 14 19:08:58 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d1635de_8d4e3152
+Bytes: 339
+Instead of assuming that we need as much space as there are temps, this should instead call a Mir2Lir method named GetNeededSpillSpaceForTemps where initially it will return space for each temp. But as it evolves, quick BE should only return space if it needs to spill and also for non-overlapping ranges it should use same spill location.
 
 File: runtime/stack.h
 
@@ -57,4 +82,12 @@ Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d1635de_6c03a3d6
 Bytes: 235
 Off the top of my head, I don't remember for sure why I started with -2 for Method* - but I might be using -1 as the code for an invalid or unknown Dalvik vreg.  When I'm at work tomorrow, I'll take a look at the code to jog my memory.
+
+536:32-536:33
+Tue Jan 14 19:08:58 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d1635de_6c03a3d6
+UUID: 6d1635de_2da125bf
+Bytes: 28
+That would be great! Thanks!
 

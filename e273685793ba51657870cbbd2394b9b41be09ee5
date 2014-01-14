@@ -9,6 +9,23 @@ UUID: 4d1b3107_a008e0f2
 Bytes: 95
 Makes sense to move this to MIRGraph constructor since we always create this special temporary.
 
+1162
+Tue Jan 14 02:21:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d1b3107_a008e0f2
+UUID: 2d30bd7d_fc3f61eb
+Bytes: 3
++1.
+
+File: compiler/dex/mir_optimization.cc
+
+247
+Tue Jan 14 02:21:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d1635de_ac369bc7
+Bytes: 253
+And, this "negative value" for compiler temps makes life a bit ugly elsewhere in the code.  I've probably flushed out the bulk of the issues by getting the method pointer special working - but beware of code that expects to index an array based on vreg.
+
 File: runtime/stack.h
 
 525:10-525:24
@@ -24,4 +41,11 @@ Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d1b3107_00daec01
 Bytes: 65
 Instead of defines we can add static methods to get these fields.
+
+536:32-536:33
+Tue Jan 14 02:21:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d1635de_6c03a3d6
+Bytes: 235
+Off the top of my head, I don't remember for sure why I started with -2 for Method* - but I might be using -1 as the code for an invalid or unknown Dalvik vreg.  When I'm at work tomorrow, I'll take a look at the code to jog my memory.
 

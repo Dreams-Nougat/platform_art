@@ -17,3 +17,19 @@ UUID: 4d1b3107_c6972c2f
 Bytes: 115
 agreed, I'd overlooked this. Jean can you fix this, this should be a UniquePtr[] or else it is still a memory leak.
 
+74:25-74:26
+Tue Jan 14 22:58:32 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d1b3107_c6972c2f
+UUID: 6de9d52a_a32be412
+Bytes: 574
+So I've tried in various ways of doing this but it seems that you can't really create a UniquePtr of UniquePtrs of non copy-able instances.
+
+Everything I've tried gets me yelled at that either UniquePtr is not happy or Pass is not happy.
+
+I would suggest another solution which is to have a global static UniquePtr to a PassHolder that automatically creates these passes internally in an array and we can retrieve them via a simple get API.
+
+Once that gets killed, I can free the passes without UniquePtr underneath.
+
+Or you have a wonderful solution that I've overlooked :)
+

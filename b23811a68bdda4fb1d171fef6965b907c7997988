@@ -26,6 +26,38 @@ UUID: 0df0590e_0c08ffb8
 Bytes: 119
 If the location is DalvikFrame or CompilerTemp after an UpdateLoc, then the value isn't in registers (as far as I know)
 
+864
+Wed Jan 15 21:43:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0df0590e_0c08ffb8
+UUID: 0df0590e_2c74db14
+Bytes: 8
+Correct.
+
+901:17-901:26
+Wed Jan 15 21:43:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0df0590e_2c25fb93
+Bytes: 1027
+[my first comment here was going to be "don't do this!", but now I think I see what you're after.  Note, though, that it's really dangerous to directly modify the register fields of RegLocations.  Avoid doing so if possible.].
+
+
+As you've no doubt noticed, the general structure of Quick codegen has a 3-address bias.  I'm assuming that you are intending this routine to better support 2-address operations.  Let's move this to gen_loadstore.cc, and make it available for all targets.  Also, don't pass RegLocations by reference.  They are small enough to frequently be held in registers, so make this a function that returns a RegLocation.  I could envision a similar use for int, single and double - but let's not worry about that now.  Just call this one RegLocation ForceTempWide(RegLocation loc) and DCHECK to make sure that your incoming registers are core.
+
+I'm in the midst of a rework of register handling (part of the "pair" cleanup).  As part of that, I'll rework your new ForceTempWide() to handle core and FP regs.
+
+921:33-921:35
+Wed Jan 15 21:43:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: edaa25eb_d2606420
+Bytes: 775
+The various UpdateLocs tell you if the desired value happens to already be live in a register.  It will not, however, allocate any registers.  For rl_dest, what you generaly want is EvalLoc().  EvalLoc() will ensure that physical registers are allocated for your eventual result.  Your use of UpdateLoc to snoop on the current state of the world is fine, but if you can't do the operation directly into registers you may end up at the final StoreValue with no registers having been allocated.
+
+You may generally get away with this, but I think you may get caught if one of the two Dalvik vregs that makes up the wide value here was promoted, but the other wasn't.  EvalLocWide() deals with this case.
+
+
+Add an EvalLocWide below, immediately before the final StoreValueWide().
+
 943
 Wed Jan 15 20:27:58 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,6 +73,21 @@ UUID: 0df0590e_2caa1b6c
 Bytes: 44
 I think EvalLocWide is what I really wanted.
 
+943
+Wed Jan 15 21:43:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: edaa25eb_b2983863
+UUID: 4deed135_14ff62d5
+Bytes: 373
+The above call to LoadValueWide lets you specify the register class you want (which could be anything - float even if it's core, or core if it's float).  It will ensure that the value is loaded into physical register[s] of the specified class.  However, you cannot assume that the register[s] will be temp.  If the value has been promoted, you'll get the promoted register.
+
+952
+Wed Jan 15 21:43:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: edaa25eb_32460896
+Bytes: 19
+EvalLocWide() here.
+
 File: compiler/dex/quick/x86/target_x86.cc
 
 682
@@ -49,6 +96,14 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: edaa25eb_d2bea4b6
 Bytes: 55
 This is a bug fix.  IsFpReg(INVALID_REG) returns 'true'
+
+682
+Wed Jan 15 21:43:09 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: edaa25eb_d2bea4b6
+UUID: 4deed135_54228abe
+Bytes: 109
+Ah, yes.  I'll keep that in mind during my register rework. 0xff does match all of the bit mask flags.  Yuck.
 
 700
 Wed Jan 15 20:27:58 2014 +0000

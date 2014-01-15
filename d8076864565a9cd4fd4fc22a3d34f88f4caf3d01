@@ -17,3 +17,11 @@ UUID: 4deed135_94cd32f8
 Bytes: 477
 This function runs with all of the threads suspended. The profiler checkpoint does has a ScopedObjectAccess. This would normally work if we were in kRunnable, but since we SetStateUnsafe back to the old_state, it ends up trying to acquire the mutator lock which is already exclusively held. This causes a deadlock since we don't support recursive reader writer locks. I can't think of any clean ways to change the profiler checkpoint to deal with this issue, maybe irogers can.
 
+151
+Wed Jan 15 23:05:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4deed135_94cd32f8
+UUID: 4deed135_68bed2e7
+Bytes: 277
+Our reader writer lock is non-reentrant. Scoped object access ignores transitions in the runnable case, and so this change achieves that. I'd rather that we were running checkpoints with all threads suspended, so we should be able to move the checkpoint to after the ResumeAll.
+

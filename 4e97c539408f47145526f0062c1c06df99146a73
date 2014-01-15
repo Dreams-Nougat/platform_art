@@ -41,3 +41,33 @@ UUID: ad810d4e_614bc075
 Bytes: 42
 Your solution sounds good to me (sgtm) :-)
 
+74:25-74:26
+Wed Jan 15 15:17:10 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad810d4e_614bc075
+UUID: 8db2895a_d1bea4b6
+Bytes: 671
+Why does it need to be allocated on the heap?
+
+  template <typename PassType>
+  Pass* GetPassInstance() {
+    static PassType pass;
+    return &pass;
+  }
+
+  [...]
+
+  static Pass* const passes[] = {
+      GetPassInstance<CodeLayout>(),
+      GetPassInstance<SSATransformation>(),
+      GetPassInstance<ConstantPropagation>(),
+      GetPassInstance<InitRegLocations>(),
+      GetPassInstance<MethodUseCount>(),
+      GetPassInstance<NullCheckEliminationAndTypeInferenceInit>(),
+      GetPassInstance<NullCheckEliminationAndTypeInference>(),
+      GetPassInstance<BBCombine>(),
+      GetPassInstance<BBOptimizations>(),
+  };
+
+Shouldn't the passes be const or even constexpr?
+

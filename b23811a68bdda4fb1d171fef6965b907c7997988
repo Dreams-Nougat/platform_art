@@ -104,6 +104,46 @@ UUID: 0df0590e_6c26e3e7
 Bytes: 4
 Done
 
+952
+Wed Jan 15 22:34:07 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: edaa25eb_32460896
+UUID: 4deed135_74950edb
+Bytes: 1388
+Now that I think about it, my advice about needing an EvalLocWide() here was wrong.  What threw me here was not seeing an EvalLoc anywhere - which is something that's usually required.  However, your new ForceTempWide() plays a similar role to EvalLoc elsewhere.  Normally, you'd:
+
+rl_src1 = LoadValue()
+
+rl_src2 = LoadValue()
+
+rl_result = EvalLoc(rl_dest)
+
+... do operations into rl_result's registers
+
+StoreValue(rl_dest, rl_result);  // flush to home location
+
+
+Your ForceTempWide can be looked at as the functional equivalent of
+
+
+rl_src = LoadValue(rl_src)
+
+rl_result = EvalLoc(rl_dest)
+
+copy(rl_result, rl_src)
+
+
+So, I don't think you need the explicit EvalLoc after all.  However, to make this code fit in better with the existing scheme, go ahead and use the "rl_result" name for the result of ForceTempWide:
+
+RegLocation rl_result = ForceTempWide(rl_src)
+
+.. then operate on rl_result
+
+StoreValue(rl_dest, rl_result);
+
+
+Now, I think there may be another problem that I overlooked.  In your ForceTempWide, if either of the registers is already a temp you leave it alone and use it as-is.  In this case, you also need to Clobber() it to break the association between that temp register and the src vReg it was loaded from.  Otherwise, a subsequent operation may attempt to reuse that register assuming the original vreg's value is still live in it (and you've since stepped on it).
+
 File: compiler/dex/quick/x86/target_x86.cc
 
 682

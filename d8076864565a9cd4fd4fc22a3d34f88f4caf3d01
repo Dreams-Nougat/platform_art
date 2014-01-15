@@ -9,3 +9,11 @@ UUID: edaa25eb_35f8b231
 Bytes: 84
 wouldn't it be cleaner to make the checkpoint restore the world the way it found it?
 
+151
+Wed Jan 15 22:41:59 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: edaa25eb_35f8b231
+UUID: 4deed135_94cd32f8
+Bytes: 477
+This function runs with all of the threads suspended. The profiler checkpoint does has a ScopedObjectAccess. This would normally work if we were in kRunnable, but since we SetStateUnsafe back to the old_state, it ends up trying to acquire the mutator lock which is already exclusively held. This causes a deadlock since we don't support recursive reader writer locks. I can't think of any clean ways to change the profiler checkpoint to deal with this issue, maybe irogers can.
+

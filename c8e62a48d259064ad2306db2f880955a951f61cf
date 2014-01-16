@@ -11,6 +11,18 @@ If we ever hit this, DexFile_openDexFileNative shall crash on
 
   CHECK_EQ(env->ExceptionCheck(), JNI_TRUE);
 
+856:11-856:18
+Thu Jan 16 17:34:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d6331c4_9726044c
+UUID: 6dd0f588_11594ec1
+Bytes: 423
+we could be doing ThrowIOException here and below then.
+
+however, it then seems odd to have error_msg as an out argument?
+
+I'm thinking this was just some bad mix of old exception code and newer error_msg code. I think the preferred style now is to just use error_msg and let the caller make the exception. That would mean adjusting GenerateOatFile to not use ThrowIOException and change DexFile_openDexFileNative to do so.
+
 864
 Thu Jan 16 16:04:53 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

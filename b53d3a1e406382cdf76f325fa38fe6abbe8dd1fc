@@ -1,0 +1,25 @@
+Revision: b53d3a1e406382cdf76f325fa38fe6abbe8dd1fc
+Patch-set: 3
+File: compiler/dex/pass_driver.cc
+
+35
+Thu Jan 16 19:25:25 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6331c4_5798ec13
+Bytes: 375
+const here and on the return type.
+
+constexpr would be even better but for that I would need
+
+  protected:
+    ~Pass() = default;
+
+and that makes the gcc -Wnon-virtual-dtor complain. I could work around that with a #pragma but the derived classes should really be marked final and the host build on my development machine uses gcc 4.6 without support for C++11 final classes.
+
+55:40-55:45
+Thu Jan 16 19:25:25 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed71458d_741248de
+Bytes: 101
+Top-level const on function arguments is almost completely meaningless. I would discourage its usage.
+

@@ -1,0 +1,66 @@
+Revision: 0d3d8bbde9c8b2bbb058b9e36b671112e0431449
+Patch-set: 2
+File: compiler/dex/quick/gen_loadstore.cc
+
+306
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd6e41b0_73426058
+Bytes: 70
+Why is this called ForceTempWide if it works for non-wide loc as well?
+
+File: compiler/dex/quick/x86/int_x86.cc
+
+805
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6331c4_d7bf9c42
+Bytes: 121
+Rename to in_mem.
+
+Optionally, make it a function argument and drop the loc. The DCHECK below can be moved to the caller.
+
+865
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6331c4_f7c4a0df
+Bytes: 107
+There is no reason to declare variables early. You can have 4 independent variables x86op in this function.
+
+871
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6331c4_17aaf404
+Bytes: 14
+Same as x86op.
+
+911
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed71458d_34745015
+Bytes: 9
+And here.
+
+File: compiler/dex/quick/x86/target_x86.cc
+
+682
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd6e41b0_7318a0cb
+Bytes: 94
+This makes the branch unreachable. We have already filtered loc.location == kLocPhysReg above.
+
+700
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed71458d_746ec846
+Bytes: 18
+Is this necessary?
+
+804
+Thu Jan 16 20:43:47 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d6331c4_57b46c64
+Bytes: 16
+LOG(INFO) << ...
+

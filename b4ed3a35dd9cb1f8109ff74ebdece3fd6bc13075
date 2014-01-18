@@ -9,6 +9,14 @@ UUID: 32249ea3_5655b415
 Bytes: 67
 Since this is gen_common.cc, does this check work on all platforms?
 
+910:44-910:51
+Sat Jan 18 01:12:40 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32249ea3_5655b415
+UUID: cd43a132_208c106b
+Bytes: 222
+No, GetSupportBootImageFixup() returns true only when it's kThumb2. As such, this DCHECK intends to double-verify that the OpPcRelLoad() works, following NextSDCallInsn() in gen_invoke.cc. So, it's redundant. I removed it.
+
 File: runtime/entrypoints/entrypoint_utils.h
 
 146:8-146:9
@@ -17,4 +25,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12215a95_b59c00a0
 Bytes: 124
 I think you need a null check here in case you enter code line 101. Alternatively, you coult put slow_path to true line 101.
+
+146:8-146:9
+Sat Jan 18 01:12:40 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12215a95_b59c00a0
+UUID: 8d37e9c2_23f26684
+Bytes: 203
+Good catch. Changed it so slow_path will be set to true (and the null check in line 148 will be reached) even if EnsureInitialized() fails in CheckClassInitializedForObjectAlloc() and CheckObjectAlloc().
 

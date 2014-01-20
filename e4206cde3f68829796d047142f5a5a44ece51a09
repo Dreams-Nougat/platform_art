@@ -1,0 +1,57 @@
+Revision: e4206cde3f68829796d047142f5a5a44ece51a09
+Patch-set: 2
+File: compiler/dex/quick/gen_common.cc
+
+893:0-893:84
+Mon Jan 20 00:49:46 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 723ff6b5_ffc00b6b
+Bytes: 442
+The code gen here should be naive, ie put down a fast or slow path. The compiler driver should say which and any pertinent extra details. Compiler code runs as native, whereas this code is touching naked mirror objects. The choice about fast/slow paths is made in the compiler driver so all compilers can leverage an optimization and theres a single place to look at compile time assumptions (usually necessary when checking verifier sanity).
+
+File: compiler/driver/compiler_driver.h
+
+351:4-351:11
+Mon Jan 20 00:49:46 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 723ff6b5_1fdcef58
+Bytes: 77
+As there are no sub-classes, these member functions don't need to be virtual.
+
+387:0-387:33
+Mon Jan 20 00:49:46 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5244b256_38aeadae
+Bytes: 9
+And here.
+
+File: runtime/entrypoints/entrypoint_utils.h
+
+95:0-95:83
+Mon Jan 20 00:49:46 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5244b256_18b3e916
+Bytes: 43
+template specialization? s/GCC/annotalysis/
+
+96:0-96:100
+Mon Jan 20 00:49:46 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 723ff6b5_dfbd47e9
+Bytes: 69
+Only used in quick_alloc_entrypoints.cc so move to only point of use?
+
+145:20-145:21
+Mon Jan 20 00:49:46 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5244b256_f8a705cd
+Bytes: 8
+And here
+
+166:0-166:96
+Mon Jan 20 00:49:46 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5244b256_d8a441cb
+Bytes: 9
+And here.
+

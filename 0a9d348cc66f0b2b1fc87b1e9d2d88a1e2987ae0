@@ -9,6 +9,14 @@ UUID: 3229fe85_029b7aea
 Bytes: 313
 I don't follow the "re-read" comment. In all of the cases you are searching the class linker for dex caches from dex files, whereas in the original code this was only done if the reference was across dex files. The original reason to do this was driven by profiling the code, something I suspect wasn't done here.
 
+1175:0-1175:89
+Tue Jan 21 16:48:24 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3229fe85_029b7aea
+UUID: 728d36f2_2398d465
+Bytes: 377
+In the original code, Compute{Field,Method}ReferencedFromCompilingMethod() performs the first FindDexCache() and then, ComputeCompilingMethodsClass() may do a second FindDexCache() for the same DexFile since the caller initialized the dex_cache from the resolved field/method. With this change, we only do the FindDexCache() once and use that dex_cache as many times as needed.
+
 1177:0-1177:77
 Tue Jan 21 16:12:34 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

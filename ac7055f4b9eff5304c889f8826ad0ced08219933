@@ -25,10 +25,26 @@ UUID: f265a62a_29e61506
 Bytes: 117
 Let me look at making the change in the ME pass and remove this special case which should never really happen anyway.
 
+197
+Fri Jan 24 21:32:28 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f265a62a_29e61506
+UUID: 92bf0a8c_86b43b01
+Bytes: 308
+Agreed - this kind of thing should be handled at the MIR level.  Also, I'm a little hesitant to add code for which there is no way to test.  Until inlining is active, we'll never see this case, and if you do add code at the MIR level we cannot test it.  Might be better to add a TODO at the appropriate spot.
+
 235:10-235:19
 Fri Jan 24 21:01:24 2014 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 92bf0a8c_a607ff34
 Bytes: 43
 Should I free temp after I am done with it?
+
+235:10-235:19
+Fri Jan 24 21:32:28 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92bf0a8c_a607ff34
+UUID: 92bf0a8c_26a54fc5
+Bytes: 236
+As a matter of general cleanliness, you should always free any temps you allocate at the point they are no longer needed.  As a practical matter, though, all temps are automatically freed at the end of processing for each Dalvik opcode.
 

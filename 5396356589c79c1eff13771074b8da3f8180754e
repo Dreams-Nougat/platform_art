@@ -9,12 +9,28 @@ UUID: 92bf0a8c_28899e60
 Bytes: 191
 This feels like a CSE like pass, not sure why we need side data other than to say whether initialization is necessary or not. The pass only being necessary if there are static field accesses.
 
+17:0-17:32
+Fri Jan 24 10:27:21 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92bf0a8c_28899e60
+UUID: 3243be82_de4f65a7
+Bytes: 203
+I was thinking about doing the same as the null check elimination pass, except that the bit field would be indexed by the meta::sfield_annotation. It's much better than using a std::set of field indexes.
+
 20:0-20:12
 Fri Jan 24 06:34:54 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f265a62a_a3a404ca
 Bytes: 56
 how does this relate to the "inliner's" special methods.
+
+20:0-20:12
+Fri Jan 24 10:27:21 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f265a62a_a3a404ca
+UUID: 3243be82_1e41cd78
+Bytes: 263
+WIP: We would insert IGET/IPUT with an already resolved annotation. Currently, if we want to insert an IGET/IPUT (with MIR_CALLEE as in https://android-review.googlesource.com/73710) we'd need to somehow hack around the FastInstance() call in GenIGet()/GenIPut().
 
 File: compiler/driver/compiler_driver.cc
 

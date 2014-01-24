@@ -1,0 +1,13 @@
+Revision: 7476280b20d0b5addf9e4a2ce84d1eee36c76c1e
+Patch-set: 2
+File: runtime/gc/heap.cc
+
+2187:50-2187:69
+Fri Jan 24 22:16:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b2fdee74_f2ca4888
+Bytes: 559
+Was what happened that the gc duration got longer with the heap verification turned on, which caused remaining_bytes to get larger and concurrent_start_bytes_ to get smaller, which caused more frequent GC invocations?
+
+Assuming that, in the normal case (ie. with the heap verification turned off), if there's an app that either allocates fast (higher allocation rate) or causes long GC durations (due to a large heap size, etc.), then could this change increase the chance that the concurrent GC starts too late (ie. can't keep up with the mutator) in theory?
+

@@ -1,0 +1,34 @@
+Revision: a7bd0377c921eec4fb1add850106ce9ee1d8baba
+Patch-set: 1
+File: /COMMIT_MSG
+
+12:10-12:24
+Fri Jan 24 22:26:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72b456b0_f292958b
+Bytes: 84
+Is this buggy JNI code referring to some specific regression/code/bug or in general?
+
+File: runtime/gc/heap.cc
+
+2124:0-2124:4
+Fri Jan 24 22:26:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b2fdee74_12bc2cbf
+Bytes: 421
+minor cleanup idea: would it make sense to turn this into
+
+return main_space_ != nullptr && main_space_->HasAddress(obj) &&
+    (IsCompactingGC(background_collector_type_) || IsCompactingGC(collector_type_));
+
+(and get rid of the if statement)
+
+or
+
+if (main_space_ != nullptr && main_space_->HasAddress(obj)) &&
+    ((IsCompactingGC(background_collector_type_) || IsCompactingGC(collector_type_))) {
+    return true;
+}
+
+?
+

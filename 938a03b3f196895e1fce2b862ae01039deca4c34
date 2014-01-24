@@ -16,6 +16,14 @@ UUID: d2cb423b_4b02e527
 Bytes: 156
 I'd like to have a rough expectation for myself - do you have a sense of how much slower the debug build is with this heap verification enabled than before?
 
+9
+Fri Jan 24 22:02:51 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2cb423b_4b02e527
+UUID: 72b456b0_af527a50
+Bytes: 65
+Adds ~100ms per GC iteration post gc (pre sweeping) verification.
+
 File: runtime/gc/heap.cc
 
 226:0-226:2
@@ -29,12 +37,28 @@ I think this could/should be surrounded by
 
 as we won't use the post zygote non-moving space otherwise?
 
+226
+Fri Jan 24 22:02:51 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5244b256_def30952
+UUID: 9202aa40_b11c4082
+Bytes: 86
+Currently this still happens for non-moving GC. I added the check for IsZygote though,
+
 796:8-796:20
 Tue Jan 21 20:08:30 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5244b256_fe1dadc5
 Bytes: 66
 Is this the case for the java.lang.Class object? Leave a comment ?
+
+796
+Fri Jan 24 22:02:51 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5244b256_fe1dadc5
+UUID: b2fdee74_72893860
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -44,4 +68,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d2cb423b_0b337d0f
 Bytes: 136
 This should be "collector_type" instead of "gc::kCollectorTypeGSS". Currently, the GC type override (-Xgc) does not work. Will fix this.
+
+597
+Fri Jan 24 22:02:51 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2cb423b_0b337d0f
+UUID: 9202aa40_d123c4b5
+Bytes: 29
+I see you fixed this, thanks.
 

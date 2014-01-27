@@ -9,12 +9,28 @@ UUID: f2fa0681_128c2cb1
 Bytes: 428
 Be aware that unless you do an UpdateLoc(), you can only tell if the home location of the value is in a register.  In this particular case, that's probably what you want - because if Method* happened to be currently live in a temp register (say kArg0 or kArg1), the code below would fail.  Still, it wouldn't hurt to add a DCHECK to ensture in the (rl_method.location == kLocPhysReg) case that rl_method.low_reg is *not* a temp.
 
+834
+Mon Jan 27 17:43:50 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2fa0681_128c2cb1
+UUID: f2fa0681_b515425e
+Bytes: 100
+I think the 'FlushAllRegs' will ensure that there is no temp here, but I will add the DCHECK anyways
+
 849
 Mon Jan 27 17:15:42 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12eebac6_b6438e5d
 Bytes: 739
 We actually can't put the LoadConstant under the OpIT.  The issue is we can't know how many instructions are needed to materialize the constant - which is something that must be known and unchanging to use the proper IT form.  You could conceivably enhance IT generation to support this, but you won't know the answer until the assembly phase when all offsets are known.  If a constant can't be materialized with ALU ops, we fall back to loading it from the constant pool.  However, it's possible that after all code is generated we may find that the constant pool is too far to reach in a single load+displacement, so we have to expand the instruction sequence during the assembly fixup stage.  For this reason, OpIT must tread carefully.
+
+849
+Mon Jan 27 17:43:50 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12eebac6_b6438e5d
+UUID: d2f7c297_f17b60d1
+Bytes: 4
+Done
 
 857
 Mon Jan 27 17:15:42 2014 +0000
@@ -23,10 +39,26 @@ UUID: f2fa0681_928dbcdc
 Bytes: 389
 For the reasons stated above, this OpRegCopy must result in exactly 1 instruction being generated.  Given the preceeding code and knowledge of fixed register usage, it should never be the case that (r_method == kArg0) at this point.  However, if it were, OpRegCopy() would try to be clever and delete the copy as unnecessary - breaking the IT.  Add a DCHECK_NE(TargetReg(kArg0), r_method).
 
+857
+Mon Jan 27 17:43:50 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2fa0681_928dbcdc
+UUID: 12eebac6_f6deb62e
+Bytes: 4
+Done
+
 864
 Mon Jan 27 17:15:42 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f2fa0681_526d1417
 Bytes: 168
 For instruction scheduling purposes, re-order these such that the LoadConstant (which could turn into a memory load from the literal pool) comes before the OpRegCopy().
+
+864
+Mon Jan 27 17:43:50 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2fa0681_526d1417
+UUID: f2fa0681_d50c4e56
+Bytes: 4
+Done
 

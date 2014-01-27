@@ -1,0 +1,26 @@
+Revision: 84c7ac294130576f6886abbebe382031c20404c3
+Patch-set: 1
+File: build/Android.oat.mk
+
+96
+Mon Jan 27 23:53:47 2014 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 922b8ac2_6c02f3d5
+Bytes: 747
+But even if you exclude this block from the build system, boot.art will still be built to /system/framework/boot.art.
+The above block doesn't affect if boot.art will be built or not, unless you explicitly run "make boot.art".
+To disable installation of boot.art, we need to change build/core/dex_preopt_libart.mk, to something like:
+
+DEFAULT_DEX_PREOPT_INSTALLED_IMAGE :=
+
+ifneq ($(PRODUCT_DEX_PREOPT_IMAGE_IN_DATA),true)
+
+DEFAULT_DEX_PREOPT_INSTALLED_IMAGE := $(PRODUCT_OUT)$(LIBART_BOOT_IMAGE)
+
+# The rule to install boot.art and boot.oat
+$(DEFAULT_DEX_PREOPT_INSTALLED_IMAGE) : $(DEFAULT_DEX_PREOPT_BUILT_IMAGE) | $(ACP)
+        $(call copy-file-to-target)
+        $(hide) $(ACP) -fp $(patsubst %.art,%.oat,$<) $(patsubst %.art,%.oat,$@)
+
+endif
+

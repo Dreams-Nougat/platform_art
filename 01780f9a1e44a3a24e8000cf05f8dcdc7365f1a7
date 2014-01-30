@@ -1,0 +1,108 @@
+Revision: 01780f9a1e44a3a24e8000cf05f8dcdc7365f1a7
+Patch-set: 1
+File: runtime/gc/heap.cc
+
+1201:6-1201:47
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 92870a29_e3f52e9f
+Bytes: 46
+This comment is no longer true. Get rid of it?
+
+1202:6-1202:17
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52811216_41b996f6
+Bytes: 92
+If RemoveSpace() nullify main_space_, the delete here will cause a null pointer dereference?
+
+1432:65-1433:46
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2b4c6fd_d1014ed1
+Bytes: 253
+I guess this is because the zygote space reuses the old alloc space's bitmaps in MallocSpace::CreateZygoteSpace(). With this in mind, what (something bad) happens if the old alloc space's bitmaps are null when calling RemoveSpace on the old alloc space?
+
+File: runtime/gc/space/dlmalloc_space.cc
+
+290:2-290:45
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52811216_bcaef578
+Bytes: 75
+In parallel to this TODO, should RosAllocSpace::Clear() get a similar TODO?
+
+File: runtime/gc/space/malloc_space.cc
+
+188:2-188:40
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 92870a29_23abc658
+Bytes: 21
+Remove this LOG line?
+
+File: runtime/gc/space/malloc_space.h
+
+128:55-128:62
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52811216_bc199591
+Bytes: 21
+itself, or ourselves?
+
+File: runtime/gc/space/space.h
+
+110:41-110:73
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52811216_3c8a0507
+Bytes: 107
+Should this "|| type == kSpaceTypeZygoteSpace" part be removed? Or, is there some code that relies on this?
+
+171:15-171:20
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52811216_bca435ca
+Bytes: 167
+Is there a reason to move Sweep() all the way up to Space, as opposed to 
+ContinuousSpace which has the live/mark bitmaps? It seems like Sweep() goes with the bitmaps?
+
+188:0-188:2
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52811216_7c947d29
+Bytes: 10
+Same here.
+
+File: runtime/gc/space/zygote_space.cc
+
+35:4-35:47
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52811216_1cab8158
+Bytes: 103
+Optional: would it make sense to get rid of 'const' from the 'visitor' parameter of VisitMarkedRange()?
+
+56:0-56:2
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 92870a29_be742d14
+Bytes: 160
+How about DCHECK'ing here that the bitmaps are null before reseting them to the given bitmaps to verify that 'create_bitmaps' was false in the constructor call?
+
+76:18-76:31
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f2b4c6fd_83ec9d32
+Bytes: 65
+Should this update objects_allocated_ (as objects are collected)?
+
+File: runtime/gc/space/zygote_space.h
+
+32:0-32:63
+Thu Jan 30 02:07:36 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 92870a29_9ecbe9e6
+Bytes: 44
+This comment should talk about zygote space.
+

@@ -52,6 +52,14 @@ UUID: f2b4c6fd_9993ec90
 Bytes: 119
 Just out of curiosity, what is the lock needed for? Why is there a single mutator lock used everywhere for the runtime?
 
+38:84-38:97
+Thu Jan 30 17:29:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2b4c6fd_9993ec90
+UUID: 92870a29_15dd17fa
+Bytes: 611
+Its a shared/exclusive lock (reader/writer) with mutators sharing the heap and the GC taking exclusive access during GC pauses. This arrangement avoids the GC busy waiting for mutators to suspend, a source of increased pause time. The lock forms part of the global order (locks.h) where the only thing that matters is we have an order so that we avoid deadlocks. Requiring via static analysis (annotalysis) that the mutator lock is held means that non-runnable threads aren't mutating the heap, which would break the GC. Having a share of the mutator lock is a proxy for saying the accessing thread is runnable.
+
 File: runtime/arch/x86_64/asm_support_x86_64.S
 
 109

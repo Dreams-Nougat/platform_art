@@ -1,5 +1,48 @@
 Revision: 63fb432c27a448725610f79dd0e5da3f77d332d9
 Patch-set: 2
+File: compiler/image_writer.cc
+
+716:15-716:26
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_bbd1079c
+Bytes: 47
+s/SetFieldPtr/SetFieldObjectWithoutWriteBarrier
+
+726:11-726:22
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c6a85_e159267d
+Bytes: 47
+s/SetFieldPtr/SetFieldObjectWithoutWriteBarrier
+
+File: compiler/oat_test.cc
+
+50:6-50:61
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c6a85_61463697
+Bytes: 79
+Might be worth to assert we have either quick code or portable code, not both ?
+
+File: compiler/oat_writer.cc
+
+488:6-488:61
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_7b9b7fea
+Bytes: 32
+Could you add a TODO or remove ?
+
+File: disassembler/disassembler_arm.cc
+
+19:9-19:21
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_4027b0c4
+Bytes: 18
+Include with < > ?
+
 File: runtime/arch/x86_64/asm_support_x86_64.S
 
 109
@@ -85,6 +128,129 @@ UUID: 12a87aa1_a08d546d
 Bytes: 53
 LDT entry related code is non functional in host mode
 
+File: runtime/debugger.cc
+
+1084:4-1084:29
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_1b50fb47
+Bytes: 88
+Add a TODO to fix thread safety analysis later. I guess it's due to the template, right?
+
+File: runtime/entrypoints/entrypoint_utils.h
+
+722:2-722:36
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_006648fe
+Bytes: 66
+Would be nice to track this in buganizer. Do we have a bug opened?
+
+File: runtime/gc/accounting/mod_union_table.cc
+
+85:15-85:26
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c6a85_240ddc4f
+Bytes: 47
+s/SetFieldPtr/SetFieldObjectWithoutWriteBarrier
+
+File: runtime/gc/collector/semi_space.cc
+
+606:47-606:58
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c6a85_e4837440
+Bytes: 47
+s/SetFieldPtr/SetFieldObjectWithoutWriteBarrier
+
+File: runtime/hprof/hprof.cc
+
+249:17-249:35
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_5eec3131
+Bytes: 105
+Can we create a method/macro with this code and use it so we do not duplicate code at multiple locations?
+
+532:4-532:66
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c6a85_249a7ca3
+Bytes: 20
+Use a foreach loop ?
+
+558:4-558:66
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_1ef6a901
+Bytes: 20
+Use a foreach loop ?
+
+File: runtime/mirror/array.h
+
+124:4-125:38
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c6a85_a4644cf3
+Bytes: 130
+Would be nice to use GetRawData(sizeof(T), 0) to avoid duplicating code. I missed this one when refactoring array for interpreter.
+
+129:4-130:38
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_3e104569
+Bytes: 16
+Same than above.
+
+File: runtime/mirror/art_method.cc
+
+182:0-182:21
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_de2de1aa
+Bytes: 16
+Why this change?
+
+276:10-276:31
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_4048d048
+Bytes: 283
+This probably will slow down invokes a bit going through this path since we need to do this test each time (plus the extra entrypoint). Wondering what's the impact here, especially for reflection. Interpreter could be impacted too because transition to compiled code take this route.
+
+298:76-298:77
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_00e1a8ed
+Bytes: 24
+Remove extra semi-colon.
+
+298:6-298:76
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_5e1af185
+Bytes: 113
+I'm pretty sure I've already seen this log but I don't remember where. Is this happening only during compilation?
+
+File: runtime/mirror/art_method.h
+
+430:11-430:32
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_20dca434
+Bytes: 41
+Nice renaming! I prefer this one I think.
+
+File: runtime/mirror/dex_cache.h
+
+153:2-153:10
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c6a85_24c83c8f
+Bytes: 19
+Why not uintptr_t ?
+
 File: runtime/mirror/object.h
 
 228
@@ -94,6 +260,36 @@ UUID: 929c6a85_4410e069
 Bytes: 115
 This field contains reference to monitor for fat locks. Do you think it could be reasonable to extend it to 64-bit?
 
+File: runtime/mirror/object_array-inl.h
+
+58:9-58:54
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_be49f582
+Bytes: 59
+Why changing this line? GetWithoutChecks does this already.
+
+76:4-76:54
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_40f690ab
+Bytes: 37
+Same than above for SetWithoutChecks.
+
+107:9-107:12
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_20f384bb
+Bytes: 7
+int32_t
+
+161:2-161:5
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2b1820e_7e448d65
+Bytes: 7
+int32_t
+
 File: runtime/mirror/string.h
 
 139
@@ -102,6 +298,24 @@ Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12a87aa1_e0835c40
 Bytes: 56
 Shouldn't we change private members of StringClass also?
+
+File: runtime/native/java_lang_System.cc
+
+76:6-76:14
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_60c86c62
+Bytes: 95
+Why multiple UNLIKELYs rather than only one? Is the generated code different with this pattern?
+
+File: runtime/profiler.cc
+
+443:10-443:29
+Thu Jan 30 15:18:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12a87aa1_e0a23c91
+Bytes: 83
+As noticed earlier, we should move this to a separate method/macro and use it here.
 
 File: runtime/stack.cc
 

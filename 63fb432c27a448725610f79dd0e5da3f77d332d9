@@ -33,6 +33,14 @@ UUID: 52811216_5c9179c8
 Bytes: 104
 I don't get why rbx is being "smashed". Anyway, rsi, rdi, and r8-r11 are not kept across function calls.
 
+56:20-56:36
+Thu Jan 30 03:39:15 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52811216_5c9179c8
+UUID: 52811216_10a9a56f
+Bytes: 395
+This code is used when quick does a long jump to deliver an exception. In the event that the handler is an upcall into managed code we want to ensure the "returned value" (we're delivering an exception so there isn't a returned value) is 0. It would suffice to have RAX be zero, on 32bit we needed RAX and RDX. We know no temporary/argument registers are live when doing the exception long jump.
+
 File: runtime/arch/x86_64/registers_x86_64.cc
 
 25

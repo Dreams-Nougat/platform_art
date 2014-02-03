@@ -9,10 +9,26 @@ UUID: b20eceb3_bffb2be7
 Bytes: 155
 At the surface, it seems like a good idea to keep StartGC() (that's probably more parameterized) to match FinishGC()? Alternatively, get rid of FinishGC()?
 
+1197
+Mon Feb 03 21:00:31 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b20eceb3_bffb2be7
+UUID: d2dfc254_4010dc69
+Bytes: 156
+The main issue with StartGC was that special logic needed to be guarded by the lock at each call site, like compacting_gc = IsCompactingGC(collector_type_);
+
 1208:51-1208:67
 Mon Feb 03 20:26:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d2dfc254_658e4ad8
 Bytes: 114
 I think using TypeSS is ok here even when GSS is actually used, as IsCompactingGC() should behave the same, right?
+
+1208
+Mon Feb 03 21:00:31 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2dfc254_658e4ad8
+UUID: d2dfc254_8016c466
+Bytes: 94
+It shouldn't make a difference, though we probably don't want to use GSS for heap transitions.
 

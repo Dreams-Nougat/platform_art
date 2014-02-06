@@ -2,10 +2,25 @@ Revision: 5056421085a00964e9442115ef4f7416da013fec
 Patch-set: 1
 File: compiler/dex/quick/gen_invoke.cc
 
+1011:13-1011:22
+Thu Feb 06 18:29:42 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 129ebad0_59b2d6e1
+Bytes: 199
+If the index is not constant, moving the load here is a slight performance regression for non-x86 targets.  Perhaps it should be restored, but guarded with a "((instruction_set != kX86) && !is_const)
+
 1051
 Thu Feb 06 14:26:31 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f2aa06eb_819b2817
 Bytes: 86
 Not 100% certain that this shouldn't check for x86 or if rl_idx.low_reg == INVALID_REG
+
+1051
+Thu Feb 06 18:29:42 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2aa06eb_819b2817
+UUID: 32a1fe0c_ae544c1b
+Bytes: 73
+Looks right to me, but we'll definitely want to test this on all targets.
 

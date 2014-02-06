@@ -1,0 +1,82 @@
+Revision: 4be2169a4a3d00e33f7df2f9a58d32f62a513fba
+Patch-set: 1
+File: runtime/gc/allocator/rosalloc.cc
+
+1013
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b2496e4f_1293ec91
+Bytes: 80
+Fix name to match convention thread_local_free_bit_map -> ThreadLocalFreeBitMap?
+
+File: runtime/gc/allocator/rosalloc.h
+
+252
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d26ee2af_53cba48d
+Bytes: 71
+You could make these const if you added a
+ThreadLocalFreeBitMap() const
+
+File: runtime/gc/collector/mark_sweep.cc
+
+202
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924e2a55_512734c4
+Bytes: 272
+It might be cleaner to put this logic before the GC begins in heap.cc? Something like
+SuspendAll();
+PreGcRosAllocVerification();
+ResumeAll();
+So that we don't need to have the RosAlloc verification in each GC file?
+
+Also, where do you call PostGcRosAllocVerification from?
+
+File: runtime/gc/heap.cc
+
+1195
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b2496e4f_52f9f4f1
+Bytes: 11
+VLOG(heap)?
+
+1447
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924e2a55_d1e4044e
+Bytes: 7
+Delete?
+
+1458
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924e2a55_31ec7031
+Bytes: 34
+ScopedDisableRosAllocVerification?
+
+2125
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924e2a55_b154e01b
+Bytes: 14
+Stale comment?
+
+2141
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b2496e4f_b254e01b
+Bytes: 4
+Same
+
+File: runtime/gc/heap.h
+
+809
+Thu Feb 06 20:38:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924e2a55_1144cc64
+Bytes: 44
+ScopedDisableRosAllocVerification is clearer
+

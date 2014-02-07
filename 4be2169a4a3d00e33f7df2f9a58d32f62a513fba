@@ -9,6 +9,14 @@ UUID: b2496e4f_1293ec91
 Bytes: 80
 Fix name to match convention thread_local_free_bit_map -> ThreadLocalFreeBitMap?
 
+1013
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b2496e4f_1293ec91
+UUID: f2468641_5518fed2
+Bytes: 4
+Done
+
 File: runtime/gc/allocator/rosalloc.h
 
 252
@@ -18,6 +26,14 @@ UUID: d26ee2af_53cba48d
 Bytes: 71
 You could make these const if you added a
 ThreadLocalFreeBitMap() const
+
+252
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d26ee2af_53cba48d
+UUID: 323d7e9f_e265aea0
+Bytes: 250
+Tried this, but I don't think this is worth enough to have to use a const_cast to cast away const in ThreadLocalFreeBitMap(). Also, since the point of ThreadLocalFreeBitMap() is to return a pointer to read/write, so it's not really meant to be const.
 
 File: runtime/gc/collector/mark_sweep.cc
 
@@ -34,6 +50,16 @@ So that we don't need to have the RosAlloc verification in each GC file?
 
 Also, where do you call PostGcRosAllocVerification from?
 
+202
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 924e2a55_512734c4
+UUID: 123a3aa9_219176f8
+Bytes: 968
+I'd rather not move the logic to heap.cc as it'd require adding it at each GC::Run() call site (or miss one if one is added later in the future.) In this regard, putting it in GC::Run() might be better, which I did.
+
+Also, it seems better to not cause a separate pause (SuspendAll/ResumeAll) just for this rosalloc verification. Because (aside from the extra cost of doing that) mutators could still cause a race/corruption after that pause during the (concurrent) marking phase, which means we don't get much information on whether mutators, concurrent part of GC, or non-concurrent part of GC has caused it. If we do rosalloc verification during the GC pause, then at least we can tell that the non-concurrent part of GC hasn't likely caused it (assuming we enabled both pre/post verifications.) This should help narrow down the cause. Especially so if the concurrent part of GC (like concurrent marking) isn't likely to write to the heap or allocate/move an object.
+
 File: runtime/gc/heap.cc
 
 1195
@@ -43,12 +69,28 @@ UUID: b2496e4f_52f9f4f1
 Bytes: 11
 VLOG(heap)?
 
+1195
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b2496e4f_52f9f4f1
+UUID: 123a3aa9_36c9beee
+Bytes: 4
+Done
+
 1447
 Thu Feb 06 20:38:39 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 924e2a55_d1e4044e
 Bytes: 7
 Delete?
+
+1447
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 924e2a55_d1e4044e
+UUID: 323d7e9f_625a9ee5
+Bytes: 4
+Done
 
 1458
 Thu Feb 06 20:38:39 2014 +0000
@@ -57,6 +99,14 @@ UUID: 924e2a55_31ec7031
 Bytes: 34
 ScopedDisableRosAllocVerification?
 
+1458
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 924e2a55_31ec7031
+UUID: 123a3aa9_b68bee99
+Bytes: 4
+Done
+
 2125
 Thu Feb 06 20:38:39 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -64,12 +114,28 @@ UUID: 924e2a55_b154e01b
 Bytes: 14
 Stale comment?
 
+2125
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 924e2a55_b154e01b
+UUID: 123a3aa9_f69576b5
+Bytes: 10
+Yes. Done.
+
 2141
 Thu Feb 06 20:38:39 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b2496e4f_b254e01b
 Bytes: 4
 Same
+
+2141
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b2496e4f_b254e01b
+UUID: 323d7e9f_e2b4ceb7
+Bytes: 10
+Yes. Done.
 
 File: runtime/gc/heap.h
 
@@ -79,4 +145,12 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 924e2a55_1144cc64
 Bytes: 44
 ScopedDisableRosAllocVerification is clearer
+
+809
+Fri Feb 07 23:33:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 924e2a55_1144cc64
+UUID: f2468641_f56c8a1d
+Bytes: 4
+Done
 

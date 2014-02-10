@@ -9,6 +9,29 @@ UUID: 0f7db19f_75bbe8c7
 Bytes: 49
 This name to make it consistent with dalvik-host.
 
+304:3-304:4
+Mon Feb 10 21:06:49 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f7db19f_75bbe8c7
+UUID: ef4bfd71_4de77193
+Bytes: 656
+its preferred not to use the phony target names.
+
+so:
+  dalvikvm -> $(HOST_OUT)/bin/dalvikvm
+  dex2oat -> $(HOST_OUT)/bin/dex2oat
+  libart -> $(HOST_OUT)/lib/libart.so
+  libart -> $(HOST_OUT)/lib/libart-compiler.so
+
+maybe also the debug versions?
+  dex2oat -> $(HOST_OUT)/bin/dex2oatd
+  libart -> $(HOST_OUT)/lib/libartd.so
+  libart -> $(HOST_OUT)/lib/libartd-compiler.so
+
+but maybe they could be an extra art-host-debug phony target?
+
+I have some special manifests like dalvik-dev-dalvik-host and master-dalvik-host that actually build the dalvik-host target to make sure we don't grow unexpected dependencies. We could add the -art-host versions as well.
+
 File: dalvikvm/Android.mk
 
 53:25-53:35
@@ -20,4 +43,34 @@ What's the preferred way?
 1) OK to do like this/
 2) Move script to this directory
 3) Add a Makefile in the tools directory
+
+53:25-53:35
+Mon Feb 10 21:06:49 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f7db19f_55b6ece2
+UUID: ef4bfd71_6db0ed74
+Bytes: 235
+the preferred way is to have the Android.mk with the source, so I'd make this part addition to a new art/tools/Android.mk. Then add to art/Android.mk
+
+include $(art_path)/tools/Android.mk
+
+next to the other "include $(art_path)" lines.
+
+File: runtime/runtime.cc
+
+757
+Mon Feb 10 21:06:49 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af83c5c3_6bb0f174
+Bytes: 89
+if (!kIsTargetBuildm && parsed->host_prefix_.empty()) to prevent accidents on the target.
+
+File: tools/art
+
+50
+Mon Feb 10 21:06:49 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef4bfd71_0d95f9b5
+Bytes: 194
+so is this along with the runtime.cc change sufficient to make this work. I'd hope the restriction on running in $ANDROID_BUILD_TOP would be easy to fix, but wasn't expecting it to be this easy.
 

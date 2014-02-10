@@ -9,12 +9,28 @@ UUID: efa05d5c_9ca265bc
 Bytes: 47
 Can't the std::vector be a std::vector of Sirt?
 
+1089
+Mon Feb 10 20:33:59 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: efa05d5c_9ca265bc
+UUID: af83c5c3_cbda5d39
+Bytes: 148
+That requires gross code since a vector of SIRTs would need to be a vector of SIRT pointers which are constructed and destructed in the right order.
+
 1094:2-1094:14
 Mon Feb 10 19:37:00 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cf48f97a_ec1bbf86
 Bytes: 143
 Is this function making sure GC not happening by not having a thread suspension point (which is asserted by Start/EndAssertNoThreadSuspension)?
+
+1094
+Mon Feb 10 20:33:59 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cf48f97a_ec1bbf86
+UUID: af83c5c3_abdd9933
+Bytes: 3
+Yes
 
 1126:29-1126:37
 Mon Feb 10 09:09:26 2014 +0000
@@ -23,12 +39,28 @@ UUID: cf7639c5_f3bcf0ec
 Bytes: 6
 Ditto.
 
+1126
+Mon Feb 10 20:33:59 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cf7639c5_f3bcf0ec
+UUID: cf48f97a_8cd0cb0a
+Bytes: 73
+Could make c a SIRT but I rather keep the behavior as the same functions.
+
 1172:49-1172:52
 Mon Feb 10 09:09:26 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cf7639c5_b3c67883
 Bytes: 87
 What classes? Is it the "o" parameter that is the problem? Shouldn't it be a Sirt then?
+
+1172
+Mon Feb 10 20:33:59 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cf7639c5_b3c67883
+UUID: ef4bfd71_4d72d16d
+Bytes: 114
+I could make o a SIRT but I just copied the pattern of the other functions. Will change the comment in another CL.
 
 File: runtime/jdwp/object_registry.cc
 
@@ -41,6 +73,15 @@ Bytes: 343
 
 object_to_entry_ takes a value of ObjectRegistryEntry (it copies) but id_to_entry_ needs a heap-allocated ObjectRegistryEntry. I think it'd be clearer if we declare separate ObjectRegistryEntry for the two cases, as opposed to reusing the heap allocated ObjectRegistryEntry in terms of stack- vs heap-allocated.
 
+63
+Mon Feb 10 20:33:59 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f8d4df2_e061826b
+UUID: ef4bfd71_8ddd69fb
+Bytes: 340
+Is () the C++ style guide? Couldn't find it. 
+I'm confused as to what you mean by making a separate ObjectRegistryEntry? Before, we were always storing ObjectRegistryEntry in the object_to_entry_ map, just not as a pointer. This caused issues where I removed stale objects in UpdateObjectPointers since it moved the object registry entries.
+
 File: runtime/native/dalvik_system_VMDebug.cc
 
 238:18-238:67
@@ -49,4 +90,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: af83c5c3_e8788709
 Bytes: 83
 We now use VisitObjects() instead of the live bitmap, right? Is this comment stale?
+
+238
+Mon Feb 10 20:33:59 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af83c5c3_e8788709
+UUID: ef4bfd71_6df8ed63
+Bytes: 19
+Done in another CL.
 

@@ -1,0 +1,101 @@
+Revision: 3956e3ffd94c84f00e02bca3ce3a9b6d12af03f0
+Patch-set: 8
+File: runtime/gc/accounting/mod_union_table.cc
+
+87:0-87:56
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_efe395b8
+Bytes: 67
+DCHECK(!...IsActiveTransaction...);
+
+Transactions add moving GC :-/
+
+File: runtime/gc/collector/semi_space.cc
+
+606:0-606:54
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_8fe0d9ad
+Bytes: 67
+DCHECK(!...IsActiveTransaction...);
+
+Transactions add moving GC :-/
+
+File: runtime/gc/heap.cc
+
+2307:0-2307:50
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: efce9d4a_12ec0c73
+Bytes: 92
+I'd also expect not to be here in a transaction, but I don't think it'd be inherently wrong.
+
+File: runtime/mirror/array.h
+
+155:38-155:44
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_8ff53969
+Bytes: 55
+broken due to the templating? add to comment the reason
+
+165:0-165:92
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_aff27d7c
+Bytes: 8
+and here
+
+File: runtime/mirror/art_field.cc
+
+46:0-46:14
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: efce9d4a_b215f89b
+Bytes: 78
+sounds like this could be enabled, "if (kIsDebugBuild)" is preferred to #ifdef
+
+File: runtime/mirror/class-inl.h
+
+432:48-432:49
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_2f20cd26
+Bytes: 49
+needed because image writing is in a transaction?
+
+File: runtime/mirror/string.cc
+
+36:30-36:75
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: efce9d4a_7259d079
+Bytes: 108
+another bogus case, thanks for cleaning the one below, annotalysis belongs on the declaration not definition
+
+40:0-40:83
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_4f8501ae
+Bytes: 77
+It should be sound to set this unconditionally as the hash code is invariant.
+
+File: runtime/thread.cc
+
+401:8-401:27
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_cf78110a
+Bytes: 7
+runtime
+
+File: test/Transaction/Transaction.java
+
+31:7-31:8
+Tue Feb 11 18:33:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: efce9d4a_b22738dc
+Bytes: 2
+ws
+

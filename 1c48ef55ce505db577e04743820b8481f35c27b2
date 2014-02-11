@@ -1,0 +1,13 @@
+Revision: 1c48ef55ce505db577e04743820b8481f35c27b2
+Patch-set: 4
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+566
+Tue Feb 11 18:04:32 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0fabf157_c8600f91
+Bytes: 314
+This DCHECK is wrong. While we must have gone through the "called->IsRuntimeMethod()" branch above where dex_method_idx was initialized from the "instr", we have since changed "called" and cannot use it here to check that we originally took that branch.
+
+The important assumptions we use below are still satisfied.
+

@@ -11,6 +11,14 @@ DCHECK(!...IsActiveTransaction...);
 
 Transactions add moving GC :-/
 
+87
+Tue Feb 11 20:30:16 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_efe395b8
+UUID: 8fbfe18b_1203b2da
+Bytes: 217
+I think this should always be obj->SetFieldObjectWithoutWriteBarrier<false>? If an object gets moved, you do not want to restore the pointer if the transaction gets aborted since it will be pointing to random garbage.
+
 File: runtime/gc/collector/semi_space.cc
 
 606:0-606:54
@@ -22,6 +30,14 @@ DCHECK(!...IsActiveTransaction...);
 
 Transactions add moving GC :-/
 
+606
+Tue Feb 11 20:30:16 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_8fe0d9ad
+UUID: efce9d4a_d530ae1a
+Bytes: 103
+Don't restore pointers of moved objects since rolling back the transaction will not unmove the objects.
+
 File: runtime/gc/heap.cc
 
 2307:0-2307:50
@@ -30,6 +46,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: efce9d4a_12ec0c73
 Bytes: 92
 I'd also expect not to be here in a transaction, but I don't think it'd be inherently wrong.
+
+2307
+Tue Feb 11 20:30:16 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: efce9d4a_12ec0c73
+UUID: efce9d4a_f52daabd
+Bytes: 108
+In some cases, this is called when the referent moves, we do not want to store that case in the transaction.
 
 File: runtime/mirror/array.h
 
@@ -64,6 +88,15 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8fbfe18b_2f20cd26
 Bytes: 49
 needed because image writing is in a transaction?
+
+File: runtime/mirror/object.h
+
+182
+Tue Feb 11 20:30:16 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8fbfe18b_d2fc3a8e
+Bytes: 69
+Worth doing kCheckTransition = kIsDebugBuild for performance? Or nah?
 
 File: runtime/mirror/string.cc
 

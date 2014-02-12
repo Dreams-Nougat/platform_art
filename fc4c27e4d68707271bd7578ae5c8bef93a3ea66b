@@ -1,0 +1,13 @@
+Revision: fc4c27e4d68707271bd7578ae5c8bef93a3ea66b
+Patch-set: 2
+File: runtime/gc/space/bump_pointer_space.cc
+
+150:2-150:4
+Wed Feb 12 01:23:26 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f6c3514_96a5ccc8
+Bytes: 536
+Is it currently the case that either 1) the whole space is a one block (=main block) or 2) there are TLABs (and no main block)? If so, Walk() does not need to be written this (general) way that seems to suggest that there's a case where there are TLABs right after the main block, (though it works)?
+
+Also, if main_block_size == Size() (End() - Begin()) always when the main block exists, then, maybe we do not need to store the main block size and instead could just have a boolean flag (is_there_main_block) instead (and call Size())?
+

@@ -19,6 +19,14 @@ UUID: 8fbfe18b_1203b2da
 Bytes: 217
 I think this should always be obj->SetFieldObjectWithoutWriteBarrier<false>? If an object gets moved, you do not want to restore the pointer if the transaction gets aborted since it will be pointing to random garbage.
 
+87
+Wed Feb 12 18:00:58 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_1203b2da
+UUID: 0f405174_91b4acb8
+Bytes: 4
+Done
+
 File: runtime/gc/collector/semi_space.cc
 
 606:0-606:54
@@ -38,6 +46,14 @@ UUID: efce9d4a_d530ae1a
 Bytes: 103
 Don't restore pointers of moved objects since rolling back the transaction will not unmove the objects.
 
+606
+Wed Feb 12 18:00:58 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: efce9d4a_d530ae1a
+UUID: 0fabf157_3437befc
+Bytes: 90
+Agreed. Actually we do not change the object, just its address so no need to roll it back.
+
 File: runtime/gc/heap.cc
 
 2307:0-2307:50
@@ -54,6 +70,14 @@ Parent: efce9d4a_12ec0c73
 UUID: efce9d4a_f52daabd
 Bytes: 108
 In some cases, this is called when the referent moves, we do not want to store that case in the transaction.
+
+2307
+Wed Feb 12 18:00:58 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: efce9d4a_f52daabd
+UUID: 0fabf157_d41bca86
+Bytes: 4
+Done
 
 File: runtime/mirror/array.h
 
@@ -97,6 +121,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8fbfe18b_d2fc3a8e
 Bytes: 69
 Worth doing kCheckTransition = kIsDebugBuild for performance? Or nah?
+
+182
+Wed Feb 12 18:00:58 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_d2fc3a8e
+UUID: 0fabf157_d4166a69
+Bytes: 70
+I'll move the transaction mode check from CHECK to DCHECK to fix that.
 
 File: runtime/mirror/string.cc
 

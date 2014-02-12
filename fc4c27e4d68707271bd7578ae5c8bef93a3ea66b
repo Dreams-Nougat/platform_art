@@ -11,3 +11,11 @@ Is it currently the case that either 1) the whole space is a one block (=main bl
 
 Also, if main_block_size == Size() (End() - Begin()) always when the main block exists, then, maybe we do not need to store the main block size and instead could just have a boolean flag (is_there_main_block) instead (and call Size())?
 
+150
+Wed Feb 12 01:28:11 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f6c3514_96a5ccc8
+UUID: 8f028140_71d6583d
+Bytes: 167
+There can be a main block and TLABS. E.g. semispace GC allocates into the main block, then the mutators use TLABs after the GC. We need to store the size in this case.
+

@@ -1,0 +1,61 @@
+Revision: 8f69dc3677433a912df6b5fe57a690a9b42c172b
+Patch-set: 1
+File: runtime/gc/accounting/atomic_stack.h
+
+87
+Thu Feb 13 18:16:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_51595e79
+Bytes: 69
+Is testing index instead of just new_index for integer overflow case?
+
+File: runtime/gc/heap-inl.h
+
+113
+Thu Feb 13 18:16:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_9344a68f
+Bytes: 40
+Nice that this provides a large speedup!
+
+File: runtime/gc/heap.cc
+
+1538
+Thu Feb 13 18:16:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_d1964ec0
+Bytes: 85
+Instead of copy paste you could do:
+!kUseThreadLocalAllocationStack || obj != nullptr
+
+2021
+Thu Feb 13 18:16:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_11a1960f
+Bytes: 50
+!kUseThreadLocalAllocationStack || *it != nullptr?
+
+2039
+Thu Feb 13 18:16:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_f32a3aa3
+Bytes: 68
+I think operator -> is overloaded, so you shouldn't need the .get().
+
+2056
+Thu Feb 13 18:16:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_7169020b
+Bytes: 88
+I think you can use the ranged based loop for less code:
+for (Thread* t : thread_list) {
+
+File: runtime/thread-inl.h
+
+196
+Thu Feb 13 18:16:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_f17c32cc
+Bytes: 82
+I don't believe that thread_local_alloc_stack_start_ is used, is it worth keeping?
+

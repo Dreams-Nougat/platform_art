@@ -88,12 +88,28 @@ UUID: 8fbfe18b_8ff53969
 Bytes: 55
 broken due to the templating? add to comment the reason
 
+155:38-155:44
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_8ff53969
+UUID: 0fabf157_942f926c
+Bytes: 4
+Done
+
 165:0-165:92
 Tue Feb 11 18:33:36 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8fbfe18b_aff27d7c
 Bytes: 8
 and here
+
+165:0-165:92
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_aff27d7c
+UUID: 0fabf157_b42c0e78
+Bytes: 4
+Done
 
 File: runtime/mirror/art_field.cc
 
@@ -104,6 +120,14 @@ UUID: efce9d4a_b215f89b
 Bytes: 78
 sounds like this could be enabled, "if (kIsDebugBuild)" is preferred to #ifdef
 
+46:0-46:14
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: efce9d4a_b215f89b
+UUID: 4fda4934_df257bbe
+Bytes: 4
+Done
+
 File: runtime/mirror/class-inl.h
 
 432:48-432:49
@@ -112,6 +136,15 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8fbfe18b_2f20cd26
 Bytes: 49
 needed because image writing is in a transaction?
+
+432:48-432:49
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_2f20cd26
+UUID: 4fda4934_a260a08f
+Bytes: 367
+Weird: if I force non-transactional mode use, it later fails during image writing in ComputeEagerResolvedStringsCallback. It seems a String (maybe this class name) is empty (array==null, count=0, hashcode!=0) so DCHECK fails in String::GetLength. I prefer keep it as is for now.
+I wonder if it's related to String's field handling in transaction. Need to investigate.
 
 File: runtime/mirror/object.h
 
@@ -139,12 +172,28 @@ UUID: efce9d4a_7259d079
 Bytes: 108
 another bogus case, thanks for cleaning the one below, annotalysis belongs on the declaration not definition
 
+36:30-36:75
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: efce9d4a_7259d079
+UUID: 4f3ec9eb_5321842d
+Bytes: 4
+Done
+
 40:0-40:83
 Tue Feb 11 18:33:36 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8fbfe18b_4f8501ae
 Bytes: 77
 It should be sound to set this unconditionally as the hash code is invariant.
+
+40:0-40:83
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_4f8501ae
+UUID: 4fda4934_df9bbba4
+Bytes: 4
+Done
 
 File: runtime/thread.cc
 
@@ -155,6 +204,14 @@ UUID: 8fbfe18b_cf78110a
 Bytes: 7
 runtime
 
+401:8-401:27
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8fbfe18b_cf78110a
+UUID: 4f3ec9eb_f3f2587d
+Bytes: 4
+Done
+
 File: test/Transaction/Transaction.java
 
 31:7-31:8
@@ -163,4 +220,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: efce9d4a_b22738dc
 Bytes: 2
 ws
+
+31:7-31:8
+Fri Feb 14 08:41:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: efce9d4a_b22738dc
+UUID: 2fdfd524_01f5ccf5
+Bytes: 4
+Done
 

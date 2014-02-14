@@ -9,3 +9,50 @@ UUID: 8f9e016b_7d372214
 Bytes: 231
 There's an issue with using native argument convention disagree with the implied location of GPRs from the core spill mask. It leads to this messy interwoven pushes and the GprIndexToGprOffset routine in the quick argument visitor.
 
+52:0-52:81
+Fri Feb 14 13:55:31 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f9e016b_7d372214
+UUID: 8f9e016b_90210d86
+Bytes: 112
+Do you have a better suggestion?  Is the messiness hidden in a couple of routines that aren't generally visible?
+
+67
+Fri Feb 14 13:55:31 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_90a6515c
+Bytes: 42
+Wasn't Method* being passed in RAX (arg0)?
+
+261:34-261:48
+Fri Feb 14 13:55:31 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_b0253191
+Bytes: 24
+comment: arg_array+=2 ??
+
+302:17-302:18
+Fri Feb 14 13:55:31 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_f02fb96a
+Bytes: 56
+rcx?   I am also uncertain about movl r10q vs. movq r10.
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+162
+Fri Feb 14 13:55:31 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_303b01b2
+Bytes: 48
+Is it better to have an array and a range check?
+
+File: runtime/runtime.cc
+
+1492
+Fri Feb 14 13:55:31 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_703589ba
+Bytes: 91
+Seems like this could be optimized to choosing 0 or 8, and not bothering with the popcount.
+

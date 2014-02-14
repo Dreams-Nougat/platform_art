@@ -9,3 +9,38 @@ UUID: 8f9e016b_651b0e03
 Bytes: 260
 As far as I can tell from code inspection, the interpreter is used for debugging. So that must mean that we are no longer in the compiled native code when debugging. So what exactly is missing here? Namely, what is the "additional information" to make it work?
 
+12
+Fri Feb 14 07:44:41 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f9e016b_651b0e03
+UUID: 8f9e016b_5db5fe62
+Bytes: 109
+If we deoptimize a method that has been inlined, the outer method its inlined into won't also be deoptimized.
+
+File: compiler/dex/bb_optimizations.cc
+
+26:49-26:51
+Fri Feb 14 07:44:41 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_736c9fdd
+Bytes: 23
+"* " here and elsewhere
+
+File: compiler/dex/bb_optimizations.h
+
+59:15-59:17
+Fri Feb 14 07:44:41 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_936123e7
+Bytes: 5
+" : "
+
+File: compiler/dex/quick/dex_file_method_inliner.h
+
+408:0-408:28
+Fri Feb 14 07:44:41 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_306cbddc
+Bytes: 29
+DEFAULT_MUTEX_ACQUIRED_AFTER;
+

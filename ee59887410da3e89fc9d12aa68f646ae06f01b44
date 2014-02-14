@@ -1,0 +1,233 @@
+Revision: ee59887410da3e89fc9d12aa68f646ae06f01b44
+Patch-set: 1
+File: /COMMIT_MSG
+
+15:0-16:19
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_957f63f2
+Bytes: 104
+... OatWriter and ElfWriterQuick (file name extension wrong, but class names are probably better anyway)
+
+24:19-24:22
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_dd4bae43
+Bytes: 4
+from
+
+File: compiler/compiled_method.cc
+
+163:12-163:69
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_38fd961d
+Bytes: 62
+simpler just to have DeduplicateCFIInfo handle the null check?
+
+178:2-178:21
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_d578bb09
+Bytes: 59
+curious why these aren't in the initializer list like above
+
+File: compiler/dex/quick/codegen_util.cc
+
+1077:0-1078:55
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_98d302a3
+Bytes: 103
+just have 
+
+UniquePtr<std::vector<uint8_t> > cfi_info(ReturnCallFrameInformation())
+
+and lose the bool?
+
+File: compiler/dex/quick/x86/target_x86.cc
+
+962:0-971:1
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_f5fcd722
+Bytes: 75
+we have a leb128.h, move there? it would be nice to have a leb128_test too.
+
+File: compiler/elf_writer_quick.cc
+
+25:0-25:31
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_d51efbbf
+Bytes: 71
+We pull external imports out, see art/compiler/elf_writer.h for example
+
+File: compiler/oat_writer.h
+
+72:13-72:44
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_9d93e641
+Bytes: 117
+The other content to write comes from the CompilerDriver, it seems like we'd want to keep the cfi_info there as well?
+
+File: dex2oat/dex2oat.cc
+
+65:0-66:56
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_3d84bafa
+Bytes: 123
+yeah, this seems to be the most hackish part. Why isn't this hiden away within the CompilerDriver? Is that part of the WIP?
+
+314:4-323:5
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_35de6fac
+Bytes: 377
+I'd add a command line flag for this. I'd make it default on in dex2oatd, and off in dex2oat. I have a WIP change (not yet uploaded) to make it a bit easier to add command line options to dex2oat and have them flow through, so you may want to wait and rebase on that. a corresponding change will also let us use Android system properties to control dex2oat flags for debugging.
+
+File: runtime/elf_file.cc
+
+59:41-59:56
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_7d6722aa
+Bytes: 117
+{ 1, 0, nullptr, nullptr }; 
+
+makes it clearer the last two are pointers
+
+actually, is the 0 signifying JIT_NOACTION?
+
+78:12-78:29
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_1df37683
+Bytes: 63
+doesn't this need to call __jit_debug_register_code at the end?
+
+81:3-81:21
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_55868b94
+Bytes: 80
+if (entry->next != nullptr) {
+
+(we don't typically use implicit bool conversion)
+
+94:2-94:21
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_f896cebf
+Bytes: 8
+and here
+
+100:2-100:21
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_358b0f9b
+Bytes: 8
+and here
+
+63:0-107:1
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_dde80e8f
+Bytes: 129
+we seem to Create/Register Unregister/Delete together. Any reason why the Create/Delete can't be folded into the other functions?
+
+856:34-856:37
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_f8440e90
+Bytes: 106
+it would be good to have at least a magic constant for this in ElfFile to keep in sync with ElfWriterQuick
+
+869:27-869:31
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_bde6eac9
+Bytes: 46
+1024 -> KB
+
+but more important, why this much?
+
+914:40-914:42
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_98378213
+Bytes: 17
+constant here too
+
+972:32-972:34
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_7842be7f
+Bytes: 96
+I'd just use the expression 1+3*4 here. is there a sizeof that should be used in the expression?
+
+978:20-978:21
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_dde3aeb8
+Bytes: 30
+WS around + here and elsewhere
+
+982:42-982:43
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_35594f7b
+Bytes: 82
+does the LLVM Dwarf include have any declarations of these so we could use sizeof?
+
+985:58-985:59
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_955e4361
+Bytes: 9
+and here?
+
+990:40-990:42
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_7563c724
+Bytes: 79
+define named constant for offset, especially since it may vary by architecture?
+
+1008:40-1008:42
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f9e016b_fde072ae
+Bytes: 8
+and here
+
+1011:12-1011:13
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_b83c46f6
+Bytes: 97
+i'm kind of fine with the size being repeated here, but its also used below, so maybe a constant?
+
+1065:21-1065:23
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef13fd9e_d5471b92
+Bytes: 23
+use constant from above
+
+1076:16-1076:17
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_d8302a1b
+Bytes: 24
+use constant from above?
+
+1079:21-1079:23
+Fri Feb 14 06:44:51 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: afcbc564_182b72a9
+Bytes: 23
+use constant from above
+

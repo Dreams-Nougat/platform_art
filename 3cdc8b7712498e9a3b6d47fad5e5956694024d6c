@@ -17,12 +17,28 @@ UUID: 8f9e016b_90210d86
 Bytes: 112
 Do you have a better suggestion?  Is the messiness hidden in a couple of routines that aren't generally visible?
 
+52:0-52:81
+Tue Feb 18 05:33:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f9e016b_90210d86
+UUID: cf26394f_7645ae88
+Bytes: 245
+I think the main places are the FillInCalleeSaves routine in Context and the quick argument visitor. I think for the sake of my sanity I'll handle the irregular layout in the argument visitor and the FillInCalleeSaves will just scan numerically.
+
 67
 Fri Feb 14 13:55:31 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ef13fd9e_90a6515c
 Bytes: 42
 Wasn't Method* being passed in RAX (arg0)?
+
+67
+Tue Feb 18 05:33:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef13fd9e_90a6515c
+UUID: 6f8b8d70_96314c09
+Bytes: 415
+So this is a bridge, the incoming method is in RDI (unless you want to add RAX as another argument register?) this code is placing the callee save method (to describe the spilt arguments and callee saves) on to the stack. The same code is performed in FinishCalleeSaveFrameSetup, but I'd like to remove that code as it will cut down on the number of arguments being passed and some messy argument stomping problems.
 
 234:73-234:76
 Sat Feb 15 21:04:01 2014 +0000
@@ -61,6 +77,14 @@ UUID: 8f9e016b_303b01b2
 Bytes: 48
 Is it better to have an array and a range check?
 
+162
+Tue Feb 18 05:33:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f9e016b_303b01b2
+UUID: cf26394f_d63cc2f9
+Bytes: 81
+Yep, this was a first cut and the arguments are not yet getting passed correctly.
+
 File: runtime/runtime.cc
 
 1492
@@ -69,4 +93,12 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8f9e016b_703589ba
 Bytes: 91
 Seems like this could be optimized to choosing 0 or 8, and not bothering with the popcount.
+
+1492
+Tue Feb 18 05:33:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f9e016b_703589ba
+UUID: ef293d20_172b16aa
+Bytes: 103
+Its more about the readability, we should only ever create these methods when we create the boot image.
 

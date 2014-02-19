@@ -62,6 +62,14 @@ UUID: 6f646d9a_714cea5c
 Bytes: 155
 Did you forget that multiple field indexes may refer to the same field? This, together with the dex file above, is supposed to uniquely identify the field.
 
+44:11-44:29
+Wed Feb 19 15:13:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f646d9a_714cea5c
+UUID: 0ff0510e_a073d4ff
+Bytes: 304
+I didn't but there's no comments in this code. It'd be worth adding the comments as its not obvious where all the various indices are into. My specific concern is that we use an index in a place that its not intended to be used, which is more likely when this code is used with the inlining of accessors.
+
 63:2-63:5
 Tue Feb 18 22:22:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -124,6 +132,21 @@ UUID: 6f646d9a_11dece2e
 Bytes: 154
 This is irrelevant. Since we're using 16-bit NarrowDexOffset, we clearly cannot exceed 2^16 annotations but this union shall have at least 32 bits anyway.
 
+264:4-264:12
+Wed Feb 19 15:13:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f646d9a_11dece2e
+UUID: 0ff0510e_e06ddc17
+Bytes: 100
+Add a comment that we expect to only use 2^16 indices as otherwise it makes the code hard to follow.
+
+266:0-266:31
+Wed Feb 19 15:13:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ff0510e_4083f077
+Bytes: 9
+likewise.
+
 File: compiler/driver/compiler_driver.cc
 
 37:9-37:10
@@ -142,4 +165,12 @@ Bytes: 161
 Why not?
 
 We're already including some compiler parts above since the refactoring that moved some parts from verifier (where they didn't belong) to the compiler.
+
+37:9-37:10
+Wed Feb 19 15:13:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f860164_da361969
+UUID: 0ff0510e_20806469
+Bytes: 349
+The verifier is part of the runtime. The reason not to include this file is that when we delete the quick compiler we shouldn't be removing bits of its interface that has leaked into the more general compiler interface. The compiler interface should also be better encapsulated and not just dumped into the compiler driver, but that's another story.
 

@@ -1,0 +1,58 @@
+Revision: 00ce228cb97000431dcffa12f4308982b140ea78
+Patch-set: 2
+File: compiler/elf_fixup.cc
+
+25:0-25:21
+Wed Feb 19 18:56:53 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ff0510e_e6ee94da
+Bytes: 109
+nit: I think the system ones are supposed to come after the elf_fixup.h but below the local project includes.
+
+File: compiler/elf_stripper.cc
+
+22:0-22:25
+Wed Feb 19 18:56:53 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: effcddee_254874e8
+Bytes: 185
+the .h for the corresponding .cc really is supposed to be on its on ahead of the others. See:
+
+http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#Names_and_Order_of_Includes
+
+File: compiler/elf_writer_quick.cc
+
+32:0-34:1
+Wed Feb 19 18:56:53 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ff0510e_c69ef853
+Bytes: 15
+move to header?
+
+File: compiler/utils/elf_utils.h
+
+20:3-20:60
+Wed Feb 19 18:56:53 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ff0510e_26e99c91
+Bytes: 62
+I think I'd say "... with llvm/Support/ELF.h" just to be clear
+
+21:0-21:52
+Wed Feb 19 18:56:53 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ff0510e_669724eb
+Bytes: 124
+I think you can just 
+
+<bionic/libc/kernel/uapi/linux/elf.h> since top of tree is on the include path? but I could be wrong.
+
+File: runtime/elf_file.h
+
+28:0-28:52
+Wed Feb 19 18:56:53 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ff0510e_e6aa141f
+Bytes: 69
+I'd just include utils/elf_util.h to hide the ../../bionic hack here.
+

@@ -9,12 +9,28 @@ UUID: ef577db2_e4581a79
 Bytes: 12
 MemberOffset
 
+41:2-41:5
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef577db2_e4581a79
+UUID: af81054e_5bd46f10
+Bytes: 99
+This is created based on ComputeInstanceFieldInfo() which uses int. MemberOffset is not a POD type.
+
 42:17-42:34
 Tue Feb 18 22:22:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ef7e9d24_8f313909
 Bytes: 13
 why resolved?
+
+42:17-42:34
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef7e9d24_8f313909
+UUID: af81054e_db085ff8
+Bytes: 35
+Shall rename to declaring_dex_file.
 
 43:11-43:29
 Tue Feb 18 22:22:47 2014 +0000
@@ -23,12 +39,28 @@ UUID: ef577db2_04521654
 Bytes: 61
 presumably declaring class rather than the type of the field?
 
+43:11-43:29
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef577db2_04521654
+UUID: 8f860164_7ae92d90
+Bytes: 36
+Shall rename to declaring_class_idx.
+
 44:11-44:29
 Tue Feb 18 22:22:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ef7e9d24_af3675fc
 Bytes: 39
 why is this different than field index?
+
+44:11-44:29
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef7e9d24_af3675fc
+UUID: 6f646d9a_714cea5c
+Bytes: 155
+Did you forget that multiple field indexes may refer to the same field? This, together with the dex file above, is supposed to uniquely identify the field.
 
 63:2-63:5
 Tue Feb 18 22:22:47 2014 +0000
@@ -37,6 +69,14 @@ UUID: ef577db2_845da667
 Bytes: 12
 MemberOffset
 
+63:2-63:5
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef577db2_845da667
+UUID: 8f860164_ba1f95ec
+Bytes: 9
+As above.
+
 64:6-64:19
 Tue Feb 18 22:22:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +84,28 @@ UUID: ef577db2_64450a89
 Bytes: 12
 what's this?
 
+64:6-64:19
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef577db2_64450a89
+UUID: 6f646d9a_d1dfd62e
+Bytes: 83
+See ComputeStaticFieldInfo(). Please suggest a better name if you can think of one.
+
 65:17-65:34
 Tue Feb 18 22:22:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: afdf457e_a555a819
 Bytes: 34
 same missing explanations as above
+
+65:17-65:34
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: afdf457e_a555a819
+UUID: af81054e_3bf40ba1
+Bytes: 22
+Shall rename as above.
 
 File: compiler/dex/mir_graph.h
 
@@ -60,6 +116,14 @@ UUID: ef7e9d24_4f1cb17f
 Bytes: 15
 TODO: unit16_t?
 
+264:4-264:12
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef7e9d24_4f1cb17f
+UUID: 6f646d9a_11dece2e
+Bytes: 154
+This is irrelevant. Since we're using 16-bit NarrowDexOffset, we clearly cannot exceed 2^16 annotations but this union shall have at least 32 bits anyway.
+
 File: compiler/driver/compiler_driver.cc
 
 37:9-37:10
@@ -68,4 +132,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ef577db2_c43cfef9
 Bytes: 62
 The compiler driver shouldn't be including parts of compilers.
+
+37:9-37:10
+Wed Feb 19 11:57:11 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef577db2_c43cfef9
+UUID: 8f860164_da361969
+Bytes: 161
+Why not?
+
+We're already including some compiler parts above since the refactoring that moved some parts from verifier (where they didn't belong) to the compiler.
 

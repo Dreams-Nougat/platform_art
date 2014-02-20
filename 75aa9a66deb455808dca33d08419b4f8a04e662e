@@ -9,6 +9,14 @@ UUID: ef15bdf4_34c0b06a
 Bytes: 131
 ugh. Note we'd generally use "std::string methodname(PrettyMethod .." rather than assignment due to bugs in the STL implementation.
 
+212:29-212:41
+Thu Feb 20 00:44:33 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef15bdf4_34c0b06a
+UUID: 2f1c351e_19420f5b
+Bytes: 132
+Surely those are both initializations, not assignments.  I'll change it but I don't think that "std::string x = y" is an assignment.
+
 File: compiler/driver/compiler_driver.cc
 
 307:31-307:42
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0f193130_b5dfa02f
 Bytes: 11
 const char*
+
+307:31-307:42
+Thu Feb 20 00:44:33 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f193130_b5dfa02f
+UUID: 2f1c351e_990d7f07
+Bytes: 189
+const std::string&.  The caller holds the result of an option parse in a std::string.  To use const char* I'd have to use .c_str() and then I'd have to use strcmp() to check if it is empty.
 
 File: compiler/driver/compiler_driver.h
 
@@ -27,12 +43,30 @@ UUID: 2f1c351e_f68da01c
 Bytes: 11
 const char*
 
+105:26-105:37
+Thu Feb 20 00:44:33 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f1c351e_f68da01c
+UUID: 2f1c351e_79f7c3a7
+Bytes: 18
+const std::string&
+
 507:0-510:22
 Wed Feb 19 23:07:20 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ef15bdf4_54c72c80
 Bytes: 26
 const on all these fields?
+
+507:0-510:22
+Thu Feb 20 00:44:33 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef15bdf4_54c72c80
+UUID: 0f193130_5528ccaa
+Bytes: 273
+No, can't.  I mentioned this before.  The insertion into a map requires an assignment operator and therefore these can't be const.  They are all private and not pointers.
+
+If I make the map use a pointer instead of an object then it would use more heap space unnecessarily.
 
 File: runtime/native/dalvik_system_DexFile.cc
 
@@ -43,12 +77,36 @@ UUID: 2f1c351e_f6cc8051
 Bytes: 7
 FdFile?
 
+203:11-203:15
+Thu Feb 20 00:44:33 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f1c351e_f6cc8051
+UUID: 0f193130_78117d6e
+Bytes: 641
+Couple of issues with that:
+
+1. It's not thread safe (according to the source code)
+2. It doesn't have a simple 'read' call that reads from current position into a buffer and tells you how many bytes were read.  The closest is Read() and that takes an offset which means it needs to be tracked.
+3. ReadFully() doesn't tell you how many bytes were actually read so there is no way to know how many bytes were inserted into the buffer.
+
+To do what I need, I'd have to add a CopyFrom() or CopyTo() function and this would the only place it's used.
+
+I don't think it's worth rewriting this code to use FdFile when I'd have to make changes to it.
+
 233:89-233:90
 Wed Feb 19 23:07:20 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2f1c351e_3678b84f
 Bytes: 2
 ws
+
+233:89-233:90
+Thu Feb 20 00:44:33 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f1c351e_3678b84f
+UUID: 0f193130_98ba99c2
+Bytes: 25
+Wonder how that happened?
 
 File: runtime/profiler.cc
 
@@ -58,4 +116,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2f1c351e_16e49cc0
 Bytes: 7
 FdFile?
+
+238:11-238:15
+Thu Feb 20 00:44:33 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f1c351e_16e49cc0
+UUID: ef15bdf4_544f2ca7
+Bytes: 147
+No, I'd rather not mix the layers.  I need to use flock and that needs an fd.  Abstracting the fd out into a higher level object is just confusing.
 

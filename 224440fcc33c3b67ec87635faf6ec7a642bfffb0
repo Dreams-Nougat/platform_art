@@ -2,10 +2,25 @@ Revision: 224440fcc33c3b67ec87635faf6ec7a642bfffb0
 Patch-set: 1
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
+450:60-450:75
+Fri Feb 21 07:13:40 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f75b176_eafcabdf
+Bytes: 131
+Latent bug, this should be a stack reference. While arguments from registers are 64bit the arguments passed on the stack are 32bit.
+
 528
 Fri Feb 21 01:28:10 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0f75b176_e9575d95
 Bytes: 62
 Is this required even though we do FinishCalleeSaveFrameSetup?
+
+528
+Fri Feb 21 07:13:40 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f75b176_e9575d95
+UUID: 6f5e2dff_2d7b2596
+Bytes: 125
+This shouldn't be required as the interpreter will finish the execution of the method and so the arguments won't be restored.
 

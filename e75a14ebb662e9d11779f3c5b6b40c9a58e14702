@@ -9,12 +9,30 @@ UUID: ef985df7_7c5879e9
 Bytes: 51
 Can't we assume super calls are on a non-null this?
 
+192:42-192:46
+Fri Feb 21 14:12:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef985df7_7c5879e9
+UUID: ef985df7_1c9055f4
+Bytes: 132
+We can. I think "this == null" is already handled by the NullCheckEliminationAndTypeInference pass so it doesn't really matter here.
+
 206:50-206:56
 Fri Feb 21 12:26:57 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ef985df7_9ca9c560
 Bytes: 69
 I know that's from the old code, but I don't understand this comment.
+
+206:50-206:56
+Fri Feb 21 14:12:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef985df7_9ca9c560
+UUID: ef985df7_3c48b1e8
+Bytes: 273
+"result s_reg" refers to the "mir->ssa_rep->defs[0]". Since this instruction defines that s_reg in SSA form, this is the first time we see it and we're guaranteed to assign a unique value name to it.
+
+(I'm not sure this explanation is any better than the original comment.)
 
 546:13-546:23
 Fri Feb 21 12:26:57 2014 +0000
@@ -23,12 +41,28 @@ UUID: af64a5c8_da8d051d
 Bytes: 67
 Please explain why volatile fields always get a new memory version.
 
+546:13-546:23
+Fri Feb 21 14:12:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af64a5c8_da8d051d
+UUID: ef985df7_1ce775c8
+Bytes: 49
+Every read from volatile can get you a new value.
+
 555:8-555:9
 Fri Feb 21 12:26:57 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: af64a5c8_fa92c93d
 Bytes: 57
 In case of volatile, why do you need to do the following?
+
+555:8-555:9
+Fri Feb 21 14:12:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af64a5c8_fa92c93d
+UUID: ef985df7_9cd2a5f0
+Bytes: 165
+You still need to assign a version name. For volatile you are guaranteed to have a new memory version, so the lookup below is guaranteed to get you a new value name.
 
 File: compiler/dex/local_value_numbering.h
 
@@ -39,12 +73,28 @@ UUID: af64a5c8_7ad1590d
 Bytes: 26
 FieldKey -> FieldReference
 
+37:5-37:13
+Fri Feb 21 14:12:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af64a5c8_7ad1590d
+UUID: cf9559be_5bd4a3fe
+Bytes: 4
+Done
+
 48:28-48:31
 Fri Feb 21 12:26:57 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ef985df7_3c751158
 Bytes: 49
 Pointer comparison? Can't you use something else?
+
+48:28-48:31
+Fri Feb 21 14:12:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef985df7_3c751158
+UUID: ef985df7_7c9799ea
+Bytes: 75
+Inspired by MethodReferenceComparator which also compares DexFile pointers.
 
 186:21-186:36
 Fri Feb 21 12:26:57 2014 +0000
@@ -54,4 +104,12 @@ Bytes: 160
 My understanding of unique after reviewing the code is objects that don't alias. Is that correct?
 
 In any case, please add a comment of what a unique object is.
+
+186:21-186:36
+Fri Feb 21 14:12:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ef985df7_3c5ef1d7
+UUID: af64a5c8_9a20ed2c
+Bytes: 8
+Renamed.
 

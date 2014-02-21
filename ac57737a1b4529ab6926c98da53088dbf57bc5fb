@@ -1,0 +1,61 @@
+Revision: ac57737a1b4529ab6926c98da53088dbf57bc5fb
+Patch-set: 1
+File: compiler/dex/quick/gen_common.cc
+
+69:0-69:0
+Fri Feb 21 07:23:44 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f5e2dff_cdd0e942
+Bytes: 2
+ws
+
+89:0-89:16
+Fri Feb 21 07:23:44 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f75b176_4a14bf5f
+Bytes: 6
+cruft?
+
+File: oatdump/oatdump.cc
+
+86:10-86:16
+Fri Feb 21 07:23:44 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f5e2dff_2dc0856a
+Bytes: 53
+This change is self-contained, move to a separate CL.
+
+File: runtime/fault_handler.cc
+
+130:25-130:26
+Fri Feb 21 07:23:44 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f78b56e_eb6031e3
+Bytes: 297
+we're considering potential method as a viable method if its value is non-zero, it could just be random junk on the stack which would make the read from that address below very unsound. I'd prefer if here we used something like the live heap bitmap to say whether this looked like a viable object.
+
+File: runtime/fault_handler.h
+
+39:0-39:46
+Fri Feb 21 07:23:44 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f75b176_0a3727fb
+Bytes: 84
+I don't think the typedef buys anything here (as we use auto for iterators), remove.
+
+53:14-53:15
+Fri Feb 21 07:23:44 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f5e2dff_0db4a1fc
+Bytes: 7
+* const
+
+File: runtime/runtime.cc
+
+499:34-499:38
+Fri Feb 21 07:23:44 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f5e2dff_2da965a2
+Bytes: 109
+should be sound to make this false, but presumably its dependent on getting x86 implicit null checks working.
+

@@ -1,0 +1,20 @@
+Revision: ff658f6cf524a562bd34586b8f5189984714a91a
+Patch-set: 1
+File: runtime/gc/space/los_space_test.cc
+
+1:0-1:2
+Sat Feb 22 00:37:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f78b56e_a2fd731e
+Bytes: 91
+Since los stands for large object space, "large_object_space_test.cc" may be a better name?
+
+23:7-23:16
+Sat Feb 22 00:37:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_87423ac7
+Bytes: 634
+This isn't a strong point, but in terms of the test output we see as the tests run, using a different name (instead of "SpaceTest", something like "LargeObjectSpaceTest") here may be a good idea (same for rosalloc_space and dlmalloc_space) because using a different name would give the (correct) impression that they are in different test files and hence parallelized. Otherwise, it could lead to a wrong impression that they aren't parallelized.
+
+We could do this easily by having an (almost) empty subclass of SpaceTest here and let LargeObjecTest() belong to it. It's a good idea to move the body of LargeObjectTest() here as well.
+

@@ -9,6 +9,14 @@ UUID: 6f5e2dff_cdd0e942
 Bytes: 2
 ws
 
+69:0-69:0
+Mon Feb 24 18:20:25 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f5e2dff_cdd0e942
+UUID: 0f3a11a9_0ff1fc4d
+Bytes: 4
+Done
+
 71:27-71:36
 Mon Feb 24 06:16:24 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +30,22 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0f3a11a9_6c30cecf
 Bytes: 462
 This needs an argument of MemberOffset for the offset of the field or array offset being accessed. If the field happens to lie out reserved low memory we still need an explicit check, and also in the case of a random array index - although we are saved from this in the general case by the load of the array length (which should be in low memory) for the bound check. This assumption should be asserted, ie no implicit null check when there isn't a bounds check.
+
+71:14-71:26
+Mon Feb 24 18:20:25 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f3a11a9_6c30cecf
+UUID: ef1f7d43_077bb895
+Bytes: 301
+A better way would be to always generate a load from offset 0 in the object unless we can be sure it's already done (range check or other).  Is it even possible to generate an object over 8MB in size?  I don't know what the size of the unmapped region at the start of memory is, but it is at least 8M.
+
+71:27-71:36
+Mon Feb 24 18:20:25 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f3a11a9_2c26c69b
+UUID: ef1f7d43_c7d52030
+Bytes: 225
+This was already present.  I'm not sure why it is there, perhaps older code used it.  This isn't a virtual function so there is no way it can be overridden.  I'll remove the unused parameter unless there are objection (Bill?)
 
 81:14-81:46
 Mon Feb 24 06:16:24 2014 +0000
@@ -37,6 +61,14 @@ UUID: 0f75b176_4a14bf5f
 Bytes: 6
 cruft?
 
+89:0-89:16
+Mon Feb 24 18:20:25 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f75b176_4a14bf5f
+UUID: ef469d41_d6aeb164
+Bytes: 22
+Yeah, missed that one.
+
 File: oatdump/oatdump.cc
 
 86:10-86:16
@@ -45,6 +77,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f5e2dff_2dc0856a
 Bytes: 53
 This change is self-contained, move to a separate CL.
+
+86:10-86:16
+Mon Feb 24 18:20:25 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f5e2dff_2dc0856a
+UUID: ef1f7d43_67c70c81
+Bytes: 2
+OK
 
 File: runtime/fault_handler.cc
 
@@ -55,12 +95,30 @@ UUID: af64a5c8_3aa601d3
 Bytes: 58
 I suggest moving arm-related code to fault_handler_arm.cc.
 
+88:5-88:17
+Mon Feb 24 18:20:25 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af64a5c8_3aa601d3
+UUID: ef469d41_f68d6d1c
+Bytes: 6
+Can do
+
 130:25-130:26
 Fri Feb 21 07:23:44 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2f78b56e_eb6031e3
 Bytes: 297
 we're considering potential method as a viable method if its value is non-zero, it could just be random junk on the stack which would make the read from that address below very unsound. I'd prefer if here we used something like the live heap bitmap to say whether this looked like a viable object.
+
+130:25-130:26
+Mon Feb 24 18:20:25 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f78b56e_eb6031e3
+UUID: ef1f7d43_0726589b
+Bytes: 367
+The 0 is also used to detect non-ARM processors (that was the intention).  But you are correct, we need a way to make sure that the load doesn't fault.  Is there a quick way to look up the live bitmap?  It will probably involve grabbing a lock or two.  
+
+Maybe we could use the fact that the load will cause another SEGV if it is wrong?  Have to experiment that that.
 
 File: runtime/fault_handler.h
 

@@ -1,0 +1,124 @@
+Revision: 447c38a22c66c8a1078692d0bee0fa7ce7c4e36f
+Patch-set: 1
+File: compiler/dex/mir_analysis.cc
+
+961:0-962:34
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_efe910d5
+Bytes: 192
+It would be nice to turn this into something more like, "IsSmallMethod(GetNumDalvikInsns())" and bury things like small_method_threshold_. I don't mind this change as a step in that direction.
+
+1041:44-1041:87
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_ef02f0d4
+Bytes: 713
+Its this kind of thing in the current code that upsets me. We are we dividing a number of instructions by 2 and then comparing to a count of basic blocks? Its an approximate thing but we should be detailing why 2 (do we expect just 2 instructions per basic block), etc. and I'd prefer if this was done in a vain like above where we go "IsTooManyBasicBlocks(num_blocks_)" although that would have no purpose being more global than to quick.
+Given this code isn't being used in anger I see that the point of being in this code was just to clean-up the options from Runtime to CompilerOptions. I'm just commenting for the sake of future clean-up, but may be the best thing to do then is just to get rid of this code.
+
+File: compiler/dex/verification_results.h
+
+39:0-39:27
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef1f7d43_84afa611
+Bytes: 58
+this class is missing a comment describing its purpose :-(
+
+64:0-64:40
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef1f7d43_a4b4a268
+Bytes: 46
+missing GUARDED_BY(verified_methods_lock_) :-(
+
+File: dex2oat/dex2oat.cc
+
+166:0-166:18
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_4f75c456
+Bytes: 41
+Can this be moved into a system property?
+
+172:62-172:72
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_8ff40ca3
+Bytes: 9
+threshold
+
+173:23-173:27
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef469d41_d3588379
+Bytes: 28
+used by compiler-filters ...
+
+177:0-178:27
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_efbf50b0
+Bytes: 5
+ditto
+
+182:16-183:24
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_ef983068
+Bytes: 5
+ditto
+
+187:16-188:24
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef1f7d43_84d886c1
+Bytes: 5
+ditto
+
+192:16-193:24
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_0f9e5c51
+Bytes: 75
+ditto
+We should also explain what the difference is between small and tiny.
+
+197:16-197:87
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_4fb064d8
+Bytes: 47
+ditto, also explain connection to options above
+
+217:21-217:38
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef469d41_133ccbf3
+Bytes: 6
+const?
+
+506:8-506:24
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef1f7d43_8485e688
+Bytes: 422
+I'm kind of put off by reference fields like this. I like that they capture non-nullness, but they seem to more poorly capture the notion of ownership than a pointer - which is say hey somebody else owns this don't worry. CompilerOptions could well be stack allocated, so I find this a little scary. Perhaps make it a pointer or add a comment to who the expected owner is. Perhaps there's another way to allay my concerns.
+
+1030:2-1030:17
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ef469d41_96f509f8
+Bytes: 21
+see comment above :-)
+
+File: runtime/common_test.h
+
+516:48-516:72
+Mon Feb 24 17:49:20 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f3a11a9_af6c688e
+Bytes: 91
+just making the argument a pointer feels simpler to me when we start getting code like this
+

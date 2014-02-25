@@ -9,6 +9,14 @@ UUID: 1cf89137_11c3bc79
 Bytes: 45
 Should we lock thread_list_lock_ around here?
 
+819
+Tue Feb 25 01:43:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_11c3bc79
+UUID: 5cf6894a_59384300
+Bytes: 128
+Not necessary since we aren't directly accessing the threads here. SuspendAll and ResumeAll use the thread list lock internally.
+
 File: runtime/gc/collector/mark_sweep.cc
 
 237:12-237:16
@@ -17,6 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cfb9535_92b34c7e
 Bytes: 63
 nit: Is it any better if we pass self from the call site below?
+
+237
+Tue Feb 25 01:43:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cfb9535_92b34c7e
+UUID: 5cf6894a_6ea1ff8d
+Bytes: 4
+Done
 
 File: runtime/gc/collector/mark_sweep.h
 
@@ -27,6 +43,14 @@ UUID: 5cf6894a_ee218f83
 Bytes: 49
 What is the thread safety annotations issue here?
 
+333
+Tue Feb 25 01:43:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cf6894a_ee218f83
+UUID: 3cfb9535_b8c3c924
+Bytes: 67
+Called from MarkingPhase guarded by IsExclusiveHeld, added comment.
+
 File: runtime/gc/heap.h
 
 210:55-210:77
@@ -35,4 +59,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cfb9535_12a73c3a
 Bytes: 36
 Is this a bug fix for another issue?
+
+210
+Tue Feb 25 01:43:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cfb9535_12a73c3a
+UUID: 1cf89137_acf5cb64
+Bytes: 13
+Just cleanup.
 

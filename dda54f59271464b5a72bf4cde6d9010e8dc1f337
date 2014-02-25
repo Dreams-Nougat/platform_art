@@ -1,0 +1,48 @@
+Revision: dda54f59271464b5a72bf4cde6d9010e8dc1f337
+Patch-set: 3
+File: /COMMIT_MSG
+
+23:0-23:6
+Tue Feb 25 20:06:03 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc35c5d3_32025067
+Bytes: 13
+Nice speedup.
+
+File: runtime/gc/collector/mark_sweep.cc
+
+68:0-68:9
+Tue Feb 25 20:06:03 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7cf18d4f_26f0c245
+Bytes: 37
+nit: Could these constants be static?
+
+243:7-243:77
+Tue Feb 25 20:06:03 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1cf89137_7f164233
+Bytes: 1097
+As we discussed in an in-person discussion, without a checkpoint, there's a chance that GC may miss a write if the order of actions is:
+
+1. mutator dirties the card (write barrier)
+2. GC ages the card (the above ProcessCards call)
+3. GC scans the object (the RecursiveMarkDirtyObjects call below)
+4. mutator writes the value (corresponding to the write barrier in 1.)
+
+(GC in 3. may miss the write in 4.)
+
+But by having a checkpoint we can force GC (3.) to see 1. and 4. as we will have
+
+1. mutator dirties the card (write barrier)
+2. GC ages the card (the above ProcessCards call)
+3. mutator writes the value (corresponding to the write barrier in 1.)
+4. Checkpoint (the MarkThreadRoots call)
+5. GC scans the object (the RecursiveMarkDirtyObjects call below)
+
+where 5. won't miss the write in 3. This is because a checkpoint can't happen between 1. and 3.
+
+Also, Mathieu says that, independent of the above issue, rescanning roots here will help reduce the pause time (which indicates there are some white/new objects reachable from the roots.)
+
+How about leaving a bit longer comment about this?
+

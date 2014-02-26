@@ -1,0 +1,34 @@
+Revision: 99ec0c6440c6a71b91febc127dd2708eb6e8262d
+Patch-set: 2
+File: runtime/fault_handler.cc
+
+139
+Wed Feb 26 22:14:50 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1cf89137_05f7e4fd
+Bytes: 104
+You can use GetClass<kVerifyNone> to not have heap verification, it is cleaner than using ClassOffset().
+
+142
+Wed Feb 26 22:14:50 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1cf89137_a5def080
+Bytes: 99
+Stuff like
+*reinterpret_cast<mirror::Class* const *>
+is not 64 bit safe due to compressed pointers.
+
+146
+Wed Feb 26 22:14:50 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1cf89137_a505d030
+Bytes: 110
+There is a routine called Heap::IsValidObjectAddress which returns true if the heap things an object is valid.
+
+155
+Wed Feb 26 22:14:50 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c44c956_9e28e1ae
+Bytes: 102
+I recently added something called VerifyClassClass which basically does this check. (verify_object.h).
+

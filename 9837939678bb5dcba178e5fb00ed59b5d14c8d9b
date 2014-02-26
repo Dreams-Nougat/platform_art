@@ -49,6 +49,14 @@ UUID: 1cf89137_2e49a54f
 Bytes: 312
 thread_class is a reference into the Java heap, I don't want its lifetime to persist as it will go stale if we take a safepoint. The scoping makes this explicit. Other tools are the Start/End no thread suspension, Sirts, etc. While the scoping is ugly, not being able to eye-ball moving collector bugs is uglier.
 
+304:2-304:3
+Wed Feb 26 09:33:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_2e49a54f
+UUID: dc0199f4_e1c5224c
+Bytes: 193
+Do we have a stack allocated object that would ensure there is no GC in that block, just in debug mode? That would make what you write explicit and avoid anyone refactoring introducing the bug.
+
 310:2-310:3
 Tue Feb 25 09:11:53 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

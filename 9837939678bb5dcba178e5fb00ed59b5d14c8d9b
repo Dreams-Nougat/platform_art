@@ -9,12 +9,28 @@ UUID: dc0199f4_9b424b28
 Bytes: 62
 Did you consider adding a field in Class* for the array class?
 
+41:79-41:92
+Wed Feb 26 06:12:26 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc0199f4_9b424b28
+UUID: 1cf89137_8e32f9ce
+Bytes: 101
+Yes, in general the meta-data needs to be on a diet - unfortunately its been getting fat on 64bit :-(
+
 43:16-43:22
 Tue Feb 25 09:11:53 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c156131_391b4f5b
 Bytes: 40
 the cached the array -> the cached array
+
+43:16-43:22
+Wed Feb 26 06:12:26 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c156131_391b4f5b
+UUID: 1cf89137_6e37adc0
+Bytes: 4
+Done
 
 File: runtime/debugger.cc
 
@@ -24,6 +40,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c156131_b92e3f72
 Bytes: 18
 Why the new block?
+
+304:2-304:3
+Wed Feb 26 06:12:26 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c156131_b92e3f72
+UUID: 1cf89137_2e49a54f
+Bytes: 312
+thread_class is a reference into the Java heap, I don't want its lifetime to persist as it will go stale if we take a safepoint. The scoping makes this explicit. Other tools are the Start/End no thread suspension, Sirts, etc. While the scoping is ugly, not being able to eye-ball moving collector bugs is uglier.
 
 310:2-310:3
 Tue Feb 25 09:11:53 2014 +0000
@@ -47,4 +71,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dc0199f4_5be843d3
 Bytes: 91
 This seems new. Were we not having the correct behavior before? Do we have a test for this?
+
+97:20-97:21
+Wed Feb 26 06:12:26 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc0199f4_5be843d3
+UUID: 5c44c956_0f0a85b6
+Bytes: 176
+Its buried in the std::string constructor details. The old code would create an initial descriptor string of num_dimensions * "[".
+There are multi-dimensional array unit tests.
 

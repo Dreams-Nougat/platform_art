@@ -25,6 +25,14 @@ UUID: 1cf89137_4e4cf160
 Bytes: 110
 I changed to compiler_options_->SetCompilerFilter which should do the trick. Just noticed when self-reviewing.
 
+288:6-288:59
+Wed Feb 26 07:23:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_4e4cf160
+UUID: 1cf89137_6e6d6d89
+Bytes: 43
+ok, thanks. I didn't re-test since that CL.
+
 300:47-300:49
 Wed Feb 26 05:51:52 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -61,6 +69,14 @@ changed to be a testing::Test (gtest superclass)
 
 it still needs common_runtime_test.h for ScratchFile. I could make that its own include, but it's test only so far, moving it out might encourage its use outside tests which doesn't seem good without further consideration.
 
+26:32-26:49
+Wed Feb 26 07:23:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cfb9535_b5e864d4
+UUID: 1cf89137_ce6ec189
+Bytes: 167
+Yes, my "?" is why have we got "runtime" tests in compiler. I don't this will be revisited for a while so splitting out ScratchFile sounds like the cleanest way to go.
+
 File: compiler/utils/scoped_hashtable_test.cc
 
 31:35-31:52
@@ -95,6 +111,14 @@ UUID: 1cf89137_2ed4050c
 Bytes: 100
 I checked, its used by dex_file_test. We could move it there, but for now I just made static inline.
 
+81:6-81:18
+Wed Feb 26 07:23:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_2ed4050c
+UUID: 5c44c956_8f7675e6
+Bytes: 35
+another thing for the TODO pile :-)
+
 File: runtime/jni_internal_test.cc
 
 34:9-34:72
@@ -128,4 +152,12 @@ Parent: 1cf89137_2ec08569
 UUID: 3cfb9535_950448e3
 Bytes: 47
 use by exeception_test which is a runtime test.
+
+17:0-17:37
+Wed Feb 26 07:23:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cfb9535_950448e3
+UUID: 3cfb9535_d5fbf05d
+Bytes: 65
+its probably better we just stuff the encoder into leb128.h then.
 

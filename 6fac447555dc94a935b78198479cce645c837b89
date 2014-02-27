@@ -9,6 +9,14 @@ UUID: 1c26d1b5_9370e41b
 Bytes: 35
 Why change from size_t to uint32_t?
 
+1228:53-1228:61
+Thu Feb 27 08:37:09 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c26d1b5_9370e41b
+UUID: 1c26d1b5_7c34255e
+Bytes: 152
+Before 64bit, size_t and uint32_t were effectively the same. In 64bit not and we have 32bit of storage in Class. I wanted the type here to reflect that.
+
 File: runtime/gc/heap-inl.h
 
 77:23-77:39
@@ -18,6 +26,14 @@ UUID: 1c26d1b5_b39c000e
 Bytes: 23
 When can klass be null?
 
+77:23-77:39
+Thu Feb 27 08:37:09 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c26d1b5_b39c000e
+UUID: 1cf89137_8db8b6a8
+Bytes: 62
+It was a unit test thing but IsStarted subsumes it so removed.
+
 File: runtime/gc/space/rosalloc_space.cc
 
 76:0-76:34
@@ -26,6 +42,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cf89137_77bd3d96
 Bytes: 42
 Is the indentation off in lines 76 and 77?
+
+76:0-76:34
+Thu Feb 27 08:37:09 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_77bd3d96
+UUID: 1c26d1b5_fc47f5da
+Bytes: 4
+Done
 
 File: runtime/mirror/array-inl.h
 
@@ -44,12 +68,28 @@ UUID: 1cf89137_8a077c75
 Bytes: 38
 dlmalloc/dlmalloc_space does the same.
 
+104:11-104:20
+Thu Feb 27 08:37:09 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_8a077c75
+UUID: 3c29d585_4302a467
+Bytes: 86
+thanks, we switched from calloc to memset to reduce the period we held the lock. Done.
+
 118:2-118:8
 Thu Feb 27 02:12:34 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cf89137_374215cb
 Bytes: 190
 How about adding DCHECK_EQ(array_class->GetComponentSize(), component_size) since component_size is given as opposed to computed here? Alternatively, get rid of the component_size parameter?
+
+118:2-118:8
+Thu Feb 27 08:37:09 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_374215cb
+UUID: 3c29d585_23079877
+Bytes: 4
+Done
 
 125:6-125:18
 Thu Feb 27 02:12:34 2014 +0000
@@ -58,4 +98,12 @@ UUID: 3c29d585_7d4d4308
 Bytes: 124
 1. Could fill_usable be a template parameter? If so, this if statement could be compiled away.
 2. Surround with an UNLIKELY?
+
+125:6-125:18
+Thu Feb 27 08:37:09 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c29d585_7d4d4308
+UUID: 1c26d1b5_3ca9fd2e
+Bytes: 82
+All the relevant code should be inlined so I'd rather not use template parameters.
 

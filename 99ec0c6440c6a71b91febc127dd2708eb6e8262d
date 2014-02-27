@@ -9,6 +9,14 @@ UUID: 7c0a6d15_cc6a4f47
 Bytes: 44
 MarkPossibleNullPointerException(opt_flags);
 
+1037
+Thu Feb 27 20:46:14 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0a6d15_cc6a4f47
+UUID: fc32ddef_4c0d3f97
+Bytes: 15
+Yup, nice catch
+
 File: compiler/dex/quick/gen_invoke.cc
 
 1004
@@ -18,6 +26,14 @@ UUID: dc0199f4_8fb3257e
 Bytes: 98
 This seems unnecessary. We should never get NPE here, it would be caught on the the previous insn.
 
+1004
+Thu Feb 27 20:46:14 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc0199f4_8fb3257e
+UUID: bce78593_3c20d17f
+Bytes: 20
+Indeed.  Removing it
+
 File: runtime/fault_handler.cc
 
 139
@@ -26,6 +42,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cf89137_05f7e4fd
 Bytes: 104
 You can use GetClass<kVerifyNone> to not have heap verification, it is cleaner than using ClassOffset().
+
+139
+Thu Feb 27 20:46:14 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cf89137_05f7e4fd
+UUID: fc32ddef_8cfb2728
+Bytes: 290
+I talked with Ian.  I'm going to check that the mutator lock is held in this function.  That way we can be sure that the top of the stack is a method pointer and not need to check that it's in the heap.  This will also fix to TODO below because we don't need to grab the mutator lock again.
 
 142
 Wed Feb 26 22:14:50 2014 +0000

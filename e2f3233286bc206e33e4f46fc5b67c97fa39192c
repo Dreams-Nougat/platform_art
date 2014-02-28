@@ -1,0 +1,19 @@
+Revision: e2f3233286bc206e33e4f46fc5b67c97fa39192c
+Patch-set: 3
+File: runtime/arch/arm/fault_handler_arm.cc
+
+77
+Fri Feb 28 23:46:48 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c8801e4_27b3fecd
+Bytes: 402
+I don't think this code handle heap corruption related crashes like:
+
+signal 11 (SIGSEGV), code 2 (SEGV_ACCERR), fault addr 421f54c0
+
+backtrace:
+    #00 pc 0000b1c0  /data/dalvik-cache/system@framework@boot.oat
+    #01 pc dead431f  <unknown>
+
+These are not null pointer exceptions and should not be treated as such. Please do not submit this until these faults are rejected by the null pointer handler.
+

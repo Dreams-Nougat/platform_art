@@ -1,0 +1,73 @@
+Revision: 75602f0cbf9fa281a37e752cf39aec09e02106ec
+Patch-set: 1
+File: runtime/gc/collector/semi_space.cc
+
+174:7-174:29
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c58ad41_c2d20610
+Bytes: 146
+Does the stack trace help with diagnosing a heap corruption because it might show some code might be missing a reference to update on a moving gc?
+
+File: runtime/gc/heap.cc
+
+356:13-356:16
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c5da930_9c2591bf
+Bytes: 42
+Raw meaning an object whose class is null?
+
+367:4-367:10
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c52b523_2c80b79c
+Bytes: 55
+Do we want to say something like obj is null to stream?
+
+381:8-381:14
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c58ad41_42a9762d
+Bytes: 5
+Same.
+
+386:0-386:4
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c5da930_fca92da5
+Bytes: 361
+On a foreground to background transition, do we completely delete/unmap the main free list space? If so, that space may not even be part of the continuous space list and its mem map may be unmapped. Do we want/is it reasonable to be able to detect a case where a moving GC fails to update a reference somewhere which may still be pointing to this deleted space?
+
+390:24-390:26
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c52b523_4ca41357
+Bytes: 109
+If this << is to print the address, then we may need "hex" or reinterpret_cast<void*> to print a hex address?
+
+903:25-903:57
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c58ad41_22cfa248
+Bytes: 179
+Depending on the definition of this function or what we need, is there a case where we'd like to know if an address is within the continuous space ranges even if it's not aligned?
+
+File: runtime/gc/heap.h
+
+519:4-519:5
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c5da930_41661640
+Bytes: 194
+A side question, might it be good if these functions can be called manually from within gdb. I'm not sure what conditions have to be met for a function to be called manually within gdb, however.
+
+File: runtime/runtime_linux.cc
+
+313:6-313:10
+Fri Feb 28 19:22:33 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c58ad41_22f0c245
+Bytes: 95
+Maybe print some header text like "the fault address is " in front of what DumpObject() prints?
+

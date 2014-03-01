@@ -17,6 +17,22 @@ UUID: 9c8801e4_9bd4a332
 Bytes: 106
 Given we only have host working, and for host cache flushes aren't necessary a warning seemed appropriate.
 
+243:0-243:49
+Sat Mar 01 10:22:51 2014 +0000
+Author: Bernhard Rosenkränzer <1010121@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c58ad41_5ebf0ab2
+Bytes: 343
+We can fix this properly. Clang does have access to libgcc, which provides __clear_cache (without the __builtin_ prefix, but with the same functionality otherwise).
+
+IMO this should be
+#if GCC_VERSION >= 40303
+__builtin___clear_cache....
+#elif defined(__clang__)
+__clear_cache(reinterpret_cast.....
+#else
+LOG(FATAL) << "UNIMPLEMENTED...
+#endif
+
 File: runtime/Android.mk
 
 306:0-306:37

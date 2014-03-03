@@ -9,6 +9,14 @@ UUID: 7c8d0df2_40962e31
 Bytes: 164
 perhaps move to entypoint_utils.h. Please comment on why the runtime shutdown lock is necessary and not other heavier weight locks, like the exclusive mutator lock.
 
+69
+Mon Mar 03 19:33:21 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c8d0df2_40962e31
+UUID: bce78593_1fedfc30
+Bytes: 4
+Done
+
 File: runtime/instrumentation.cc
 
 34:0-34:48
@@ -18,12 +26,28 @@ UUID: 7c8d0df2_e07ae246
 Bytes: 40
 or perhaps move the declaration here :-)
 
+34
+Mon Mar 03 19:33:21 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c8d0df2_e07ae246
+UUID: bc35c5d3_6c73576e
+Bytes: 4
+Done
+
 463:46-463:68
 Mon Mar 03 18:55:24 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c58ad41_1d9075ef
 Bytes: 356
 Side question/wondering: would it make sense (and more robust) for SuspendAll() to always lock runtime_shutdown_lock_ in addition to the mutator lock as a general pattern? Otherwise, it might be easy to hit this sort of murky situation where a new thread might be in the middle of starting up when SuspendAll() is called? I don't know if this works or not.
+
+463
+Mon Mar 03 19:33:21 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c58ad41_1d9075ef
+UUID: fc32ddef_d512cee0
+Bytes: 96
+Good question, I think this would work. But, would it be worth doing? Maybe irogers can comment?
 
 File: runtime/instrumentation.h
 
@@ -33,4 +57,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c8d0df2_2091aa37
 Bytes: 33
 + , Locks::runtime_shutdown_lock_
+
+170
+Mon Mar 03 19:33:21 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c8d0df2_2091aa37
+UUID: bce78593_ffe93824
+Bytes: 4
+Done
 

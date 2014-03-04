@@ -68,6 +68,21 @@ UUID: fcce5d4a_0cbdd748
 Bytes: 153
 Better experience with debugging tools. I can see ART currently does not push frame pointers, but I guess the stack walker could work with both versions.
 
+28:0-28:20
+Tue Mar 04 22:16:52 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcce5d4a_0cbdd748
+UUID: 7c66ed13_f54b6f47
+Bytes: 289
+The other thing on x86 is that we could always on entry do:
+
+push fs:[last_frame_pointer_offset]
+mov esp, fs:[last_frame_pointer_offset]
+...
+pop fs:[last_frame_pointer_offset]
+
+if we were to want frame pointers and not blow a register. The primary concern being we have very few registers.
+
 File: compiler/optimizing/codegen_test.cc
 
 30:6-30:54

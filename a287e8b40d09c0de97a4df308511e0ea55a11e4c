@@ -89,6 +89,23 @@ UUID: 3cae3566_fa1b5184
 Bytes: 101
 That would change the behavior though, we still want to set the entrypoints for an unstarted runtime.
 
+463
+Wed Mar 05 19:58:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cae3566_fa1b5184
+UUID: 1c7df19f_03aeec12
+Bytes: 431
+Do:
+
+if (!runtime->IsStarted()) {
+    MutexLock mu(Thread::Current(), *Locks::runtime_shutdown_lock_);
+    SetQuickAllocEntryPointsInstrumented(instrumented);
+    ResetQuickAllocEntryPoints();
+  return;
+}
+
+then? Presumably the annotalysis breakage is because you take a lock on some paths and not on others. If you duplicate the code in the middle then you are consistently taking/releasing a lock on one path and not on the other.
+
 File: runtime/zip_archive.cc
 
 42:0-42:20

@@ -1,0 +1,54 @@
+Revision: 774a96e65290a65550276b80ab7e3582fa1db250
+Patch-set: 3
+File: compiler/optimizing/nodes.h
+
+83:0-83:30
+Thu Mar 06 19:33:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fca73d88_c128e5af
+Bytes: 118
+Could you comment on what the id means? ie do we expect ids within a block to be ascending? what do negative ids mean?
+
+204:14-204:16
+Thu Mar 06 19:33:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dca43989_acf602ff
+Bytes: 7
+* const
+
+205:14-205:15
+Thu Mar 06 19:33:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fca73d88_64d9ff99
+Bytes: 7
+* const
+
+277:2-277:9
+Thu Mar 06 19:33:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fca73d88_e4ec0f37
+Bytes: 346
+Avoid inline when possible due to its overloaded meaning and that we expect compilers to be smart. The overloaded meaning is its both a linker directive (ie something inline in two .cc files won't conflict) and a hint that this code should be inlined. If the compiler is doing the wrong thing and performance matters we use HOT and ALWAYS_INLINE.
+
+296:2-296:9
+Thu Mar 06 19:33:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c348108_e4a614a1
+Bytes: 88
+could you remove these inlines too. Sorry, should have caught this in an earlier review.
+
+449:2-449:10
+Thu Mar 06 19:33:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dca43989_0c1cf67c
+Bytes: 54
+const uint16_t. Iirc we only support 64k of registers.
+
+491:2-491:5
+Thu Mar 06 19:33:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dca43989_2c3532f0
+Bytes: 115
+const int32_t
+I'd prefer int32_t here as this is something specified in the dex file and int is a little ambiguous.
+

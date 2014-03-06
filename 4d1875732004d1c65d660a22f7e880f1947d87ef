@@ -91,6 +91,15 @@ UUID: 1cc2511e_d3a9aca5
 Bytes: 121
 Yes, we could. I'm still worried about the use of fs:.. though, I'll investigate the size/performance cost at some point.
 
+28:0-28:20
+Thu Mar 06 00:48:51 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cc2511e_d3a9aca5
+UUID: 1c7df19f_174866eb
+Bytes: 835
+Quick isn't smart about its use of fs: and consequently whenever it needs the thread it uses fs:. You can reduce need for the thread by unrolling loops, avoiding suspend checks that dominate others, etc. Comparing this naive use of fs: to using a register, in some cases you can see a 1% performance win from not using fs in a micro benchmark that attempts to reproduce the conditions from quick. This doesn't measure the cost of losing the register across all compiled code. I think what I prefer in the case that using fs: is an impediment is to allocate a temporary to hold the thread and then have the codegen use the temporary if there or fs: otherwise.
+I expect in a reasonable "optimizing" compiler the extra register will be of more performance advantage than the smaller instruction encoding. This has been my past experience.
+
 File: compiler/optimizing/codegen_test.cc
 
 30:6-30:54

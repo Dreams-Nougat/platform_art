@@ -1,0 +1,11 @@
+Revision: 6dda898d47b3e8931e4404330e81b7110108e34f
+Patch-set: 1
+File: runtime/gc/heap.cc
+
+321:11-321:28
+Fri Mar 07 04:36:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc4c9db4_5f07cf75
+Bytes: 612
+So far, I see that this only gets called before the app starts (that is, before any allocation or GC occurs). Is this meant to be used only then? If so, maybe we'd like to check/assert that. If not (that is, this can be called after the app starts), then could there be a subtle bug to do with "copying_transition" and GetPrimitiveArrayCritical() in TransitionCollector()? As we change post_zygote_collector_type_ and background_collector_type_ here to CMS or MS, copying_transition will be false and we might break the for loop in TransitionCollector() prematurely, if a compacting GC (SS/GSS) was running then.
+

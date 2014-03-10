@@ -9,6 +9,14 @@ UUID: 3cf1d5a2_884c6b94
 Bytes: 132
 SuspendCheckUsingLoads? I know what you mean but I'm not sure the name is intention revealing. Perhaps a comment as to what this is.
 
+33:9-33:27
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_884c6b94
+UUID: 9c2ba1c2_fe284598
+Bytes: 26
+Sure, that's a better name
+
 File: compiler/dex/quick/arm/target_arm.cc
 
 734:2-734:9
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf7d997_65f20ac1
 Bytes: 44
 UNUSED(load1), move your comment to a CHECK?
+
+734:2-734:9
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_65f20ac1
+UUID: 9c2ba1c2_7e4c5593
+Bytes: 51
+This is actually unused, old code.  I'll remove it.
 
 File: compiler/dex/quick/gen_common.cc
 
@@ -27,6 +43,14 @@ UUID: 9c2ba1c2_d899191d
 Bytes: 7
 nullptr
 
+78:9-78:13
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c2ba1c2_d899191d
+UUID: dcf7d997_e0c38823
+Bytes: 4
+Done
+
 File: compiler/dex/quick/mips/codegen_mips.h
 
 33:27-33:30
@@ -36,6 +60,14 @@ UUID: 3cf1d5a2_486443f8
 Bytes: 12
 () OVERRIDE;
 
+33:27-33:30
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_486443f8
+UUID: 9c2ba1c2_7e5e152b
+Bytes: 4
+Done
+
 File: compiler/dex/quick/x86/codegen_x86.h
 
 33:27-33:30
@@ -44,6 +76,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cf1d5a2_6863ffed
 Bytes: 12
 () OVERRIDE;
+
+33:27-33:30
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_6863ffed
+UUID: 9c2ba1c2_3efbfd60
+Bytes: 4
+Done
 
 File: compiler/dex/quick/x86/target_x86.cc
 
@@ -55,6 +95,14 @@ Bytes: 53
 Implemented for MIPS but not for x86?
 s/NULL/nullptr/
 
+556:0-557:14
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_05f86693
+UUID: 3cf1d5a2_e3cf1069
+Bytes: 134
+Yeah, still WIP for x86.  I haven't tested MIPS either so it might be wrong.  It was just closer to ARM so was easy while I was there.
+
 File: runtime/arch/arm/fault_handler_arm.cc
 
 136:4-136:21
@@ -63,6 +111,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cf1d5a2_c8fdd388
 Bytes: 234
 Pass self in? I'm concerned that Thread::Current() is null depending on the context. I believe the caller has already proved self to be "!= null" so it can pass the value through to establish that we can't expect this to be null here.
+
+136:4-136:21
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_c8fdd388
+UUID: 9c2ba1c2_def58164
+Bytes: 57
+Yeah, see the comments for thread.cc.  This doesn't work.
 
 File: runtime/arch/mips/fault_handler_mips.cc
 
@@ -73,6 +129,14 @@ UUID: dcf7d997_a55eb2d4
 Bytes: 77
 unimplemented yet somewhat implemented? Add a LOG(FATAL) to the codegen path.
 
+39:0-40:15
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_a55eb2d4
+UUID: dcf7d997_e03ee837
+Bytes: 154
+This is OK.  It will result in a regular SEGV crash because this means that it's not handled.  Actually better than a fatal since it won't mask the crash.
+
 File: runtime/arch/x86_64/fault_handler_x86_64.cc
 
 32:5-32:39
@@ -81,6 +145,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf7d997_25ae4269
 Bytes: 17
 similar for arm64
+
+32:5-32:39
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_25ae4269
+UUID: 9c2ba1c2_dec90197
+Bytes: 3
+eh?
 
 File: runtime/fault_handler.h
 
@@ -91,12 +163,28 @@ UUID: 3cf1d5a2_88962b37
 Bytes: 118
 Move #includes into the .cc when possible. I don't see a use of mutex here, and so it shouldn't be in the header file.
 
+21:0-26:23
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_88962b37
+UUID: 3cf1d5a2_c37ad446
+Bytes: 21
+old code, will remove
+
 59:14-59:15
 Mon Mar 10 19:18:48 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c2ba1c2_63631eee
 Bytes: 7
 * const
+
+59:14-59:15
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c2ba1c2_63631eee
+UUID: 9c2ba1c2_7eb0d507
+Bytes: 13
+I hate const.
 
 62:24-62:26
 Mon Mar 10 19:18:48 2014 +0000
@@ -105,12 +193,28 @@ UUID: dcf7d997_45fb8e5f
 Bytes: 7
 FINAL :
 
+62:24-62:26
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_45fb8e5f
+UUID: 3cf1d5a2_e381d0e5
+Bytes: 2
+OK
+
 68:56-68:58
 Mon Mar 10 19:18:48 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf7d997_05dea6f5
 Bytes: 11
 ) OVERRIDE;
+
+68:56-68:58
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_05dea6f5
+UUID: 3cf1d5a2_436ee48a
+Bytes: 2
+OK
 
 71:23-71:27
 Mon Mar 10 19:18:48 2014 +0000
@@ -119,12 +223,28 @@ UUID: 3cf1d5a2_a8c5e74c
 Bytes: 7
 FINAL :
 
+71:23-71:27
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_a8c5e74c
+UUID: dcf7d997_4086dcbd
+Bytes: 4
+Done
+
 77:56-77:58
 Mon Mar 10 19:18:48 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c2ba1c2_03cd02a3
 Bytes: 11
 ) OVERRIDE;
+
+77:56-77:58
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c2ba1c2_03cd02a3
+UUID: dcf7d997_208bd0c5
+Bytes: 4
+Done
 
 File: runtime/mirror/art_method.cc
 
@@ -135,6 +255,14 @@ UUID: dcf7d997_05f98660
 Bytes: 26
 s/abort/abort_on_failure/g
 
+160:53-160:58
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_05f98660
+UUID: 3cf1d5a2_23ae3869
+Bytes: 4
+Done
+
 File: runtime/mirror/art_method.h
 
 406:44-406:49
@@ -143,6 +271,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf7d997_c515becb
 Bytes: 25
 s/abort/abort_on_failure/
+
+406:44-406:49
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_c515becb
+UUID: dcf7d997_60c2f8d6
+Bytes: 4
+Done
 
 File: runtime/parsed_options.cc
 
@@ -153,6 +289,14 @@ UUID: 3cf1d5a2_48872301
 Bytes: 76
 Would be nice to see this enabled for host testing, but we lack x86 support.
 
+220:2-220:64
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_48872301
+UUID: 3cf1d5a2_63b840a8
+Bytes: 3
+TBD
+
 File: runtime/parsed_options.h
 
 84:0-85:54
@@ -161,6 +305,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf7d997_c5601e6a
 Bytes: 13
 move to enum?
+
+84:0-85:54
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_c5601e6a
+UUID: 9c2ba1c2_3e0addf1
+Bytes: 193
+I'd rather not.  These are bits.  To me, an enum has an exclusive value and cannot have more than one.  I know we've used enums elsewhere in the compiler but I believe that is a misuse of them.
 
 File: runtime/runtime.cc
 
@@ -171,12 +323,28 @@ UUID: dcf7d997_45342e5e
 Bytes: 40
 valgrind memory leak, move to UniquePtr?
 
+529:6-529:30
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_45342e5e
+UUID: 3cf1d5a2_e3da70ff
+Bytes: 124
+Or just delete it in the destructor.  Can't uniqueptr because they are also held in the fault manager object's handler list.
+
 533:6-533:34
 Mon Mar 10 19:18:48 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cf1d5a2_08851bf2
 Bytes: 9
 similarly
+
+533:6-533:34
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_08851bf2
+UUID: dcf7d997_f43ce9d1
+Bytes: 5
+ditto
 
 File: runtime/runtime.h
 
@@ -187,6 +355,16 @@ UUID: 3cf1d5a2_a8b967ab
 Bytes: 201
 Add a comment to say what this boolean means. False in the case of supporting implicit checks? Seems the logic should be more of a test for implicit support from the runtime's pov rather than explicit.
 
+408:0-408:31
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_a8b967ab
+UUID: dcf7d997_8066043d
+Bytes: 147
+This isn't used.  I'll delete it.
+
+As for the direction of the flags.  It's a matter of taste and I don't want to spend the time to reverse it now.
+
 File: runtime/stack.cc
 
 95:37-95:42
@@ -196,6 +374,14 @@ UUID: dcf7d997_a544f2d7
 Bytes: 25
 s/abort/abort_on_failure/
 
+95:37-95:42
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_a544f2d7
+UUID: dcf7d997_a02ea0ba
+Bytes: 4
+Done
+
 File: runtime/stack.h
 
 523:25-523:30
@@ -204,6 +390,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cf1d5a2_e8c36f23
 Bytes: 25
 s/abort/abort_on_failure/
+
+523:25-523:30
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_e8c36f23
+UUID: dcf7d997_002cd4c1
+Bytes: 4
+Done
 
 File: runtime/thread.cc
 
@@ -215,10 +409,30 @@ Bytes: 143
 Move to header, at the least comments describing member functions belong on declarations not definitions.
 Other than Init where is this called?
 
+325:0-325:37
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf1d5a2_c8e313bb
+UUID: dcf7d997_3405d12f
+Bytes: 290
+This isn't working right now.  Small tests pass but the phone doesn't boot.  I think it needs to atomic along with the setting of the flags.
+
+It's supposed to be called to remove the trigger after the suspend has happened, but again, atomicity is needed.
+
+More work to do, if it's worth it,
+
 332:0-332:31
 Mon Mar 10 19:18:48 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf7d997_c592def9
 Bytes: 6
 ditto.
+
+332:0-332:31
+Mon Mar 10 20:52:41 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf7d997_c592def9
+UUID: 3cf1d5a2_a376a817
+Bytes: 4
+Done
 

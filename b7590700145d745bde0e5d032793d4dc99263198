@@ -1,0 +1,224 @@
+Revision: b7590700145d745bde0e5d032793d4dc99263198
+Patch-set: 4
+File: compiler/dex/quick/arm/codegen_arm.h
+
+33:9-33:27
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_884c6b94
+Bytes: 132
+SuspendCheckUsingLoads? I know what you mean but I'm not sure the name is intention revealing. Perhaps a comment as to what this is.
+
+File: compiler/dex/quick/arm/target_arm.cc
+
+734:2-734:9
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_65f20ac1
+Bytes: 44
+UNUSED(load1), move your comment to a CHECK?
+
+File: compiler/dex/quick/gen_common.cc
+
+78:9-78:13
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_d899191d
+Bytes: 7
+nullptr
+
+File: compiler/dex/quick/mips/codegen_mips.h
+
+33:27-33:30
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_486443f8
+Bytes: 12
+() OVERRIDE;
+
+File: compiler/dex/quick/x86/codegen_x86.h
+
+33:27-33:30
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_6863ffed
+Bytes: 12
+() OVERRIDE;
+
+File: compiler/dex/quick/x86/target_x86.cc
+
+556:0-557:14
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_05f86693
+Bytes: 53
+Implemented for MIPS but not for x86?
+s/NULL/nullptr/
+
+File: runtime/arch/arm/fault_handler_arm.cc
+
+136:4-136:21
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_c8fdd388
+Bytes: 234
+Pass self in? I'm concerned that Thread::Current() is null depending on the context. I believe the caller has already proved self to be "!= null" so it can pass the value through to establish that we can't expect this to be null here.
+
+File: runtime/arch/mips/fault_handler_mips.cc
+
+39:0-40:15
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_a55eb2d4
+Bytes: 77
+unimplemented yet somewhat implemented? Add a LOG(FATAL) to the codegen path.
+
+File: runtime/arch/x86_64/fault_handler_x86_64.cc
+
+32:5-32:39
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_25ae4269
+Bytes: 17
+similar for arm64
+
+File: runtime/fault_handler.h
+
+21:0-26:23
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_88962b37
+Bytes: 118
+Move #includes into the .cc when possible. I don't see a use of mutex here, and so it shouldn't be in the header file.
+
+59:14-59:15
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_63631eee
+Bytes: 7
+* const
+
+62:24-62:26
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_45fb8e5f
+Bytes: 7
+FINAL :
+
+68:56-68:58
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_05dea6f5
+Bytes: 11
+) OVERRIDE;
+
+71:23-71:27
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_a8c5e74c
+Bytes: 7
+FINAL :
+
+77:56-77:58
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_03cd02a3
+Bytes: 11
+) OVERRIDE;
+
+File: runtime/mirror/art_method.cc
+
+160:53-160:58
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_05f98660
+Bytes: 26
+s/abort/abort_on_failure/g
+
+File: runtime/mirror/art_method.h
+
+406:44-406:49
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_c515becb
+Bytes: 25
+s/abort/abort_on_failure/
+
+File: runtime/parsed_options.cc
+
+220:2-220:64
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_48872301
+Bytes: 76
+Would be nice to see this enabled for host testing, but we lack x86 support.
+
+File: runtime/parsed_options.h
+
+84:0-85:54
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_c5601e6a
+Bytes: 13
+move to enum?
+
+File: runtime/runtime.cc
+
+529:6-529:30
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_45342e5e
+Bytes: 40
+valgrind memory leak, move to UniquePtr?
+
+533:6-533:34
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_08851bf2
+Bytes: 9
+similarly
+
+File: runtime/runtime.h
+
+408:0-408:31
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_a8b967ab
+Bytes: 201
+Add a comment to say what this boolean means. False in the case of supporting implicit checks? Seems the logic should be more of a test for implicit support from the runtime's pov rather than explicit.
+
+File: runtime/stack.cc
+
+95:37-95:42
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_a544f2d7
+Bytes: 25
+s/abort/abort_on_failure/
+
+File: runtime/stack.h
+
+523:25-523:30
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_e8c36f23
+Bytes: 25
+s/abort/abort_on_failure/
+
+File: runtime/thread.cc
+
+325:0-325:37
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf1d5a2_c8e313bb
+Bytes: 143
+Move to header, at the least comments describing member functions belong on declarations not definitions.
+Other than Init where is this called?
+
+332:0-332:31
+Mon Mar 10 19:18:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf7d997_c592def9
+Bytes: 6
+ditto.
+

@@ -17,6 +17,14 @@ UUID: fce81dcd_5fca4f38
 Bytes: 133
 I copied this code from elsewhere.  Maybe that is not 64-bit safe as well.  But, why is this not 64 bit safe?  They are all pointers.
 
+134
+Tue Mar 11 01:35:39 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fce81dcd_5fca4f38
+UUID: 9c2ba1c2_06db4b05
+Bytes: 479
+As a hard rule you shouldn't touch raw pointers in the Java heap without going through the mirror accessors. Doing so works around our ability to assert the sanity of the heap (which this code was originally a part of). Whilst Mathieu is correct that this isn't 64 bit correct, you shouldn't ever be using naked pointers into the heap without using mirror. The only exception being the GC (of which heap is part). This is also why we assert that you are holding the mutator lock.
+
 144
 Mon Mar 10 23:24:13 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>

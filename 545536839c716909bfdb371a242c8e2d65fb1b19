@@ -9,3 +9,13 @@ UUID: fce81dcd_90b844a9
 Bytes: 81
 I worry about robustness here. We may expect no code items for proxy methods too.
 
+1293:0-1293:30
+Tue Mar 11 15:49:05 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fce81dcd_90b844a9
+UUID: 3c1ab5b4_8c212b85
+Bytes: 540
+I think we should just not get there for native methods if we can't read/write any local value. This is used to build the variable table which declares these slots for each local value. But native and proxy methods shouldn't have variable table. And we should not be asked for abstract methods.
+I also spotted the same kind of issue in DexFile::DecodeDebugInfo which is used in Method::LineTable and Method::VariableTable commands.
+I can add a special case for the null code item and move the CHECK to the uses of these slots if you prefer.
+

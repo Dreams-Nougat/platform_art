@@ -1,0 +1,46 @@
+Revision: 6d89bd2e66cf748cdf20512afff0f7b7e7ea4dd4
+Patch-set: 7
+File: compiler/dex/quick/dex_file_method_inliner.cc
+
+52:29-52:39
+Wed Mar 12 19:26:28 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_4f2f0670
+Bytes: 95
+Why tag the inlined MIR with this flag? What would be more useful is to know its source method.
+
+443:6-443:17
+Wed Mar 12 19:26:28 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9cb9e1da_9687544e
+Bytes: 63
+Should you check whether move-result is consistent with return?
+
+461:34-461:50
+Wed Mar 12 19:26:28 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c2ba1c2_4f7266b5
+Bytes: 207
+How come you are tagging with this flag? To me this makes it seem that this must have been a prediction. However, I don't see any prediction mechanism here. Namely, even direct invokes seem to get this flag.
+
+833:65-833:98
+Wed Mar 12 19:26:28 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fce81dcd_74871e01
+Bytes: 195
+Although I tend to agree with your statement that correct stack trace is useful, why is it actually needed? Are there requirements somewhere that ART must be able to produce correct stack traces?
+
+833:7-833:11
+Wed Mar 12 19:26:28 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fce81dcd_f4c88e66
+Bytes: 212
+Any plans for how to do this? In Dalvik it was done by setting the offset to the one of the invoke so that when punting to interpreter for exception, it would reexecute invoke and thus have the right stack trace.
+
+868:41-868:76
+Wed Mar 12 19:26:28 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fce81dcd_34f83694
+Bytes: 138
+Although this may be true, it seems that what you are doing here is adhering to the bytecode format. Namely, vC should be holding the idx.
+

@@ -9,6 +9,14 @@ UUID: 9c2ba1c2_4f2f0670
 Bytes: 95
 Why tag the inlined MIR with this flag? What would be more useful is to know its source method.
 
+52:29-52:39
+Thu Mar 13 10:53:56 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c2ba1c2_4f2f0670
+UUID: 3c1ab5b4_1a528da5
+Bytes: 74
+The method can be looked up via the INVOKE with the same offset if needed.
+
 443:6-443:17
 Wed Mar 12 19:26:28 2014 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 9cb9e1da_9687544e
 Bytes: 63
 Should you check whether move-result is consistent with return?
 
+443:6-443:17
+Thu Mar 13 10:53:56 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9cb9e1da_9687544e
+UUID: bcb4e5de_806d5a8c
+Bytes: 76
+I would expect the MethodVerifier to reject the method if it's inconsistent.
+
 461:34-461:50
 Wed Mar 12 19:26:28 2014 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c2ba1c2_4f7266b5
 Bytes: 207
 How come you are tagging with this flag? To me this makes it seem that this must have been a prediction. However, I don't see any prediction mechanism here. Namely, even direct invokes seem to get this flag.
+
+461:34-461:50
+Thu Mar 13 10:53:56 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c2ba1c2_4f7266b5
+UUID: 3c1ab5b4_9a12fddf
+Bytes: 173
+I want to use MIR_INLINED but it's already used for some obscure purpose and that needs to be cleaned up. I used the MIR_INLINED_PRED which was available (work in progress).
 
 833:65-833:98
 Wed Mar 12 19:26:28 2014 +0000
@@ -47,10 +71,26 @@ I am looking at description of getStackTrace at http://docs.oracle.com/javase/6/
 
 There it says "Some virtual machines may, under some circumstances, omit one or more stack frames from the stack trace."
 
+833:65-833:98
+Thu Mar 13 10:53:56 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9cb9e1da_56385cb2
+UUID: bcb4e5de_00594aeb
+Bytes: 81
+Thanks! That means I can experiment with inlining these despite dropping a frame.
+
 868:41-868:76
 Wed Mar 12 19:26:28 2014 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fce81dcd_34f83694
 Bytes: 138
 Although this may be true, it seems that what you are doing here is adhering to the bytecode format. Namely, vC should be holding the idx.
+
+868:41-868:76
+Thu Mar 13 10:53:56 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fce81dcd_34f83694
+UUID: bcb4e5de_20a9ee60
+Bytes: 68
+This is obsolete, LVN has been rewritten and doesn't use vC anymore.
 

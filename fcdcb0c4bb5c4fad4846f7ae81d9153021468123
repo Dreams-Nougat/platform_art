@@ -1,0 +1,28 @@
+Revision: fcdcb0c4bb5c4fad4846f7ae81d9153021468123
+Patch-set: 2
+File: runtime/class_linker.cc
+
+1778:5-1778:81
+Thu Mar 13 19:43:37 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cc8f574_bc8fe9d3
+Bytes: 78
+shouldn't this be the same situation as the new enter_interpreter block below?
+
+1796:0-1796:54
+Thu Mar 13 19:43:37 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb3e9f9_2034905d
+Bytes: 52
+We shouldn't expect to link methods twice should we?
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+1507:6-1507:57
+Thu Mar 13 19:43:37 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb3e9f9_a047c0db
+Bytes: 203
+DCHECK(self->IsExceptionPending());
+I'm fine with duplication in debug builds for the sake of readability and correctness. If the check were removed from artFindNativeMethod then we could be broken here.
+

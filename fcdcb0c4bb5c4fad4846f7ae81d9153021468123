@@ -9,12 +9,30 @@ UUID: 3cc8f574_bc8fe9d3
 Bytes: 78
 shouldn't this be the same situation as the new enter_interpreter block below?
 
+1778:5-1778:81
+Thu Mar 13 22:20:40 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cc8f574_bc8fe9d3
+UUID: 1cc5f15c_b85d35b4
+Bytes: 191
+This is handled as the block below applies to methods that hit this branch.
+
+The block is down below because we also need to fix when the native method is static (the case of the top branch).
+
 1796:0-1796:54
 Thu Mar 13 19:43:37 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5cb3e9f9_2034905d
 Bytes: 52
 We shouldn't expect to link methods twice should we?
+
+1796:0-1796:54
+Thu Mar 13 22:20:40 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb3e9f9_2034905d
+UUID: 3cc8f574_8563acec
+Bytes: 20
+Changed to a DCHECK.
 
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
@@ -25,4 +43,12 @@ UUID: 5cb3e9f9_a047c0db
 Bytes: 203
 DCHECK(self->IsExceptionPending());
 I'm fine with duplication in debug builds for the sake of readability and correctness. If the check were removed from artFindNativeMethod then we could be broken here.
+
+1507:6-1507:57
+Thu Mar 13 22:20:40 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb3e9f9_a047c0db
+UUID: 3cc8f574_aa1b17ce
+Bytes: 5
+Done.
 

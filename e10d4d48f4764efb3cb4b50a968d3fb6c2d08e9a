@@ -32,3 +32,29 @@ UUID: 3c1ab5b4_7a2e2111
 Bytes: 111
 If any exception is thrown (NPE or clinit error), we won't reach those insns where we're eliminating the check.
 
+996
+Thu Mar 13 16:17:40 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c1ab5b4_7a2e2111
+UUID: fce81dcd_e9b510f8
+Bytes: 287
+Ok. How is the case:
+
+class MyOtherClass {
+  static {
+    throw new Exception("boo");
+  }
+  static int x;
+}
+class MyClass {
+
+static {
+  try {
+    MyOtherClass.x = 100;  // Should fail with EIIE
+  } catch(Throwable ignored) {
+  }
+  MyOtherClass.x = 100;  // Should fail again.
+}
+
+handled?
+

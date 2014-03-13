@@ -1,0 +1,49 @@
+Revision: e58b79bfd97a6267d97fe6ec13665df60ebd6fa7
+Patch-set: 1
+File: runtime/gc/accounting/remembered_set.cc
+
+77
+Thu Mar 13 17:57:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb3e9f9_3a8afd98
+Bytes: 237
+I'm not sure this and the code in mod union table is correct. A moved object is still the same object as before, if we undo the write and restore the pointer to the non moved object it seems broken since the transactions can't undo a GC.
+
+95
+Thu Mar 13 17:57:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb3e9f9_3a5cbd69
+Bytes: 152
+Might be cleaner to have a pointer passed in the constructor
+(bool* const contains_reference_to_target_space_) so that you don't need a const cast here.
+
+101
+Thu Mar 13 17:57:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cc8f574_b618e8d2
+Bytes: 7
+* const
+
+147
+Thu Mar 13 17:57:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9cb9e1da_b5fa85df
+Bytes: 18
+Line > 100 columns
+
+169
+Thu Mar 13 17:57:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb3e9f9_fa2885af
+Bytes: 73
+I wonder if we could use logic like this to improve the mod union tables.
+
+File: runtime/gc/heap.h
+
+698
+Thu Mar 13 17:57:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb3e9f9_9d1ea376
+Bytes: 102
+I wonder if there is a way to make this logic more flexible, either way, that will have to do for now.
+

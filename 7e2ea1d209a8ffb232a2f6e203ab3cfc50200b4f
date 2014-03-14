@@ -1,0 +1,21 @@
+Revision: 7e2ea1d209a8ffb232a2f6e203ab3cfc50200b4f
+Patch-set: 2
+File: runtime/verifier/method_verifier_test.cc
+
+134:46-134:58
+Fri Mar 14 15:10:41 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ca891a1_7d16d7d7
+Bytes: 178
+I had to disable this test because calling DescribeVRegs here causes a crash. There is no register line at this dex pc. WAI ?
+Note I didn't disable such calls in the "long" test.
+
+135:14-135:32
+Fri Mar 14 15:10:41 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ca891a1_bd1b3f01
+Bytes: 406
+My first version used kConstant (which is handled by the CatchBlockVisitor when deoptimizing). In the context of the test, we're supposed to be in compilation mode (Runtime::IsCompiler == true) so the method verifier use imprecise constants only.
+
+We should have control on that by passing a boolean to the MethodVerifier upon construction so the behavior is the same than during deoptimization at runtime.
+

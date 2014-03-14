@@ -9,12 +9,28 @@ UUID: 3cc8f574_90376cbf
 Bytes: 64
 true for volatile? Or add an accessor for queue and use it here?
 
+26
+Fri Mar 14 00:29:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cc8f574_90376cbf
+UUID: 3cc8f574_f0f8a05e
+Bytes: 160
+Its not necessary since this is only called with all the mutator threads suspended which means the threads already have done a barrier for the state transition.
+
 27:79-27:84
 Thu Mar 13 23:37:55 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cc5f15c_9b79530d
 Bytes: 70
 true for volatile? Or add an accessor for queue_next_ and use it here?
+
+27
+Fri Mar 14 00:29:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cc5f15c_9b79530d
+UUID: 5cb3e9f9_6cb03f08
+Bytes: 5
+Same.
 
 File: runtime/mirror/reference.h
 
@@ -25,12 +41,28 @@ UUID: 1cc5f15c_dbfe6b19
 Bytes: 90
 I don't see a good way around, but "Reference" might be confused with Heap/StackReference?
 
+30
+Fri Mar 14 00:29:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cc5f15c_dbfe6b19
+UUID: 3cc8f574_701c90f9
+Bytes: 99
+True, but we have a namespace so mirror::Reference should be fairly clear that it is a java object.
+
 58:58-58:63
 Thu Mar 13 23:37:55 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cc5f15c_db410bc7
 Bytes: 37
 Should this be true as it's volatile?
+
+58
+Fri Mar 14 00:29:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cc5f15c_db410bc7
+UUID: 1cc5f15c_1e6e118a
+Bytes: 306
+I don't think this is needed since the java pending next is only accessed from the java threads for cleared references. And since cleared references have a null referent, we never end up looking at their pending next from the GC. It may be worth refactoring this code to make it clearer that it is correct.
 
 62:74-62:79
 Thu Mar 13 23:37:55 2014 +0000
@@ -39,10 +71,26 @@ UUID: 3cc8f574_d021e483
 Bytes: 4
 same
 
+62
+Fri Mar 14 00:29:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cc8f574_d021e483
+UUID: 3cc8f574_b0a6283b
+Bytes: 4
+Same
+
 76:16-76:25
 Thu Mar 13 23:37:55 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cc8f574_10a19cb8
 Bytes: 113
 Should this be of type ReferenceQueue instead of Reference? ReferenceQueue does not seem to exist, so use Object?
+
+76
+Fri Mar 14 00:29:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cc8f574_10a19cb8
+UUID: 1cc5f15c_de457933
+Bytes: 28
+Nice catch, I'll use object.
 

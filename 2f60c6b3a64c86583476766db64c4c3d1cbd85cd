@@ -1,0 +1,39 @@
+Revision: 2f60c6b3a64c86583476766db64c4c3d1cbd85cd
+Patch-set: 2
+File: runtime/mem_map.cc
+
+117:12-117:17
+Fri Mar 14 20:54:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcb1990e_4f291d9a
+Bytes: 170
+This could be redundant, but would it make sense to also check errno == ENOMEM in the 'else' block of this if statement to be conservative? I noticed this in 'man msync'.
+
+129:24-129:26
+Fri Mar 14 20:54:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcb1990e_cf4bed7a
+Bytes: 18
+Do you mean '!=' ?
+
+134:15-134:22
+Fri Mar 14 20:54:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cbf69de_4074440f
+Bytes: 67
+Do you mean "!(low_4gb && addr == nullptr)" or something like that?
+
+143:0-143:6
+Fri Mar 14 20:54:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcb49dfd_457a20cf
+Bytes: 191
+What happens if we have a non-x86-64 non-arm64 64-bit architecture? In other words, should we use the non-MAP32BIT code for the case where ifdef _LP64 && !(__x86_64) case, not just for arm64?
+
+258:28-258:37
+Fri Mar 14 20:54:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcb49dfd_8532681d
+Bytes: 129
+I see no problem here. Since we're discussing use of MAP_FIXED in MapAnonymous() in CL 87743, I'd like to hear what Brian thinks.
+

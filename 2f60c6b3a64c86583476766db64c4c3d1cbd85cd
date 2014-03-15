@@ -2,12 +2,34 @@ Revision: 2f60c6b3a64c86583476766db64c4c3d1cbd85cd
 Patch-set: 2
 File: runtime/mem_map.cc
 
+111:9-111:38
+Sat Mar 15 00:43:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcb1990e_c4206f2b
+Bytes: 52
+can we remember where we left off for the next call?
+
+111:0-112:21
+Sat Mar 15 00:43:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cbf69de_8c7bb34b
+Bytes: 42
+I find the ptr/ptr2 to be a bit confusing.
+
 117:12-117:17
 Fri Mar 14 20:54:29 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcb1990e_4f291d9a
 Bytes: 170
 This could be redundant, but would it make sense to also check errno == ENOMEM in the 'else' block of this if statement to be conservative? I noticed this in 'man msync'.
+
+117:12-117:17
+Sat Mar 15 00:43:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcb1990e_4f291d9a
+UUID: dcb1990e_c4ce2f4a
+Bytes: 92
+Yes, I'd prefer assert that when you fall through that you got the thing you were expecting.
 
 129:24-129:26
 Fri Mar 14 20:54:29 2014 +0000
@@ -23,6 +45,14 @@ Parent: dcb1990e_cf4bed7a
 UUID: dcb1990e_cf01ad63
 Bytes: 99
 Never mind. I see this is your way of matching the else block to the beginning of the if statement.
+
+129:24-129:26
+Sat Mar 15 00:43:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcb1990e_cf01ad63
+UUID: fcb49dfd_71adda7e
+Bytes: 150
+yeah, I also found this more confusing than helpful. When I write a comment after the else, its typically to describe what holds true within the else.
 
 134:15-134:22
 Fri Mar 14 20:54:29 2014 +0000

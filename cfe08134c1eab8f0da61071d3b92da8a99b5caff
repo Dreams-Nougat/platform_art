@@ -1,0 +1,17 @@
+Revision: cfe08134c1eab8f0da61071d3b92da8a99b5caff
+Patch-set: 6
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+930
+Wed Mar 19 13:16:41 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1cffb1b9_2e426bcb
+Bytes: 237
+SP _must_ be 16 byte aligned. It isn't just a convention - the processor will trap on accesses using an unaligned SP.
+Consequently, the result of:
+  add sp, sp, #8
+  add x9, sp, x0 
+  add sp, x9, #136
+
+must be that SP is 16 byte aligned.
+

@@ -9,6 +9,14 @@ UUID: fcfbbdcb_387ab1ce
 Bytes: 43
 should architecture specific files be here?
 
+23:0-24:36
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcfbbdcb_387ab1ce
+UUID: fcfbbdcb_1e0b5d40
+Bytes: 194
+I talked to Ian about it and we want to move towards having the CompiledMethod apply patches.  This is at the top level so it seemed appropriate to put the architecture specific stuff there too.
+
 File: compiler/arch/arm/entrypoint_trampoline.cc
 
 24:4-24:69
@@ -17,6 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf8b9d4_c3b976cf
 Bytes: 120
 do we want to reuse the assembler like the trampoline_compiler? in fact, isn't this CreateTrampoline(kQuickAbi, offset)?
+
+24:4-24:69
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf8b9d4_c3b976cf
+UUID: dcf8b9d4_66c3f079
+Bytes: 389
+That was my first attempt at this.  Unfortunately it only generated ARM code, not thumb, and it generates two instructions per trampoline (LDR followed by BKPT).  The two instructions I could work around, but the lack of thumb was an issue.  Because we call the compiler through a function pointer and the assembler is part of the compiler (ArmMir2Lir) there is no way to call it directly.
 
 File: compiler/arch/arm/final_relocations_arm.cc
 
@@ -27,6 +43,14 @@ UUID: bc33057e_0273ca6e
 Bytes: 14
 island_offset?
 
+26:2-26:17
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc33057e_0273ca6e
+UUID: dcf8b9d4_26cdf8a2
+Bytes: 4
+Sure
+
 27:2-27:26
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,12 +58,28 @@ UUID: dcf8b9d4_839a5e5b
 Bytes: 95
 const bool, and we usually say kDebugPrint in case its later promoted to be global to the file.
 
+27:2-27:26
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf8b9d4_839a5e5b
+UUID: fcfbbdcb_de56e520
+Bytes: 2
+ok
+
 29:7-29:18
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fcfbbdcb_93506624
 Bytes: 6
 const?
+
+29:7-29:18
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcfbbdcb_93506624
+UUID: dcf8b9d4_06cafc8a
+Bytes: 4
+sure
 
 32:6-36:75
 Wed Mar 19 21:27:48 2014 +0000
@@ -52,12 +92,28 @@ __attribute__ ((aligned (2)));
 
 see disassembler_arm.cc which does this.
 
+32:6-36:75
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcfbbdcb_339bf2a7
+UUID: fcfbbdcb_be868950
+Bytes: 91
+I'll look into it, however the order of the words is not little endian for a 4 byte entity.
+
 39:23-39:33
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bc33057e_62bdf695
 Bytes: 172
 do we care we have constants for these? even if they are just shared between the code generating and the code validating? its easier to grep to see how things wire together
+
+39:23-39:33
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc33057e_62bdf695
+UUID: dcf8b9d4_e637e0c0
+Bytes: 57
+Same issue with not having an accessible Thumb assembler.
 
 41:9-41:88
 Wed Mar 19 21:27:48 2014 +0000
@@ -70,12 +126,28 @@ http://infocenter.arm.com/help/topic/com.arm.doc.ihi0044e/IHI0044E_aaelf.pdf
 
 for reference? or are we doing something novel
 
+41:9-41:88
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c13a1db_3d550738
+UUID: dcf8b9d4_c60e2404
+Bytes: 223
+Don't follow.  Are you referring to the constant used for the relocation type (kRelocationCall).   If so, that is architecture independent so we can't use an ARM specific name.  If you mean something else, please elaborate.
+
 55:27-55:37
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c13a1db_1d524350
 Bytes: 3
 *MB
+
+55:27-55:37
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c13a1db_1d524350
+UUID: dcf8b9d4_664c1061
+Bytes: 32
+OK, did't know about that macro.
 
 File: compiler/arch/arm/final_relocations_arm.h
 
@@ -86,6 +158,14 @@ UUID: bc33057e_c295e223
 Bytes: 75
 where is this defined? I don't see a new final_entrypoint_relocation_set.h?
 
+29:47-29:75
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc33057e_c295e223
+UUID: fcfbbdcb_5ec0b56a
+Bytes: 70
+It's in compiled_method.h.  Do you want a separate header file for it?
+
 File: compiler/compiled_method.cc
 
 19:0-19:23
@@ -95,12 +175,28 @@ UUID: fccd7da7_34dbc506
 Bytes: 14
 was this used?
 
+19:0-19:23
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_34dbc506
+UUID: bc33057e_4568fc4d
+Bytes: 61
+Probably was at some time in the development.  I'll remove it
+
 207:0-209:1
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fccd7da7_d40491ab
 Bytes: 55
 shouldn't this be a final_entrypoint_relocation_set.cc?
+
+207:0-209:1
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_d40491ab
+UUID: fcfbbdcb_feb521fa
+Bytes: 42
+Sure.  I'll add a .h and .cc for the class
 
 File: compiler/compiled_method.h
 
@@ -111,12 +207,28 @@ UUID: 9c13a1db_9d3cf3f4
 Bytes: 88
 presumbably for public visibility by default. shouldn't this TODO go on CompilationUnit?
 
+34:0-34:48
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c13a1db_9d3cf3f4
+UUID: dcf8b9d4_c6b984cf
+Bytes: 24
+I'll remove the comment.
+
 38:0-39:1
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fccd7da7_144d6908
 Bytes: 63
 would there ever be a None? I'm fine having a one element enum.
+
+38:0-39:1
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_144d6908
+UUID: bc33057e_453f9c34
+Bytes: 141
+This is added to a std::vector so there needs to be a default constructor for Relocation.  The None is to allow for a default value for this.
 
 42:0-42:26
 Wed Mar 19 21:27:48 2014 +0000
@@ -127,12 +239,28 @@ class doc to explain what this is briefly
 
 what is final about it? are we going to merge concept in with the PatchInfo?
 
+42:0-42:26
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_1bdecb2c
+UUID: bc33057e_e59ef00a
+Bytes: 41
+That's the intention.  I'll add a comment
+
 57:4-57:72
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c0da9ba_db0ef303
 Bytes: 65
 do we need this constructor? should we use a DISALLOW macro here?
+
+57:4-57:72
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_db0ef303
+UUID: fcfbbdcb_fe108137
+Bytes: 26
+Yes, used in a std::vector
 
 67:2-67:46
 Wed Mar 19 21:27:48 2014 +0000
@@ -141,12 +269,28 @@ UUID: 5c0da9ba_9b087bf7
 Bytes: 64
 are the Relocations immutable? can the vector elements be const?
 
+67:2-67:46
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_9b087bf7
+UUID: fcfbbdcb_de15c525
+Bytes: 5
+yeah.
+
 69:0-69:2
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c13a1db_b8f905ef
 Bytes: 61
 should we have a DISALLOW_ macro here for FinalRelocationSet?
+
+69:0-69:2
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c13a1db_b8f905ef
+UUID: fcfbbdcb_be1a0954
+Bytes: 57
+Dunno, need to work out what it does, and why we need it.
 
 37:0-81:2
 Wed Mar 19 21:27:48 2014 +0000
@@ -155,12 +299,28 @@ UUID: 5c0da9ba_5bd4430c
 Bytes: 116
 given that the subclasses will be in their own file, I'd probably just put this in its own file too for consistency.
 
+37:0-81:2
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_5bd4430c
+UUID: fcfbbdcb_9e1f4d44
+Bytes: 2
+ok
+
 89:15-89:60
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c0da9ba_7bfee784
 Bytes: 112
 why optional? unless there are a lot of callers, seems clear at the call site to show there is something missing
+
+89:15-89:60
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_7bfee784
+UUID: fcfbbdcb_5e22f588
+Bytes: 111
+Can't remember.  Probably left over from development.  I'll remove it and see what the compiler complains about
 
 134:0-137:1
 Wed Mar 19 21:27:48 2014 +0000
@@ -169,12 +329,28 @@ UUID: fccd7da7_f438ad53
 Bytes: 111
 I realize you have the helper to do the null check, but can't the inner loop be a method on FinalRelocationsSet
 
+134:0-137:1
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_f438ad53
+UUID: dcf8b9d4_c6a0648d
+Bytes: 25
+Yeah, probably being lazy
+
 178:17-178:62
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c0da9ba_3bf86f94
 Bytes: 93
 again, not sure I'd make optional. if a caller is passing nullptr, i'd comment it with a TODO
+
+178:17-178:62
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_3bf86f94
+UUID: fcfbbdcb_fe3761c0
+Bytes: 5
+ditto
 
 File: compiler/dex/quick/codegen_util.cc
 
@@ -185,6 +361,14 @@ UUID: 5c0da9ba_1bf5ab9a
 Bytes: 63
 UniquePtr<FinalRelocations> to prevent future accidental leaks.
 
+1014:2-1014:18
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_1bf5ab9a
+UUID: bc33057e_c5ef2c69
+Bytes: 2
+ok
+
 File: compiler/dex/quick/gen_invoke.cc
 
 28:0-28:36
@@ -193,6 +377,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fccd7da7_d42db113
 Bytes: 35
 alpha order (perhaps elsewhere too)
+
+28:0-28:36
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_d42db113
+UUID: dcf8b9d4_667bf04c
+Bytes: 15
+sure (whatever)
 
 File: compiler/dex/quick/mir_to_lir.h
 
@@ -203,6 +395,14 @@ UUID: fccd7da7_944859ee
 Bytes: 23
 what is stored in this?
 
+1246:4-1246:44
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_944859ee
+UUID: fcfbbdcb_fee2c1f3
+Bytes: 77
+I should probably use a struct instead of an encoded uint64_t.  I'll do that.
+
 File: compiler/driver/compiler_driver.cc
 
 1246:4-1246:38
@@ -212,12 +412,28 @@ UUID: 9c13a1db_581c497d
 Bytes: 162
 nit: switch vs if for later? or even better, perhaps this should just call via some interface that is implemented for each architecture to not have a switch here?
 
+1246:4-1246:38
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c13a1db_581c497d
+UUID: fcfbbdcb_9ef18dbd
+Bytes: 2
+ok
+
 1249:8-1249:11
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c0da9ba_fbb417d7
 Bytes: 25
 nit: UNIMPLEMENTED(FATAL)
+
+1249:8-1249:11
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_fbb417d7
+UUID: bc33057e_251618a5
+Bytes: 2
+ok
 
 2134:6-2134:9
 Wed Mar 19 21:27:48 2014 +0000
@@ -235,6 +451,14 @@ UUID: 5c0da9ba_5bc68358
 Bytes: 138
 I thought we'd need more than one table due to current boot.oat code size, or are we under the limit for now ignore other header overhead?
 
+653:0-655:2
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_5bc68358
+UUID: fcfbbdcb_5efb1593
+Bytes: 154
+The comment is wrong.  It's 16MB on thumb.  We dump a table every 15MB so we do need two of them inside boot.oat.  That is taken care of by the oat dumper
+
 File: compiler/oat_writer.cc
 
 436:8-445:11
@@ -244,12 +468,28 @@ UUID: 5c0da9ba_fb9bf761
 Bytes: 138
 maybe this should be in the ARM specific code in ApplyFinalRelocations? or does it need to know the code_size I guess? perhaps pass it in?
 
+436:8-445:11
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_fb9bf761
+UUID: bc33057e_e5d910c4
+Bytes: 53
+It's old code I used in development.  I'll remove it.
+
 911:2-919:9
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fccd7da7_947a99fe
 Bytes: 72
 kIsDebug at least? seems overkill to keep especially since arm specific?
+
+911:2-919:9
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_947a99fe
+UUID: fcfbbdcb_7ec93168
+Bytes: 13
+same as above
 
 1191:2-1191:37
 Wed Mar 19 21:27:48 2014 +0000
@@ -265,6 +505,16 @@ UUID: fccd7da7_54ff6115
 Bytes: 54
 isn't this ARM specific as well, that is a bigger TODO
 
+1191:2-1191:37
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_74f25d4f
+UUID: dcf8b9d4_26c73834
+Bytes: 257
+Yes, it is ARM specific.  I'll find a better place for it (I guess I'll do the TODO).
+
+The max range is 16MB for a thumb2 BL.  I just used 15MB because it's close enough without getting out of range.  It doesn't make any difference to the number of islands.
+
 File: compiler/oat_writer.h
 
 98
@@ -274,6 +524,14 @@ UUID: 5c0da9ba_db8b930b
 Bytes: 7
 Offset?
 
+98
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_db8b930b
+UUID: dcf8b9d4_e6cfe047
+Bytes: 4
+sure
+
 298:2-298:38
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -281,12 +539,28 @@ UUID: 5c0da9ba_9b951b25
 Bytes: 7
 offset_
 
+298:2-298:38
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c0da9ba_9b951b25
+UUID: dcf8b9d4_c6d4e4da
+Bytes: 5
+ditto
+
 299:24-299:43
 Wed Mar 19 21:27:48 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c13a1db_98508124
 Bytes: 27
 trampoline_island_offsets_?
+
+299:24-299:43
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c13a1db_98508124
+UUID: bc33057e_45a0fc0c
+Bytes: 8
+as above
 
 File: disassembler/disassembler_arm.cc
 
@@ -296,4 +570,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fccd7da7_34fce51e
 Bytes: 48
 Instead of comment, perhaps a LOG(WARNING) then?
+
+1183:15-1183:57
+Wed Mar 19 22:01:35 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fccd7da7_34fce51e
+UUID: bc33057e_854844a5
+Bytes: 196
+The problem with that is if we ever generate code that does it, we will spam the log.  Since it's only the disassembler output I'd prefer it just didn't crash.  I'll add a log if you insist though
 

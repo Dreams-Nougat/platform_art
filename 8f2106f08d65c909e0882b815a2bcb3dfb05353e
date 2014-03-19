@@ -1,0 +1,80 @@
+Revision: 8f2106f08d65c909e0882b815a2bcb3dfb05353e
+Patch-set: 1
+File: compiler/dex/quick/arm/call_arm.cc
+
+362:56-362:71
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcca7990_dcd4c1da
+Bytes: 68
+64 bit will be different code
+s/frame_sub/frame_size_without_spills/
+
+381:86-381:87
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7cefcdff_dfddc786
+Bytes: 48
+. Assumes codegen and target are in thumb2 mode.
+
+386:8-386:12
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7cefcdff_9ffe1fd3
+Bytes: 5
+const
+
+387:8-387:14
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cf4c9d0_98b759b7
+Bytes: 5
+const
+
+File: compiler/dex/quick/mips/call_mips.cc
+
+341:6-341:12
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cf4c9d0_b8b21dc7
+Bytes: 5
+const
+
+346:0-346:55
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcca7990_bcc90545
+Bytes: 42
+// TODO: avoid copy for small frame sizes.
+
+File: compiler/dex/quick/x86/call_x86.cc
+
+232:6-232:12
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcca7990_9c09a9c4
+Bytes: 5
+const
+
+234:0-234:0
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcca7990_bc0465aa
+Bytes: 338
+// TODO: for large frames we should do something like:
+// spill ebp
+// lea ebp, [esp + frame_size]
+// cmp ebp, fs:[stack_end_]
+// jcc stack_overflow_exception
+// mov esp, ebp
+// in case a signal comes in that's not using an alternate signal stack and the large frame may have moved us outside of the reserved area at the end of the stack.
+
+File: runtime/thread.h
+
+104:0-104:69
+Wed Mar 19 22:00:36 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcca7990_7cefed99
+Bytes: 28
+describe these two constants
+

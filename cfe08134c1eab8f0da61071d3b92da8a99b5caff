@@ -43,3 +43,11 @@ This defines how many arguments are used in the Quick ABI. As the first argument
 
 For me, the error occurs not in the generic JNI code, but in the quick_invoke_stub, where the arg array is pushed into the registers. The generic JNI code picks up those wrong numbers correctly, itself.
 
+93
+Wed Mar 19 15:52:04 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c13a1db_527d4ac4
+UUID: 9c13a1db_724baea2
+Bytes: 263
+The quick_invoke_stub loads registers x1-x7 and d0-d7. The generic JNI code loads x0 to x7, d0-x7. Yet, the number of registers it uses for its calculations are kNumNativeFprArgs=8 and kNumNativeGprArgs=7. My guess was that disparity was causing alignment issues.
+

@@ -1,0 +1,299 @@
+Revision: ded875a630f9cbacdebda4cba89be5890c7f79ed
+Patch-set: 4
+File: compiler/Android.mk
+
+23:0-24:36
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcfbbdcb_387ab1ce
+Bytes: 43
+should architecture specific files be here?
+
+File: compiler/arch/arm/entrypoint_trampoline.cc
+
+24:4-24:69
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf8b9d4_c3b976cf
+Bytes: 120
+do we want to reuse the assembler like the trampoline_compiler? in fact, isn't this CreateTrampoline(kQuickAbi, offset)?
+
+File: compiler/arch/arm/final_relocations_arm.cc
+
+26:2-26:17
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc33057e_0273ca6e
+Bytes: 14
+island_offset?
+
+27:2-27:26
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf8b9d4_839a5e5b
+Bytes: 95
+const bool, and we usually say kDebugPrint in case its later promoted to be global to the file.
+
+29:7-29:18
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcfbbdcb_93506624
+Bytes: 6
+const?
+
+32:6-36:75
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcfbbdcb_339bf2a7
+Bytes: 129
+I think its cleaner to use the trick Ian showed me with
+
+__attribute__ ((aligned (2)));
+
+see disassembler_arm.cc which does this.
+
+39:23-39:33
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc33057e_62bdf695
+Bytes: 172
+do we care we have constants for these? even if they are just shared between the code generating and the code validating? its easier to grep to see how things wire together
+
+41:9-41:88
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c13a1db_3d550738
+Bytes: 174
+Is there a standard name for this relocation in 
+
+http://infocenter.arm.com/help/topic/com.arm.doc.ihi0044e/IHI0044E_aaelf.pdf
+
+for reference? or are we doing something novel
+
+55:27-55:37
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c13a1db_1d524350
+Bytes: 3
+*MB
+
+File: compiler/arch/arm/final_relocations_arm.h
+
+29:47-29:75
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc33057e_c295e223
+Bytes: 75
+where is this defined? I don't see a new final_entrypoint_relocation_set.h?
+
+File: compiler/compiled_method.cc
+
+19:0-19:23
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_34dbc506
+Bytes: 14
+was this used?
+
+207:0-209:1
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_d40491ab
+Bytes: 55
+shouldn't this be a final_entrypoint_relocation_set.cc?
+
+File: compiler/compiled_method.h
+
+34:0-34:48
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c13a1db_9d3cf3f4
+Bytes: 88
+presumbably for public visibility by default. shouldn't this TODO go on CompilationUnit?
+
+38:0-39:1
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_144d6908
+Bytes: 63
+would there ever be a None? I'm fine having a one element enum.
+
+42:0-42:26
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_1bdecb2c
+Bytes: 119
+class doc to explain what this is briefly
+
+what is final about it? are we going to merge concept in with the PatchInfo?
+
+57:4-57:72
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_db0ef303
+Bytes: 65
+do we need this constructor? should we use a DISALLOW macro here?
+
+67:2-67:46
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_9b087bf7
+Bytes: 64
+are the Relocations immutable? can the vector elements be const?
+
+69:0-69:2
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c13a1db_b8f905ef
+Bytes: 61
+should we have a DISALLOW_ macro here for FinalRelocationSet?
+
+37:0-81:2
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_5bd4430c
+Bytes: 116
+given that the subclasses will be in their own file, I'd probably just put this in its own file too for consistency.
+
+89:15-89:60
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_7bfee784
+Bytes: 112
+why optional? unless there are a lot of callers, seems clear at the call site to show there is something missing
+
+134:0-137:1
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_f438ad53
+Bytes: 111
+I realize you have the helper to do the null check, but can't the inner loop be a method on FinalRelocationsSet
+
+178:17-178:62
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_3bf86f94
+Bytes: 93
+again, not sure I'd make optional. if a caller is passing nullptr, i'd comment it with a TODO
+
+File: compiler/dex/quick/codegen_util.cc
+
+1014:2-1014:18
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_1bf5ab9a
+Bytes: 63
+UniquePtr<FinalRelocations> to prevent future accidental leaks.
+
+File: compiler/dex/quick/gen_invoke.cc
+
+28:0-28:36
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_d42db113
+Bytes: 35
+alpha order (perhaps elsewhere too)
+
+File: compiler/dex/quick/mir_to_lir.h
+
+1246:4-1246:44
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_944859ee
+Bytes: 23
+what is stored in this?
+
+File: compiler/driver/compiler_driver.cc
+
+1246:4-1246:38
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c13a1db_581c497d
+Bytes: 162
+nit: switch vs if for later? or even better, perhaps this should just call via some interface that is implemented for each architecture to not have a switch here?
+
+1249:8-1249:11
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_fbb417d7
+Bytes: 25
+nit: UNIMPLEMENTED(FATAL)
+
+2134:6-2134:9
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_9bc3db49
+Bytes: 20
+UNIMPLEMENTED(FATAL)
+
+File: compiler/driver/compiler_driver.h
+
+653:0-655:2
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_5bc68358
+Bytes: 138
+I thought we'd need more than one table due to current boot.oat code size, or are we under the limit for now ignore other header overhead?
+
+File: compiler/oat_writer.cc
+
+436:8-445:11
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_fb9bf761
+Bytes: 138
+maybe this should be in the ARM specific code in ApplyFinalRelocations? or does it need to know the code_size I guess? perhaps pass it in?
+
+911:2-919:9
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_947a99fe
+Bytes: 72
+kIsDebug at least? seems overkill to keep especially since arm specific?
+
+1191:2-1191:37
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_74f25d4f
+Bytes: 42
+* MB. and didn't I see a -16*MB elsewhere?
+
+1191:40-1191:78
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_54ff6115
+Bytes: 54
+isn't this ARM specific as well, that is a bigger TODO
+
+File: compiler/oat_writer.h
+
+98
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_db8b930b
+Bytes: 7
+Offset?
+
+298:2-298:38
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c0da9ba_9b951b25
+Bytes: 7
+offset_
+
+299:24-299:43
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c13a1db_98508124
+Bytes: 27
+trampoline_island_offsets_?
+
+File: disassembler/disassembler_arm.cc
+
+1183:15-1183:57
+Wed Mar 19 21:27:48 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fccd7da7_34fce51e
+Bytes: 48
+Instead of comment, perhaps a LOG(WARNING) then?
+

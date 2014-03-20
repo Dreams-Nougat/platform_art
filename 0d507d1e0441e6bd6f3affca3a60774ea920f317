@@ -47,3 +47,11 @@ UUID: 9c21e133_ad01b563
 Bytes: 743
 Because signal handlers are user-defined and thus could use an arbitrary amount of stack, we can't guarantee that sigcontext + handler's memory use will fit in 2K.  However, in that event the error would be in the user's signal handler (who probably ought to be using an altstack).  The runtime system, however, does have a responsibility to ensure that there is sufficient space for the OS to drop a sigcontext and at least begin execution of the user's handler.  If the user's handler blows through the stack once it starts running - not our problem.  The choice of 2K is somewhat arbitrary, but is plenty of room for sigcontext plus a simple handler.  It's also large enough that the vast majority of methods will fit in the fast pass case.
 
+400:32-400:33
+Thu Mar 20 16:46:19 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c21e133_ad01b563
+UUID: 9c21e133_68162bd8
+Bytes: 69
+Would a choice of something like PTHREAD_STACK_MIN be less arbitrary?
+

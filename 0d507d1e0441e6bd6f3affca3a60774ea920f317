@@ -32,6 +32,16 @@ UUID: dc26f94e_369896a7
 Bytes: 168
 Sorry the question was too generic. I was also wondering how we handle a call stack of methods that use "small enough" stack space? Or recursive calls on such a method?
 
+399
+Thu Mar 20 17:58:21 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc26f94e_369896a7
+UUID: 7c16eddd_bbad733b
+Bytes: 730
+If a frame is small then we needn't worry about going over the reserved region when it is created, so we manipulate SP directly and check for stack overflows there. This avoids a move in the common path, and a load in the slow path.
+Note this optimization isn't done for MIPS, for Intel we only create frames this way. There are TODOs in this change to capture that we need to optimize MIPS and make x86 robust to the signal issue in the same way that ARM is.
+That said, signals from outside the runtime shouldn't be delivered on Java stacks. The behavior will always be unpredictable - stack sizes vary between ART and Dalvik, and across Android releases. Robust signal handlers are best written to use an alternate signal stack.
+
 400:32-400:33
 Thu Mar 20 10:16:46 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

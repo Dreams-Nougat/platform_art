@@ -42,6 +42,14 @@ If a frame is small then we needn't worry about going over the reserved region w
 Note this optimization isn't done for MIPS, for Intel we only create frames this way. There are TODOs in this change to capture that we need to optimize MIPS and make x86 robust to the signal issue in the same way that ARM is.
 That said, signals from outside the runtime shouldn't be delivered on Java stacks. The behavior will always be unpredictable - stack sizes vary between ART and Dalvik, and across Android releases. Robust signal handlers are best written to use an alternate signal stack.
 
+399
+Thu Mar 20 18:03:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c16eddd_bbad733b
+UUID: dc26f94e_b6dd8655
+Bytes: 207
+But doesn't that just kill the purposes of this optimization? By doing recursive calls on a method that fits that scheme, we'll end up not having the space we thought would be needed for the signal handling.
+
 400:32-400:33
 Thu Mar 20 10:16:46 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

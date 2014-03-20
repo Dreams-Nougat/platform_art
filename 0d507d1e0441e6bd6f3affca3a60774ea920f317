@@ -50,6 +50,14 @@ UUID: dc26f94e_b6dd8655
 Bytes: 207
 But doesn't that just kill the purposes of this optimization? By doing recursive calls on a method that fits that scheme, we'll end up not having the space we thought would be needed for the signal handling.
 
+399
+Thu Mar 20 18:11:53 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc26f94e_b6dd8655
+UUID: dc4d1911_951394e5
+Bytes: 422
+After the optimization, it still does the overflow check, we just have a SP which temporarily may be in the reserved region during the overflow check. We make sure to still have a small amount of space in the reserved region however since a signal could theoretically come in (though very unlikely). Recursive calls are handled since as soon as the SP goes into the reserved region since we get a stack overflow exception.
+
 400:32-400:33
 Thu Mar 20 10:16:46 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

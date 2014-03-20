@@ -23,3 +23,11 @@ UUID: 5c904999_af62f9e7
 Bytes: 88
 I don't understand this comment. What's the relation between "enough space" and signals?
 
+400:32-400:33
+Thu Mar 20 12:17:48 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c904999_af62f9e7
+UUID: dc4d1911_af01a163
+Bytes: 343
+The point of this is to ensure that the thread's stack has sufficient space to allow the OS to drop down a sigcontext in the event a signal happens to arrive.  In the large frame case above, unless we move to using an altstack for signal delivery we can't be sure the stack will be valid so SP must be tested for overflow before being updated.
+

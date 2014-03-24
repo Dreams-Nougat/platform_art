@@ -9,3 +9,18 @@ UUID: 3cf3951c_a4a3e64e
 Bytes: 177
 it was unclear to me from reading strerror that this was safe. what if ReadFileToString uses strerror? the doc stays the string may be modified by a subsequent call to strerror.
 
+200:4-200:41
+Mon Mar 24 17:10:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf3951c_a4a3e64e
+UUID: bcdf857e_2e1b2c5b
+Bytes: 535
+You are right, we should move the strerror below for safety. Though my reading of the manual is that you must call strerror to change the value (just setting errno is not enough):
+
+The string pointed to shall not be modified by the application, but may be overwritten by a subsequent call to strerror()
+
+I can't find an occurrence of that in ReadFileToString or called functions.
+
+
+Ian asked me to do this change before posting his bug. He wanted const char* to avoid the memory allocation of std::string. That's why I changed your PS.
+

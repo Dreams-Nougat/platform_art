@@ -24,3 +24,15 @@ I can't find an occurrence of that in ReadFileToString or called functions.
 
 Ian asked me to do this change before posting his bug. He wanted const char* to avoid the memory allocation of std::string. That's why I changed your PS.
 
+200:4-200:41
+Mon Mar 24 17:14:31 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcdf857e_2e1b2c5b
+UUID: 1cf0910e_43613a6b
+Bytes: 441
+we can't move the strerror down, we want to preserve the value from the mmmap syscall.
+
+my point is, we shouldn't assume what ReadFileToString does. it could change later and no one would think to come back here.
+
+he wanted to remove the std::string in the common case. its only in the error case now. I tried to change to const char* too, but felt it was not safe given the significant code that runs between the mmap and the error logging.
+

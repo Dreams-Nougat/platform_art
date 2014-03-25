@@ -9,12 +9,28 @@ UUID: 3c3d559f_91843e8d
 Bytes: 65
 This was removed because callback will update the field, correct?
 
+77
+Tue Mar 25 19:58:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c3d559f_91843e8d
+UUID: 3c78f56e_9ca8ed5e
+Bytes: 3
+Yes
+
 99:4-99:10
 Tue Mar 25 19:23:55 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c3d559f_11992eef
 Bytes: 12
 Why removed?
+
+99
+Tue Mar 25 19:58:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c3d559f_11992eef
+UUID: dc6ef9af_3975279d
+Bytes: 155
+I dislike null DCHECKs when you will get a segfault + stack trace if the object is null. It adds code and slows debug builds without providing real benefit
 
 File: runtime/gc/collector/semi_space.cc
 
@@ -25,6 +41,14 @@ UUID: 3c78f56e_19f5cf35
 Bytes: 37
 Why is this not initialized any more?
 
+101
+Tue Mar 25 19:58:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c78f56e_19f5cf35
+UUID: 3c78f56e_1ce4ddc2
+Bytes: 131
+There are a lot of things we initialize in InitializePhase which weren't in the constructor before. I just made it more consistent.
+
 271:4-271:42
 Tue Mar 25 19:23:55 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,10 +56,26 @@ UUID: 3c78f56e_d9019763
 Bytes: 187
 Why is this DCHECK removed? This is the whole point of this verify-only class. The DumpObject() call in the above if statement is there so that when the DCHECK fails we can see more info.
 
+271
+Tue Mar 25 19:58:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c78f56e_d9019763
+UUID: 3c3d559f_f4e7304f
+Bytes: 55
+Just added a log fatal in the if statement, sound good?
+
 278:2-278:8
 Tue Mar 25 19:23:55 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c3d559f_9110be37
 Bytes: 28
 Why was this DCHECK removed?
+
+278
+Tue Mar 25 19:58:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c3d559f_9110be37
+UUID: 3c3d559f_94ffccd2
+Bytes: 30
+Same as comment in other file.
 

@@ -32,6 +32,16 @@ UUID: dc6ef9af_3975279d
 Bytes: 155
 I dislike null DCHECKs when you will get a segfault + stack trace if the object is null. It adds code and slows debug builds without providing real benefit
 
+99
+Tue Mar 25 20:34:13 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc6ef9af_3975279d
+UUID: 1c23318f_a5381e53
+Bytes: 391
+Will a segfault give us the stack trace, but a DCHECK does not? If it's the case, maybe a DCHECK failure should cause a stack trace to be printed?
+
+I think that a benefit might be assertion/invariant documentation. And, if the distance from DCHECK to the segfault point is far, then diagnosis may be quicker on a DCHECK failure than a segfault where obj may be passed around among functions.
+
 File: runtime/gc/collector/semi_space.cc
 
 101:6-101:35
@@ -63,6 +73,14 @@ Parent: 3c78f56e_d9019763
 UUID: 3c3d559f_f4e7304f
 Bytes: 55
 Just added a log fatal in the if statement, sound good?
+
+271
+Tue Mar 25 20:34:13 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c3d559f_f4e7304f
+UUID: fc1f3d43_844c060e
+Bytes: 4
+Yes.
 
 278:2-278:8
 Tue Mar 25 19:23:55 2014 +0000

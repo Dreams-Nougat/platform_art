@@ -1,0 +1,45 @@
+Revision: 407f702da4f867c074fc3c8c688b8f8c32279eff
+Patch-set: 3
+File: runtime/gc/collector/semi_space.cc
+
+580:58-580:65
+Tue Mar 25 19:23:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c3d559f_1125ae8f
+Bytes: 132
+This was changed from Object to HeapReference so that the MarkObject() now updates the field (with the forwarding address), correct?
+
+634:7-634:10
+Tue Mar 25 19:23:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c3d559f_f1ce6249
+Bytes: 796
+I see the need to convert from Object* to HeapReference, but it seems not ideal to have a HeapReference on the stack because it's not a heap reference (a reference in the heap) and because if a read barrier might trigger here, a bad thing may happen (though this is specific to the semi-space collector which does not have a read barrier.)
+
+How about changing the argument type of MarkObject() from HeapReference to ObjectReference and using ObjectReference here()? Since ObjectReference is a super class of HeapReference, MarkObject() would work for both ObjectReference and HeapReference?
+
+Alternatively, Is it possible to get rid of MarkObjectCallback() as it appears the only remaining use is for ProcessReferences() which does not seem to have a problem with using MarkHeapReferenceCallback?
+
+646:7-646:10
+Tue Mar 25 19:23:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc6ef9af_b642267e
+Bytes: 88
+Similar comment as above. How about using ObjectReference here instead of HeapReference?
+
+File: runtime/gc/heap.cc
+
+1309:9-1309:41
+Tue Mar 25 19:23:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc6ef9af_9609aaff
+Bytes: 54
+nit: This comment should be Object::VisitReferences()?
+
+1919:68-1919:74
+Tue Mar 25 19:23:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c3d559f_519bb6a5
+Bytes: 14
+nit: is_static
+

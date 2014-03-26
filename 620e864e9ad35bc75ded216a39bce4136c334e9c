@@ -1,0 +1,77 @@
+Revision: 620e864e9ad35bc75ded216a39bce4136c334e9c
+Patch-set: 1
+File: build/Android.common.mk
+
+138:0-138:37
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99157331_993ffb33
+Bytes: 113
+you define this, but then just use TARGET_2ND_ARCH below. seems like it is fine to just use the original variable
+
+139:0-139:16
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_ba1071d9
+Bytes: 97
+MK reads as .mk related to me, what does it mean? is there a better term? it seems to be 64 vs 32
+
+File: build/Android.gtest.mk
+
+119:0-126:20
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99157331_59a3a350
+Bytes: 164
+i thought we didn't indent the target definitions themselves, I thought there were issues with it. I guess the commands are not indent more than with the usual tab.
+
+182:0-184:1
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_9a0dadc3
+Bytes: 115
+I'd probably just define the versions with the suffixes in .common.mk as ART_MODULE_PATH_32 and ART_MODULE_PATH_64?
+
+195:8-195:66
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99157331_39a8ef28
+Bytes: 115
+ah, here is the use. I think I might call it ART_PHONY_TEST_TARGET_SUFFIX or something equally verbose but clearer?
+
+225:0-228:0
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_7a4c190c
+Bytes: 7
+remove?
+
+File: build/Android.libarttest.mk
+
+54:0-55:50
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99157331_19ad2b39
+Bytes: 22
+and use them here too.
+
+File: build/Android.oat.mk
+
+56:7-56:32
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_5a5155a0
+Bytes: 68
+the convention is to use - not _ in these names for whatever reason.
+
+File: test/Android.mk
+
+85:0-99:35
+Wed Mar 26 05:06:50 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_3a56a19a
+Bytes: 201
+add a TODO?
+
+wangying had a better idea that all this define stuff which is hard to debug. he suggests just using .mk files that are included. not necessarily for this change, but it might life easier.
+

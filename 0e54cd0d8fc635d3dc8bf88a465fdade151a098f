@@ -9,6 +9,14 @@ UUID: 1c23318f_a4e2d7f2
 Bytes: 233
 Related question: Does this class ever remove references from the reference cache? If not, I wonder if the cache gets very large over time as different references are written to the image space, in particular with a moving collector?
 
+29
+Wed Mar 26 18:35:18 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c23318f_a4e2d7f2
+UUID: 1c23318f_4478434e
+Bytes: 83
+The references associated with a card are recomputed each time the card is dirtied.
+
 35:7-35:19
 Tue Mar 25 20:17:08 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,6 +26,14 @@ Is ShouldAddReference a better name?
 
 Is this equivalent to "return !space_->HasAddress(ref)" without needing to loop over the spaces?
 
+35
+Wed Mar 26 18:35:18 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc435932_0bb01dd5
+UUID: 590f7b24_3abc5d4b
+Bytes: 126
+Nice catch, it is equivalent to !GetHeap()->GetImageSpace()->HasAddress(). This won't work with multiple image spaces however.
+
 File: runtime/gc/collector/immune_region.h
 
 70:18-70:22
@@ -26,4 +42,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c3721c3_69de052e
 Bytes: 110
 This is fine. Future note: if end_ is dropped (and just size_ is used), then there's no need for UpdateSize()?
+
+70
+Wed Mar 26 18:35:18 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c3721c3_69de052e
+UUID: 392487a3_39bc6b4b
+Bytes: 108
+I considered doing that, but decided against it since it would have complicated the AddContinuousSpace code.
 

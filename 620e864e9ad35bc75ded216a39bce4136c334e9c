@@ -9,6 +9,14 @@ UUID: 99157331_993ffb33
 Bytes: 113
 you define this, but then just use TARGET_2ND_ARCH below. seems like it is fine to just use the original variable
 
+138:0-138:37
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99157331_993ffb33
+UUID: 1c23318f_3a1365e7
+Bytes: 124
+It is used later, and just here to make it more conforming with other standards of forming the name of the secondary target.
+
 139:0-139:16
 Wed Mar 26 05:06:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +33,30 @@ UUID: 99157331_59a3a350
 Bytes: 164
 i thought we didn't indent the target definitions themselves, I thought there were issues with it. I guess the commands are not indent more than with the usual tab.
 
+119:0-126:20
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99157331_59a3a350
+UUID: 1c23318f_5a1021d8
+Bytes: 14
+Will be fixed.
+
 182:0-184:1
 Wed Mar 26 05:06:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b910773f_9a0dadc3
 Bytes: 115
 I'd probably just define the versions with the suffixes in .common.mk as ART_MODULE_PATH_32 and ART_MODULE_PATH_64?
+
+182:0-184:1
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b910773f_9a0dadc3
+UUID: fc1f3d43_59e10fe9
+Bytes: 287
+They have different values depending on what we build. It's either the nativetest or the art-test directory. So this was to not have too many ART_ variables.
+
+I also need to ask Colin for the exact semantics of LOCAL_MODULE_PATH_{32,64}, and talk to you and Anwar about what our goal is.
 
 195:8-195:66
 Wed Mar 26 05:06:50 2014 +0000
@@ -39,12 +65,28 @@ UUID: 99157331_39a8ef28
 Bytes: 115
 ah, here is the use. I think I might call it ART_PHONY_TEST_TARGET_SUFFIX or something equally verbose but clearer?
 
+195:8-195:66
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99157331_39a8ef28
+UUID: dc1c3954_78c4052d
+Bytes: 139
+Yes, it's there to make the rules unique for the different targets. I was opting for something short because the lines become awfully long.
+
 225:0-228:0
 Wed Mar 26 05:06:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b910773f_7a4c190c
 Bytes: 7
 remove?
+
+225:0-228:0
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b910773f_7a4c190c
+UUID: fc1f3d43_59f82f95
+Bytes: 4
+Yes.
 
 File: build/Android.libarttest.mk
 
@@ -55,6 +97,14 @@ UUID: 99157331_19ad2b39
 Bytes: 22
 and use them here too.
 
+54:0-55:50
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99157331_19ad2b39
+UUID: dc1c3954_d8c97944
+Bytes: 16
+Different paths.
+
 File: build/Android.oat.mk
 
 56:7-56:32
@@ -63,6 +113,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b910773f_5a5155a0
 Bytes: 68
 the convention is to use - not _ in these names for whatever reason.
+
+56:7-56:32
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b910773f_5a5155a0
+UUID: 1c23318f_ba383553
+Bytes: 14
+Will fix that.
 
 File: test/Android.mk
 
@@ -74,4 +132,14 @@ Bytes: 201
 add a TODO?
 
 wangying had a better idea that all this define stuff which is hard to debug. he suggests just using .mk files that are included. not necessarily for this change, but it might life easier.
+
+85:0-99:35
+Wed Mar 26 14:47:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b910773f_3a56a19a
+UUID: fc1f3d43_99b467d7
+Bytes: 470
+The reason that this is commented out is that the BUILD_JAVA_LIBRARY mk files is not like the SHARED_LIBRARY mk file, as building Java libraries is principally target-independent. So using the same code, no matter inline or included, will give warnings that targets are being overwritten.
+
+I elected to copy the jars to have two complete "test trees." Another solution could be to have just one copy in the system and make the different targets refer to the single copy.
 

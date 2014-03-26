@@ -9,12 +9,28 @@ UUID: bcdf857e_c856034a
 Bytes: 51
 Why the 'if', since they both take the same action?
 
+42
+Wed Mar 26 11:20:31 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcdf857e_c856034a
+UUID: f904af03_9c96c57b
+Bytes: 36
+You are right, it is redundant code.
+
 93
 Fri Mar 21 12:24:47 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c5e35d0_8f905d35
 Bytes: 63
 replace switch by calculation?  Can we assume XMM7 == XMM0 + 7?
+
+93
+Wed Mar 26 11:20:31 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c5e35d0_8f905d35
+UUID: 99ec937b_01c24a75
+Bytes: 54
+Will change this switch to XMM0+itr_float_and_doubles_
 
 File: compiler/utils/x86_64/assembler_x86_64.cc
 
@@ -25,6 +41,14 @@ UUID: 3c5e35d0_6f78814e
 Bytes: 15
 remove comment?
 
+1731
+Wed Mar 26 11:20:31 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c5e35d0_6f78814e
+UUID: 19f8a337_dda7abcf
+Bytes: 4
+Done
+
 File: compiler/utils/x86_64/assembler_x86_64.h
 
 0
@@ -33,6 +57,18 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcdf857e_e865c729
 Bytes: 82
 Would it have made sense to derive from the X86 version?  Is there any code reuse?
+
+0
+Wed Mar 26 11:20:31 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcdf857e_e865c729
+UUID: f904af03_3c3331d7
+Bytes: 302
+The X86_64 assembler is based on X86 assembler code + REX support and x86_64 calling convention fixes.
+
+X86 version belongs to x86 namespace, it operates on x86:ManagedRegister and does not have access to x86_64 register constants (e.g. R8..R15).
+
+Thus deriving from X86 assembler looks not reasonable.
 
 2
 Fri Mar 21 12:24:47 2014 +0000
@@ -49,4 +85,12 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcdf857e_484b13a2
 Bytes: 13
 fix filename?
+
+28
+Wed Mar 26 11:20:31 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcdf857e_484b13a2
+UUID: 19f8a337_7d39b7b4
+Bytes: 164
+There is no x86.cc in art project now and it is not clear what should be synced. It seems the comment is obsolete in this file, as well as in managed_register_x86.h
 

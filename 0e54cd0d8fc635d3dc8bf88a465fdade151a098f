@@ -17,6 +17,14 @@ UUID: 1c23318f_4478434e
 Bytes: 83
 The references associated with a card are recomputed each time the card is dirtied.
 
+29
+Wed Mar 26 18:56:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c23318f_4478434e
+UUID: 392487a3_dce8c520
+Bytes: 251
+Are you sure? :) Does ModUnionTableReferenceCache::references_ get elements *removed* from it ever (I see only references_->push_back() or ->Put())? And, it looks like we don't recreate the mod union table object or the references_ map at each gc. No?
+
 35:7-35:19
 Tue Mar 25 20:17:08 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,6 +41,14 @@ Parent: dc435932_0bb01dd5
 UUID: 590f7b24_3abc5d4b
 Bytes: 126
 Nice catch, it is equivalent to !GetHeap()->GetImageSpace()->HasAddress(). This won't work with multiple image spaces however.
+
+35
+Wed Mar 26 18:56:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 590f7b24_3abc5d4b
+UUID: 1c23318f_44cbe3e8
+Bytes: 189
+As the mod union table object has a reference to its space (ModUnionTable::space_), it's self-contained, that is, we don't need to refer back to Heap or assume there's only one image space.
 
 File: runtime/gc/collector/immune_region.h
 

@@ -9,6 +9,14 @@ UUID: b910773f_a32a885b
 Bytes: 174
 Is there a risk that the amount of dead objects that's not subject to sticky collections may grow too large as long as the app allocates enough new dead (short-team) objects?
 
+13
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b910773f_a32a885b
+UUID: b935d7d3_158616bb
+Bytes: 182
+I think you are right, there is a theoretical case which could cause continuous sticky GC to occur if the throughput remains >= partial/full. I'll add some logic to handle that case.
+
 File: runtime/base/timing_logger.h
 
 63:2-63:8
@@ -18,12 +26,28 @@ UUID: 99157331_c29b3813
 Bytes: 57
 Should uint64_t be better as since it's time, not a size?
 
+63
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99157331_c29b3813
+UUID: f91d8f5d_29ad3539
+Bytes: 4
+Done
+
 72:2-72:8
 Thu Mar 27 21:23:41 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39fba735_e7f09047
 Bytes: 57
 Should uint64_t be better as since it's time, not a size?
+
+72
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39fba735_e7f09047
+UUID: b935d7d3_d5776e15
+Bytes: 4
+Done
 
 File: runtime/gc/collector/garbage_collector.cc
 
@@ -34,12 +58,28 @@ UUID: 99157331_829e6009
 Bytes: 9
 brackets?
 
+190
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99157331_829e6009
+UUID: b935d7d3_150976c0
+Bytes: 4
+Done
+
 195:9-195:28
 Thu Mar 27 21:02:22 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b910773f_03c25475
 Bytes: 8
 and here
+
+195
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b910773f_03c25475
+UUID: f91d8f5d_89a8c95c
+Bytes: 4
+Done
 
 File: runtime/gc/collector/garbage_collector.h
 
@@ -50,6 +90,14 @@ UUID: 39fba735_c7fd941d
 Bytes: 24
 Do we need two of these?
 
+71
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39fba735_c7fd941d
+UUID: b935d7d3_d5f08e47
+Bytes: 26
+Deleted the non const one.
+
 File: runtime/gc/heap.cc
 
 2501:0-2509:5
@@ -59,10 +107,26 @@ UUID: b935d7d3_950d66c3
 Bytes: 62
 This portion optionally could be factored out into a function?
 
+2509
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b935d7d3_950d66c3
+UUID: 590f7b24_ead16a0d
+Bytes: 4
+Done
+
 2515:22-2515:48
 Thu Mar 27 21:23:41 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39fba735_4703c46b
 Bytes: 147
 Is this already available as "gc_type" without calling it again? Or just use collector::kGcTypeSticky as a constant as the else block implies that?
+
+2515
+Thu Mar 27 21:54:54 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39fba735_4703c46b
+UUID: b935d7d3_156cd61b
+Bytes: 44
+I'll just put collector::kGcTypeSticky back.
 

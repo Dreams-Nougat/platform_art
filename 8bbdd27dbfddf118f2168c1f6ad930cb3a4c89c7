@@ -1,5 +1,30 @@
 Revision: 8bbdd27dbfddf118f2168c1f6ad930cb3a4c89c7
 Patch-set: 2
+File: /COMMIT_MSG
+
+10:57-13:16
+Thu Mar 27 21:23:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_a32a885b
+Bytes: 174
+Is there a risk that the amount of dead objects that's not subject to sticky collections may grow too large as long as the app allocates enough new dead (short-team) objects?
+
+File: runtime/base/timing_logger.h
+
+63:2-63:8
+Thu Mar 27 21:23:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99157331_c29b3813
+Bytes: 57
+Should uint64_t be better as since it's time, not a size?
+
+72:2-72:8
+Thu Mar 27 21:23:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39fba735_e7f09047
+Bytes: 57
+Should uint64_t be better as since it's time, not a size?
+
 File: runtime/gc/collector/garbage_collector.cc
 
 190:9-190:34
@@ -15,4 +40,29 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b910773f_03c25475
 Bytes: 8
 and here
+
+File: runtime/gc/collector/garbage_collector.h
+
+71:20-71:40
+Thu Mar 27 21:23:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39fba735_c7fd941d
+Bytes: 24
+Do we need two of these?
+
+File: runtime/gc/heap.cc
+
+2501:0-2509:5
+Thu Mar 27 21:23:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b935d7d3_950d66c3
+Bytes: 62
+This portion optionally could be factored out into a function?
+
+2515:22-2515:48
+Thu Mar 27 21:23:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39fba735_4703c46b
+Bytes: 147
+Is this already available as "gc_type" without calling it again? Or just use collector::kGcTypeSticky as a constant as the else block implies that?
 

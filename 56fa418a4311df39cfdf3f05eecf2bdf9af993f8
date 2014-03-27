@@ -1,5 +1,30 @@
 Revision: 56fa418a4311df39cfdf3f05eecf2bdf9af993f8
 Patch-set: 2
+File: compiler/jni/quick/calling_convention.cc
+
+196:50-196:66
+Thu Mar 27 21:30:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 590f7b24_af7ca496
+Bytes: 236
+This one should be sizeof(uint32_t), the size of number_of_references_, to decouple it from the size of StackReference. Maybe introduce another method SirtReferencesOffset() to abstract and have all the SIRT offset logic close together?
+
+File: compiler/jni/quick/calling_convention.h
+
+70:43-70:44
+Thu Mar 27 21:30:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91d8f5d_ae502b48
+Bytes: 47
+Size of StackReference as an expression, maybe?
+
+82:7-83:8
+Thu Mar 27 21:30:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91d8f5d_4e399702
+Bytes: 29
+"else if" or a switch, maybe?
+
 File: compiler/jni/quick/x86_64/calling_convention_x86_64.cc
 
 42
@@ -31,6 +56,27 @@ Parent: 3c5e35d0_8f905d35
 UUID: 99ec937b_01c24a75
 Bytes: 54
 Will change this switch to XMM0+itr_float_and_doubles_
+
+125:0-132:2
+Thu Mar 27 21:30:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91d8f5d_6958cd4c
+Bytes: 6
+Cruft?
+
+158:21-158:58
+Thu Mar 27 21:30:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 590f7b24_0ffcb087
+Bytes: 91
+Use kSirtPointerSize (add to JniCallingConvention)? Will change the expression structure...
+
+168:0-181:2
+Thu Mar 27 21:30:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91d8f5d_a96f05cd
+Bytes: 6
+Cruft?
 
 File: compiler/utils/x86_64/assembler_x86_64.cc
 
@@ -76,6 +122,15 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c5e35d0_0f854df1
 Bytes: 9
 fix date?
+
+File: compiler/utils/x86_64/assembler_x86_64_test.cc
+
+23:0-30:1
+Thu Mar 27 21:30:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91d8f5d_09bcb998
+Bytes: 233
+The REX prefixes make the assembler quite a bit more complicated. I think we should have more/better tests here that actually compare against some hand-encoded sequences. But it would be OK with me to merge without the tests for now.
 
 File: compiler/utils/x86_64/managed_register_x86_64.h
 

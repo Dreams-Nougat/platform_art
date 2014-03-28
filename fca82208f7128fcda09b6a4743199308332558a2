@@ -1,0 +1,20 @@
+Revision: fca82208f7128fcda09b6a4743199308332558a2
+Patch-set: 3
+File: compiler/jni/quick/calling_convention.h
+
+302:23-303:39
+Fri Mar 28 17:44:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b935d7d3_7910b81d
+Bytes: 231
+I'll accept for now. But please change StackIndirectReferenceTable to have an Offset method similar to the ones before. If we change the layout of the SIRT class once again, this code will break and people won't notice immediately.
+
+File: compiler/jni/quick/x86_64/calling_convention_x86_64.cc
+
+143:21-143:88
+Fri Mar 28 17:44:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7958bf41_ab27f5c6
+Bytes: 182
+I'll accept for now, but you should investigate: There is actually SizeOf in the SIRT class. But there are issues when cross-compiling (though those issues also exist for this code).
+

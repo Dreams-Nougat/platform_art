@@ -9,10 +9,26 @@ UUID: 1926e3b5_d0cb02e6
 Bytes: 209
 We should switch this to be the slow path, the gain from being inline is marginal and the code expansion imo not worth it. The slow path handles both recursion and quick path locking without going into C code.
 
+180:0-180:69
+Fri Mar 28 23:20:08 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1926e3b5_d0cb02e6
+UUID: f94bcf71_58d3ad4a
+Bytes: 12
+Separate CL.
+
 243:17-243:31
 Fri Mar 28 22:24:49 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1926e3b5_b0c876ea
+Bytes: 5
+ditto
+
+243:17-243:31
+Fri Mar 28 23:20:08 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1926e3b5_b0c876ea
+UUID: f94bcf71_18dd3553
 Bytes: 5
 ditto
 
@@ -26,6 +42,16 @@ Bytes: 154
 why not 'ldr.w r12,[sp, #-16384]' ?
 Note r12 is used for a hidden argument during imt resolution. This is ok as stack overflow checks occur post dispatch.
 
+169:0-170:21
+Fri Mar 28 23:20:08 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1926e3b5_90c57ad4
+UUID: d948cb7a_972a145c
+Bytes: 196
+Because thumb2 has no instruction for an ldr with a negative immediate offset.  You have to use an mvn instruction, or a movw/movt pair to put the offset into a register.
+
+R12 is safe to use here.
+
 File: runtime/stack.cc
 
 37:0-37:38
@@ -34,6 +60,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1926e3b5_508952a1
 Bytes: 117
 can you follow the pattern from runtime to actually allocate a proper object? See the resolution method allocation...
+
+37:0-37:38
+Fri Mar 28 23:20:08 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1926e3b5_508952a1
+UUID: d948cb7a_573edc9e
+Bytes: 18
+I'll look into it.
 
 File: runtime/stack.h
 
@@ -44,6 +78,14 @@ UUID: 1926e3b5_10daaab3
 Bytes: 68
 Can you make this not a mirror type as its breaking heap invariants.
 
+109:22-109:23
+Fri Mar 28 23:20:08 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1926e3b5_10daaab3
+UUID: 194fc37f_54101a1d
+Bytes: 179
+Does this not conflict with your desire to allocate a proper object for it?  I started out with a hardcoded constant address but thought it would be safer to use a static address.
+
 File: runtime/thread.cc
 
 257:0-257:53
@@ -52,4 +94,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1926e3b5_f0cefef7
 Bytes: 30
 this will add to footprint :-/
+
+257:0-257:53
+Fri Mar 28 23:20:08 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1926e3b5_f0cefef7
+UUID: d948cb7a_77e2f8f6
+Bytes: 195
+Yeah, but no choice.  You have to get the kernel to map the pages before you can mprotect them.  It only affects the main stack, so an overall footprint increase of 32K per process.  Not too bad.
 

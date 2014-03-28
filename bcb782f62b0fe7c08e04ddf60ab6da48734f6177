@@ -9,6 +9,14 @@ UUID: f94bcf71_84a1c6bb
 Bytes: 41
 Same comment as the one in semi_space.cc.
 
+1379
+Fri Mar 28 18:35:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f94bcf71_84a1c6bb
+UUID: f94bcf71_c4457ed5
+Bytes: 106
+AddLogger now does Start/End internally, I just fixed a location in frontend.cc which still did Start/End.
+
 File: runtime/gc/collector/semi_space.cc
 
 768:22-768:27
@@ -17,6 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 194fc37f_659da655
 Bytes: 111
 The pair of Start/End() calls are removed when this code is moved to garbage_collector.cc. Is this as intended?
+
+768
+Fri Mar 28 18:35:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 194fc37f_659da655
+UUID: f94bcf71_843f8633
+Bytes: 29
+Same comment as mark_sweep.cc
 
 File: runtime/gc/collector/semi_space.h
 
@@ -27,6 +43,14 @@ UUID: 194fc37f_85fae221
 Bytes: 26
 This was dead code, right?
 
+192
+Fri Mar 28 18:35:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 194fc37f_85fae221
+UUID: f94bcf71_44a3ce50
+Bytes: 3
+Yes
+
 File: runtime/gc/collector/sticky_mark_sweep.h
 
 51:7-51:28
@@ -35,4 +59,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99157331_e81a9b80
 Bytes: 388
 To confirm, this empty overriding UpdateAndMarkModUnion() was here because the sticky collection didn't need to call the parent's UpdateAndMarkModUnion(). But now, as he call site was moved from MarkingPhase() to MarkReachableObjects() which this class already overrides with a function that does not call UpdateAndMarkModUnion() (and hence no longer needs to empty-override it), correct?
+
+51
+Fri Mar 28 18:35:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99157331_e81a9b80
+UUID: f94bcf71_e4919af7
+Bytes: 98
+Yes, we now call UpdateAndMarkModUnion from MarkReachableObjects which is overridden by sticky GC.
 

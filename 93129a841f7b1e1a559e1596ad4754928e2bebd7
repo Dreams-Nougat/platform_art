@@ -1,0 +1,67 @@
+Revision: 93129a841f7b1e1a559e1596ad4754928e2bebd7
+Patch-set: 4
+File: runtime/gc/accounting/mod_union_table.cc
+
+79:59-79:65
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_eefbc78f
+Bytes: 25
+Should this be is_static?
+
+File: runtime/gc/collector/garbage_collector.cc
+
+151:43-151:47
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39fba735_4d864555
+Bytes: 5
+many?
+
+File: runtime/gc/collector/mark_sweep.cc
+
+1339:2-1339:41
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d948cb7a_a3cb9a8d
+Bytes: 55
+This comment should go with the CHECK now in line 1360.
+
+1362:2-1362:17
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b910773f_ee5f47d0
+Bytes: 139
+It looks like a lack of this locking in the previous code. Does that indicate a lack of proper locking (a potential race condition) before?
+
+File: runtime/gc/collector/semi_space.cc
+
+778:2-778:17
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 194fc37f_e51cf6c7
+Bytes: 41
+Same comment as the one in mark_sweep.cc.
+
+File: runtime/gc/collector/semi_space.h
+
+31:6-31:10
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f94bcf71_c4ea1e87
+Bytes: 75
+Not sure, but should this be in the "namespace gc { ... }" instead of here?
+
+File: runtime/gc/heap.cc
+
+2828:8-2828:45
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f94bcf71_240452aa
+Bytes: 336
+At this point, bound bit maps are already unbound, except for the image space which has permanently bound bit maps (or that it only has one bit map shared as live and mark bit map). So, this condition is equivalent to 
+
+   space->GetGcRetentionPolicy() != space::kGcRetentionPolicyNeverCollect
+
+in the old version of this code. Correct?
+

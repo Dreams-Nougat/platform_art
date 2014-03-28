@@ -1,0 +1,38 @@
+Revision: bcb782f62b0fe7c08e04ddf60ab6da48734f6177
+Base-for-patch-set: 4
+File: runtime/gc/collector/mark_sweep.cc
+
+1379:22-1379:27
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f94bcf71_84a1c6bb
+Bytes: 41
+Same comment as the one in semi_space.cc.
+
+File: runtime/gc/collector/semi_space.cc
+
+768:22-768:27
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 194fc37f_659da655
+Bytes: 111
+The pair of Start/End() calls are removed when this code is moved to garbage_collector.cc. Is this as intended?
+
+File: runtime/gc/collector/semi_space.h
+
+192:7-192:24
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 194fc37f_85fae221
+Bytes: 26
+This was dead code, right?
+
+File: runtime/gc/collector/sticky_mark_sweep.h
+
+51:7-51:28
+Fri Mar 28 18:15:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99157331_e81a9b80
+Bytes: 388
+To confirm, this empty overriding UpdateAndMarkModUnion() was here because the sticky collection didn't need to call the parent's UpdateAndMarkModUnion(). But now, as he call site was moved from MarkingPhase() to MarkReachableObjects() which this class already overrides with a function that does not call UpdateAndMarkModUnion() (and hence no longer needs to empty-override it), correct?
+

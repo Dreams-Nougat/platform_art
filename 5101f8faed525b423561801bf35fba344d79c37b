@@ -1,0 +1,55 @@
+Revision: 5101f8faed525b423561801bf35fba344d79c37b
+Patch-set: 2
+File: compiler/dex/quick/arm/call_arm.cc
+
+180:0-180:69
+Fri Mar 28 22:24:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1926e3b5_d0cb02e6
+Bytes: 209
+We should switch this to be the slow path, the gain from being inline is marginal and the code expansion imo not worth it. The slow path handles both recursion and quick path locking without going into C code.
+
+243:17-243:31
+Fri Mar 28 22:24:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1926e3b5_b0c876ea
+Bytes: 5
+ditto
+
+File: runtime/arch/arm/fault_handler_arm.cc
+
+169:0-170:21
+Fri Mar 28 22:24:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1926e3b5_90c57ad4
+Bytes: 154
+why not 'ldr.w r12,[sp, #-16384]' ?
+Note r12 is used for a hidden argument during imt resolution. This is ok as stack overflow checks occur post dispatch.
+
+File: runtime/stack.cc
+
+37:0-37:38
+Fri Mar 28 22:24:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1926e3b5_508952a1
+Bytes: 117
+can you follow the pattern from runtime to actually allocate a proper object? See the resolution method allocation...
+
+File: runtime/stack.h
+
+109:22-109:23
+Fri Mar 28 22:24:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1926e3b5_10daaab3
+Bytes: 68
+Can you make this not a mirror type as its breaking heap invariants.
+
+File: runtime/thread.cc
+
+257:0-257:53
+Fri Mar 28 22:24:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1926e3b5_f0cefef7
+Bytes: 30
+this will add to footprint :-/
+

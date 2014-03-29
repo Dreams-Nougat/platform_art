@@ -17,6 +17,14 @@ UUID: f94bcf71_58d3ad4a
 Bytes: 12
 Separate CL.
 
+180:0-180:69
+Sat Mar 29 00:30:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f94bcf71_58d3ad4a
+UUID: d948cb7a_575b7c71
+Bytes: 502
+Ian, if I remember correctly, when you proposed doing this last year the tests showed measurable/significant performance degradation on at least some popular devices - which is why we didn't do it then.  Has something changed?  (or perhaps my memory isn't correct).  In any event, I agree with Dave that this should be taken up in a separate CL with new measurements to judge the cost/benefit.  I'd be thrilled if we could push this code out-of-line, provided there was no significant performance loss.
+
 243:17-243:31
 Fri Mar 28 22:24:49 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +39,22 @@ Parent: 1926e3b5_b0c876ea
 UUID: f94bcf71_18dd3553
 Bytes: 5
 ditto
+
+415
+Sat Mar 29 00:30:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d948cb7a_12e75254
+Bytes: 566
+What's the size of the overflow reserve?  In the previous code, we used a 2 operand sub form, which allows for a large immediate.  I don't have an ARM manual in front of me, but reg/reg/imm doesn't allow nearly as large an immediate - which could mean OpRegRegImm would try to allocate a temp register at this point.  Thinking about it though, I vaguely recall a special sub reg immediate form if the reg is SP.   Anyway, worth reviewing temp register requirements at this point in the code if you can't afford another temp register to be allocated behind your back.
+
+File: compiler/dex/quick/gen_invoke.cc
+
+819
+Sat Mar 29 00:30:14 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 194fc37f_1f0abbed
+Bytes: 20
+leftover debug code?
 
 File: runtime/arch/arm/fault_handler_arm.cc
 

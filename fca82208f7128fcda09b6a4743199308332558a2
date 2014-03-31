@@ -9,6 +9,14 @@ UUID: b935d7d3_7910b81d
 Bytes: 231
 I'll accept for now. But please change StackIndirectReferenceTable to have an Offset method similar to the ones before. If we change the layout of the SIRT class once again, this code will break and people won't notice immediately.
 
+303
+Mon Mar 31 02:42:53 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b935d7d3_7910b81d
+UUID: 99ec937b_b5f2b80a
+Bytes: 63
+I'll upload this enhancement as a separate patch set this week.
+
 File: compiler/jni/quick/x86_64/calling_convention_x86_64.cc
 
 143:21-143:88
@@ -17,4 +25,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7958bf41_ab27f5c6
 Bytes: 182
 I'll accept for now, but you should investigate: There is actually SizeOf in the SIRT class. But there are issues when cross-compiling (though those issues also exist for this code).
+
+143
+Mon Mar 31 02:42:53 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7958bf41_ab27f5c6
+UUID: 19f8a337_b196487b
+Bytes: 150
+Do you think the following expression acceptable?
+
+size_t sirt_size = sizeof(StackIndirectReferenceTable) + (ReferenceCount() - 1) * kSirtPointerSize;
 

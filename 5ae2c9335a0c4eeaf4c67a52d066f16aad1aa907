@@ -11,6 +11,14 @@ Presumably, the new logic avoid excessive/repeated sticky GCs because the next G
 
 Another way to view this may be that with the new code AllocateWithGc() now honors the next_gc_type_ set at the last GC, which it didn't?
 
+12
+Mon Mar 31 18:00:48 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 199423fe_5d6ffb84
+UUID: f9a02f5c_bcac011a
+Bytes: 198
+Yes that is the reason, previously we would keep doing sticky until it did not free enough memory. This meant that the last few sticky GC would only free a handful of bytes, and this is inefficient.
+
 File: runtime/gc/heap.cc
 
 1160:2-1160:11
@@ -19,4 +27,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9a02f5c_1ccbb53b
 Bytes: 88
 A short comment on what this code intends to do (including the following gc_plan_ loop)?
+
+1160
+Mon Mar 31 18:00:48 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9a02f5c_1ccbb53b
+UUID: f94bcf71_816f6d84
+Bytes: 22
+Will do in another CL.
 

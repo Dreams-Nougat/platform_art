@@ -9,6 +9,14 @@ UUID: 5944db56_7e2add95
 Bytes: 38
 Is it as intended to remove this call?
 
+178
+Mon Mar 31 22:20:51 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5944db56_7e2add95
+UUID: f94bcf71_4160551a
+Bytes: 152
+It is no longer necessary since we can't have anything in the allocation which points to previously freed objects since we swap the stacks in the pause.
+
 307:37-307:53
 Mon Mar 31 18:31:13 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: 199423fe_a09934ad
 Bytes: 166
 To confirm, now that we delayed the stack swap from the thread checkpoint at the beginning of the mark phase to the pause, we don't need this code/technique, correct?
 
+307
+Mon Mar 31 22:20:51 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 199423fe_a09934ad
+UUID: 79db5f06_5665a4f3
+Bytes: 93
+Yes the objects which would have previously unmarked are eligible to reclaimed this GC cycle.
+
 1056:14-1056:46
 Mon Mar 31 18:31:13 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5944db56_9ef2210b
 Bytes: 133
 To confirm: now that we revoke thread-local allocation stacks during the pause, doing it here would be unnecessary and hence removed.
+
+1056
+Mon Mar 31 22:20:51 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5944db56_9ef2210b
+UUID: 79db5f06_766a28c5
+Bytes: 3
+Yes
 

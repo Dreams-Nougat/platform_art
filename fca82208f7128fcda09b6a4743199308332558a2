@@ -36,3 +36,17 @@ Do you think the following expression acceptable?
 
 size_t sirt_size = sizeof(StackIndirectReferenceTable) + (ReferenceCount() - 1) * kSirtPointerSize;
 
+143
+Mon Mar 31 15:08:55 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19f8a337_b196487b
+UUID: f94bcf71_4e4d248d
+Bytes: 612
+That does not improve the current expression.
+
+The issue is with cross-compiling, that is, compiling for 64b on 32b or the reverse. Then sizeof and OFFSETOF_MEMBER compute offsets for the "host" layout, while they should compute for the target.
+
+We do not have a good story yet on how to solve this issue without too much code duplication or flags. Ideas are welcome.
+
+What I meant with the comment: Sirt::SizeOf(num_entries) is supposed to compute the Sirt size for the given number of entries, so you don't need this compound expression at all. However, that function has the same limitation as outlined above.
+

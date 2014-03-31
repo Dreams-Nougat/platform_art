@@ -55,6 +55,20 @@ UUID: d948cb7a_12e75254
 Bytes: 566
 What's the size of the overflow reserve?  In the previous code, we used a 2 operand sub form, which allows for a large immediate.  I don't have an ARM manual in front of me, but reg/reg/imm doesn't allow nearly as large an immediate - which could mean OpRegRegImm would try to allocate a temp register at this point.  Thinking about it though, I vaguely recall a special sub reg immediate form if the reg is SP.   Anyway, worth reviewing temp register requirements at this point in the code if you can't afford another temp register to be allocated behind your back.
 
+415
+Mon Mar 31 21:35:18 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d948cb7a_12e75254
+UUID: 79db5f06_f3d2aa21
+Bytes: 422
+It's 16K.  The ARM instruction sequence is:
+sub r12,sp,#16384
+ldr.w r12,[r12,#0]
+
+Those are both 4 byte instructions due to the use of r12.  Thumb doesn't have a ldr.w r12,[sp,#-16384] or anything negative so this seems to be the best sequence I could find.
+
+The offset is constant so there will never be a register allocated unless someone goes and changes it.  I'll add a comment to that effect in the code as a warning.
+
 File: compiler/dex/quick/gen_invoke.cc
 
 819
@@ -63,6 +77,14 @@ Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 194fc37f_1f0abbed
 Bytes: 20
 leftover debug code?
+
+819
+Mon Mar 31 21:35:18 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 194fc37f_1f0abbed
+UUID: b9d157e4_f5761262
+Bytes: 19
+Indeed, I'll remove
 
 File: runtime/arch/arm/fault_handler_arm.cc
 
@@ -142,4 +164,14 @@ Parent: d948cb7a_77e2f8f6
 UUID: 3929e785_d7e89620
 Bytes: 33
 Could we madvise the memory away?
+
+257:0-257:53
+Mon Mar 31 21:35:18 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3929e785_d7e89620
+UUID: 39ae4766_c6bb22a1
+Bytes: 299
+It's on the main stack only.  There's no point in doing that because the process will exit.
+
+However, I just though of something.  We don't really need to touch the memory for non-main-stack threads.  I know in the caller if the stack is the main stack so I can only do the memset if it is the main.
 

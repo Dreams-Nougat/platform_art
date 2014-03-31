@@ -33,6 +33,14 @@ UUID: f9a02f5c_3fe78354
 Bytes: 279
 measurable, yes, significant it was around the noise margin on a single benchmark. The issue that's relevant here is that Dave is optimizing a code path we should probably have just deleted for code expansion reasons. Note we don't have this code path on anything other than ARM.
 
+180:0-180:69
+Mon Mar 31 21:58:28 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9a02f5c_3fe78354
+UUID: 39ae4766_867a0acb
+Bytes: 124
+Not optimizing it, just making it work.  We can move it to a slow path later but I wanted to get it into a good state first.
+
 243:17-243:31
 Fri Mar 28 22:24:49 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -122,6 +130,14 @@ Parent: 1926e3b5_508952a1
 UUID: d948cb7a_573edc9e
 Bytes: 18
 I'll look into it.
+
+37:0-37:38
+Mon Mar 31 21:58:28 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d948cb7a_573edc9e
+UUID: b9d157e4_b53f2a33
+Bytes: 258
+On second thoughts, I think it's better just make this into a void* and not worry about allocating a real object.  It removes any future difficulties with moving objects, and whatever else we come up with.  Best not to have a fake object in the heap I think.
 
 File: runtime/stack.h
 

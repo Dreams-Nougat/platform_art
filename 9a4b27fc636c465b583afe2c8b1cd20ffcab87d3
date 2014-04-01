@@ -1,0 +1,36 @@
+Revision: 9a4b27fc636c465b583afe2c8b1cd20ffcab87d3
+Patch-set: 3
+File: runtime/fault_handler.cc
+
+96:2-96:71
+Tue Apr 01 00:31:03 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d157e4_e678a697
+Bytes: 80
+This code is always reachable. Do you mean returning in the above if statements?
+
+206:24-206:29
+Tue Apr 01 00:31:03 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d157e4_a6a4decb
+Bytes: 145
+We have already crashed here and might not want a nested DCHECK failure, but would it be any valuable if we do DCHECK(frame->IsArtMethod()) here?
+
+File: runtime/fault_handler.h
+
+99:6-99:23
+Tue Apr 01 00:31:03 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19ab4358_c51d5a7b
+Bytes: 88
+Would "JavaStackTraceHandler" be a better name to disambiguate it from the native stack?
+
+File: runtime/runtime.cc
+
+530:46-531:28
+Tue Apr 01 00:31:03 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39ae4766_2fad2939
+Bytes: 154
+This comment says that the null check handler must be the last. But it looks like the new handler comes last now. Reorder the list or update this comment?
+

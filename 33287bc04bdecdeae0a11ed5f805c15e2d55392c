@@ -1,0 +1,32 @@
+Revision: 33287bc04bdecdeae0a11ed5f805c15e2d55392c
+Patch-set: 1
+File: runtime/mirror/class.h
+
+1021:0-1021:17
+Tue Apr 01 07:31:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19ab4358_eed2b321
+Bytes: 61
+no padding now implies Class is a multiple of 8 bytes in size
+
+File: runtime/mirror/string.h
+
+165:0-165:17
+Tue Apr 01 07:31:13 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19ab4358_2e0a0bee
+Bytes: 429
+From class_linker.cc:
+
+line 3921:
+    // First come reference fields, then 64-bit, and finally 32-bit
+
+line 3997:
+  // Now we want to pack all of the double-wide fields together.  If
+  // we're not aligned, though, we want to shuffle one 32-bit field
+  // into place.  If we can't find one, we'll have to pad it.
+
+So I believe the layout here is:
+
+ASCII_ then CASE_INSENSITIVE_ORDER_ then serialVersionUID_ then REPLACEMENT_CHAR_
+

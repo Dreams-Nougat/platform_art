@@ -9,3 +9,11 @@ UUID: d9cb6b3b_d4e432c7
 Bytes: 88
 Curious - what was broken? It's not obvious to me what this change changes the behavior.
 
+7
+Wed Apr 02 19:00:21 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9cb6b3b_d4e432c7
+UUID: 79399f00_d491fcf7
+Bytes: 261
+Dlmalloc was using Runtime::Current()->GetHeap()->RunningOnValgrind(). But GetHeap is null until after we finish initialization. So I changed it to use Runtime::RunningOnValgrind(). The code worked for RosAlloc since RosAlloc doesn't support valgrind currently.
+

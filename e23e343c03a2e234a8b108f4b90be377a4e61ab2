@@ -1,0 +1,82 @@
+Revision: e23e343c03a2e234a8b108f4b90be377a4e61ab2
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+63:10-63:40
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9628b23_f3aa5065
+Bytes: 147
+I suggest UpdateMaximumNumberOfVRegs since CodeItem.outs_size_ is a number of Dalvik out vregs. IIRC, it counts 2 vregs for a long/double argument.
+
+214:8-217:39
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9902d340_915f7cd1
+Bytes: 261
+Do LoadLocal and HPushArgument handle long/double arguments as register pair ? If you don't handle them for now, it'd be worth adding check of the method signature to avoid compiling if there are long or double arguments (and let the Quick compiler do the job).
+
+File: compiler/optimizing/code_generator.h
+
+199:2-199:5
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9628b23_336fa886
+Bytes: 6
+size_t
+
+201:18-201:21
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9902d340_11ad4c6b
+Bytes: 6
+size_t
+
+201:37-201:62
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9902d340_51b7d4b8
+Bytes: 90
+It'd be worth to add a DCHECK to verify index is valid. It helps when this case happens :)
+
+File: compiler/optimizing/code_generator_arm.cc
+
+41:40-41:41
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19698306_55096cbf
+Bytes: 92
+Use a constant? We could then sync GenerateFrameEntry and GenerateFrameExit and avoid error.
+
+211:2-211:5
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9902d340_b1e440c6
+Bytes: 7
+uint8_t
+
+File: compiler/optimizing/code_generator_x86.cc
+
+42:42-42:43
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9628b23_b3629897
+Bytes: 46
+Same comment than InstructionCodeGeneratorARM.
+
+214:2-214:5
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9902d340_91e13cb6
+Bytes: 7
+uint8_t
+
+File: runtime/utils.h
+
+75:8-75:25
+Thu Apr 03 13:30:33 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9902d340_d1dbc401
+Bytes: 91
+There is already a macro arraysize in runtime/base/macros.h. You can probably use this one.
+

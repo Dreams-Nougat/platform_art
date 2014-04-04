@@ -1,0 +1,15 @@
+Revision: e3e7a44322bcb43f09b22eb4a1786e99c97a4643
+Patch-set: 3
+File: compiler/dex/quick/arm/arm_lir.h
+
+275:53-275:55
+Fri Apr 04 21:44:08 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39764713_4cd55384
+Bytes: 515
+I believe we can go up to d31 following this change. There will need to be changes to:
+Runtime::CreateCalleeSaveMethod - change the fp spill mask there to be doubles rather than singles
+ArmContext::FillCalleeSaves - fprs_ should be 64bit and the loop over kNumberOfDRegisters rather than SRegisters
+SETUP_SAVE_ALL_CALLEE_SAVE_FRAME - should vpush double rather than single registers for callee saves for the exception throw long jump
+art_quick_do_long_jump - the vldm should load double rather than single registers
+

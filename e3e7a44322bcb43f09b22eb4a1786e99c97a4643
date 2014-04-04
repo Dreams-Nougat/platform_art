@@ -13,3 +13,15 @@ ArmContext::FillCalleeSaves - fprs_ should be 64bit and the loop over kNumberOfD
 SETUP_SAVE_ALL_CALLEE_SAVE_FRAME - should vpush double rather than single registers for callee saves for the exception throw long jump
 art_quick_do_long_jump - the vldm should load double rather than single registers
 
+275:53-275:55
+Fri Apr 04 22:24:42 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39764713_4cd55384
+UUID: 39c80775_b100e71e
+Bytes: 907
+Yes - I'll probably wait until the next CL for that (this one has once again gotten way too big).  There's another thing that will also need to change: the width of the def/use LIR flags.  There isn't space for 16 new resources (which is also why we currently only use half of MIPS floating point registers).
+
+Another benefit of this move is that we'll be able to promote overlapping doubles.  With the old rule that every double consisted of a pair of singles, we could not promote pairs v7/v8 *and* v8/v9 within the same method because the single v8 could not appear in two distinct promoted register pairs.  Once we start treating paired Dalvik virtual register uses as distinct from single uses, we can do this (with the special tag bit in the register map that we discussed a few weeks (months?) ago).
+
+But, for this CL I'll likely try to just keep everything working with doubles allocated as doubles.
+

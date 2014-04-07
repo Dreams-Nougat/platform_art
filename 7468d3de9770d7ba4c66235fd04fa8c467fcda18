@@ -32,6 +32,16 @@ UUID: f96f4f39_5e1df5f2
 Bytes: 116
 Is there any reason that would be necessary? In the GC, we don't use the runtime shutdown lock when we do the pause.
 
+920
+Mon Apr 07 21:26:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f96f4f39_5e1df5f2
+UUID: 59a69bd4_8ea6033c
+Bytes: 649
+Probably no, in this case, as a thread that's created during this pause wouldn't be interacting with a monitor before the pause ends. As I recall that there have been some SuspendAll() calls where the runtime shutdown lock had to be locked as well, I'm being paranoid. When I see a SuspendAll() call, I tend to start thinking whether a newly created thread would cause a corner case race condition bug.
+
+(As a side note, I think it's worth considering the idea of locking the runtime shutdown lock between SuspendAll() and ResumeAll() as we most likely don't want to shut down while all the threads are suspended, which makes this less error-prone.)
+
 924:2-924:6
 Mon Apr 07 18:04:38 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>

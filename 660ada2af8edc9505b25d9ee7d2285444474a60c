@@ -1,0 +1,19 @@
+Revision: 660ada2af8edc9505b25d9ee7d2285444474a60c
+Patch-set: 1
+File: runtime/reflection.cc
+
+245:0-245:55
+Mon Apr 07 15:25:25 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f96f4f39_386a11c4
+Bytes: 280
+I agree this is a bug, nice catch!
+Creating std::strings could be a significant performance regression (looking forward to libc++), check with libcore's ReflectionBench. With a std::string the StringPiece is unnecessary, so switch to just using 'const std::string src_descriptor'.
+
+746:19-746:20
+Mon Apr 07 15:25:25 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59a69bd4_5f4aeb44
+Bytes: 32
+similarly, avoid the StringPiece
+

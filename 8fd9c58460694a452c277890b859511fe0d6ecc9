@@ -9,12 +9,30 @@ UUID: 99873329_affb1d90
 Bytes: 89
 What's the purpose of HNot? Why not having a HNotEqual node instead of HNot(HEqual) node?
 
+96:48-96:52
+Mon Apr 07 15:00:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99873329_affb1d90
+UUID: 797c3ff1_2e10131d
+Bytes: 354
+Dex has "not" as a proper instruction (not-int, not-long, ...), so at first sight, it makes sense to think about sharing it with the if-ne instruction.
+
+But this will really be dependent on how we write optimization/code generator for HNot like instructions. If it turns out it's easier to have a HNotEqual instruction, I wouldn't mind adding a new node.
+
 100:2-100:8
 Mon Apr 07 14:51:01 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9823717_90d59c0d
 Bytes: 82
 I think it's worth to use CHECK here, especially when using dex2oat, not dex2oatd.
+
+100:2-100:8
+Mon Apr 07 15:00:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9823717_90d59c0d
+UUID: b9823717_50bec4b5
+Bytes: 157
+At this point, I expect the verifier to have checked that already. For such cases, I prefer using DCHECK and not pollute the "production" runtime with CHECK.
 
 103:2-103:8
 Mon Apr 07 14:51:01 2014 +0000
@@ -31,4 +49,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9823717_3010701d
 Bytes: 94
 Is there a risk this is simplified by a Java compiler so we do not test what we expect we do ?
+
+46:8-46:20
+Mon Apr 07 15:00:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9823717_3010701d
+UUID: b9823717_30a23095
+Bytes: 158
+Good point, I was too naive in thinking the Java compiler does not do any kind of optimization. It actually does some constant folding. I'll rewrite the test.
 

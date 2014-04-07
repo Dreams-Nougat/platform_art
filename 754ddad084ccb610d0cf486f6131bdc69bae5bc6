@@ -9,6 +9,14 @@ UUID: 59a69bd4_b9e6af54
 Bytes: 301
 Dave, I believe the MIPS assert is caused passing an InvalidReg() to CallHelper. It looks like both Arm and X86 have specialized versions of CallHelper() which can handle an InvalidReg() as a base, but MIPS will get the default one - which will always try to do an OpReg() using the incoming register.
 
+958
+Mon Apr 07 21:45:01 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59a69bd4_b9e6af54
+UUID: f9966f57_92783c97
+Bytes: 305
+Ah yes, I see.  The r_tgt register is not used by X86 at all and not used by ARM when we are generating helper trampolines.  However MIPS is using it.  Thanks.  I'll deal with it in the MIPS case.  We will eventually want to handle these trampolines in MIPS anyway so having a CallHelper in there is good.
+
 File: compiler/driver/compiler_driver.cc
 
 1259

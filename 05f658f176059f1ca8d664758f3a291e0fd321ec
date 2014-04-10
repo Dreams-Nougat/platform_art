@@ -9,6 +9,14 @@ UUID: f9502fa6_8544c868
 Bytes: 148
 "Clean up" as "Refactor" would imply no behavior changes? Or, making "CMS as the pre-fork collector" as the main CL description, with other cleanup?
 
+7
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9502fa6_8544c868
+UUID: 996f3376_a9ac3d3d
+Bytes: 4
+Done
+
 11:49-11:52
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,6 +31,14 @@ UUID: f9fbcfcb_99dc0758
 Bytes: 35
 This seems to point to a wrong bug.
 
+21
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9fbcfcb_99dc0758
+UUID: 195b43e2_45c24a77
+Bytes: 17
+Copy paste error.
+
 File: runtime/gc/heap.cc
 
 169:4-169:30
@@ -35,6 +51,14 @@ background_collector_type_ defaults to post_zygote_collector_type_ (at the botto
 Not that background GC means anything right now for the command line case, maybe it's a tiny bit more general if we don't overwrite background_collector_type_ here? Or, if we want to overwrite it, would it be cleaner if we complain/exit at the flag/option parsing time if background_collector_type_ != post_zygote_collector_type_ and a command line case (!is_zygote)?
 
 This is a subtle point.
+
+169
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9fbcfcb_59d32f27
+UUID: 996f3376_c394ea29
+Bytes: 252
+The main problem I was getting is that one of the run tests was failing if background compaction was enabled due to incorrectly putting non movable objects in the non-moving space. This was caused by only having 1 free list space (non moving rosalloc).
 
 171:18-171:41
 Thu Apr 10 00:02:18 2014 +0000
@@ -54,6 +78,22 @@ Shouldn't this be always CMS if zygote case (is_zygote == true)? I assume this c
 
 For the command line case (is_zygote == false), this is correct as desired_collector_type_ == post_zygote_collector_type_.
 
+171
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9502fa6_05a2f894
+UUID: d9544bb3_437b2603
+Bytes: 151
+Currently we just use the post zygote collector pre zygote. Maybe I'll rename this to be foreground_collector_ since its used both pre and post zygote.
+
+171
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9502fa6_a596a437
+UUID: 996f3376_52444535
+Bytes: 107
+No, this change just uses the post zygote collector pre zygote. I renamed it to foreground_collector_type_.
+
 196:32-196:44
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -61,12 +101,28 @@ UUID: 39d4872d_42143f9b
 Bytes: 291
 I think this should specify the base address (pass non_moving_space_->Limit() instead of nullptr as the second argument) so that this comes right after the non-moving space with no gap. Otherwise, the immune region thing may subtly break (eg a LOS object could be allocated between the gap).
 
+196
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39d4872d_42143f9b
+UUID: 79027fbc_ac8abb05
+Bytes: 125
+Can we be sure that there wont be something else at that memory address? I can try I guess. The space bitmaps could be there.
+
 213:46-213:96
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39d4872d_2284a38b
 Bytes: 169
 This could be more precise, I think. The background compaction is not the only reason/case. What if post_zygote_collector_type_ is a compacting one? The code looks fine.
+
+213
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39d4872d_2284a38b
+UUID: f97e6f24_f34bfff2
+Bytes: 16
+Updated comment.
 
 221:49-221:51
 Thu Apr 10 00:02:18 2014 +0000
@@ -77,12 +133,28 @@ Could we combine the two if statement so that we need to check IsCompactingGC(po
 
 This seems to imply that we hardcode CMS as pre-fork collector (that is, no SS as pre-fork) as otherwise we would need two bump pointer spaces. Correct?
 
+221
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 793d1f4c_a0853a48
+UUID: 996f3376_52cf6569
+Bytes: 116
+Pre fork now uses the foreground collector as well as post fork. This should be handled by creating both the spaces.
+
 1416:8-1416:19
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9921f333_1ff9eb97
 Bytes: 51
 Which space does temp_space point to at this point?
+
+1416
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9921f333_1ff9eb97
+UUID: 79027fbc_2ce22bb9
+Bytes: 60
+It should contain the old bump pointer space. Added comment.
 
 1419:41-1419:61
 Thu Apr 10 00:02:18 2014 +0000
@@ -99,6 +171,14 @@ The ashmem names would probably sometimes look wrong as they are not updatable.
 
 Also, not that a transition currently works for GSS, but GSS uses the three spaces at the same time. This change would make it harder to add support for that.
 
+1419
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39d4872d_c264cf2f
+UUID: 79027fbc_0c564799
+Bytes: 89
+Agreed about the ashmem names, GSS still works since the non moving space is still there.
+
 1437:16-1437:23
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -108,12 +188,28 @@ Is this guaranteed to be the mem map that used to be the main space when we tran
 
 At the minimum, if we do this, as the enforcing gapless immune region is error-prone, do you mind adding an assert that checks that whatever is put into the immune region is actually contiguous (gapless)?
 
+1437
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9502fa6_25f61402
+UUID: f97e6f24_b6eb25ce
+Bytes: 204
+Good point, this would break if we were to ever make the main space immune. Fortunately, this doesn't currently happen. Do you think its worth changing to logic to have all 3 spaces live at the same time?
+
 1438:43-1438:56
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 793d1f4c_402b0e62
 Bytes: 56
 Is there a reason that kDefaultInitialSize doesn't work?
+
+1438
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 793d1f4c_402b0e62
+UUID: 79027fbc_aca2bb4a
+Bytes: 4
+Done
 
 1447:8-1447:37
 Thu Apr 10 00:02:18 2014 +0000
@@ -122,12 +218,28 @@ UUID: 39d4872d_a41b2085
 Bytes: 203
 Also, shouldn't temp_space be updated to point to the the mem map that bump_pointer_space_ points to here? Otherwise, I'm not sure what temp_space_ points to  in the CMS->SS transition (line 1416) above?
 
+1447
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39d4872d_a41b2085
+UUID: 79027fbc_0ca80729
+Bytes: 88
+The SS collector swaps the spaces, I plan on refactoring this out of the collector soon.
+
 1642:34-1642:41
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d94d2b11_644d005b
 Bytes: 23
 Is this call necessary?
+
+1642
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d94d2b11_644d005b
+UUID: f97e6f24_93a39b2c
+Bytes: 113
+In DlMalloc the space is set to PROT_NONE at the start. If we start writing past the end, we will get a segfault.
 
 1656:23-1656:46
 Thu Apr 10 00:02:18 2014 +0000
@@ -140,12 +252,28 @@ If so, isn't the pre-fork collector always CMS (is the true block of this if sta
 
 Can you remind where desired_collector_type_ is set? Isn't desired_collector_type_ set to the post_zygote_collector_type_ in Heap::Heap()?
 
+1656
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9921f333_390c0f54
+UUID: f97e6f24_13e00b63
+Bytes: 168
+I just use the foreground collector pre-fork now. It could be SS or CMS based on what the foreground_collector_type_ is. Nice catch, I changed it to be collector_type_.
+
 1673:37-1673:43
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9921f333_99b0bb0a
 Bytes: 24
 Use kDefaultInitialSize?
+
+1673
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9921f333_99b0bb0a
+UUID: 996f3376_b2a7c15a
+Bytes: 4
+Done
 
 2469:9-2470:55
 Thu Apr 10 00:02:18 2014 +0000
@@ -155,4 +283,12 @@ Bytes: 192
 What if background_collector_type_ == SS and post_zygote_collector_type_ == SS?
 
 What if background_collector_type_ == GSS and post_zygote_collector_type_ == GSS? Note GSS uses the main space.
+
+2470
+Thu Apr 10 21:04:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9921f333_dc08618a
+UUID: f97e6f24_5670c1ab
+Bytes: 225
+Copying into a non moving space is OK just not copying out of. Currently the main space is only ever copied out of during background compaction, which only occurs iff there is a transition from MS/CMS -> SS/GSS or visa versa.
 

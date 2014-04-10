@@ -9,10 +9,28 @@ UUID: 996f3376_5847896d
 Bytes: 37
 Is this guaranteed to be at offset 0?
 
+117
+Thu Apr 10 16:59:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 996f3376_5847896d
+UUID: 996f3376_187351bb
+Bytes: 393
+I don't know for sure, but I think it is. The problem is that I don't see another way for cross-compiling but to assume the layout the compiler uses.
+
+But that's why there is a host and target test now. Check stack_indirect_reference_table_test.cc. It creates a SIRT with some constants, and then tries to access with the offsets. It succeeds for ARM, x86, and x86-64, so I think it's correct.
+
 127
 Thu Apr 10 16:49:11 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79027fbc_fb2e2b0d
 Bytes: 21
 Any alignment issues?
+
+127
+Thu Apr 10 16:59:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79027fbc_fb2e2b0d
+UUID: 996f3376_78a84d9f
+Bytes: 252
+Same answer as above. The test can read the value out of references[0] correctly. Now if gcc/clang makes this an unaligned load, then I guess there are alignment issues. But it shows the offset is correct and we would have problems in the JNI compiler.
 

@@ -94,6 +94,16 @@ UUID: 996f3376_52444535
 Bytes: 107
 No, this change just uses the post zygote collector pre zygote. I renamed it to foreground_collector_type_.
 
+171
+Fri Apr 11 18:09:19 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9544bb3_437b2603
+UUID: 996f3376_fccd08a8
+Bytes: 386
+OK. My misunderstanding. Instead of hardcoding CMS as the pre-zygote-fork collector, we are hardcoding to use the same collector both pre-zygote-fork and post-zygote-fork (and calling it the foreground collector) while we use the SS collector to do the one-time compaction at the zygote fork time.
+
+This implies we could still use SS or GSS as the foreground collector as well, correct?
+
 196:32-196:44
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -108,6 +118,20 @@ Parent: 39d4872d_42143f9b
 UUID: 79027fbc_ac8abb05
 Bytes: 125
 Can we be sure that there wont be something else at that memory address? I can try I guess. The space bitmaps could be there.
+
+196
+Fri Apr 11 18:09:19 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79027fbc_ac8abb05
+UUID: 99b2d35a_3733a025
+Bytes: 610
+Based on our in-person discussions, the plan is 
+
+1) keep the non-moving space 64 mb instead of size 'capacity' like before.
+
+2) have the non-moving space at the lower address and the main space at the higher address, like it's coded in this CL.
+
+3) allocate a single mem-map for the non-moving space (future zygote) and the main space in one call at base address 'requested_alloc_space_begin' and split them so that all non-moving image, zygote, non-moving, and main spaces are all gapless (eg GSS makes the main and the non-moving spaces immune and immune region would work if we keep them gapless/adjacent).
 
 213:46-213:96
 Thu Apr 10 00:02:18 2014 +0000
@@ -179,6 +203,14 @@ UUID: 79027fbc_0c564799
 Bytes: 89
 Agreed about the ashmem names, GSS still works since the non moving space is still there.
 
+1419
+Fri Apr 11 18:09:19 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79027fbc_0c564799
+UUID: d9a7eb21_cbeef56c
+Bytes: 139
+GSS needs the main space for the transition to work (or else movable/non-movable objects would be mixed up and a transition wouldn't work.)
+
 1437:16-1437:23
 Thu Apr 10 00:02:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -195,6 +227,14 @@ Parent: f9502fa6_25f61402
 UUID: f97e6f24_b6eb25ce
 Bytes: 204
 Good point, this would break if we were to ever make the main space immune. Fortunately, this doesn't currently happen. Do you think its worth changing to logic to have all 3 spaces live at the same time?
+
+1437
+Fri Apr 11 18:09:19 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f97e6f24_b6eb25ce
+UUID: 99b2d35a_ba6495f9
+Bytes: 41
+Based on our discussion, let's keep them.
 
 1438:43-1438:56
 Thu Apr 10 00:02:18 2014 +0000

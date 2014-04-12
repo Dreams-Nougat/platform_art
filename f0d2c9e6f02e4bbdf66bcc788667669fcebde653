@@ -1,5 +1,14 @@
 Revision: f0d2c9e6f02e4bbdf66bcc788667669fcebde653
 Patch-set: 3
+File: compiler/dex/quick/gen_common.cc
+
+1996
+Sat Apr 12 00:55:39 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9a7eb21_65144a9c
+Bytes: 380
+Let's not use the suffix "Pair" here.  If you need to distinguish this from a 32-bit div zero check, use "Wide" instead.  On 32-bit systems, we use a pair of registers to hold a long - but on a 64-bit system it will be a single register.   With very little change, I believe this routine can be used for both 32 & 64 bit systems, so let's try to avoid using 32-bit specific names.
+
 File: compiler/dex/quick/mir_to_lir.h
 
 566:9-566:24

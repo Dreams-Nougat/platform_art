@@ -1,0 +1,238 @@
+Revision: 5a8eecdb3fc21ac8cc8a77caacf4d0d7a1144ac8
+Patch-set: 1
+File: compiler/optimizing/builder.cc
+
+76:8-76:57
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_25ccfafd
+Bytes: 95
+In the future we'll need to do this for double too. I suggest adding a TODO so we don't forget.
+
+269:26-269:76
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_85c986f0
+Bytes: 133
+The correct test is "instruction.Opcode() != Instruction::INVOKE_STATIC && instruction.Opcode() != Instruction::INVOKE_STATIC_RANGE".
+
+295:57-295:83
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_65c602e0
+Bytes: 209
+Why checking that? I don't see such check in the verifier, the quick compiler or the interpreter. By convention, args[i] contains the low reg of a reg pair. We only skip args[i + 1] as you do some lines below.
+
+303:8-303:41
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_047636aa
+Bytes: 51
+Add a TODO to not forget kPrimDouble in the future.
+
+362:22-362:33
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_44702eac
+Bytes: 112
+Why not moving it to BuildReturn with a special case for kPrimVoid. The return logic would be at the same place.
+
+496:22-496:38
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_a4cda2a9
+Bytes: 47
+What about MOVE_RESULT and MOVE_RESULT_OBJECT ?
+
+File: compiler/optimizing/code_generator.h
+
+79:7-79:14
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_a5880aa0
+Bytes: 94
+Is it really useful since we have isInvalid? I suggest only keep IsValid and remove isInvalid.
+
+98:4-99:44
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_a443e683
+Bytes: 17
+Split in 2 DCHECK
+
+153:14-153:22
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_85a22616
+Bytes: 17
+const Location& ?
+
+169:2-169:6
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_e59212cc
+Bytes: 60
+Why using "enum"? Could you use "static constexpr" instead ?
+
+File: compiler/optimizing/code_generator_arm.cc
+
+104:30-104:38
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_8414e62a
+Bytes: 17
+const Location& ?
+
+125:30-125:38
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_a55aca6b
+Bytes: 17
+const Location& ?
+
+168:31-168:73
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_04bf56de
+Bytes: 97
+I suggest moving this to a dedicated function (GetHighStackIndex ?) so the logic is in one place.
+
+191:55-191:63
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_4715c459
+Bytes: 17
+const Location& ?
+
+220:8-220:14
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_e4b03a0b
+Bytes: 171
+Do we load/store boolean, byte, char and short as integer ? I mean, do we always generate code using ldr/str instructions only or do we support ldrb/strb, ldrh/strh, ... ?
+
+391:6-391:47
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_c700b423
+Bytes: 23
+Dump the type for info.
+
+414:8-414:49
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_24ab729e
+Bytes: 23
+Dump the type for info.
+
+453:6-453:49
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_04a8f69d
+Bytes: 23
+Dump the type for info.
+
+540:4-540:12
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_44a2eebf
+Bytes: 137
+Maybe we should make a difference between types we do not expect (boolean, byte, ...) and types we do not support yet (float and double).
+
+541:6-541:36
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_64a56ac6
+Bytes: 23
+Dump the type for info.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+108:30-108:38
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_c41ede46
+Bytes: 17
+const Location& ?
+
+130:30-130:38
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_27123873
+Bytes: 17
+const Location& ?
+
+190:55-190:63
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_870fcc49
+Bytes: 17
+const Location& ?
+
+File: runtime/utils.h
+
+432:14-432:22
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_8554e63d
+Bytes: 7
+IsValid
+
+437:15-437:19
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_04211684
+Bytes: 4
+Mask
+
+443:15-443:28
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_642e0a74
+Bytes: 11
+MaskInPlace
+
+449:13-449:18
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_6551e24b
+Bytes: 5
+Shift
+
+454:13-454:20
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9c3cfc8_442b0e62
+Bytes: 7
+BitSize
+
+459:15-459:21
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_670c4055
+Bytes: 6
+Encode
+
+465:11-465:17
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_c729d4a1
+Bytes: 6
+Decode
+
+472:15-472:21
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ee9b35_c53eeeed
+Bytes: 6
+Update
+
+File: test/403-optimizing-long/src/Main.java
+
+27:21-27:25
+Mon Apr 14 09:03:22 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f3a71c_e73850e9
+Bytes: 45
+Is it worth adding test for negative values ?
+

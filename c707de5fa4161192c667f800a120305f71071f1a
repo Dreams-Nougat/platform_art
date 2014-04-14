@@ -16,3 +16,21 @@ UUID: f9982ff7_df8fbf14
 Bytes: 49
 Isn't this the usual visitor annotalysis problem?
 
+126
+Mon Apr 14 23:49:35 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9982ff7_df8fbf14
+UUID: f9982ff7_5fc64f38
+Bytes: 245
+No, the visitor requires
+EXCLUSIVE_LOCKS_REQUIRED(Locks::heap_bitmap_lock_) SHARED_LOCKS_REQUIRED(Locks::mutator_lock_);
+which we have when we do that. But somehow the compiler thinks that we don't have the locks held inside of VisitMarkedRange.
+
+126
+Mon Apr 14 23:49:35 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9982ff7_bfa11392
+UUID: f9982ff7_3f60a38f
+Bytes: 4
+Done
+

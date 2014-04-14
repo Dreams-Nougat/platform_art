@@ -9,12 +9,28 @@ UUID: 59ee9b35_25ccfafd
 Bytes: 95
 In the future we'll need to do this for double too. I suggest adding a TODO so we don't forget.
 
+76:8-76:57
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_25ccfafd
+UUID: 59ee9b35_4533fe23
+Bytes: 58
+The TODO is kind of part of the return false line 64 here.
+
 269:26-269:76
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59ee9b35_85c986f0
 Bytes: 133
 The correct test is "instruction.Opcode() != Instruction::INVOKE_STATIC && instruction.Opcode() != Instruction::INVOKE_STATIC_RANGE".
+
+269:26-269:76
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_85c986f0
+UUID: 59ee9b35_25307a15
+Bytes: 88
+Done. Good catch about the *RANGE instruction, I forgot that while refactoring the code.
 
 295:57-295:83
 Mon Apr 14 09:03:22 2014 +0000
@@ -23,12 +39,34 @@ UUID: 59ee9b35_65c602e0
 Bytes: 209
 Why checking that? I don't see such check in the verifier, the quick compiler or the interpreter. By convention, args[i] contains the low reg of a reg pair. We only skip args[i + 1] as you do some lines below.
 
+295:57-295:83
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_65c602e0
+UUID: 59ee9b35_652a82a7
+Bytes: 356
+The non-range instructions specify the register to use. I believe it's possible a dex compiler could generate something like
+
+invoke foo(J) r0 r5
+
+Which AFAICS is not specified as being invalid, and is easy to support if the compiler always treats long values as a pair of locals.
+
+I could make it work here too, but did not bother implementing it for now.
+
 303:8-303:41
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9c3cfc8_047636aa
 Bytes: 51
 Add a TODO to not forget kPrimDouble in the future.
+
+303:8-303:41
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_047636aa
+UUID: 39f3a71c_074d7c8d
+Bytes: 64
+Same as my last comment, the return false line 292 is this TODO.
 
 362:22-362:33
 Mon Apr 14 09:03:22 2014 +0000
@@ -37,12 +75,28 @@ UUID: f9c3cfc8_44702eac
 Bytes: 112
 Why not moving it to BuildReturn with a special case for kPrimVoid. The return logic would be at the same place.
 
+362:22-362:33
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_44702eac
+UUID: 39f3a71c_e7517029
+Bytes: 4
+Done
+
 496:22-496:38
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9c3cfc8_a4cda2a9
 Bytes: 47
 What about MOVE_RESULT and MOVE_RESULT_OBJECT ?
+
+496:22-496:38
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_a4cda2a9
+UUID: 39f3a71c_4747846d
+Bytes: 94
+Not needed for this CL (long support), which is already quite big. I'll add them in a next CL.
 
 File: compiler/optimizing/code_generator.h
 
@@ -53,12 +107,28 @@ UUID: 59ee9b35_a5880aa0
 Bytes: 94
 Is it really useful since we have isInvalid? I suggest only keep IsValid and remove isInvalid.
 
+79:7-79:14
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_a5880aa0
+UUID: f9c3cfc8_e4eb1acd
+Bytes: 4
+Done
+
 98:4-99:44
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39f3a71c_a443e683
 Bytes: 17
 Split in 2 DCHECK
+
+98:4-99:44
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f3a71c_a443e683
+UUID: 39f3a71c_2744f866
+Bytes: 4
+Done
 
 153:14-153:22
 Mon Apr 14 09:03:22 2014 +0000
@@ -67,12 +137,28 @@ UUID: 59ee9b35_85a22616
 Bytes: 17
 const Location& ?
 
+153:14-153:22
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_85a22616
+UUID: f9c3cfc8_c4f09eba
+Bytes: 175
+Location objects are meant to be single-word objects and passed by value. By consistently passing them by value, I'm trying to communicate to readers the single-word property.
+
 169:2-169:6
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59ee9b35_e59212cc
 Bytes: 60
 Why using "enum"? Could you use "static constexpr" instead ?
+
+169:2-169:6
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_e59212cc
+UUID: f9c3cfc8_24d6d217
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -97,6 +183,14 @@ UUID: f9c3cfc8_04bf56de
 Bytes: 97
 I suggest moving this to a dedicated function (GetHighStackIndex ?) so the logic is in one place.
 
+168:31-168:73
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_04bf56de
+UUID: 59ee9b35_48ecb333
+Bytes: 4
+Done
+
 191:55-191:63
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -111,12 +205,28 @@ UUID: f9c3cfc8_e4b03a0b
 Bytes: 171
 Do we load/store boolean, byte, char and short as integer ? I mean, do we always generate code using ldr/str instructions only or do we support ldrb/strb, ldrh/strh, ... ?
 
+220:8-220:14
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_e4b03a0b
+UUID: f9c3cfc8_c409befa
+Bytes: 249
+For simplicity, I'm currently only treating locals as 32bits and use 32bits instructions/registers. For static/instance fields we might use different instructions/registers if we pack multiple fields in a single word, but I don't believe we do that.
+
 391:6-391:47
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39f3a71c_c700b423
 Bytes: 23
 Dump the type for info.
+
+391:6-391:47
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f3a71c_c700b423
+UUID: 59ee9b35_4815d359
+Bytes: 4
+Done
 
 414:8-414:49
 Mon Apr 14 09:03:22 2014 +0000
@@ -125,12 +235,28 @@ UUID: f9c3cfc8_24ab729e
 Bytes: 23
 Dump the type for info.
 
+414:8-414:49
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_24ab729e
+UUID: f9c3cfc8_64f9ea97
+Bytes: 4
+Done
+
 453:6-453:49
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9c3cfc8_04a8f69d
 Bytes: 23
 Dump the type for info.
+
+453:6-453:49
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_04a8f69d
+UUID: f9c3cfc8_44f66ea9
+Bytes: 4
+Done
 
 540:4-540:12
 Mon Apr 14 09:03:22 2014 +0000
@@ -139,12 +265,28 @@ UUID: f9c3cfc8_44a2eebf
 Bytes: 137
 Maybe we should make a difference between types we do not expect (boolean, byte, ...) and types we do not support yet (float and double).
 
+540:4-540:12
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_44a2eebf
+UUID: 39f3a71c_c77b949d
+Bytes: 17
+Good point. Done.
+
 541:6-541:36
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9c3cfc8_64a56ac6
 Bytes: 23
 Dump the type for info.
+
+541:6-541:36
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_64a56ac6
+UUID: 59ee9b35_28120f73
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -199,12 +341,28 @@ UUID: 59ee9b35_6551e24b
 Bytes: 5
 Shift
 
+449:13-449:18
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_6551e24b
+UUID: 59ee9b35_680c1755
+Bytes: 4
+Done
+
 454:13-454:20
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9c3cfc8_442b0e62
 Bytes: 7
 BitSize
+
+454:13-454:20
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c3cfc8_442b0e62
+UUID: f9c3cfc8_84b866ca
+Bytes: 4
+Done
 
 459:15-459:21
 Mon Apr 14 09:03:22 2014 +0000
@@ -213,6 +371,14 @@ UUID: 39f3a71c_670c4055
 Bytes: 6
 Encode
 
+459:15-459:21
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f3a71c_670c4055
+UUID: 39f3a71c_a7800839
+Bytes: 4
+Done
+
 465:11-465:17
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -220,12 +386,28 @@ UUID: 39f3a71c_c729d4a1
 Bytes: 6
 Decode
 
+465:11-465:17
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f3a71c_c729d4a1
+UUID: 39f3a71c_07861c53
+Bytes: 4
+Done
+
 472:15-472:21
 Mon Apr 14 09:03:22 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59ee9b35_c53eeeed
 Bytes: 6
 Update
+
+472:15-472:21
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ee9b35_c53eeeed
+UUID: f9c3cfc8_e4bddab8
+Bytes: 4
+Done
 
 File: test/403-optimizing-long/src/Main.java
 
@@ -235,4 +417,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39f3a71c_e73850e9
 Bytes: 45
 Is it worth adding test for negative values ?
+
+27:21-27:25
+Mon Apr 14 10:09:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f3a71c_e73850e9
+UUID: 59ee9b35_a82e1fa5
+Bytes: 4
+Done
 

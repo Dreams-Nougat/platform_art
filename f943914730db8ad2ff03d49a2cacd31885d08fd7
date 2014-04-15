@@ -42,6 +42,14 @@ UUID: f9982ff7_1fa6873d
 Bytes: 117
 Moving to a bug for you to address. I had a large number of review comments in PS2 which you superficially addressed.
 
+330:0-330:88
+Tue Apr 15 01:27:48 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9982ff7_1fa6873d
+UUID: 198c23b9_669c640c
+Bytes: 561
+Of the 6 comments on PS2, two were referring to this issue (objects not being objects).  I had thought that I had addressed the other 4.  The first two are a separate CL (TBD), another was a question about the thumb2 instruction set.  The last one was about increased use of memory.  I modified the code only to do the memset on the main stack, so the total increase in memory was 32K per process.  I did not (yet) try your suggestion of using madvise and I don't know if it will work until I try.  If that is superficial, I apologize, but I do humbly disagree.
+
 File: runtime/stack.h
 
 103:0-109:39
@@ -68,4 +76,12 @@ Parent: 198c23b9_036e3285
 UUID: 9980137b_9b0e23bc
 Bytes: 269
 Objects have a strong meaning, references to them can be poisoned, as well as other invariants checked. Casting void*s to mirror::Objects is bad as it means we must test for special cases beyond the well known one of null. I don't expect to see code like this anywhere.
+
+103:0-109:39
+Tue Apr 15 01:27:48 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9980137b_9b0e23bc
+UUID: 198c23b9_0634805a
+Bytes: 120
+So you would prefer I allocate an object in the heap?  OK, I'll look into doing that.  Thanks for answering my question.
 

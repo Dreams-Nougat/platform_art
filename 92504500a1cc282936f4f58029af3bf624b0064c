@@ -9,6 +9,14 @@ UUID: d9436b32_ce8d43af
 Bytes: 119
 where does the value 2.0 come from and should it be configurable? Most of the related options come from configurations.
 
+90
+Wed Apr 16 20:16:24 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9436b32_ce8d43af
+UUID: d91c4b54_e95af1ba
+Bytes: 48
+Added a runtime option, 2.0 is just the default.
+
 2530:6-2530:28
 Wed Apr 16 18:11:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 993733c3_6f9fe5cf
 Bytes: 40
 I assume this means "in the background".
 
+2530
+Wed Apr 16 20:16:24 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 993733c3_6f9fe5cf
+UUID: 85e7c793_68ad77bd
+Bytes: 14
+Added comment.
+
 2548:4-2548:7
 Wed Apr 16 18:11:18 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d91c4b54_09ecad32
 Bytes: 133
 Maybe should 'delta' be of type intptr_t to support potentially large heap cases (eg, what if we grow the heap by 3 GB under 64-bit)?
+
+2548
+Wed Apr 16 20:16:24 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91c4b54_09ecad32
+UUID: 85e7c793_48a2b3cd
+Bytes: 4
+Done
 
 2550:18-2550:54
 Wed Apr 16 18:11:18 2014 +0000
@@ -31,4 +55,12 @@ Bytes: 358
 In this addition, since bytes_allocated is of type size_t (unsigned), is this safe for a shrink case where delta < 0 with regard to implicit type conversions?
 
 Also, is it possible that the 2.0x multiplier causes we shrink too aggressively and end up with a negative target_size (which would unintentionally be a very large positive number as it's unsigned)?
+
+2550
+Wed Apr 16 20:16:24 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 993733c3_d2331a0c
+UUID: 993733c3_72fb4e28
+Bytes: 98
+Delta is never < 0, there is a check preventing that. I'll change target_size to be type uint64_t.
 

@@ -1,0 +1,27 @@
+Revision: 92504500a1cc282936f4f58029af3bf624b0064c
+Patch-set: 2
+File: runtime/gc/heap.cc
+
+2530:6-2530:28
+Wed Apr 16 18:11:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 993733c3_6f9fe5cf
+Bytes: 40
+I assume this means "in the background".
+
+2548:4-2548:7
+Wed Apr 16 18:11:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91c4b54_09ecad32
+Bytes: 133
+Maybe should 'delta' be of type intptr_t to support potentially large heap cases (eg, what if we grow the heap by 3 GB under 64-bit)?
+
+2550:18-2550:54
+Wed Apr 16 18:11:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 993733c3_d2331a0c
+Bytes: 358
+In this addition, since bytes_allocated is of type size_t (unsigned), is this safe for a shrink case where delta < 0 with regard to implicit type conversions?
+
+Also, is it possible that the 2.0x multiplier causes we shrink too aggressively and end up with a negative target_size (which would unintentionally be a very large positive number as it's unsigned)?
+

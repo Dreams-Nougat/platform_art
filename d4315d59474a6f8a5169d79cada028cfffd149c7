@@ -1,0 +1,11 @@
+Revision: d4315d59474a6f8a5169d79cada028cfffd149c7
+Patch-set: 3
+File: compiler/oat_writer.cc
+
+509:17-509:43
+Thu Apr 17 10:38:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a51a0b65_93e7dcf7
+Bytes: 437
+CodeChecksumMethodProcessor (above) and MapChecksumMethodProcessor are used to perform the checksum calculation in order, i.e. all header+code chunks first, then GC maps, then mapping tables and then vmap tables. However, each iteration in ProcessDexMethods takes almost 50ms for boot.oat on N5 (4 additional passes -> almost 200ms). If we don't care about the checksum being done in order, we could merge these into the previous passes.
+

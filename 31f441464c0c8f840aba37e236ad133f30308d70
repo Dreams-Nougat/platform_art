@@ -9,6 +9,18 @@ UUID: d9a7eb21_e5215a2f
 Bytes: 185
 Just a note based on our in-person conversation, by calling SuspendAll() here in GarbageCollector::Run(), we miss the rosalloc verification and the pause time info will be slightly off.
 
+1884:30-1884:40
+Thu Apr 17 01:45:39 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9a7eb21_e5215a2f
+UUID: c51d3f5e_b409a0ba
+Bytes: 697
+I think the reason for the semi space collector not to always call SemiSwapSpaces() during its pause is that we don't want to swap them for the zygote fork compaction case or the SS-CMS transition cases because the from-space or the to-space isn't necessarily a bump pointer space. Right?
+
+I think we'd like to go back to the previous state of calling SuspendAll()/ResumeAll() in GarbageCollector::Run(), as opposed to here, for the reasons stated above.
+
+How about adding a new param "bool swap_semi_spaces" in GarbageCollector::Run() to decide whether to call Heap::SwapSemiSpaces() within a pause? Then can we get rid of the SuspendAll/ResumeAll() here? The CMS collector can ignore that param.
+
 File: runtime/gc/space/valgrind_malloc_space-inl.h
 
 98:47-99:90

@@ -1,5 +1,14 @@
 Revision: d4315d59474a6f8a5169d79cada028cfffd149c7
 Patch-set: 3
+File: compiler/common_compiler_test.h
+
+185:9-185:21
+Thu Apr 17 22:55:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 853507d4_124d01a7
+Bytes: 97
+we don't put user id's in TODO's in android. see http://source.android.com/source/code-style.html
+
 File: compiler/oat_writer.cc
 
 509:17-509:43
@@ -8,4 +17,32 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a51a0b65_93e7dcf7
 Bytes: 437
 CodeChecksumMethodProcessor (above) and MapChecksumMethodProcessor are used to perform the checksum calculation in order, i.e. all header+code chunks first, then GC maps, then mapping tables and then vmap tables. However, each iteration in ProcessDexMethods takes almost 50ms for boot.oat on N5 (4 additional passes -> almost 200ms). If we don't care about the checksum being done in order, we could merge these into the previous passes.
+
+509:17-509:43
+Thu Apr 17 22:55:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a51a0b65_93e7dcf7
+UUID: 45586f41_82788e09
+Bytes: 56
+i actually don't care about doing the checksum in order.
+
+File: oatdump/oatdump.cc
+
+47:0-47:21
+Thu Apr 17 22:55:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c51d3f5e_1e574a8a
+Bytes: 64
+i thought if we included the foo-inl.h, we didn't include foo.h?
+
+File: runtime/oat.cc
+
+361:0-364:33
+Thu Apr 17 22:55:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_fd324be3
+Bytes: 294
+I thought Ian's goal was to move all of these to be just before the code pointer? then OatMethodOffsets can go away since in its place we'd just have an array of code offsets?
+
+i thought maybe this was because these were common vs quick specific, but the rest seem to be quick specific as well?
 

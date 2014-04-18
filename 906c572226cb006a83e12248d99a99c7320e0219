@@ -9,6 +9,14 @@ UUID: 0552f722_ecb5ffd4
 Bytes: 92
 Perhaps TargetReg(kArg0) should return a Solo64 for x86_64?  Then you wouldn't need the 'if'
 
+367
+Fri Apr 18 13:37:44 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0552f722_ecb5ffd4
+UUID: 45586f41_e32d09ca
+Bytes: 4
+Yes.
+
 1408:2-1414:1
 Fri Apr 18 12:35:52 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,6 +33,14 @@ UUID: 0552f722_acaf0781
 Bytes: 92
 Could LoadBaseDisp look at Is64Bit and automatically change to kLong?  Does that make sense?
 
+80
+Fri Apr 18 13:37:44 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0552f722_acaf0781
+UUID: 45586f41_7e03ee2d
+Bytes: 516
+The LoadWord/StoreWord code needs some thought.  These originated as wrappers to avoid constantly typing out all of the arguments for LoadBaseDisp, and likely are used frequently with the assumption that the size is 32 bits regardless of natural machine word size.  It might make sense to replace existing uses of LoadWord/StoreWord with Load32/Store32 (the typical case) and then have LoadWord/StoreWorld target-dependent for those (much rarer, I assume) cases that you really do want the natural machine word size.
+
 File: compiler/dex/quick/x86/call_x86.cc
 
 258
@@ -33,4 +49,30 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0552f722_8cac4b8d
 Bytes: 53
 Are we doing compile time code selection, or runtime?
+
+258
+Fri Apr 18 13:37:44 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0552f722_8cac4b8d
+UUID: 0552f722_0c6f3b7e
+Bytes: 186
+Should be run-time code selection (at the moment we assume a host build can generate code for any target).  It's on our TODO list to support target builds that only build for one target.
+
+File: compiler/dex/quick/x86/target_x86.cc
+
+562
+Fri Apr 18 13:37:44 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0552f722_8c5a0bd5
+Bytes: 99
+Better to have a target-specific function that returns a RegStorage of the  target's natural width.
+
+File: compiler/dex/quick/x86/utility_x86.cc
+
+695
+Fri Apr 18 13:37:44 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_def41af8
+Bytes: 99
+This code has changed in my outstanding CL - LoadBaseIndexedDisp no longer assumes a register pair.
 

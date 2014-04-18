@@ -9,6 +9,14 @@ UUID: 853507d4_e88e0cd9
 Bytes: 147
 If we have LIKELY here, which probably makes sense as there's one large object space typically, how about putting it in Test() and Clear() as well?
 
+72
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 853507d4_e88e0cd9
+UUID: c51d3f5e_b4fe357d
+Bytes: 4
+Done
+
 File: runtime/gc/accounting/heap_bitmap.h
 
 36:20-36:35
@@ -17,6 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 653ad3c6_e0798c50
 Bytes: 121
 How about calling this LargeObjectSetVisitor or something like that to make the meaning of the 'slow path' more specific?
+
+36
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 653ad3c6_e0798c50
+UUID: c51d3f5e_f4b26dea
+Bytes: 4
+Done
 
 File: runtime/gc/collector/garbage_collector.cc
 
@@ -27,12 +43,28 @@ UUID: 05291785_dd2f9779
 Bytes: 89
 Not about this change, but how about calling AsLargeObjectSpace() instead of a down_cast?
 
+188
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05291785_dd2f9779
+UUID: 853507d4_c3a56928
+Bytes: 4
+Done
+
 193:4-193:13
 Fri Apr 18 01:05:50 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45586f41_af093a91
 Bytes: 55
 Not about this change, but this down_cast is redundant.
+
+193
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45586f41_af093a91
+UUID: c51d3f5e_1464c99c
+Bytes: 4
+Done
 
 File: runtime/gc/collector/semi_space-inl.h
 
@@ -65,6 +97,14 @@ if (!was_already_marked) {
   MarkStackPush(obj);
 }
 
+42
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 453f8fb5_e49be2ea
+UUID: 853507d4_3e344e00
+Bytes: 99
+Since its a DCHECK, making it slower should be OK. I'll use GetContinuousSpaceBitmap in MarkObject.
+
 File: runtime/gc/collector/semi_space.cc
 
 370:35-370:53
@@ -74,12 +114,28 @@ UUID: 45586f41_0fb1667f
 Bytes: 28
 Rename to large_live_bitmap?
 
+370
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45586f41_0fb1667f
+UUID: c51d3f5e_941c5902
+Bytes: 4
+Done
+
 372:41-372:72
 Fri Apr 18 01:05:50 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45586f41_efd4d27c
 Bytes: 149
 Would using large_live_space->Begin()/End() instead of the HeapBegin()/Limit() be faster as the former is likely to be a smaller/more specific range?
+
+372
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45586f41_efd4d27c
+UUID: 45586f41_f226f51c
+Bytes: 4
+Done
 
 File: runtime/gc/space/large_object_space.cc
 
@@ -90,6 +146,14 @@ UUID: 853507d4_68f7bcaf
 Bytes: 57
 Note to self: Why wasn't this done before with ObjectSet?
 
+400
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 853507d4_68f7bcaf
+UUID: c51d3f5e_944339ce
+Bytes: 37
+Forgot to do the optimization before.
+
 File: runtime/gc/space/large_object_space.h
 
 82:38-82:39
@@ -98,6 +162,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45586f41_7def7b68
 Bytes: 113
 How about saying "which may vary as the space is filled" like End() to stress that it may not be a fixed address?
+
+82
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45586f41_7def7b68
+UUID: 45586f41_d2bad15a
+Bytes: 4
+Done
 
 File: runtime/gc/space/space.cc
 
@@ -108,12 +180,28 @@ UUID: 45586f41_bd561339
 Bytes: 98
 I wonder if there's a way to assert this so it will fail if we have objects not in the low 32 bit.
 
+74
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45586f41_bd561339
+UUID: c51d3f5e_d4609161
+Bytes: 49
+We could add asserts in the allocators I suppose.
+
 76:46-76:70
 Fri Apr 18 01:05:50 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45586f41_3d6c6318
 Bytes: 18
 Why subtract this?
+
+76
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45586f41_3d6c6318
+UUID: c51d3f5e_544da1f7
+Bytes: 112
+I forgot to delete this code, there was an integer overflow error when I was using HeapLimit() instead of End().
 
 File: runtime/gc/space/space.h
 
@@ -123,4 +211,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c51d3f5e_d1be63ef
 Bytes: 325
 As we start referring to "LargeObject" stuff in DiscontinuousSpace, DiscontinuousSpace becomes less abstract and more specific to LargeObjectSpace, it seems. Would we want to get rid of DiscontinuousSpace (I think there's no other derived class of DiscontinuousSpace) or move the "LargeObject" stuff down to LargeObjectSpace?
+
+334
+Fri Apr 18 02:02:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c51d3f5e_d1be63ef
+UUID: c51d3f5e_f43a6d53
+Bytes: 94
+Might be worth doing in another CL. I don't really see other uses for DiscontinuousSpaces now.
 

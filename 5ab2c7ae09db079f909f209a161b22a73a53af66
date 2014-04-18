@@ -1,0 +1,126 @@
+Revision: 5ab2c7ae09db079f909f209a161b22a73a53af66
+Patch-set: 4
+File: runtime/gc/accounting/heap_bitmap-inl.h
+
+72:8-72:14
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 853507d4_e88e0cd9
+Bytes: 147
+If we have LIKELY here, which probably makes sense as there's one large object space typically, how about putting it in Test() and Clear() as well?
+
+File: runtime/gc/accounting/heap_bitmap.h
+
+36:20-36:35
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 653ad3c6_e0798c50
+Bytes: 121
+How about calling this LargeObjectSetVisitor or something like that to make the meaning of the 'slow path' more specific?
+
+File: runtime/gc/collector/garbage_collector.cc
+
+188:37-188:84
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05291785_dd2f9779
+Bytes: 89
+Not about this change, but how about calling AsLargeObjectSpace() instead of a down_cast?
+
+193:4-193:13
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_af093a91
+Bytes: 55
+Not about this change, but this down_cast is redundant.
+
+File: runtime/gc/collector/semi_space-inl.h
+
+38:0-42:79
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 453f8fb5_e49be2ea
+Bytes: 1435
+I don't think the meaning of this code fragment is preserved from the Base PS. The old code said if we mark an object in a continuous space and the collector is in generational mode, then it must be a whole heap collection (== not a bump pointer space collection.) To do that, we probably need a fast-path visitor instead of a slow path visitor as the current code in PS4 won't detect an execution of a fast path.
+
+One idea is to add a fast path visitor and put the original code fragment in it.
+
+Another is to pass the address of a bool local variable to the slow path visitor and make it set if it's executed. If the local variable isn't set, then run the fast-path check.
+
+Another is to add a bool output parameter in HeapBitmap::Set() (and AtomicTestAndSet()) (eg. is_slow_path or is_large_object or something like that) and perform checks accordingly. Something like:
+
+bool is_large_object;
+bool was_already_marked = mark_bit_map_->Set(obj, &is_large_object);
+if (!is_large_object) {
+  // If a bump pointer space only collection, we should not
+  // reach here as we don't/won't mark the objects in the
+  // non-moving space (except for the promoted objects.)  Note
+  // the non-moving space is added to the immune space.
+  DCHECK(whole_heap_collection_);
+} else {
+  CHECK(!to_space_->HasAddress(obj)) << "Marking " << obj << " in to_space_";
+  CHECK(IsAligned<kPageSize>(obj));
+}
+if (!was_already_marked) {
+  MarkStackPush(obj);
+}
+
+File: runtime/gc/collector/semi_space.cc
+
+370:35-370:53
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_0fb1667f
+Bytes: 28
+Rename to large_live_bitmap?
+
+372:41-372:72
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_efd4d27c
+Bytes: 149
+Would using large_live_space->Begin()/End() instead of the HeapBegin()/Limit() be faster as the former is likely to be a smaller/more specific range?
+
+File: runtime/gc/space/large_object_space.cc
+
+400:5-400:60
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 853507d4_68f7bcaf
+Bytes: 57
+Note to self: Why wasn't this done before with ObjectSet?
+
+File: runtime/gc/space/large_object_space.h
+
+82:38-82:39
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_7def7b68
+Bytes: 113
+How about saying "which may vary as the space is filled" like End() to stress that it may not be a fixed address?
+
+File: runtime/gc/space/space.cc
+
+74:5-74:9
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_bd561339
+Bytes: 98
+I wonder if there's a way to assert this so it will fail if we have objects not in the low 32 bit.
+
+76:46-76:70
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45586f41_3d6c6318
+Bytes: 18
+Why subtract this?
+
+File: runtime/gc/space/space.h
+
+334:24-334:41
+Fri Apr 18 01:05:50 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c51d3f5e_d1be63ef
+Bytes: 325
+As we start referring to "LargeObject" stuff in DiscontinuousSpace, DiscontinuousSpace becomes less abstract and more specific to LargeObjectSpace, it seems. Would we want to get rid of DiscontinuousSpace (I think there's no other derived class of DiscontinuousSpace) or move the "LargeObject" stuff down to LargeObjectSpace?
+

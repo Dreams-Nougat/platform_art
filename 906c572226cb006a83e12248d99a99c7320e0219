@@ -58,6 +58,14 @@ UUID: 0552f722_0c6f3b7e
 Bytes: 186
 Should be run-time code selection (at the moment we assume a host build can generate code for any target).  It's on our TODO list to support target builds that only build for one target.
 
+258
+Mon Apr 21 07:41:19 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0552f722_0c6f3b7e
+UUID: 6571f3c6_99391bf1
+Bytes: 266
+While this patch is a WIP, the #ifdef is safest way to do not break x86 functionality. Making thise selection run-time require refactoring of common QCG code, which still have ThreadOffset<4> issue (all functions assumes that thread offset contains 32-bit pointers).
+
 File: compiler/dex/quick/x86/target_x86.cc
 
 562
@@ -67,6 +75,14 @@ UUID: 0552f722_8c5a0bd5
 Bytes: 99
 Better to have a target-specific function that returns a RegStorage of the  target's natural width.
 
+562
+Mon Apr 21 07:41:19 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0552f722_8c5a0bd5
+UUID: 058037c3_d611a474
+Bytes: 44
+Is it correct that 91569 adds such function?
+
 File: compiler/dex/quick/x86/utility_x86.cc
 
 695
@@ -75,4 +91,12 @@ Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45586f41_def41af8
 Bytes: 99
 This code has changed in my outstanding CL - LoadBaseIndexedDisp no longer assumes a register pair.
+
+695
+Mon Apr 21 07:41:19 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45586f41_def41af8
+UUID: 6571f3c6_f93cd7e1
+Bytes: 61
+Bill, I'll rebase this patch on top of your patch 91569 soon.
 

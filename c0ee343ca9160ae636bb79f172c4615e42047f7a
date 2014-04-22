@@ -1,0 +1,31 @@
+Revision: c0ee343ca9160ae636bb79f172c4615e42047f7a
+Patch-set: 3
+File: compiler/dex/quick/gen_invoke.cc
+
+541
+Tue Apr 22 11:00:26 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5a7ff88_84f446f7
+Bytes: 92
+My evaluation of 64-bit HW shows that LoadRefDisp should be here (access by  method_idx * 4)
+
+File: compiler/dex/quick/gen_loadstore.cc
+
+123
+Tue Apr 22 11:00:26 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25b9bbaa_e75662e3
+Bytes: 193
+The LoadValueDirect sometimes used with FP registersm but it seems that LoadWordDisp is not applicable to FP registers.
+
+Can we say here that loads always 32 bit and replace this by Load32Disp?
+
+File: compiler/dex/quick/x86/target_x86.cc
+
+371
+Tue Apr 22 11:00:26 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25b9bbaa_47edeedd
+Bytes: 111
+Spill/Unspill core reg uses offset += 4, for 64-bit "offset += kPointerSize" (will upload the change to 91375).
+

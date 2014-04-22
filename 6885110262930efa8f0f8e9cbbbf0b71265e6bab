@@ -126,6 +126,18 @@ Done.
 
 But where do we use the OatHeader::executable_offset_ to actually make the code executable? Or do we make it all executable anyway?
 
+62:1-77:2
+Tue Apr 22 17:44:18 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e53fa3e6_fd650759
+UUID: 253e1beb_a20400e2
+Bytes: 184
+The ElfWriter uses it
+
+./elf_writer_quick.cc:201:  uint32_t oat_data_size = oat_header.GetExecutableOffset();
+
+the oat data will span two elf segments, one read only, one read execute.
+
 113:9-113:18
 Fri Apr 18 00:45:08 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>

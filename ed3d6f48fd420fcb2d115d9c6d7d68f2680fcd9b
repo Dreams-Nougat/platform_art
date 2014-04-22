@@ -9,12 +9,28 @@ UUID: 25f61b4a_08126b78
 Bytes: 43
 Any mem alloc test performance degradation?
 
+7
+Tue Apr 22 00:49:29 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25f61b4a_08126b78
+UUID: 658813e3_d6d8c2ff
+Bytes: 67
+There was a small one, but then I optimized RosAlloc to avoid this.
+
 11:0-11:15
 Wed Apr 16 22:24:28 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e5f7a345_c3a8ea02
 Bytes: 95
 Is this a crash and/or a class unloading already happening or is this about being future proof?
+
+11
+Tue Apr 22 00:49:29 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5f7a345_c3a8ea02
+UUID: 856c27f2_6e8b17a0
+Bytes: 135
+Theoretical crash which I managed to reproduce when I tried to move the from_space_ clear before the sweep in the semi space collector.
 
 File: runtime/gc/space/rosalloc_space.cc
 
@@ -25,6 +41,14 @@ UUID: e5f7a345_e60e5452
 Bytes: 108
 I think this should be changed so that this function returns the return value from RosAlloc::Free() as well.
 
+175
+Tue Apr 22 00:49:29 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5f7a345_e60e5452
+UUID: 856c27f2_2e951fba
+Bytes: 4
+Done
+
 189:0-190:49
 Wed Apr 16 22:24:28 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,10 +56,26 @@ UUID: 25f61b4a_45161ee0
 Bytes: 104
 Would it make sense to move these constexpr's to the beginning of the file, or outside of this function?
 
+190
+Tue Apr 22 00:49:29 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25f61b4a_45161ee0
+UUID: 856c27f2_8e454b7b
+Bytes: 4
+Done
+
 195:10-195:11
 Wed Apr 16 22:24:28 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25f61b4a_85f5466a
 Bytes: 118
 Insert "kPrefetchDuringRosAllocFreeList &&" here to execute the prefetch code only if kPrefetchDuringRosAllocFreeList?
+
+195
+Tue Apr 22 00:49:29 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25f61b4a_85f5466a
+UUID: 658813e3_761c5601
+Bytes: 4
+Done
 

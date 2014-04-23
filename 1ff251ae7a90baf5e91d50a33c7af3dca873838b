@@ -9,3 +9,20 @@ UUID: 2557fb42_40a7dfad
 Bytes: 5
 Typo?
 
+File: runtime/mirror/array.h
+
+71:17-71:27
+Wed Apr 23 17:53:30 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_5c7242f9
+Bytes: 308
+How about supporting non-object arrays as well?
+
+I'm thinking of something like:
+
+template<typename ComponentType>
+static MemberOffset DataOffsetAtIndex(int32_t index) {
+  size_t component_size = sizeof(ComponentType);
+  return MemberOffset(DataOffset(component_size).SizeValue() + component_size * index);
+}
+

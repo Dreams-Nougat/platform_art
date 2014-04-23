@@ -34,3 +34,26 @@ UUID: c5137f9f_64a20ace
 Bytes: 281
 I am not sure I agree. The issue is that on a high level, object arrays contain links to objects. But with your change, one would have to write <HeapReference<mirror::X>> so that component_size gets the right size, which is not as intuitive and straightforward as just <mirror::X>.
 
+71:17-71:27
+Wed Apr 23 19:16:31 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5137f9f_64a20ace
+UUID: c5137f9f_049076c9
+Bytes: 961
+OK. I was going to say the following, but there's already ObjectArray<T>::OffsetOfElement() which we can use in this case?
+
+---
+
+Do we need MirrorType? It does not seem that sizeof(HeapReference<MirrorType>) is a function of MirrorType or MirrorType is propagated to the return type.
+
+If this is only for object arrays, I'd imagine something like:
+
+static MemberOffset ObjectArrayDataOffsetAtIndex(int32_t index) {
+  size_t component_size = sizeof(HeapReference<Object>);
+  return MemberOffset(DataOffset(component_size).SizeValue() + component_size * index);
+}
+
+assuming that we don't need to parameterize it with MirrorType and we'd like to emphasize that it's only for object arrays. We could also consider moving it to object_array.h and losing the "ObjectArray" name prefix.
+
+A minor point: I think the convention is to have MirrorType include the *. So, HeapReference<MirrorType> instead of HeapReference<MirrorType*>, if we need to use MirrorType at all.
+

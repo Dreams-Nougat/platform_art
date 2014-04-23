@@ -1,0 +1,27 @@
+Revision: 0a1b15f213000af6d84d1dbb68bb25c43839679a
+Patch-set: 2
+File: runtime/base/bit_vector.cc
+
+161
+Wed Apr 23 21:10:15 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5f76b98_4e13b32d
+Bytes: 184
+src_size = BitsToWords(highest_bit);
+
+If we're calculating the highest_bit unconditionally, we may as well use it to limit the loop below and potentially avoid the reallocating branch.
+
+381
+Wed Apr 23 21:10:15 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 652bb3c3_0cc0972f
+Bytes: 59
+Why don't you construct the whole string in a stringstream?
+
+385:24-385:33
+Wed Apr 23 21:10:15 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5f76b98_ee01bfd0
+Bytes: 151
+That's confusing. I don't think the BitVector should be confused with a large binary number where you'd want to print the most significant digit first.
+

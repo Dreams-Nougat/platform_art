@@ -57,3 +57,15 @@ assuming that we don't need to parameterize it with MirrorType and we'd like to 
 
 A minor point: I think the convention is to have MirrorType include the *. So, HeapReference<MirrorType> instead of HeapReference<MirrorType*>, if we need to use MirrorType at all.
 
+71
+Thu Apr 24 04:58:16 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5137f9f_049076c9
+UUID: a5f76b98_8e791b52
+Bytes: 531
+Changing notation to HeapReference<Object> could touch almost all source files refactored by Ian Rogers in bounds of 64-bit enabling efforts. Thus it does not sounds reasonable to change HeapReference notation at this moment.
+
+Please note that this patch is just a fix which is required for ongoing efforts on 64-bit quick code generation for multiple platforms. 
+
+I'd suggest to keep the patch as is with simplified notation, supporting only arrays of objects. There are no similar calculations in QCG for non-object arrays AFAIK.
+

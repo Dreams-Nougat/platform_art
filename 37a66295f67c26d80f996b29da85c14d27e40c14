@@ -9,6 +9,14 @@ UUID: a5104b96_32e4ce71
 Bytes: 210
 BTW, did this portion (the dedicated_full_run thing) of the change have a  performance improvement? It's good in general to evaluate the benefit (eg speedup) against the cost (eg additional RAM/LOC/complexity).
 
+21
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_32e4ce71
+UUID: 85b427df_008eaa68
+Bytes: 246
+Not sure, I presume it removed 1 compare and 1 conditional branch from each allocation. That should be a speedup, but it should also be hard to measure. Since its implemented, I propose we keep it. I think I have a way of reducing the complexity.
+
 45:14-45:16
 Thu Apr 24 02:48:53 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +33,28 @@ UUID: e516c38e_59825340
 Bytes: 104
 Is it possible to initialize dedicated_full_runs_ to point to dedicated_full_run_storage_ at this point?
 
+45
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_59825340
+UUID: 85b427df_6054c6fe
+Bytes: 4
+Done
+
 69:4-69:27
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_46455426
 Bytes: 87
 Nice as it's now possible to see the bracket index in the lock names in the mutex dump.
+
+69
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_46455426
+UUID: c5e8dfcd_02094e47
+Bytes: 75
+Agreed, this is mostly for figuring out which bracket locks are contending.
 
 99:2-99:46
 Thu Apr 24 01:58:42 2014 +0000
@@ -39,12 +63,28 @@ UUID: e516c38e_b96d47d5
 Bytes: 76
 Move this to the end of Initialize() where its other fields are initialized?
 
+99
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_b96d47d5
+UUID: c5e8dfcd_6524dc38
+Bytes: 4
+Done
+
 320:8-320:21
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_26781808
 Bytes: 64
 Should this be kCheckZeroMemory (which is currently equivalent)?
+
+320
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_26781808
+UUID: a5e5abf4_1ebd2959
+Bytes: 4
+Done
 
 368:13-368:18
 Thu Apr 24 01:58:42 2014 +0000
@@ -69,6 +109,14 @@ Nice that the debug build is probably somewhat faster.
 
 Paranoid: DCHECK_EQ(total_bytes % sizeof(uword), 0)?
 
+475
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_e6656059
+UUID: a5e5abf4_5ec7b1d8
+Bytes: 4
+Done
+
 541:20-541:72
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -78,6 +126,14 @@ This is probably intended to be (note the location of the parentheses):
 
 reinterpret_cast<byte*>(new_run) + headerSizes[idx];
 
+541
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_a316a5dc
+UUID: 85b427df_80d0fa31
+Bytes: 11
+Nice catch.
+
 542:29-542:39
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -85,12 +141,28 @@ UUID: a5104b96_461554a0
 Bytes: 76
 numOfSlots[idx] and bracketSizes[idx] can be cached/hoisted out of the loop.
 
+542
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_461554a0
+UUID: a5e5abf4_1ee44971
+Bytes: 4
+Done
+
 543:8-543:26
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85fd0775_c3ff6913
 Bytes: 159
 I'm not sure, but is prefetching beneficial for all the slots which can be up to > 200, given the cost of this loop? Did you try limiting it to a fixed number?
+
+543
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_c3ff6913
+UUID: a5e5abf4_043a3cba
+Bytes: 46
+It is certainly worth investigating this more.
 
 551:0-551:4
 Thu Apr 24 17:51:17 2014 +0000
@@ -101,12 +173,28 @@ We rely on the zero'ed header for some of the fields' initial value here. Can yo
 
 DCHECK(!new_run->IsThreadLocal());
 
+551
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5e8dfcd_652f7cae
+UUID: a5e5abf4_2f2ab107
+Bytes: 4
+Done
+
 561:18-561:23
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85fd0775_432ff916
 Bytes: 46
 So, lower_bound() wasn't necessary, I take it.
+
+561
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_432ff916
+UUID: c5e8dfcd_c25686e3
+Bytes: 39
+Its sorted by increasing order already.
 
 599:28-599:67
 Thu Apr 24 01:58:42 2014 +0000
@@ -115,12 +203,28 @@ UUID: 85fd0775_037df1c1
 Bytes: 100
 Note to self: is it safe to pass in dedicated_full_run_ to MergeThreadLocalFreeBitMapToAllocBitMap()
 
+599
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_037df1c1
+UUID: 85b427df_60c84631
+Bytes: 42
+The free bitmap of the dedicated full run.
+
 605:10-605:60
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85cb4765_c283e23f
 Bytes: 33
 This comment needs to be updated.
+
+605
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_c283e23f
+UUID: a5e5abf4_e139c2ef
+Bytes: 4
+Done
 
 606:10-606:74
 Thu Apr 24 01:58:42 2014 +0000
@@ -133,6 +237,14 @@ Either case, why is this case? Because it was full? But it's all free now.
 
 Would it be the case regardless of what is_all_free_after_merge is?
 
+606
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_a0ca184e
+UUID: a5e5abf4_c13cc6e2
+Bytes: 21
+Stale check, updated.
+
 608:8-608:48
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -140,12 +252,28 @@ UUID: 85fd0775_00b684e0
 Bytes: 110
 Why set it to zero here? Isn't first_bitmap_idx_ already updated by MergeThreadLocalFreeBitMapToAllocBitMap()?
 
+608
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_00b684e0
+UUID: 85b427df_80cd5a42
+Bytes: 20
+Stale code, deleted.
+
 612:0-623:80
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85fd0775_0087a44f
 Bytes: 220
 I think this code (lines 612-623) should be skipped if thread_local_run == dedicated_full_run_ as, I think, it'd be cleaner if we don't insert dedicated_full_run_ into the full_runs_ or update its is_thread_local_ field.
+
+623
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_0087a44f
+UUID: c5e8dfcd_22a72a98
+Bytes: 4
+Done
 
 630:26-630:42
 Thu Apr 24 01:58:42 2014 +0000
@@ -161,12 +289,28 @@ UUID: e516c38e_d992c374
 Bytes: 87
 Call ZeroHeader() above the MutexLock? Two other places where the same comment applies.
 
+751
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_d992c374
+UUID: a5e5abf4_81d0fe31
+Bytes: 4
+Done
+
 753:6-753:20
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85cb4765_a5b42811
 Bytes: 47
 run is dead at this point. Get rid of line 753?
+
+753
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_a5b42811
+UUID: a5e5abf4_41c6f67e
+Bytes: 4
+Done
 
 807:29-807:30
 Thu Apr 24 01:58:42 2014 +0000
@@ -175,12 +319,28 @@ UUID: 85cb4765_45ad1cbd
 Bytes: 69
 For consistency, get rid of the '_' here or add it to all the fields?
 
+807
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_45ad1cbd
+UUID: c5e8dfcd_82b63ec8
+Bytes: 4
+Done
+
 820:0-820:4
 Thu Apr 24 17:51:17 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5e5abf4_21e48a71
 Bytes: 122
 How about DCHECK'ing that all the bits before first_bitmap_idx_ are all set here to verify that there's no slots 'leaked'?
+
+820
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5e5abf4_21e48a71
+UUID: 85b427df_09f0956f
+Bytes: 4
+Done
 
 822:4-822:28
 Thu Apr 24 01:58:42 2014 +0000
@@ -189,12 +349,28 @@ UUID: a5104b96_17c6e47d
 Bytes: 97
 I guess this is where a bound check was removed by masking the end of the alloc bit map, correct?
 
+822
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_17c6e47d
+UUID: a5e5abf4_c198469a
+Bytes: 84
+Yes, since the bits are always masked we don't need to worry about allocating there.
+
 824:58-824:87
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_374cc086
 Bytes: 63
 Either just "32" or "sizeof(*alloc_bitmap_ptr) * kBitsPerByte"?
+
+824
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_374cc086
+UUID: c5e8dfcd_62c85231
+Bytes: 4
+Done
 
 838:17-838:26
 Thu Apr 24 01:58:42 2014 +0000
@@ -205,12 +381,28 @@ num_vec?
 
 Hoist this out of the loop?
 
+838
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_ac850780
+UUID: c5e8dfcd_a2e17aaf
+Bytes: 99
+I don't think we want to since the loop usually will return before going to the next bitmap vector.
+
 841:6-841:12
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85fd0775_006cc445
 Bytes: 129
 I think it's good idea to DCHECK that the run is actually full before returning here, in case there's a bug in first_bitmap_idx_.
+
+841
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_006cc445
+UUID: a5e5abf4_211f2a4f
+Bytes: 4
+Done
 
 842:4-842:5
 Thu Apr 24 01:58:42 2014 +0000
@@ -223,6 +415,14 @@ Is this as intended?
 
 I guess how it should be because we removed the bound check above. Correct?
 
+842
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_e3154a58
+UUID: c5e8dfcd_22f56a68
+Bytes: 149
+Yes, the point of that is that the last bitmap word is still valid memory so we don't need to check that we are on a valid word before doing the ffs.
+
 870:2-870:8
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -231,6 +431,14 @@ Bytes: 220
 Since we zero out the memory for each slot as it is freed, it may be worth experimenting with a hand-written C++ memory zero routine for a smaller size (eg < 64 bytes), as opposed to always calling memset.
 
 Leave a TODO?
+
+870
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_97793452
+UUID: a5e5abf4_e15382f0
+Bytes: 4
+Done
 
 879:19-879:38
 Thu Apr 24 01:58:42 2014 +0000
@@ -246,12 +454,28 @@ UUID: e516c38e_4efe071c
 Bytes: 10
 DCHECK_GE?
 
+980
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_4efe071c
+UUID: a5e5abf4_4119964e
+Bytes: 4
+Done
+
 982:2-982:10
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_23164ab1
 Bytes: 10
 DCHECK_NE?
+
+982
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_23164ab1
+UUID: a5e5abf4_610e9207
+Bytes: 4
+Done
 
 991:20-991:24
 Thu Apr 24 01:58:42 2014 +0000
@@ -260,6 +484,14 @@ UUID: 85fd0775_037dee3c
 Bytes: 19
 'bits' -> 'vector'?
 
+991
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_037dee3c
+UUID: 85b427df_405ee259
+Bytes: 4
+Done
+
 1005:4-1005:6
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -267,12 +499,28 @@ UUID: 65d01310_81347a02
 Bytes: 56
 I guess this was simplified due to the last vector mask.
 
+1005
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65d01310_81347a02
+UUID: a5e5abf4_a1e17aaf
+Bytes: 3
+Yes
+
 1130:15-1130:47
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_37596071
 Bytes: 44
 This DCHECK is redundant and can be removed.
+
+1130
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_37596071
+UUID: c5e8dfcd_25c1f465
+Bytes: 4
+Done
 
 1171:8-1171:16
 Thu Apr 24 01:58:42 2014 +0000
@@ -302,6 +550,14 @@ UUID: a5104b96_3225eece
 Bytes: 41
 run is dead and this line can be removed?
 
+1262
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_3225eece
+UUID: 85b427df_6393f046
+Bytes: 4
+Done
+
 1550:26-1550:45
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -309,12 +565,28 @@ UUID: 85cb4765_88cd7b42
 Bytes: 178
 I don't think dedicated_full_run_ would show up here as it points to a statically allocated memory, separate from the space memory, and we can undo the change around here, right?
 
+1550
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_88cd7b42
+UUID: a5e5abf4_c149269b
+Bytes: 90
+It used to be allocated in the RosAlloc space, the check isn't necessary anymore. Deleted.
+
 1600:9-1600:25
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85cb4765_a80f9fbe
 Bytes: 93
 So, thread_local_run could be nullptr? Not always pointing to dedicated_full_run_ if revoked?
+
+1600
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_a80f9fbe
+UUID: 85b427df_035b14db
+Bytes: 12
+Not anymore.
 
 1606:8-1606:16
 Thu Apr 24 01:58:42 2014 +0000
@@ -335,12 +607,28 @@ if (thread_local_run == nullptr) {
 
 ?
 
+1606
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_8829fb11
+UUID: a5e5abf4_012b0eb5
+Bytes: 40
+Can't be null anymore with new patchset.
+
 1611:6-1611:48
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_9204a2e2
 Bytes: 49
 Move this above line 1609, right after line 1608?
+
+1611
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_9204a2e2
+UUID: c5e8dfcd_055158e8
+Bytes: 4
+Done
 
 1631:8-1631:35
 Thu Apr 24 01:58:42 2014 +0000
@@ -349,6 +637,14 @@ UUID: 85cb4765_681677e0
 Bytes: 79
 Similarly, thread_local_run is dead at this point and this line can be removed?
 
+1631
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_681677e0
+UUID: 85b427df_0054ea2f
+Bytes: 4
+Done
+
 1778:43-1778:44
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -356,12 +652,28 @@ UUID: 85cb4765_088c0bdf
 Bytes: 207
 If we make dedicated_full_run_ as a size bracket idx 0, then how about asserting that the numOfSlots[0] is largest in the numOfSlots array so that its alloc bit map must be the largest? We rely on this fact.
 
+1778
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_088c0bdf
+UUID: c5e8dfcd_650e9c07
+Bytes: 51
+I don't think it matters which size bracket we use.
+
 1878:28-1878:47
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_92794252
 Bytes: 117
 Similarly, dedicated_full_run_ isn't part of the space memory and the page map. We can remove the change around here?
+
+1878
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_92794252
+UUID: a5e5abf4_04f23c09
+Bytes: 4
+Done
 
 File: runtime/gc/allocator/rosalloc.h
 
@@ -381,12 +693,36 @@ UUID: 85fd0775_20d90802
 Bytes: 231
 It seems that "first_bitmap_idx_" could be interpreted to mean something else as it's taken literally. How about "first_search_vec_idx_" or something like that in the sense that we search for an free slot starting from that vector?
 
+193
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_e0e540b2
+UUID: 85b427df_2ea8ffad
+Bytes: 4
+Done
+
+193
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_20d90802
+UUID: c5e8dfcd_d00e4c52
+Bytes: 4
+Done
+
 228:42-228:53
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c5137f9f_c7e780f6
 Bytes: 27
 "per section" -> "per run"?
+
+228
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5137f9f_c7e780f6
+UUID: c5e8dfcd_85772815
+Bytes: 4
+Done
 
 229:11-229:30
 Thu Apr 24 01:58:42 2014 +0000
@@ -395,6 +731,14 @@ UUID: 85fd0775_e311cd74
 Bytes: 122
 "Words" -> "Vectors"? Let's call it a vector as technically necessarily uword != uint32_t and for terminology consistency.
 
+229
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_e311cd74
+UUID: a5e5abf4_04515ce8
+Bytes: 4
+Done
+
 262:18-262:33
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -402,12 +746,28 @@ UUID: e516c38e_ce34b767
 Bytes: 30
 GetLastBitMapLastVectorMask()?
 
+262
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_ce34b767
+UUID: c5e8dfcd_45e9a048
+Bytes: 4
+Done
+
 277:29-277:50
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e516c38e_2e72abf8
 Bytes: 105
 Either lose "with a specific value" (the word "Fill" already implies what it does) or say "Set all bits"?
+
+277
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_2e72abf8
+UUID: a5e5abf4_64c5c03f
+Bytes: 44
+Stale comment, there used to be a parameter.
 
 472:16-472:43
 Thu Apr 24 01:58:42 2014 +0000
@@ -420,6 +780,14 @@ byte dedicated_full_runs_storage_[kPageSize]
 
 ?
 
+472
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_03acee78
+UUID: c5e8dfcd_6563fc20
+Bytes: 78
+Needs to be static since we do ::Thread() before the RosAllocSpace is created.
+
 522:5-522:39
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -427,12 +795,28 @@ UUID: e516c38e_f9f21f79
 Bytes: 56
 This should now be the number of bytes instead of pages.
 
+522
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_f9f21f79
+UUID: a5e5abf4_c460548b
+Bytes: 4
+Done
+
 528:2-528:8
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e516c38e_2ebbcbd6
 Bytes: 41
 Comment that it returns the bracket size?
+
+528
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_2ebbcbd6
+UUID: a5e5abf4_241c9800
+Bytes: 4
+Done
 
 File: runtime/gc/heap.cc
 
@@ -443,12 +827,28 @@ UUID: c5137f9f_0751981e
 Bytes: 209
 For clarification, is another way to put this that so that we won't incorrectly retain the thread-local run from the previous rosalloc space (which could be invalidated/deallocated) after setting up a new one?
 
+600
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5137f9f_0751981e
+UUID: a5e5abf4_4448c4e9
+Bytes: 94
+This is not a normal case, the tests just do strange stuff by adding multiple RosAlloc spaces.
+
 607:27-607:54
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e516c38e_6b465566
 Bytes: 142
 Same comment from another file: Setting up new thread local buffers by calling revoke upon a brand new rosalloc space seems unintuitive to me.
+
+607
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_6b465566
+UUID: 85b427df_0e933b7a
+Bytes: 46
+Deleted the revoke after, no longer necessary.
 
 1470:33-1470:38
 Thu Apr 24 01:58:42 2014 +0000
@@ -463,6 +863,14 @@ Could there be a cleaner way?
 
 And what exactly does not work for debug builds?
 
+1470
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_cb8dc96d
+UUID: 85b427df_ee01a7d0
+Bytes: 400
+The problem is that since the space is protected, when RosAlloc tries to trim it it attempts to read the magic number (only for debug builds). But since the protection is set to PROT_NONE it faults. This is fixed if you remove the space since it doesn't get trimmed. I think this is a long existing bug with background compaction + debug builds. I can't think of cleaner ways, let me know if you can.
+
 File: runtime/gc/space/space_test.h
 
 42:51-42:55
@@ -472,12 +880,28 @@ UUID: 85fd0775_324845e9
 Bytes: 58
 Note to self: By passing true, AddSpace() does the revoke.
 
+42
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_324845e9
+UUID: 85b427df_8ecaeb4e
+Bytes: 4
+Done
+
 150:40-150:41
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85fd0775_52786908
 Bytes: 18
 Double semicolons.
+
+150
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_52786908
+UUID: a5e5abf4_24ef3869
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -487,6 +911,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e516c38e_48527f9a
 Bytes: 96
 Is this what the new thread had to do for the main thread? Same comment as the one in thread.cc.
+
+639
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_48527f9a
+UUID: 85b427df_cecb0351
+Bytes: 8
+Deleted.
 
 File: runtime/thread.cc
 
@@ -498,4 +930,12 @@ Bytes: 92
 Say why in the comment?
 
 It seems unintuitive to need to call Revoke...() in a fresh thread?
+
+347
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85fd0775_72a12d96
+UUID: 85b427df_6e9cb75f
+Bytes: 8
+Deleted.
 

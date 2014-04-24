@@ -9,6 +9,14 @@ UUID: a5104b96_06451c79
 Bytes: 87
 We don't need to set this to false as the header must be zeroed at this point, correct?
 
+547
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_06451c79
+UUID: 85b427df_89cd8542
+Bytes: 54
+Yes, I'll add a DCHECK that verifies its set properly.
+
 567:17-567:33
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 85cb4765_c215a258
 Bytes: 93
 This is the nullcheck this change intends to remove by using the dedicated full run, correct?
 
+567
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_c215a258
+UUID: a5e5abf4_a1117a75
+Bytes: 3
+Yes
+
 573:0-574:78
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5104b96_a9117975
 Bytes: 30
 Can we keep these two DCHECKs?
+
+574
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_a9117975
+UUID: c5e8dfcd_22bbaad6
+Bytes: 4
+Done
 
 879:2-879:32
 Thu Apr 24 01:58:42 2014 +0000
@@ -32,12 +56,28 @@ I think this DCHECK_NE should be retained, as "DCHECK(IsThreadLocal());". If it'
 
 Perhaps, the dedicated_full_run_'s is_thread_local_ wasn't kept always set ti true due to line 613 in PS2?
 
+879
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_776ab86e
+UUID: a5e5abf4_ef652959
+Bytes: 4
+Done
+
 1099:4-1099:19
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85cb4765_28bb8fd6
 Bytes: 112
 This is where the ptr array was nulled out, which caused a change in space_test.h. It wasn't necessary to do so.
+
+1099
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85cb4765_28bb8fd6
+UUID: c5e8dfcd_e5670cef
+Bytes: 68
+I assume setting the pointer to NULL was to mimic dlmalloc behavior?
 
 File: runtime/gc/space/space_test.h
 
@@ -47,4 +87,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e516c38e_e82d2bca
 Bytes: 87
 So, FreeList() no longer null out the pointer array, which is probably an optimization?
+
+352
+Thu Apr 24 22:40:04 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e516c38e_e82d2bca
+UUID: c5e8dfcd_d0b1ec1f
+Bytes: 101
+Yes, there wasn't any real reason to write null in the array. Only the tests used this functionality.
 

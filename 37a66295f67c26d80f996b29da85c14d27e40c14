@@ -92,6 +92,15 @@ UUID: 85fd0775_c3ff6913
 Bytes: 159
 I'm not sure, but is prefetching beneficial for all the slots which can be up to > 200, given the cost of this loop? Did you try limiting it to a fixed number?
 
+551:0-551:4
+Thu Apr 24 17:51:17 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5e8dfcd_652f7cae
+Bytes: 245
+We rely on the zero'ed header for some of the fields' initial value here. Can you add DCHECKs that check that the fields have zero initial values for the purpose of verification and documentation? For example,
+
+DCHECK(!new_run->IsThreadLocal());
+
 561:18-561:23
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -165,6 +174,13 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 85cb4765_45ad1cbd
 Bytes: 69
 For consistency, get rid of the '_' here or add it to all the fields?
+
+820:0-820:4
+Thu Apr 24 17:51:17 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5e5abf4_21e48a71
+Bytes: 122
+How about DCHECK'ing that all the bits before first_bitmap_idx_ are all set here to verify that there's no slots 'leaked'?
 
 822:4-822:28
 Thu Apr 24 01:58:42 2014 +0000

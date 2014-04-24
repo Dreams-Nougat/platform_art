@@ -9,12 +9,28 @@ UUID: 25b37bfb_9a3f89d5
 Bytes: 108
 Do we expect frequent rebuilds of the chains? Is the reuse worth the additional space taken by this pointer?
 
+235
+Thu Apr 24 21:46:53 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25b37bfb_9a3f89d5
+UUID: a5e5abf4_2f4c7186
+Bytes: 398
+yes, because as soon as we change something in the graph, we might need to recalculate it. Right now we do little changes but that may not always be true. I have another patch that changes all the SSA and utility infrastructure into a recallable system so that we can add changes to the ME CFG and have it update itself by recalling itself (because right now, it supposes it is only called once...)
+
 266
 Thu Apr 24 14:46:50 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45aeaf94_5be17736
 Bytes: 118
 Is this necessary? This can be retrieved from the SSAWalkData::definitions_ (which I'd like to see moved to MIRGraph).
+
+266
+Thu Apr 24 21:46:53 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45aeaf94_5be17736
+UUID: 85b427df_0e217b02
+Bytes: 326
+SSAWalkData disappears once the calculation is done, it was never supposed to stay. If we do moved something that from a SSA number gave the def_where from MIRGraph then that could be a solution but in my uses, this never is an obligation. You have the MIR, you get the SSA rep., you find the def. No need to short-circuit it.
 
 File: compiler/dex/ssa_walkdata.cc
 
@@ -25,12 +41,28 @@ UUID: 25b37bfb_7752d09a
 Bytes: 20
 This is unnecessary.
 
+29
+Thu Apr 24 21:46:53 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25b37bfb_7752d09a
+UUID: c5e8dfcd_f060a861
+Bytes: 156
+I've seen random cases of memory leaks in the past without this kind of thing (not particularly here though). If you feel strongly about it I can remove it.
+
 130
 Thu Apr 24 14:46:50 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45aeaf94_b8e539b3
 Bytes: 56
 C++11: for (const WalkDataNoDefine& info : no_define_) {
+
+130
+Thu Apr 24 21:46:53 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45aeaf94_b8e539b3
+UUID: a5e5abf4_8f82e53d
+Bytes: 13
+bad habit ;-)
 
 File: compiler/dex/ssa_walkdata.h
 
@@ -42,4 +74,16 @@ Bytes: 249
 std::vector or GrowableArray resized to MIRGraph::NumSSARegs() would be better.
 
 This could be part of the MIRGraph, initialized from HandleSSADef() where we'd need to pass the MIR. That would remove the need to HandleNoDefinitions() after the pass.
+
+89:13-89:16
+Thu Apr 24 21:46:53 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05c83774_56ff9447
+UUID: c5e8dfcd_4bdc5180
+Bytes: 555
+Agreed for the vector instead
+
+My issue with changing this is that I don't like having this MIRGraph having to be all over the place because that is where the information is. If we put things there, then every time I need to get that information from a MIR, I need the MIRGraph as well. That means constantly piggy-backing the MIRGraph when doing an optimization...
+
+Thus if I want the def_where in the MIR, I still need the HandleNoDefinitions after the pass. If we totally remove it, then yes, we do not need it but then I have the same problem as above
 

@@ -9,10 +9,30 @@ UUID: 45db0f06_93223ebf
 Bytes: 147
 would a memset of 0 be the most optimal thing here? It seems this may be more work than strictly necessary (ie we could just copy 1 byte per page).
 
+248:0-250:58
+Thu Apr 24 19:01:57 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db0f06_93223ebf
+UUID: a5e5abf4_241658b1
+Bytes: 705
+I'd thought of doing the one byte per page thing and even starting writing the code as I wanted to avoid a write to memory (to avoid dirty pages).  We just want the OS to map it in but we don't need the page.  The problem with just reading one byte per page is the compiler is apt to optimize the read out if the value read not being used.  Without going into assembly it's difficult to guarantee that the read will be in the code.
+
+However, I realize that the memcpy will create a bunch of dirty pages in the .data section of the libart.so (the static buffer), so I don't think the read is gaining us much.
+
+I think I'll change this to do a memset of 0 as you suggest.  Will that dirty the pages?  Dunno.
+
 264:50-264:63
 Mon Apr 21 23:32:03 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45db0f06_732a3aa0
 Bytes: 15
 MADV_DONTNEED ?
+
+264:50-264:63
+Thu Apr 24 19:01:57 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db0f06_732a3aa0
+UUID: 85b427df_aeb5efd5
+Bytes: 48
+duh!  of course.  That's what I meant to type...
 

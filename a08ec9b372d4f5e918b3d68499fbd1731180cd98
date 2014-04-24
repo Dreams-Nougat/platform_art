@@ -1,0 +1,50 @@
+Revision: a08ec9b372d4f5e918b3d68499fbd1731180cd98
+Base-for-patch-set: 2
+File: runtime/gc/allocator/rosalloc.cc
+
+547:13-547:30
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_06451c79
+Bytes: 87
+We don't need to set this to false as the header must be zeroed at this point, correct?
+
+567:17-567:33
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_c215a258
+Bytes: 93
+This is the nullcheck this change intends to remove by using the dedicated full run, correct?
+
+573:0-574:78
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_a9117975
+Bytes: 30
+Can we keep these two DCHECKs?
+
+879:2-879:32
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_776ab86e
+Bytes: 295
+I think this DCHECK_NE should be retained, as "DCHECK(IsThreadLocal());". If it's not thread-local, calling this function would be a bug as thread-local free bit map should not be in use.
+
+Perhaps, the dedicated_full_run_'s is_thread_local_ wasn't kept always set ti true due to line 613 in PS2?
+
+1099:4-1099:19
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_28bb8fd6
+Bytes: 112
+This is where the ptr array was nulled out, which caused a change in space_test.h. It wasn't necessary to do so.
+
+File: runtime/gc/space/space_test.h
+
+352:43-352:50
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_e82d2bca
+Bytes: 87
+So, FreeList() no longer null out the pointer array, which is probably an optimization?
+

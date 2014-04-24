@@ -1,0 +1,469 @@
+Revision: 37a66295f67c26d80f996b29da85c14d27e40c14
+Patch-set: 2
+File: runtime/gc/allocator/rosalloc.cc
+
+45:47-45:54
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_59825340
+Bytes: 104
+Is it possible to initialize dedicated_full_runs_ to point to dedicated_full_run_storage_ at this point?
+
+69:4-69:27
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_46455426
+Bytes: 87
+Nice as it's now possible to see the bracket index in the lock names in the mutex dump.
+
+99:2-99:46
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_b96d47d5
+Bytes: 76
+Move this to the end of Initialize() where its other fields are initialized?
+
+320:8-320:21
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_26781808
+Bytes: 64
+Should this be kCheckZeroMemory (which is currently equivalent)?
+
+368:13-368:18
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_c5b76cc2
+Bytes: 11
+Good point.
+
+449:9-449:18
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_19fa9b58
+Bytes: 70
+Note to self: now it returns the byte size instead of number of pages.
+
+475:11-475:16
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_e6656059
+Bytes: 108
+Nice that the debug build is probably somewhat faster.
+
+Paranoid: DCHECK_EQ(total_bytes % sizeof(uword), 0)?
+
+541:20-541:72
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_a316a5dc
+Bytes: 126
+This is probably intended to be (note the location of the parentheses): 
+
+reinterpret_cast<byte*>(new_run) + headerSizes[idx];
+
+542:29-542:39
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_461554a0
+Bytes: 76
+numOfSlots[idx] and bracketSizes[idx] can be cached/hoisted out of the loop.
+
+543:8-543:26
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_c3ff6913
+Bytes: 159
+I'm not sure, but is prefetching beneficial for all the slots which can be up to > 200, given the cost of this loop? Did you try limiting it to a fixed number?
+
+561:18-561:23
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_432ff916
+Bytes: 46
+So, lower_bound() wasn't necessary, I take it.
+
+599:28-599:67
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_037df1c1
+Bytes: 100
+Note to self: is it safe to pass in dedicated_full_run_ to MergeThreadLocalFreeBitMapToAllocBitMap()
+
+605:10-605:60
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_c283e23f
+Bytes: 33
+This comment needs to be updated.
+
+606:10-606:74
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_a0ca184e
+Bytes: 263
+first_bitmap_idx_ is meant to be a vector index, not a slot index, as I understand. Why compare it to numOfSlots[idx]?
+
+Either case, why is this case? Because it was full? But it's all free now.
+
+Would it be the case regardless of what is_all_free_after_merge is?
+
+608:8-608:48
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_00b684e0
+Bytes: 110
+Why set it to zero here? Isn't first_bitmap_idx_ already updated by MergeThreadLocalFreeBitMapToAllocBitMap()?
+
+612:0-623:80
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_0087a44f
+Bytes: 220
+I think this code (lines 612-623) should be skipped if thread_local_run == dedicated_full_run_ as, I think, it'd be cleaner if we don't insert dedicated_full_run_ into the full_runs_ or update its is_thread_local_ field.
+
+630:26-630:42
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_455fdc1c
+Bytes: 57
+Thanks for adding IsThreadLocal() and SetIsThreadLocal().
+
+751:11-751:21
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_d992c374
+Bytes: 87
+Call ZeroHeader() above the MutexLock? Two other places where the same comment applies.
+
+753:6-753:20
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_a5b42811
+Bytes: 47
+run is dead at this point. Get rid of line 753?
+
+807:29-807:30
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_45ad1cbd
+Bytes: 69
+For consistency, get rid of the '_' here or add it to all the fields?
+
+822:4-822:28
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_17c6e47d
+Bytes: 97
+I guess this is where a bound check was removed by masking the end of the alloc bit map, correct?
+
+824:58-824:87
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_374cc086
+Bytes: 63
+Either just "32" or "sizeof(*alloc_bitmap_ptr) * kBitsPerByte"?
+
+838:17-838:26
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_ac850780
+Bytes: 37
+num_vec?
+
+Hoist this out of the loop?
+
+841:6-841:12
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_006cc445
+Bytes: 129
+I think it's good idea to DCHECK that the run is actually full before returning here, in case there's a bug in first_bitmap_idx_.
+
+842:4-842:5
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_e3154a58
+Bytes: 404
+When there's no available slot, we are returning (nullptr) without incrementing first_bitmap_idx_. This means the first_bitmap_idx_ is left pointing the last vector, as opposed to the next (invalid) vector. And, next time AllocSlot() is called, it'd have to search the last vector even if the run is full.
+
+Is this as intended?
+
+I guess how it should be because we removed the bound check above. Correct?
+
+870:2-870:8
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_97793452
+Bytes: 220
+Since we zero out the memory for each slot as it is freed, it may be worth experimenting with a hand-written C++ memory zero routine for a smaller size (eg < 64 bytes), as opposed to always calling memset.
+
+Leave a TODO?
+
+879:19-879:38
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_63c03a31
+Bytes: 17
+Good refactoring.
+
+980:2-980:10
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_4efe071c
+Bytes: 10
+DCHECK_GE?
+
+982:2-982:10
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_23164ab1
+Bytes: 10
+DCHECK_NE?
+
+991:20-991:24
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_037dee3c
+Bytes: 19
+'bits' -> 'vector'?
+
+1005:4-1005:6
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65d01310_81347a02
+Bytes: 56
+I guess this was simplified due to the last vector mask.
+
+1130:15-1130:47
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_37596071
+Bytes: 44
+This DCHECK is redundant and can be removed.
+
+1171:8-1171:16
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_32d7ae5e
+Bytes: 36
+Nice. This got rid of free_from_run.
+
+1176:4-1176:10
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65d01310_21464e37
+Bytes: 17
+Nice refactoring.
+
+1193:7-1193:10
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65d01310_61405618
+Bytes: 20
+Nice simplification.
+
+1262:10-1262:24
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_3225eece
+Bytes: 41
+run is dead and this line can be removed?
+
+1550:26-1550:45
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_88cd7b42
+Bytes: 178
+I don't think dedicated_full_run_ would show up here as it points to a statically allocated memory, separate from the space memory, and we can undo the change around here, right?
+
+1600:9-1600:25
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_a80f9fbe
+Bytes: 93
+So, thread_local_run could be nullptr? Not always pointing to dedicated_full_run_ if revoked?
+
+1606:8-1606:16
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_8829fb11
+Bytes: 383
+Assuming it can be null, how about making each case explicit and get rid of the continue, as in:
+
+if (thread_local_run == nullptr) {
+  thread->SetRosAllocRun(idx, dedicated_full_run_);
+} else if (thread_local_run == dedicated_full_run) {
+  // nothing to do.
+} else {
+  thread->SetRosAllocRun(idx, dedicated_full_run_);
+  DCHECK_EQ(thread_local_run->magic_num_, kMagicNum);
+  ...
+}
+
+?
+
+1611:6-1611:48
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_9204a2e2
+Bytes: 49
+Move this above line 1609, right after line 1608?
+
+1631:8-1631:35
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_681677e0
+Bytes: 79
+Similarly, thread_local_run is dead at this point and this line can be removed?
+
+1778:43-1778:44
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85cb4765_088c0bdf
+Bytes: 207
+If we make dedicated_full_run_ as a size bracket idx 0, then how about asserting that the numOfSlots[0] is largest in the numOfSlots array so that its alloc bit map must be the largest? We rely on this fact.
+
+1878:28-1878:47
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_92794252
+Bytes: 117
+Similarly, dedicated_full_run_ isn't part of the space memory and the page map. We can remove the change around here?
+
+File: runtime/gc/allocator/rosalloc.h
+
+193:36-193:108
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_e0e540b2
+Bytes: 88
+How about:
+
+// The index of the first bitmap vector which may contain an available slot.
+
+193:13-193:30
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_20d90802
+Bytes: 231
+It seems that "first_bitmap_idx_" could be interpreted to mean something else as it's taken literally. How about "first_search_vec_idx_" or something like that in the sense that we search for an free slot starting from that vector?
+
+228:42-228:53
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5137f9f_c7e780f6
+Bytes: 27
+"per section" -> "per run"?
+
+229:11-229:30
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_e311cd74
+Bytes: 122
+"Words" -> "Vectors"? Let's call it a vector as technically necessarily uword != uint32_t and for terminology consistency.
+
+262:18-262:33
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_ce34b767
+Bytes: 30
+GetLastBitMapLastVectorMask()?
+
+277:29-277:50
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_2e72abf8
+Bytes: 105
+Either lose "with a specific value" (the word "Fill" already implies what it does) or say "Set all bits"?
+
+472:16-472:43
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5104b96_03acee78
+Bytes: 87
+This is a page-sized memory. How about
+
+byte dedicated_full_runs_storage_[kPageSize]
+
+?
+
+522:5-522:39
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_f9f21f79
+Bytes: 56
+This should now be the number of bytes instead of pages.
+
+528:2-528:8
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_2ebbcbd6
+Bytes: 41
+Comment that it returns the bracket size?
+
+File: runtime/gc/heap.cc
+
+599:70-600:62
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5137f9f_0751981e
+Bytes: 209
+For clarification, is another way to put this that so that we won't incorrectly retain the thread-local run from the previous rosalloc space (which could be invalidated/deallocated) after setting up a new one?
+
+607:27-607:54
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_6b465566
+Bytes: 142
+Same comment from another file: Setting up new thread local buffers by calling revoke upon a brand new rosalloc space seems unintuitive to me.
+
+1470:33-1470:38
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_cb8dc96d
+Bytes: 425
+It's not clear to me what this code want to do. Stepping back a bit, what does the (un)set_as_default param for AddSpace() and RemoveSpace() mean?
+
+We'd like to remove it from the continuous_spaces_ and alloc_spaces_ (presumably to avoid trimming as the comment says), but not clearing fields like main_space_, rosalloc_space_, dlmalloc_space_?
+
+Could there be a cleaner way?
+
+And what exactly does not work for debug builds?
+
+File: runtime/gc/space/space_test.h
+
+42:51-42:55
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_324845e9
+Bytes: 58
+Note to self: By passing true, AddSpace() does the revoke.
+
+150:40-150:41
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_52786908
+Bytes: 18
+Double semicolons.
+
+File: runtime/runtime.cc
+
+639:9-639:33
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e516c38e_48527f9a
+Bytes: 96
+Is this what the new thread had to do for the main thread? Same comment as the one in thread.cc.
+
+File: runtime/thread.cc
+
+347:4-347:5
+Thu Apr 24 01:58:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85fd0775_72a12d96
+Bytes: 92
+Say why in the comment?
+
+It seems unintuitive to need to call Revoke...() in a fresh thread?
+

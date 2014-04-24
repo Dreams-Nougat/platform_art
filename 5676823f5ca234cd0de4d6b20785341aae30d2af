@@ -1,0 +1,45 @@
+Revision: 5676823f5ca234cd0de4d6b20785341aae30d2af
+Patch-set: 1
+File: compiler/dex/mir_graph.h
+
+235
+Thu Apr 24 14:46:50 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25b37bfb_9a3f89d5
+Bytes: 108
+Do we expect frequent rebuilds of the chains? Is the reuse worth the additional space taken by this pointer?
+
+266
+Thu Apr 24 14:46:50 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45aeaf94_5be17736
+Bytes: 118
+Is this necessary? This can be retrieved from the SSAWalkData::definitions_ (which I'd like to see moved to MIRGraph).
+
+File: compiler/dex/ssa_walkdata.cc
+
+29
+Thu Apr 24 14:46:50 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25b37bfb_7752d09a
+Bytes: 20
+This is unnecessary.
+
+130
+Thu Apr 24 14:46:50 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45aeaf94_b8e539b3
+Bytes: 56
+C++11: for (const WalkDataNoDefine& info : no_define_) {
+
+File: compiler/dex/ssa_walkdata.h
+
+89:13-89:16
+Thu Apr 24 14:46:50 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05c83774_56ff9447
+Bytes: 249
+std::vector or GrowableArray resized to MIRGraph::NumSSARegs() would be better.
+
+This could be part of the MIRGraph, initialized from HandleSSADef() where we'd need to pass the MIR. That would remove the need to HandleNoDefinitions() after the pass.
+

@@ -9,3 +9,13 @@ UUID: a5104b96_6cf78faf
 Bytes: 74
 Is it worth having a template parameter if it is just going to be ignored?
 
+426
+Thu Apr 24 18:21:39 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5104b96_6cf78faf
+UUID: 659e536e_d1372469
+Bytes: 545
+Good point. Could go otherwise.
+
+My feeling was that that depends on the implementation of GetJavaLangReflectArtMethod(). It currently has a field that's a root. So, it does not currently use kDoReadBarrier. But, if you look at how java_lang_reflect_ArtField is obtained in class-inl.h, it uses kDoReadBarrier there. So, we could remove kDoReadBarrier from this function knowing how GetJavaLangReflectArtMethod() is implemented, but at the interface level, we may as well pass it in just in case the implementation needs it, and for consistency.
+

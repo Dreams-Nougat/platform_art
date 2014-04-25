@@ -1,0 +1,53 @@
+Revision: 141778a76d73b93299cbae3f8848f07dd91b481c
+Patch-set: 4
+File: runtime/gc/allocator/rosalloc.cc
+
+36:22-36:44
+Fri Apr 25 04:45:23 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a593eb68_2b2ab99e
+Bytes: 107
+Comment on what this is? Or name it a bit more specifically (eg kPrefetchNewRunDataByZeroing or something)?
+
+47:64-47:67
+Fri Apr 25 04:45:23 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85b427df_21072da5
+Bytes: 87
+Likely redundant, but fully spell out RosAlloc::Run* to match the type of the variable?
+
+552:10-552:32
+Fri Apr 25 04:45:23 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6587332a_89181992
+Bytes: 149
+The data part of the run should already be zero at this point. Is this just to zero it as an alternative way of prefetching it? Comment this briefly?
+
+626:10-626:45
+Fri Apr 25 04:45:23 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2581bb17_2ac63f7e
+Bytes: 289
+This DCHECK should be outside/above the if statement as this is the sanity check on the result of MergeThreadLocalFreeBitMapToAllocBitMap() returning false. As we pass in the dedicated full run through MergeThreadLocalFreeBitMapToAllocBitMap(), and it is IsFull(), it fits nicely that way.
+
+825:14-825:30
+Fri Apr 25 04:45:23 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a593eb68_aeb237e9
+Bytes: 60
+This should be first_search_vec_idx to match the field name.
+
+927:8-927:25
+Fri Apr 25 04:45:23 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a593eb68_319068ca
+Bytes: 52
+I see this logic is needed for the last vector mask.
+
+1631:6-1631:12
+Fri Apr 25 04:45:23 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6587332a_8fb579d6
+Bytes: 147
+Once more, can this DCHECK moved outside/above the if statement since it'd check that the dedicated full run is a thread-local run as it should be.
+

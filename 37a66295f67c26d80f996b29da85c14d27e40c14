@@ -235,6 +235,14 @@ UUID: a593eb68_6bd04131
 Bytes: 90
 This looks safe as the thread-local free bit map of the dedicated full run is always zero?
 
+599
+Fri Apr 25 21:13:10 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a593eb68_6bd04131
+UUID: 25bffbdf_7aeb7518
+Bytes: 77
+Yes, since its always 0, it should never clear any of the alloc bit map bits.
+
 605:10-605:60
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -366,6 +374,14 @@ Parent: 6587332a_ac0ecb50
 UUID: 6587332a_3e03dd2e
 Bytes: 52
 Can you remove the underscore before the equal sign?
+
+807
+Fri Apr 25 21:13:10 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6587332a_3e03dd2e
+UUID: a593eb68_b7b44311
+Bytes: 30
+Done, forgot to do the change.
 
 820:0-820:4
 Thu Apr 24 17:51:17 2014 +0000
@@ -787,6 +803,14 @@ UUID: 6587332a_5e2fb1ad
 Bytes: 148
 Never mind. I figured this out. As long as AllocFromRun() and MergeThreadLocalFreeBitMapToAllocBitMap() read the size index form the run, it's fine.
 
+1778
+Fri Apr 25 21:13:10 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6587332a_5e2fb1ad
+UUID: a593eb68_57195f4e
+Bytes: 24
+Yes, I'll add a comment.
+
 1878:28-1878:47
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -947,6 +971,14 @@ UUID: 6587332a_de22c1bf
 Bytes: 35
 Any comment? This isn't a big deal.
 
+472
+Fri Apr 25 21:13:10 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6587332a_de22c1bf
+UUID: 6587332a_924bdd6b
+Bytes: 68
+Added, reason was that it was not necessarily word aligned as bytes.
+
 522:5-522:39
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1010,6 +1042,14 @@ UUID: 6587332a_1e4c5986
 Bytes: 132
 We talked about ways to simplify the AddSpace/RemoveSpace interface in person. Any comment? Do something about it now? Leave a TODO?
 
+600
+Fri Apr 25 21:13:10 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6587332a_1e4c5986
+UUID: 25bffbdf_7a5a550b
+Bytes: 4
+Done
+
 607:27-607:54
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1053,6 +1093,14 @@ Parent: 85b427df_ee01a7d0
 UUID: 6587332a_2f480de9
 Bytes: 121
 OK. What's the reason not to pass false (meaning as non default) to RemoveSpace() here and AddSpace() in line 1479 below?
+
+1470
+Fri Apr 25 21:13:10 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6587332a_2f480de9
+UUID: 6587332a_525fa51c
+Bytes: 145
+As we discussed, the reason that I pass in false is to preserve the pointer to the main space since we need it for the next collector transition.
 
 File: runtime/gc/space/space_test.h
 

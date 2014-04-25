@@ -1,0 +1,17 @@
+Revision: 6b579224c6e68821cfd76f01b708db842049f7cd
+Patch-set: 2
+File: runtime/stack.h
+
+642
+Fri Apr 25 13:32:37 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65c57378_f9ee776a
+Bytes: 376
+Why sizeof(uint32_t) used here? There is similar code in runtime.cc:
+
+    size_t frame_size = RoundUp((__builtin_popcount(core_spills) /* gprs */ +
+                                 __builtin_popcount(fp_spills) /* fprs */ +
+                                 1 /* Method* */) * kX86_64PointerSize, kStackAlignment);
+
+It means that in runtime.cc 8 bytes added instead of 4 bytes.
+

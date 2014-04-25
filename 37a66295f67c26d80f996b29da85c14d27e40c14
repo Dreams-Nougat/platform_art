@@ -17,6 +17,14 @@ UUID: 85b427df_008eaa68
 Bytes: 246
 Not sure, I presume it removed 1 compare and 1 conditional branch from each allocation. That should be a speedup, but it should also be hard to measure. Since its implemented, I propose we keep it. I think I have a way of reducing the complexity.
 
+21
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85b427df_008eaa68
+UUID: 2581bb17_e72aa2af
+Bytes: 190
+My view leans toward that a speedup must be measurable by definition (that is, a non-measurable speedup isn't a speedup) just like Key Results must be measurable. Anyhow, yes, let's keep it.
+
 45:14-45:16
 Thu Apr 24 02:48:53 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -55,6 +63,14 @@ Parent: a5104b96_46455426
 UUID: c5e8dfcd_02094e47
 Bytes: 75
 Agreed, this is mostly for figuring out which bracket locks are contending.
+
+69
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5e8dfcd_02094e47
+UUID: 2581bb17_6a34b701
+Bytes: 6
+Right.
 
 99:2-99:46
 Thu Apr 24 01:58:42 2014 +0000
@@ -211,6 +227,14 @@ UUID: 85b427df_60c84631
 Bytes: 42
 The free bitmap of the dedicated full run.
 
+599
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85b427df_60c84631
+UUID: a593eb68_6bd04131
+Bytes: 90
+This looks safe as the thread-local free bit map of the dedicated full run is always zero?
+
 605:10-605:60
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -327,6 +351,14 @@ UUID: c5e8dfcd_82b63ec8
 Bytes: 4
 Done
 
+807
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5e8dfcd_82b63ec8
+UUID: 6587332a_ac0ecb50
+Bytes: 36
+I don't see any change in this line.
+
 820:0-820:4
 Thu Apr 24 17:51:17 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -341,6 +373,14 @@ Parent: a5e5abf4_21e48a71
 UUID: 85b427df_09f0956f
 Bytes: 4
 Done
+
+820
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85b427df_09f0956f
+UUID: 6587332a_0c2517ce
+Bytes: 7
+Thanks.
 
 822:4-822:28
 Thu Apr 24 01:58:42 2014 +0000
@@ -388,6 +428,14 @@ Parent: a5104b96_ac850780
 UUID: c5e8dfcd_a2e17aaf
 Bytes: 99
 I don't think we want to since the loop usually will return before going to the next bitmap vector.
+
+838
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5e8dfcd_a2e17aaf
+UUID: a593eb68_0e898b16
+Bytes: 7
+Agreed.
 
 841:6-841:12
 Thu Apr 24 01:58:42 2014 +0000
@@ -507,6 +555,13 @@ UUID: a5e5abf4_a1e17aaf
 Bytes: 3
 Yes
 
+1127:8-1127:17
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2581bb17_f06416ed
+Bytes: 35
+I think this DCHECK should be kept.
+
 1130:15-1130:47
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -521,6 +576,20 @@ Parent: a5104b96_37596071
 UUID: c5e8dfcd_25c1f465
 Bytes: 4
 Done
+
+1137:8-1137:17
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6587332a_4fc5413f
+Bytes: 9
+Good one.
+
+1157:8-1157:17
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6587332a_6fca0552
+Bytes: 28
+I think this should be kept.
 
 1171:8-1171:16
 Thu Apr 24 01:58:42 2014 +0000
@@ -660,6 +729,16 @@ UUID: c5e8dfcd_650e9c07
 Bytes: 51
 I don't think it matters which size bracket we use.
 
+1778
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5e8dfcd_650e9c07
+UUID: 2581bb17_702e6682
+Bytes: 425
+I think it does in FillAllocBitMap() in the next line so it will fill a large enough alloc bit map to cover all the bracket sizes. In this case, since size bracket idx 0 happens to have the largest alloc bit map, it works.
+
+Also the size_bracket_idx_ field and the filled alloc bit map must match as well because the dedicated full run is passed into a function where a normal run is expected. For example, in AllocFromRun().
+
 1878:28-1878:47
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -754,6 +833,14 @@ UUID: c5e8dfcd_45e9a048
 Bytes: 4
 Done
 
+262
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5e8dfcd_45e9a048
+UUID: a593eb68_f4088e45
+Bytes: 30
+Right, no need for two Last's.
+
 277:29-277:50
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -787,6 +874,22 @@ Parent: a5104b96_03acee78
 UUID: c5e8dfcd_6563fc20
 Bytes: 78
 Needs to be static since we do ::Thread() before the RosAllocSpace is created.
+
+472
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5e8dfcd_6563fc20
+UUID: 2581bb17_90075ae6
+Bytes: 265
+I didn't mean dropping static but using type byte instead of size_t.
+
+  static byte dedicated_full_runs_storage_[kPageSize];
+
+seemed simpler to have a page-sized memory, than
+
+  static size_t dedicated_full_runs_storage_[kPageSize/sizeof(size_t)];
+
+with a division.
 
 522:5-522:39
 Thu Apr 24 01:58:42 2014 +0000
@@ -835,6 +938,14 @@ UUID: a5e5abf4_4448c4e9
 Bytes: 94
 This is not a normal case, the tests just do strange stuff by adding multiple RosAlloc spaces.
 
+600
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5e5abf4_4448c4e9
+UUID: 6587332a_8fe8198c
+Bytes: 175
+If this only applies to space_test, is there a reason not to move it back to SpaceTest::AddSpace() where it was before? Or, does this have a value being here instead of there?
+
 607:27-607:54
 Thu Apr 24 01:58:42 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -870,6 +981,14 @@ Parent: e516c38e_cb8dc96d
 UUID: 85b427df_ee01a7d0
 Bytes: 400
 The problem is that since the space is protected, when RosAlloc tries to trim it it attempts to read the magic number (only for debug builds). But since the protection is set to PROT_NONE it faults. This is fixed if you remove the space since it doesn't get trimmed. I think this is a long existing bug with background compaction + debug builds. I can't think of cleaner ways, let me know if you can.
+
+1470
+Fri Apr 25 04:48:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85b427df_ee01a7d0
+UUID: 6587332a_2f480de9
+Bytes: 121
+OK. What's the reason not to pass false (meaning as non default) to RemoveSpace() here and AddSpace() in line 1479 below?
 
 File: runtime/gc/space/space_test.h
 

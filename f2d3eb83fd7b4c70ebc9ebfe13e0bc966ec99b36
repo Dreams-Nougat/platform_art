@@ -9,6 +9,14 @@ UUID: 6587332a_3251561f
 Bytes: 9
 portable?
 
+665:0-665:54
+Fri Apr 25 12:53:46 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6587332a_3251561f
+UUID: 65c57378_b90d9f0a
+Bytes: 299
+I currently don't see the need for that (not for this CL). The need to handle quick_to_interpreter_bridge_offset_ comes from the ImageWriter::FixupMethod() where it's used if quick_code == nullptr for non-abstract method. The portable_to_interpreter_bridge_offset_ is used only for abstract methods.
+
 File: runtime/instrumentation.cc
 
 713
@@ -25,4 +33,14 @@ Parent: 45aeaf94_b80c59cb
 UUID: a593eb68_94566a8b
 Bytes: 124
 seems like it belongs in the if clause below, it'll be worth revisiting other checks like this, although I don't expect many
+
+713
+Fri Apr 25 12:53:46 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a593eb68_94566a8b
+UUID: 65c57378_790827f7
+Bytes: 294
+Done. Added 5 other comparisons or DCHECKs as appropriate under the assumption that ClassLinker::GetQuickOatCodeFor() never returns the trampoline but ArtMethod::GetEntryPointFromQuickCompiledCode() might.
+
+After that I found out that the ArtMethod::GetOatCodePointer() was broken and fixed it.
 

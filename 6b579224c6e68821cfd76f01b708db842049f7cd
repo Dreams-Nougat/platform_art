@@ -25,3 +25,11 @@ Where in runtime.cc?
 
 The filler is due to dex considerations, and dex registers are currently 4 bytes.
 
+642
+Sat Apr 26 00:48:26 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a56ccb48_830f1ebf
+UUID: e5fec3bb_a5455e59
+Bytes: 313
+I mean runtime.cc:1054, function Runtime::CreateCalleeSaveMethod. For all 64-bit archs that function sets the frame size, and the spills calculated in another way, kArm64PointerSize/kX86_64PointerSize used instead of sizeof(uint32_t) for spill size calculation, also RoundUp used for whole frame size calculation.
+

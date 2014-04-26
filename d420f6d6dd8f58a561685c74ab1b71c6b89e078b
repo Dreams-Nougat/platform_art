@@ -1,0 +1,37 @@
+Revision: d420f6d6dd8f58a561685c74ab1b71c6b89e078b
+Patch-set: 3
+File: runtime/gc/accounting/space_bitmap.h
+
+69:34-69:35
+Sat Apr 26 00:36:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a593eb68_d4dd4d29
+Bytes: 23
+Keep the ALWAYS_INLINE?
+
+File: runtime/gc/collector/garbage_collector.cc
+
+71:13-71:38
+Sat Apr 26 00:36:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6587332a_beb18d20
+Bytes: 917
+These could cause the rosalloc verification to take its own pause, separate from GC's pause.
+
+I think that to have a clear separation in who to blame upon verification errors (for example, if the pre didn't fail but post failed, then GC is to blame), it makes sense to let each collector choose when to run these verifications (just like this change now lets each collector when to pause) and have the verification run in the same pause that the collector takes.
+
+For SemiSpace, how about moving lines 71 and 73 to the beginning and the end of SemiSpace::MarkPhase() or in appropriate places in RunPhases().
+
+For MarkSweep, how about moving lines 71 and 73 to the beginning and the end of SemiSpace::PausePhase() or in appropriate places in  RunPhases().
+
+Note that the SemiSpace's and MarkSweep's pre-sweep gc verifications are part of the collectors' pause where I suggest moving the rosalloc verification calls to.
+
+File: runtime/gc/heap.h
+
+447:69-447:94
+Sat Apr 26 00:36:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2581bb17_70ff4148
+Bytes: 140
+If we call these from within a collector's pause like one of the other comments suggests, we could add back those thread safety annotations.
+

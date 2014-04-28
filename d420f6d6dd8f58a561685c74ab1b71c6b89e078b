@@ -17,6 +17,14 @@ UUID: a554cbb1_83711e24
 Bytes: 58
 error: attributes are not allowed on a function-definition
 
+69
+Mon Apr 28 22:46:56 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a554cbb1_83711e24
+UUID: 05f3d71b_a1a638af
+Bytes: 106
+OK. I guess that since it's now a template function, it will be specialized and inlined anyway without it.
+
 File: runtime/gc/collector/garbage_collector.cc
 
 71:13-71:38
@@ -41,6 +49,14 @@ Parent: 6587332a_beb18d20
 UUID: e55a43dc_0b91c189
 Bytes: 62
 I put it in pre sweeping GC verification, is that good enough?
+
+71
+Mon Apr 28 22:46:56 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e55a43dc_0b91c189
+UUID: 05f3d71b_c1bc245f
+Bytes: 752
+I suggest going in the other direction. Placing it side by side with the pre-sweep gc verification isn't the main point, by which I was merely suggesting a code location to move it to. The point is, as I understand, to get the verification to give us information on who's to blame (gc or mutator). The whole reason to have the convention of having both 'pre' and 'post' in the first place is this very reason, it's not just that 'pre' needs to happen some time before a GC and 'post' needs to happen some time after a GC. They need to be part of the same GC pause for this blame attribution purpose. Otherwise, if a 'post' fails, since mutators are already resumed, we can't tell if it's mutator or what GC did during the pause that caused the problem.
 
 File: runtime/gc/heap.h
 

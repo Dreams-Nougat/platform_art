@@ -58,6 +58,14 @@ UUID: 05f3d71b_c1bc245f
 Bytes: 752
 I suggest going in the other direction. Placing it side by side with the pre-sweep gc verification isn't the main point, by which I was merely suggesting a code location to move it to. The point is, as I understand, to get the verification to give us information on who's to blame (gc or mutator). The whole reason to have the convention of having both 'pre' and 'post' in the first place is this very reason, it's not just that 'pre' needs to happen some time before a GC and 'post' needs to happen some time after a GC. They need to be part of the same GC pause for this blame attribution purpose. Otherwise, if a 'post' fails, since mutators are already resumed, we can't tell if it's mutator or what GC did during the pause that caused the problem.
 
+71
+Mon Apr 28 22:56:57 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05f3d71b_c1bc245f
+UUID: a5f92b00_fb92af41
+Bytes: 250
+I get what you mean, but if we have concurrent sweeping it will be impossible verify the RosAllocSpace after sweeping but before the mutators can change it. Do you think adding a boolean flag which does not do concurrent sweeping to be a good option?
+
 File: runtime/gc/heap.h
 
 447:69-447:94

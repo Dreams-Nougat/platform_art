@@ -33,3 +33,11 @@ UUID: e5fec3bb_a5455e59
 Bytes: 313
 I mean runtime.cc:1054, function Runtime::CreateCalleeSaveMethod. For all 64-bit archs that function sets the frame size, and the spills calculated in another way, kArm64PointerSize/kX86_64PointerSize used instead of sizeof(uint32_t) for spill size calculation, also RoundUp used for whole frame size calculation.
 
+642
+Mon Apr 28 11:03:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5fec3bb_a5455e59
+UUID: e52c0330_7557e8df
+Bytes: 150
+Code over there in runtime.cc:1054 is for computing the frame for callee save registers. It does not take care of virtual registers, contrary to here.
+

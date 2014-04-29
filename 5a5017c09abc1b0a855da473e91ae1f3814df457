@@ -1,5 +1,25 @@
 Revision: 5a5017c09abc1b0a855da473e91ae1f3814df457
 Patch-set: 3
+File: compiler/optimizing/code_generator.cc
+
+80:2-80:57
+Tue Apr 29 08:24:11 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5c04bc0_e37cb294
+Bytes: 592
+Just a general comment about this form of loop. After working in LLVM, I got used to write such loop as "for (size_t i = 0, e = locations->GetInputCount(); i < e; ++i)".
+This only works if "locations->GetInputCount()" never changes during the loop of course. But it avoids to evaluate this expression each time we loop. The compiler may optimize this already, but we can't be sure it'll be really done, especially with non-const objects.
+The pre-increment vs post-decrement is more a question of style. I use pre-increment for integers as I would for iterators so I always use the same style.
+
+File: compiler/optimizing/code_generator.h
+
+355:8-355:26
+Tue Apr 29 08:24:11 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 857b475f_828eba66
+Bytes: 33
+Is BitVector more suitable here ?
+
 File: compiler/optimizing/code_generator_arm.cc
 
 100:0-106:39

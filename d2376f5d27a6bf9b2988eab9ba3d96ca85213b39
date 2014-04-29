@@ -1,0 +1,27 @@
+Revision: d2376f5d27a6bf9b2988eab9ba3d96ca85213b39
+Patch-set: 5
+File: runtime/gc/collector/mark_sweep.cc
+
+140:15-140:32
+Tue Apr 29 18:54:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05caf7dd_1a0fad4f
+Bytes: 414
+I wasn't probably clear enough. But, I thought we agreed on running both 'pre' and 'presweep' as part of the GC's pause, and let 'post' have its own pause, if necessary. In PS5, it seems 'presweep' happens as part of the GC's pause, but 'pre' does not for the CMS case. I won't repeat my reasoning :) but if we move this PreGcVerification() call down to line 146 after "ScopedPause pause(this)", it'd fit, I think.
+
+File: runtime/parsed_options.cc
+
+128:30-128:41
+Tue Apr 29 18:54:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5c37fc9_0aae3f1e
+Bytes: 219
+How about "presweepingverify" or "presweepverify" to add "verify" in it? Without it, it may not be clear what it does. Accordingly, "nopresweepingverify", "presweepingverify_rosalloc" and "nopresweepingverify_rosalloc"?
+
+142:29-142:49
+Tue Apr 29 18:54:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5c37fc9_4ab83762
+Bytes: 29
+This one needs a "no" prefix.
+

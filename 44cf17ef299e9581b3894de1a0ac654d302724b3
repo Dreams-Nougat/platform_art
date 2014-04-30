@@ -20,6 +20,14 @@ UUID: 6aec607a_eab3bbee
 Bytes: 115
 How about naming it "AllocFromCurrentRunUnlocked" to emphasize that it won't take the size bracket lock internally?
 
+587
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6aec607a_eab3bbee
+UUID: ca046c04_ff55bb81
+Bytes: 4
+Done
+
 589:9-589:20
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,12 +35,28 @@ UUID: 4af15c4f_349fc80b
 Bytes: 122
 I see that this now avoids a null check for the current runs by using dedicated full runs just like the thread-local runs.
 
+589
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4af15c4f_349fc80b
+UUID: eaf77045_20a8a4a9
+Bytes: 36
+Yes, I had missed doing this before.
+
 595:38-595:66
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6aec607a_aa37f3f9
 Bytes: 60
 This part of the comment is obsolete. Just delete that part?
+
+595
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6aec607a_aa37f3f9
+UUID: eaf77045_e0b07c1d
+Bytes: 23
+Deleted entire comment.
 
 598:21-598:33
 Wed Apr 30 20:19:06 2014 +0000
@@ -48,12 +72,28 @@ UUID: 6aec607a_8a1e6f4f
 Bytes: 195
 It used to be the case that lower-size-bracket-index range of 'current_runs' were not in use (all were null). But now we are using them for the thread-unsafe case and that's the only case, right?
 
+623
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6aec607a_8a1e6f4f
+UUID: ca046c04_1f518795
+Bytes: 200
+Yes, I added revoke logic there too so that the memory isn't stuck as used. Alternatively we could maybe use the thread local runs for the lower size bracket index range, but this would add more code.
+
 704:16-704:30
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6aec607a_0a5b7f0d
 Bytes: 63
 This looks right, which we overlooked in the last CL, I assume.
+
+704
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6aec607a_0a5b7f0d
+UUID: ca046c04_7f908bfc
+Bytes: 106
+This is just to simplify the logic since we always set the thread local run later if we don't return here.
 
 1665:15-1665:22
 Wed Apr 30 20:19:06 2014 +0000
@@ -62,6 +102,14 @@ UUID: 8ae7d493_36b590be
 Bytes: 287
 How about "RevokeRun"? AllocRun() always allocates a run from fresh memory, but this one isn't a reverse of what it does. And, sometimes it just puts a run into full_runs_ or non_full_runs_, not 'freeing' it. And, this is called only from RevokeThreadLocalRuns() and RevokeCurrentRuns().
 
+1665
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ae7d493_36b590be
+UUID: ca046c04_5f95cfea
+Bytes: 4
+Done
+
 1693:15-1693:32
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,12 +117,28 @@ UUID: 0afbe434_de0565df
 Bytes: 210
 This function revokes the lower-size-bracket-index-range current runs, not all the current runs. I wonder if there's a better name to indicate that. Do you like something like "RevokeThreadUnsafeCurrentRuns()"?
 
+1693
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0afbe434_de0565df
+UUID: eaf77045_c096a06b
+Bytes: 4
+Done
+
 1727:2-1727:3
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4af15c4f_4f9ab91b
 Bytes: 152
 If we call RevokeCurrentRuns() in RevokeAllThreadLocalRuns(), should we assert the lower-size-bracket-index-range current runs are revoked here as well?
+
+1727
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4af15c4f_4f9ab91b
+UUID: eaf77045_c0e900cd
+Bytes: 4
+Done
 
 1955
 Wed Apr 30 20:19:06 2014 +0000
@@ -107,6 +171,14 @@ for (size_t i = 0; i < kNumOfSizeBrackets; i++) {
 
 If this is too much, I would do this.
 
+1955
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca046c04_1cfbd59a
+UUID: ca046c04_9f2b57b3
+Bytes: 27
+Thanks for the code! Added.
+
 File: runtime/gc/allocator/rosalloc.h
 
 440:8-440:15
@@ -117,6 +189,14 @@ Bytes: 78
 "use use" -> "use"
 "Brackets" -> "brackets"
 (these are existing comment bugs)?
+
+440
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ae7d493_4bc62ddf
+UUID: eaf77045_20ce643c
+Bytes: 38
+Apparently its an existing bug, fixed.
 
 442:22-442:51
 Wed Apr 30 20:19:06 2014 +0000
@@ -133,6 +213,14 @@ Some ideas:
 
 Or, this may be fine as is. Thoughts?
 
+442
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ae7d493_cba7dd30
+UUID: ca046c04_026feecb
+Bytes: 37
+I prefer kNumThreadLocalSizeBrackets.
+
 564:16-564:29
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -142,6 +230,14 @@ What do you think about flipping the meaning of this param, as in turning it int
 
 How about giving it a default param value that corresponds to thread-safe to make it a conscious decision to use thread-unsafe calls?
 
+564
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4af15c4f_c98da9dd
+UUID: ca046c04_029dae87
+Bytes: 4
+Done
+
 File: runtime/gc/collector/semi_space.cc
 
 263:2-263:29
@@ -150,6 +246,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0afbe434_3ef9e9e9
 Bytes: 108
 I assume this is where the lower-range-index current runs used by the thread-unsafe allocations get revoked.
+
+263
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0afbe434_3ef9e9e9
+UUID: ca046c04_62d472d0
+Bytes: 3
+Yes
 
 File: runtime/gc/space/bump_pointer_space-inl.h
 
@@ -163,6 +267,14 @@ Bytes: 74
 
 for shorter code?
 
+51
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6aec607a_c7247217
+UUID: eaf77045_00d928b3
+Bytes: 142
+Those operators aren't implemented in atomic.h and I don't think its worth doing considering we will be switching from stlport to libcxx soon.
+
 File: runtime/gc/space/bump_pointer_space.h
 
 51:5-51:11
@@ -171,6 +283,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ae7d493_0be82588
 Bytes: 24
 Unsafe -> Thread-unsafe?
+
+51
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ae7d493_0be82588
+UUID: 0afbe434_64ea3e3f
+Bytes: 4
+Done
 
 File: runtime/gc/space/space.h
 
@@ -181,6 +301,14 @@ UUID: eaf77045_9d8243eb
 Bytes: 137
 Can you add the comment here that Alloc() must be thread-safe, which is a more explicit requirement now that we have AllocThreadUnsafe().
 
+206
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eaf77045_9d8243eb
+UUID: ca046c04_621c72cf
+Bytes: 4
+Done
+
 209:5-209:11
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -188,12 +316,28 @@ UUID: 8ae7d493_0b3265e5
 Bytes: 28
 "Unsafe" -> "Thread-unsafe"?
 
+209
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ae7d493_0b3265e5
+UUID: 0afbe434_0487fa88
+Bytes: 4
+Done
+
 213:11-213:16
 Wed Apr 30 20:19:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4af15c4f_a9638553
 Bytes: 123
 I guess this default implementation covers the DlMallocSpace and the LargeObjectSpace cases where it is always thread-safe.
+
+213
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4af15c4f_a9638553
+UUID: ca046c04_82177ead
+Bytes: 108
+Yes the default is a bit slower since you do an extra interface dispatch but this shouldn't be a huge issue.
 
 File: runtime/thread.h
 
@@ -207,4 +351,12 @@ I think we could simplify it by saying that something like
 "There are RosAlloc::kNumThreadLocalSizeBracketIdx thread-local size brackets per thread."
 
 (the current one is clearer about what changed for this code review though)?
+
+1065
+Wed Apr 30 21:55:05 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ae7d493_0b0945f9
+UUID: 0afbe434_c4559230
+Bytes: 4
+Done
 

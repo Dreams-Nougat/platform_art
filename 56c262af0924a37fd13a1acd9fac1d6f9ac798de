@@ -9,3 +9,30 @@ UUID: 0afbe434_c4d7d2f6
 Bytes: 268
 interesting. is this the only text relocation in art? if so, when we remove dalvik we might also be able to remove the dynamic linker hack that allows DT_TEXTREL on x86 because dalvik's ridden with them (and it was kind of hard to have a useful system without dalvik).
 
+12
+Wed Apr 30 22:19:52 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0afbe434_c4d7d2f6
+UUID: eaf77045_63f116bb
+Bytes: 117
+Unfortunately we're getting non-GOT references into bionic that we need to get to the bottom of (fmod[f] and memcpy).
+
+File: runtime/arch/x86_64/asm_support_x86_64.S
+
+108:0-108:7
+Wed Apr 30 22:19:52 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eaf77045_e3dc062d
+Bytes: 108
+this should use the VAR macro for assemblers that don't support named macro arguments (OS/X "as" I mean you)
+
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+708:0-708:20
+Wed Apr 30 22:19:52 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca046c04_c5e910cd
+Bytes: 368
+dead code.
+I think this is part of the 32 (edi) vs 64 (rdi) bit confusion. Its going to be more future proof if we just make this rdi. Its a bit more compact to use edi. Elsewhere we're already making the assumption that references can be 64-bit (see treatment of the ArtMethod on line 41) , so I'd go with rdi, testq (rather than testl), movq (rather than movl), etc.
+

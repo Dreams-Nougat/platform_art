@@ -1,0 +1,30 @@
+Revision: 081a22324cb4733f0cbef491445ccc56b347a750
+Patch-set: 2
+File: compiler/dex/quick/codegen_util.cc
+
+708:4-708:29
+Wed Apr 30 17:43:38 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6aec607a_8442e8c9
+Bytes: 160
+so I assume this is when generate_dex_map is true?
+
+can we add an 
+
+else {
+  CHECK(generate_dex_map);
+}
+
+to still problems with missing refs in the common case?
+
+File: dex2oat/dex2oat.cc
+
+215:2-215:17
+Wed Apr 30 17:43:38 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ae7d493_2881af3b
+Bytes: 173
+we usually try document the default if possible, which apparently is kIsDebugBuild, so we can do
+
+ UsageError("        Default: %s", kIsDebugBuild ? "enabled" : "disabled");
+

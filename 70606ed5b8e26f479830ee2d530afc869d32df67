@@ -17,6 +17,16 @@ UUID: 4af15c4f_4094cebe
 Bytes: 94
 We might want to have RosAlloc be as independent of the Runtime as possible. Hiroshi thoughts?
 
+631
+Wed Apr 30 20:29:22 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4af15c4f_4094cebe
+UUID: 8ae7d493_a57de8c2
+Bytes: 366
+I like both of the ideas. On one hand, we might want to keep rosalloc as modular as possible. On the other hand, we would like to avoid accidental racy alloc calls.
+
+I think I'm in favor of inserting the AssertExclusiveHeld() call here. Because 1) it's not a hairy dependency, and 2) I am in general in favor of avoiding error-proneness and silently undetected bugs.
+
 File: runtime/gc/allocator/rosalloc.h
 
 528:0-528:54

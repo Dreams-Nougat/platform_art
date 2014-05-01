@@ -18,3 +18,11 @@ UUID: 65c57378_99441b2c
 Bytes: 176
 Could you get rid of that check with some refactoring? Move the switch to its own method, only do the check for the first instruction, and loop over the remaining instructions?
 
+54:17-54:44
+Thu May 01 00:06:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65c57378_99441b2c
+UUID: 0a292485_4e8f73aa
+Bytes: 316
+I agree. the original purpose was to play code layout games to see if we could trick GCC into actually doing -fthread-jumps. Wrt refactoring, should all of the instrumentation live in a different template specialization? For the threaded interpreter that's easier as it can be achieved by dorking the dispatch table.
+

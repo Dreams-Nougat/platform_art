@@ -54,3 +54,15 @@ Was not meant to be dead code, somehow uncommented to rdi line. As described abo
 
 Currently I somehow prefer to do it this way. The 32b code uses HeapReference and pointer interchangeably, so I see this as a line of defense for someone *not* "uncompressing" correctly.
 
+708:0-708:20
+Thu May 01 00:56:43 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea205093_1567342e
+UUID: ea205093_f8102de2
+Bytes: 333
+Maybe let me put it this way: Anything that accesses heap references right now cannot be future-proof without macro-ing.
+
+Even with "real" pointers being 64b, we still need to load only 32b. So with that it becomes a weird mix of "movl %rXX, %eYY," which IMHO is just as bad.
+
+Should I upload a patch with a macro attempt for review?
+

@@ -9,3 +9,13 @@ UUID: 0a292485_ceb363ef
 Bytes: 196
 would the plan for these unimplementeds to turn them into "xorq reg, [mem]" where mem holds the 64-bit immediate? You may want to do that before forcing the caller's to avoid non-32bit immediates.
 
+970:0-970:25
+Thu May 01 08:14:36 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a292485_ceb363ef
+UUID: aa1ad864_9337dcfa
+Bytes: 287
+I would prefer turning them into "xorq reg, TMP", but that means we need a TMP register for the assembler. For now I'm fine just having the caller know it cannot call this method with 64bits immediate.
+
+Andreas's CL (that got submitted) does a CHECK on the immediate which is fine by me.
+

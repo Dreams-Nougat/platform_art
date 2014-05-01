@@ -26,6 +26,14 @@ UUID: eaf77045_e3dc062d
 Bytes: 108
 this should use the VAR macro for assemblers that don't support named macro arguments (OS/X "as" I mean you)
 
+108:0-108:7
+Thu May 01 00:43:21 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eaf77045_e3dc062d
+UUID: ea205093_b88515f7
+Bytes: 150
+Sorry, I had tried for a bit. I think I messed up the interplay of preprocessor and macro, so it always told me "unknown instruction." It's fixed now.
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 708:0-708:20
@@ -35,4 +43,14 @@ UUID: ca046c04_c5e910cd
 Bytes: 368
 dead code.
 I think this is part of the 32 (edi) vs 64 (rdi) bit confusion. Its going to be more future proof if we just make this rdi. Its a bit more compact to use edi. Elsewhere we're already making the assumption that references can be 64-bit (see treatment of the ArtMethod on line 41) , so I'd go with rdi, testq (rather than testl), movq (rather than movl), etc.
+
+708:0-708:20
+Thu May 01 00:43:21 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca046c04_c5e910cd
+UUID: ea205093_1567342e
+Bytes: 318
+Was not meant to be dead code, somehow uncommented to rdi line. As described above, the comment lines are the ones for "real" 64b.
+
+Currently I somehow prefer to do it this way. The 32b code uses HeapReference and pointer interchangeably, so I see this as a line of defense for someone *not* "uncompressing" correctly.
 

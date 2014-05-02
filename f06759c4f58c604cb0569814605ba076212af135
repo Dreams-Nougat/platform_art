@@ -1,0 +1,24 @@
+Revision: f06759c4f58c604cb0569814605ba076212af135
+Patch-set: 3
+File: runtime/class_linker.cc
+
+813:2-816:71
+Fri May 02 17:41:56 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a520423_90bc595d
+Bytes: 353
+i know this loop came from the other code, but this is what
+
+const ImageHeader& image_header = runtime->GetHeap()->GetImageSpace()
+
+did and it makes it much more readable to use that. we don't have any short term plans for multiple image spaces and even if we do, we'll have a special case for the bootclasspath image space which is what is needed here.
+
+File: runtime/native/dalvik_system_DexFile.cc
+
+380:2-380:93
+Fri May 02 17:41:56 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a520423_503b810a
+Bytes: 68
+only used in one place? move definition or just use in at call site?
+

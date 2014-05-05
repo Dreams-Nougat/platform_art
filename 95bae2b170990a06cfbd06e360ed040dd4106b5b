@@ -1,0 +1,25 @@
+Revision: 95bae2b170990a06cfbd06e360ed040dd4106b5b
+Patch-set: 1
+File: runtime/gc/collector/semi_space.cc
+
+272:52-272:59
+Mon May 05 18:24:31 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a346007_21ae2eba
+Bytes: 857
+Here we cast size_t (bytes_moved_, etc.) to uint64_t (to_bytes, etc.) to int64_t (this cast) to ssize_t (RecordFree's parameter type) to int32_t (the Atomic<int32_t> GarbageCollector::freed_bytes_). This works as long as we don't free a > 2 GB object in 32-bit mode.
+
+This may be a chance to clean this up?
+
+Here's one idea: How about adding another variant of RecordFree() that takes the before/after values, instead of diffs, and handles the 'negative' case internally, something like:
+
+void RecordFree(size_t before_objects, size_t after_objects,
+                  size_t before_bytes, size_t after_bytes) {
+  freed_objects.FetchAndSub(before_objects);
+  freed_objects.FetchAndAdd(after_objects);
+  freed_bytes.FetchAndSub(before_bytes);
+  freed_bytes.FetchAndAdd(after_bytes);
+}
+
+which allows us to use size_t consistently without casts or signed types?
+

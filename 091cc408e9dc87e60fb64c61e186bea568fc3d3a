@@ -1,0 +1,36 @@
+Revision: 091cc408e9dc87e60fb64c61e186bea568fc3d3a
+Patch-set: 20
+File: compiler/dex/quick/arm/target_arm.cc
+
+63
+Mon May 05 17:09:32 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaa49887_634ca255
+Bytes: 72
+Could use arraysize macro, rather than doing sizeof(...)/sizeof(...[0]).
+
+579
+Mon May 05 17:09:32 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ae0a8ae_2fa2099d
+Bytes: 26
+"change to user" -> "use"?
+
+File: compiler/dex/reg_storage.h
+
+49
+Mon May 05 17:09:32 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaa49887_03412e1c
+Bytes: 769
+It is not clear to me how special registers (such as rzr in the A64 instruction set) would be represented. It would be good to clarify this here, but this can be done in later commits (to avoid delaying merging this one).
+
+In the arm64 quick compiler patch I did as follows:
+
+  rwzr = RegStorage::kCoreRegister | 0,
+  rxzr = RegStorage::kCoreRegister | 1,
+  constexpr RegStorage rs_wzr(RegStorage::kValid | rwzr);
+  constexpr RegStorage rs_xzr(RegStorage::kValid | rxzr);
+
+(the register views use kInvalid as their shape). This works, but is somewhat ugly, as two views (wzr, xzr) of the same architectural pseudo-register (rzr) are represented using two register numbers (0 and 1, respectively). Also methods like RegStorage.Is64Bit() don't work for rs_wzr and rs_xzr.
+

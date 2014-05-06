@@ -1,0 +1,127 @@
+Revision: ea1d751e0bd9659112416012681b3f545f3a5c15
+Patch-set: 4
+File: compiler/dex/quick/arm64/arm64_lir.h
+
+26
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3ee8ea_f4cfdee1
+Bytes: 108
+Add a TODO here, noting that the comments about the calling convention are incorrect and need to be updated.
+
+132
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a346007_94fdad1f
+Bytes: 272
+Note that the def/use encoding mechanism is currently broken for arm64: the def/use masks are only 64 bits wide, and we now have more than 64 resources.  So long as all optimizations are switched off, this won't bite us - and I expect to fix this within the next few days.
+
+166
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3ee8ea_48db8e87
+Bytes: 266
+Per our recent conversation, I think we can do this without too much trouble.  Because other targets may have similar needs, I'm going to shoot for a general solution via increasing the number of possible registers, rather than trying to use an unused bit elsewhere.
+
+190
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3ee8ea_4860aedd
+Bytes: 674
+Incidentally, I'm not happy with my naming convention.  I used the "rs_" prefix to distinguish between RegStorage elements and the previous use of raw ints to describe registers during the register utility rewrite.  Once I complete the eradication of raw ints for registers, I may want to get rid of "rs_".  Also, the capitalized "_SELF", "_SP", "_LR" etc. are holdovers from the trace JIT days when those were #define'd register numbers.  Similarly, the target prefix "ARM_SP", "A64_SP", "X86_SP" are holdovers from a time in which all of those things lived in the same namespace.  If you have any naming preferences, let me know.  I'm mostly just tired of seeing all caps.
+
+File: compiler/dex/quick/arm64/assemble_arm64.cc
+
+604
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8aba749a_01a58e27
+Bytes: 27
+use:
+if (kIsDebugBuild) {
+}
+
+746
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3ee8ea_a86b3a6f
+Bytes: 211
+Note that it's also perfectly acceptable to abort the compilation and force interpretation for pathological cases (though we would want to be pretty sure such occurrences were rare and unlikely to be important).
+
+File: compiler/dex/quick/arm64/call_arm64.cc
+
+28
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3ee8ea_08da26f5
+Bytes: 283
+Delete - as a general rule, let's avoid commenting out code.  It's too easy for such code to live around long enough that no one remembers what it was for.   Also, we'll largely be using:
+
+UNIMPLEMENTED(WARNING);
+and
+UNIMPLEMENTED(FATAL);
+
+the way you have been using the breakpoint.
+
+358
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3ee8ea_881c76fe
+Bytes: 9
+as above.
+
+File: compiler/dex/quick/arm64/fp_arm64.cc
+
+298
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a346007_4f8d4c20
+Bytes: 81
+Comment still needed?  If so, I'd additionally add an UNIMPLEMENTED(FATAL) below.
+
+File: compiler/dex/quick/arm64/int_arm64.cc
+
+162
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3ee8ea_487eeef4
+Bytes: 19
+Comment to explain?
+
+271
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a346007_6fa6509d
+Bytes: 232
+Yea, just delete it now.  If for some reason an error elsewhere results in a pair getting through, it will trip up on a GetReg() during a debug run.  Those happen frequently enough that we don't need to explicitly DCHECK(!IsPair());
+
+File: compiler/dex/quick/arm64/target_arm64.cc
+
+33
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8aba749a_6ca801ab
+Bytes: 70
+I'll add the wide view in a later CL - lets just go with this for now.
+
+595
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8aba749a_6cc9e159
+Bytes: 111
+Bad merge here?  looks like pieces of the register pool initialization got collapsed into AllocTypedTempWide().
+
+609
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8aba749a_aca8397d
+Bytes: 129
+TODO: Don't think we'll need this, but if we do simplify to ignore the pair handling and just free if rl_keep.reg != rl_free.reg.
+
+664
+Tue May 06 18:36:26 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a346007_0f222408
+Bytes: 22
+UNIMPLEMENTED(WARNING)
+

@@ -16,6 +16,20 @@ UUID: 8a58b470_40ffe2d0
 Bytes: 6
 ishst?
 
+1066:11-1066:14
+Wed May 07 01:03:07 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a58b470_40ffe2d0
+UUID: 8a58b470_00a84afe
+Bytes: 784
+This needs to be a LoadStore and StoreStore barrier.  Andreas and I concluded form the table in the documentation that ish is probably the best we can do here.
+
+Much more importantly, the barrier needs to go BEFORE the stores that effects the release of the lock.  Otherwise memory operations inside the critical sections can become visible after the lock release becomes effective, allowing other threads to acquire the lock before they see changes performed by this critical section.
+
+If the same code is used for ARM32, it should be fixed there, too.
+
+I conjecture that just replacing the str with an strl, removing the dmb, will work as well and run faster.  The documentation is not as clear as I would personally like about the interaction of acquire/release operations and dmb.
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 700:0-700:34

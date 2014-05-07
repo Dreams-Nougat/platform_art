@@ -9,6 +9,14 @@ UUID: 0a6cc413_9c616d90
 Bytes: 121
 Insert "Locks::mutator_lock_->AssertExclusiveHeld(self_);" in case a caller (a collector) uses NO_THREAD_SAFETY_ANALYSIS?
 
+36
+Wed May 07 22:28:28 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a6cc413_9c616d90
+UUID: aa62d821_7341201c
+Bytes: 4
+Done
+
 52:79-52:84
 Wed May 07 22:18:01 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 0a6cc413_fc66a164
 Bytes: 22
 'there' -> 'there is'?
 
+52
+Wed May 07 22:28:28 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a6cc413_fc66a164
+UUID: aa62d821_f35410dd
+Bytes: 4
+Done
+
 59:37-59:51
 Wed May 07 22:18:01 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8afd1475_f23a48e1
 Bytes: 442
 Just to clarify, it has to be the case that not just the referent is marked, but any objects reachable from it must be already marked (recursively marked) for us to be able to return the referent in this case. Since we call process_mark_stack_callback at the end of the 'preserving references' operations in ProcessReferences(), just checking is_marked_callback(referent) is sufficient to check if the referent is recursively marked. Correct?
+
+59
+Wed May 07 22:28:28 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8afd1475_f23a48e1
+UUID: 6a02a043_f1e9a8cc
+Bytes: 193
+Yes, that is why we must call StopPreservingReferences after we process the mark stack. It ensures that all objects reachable from the referent are already marked before we return the referent.
 
 123:54-123:78
 Wed May 07 22:18:01 2014 +0000
@@ -44,4 +68,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8afd1475_d238e4c2
 Bytes: 338
 Side question: ReferenceQueue::EnqueueFinalizerReferences's 3rd parameter is named recursive_mark_callback, but it's meant to be a non-recursive-mark callback and a better name would be mark_object_callback. Is this correct? As we call process_mark_stack_callback() in the next line (142), there's no problem here in either case, however.
+
+141
+Wed May 07 22:28:28 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8afd1475_d238e4c2
+UUID: 6a02a043_111a6c43
+Bytes: 15
+I'll rename it.
 

@@ -9,12 +9,28 @@ UUID: 2a3ee8ea_f4cfdee1
 Bytes: 108
 Add a TODO here, noting that the comments about the calling convention are incorrect and need to be updated.
 
+26
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a3ee8ea_f4cfdee1
+UUID: 8a58b470_9492dc41
+Bytes: 4
+Done
+
 132
 Tue May 06 18:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a346007_94fdad1f
 Bytes: 272
 Note that the def/use encoding mechanism is currently broken for arm64: the def/use masks are only 64 bits wide, and we now have more than 64 resources.  So long as all optimizations are switched off, this won't bite us - and I expect to fix this within the next few days.
+
+132
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a346007_94fdad1f
+UUID: 0a43e481_c186648b
+Bytes: 213
+Yes. 64 bit are enough just to take into account def/use of all registers except zr (which is not to be considered anyway). All the remaining (abstract) resources will need to be placed in separate masks, I guess.
 
 166
 Tue May 06 18:36:26 2014 +0000
@@ -23,12 +39,32 @@ UUID: 2a3ee8ea_48db8e87
 Bytes: 266
 Per our recent conversation, I think we can do this without too much trouble.  Because other targets may have similar needs, I'm going to shoot for a general solution via increasing the number of possible registers, rather than trying to use an unused bit elsewhere.
 
+166
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a3ee8ea_48db8e87
+UUID: 8a58b470_d47bb446
+Bytes: 24
+Great. This makes sense.
+
 190
 Tue May 06 18:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a3ee8ea_4860aedd
 Bytes: 674
 Incidentally, I'm not happy with my naming convention.  I used the "rs_" prefix to distinguish between RegStorage elements and the previous use of raw ints to describe registers during the register utility rewrite.  Once I complete the eradication of raw ints for registers, I may want to get rid of "rs_".  Also, the capitalized "_SELF", "_SP", "_LR" etc. are holdovers from the trace JIT days when those were #define'd register numbers.  Similarly, the target prefix "ARM_SP", "A64_SP", "X86_SP" are holdovers from a time in which all of those things lived in the same namespace.  If you have any naming preferences, let me know.  I'm mostly just tired of seeing all caps.
+
+190
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a3ee8ea_4860aedd
+UUID: eaaa1052_bf35c763
+Bytes: 502
+No preferences from my side. I suspect w0, x1, s2, d3, wzr, xzr, sp, wsp, xself, lr are good. But a common prefix can be used in case we end up hitting a massive number of already existing variables.
+
+I guess this also means that the Arm, A64 prefixes can also be removed from things like A64NativeRegisterPool, A64ShiftEncodings, ArmOpcode?
+
+If not, what is the best prefix to use? I used A64 mainly for convenience (as it is as wide as Arm, ARM), but you may want Arm64 to be used instead, I guess...
 
 File: compiler/dex/quick/arm64/assemble_arm64.cc
 
@@ -41,12 +77,35 @@ use:
 if (kIsDebugBuild) {
 }
 
+604
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8aba749a_01a58e27
+UUID: 6a346007_d1973931
+Bytes: 4
+Done
+
+669
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a523c52_3ea6519c
+Bytes: 193
+Note that - at the moment - this line causes plenty of warnings to be emitted. This is caused by the fact that rxN is currently defined identically to rwN and also by rwzr == rwsp, rxzr == rsp.
+
 746
 Tue May 06 18:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a3ee8ea_a86b3a6f
 Bytes: 211
 Note that it's also perfectly acceptable to abort the compilation and force interpretation for pathological cases (though we would want to be pretty sure such occurrences were rare and unlikely to be important).
+
+746
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a3ee8ea_a86b3a6f
+UUID: 6a346007_51ae8984
+Bytes: 353
+My feeling is that it could be indeed worth to abort compilation for methods above 1 MB in size. I suspect, however, it is best to wait until the Arm64 backend is complete before making decisions on this: I cannot yet exclude that we will have to add an instruction which requires multiple-instructions fixups (thus making the retry logic useful again).
 
 File: compiler/dex/quick/arm64/call_arm64.cc
 
@@ -62,6 +121,15 @@ and
 UNIMPLEMENTED(FATAL);
 
 the way you have been using the breakpoint.
+
+28
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a3ee8ea_08da26f5
+UUID: 6a346007_71862d03
+Bytes: 454
+I use to uncomment this line to debug via gdb (it works as a breakpoint).
+I found it useful to have it here so I could quickly find it, uncomment it and re-run a failing test. I could then use gdb to step through the generated code. A similar comment was added below, as you noticed. I will remove both of these in the next patch set. Thanks also for the guideline about the UNIMPLEMENTED macros. I added some of these, as you will see in next patch set.
 
 358
 Tue May 06 18:36:26 2014 +0000
@@ -79,6 +147,14 @@ UUID: 6a346007_4f8d4c20
 Bytes: 81
 Comment still needed?  If so, I'd additionally add an UNIMPLEMENTED(FATAL) below.
 
+298
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a346007_4f8d4c20
+UUID: 6a346007_9176515b
+Bytes: 179
+Yes, quite some functionality in this file and in int_arm64.cc will need to be implemented, probably touching the gen_*.cc files. I will add an UNIMPLEMENTED(FATAL), as suggested.
+
 File: compiler/dex/quick/arm64/int_arm64.cc
 
 162
@@ -88,12 +164,28 @@ UUID: 2a3ee8ea_487eeef4
 Bytes: 19
 Comment to explain?
 
+162
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a3ee8ea_487eeef4
+UUID: 6a346007_d1ce193b
+Bytes: 80
+This needs to be reimplemented. I will add an UNIMPLEMENTED() entry plus a TODO.
+
 271
 Tue May 06 18:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a346007_6fa6509d
 Bytes: 232
 Yea, just delete it now.  If for some reason an error elsewhere results in a pair getting through, it will trip up on a GetReg() during a debug run.  Those happen frequently enough that we don't need to explicitly DCHECK(!IsPair());
+
+271
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a346007_6fa6509d
+UUID: 4a523c52_fe5fb99c
+Bytes: 4
+Done
 
 File: compiler/dex/quick/arm64/target_arm64.cc
 
@@ -104,12 +196,28 @@ UUID: 8aba749a_6ca801ab
 Bytes: 70
 I'll add the wide view in a later CL - lets just go with this for now.
 
+33
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8aba749a_6ca801ab
+UUID: 0a43e481_218f48ab
+Bytes: 3
+OK.
+
 595
 Tue May 06 18:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8aba749a_6cc9e159
 Bytes: 111
 Bad merge here?  looks like pieces of the register pool initialization got collapsed into AllocTypedTempWide().
+
+595
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8aba749a_6cc9e159
+UUID: 4a523c52_beaf011a
+Bytes: 168
+Not sure I follow... I suspect this may be an artifact of Gerrit which is collapsing some of the common lines and representing them as "... skipped 23 common lines ..."
 
 609
 Tue May 06 18:36:26 2014 +0000
@@ -118,10 +226,26 @@ UUID: 8aba749a_aca8397d
 Bytes: 129
 TODO: Don't think we'll need this, but if we do simplify to ignore the pair handling and just free if rl_keep.reg != rl_free.reg.
 
+609
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8aba749a_aca8397d
+UUID: 8a58b470_f4ad1888
+Bytes: 227
+You are right. I will replace the body of the function with a fatal log. Otherwise, let me know and I will get rid of it entirely. I guess it would be good to create a 64-bit version of Mir2Lir::GenArithOpLong in gen_common.cc.
+
 664
 Tue May 06 18:36:26 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a346007_0f222408
 Bytes: 22
 UNIMPLEMENTED(WARNING)
+
+664
+Wed May 07 14:19:09 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a346007_0f222408
+UUID: 6a346007_718e2dda
+Bytes: 4
+Done
 

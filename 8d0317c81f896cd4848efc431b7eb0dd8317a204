@@ -1,0 +1,39 @@
+Revision: 8d0317c81f896cd4848efc431b7eb0dd8317a204
+Patch-set: 3
+File: runtime/gc/reference_processor.cc
+
+36:2-36:20
+Wed May 07 22:18:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a6cc413_9c616d90
+Bytes: 121
+Insert "Locks::mutator_lock_->AssertExclusiveHeld(self_);" in case a caller (a collector) uses NO_THREAD_SAFETY_ANALYSIS?
+
+52:79-52:84
+Wed May 07 22:18:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a6cc413_fc66a164
+Bytes: 22
+'there' -> 'there is'?
+
+59:37-59:51
+Wed May 07 22:18:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8afd1475_f23a48e1
+Bytes: 442
+Just to clarify, it has to be the case that not just the referent is marked, but any objects reachable from it must be already marked (recursively marked) for us to be able to return the referent in this case. Since we call process_mark_stack_callback at the end of the 'preserving references' operations in ProcessReferences(), just checking is_marked_callback(referent) is sufficient to check if the referent is recursively marked. Correct?
+
+123:54-123:78
+Wed May 07 22:18:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a6cc413_3f5beb31
+Bytes: 283
+Since we could use process_references_args_ here even when concurrent is false, do we need to fill process_references_args_ in the else block of the if statement above (line 104) as well, otherwise we could be passing in null process_references_args_ to PreserveSomeSoftReferences()?
+
+141:58-141:78
+Wed May 07 22:18:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8afd1475_d238e4c2
+Bytes: 338
+Side question: ReferenceQueue::EnqueueFinalizerReferences's 3rd parameter is named recursive_mark_callback, but it's meant to be a non-recursive-mark callback and a better name would be mark_object_callback. Is this correct? As we call process_mark_stack_callback() in the next line (142), there's no problem here in either case, however.
+

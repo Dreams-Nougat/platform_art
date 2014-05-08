@@ -23,6 +23,16 @@ UUID: 8afd1475_26476edc
 Bytes: 55
 stlxr  w3, w2, [x4]    // store lock_word, release lock
 
+1019:4-1019:8
+Thu May 08 22:19:18 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8afd1475_26476edc
+UUID: ca138c9f_d3829eeb
+Bytes: 330
+This doesn't need to be a release store.  See F.3.1 in the ARMv8 manual.
+
+So long as the ldx uses acquire, the barrier can be dropped and nothing else is needed.  I'd vote for moving everything from dmb to acquire/release in one fell swoop, since the documentation seems less than crystal clear on acquire/release/dmb interaction.
+
 1021:0-1021:94
 Wed May 07 00:06:04 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

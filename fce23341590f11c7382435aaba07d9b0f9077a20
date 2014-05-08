@@ -11,6 +11,14 @@ I worry that in the LPAE case we may not generated an ldrd here (or strd below) 
 
 Alternatively we could require LoadBaseDisp for k64 to never do two k32 loads.
 
+961:0-961:71
+Thu May 08 17:43:05 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa62d821_cd6e8dce
+UUID: 2ae0a8ae_a35e12c9
+Bytes: 241
+Since https://android-review.googlesource.com/#/c/93523/1/compiler/dex/quick/arm/utility_arm.cc it will always be LDRD/STRD, possibly preceded by an ADD. (The ADD itself could be more than a single instruction for displacements over 256KiB.)
+
 967
 Thu May 08 13:45:21 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,4 +41,12 @@ Parent: aaa49887_f7e6084e
 UUID: aa62d821_4d4d5d81
 Bytes: 296
 The clrex shouldn't be used. clrex was added for the problem of a context switch possibly getting the exclusive flag of the previous context. clrex clears that flag and was run of part of the code starting the freshly swapped in context (ie its really an instruction meant for kernel privileges).
+
+967
+Thu May 08 17:43:05 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa62d821_4d4d5d81
+UUID: aaa49887_176ba471
+Bytes: 9
+Shall do.
 

@@ -2,6 +2,15 @@ Revision: fce23341590f11c7382435aaba07d9b0f9077a20
 Patch-set: 1
 File: compiler/dex/quick/arm/utility_arm.cc
 
+961:0-961:71
+Thu May 08 17:33:24 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa62d821_cd6e8dce
+Bytes: 379
+I worry that in the LPAE case we may not generated an ldrd here (or strd below) if the displacement is large. We don't generally get large classes, arrays are non-volatile, so the problem isn't huge. I think the condition should be something like: "!HasLpae() || DisplacementFitsLdrd(displacement)".
+
+Alternatively we could require LoadBaseDisp for k64 to never do two k32 loads.
+
 967
 Thu May 08 13:45:21 2014 +0000
 Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,4 +25,12 @@ Parent: aa62d821_2752c224
 UUID: aaa49887_f7e6084e
 Bytes: 257
 I also think it's not strictly necessary. The question is whether the performance is better with or without it. I'm not a CPU engineer to know how much work the CPU has to do when another core tries to use LDREX/STREX while this one holds an exclusive lock.
+
+967
+Thu May 08 17:33:24 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aaa49887_f7e6084e
+UUID: aa62d821_4d4d5d81
+Bytes: 296
+The clrex shouldn't be used. clrex was added for the problem of a context switch possibly getting the exclusive flag of the previous context. clrex clears that flag and was run of part of the code starting the freshly swapped in context (ie its really an instruction meant for kernel privileges).
 

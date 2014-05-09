@@ -9,12 +9,28 @@ UUID: eac4d062_649a141c
 Bytes: 58
 add quick to the name, eventually we'd like to remove this
 
+17:8-17:40
+Fri May 09 16:41:23 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eac4d062_649a141c
+UUID: 6a87002a_2cc57b72
+Bytes: 4
+Done
+
 26:16-26:31
 Fri May 09 15:44:43 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eac4d062_449518eb
 Bytes: 56
 This is quick specific so should be QuickMethodFrameInfo
+
+26:16-26:31
+Fri May 09 16:41:23 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eac4d062_449518eb
+UUID: 8a827417_8a348b1a
+Bytes: 4
+Done
 
 File: runtime/mirror/art_method.cc
 
@@ -25,6 +41,14 @@ UUID: 2aa8a88f_5e9419bf
 Bytes: 237
 this logic should be in instrumentation, that is, instrumentation should be the point where we determine whether hacks for instrumentation have been added. Spreading the logic between ArtMethod and Instrumentation is a maintenance issue.
 
+424:1-453:3
+Fri May 09 16:41:23 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2aa8a88f_5e9419bf
+UUID: 8a827417_0dd6f561
+Bytes: 41
+I'll need to think about this a bit more.
+
 File: runtime/mirror/art_method.h
 
 326:0-326:34
@@ -34,12 +58,28 @@ UUID: eac4d062_84fd701f
 Bytes: 16
 move to if above
 
+326:0-326:34
+Fri May 09 16:41:23 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eac4d062_84fd701f
+UUID: 6a87002a_ec1e0379
+Bytes: 189
+This was WIP with the strongest checking possible. I'll have to remove this function anyway since it's used to check two different sources of the frame info and the old source will go away.
+
 332:18-332:30
 Fri May 09 15:44:43 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8a999485_41ea7c3e
 Bytes: 95
 Push Quick into the naming. When we remove the quick ABI points likes this will be problematic.
+
+332:18-332:30
+Fri May 09 16:41:23 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a999485_41ea7c3e
+UUID: 8a827417_eaa4272e
+Bytes: 4
+Done
 
 File: runtime/oat.cc
 
@@ -50,6 +90,14 @@ UUID: 2aa8a88f_1e7371fe
 Bytes: 139
 can we bring quick_ into the naming here. These fields only have meaning for the quick ABI that we'd like to be in a position to deprecate.
 
+373:4-373:20
+Fri May 09 16:41:23 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2aa8a88f_1e7371fe
+UUID: 8a827417_6a403768
+Bytes: 107
+In that case, we should rename the OatMethodHeader to OatQuickMethodHeader rather than renaming the fields.
+
 File: runtime/oat.h
 
 171:0-171:28
@@ -58,4 +106,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2aa8a88f_9e86818a
 Bytes: 99
 don't forget when moving member variables from one place to another to bring over the documentation
+
+171:0-171:28
+Fri May 09 16:41:23 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2aa8a88f_9e86818a
+UUID: aa93b868_cb55b530
+Bytes: 127
+I think I'll actually replace the three fields with the QuickMethodFrameInfo. Than the one-line comment above should be enough.
 

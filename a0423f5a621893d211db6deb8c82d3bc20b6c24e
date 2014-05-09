@@ -1,0 +1,61 @@
+Revision: a0423f5a621893d211db6deb8c82d3bc20b6c24e
+Patch-set: 2
+File: runtime/method_frame_info.h
+
+17:8-17:40
+Fri May 09 15:44:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eac4d062_649a141c
+Bytes: 58
+add quick to the name, eventually we'd like to remove this
+
+26:16-26:31
+Fri May 09 15:44:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eac4d062_449518eb
+Bytes: 56
+This is quick specific so should be QuickMethodFrameInfo
+
+File: runtime/mirror/art_method.cc
+
+424:1-453:3
+Fri May 09 15:44:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2aa8a88f_5e9419bf
+Bytes: 237
+this logic should be in instrumentation, that is, instrumentation should be the point where we determine whether hacks for instrumentation have been added. Spreading the logic between ArtMethod and Instrumentation is a maintenance issue.
+
+File: runtime/mirror/art_method.h
+
+326:0-326:34
+Fri May 09 15:44:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eac4d062_84fd701f
+Bytes: 16
+move to if above
+
+332:18-332:30
+Fri May 09 15:44:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a999485_41ea7c3e
+Bytes: 95
+Push Quick into the naming. When we remove the quick ABI points likes this will be problematic.
+
+File: runtime/oat.cc
+
+373:4-373:20
+Fri May 09 15:44:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2aa8a88f_1e7371fe
+Bytes: 139
+can we bring quick_ into the naming here. These fields only have meaning for the quick ABI that we'd like to be in a position to deprecate.
+
+File: runtime/oat.h
+
+171:0-171:28
+Fri May 09 15:44:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2aa8a88f_9e86818a
+Bytes: 99
+don't forget when moving member variables from one place to another to bring over the documentation
+

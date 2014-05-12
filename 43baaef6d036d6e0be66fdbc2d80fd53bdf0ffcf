@@ -9,6 +9,14 @@ UUID: eaf77045_e6dc142d
 Bytes: 29
 why not just char* and then..
 
+246:16-246:27
+Mon May 12 14:13:00 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eaf77045_e6dc142d
+UUID: aa26584d_96f88ae7
+Bytes: 4
+Done
+
 247:21-247:55
 Wed Apr 30 23:22:52 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: eaf77045_a6e60cfb
 Bytes: 63
 arg != nullptr && strcmp(src_descriptor, match_descriptor) == 0
 
+247:21-247:55
+Mon May 12 14:13:00 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eaf77045_a6e60cfb
+UUID: 6a862067_91107cb4
+Bytes: 4
+Done
+
 258:16-258:19
 Wed Apr 30 23:22:52 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0afbe434_d22e74c4
 Bytes: 52
 but if arg were allowed to be nullptr we'd die here?
+
+258:16-258:19
+Mon May 12 14:13:00 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0afbe434_d22e74c4
+UUID: 6a862067_f11b08d6
+Bytes: 302
+We only use these macros for primitive types. In the case of arg == nullptr, we throw an exception when the expected type is primitive (see line 230 above for the test). So I think arg can't be nullptr in these macros and we can simplify the code. Adding a CHECK in DO_FIRST_ARG will do the assert job.
 

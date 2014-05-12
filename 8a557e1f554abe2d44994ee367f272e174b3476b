@@ -1,0 +1,38 @@
+Revision: 8a557e1f554abe2d44994ee367f272e174b3476b
+Patch-set: 7
+File: runtime/mirror/art_method.cc
+
+424:0-424:40
+Mon May 12 19:33:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa4d7811_f5a5388f
+Bytes: 78
+move to line 417 and change Runtime::Current() on lines 418 and 421 to runtime
+
+File: runtime/mirror/art_method.h
+
+321:0-321:78
+Mon May 12 19:33:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa7bb835_51021471
+Bytes: 124
+this is called from walk stack, which is performance sensitive, so I think GetQuickFrameInfo should move to art_method-inl.h
+
+File: runtime/runtime.cc
+
+1019:0-1019:90
+Mon May 12 19:33:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa4d7811_5508acb2
+Bytes: 28
+this will be hot so, -inl.h.
+
+File: runtime/runtime.h
+
+343:0-343:57
+Mon May 12 19:33:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a21c030_53367c6f
+Bytes: 152
+As a separate CL let's make instruction_set_ const and add a constructor argument. That change should also document it and contrast it with kRuntimeISA.
+

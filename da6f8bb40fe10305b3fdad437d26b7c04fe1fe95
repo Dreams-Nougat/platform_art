@@ -9,6 +9,24 @@ UUID: 2a698874_d0eb52c9
 Bytes: 93
 this needs to handle REX prefixes, especially as R8 and R9 are part of the calling convention
 
+392
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a698874_d0eb52c9
+UUID: aa26584d_fc5f5d19
+Bytes: 942
+The work on REX support, particularly for r8..r9 is in progress and it depends on this patch. I would prefer to submit r8..r9 as a separate patch. Both patches are quite big and consume a lot of resources on rebasing after each change in BE (Load/StoreWord, stack walker changes, doubles as doubles, ThreadOffset4 etc).
+
+This version is functional, except "hard float" limitation, passing 3 regs as arguments limitation, register allocator limitation (it still allocates longs as pair for 64-bit, discussion with Bill initiated by Mark) - all of them are general art limitations.
+
+Does it sounds reasonable to separate patches as follows?
+ - Start with this patch (it can pass about a half of art tests in 64-bit host mode)
+ - Extend it with REX after merge (with same pass rate)
+ - Update LoadArgRegs/GenDalvikArgs with hard float and >3 parameters support
+ - Update long arithmetic when reg alloc will be ready
+
+Do you accept such sequence?
+
 411:60-411:61
 Tue May 13 06:23:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,6 +41,22 @@ UUID: 8a6a7464_7984d381
 Bytes: 14
 In 64-bit mode
 
+411
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_7984d381
+UUID: 6a862067_37d0a085
+Bytes: 37
+Do you mean I have to update comment?
+
+411
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a698874_d046f236
+UUID: 8a81944e_7884d981
+Bytes: 32
+What do you mean by "full-stop"?
+
 574:0-579:5
 Tue May 13 06:23:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +64,30 @@ UUID: 8a6a7464_f95c4360
 Bytes: 159
 this is somewhat defeating the point of having a skeleton, it'd be nicer if the lookup table contained fs: for 32-bit and gs: for 64-bit and lose the condition
 
+579
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_f95c4360
+UUID: 6a862067_37a50028
+Bytes: 321
+That is the only solution to keep lookup table manageable. There is no difference between 32-bit operations in 32-bit and 64-bit mode. The 64-bit specific appears only in three places: EmitPrefix, CalculateSize, EmitModrmThread.
+
+Is it acceptable to avoid duplicating *Thread* instruction entries in lookup table for now?
+
 635:33-635:39
 Tue May 13 06:23:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a698874_505be20c
 Bytes: 9
 full-stop
+
+635
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a698874_505be20c
+UUID: 6a862067_976cec18
+Bytes: 32
+Please describe your point here.
 
 File: compiler/dex/quick/x86/call_x86.cc
 
@@ -46,12 +98,30 @@ UUID: 4a64fc99_7c9a8191
 Bytes: 182
 presumably kPointerSize here should be 4 or 8, use GetInstructionSetPointerSize(cu_->instruction_set) or else cross-compilation 32-bit to 64-bit or vice versa will do the wrong thing
 
+214
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a64fc99_7c9a8191
+UUID: 8a81944e_98617d1b
+Bytes: 183
+I didn't have chance to check cross compilation yet, ThreadOffset4 patch was merged yesterday.
+
+I'll update kPointerSize with GetInstructionSetPointerSize where applicable. Thank you.
+
 298:64-298:76
 Tue May 13 06:23:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8a6a7464_b93fabf4
 Bytes: 5
 ditto
+
+298
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_b93fabf4
+UUID: aa26584d_7c6cadd4
+Bytes: 13
+Will fix this
 
 File: compiler/dex/quick/x86/codegen_x86.h
 
@@ -69,6 +139,14 @@ UUID: 8a6a7464_04dbea88
 Bytes: 5
 const
 
+583
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_192fd7c1
+UUID: aa26584d_dcbf01ef
+Bytes: 79
+Is "const bool Gen64Bit() { return gen64bit_; }" will be better for this place?
+
 615:4-615:8
 Tue May 13 06:23:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,6 +162,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a698874_900e3a03
 Bytes: 119
 as before (and below) this needs to be the pointer size being compiled for not the pointer size of the current runtime.
+
+589
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a698874_900e3a03
+UUID: aa26584d_fcc43d77
+Bytes: 14
+Will fix this.
 
 658:0-658:20
 Tue May 13 06:23:16 2014 +0000
@@ -123,4 +209,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a64fc99_5c5bfd0c
 Bytes: 54
 just REX 0x40 is useful for normalizing byte registers
+
+543
+Tue May 13 17:08:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a64fc99_5c5bfd0c
+UUID: 8a81944e_7832992e
+Bytes: 112
+The REX_W is used in lookup table for 64-bit entries. Do you prefer to remove REX_R/REX_X/REX_B from this patch?
 

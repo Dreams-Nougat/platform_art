@@ -9,6 +9,16 @@ UUID: 2a698874_5cea1914
 Bytes: 69
 Why do you use Is64BitInstructionSet here, and Gen64Bit other places?
 
+159
+Tue May 13 18:55:11 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a698874_5cea1914
+UUID: 6a862067_baa795db
+Bytes: 424
+The "Is64BitInstructionSet(cu_->instruction_set)" came from ThreadOffset4 rework by Andreas Gampe (https://android-review.googlesource.com/#/c/93785/). I fixed dex2oat compile time issues when rebased this patch on top of Andreas's patch.
+
+Gen64Bit comes from our patch. Later we can replace all Is64BitInstructionSet by Gen64Bit. The Is64BitInstructionSet looks as overhead in compile time, Gen64Bit should be a bit faster.
+
 File: compiler/dex/quick/x86/utility_x86.cc
 
 477:21-477:58
@@ -17,4 +27,13 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a64fc99_8f585610
 Bytes: 55
 Make a rs_rX86_SIB_NO_INDEX, and set it right for both?
+
+477
+Tue May 13 18:55:11 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a64fc99_8f585610
+UUID: 8a81944e_9bc9778e
+Bytes: 213
+r4sib_no_index was used only in this place. It was defined equal to SP. Thus I removed it and replaced by SP.
+I dont think it is reasonable to define also rs_rX86_*R4*_SIB_NO_INDEX, since it is equal to rs_rX86_SP
 

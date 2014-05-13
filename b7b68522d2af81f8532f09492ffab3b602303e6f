@@ -124,6 +124,22 @@ UUID: ca570cb3_24b71274
 Bytes: 21
 This isn't necessary?
 
+File: runtime/mirror/string.cc
+
+92
+Tue May 13 22:49:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0af3e41b_1e6aed29
+Bytes: 398
+As discussed over chat, if you don't pass down allocator from the entrypoint it uses Heap::GetCurrentAllocator() which won't result in constant propagation. This means that there is a lot of redundant switch statements in the allocation code path. Also, this calls Alloc<true> which is the instrumented (slow) entrypoint. Consider looking at the Class::Alloc to see an example of a fast entrypoint.
+
+98
+Tue May 13 22:49:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaf9f8ff_dec88159
+Bytes: 185
+Another issue here, there is probably a race where other threads could miss the writes since there is no fence before the return. Maybe worth using a pre fence visitor to do the memcpy?
+
 File: runtime/mirror/string.h
 
 47:39-47:47

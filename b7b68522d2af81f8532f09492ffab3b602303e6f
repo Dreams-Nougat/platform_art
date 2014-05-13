@@ -18,6 +18,37 @@ UUID: 8a6a7464_4d9eeddd
 Bytes: 48
 /* Build pointers to the start of string data */
 
+File: runtime/asm_support.h
+
+58:8-58:27
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa5498b1_a359ba36
+Bytes: 126
+Update here, too, please. Note these numbers should be simply the values for the #ifndef USE_BAKER_OR_BROOKS_READ_BARRIER + 8.
+
+File: runtime/interpreter/interpreter_common.cc
+
+74:8-74:19
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5e84cf_6f2881e9
+Bytes: 534
+So, these new string_init code fragments are dependent on the string factory method signatures, right? I wonder if there's a clearer/more robust way of coding/organizing/commenting this in case we change the string factory methods in the future.
+
+Maybe add a top-level comment that describes what new code fragments does? Or, add a comment to each of the code fragments to describe what they do?
+
+Do we have a test that matches the string constructors and the string factory methods signatures and detect inconsistencies between them?
+
+202:7-202:16
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5e84cf_cf78950a
+Bytes: 47
+What does this code do?
+
+What's the old string?
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 513:14-513:15
@@ -51,6 +82,81 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aa7bb835_ba66ad2e
 Bytes: 54
 we should consider replacing this with a modifier flag
+
+File: runtime/mirror/object-inl.h
+
+346:18-346:30
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca570cb3_6428aae9
+Bytes: 66
+We should pass in the read barrier (the enum) through to GetClass.
+
+351:18-351:30
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a30447d_7fffc313
+Bytes: 5
+Same.
+
+397:33-397:51
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a30447d_1f0c8f9e
+Bytes: 128
+This looks like dangerously mixing a boolean and an enum. Please use the enum, everywhere. We no longer use the boolean version.
+
+File: runtime/mirror/object.h
+
+161:70-161:84
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca570cb3_442b2ee7
+Bytes: 128
+We're using an enum "ReadBarrierOption kReadBarrierOption" instead of a boolean for the read barrier flag. Can you switch to it?
+
+File: runtime/mirror/string-inl.h
+
+65:46-65:60
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca570cb3_24b71274
+Bytes: 21
+This isn't necessary?
+
+File: runtime/mirror/string.h
+
+47:39-47:47
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a1b4808_c02cf488
+Bytes: 29
+Can we simply return &value_?
+
+50:70-50:84
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca570cb3_2422b209
+Bytes: 12
+bool -> enum
+
+154:2-154:9
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a30447d_5f6d2740
+Bytes: 32
+Should this be of type uint16_t?
+
+File: runtime/native/java_lang_String.cc
+
+30:13-30:26
+Tue May 13 19:08:00 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a30447d_9f109fb4
+Bytes: 142
+chatAt used to a non-native method. Do we have a compiler intrinsic for this? I worry about its performance.
+
+Same for compareTo, concat, etc.
 
 File: runtime/reflection.cc
 

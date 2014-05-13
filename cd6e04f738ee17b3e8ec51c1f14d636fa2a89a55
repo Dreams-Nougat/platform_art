@@ -1,0 +1,29 @@
+Revision: cd6e04f738ee17b3e8ec51c1f14d636fa2a89a55
+Base-for-patch-set: 2
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+479
+Tue May 13 18:42:21 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a862067_9ac9718e
+Bytes: 299
+I check these changes by running art tests in 64 -bit host mode.
+
+Removing this int3 allows test 103 to pass.
+
+I am not sure about SETUP_REF_ONLY_CALLEE_SAVE_FRAME. It is equal to SETUP_SAVE_ALL, and takes Method* from runtime, not RDI as QCG64 ABI specifies. But it is another place in entrypoints.
+
+492
+Tue May 13 18:42:21 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a81944e_7b6cd3d4
+Bytes: 99
+This int3 does not affect art tests but visually it looks correct and equal to NO_ARG/TWO_ARG cases
+
+998
+Tue May 13 18:42:21 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a862067_daa859b0
+Bytes: 46
+This line caused failure of 084 088 art-tests.
+

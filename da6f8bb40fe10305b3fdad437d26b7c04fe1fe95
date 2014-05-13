@@ -1,0 +1,126 @@
+Revision: da6f8bb40fe10305b3fdad437d26b7c04fe1fe95
+Patch-set: 7
+File: compiler/dex/quick/x86/assemble_x86.cc
+
+392:0-392:103
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a698874_d0eb52c9
+Bytes: 93
+this needs to handle REX prefixes, especially as R8 and R9 are part of the calling convention
+
+411:60-411:61
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a698874_d046f236
+Bytes: 9
+full-stop
+
+411:6-411:7
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_7984d381
+Bytes: 14
+In 64-bit mode
+
+574:0-579:5
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_f95c4360
+Bytes: 159
+this is somewhat defeating the point of having a skeleton, it'd be nicer if the lookup table contained fs: for 32-bit and gs: for 64-bit and lose the condition
+
+635:33-635:39
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a698874_505be20c
+Bytes: 9
+full-stop
+
+File: compiler/dex/quick/x86/call_x86.cc
+
+214:64-214:76
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a64fc99_7c9a8191
+Bytes: 182
+presumably kPointerSize here should be 4 or 8, use GetInstructionSetPointerSize(cu_->instruction_set) or else cross-compilation 32-bit to 64-bit or vice versa will do the wrong thing
+
+298:64-298:76
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_b93fabf4
+Bytes: 5
+ditto
+
+File: compiler/dex/quick/x86/codegen_x86.h
+
+583:4-583:10
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_192fd7c1
+Bytes: 10
+s/inline /
+
+583:26-583:27
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_04dbea88
+Bytes: 5
+const
+
+615:4-615:8
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a64fc99_5c321de7
+Bytes: 5
+const
+
+File: compiler/dex/quick/x86/target_x86.cc
+
+589:30-589:42
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a698874_900e3a03
+Bytes: 119
+as before (and below) this needs to be the pointer size being compiled for not the pointer size of the current runtime.
+
+658:0-658:20
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_a4f8dee6
+Bytes: 36
+TODO: r8 and r9. floating point args
+
+File: compiler/dex/quick/x86/utility_x86.cc
+
+141:0-166:3
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_84103a71
+Bytes: 6
+indent
+
+597:17-597:26
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a6a7464_240dce53
+Bytes: 12
+fall-through
+
+743:17-743:26
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a698874_f0be96c2
+Bytes: 12
+fall-through
+
+File: compiler/dex/quick/x86/x86_lir.h
+
+543
+Tue May 13 06:23:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a64fc99_5c5bfd0c
+Bytes: 54
+just REX 0x40 is useful for normalizing byte registers
+

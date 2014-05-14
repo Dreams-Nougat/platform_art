@@ -9,6 +9,14 @@ UUID: 65c57378_393d0fb3
 Bytes: 39
 Could you just check that a is kReturn?
 
+2390:29-2390:40
+Wed May 14 14:36:03 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65c57378_393d0fb3
+UUID: aa26584d_b6c82658
+Bytes: 288
+I wrote it this way so the "if" is actually simplified by the compiler (after preprocessing). It does not seem to be the case if I use instruction flags: (Instruction::FlagsOf(Instruction::code) & kReturn) != 0" does not seem to be simplified to a constant expression so the "if" remains.
+
 File: runtime/interpreter/interpreter_switch_impl.cc
 
 54:17-54:44
@@ -25,4 +33,14 @@ Parent: 65c57378_99441b2c
 UUID: 0a292485_4e8f73aa
 Bytes: 316
 I agree. the original purpose was to play code layout games to see if we could trick GCC into actually doing -fthread-jumps. Wrt refactoring, should all of the instrumentation live in a different template specialization? For the threaded interpreter that's easier as it can be achieved by dorking the dispatch table.
+
+54:17-54:44
+Wed May 14 14:36:03 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a292485_4e8f73aa
+UUID: 0a1cc41d_f9f593a7
+Bytes: 675
+I'm not sure moving the switch to its own method would be a good solution. It would make the code more complex, especially because of control flow (RETURN and exception). Note I'm not happy with this flag either. Maybe we could deal with it in a differrent way. I'm thinking about using function pointer but did not try that yet.
+
+Wrt to template specialization, we could do this. However, a debugger can attach in the middle of the execution of a method so we'd need to transition from a non-debug specialization to a debug specialization when that happens (and the contrary too). Indeed, we do that in the threaded interpreter by switching dispatch table when that happens.
 

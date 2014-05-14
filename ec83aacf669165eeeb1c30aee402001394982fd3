@@ -11,3 +11,15 @@ PREAMBLE seems more like a debugging tool: why would you duplicate this code for
 
 Also, removing it from RETURN instruction seems like deviating from its original purpose.
 
+85:8-85:16
+Wed May 14 14:36:03 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65c57378_f945572a
+UUID: 0a1cc41d_192faf7a
+Bytes: 611
+The RETURN instructions already deal with instrumentation by calling Instrumentation::MethodExitedEvent. Calling Instrumentation::DexPcMovedEvent before will report the event twice. 
+
+It's easier to report instrumentation event in the handler (the switch cases) directly because we know which is the current opcode. For the RETURN, we call Instrumentation::MethodExitedEvent, and for all the others we call Instrumentation::DexPcChanged (unless we just called MethodEnterEvent, to avoid reporting the event twice).
+
+I understand PREAMBLE had a different purpose so I'll move instrumentation do a separate macro.
+

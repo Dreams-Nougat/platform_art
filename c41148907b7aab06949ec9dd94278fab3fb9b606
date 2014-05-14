@@ -1,0 +1,78 @@
+Revision: c41148907b7aab06949ec9dd94278fab3fb9b606
+Patch-set: 4
+File: runtime/class_linker.cc
+
+2192
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0af3e41b_618b90c8
+Bytes: 94
+should this be replaced by a null check, a == '[' check, and a ThrowNoClassDefFoundError call?
+
+File: runtime/jni_internal.cc
+
+533
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaf9f8ff_a1763ab2
+Bytes: 229
+can't you just use 0? JniAbortF is noreturn so we don't actually care, and 0 should convert to every return type in use. having all these pretend return values looks misleading. and makes this diff way larger than it needs to be.
+
+2532
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cafc6cef_5ff10f05
+Bytes: 111
+won't we already have SEGVed in DecodeAndCheckArrayType? it looks like it unconditionally dereferences 'array'.
+
+File: runtime/jni_internal_test.cc
+
+73
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cafc6cef_9f03972e
+Bytes: 167
+if you want to make a global s/NULL/nullptr/ change, it really ought to be in a stand-alone change. you just obfuscate your patches by mixing it in with other changes.
+
+402
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cafc6cef_fff8dbe7
+Bytes: 127
+i think ExampleNativeMethod and losing the comment would be clearer. this is the function pointer passed for the non-null case!
+
+607
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaf9f8ff_41865654
+Bytes: 68
+looks like we're still missing the null test in all these new tests.
+
+834
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cafc6cef_1f10276f
+Bytes: 200
+the arguments to all the ASSERT_TRUEs/EXPECT_TRUEs you've turned into ASSERT_NEs and EXPECT_NEs are the wrong way round. (again, this is why you should pull cosmetic stuff out into a separate change.)
+
+887
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0af3e41b_4102d470
+Bytes: 5
+class
+
+902
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0af3e41b_21ffc814
+Bytes: 12
+either class
+
+934
+Wed May 14 15:00:33 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaf9f8ff_c15a662c
+Bytes: 45
+i'm going to stop here. this is just silly...
+

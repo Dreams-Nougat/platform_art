@@ -27,6 +27,13 @@ I see. Maybe add that as a comment, so this information does not get lost in a f
 
 File: runtime/interpreter/interpreter_switch_impl.cc
 
+53:12-53:16
+Thu May 15 08:11:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a531cfd_d0279ca3
+Bytes: 43
+What happens if a method just has a return?
+
 54:17-54:44
 Fri Apr 25 09:40:35 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,4 +58,12 @@ Bytes: 675
 I'm not sure moving the switch to its own method would be a good solution. It would make the code more complex, especially because of control flow (RETURN and exception). Note I'm not happy with this flag either. Maybe we could deal with it in a differrent way. I'm thinking about using function pointer but did not try that yet.
 
 Wrt to template specialization, we could do this. However, a debugger can attach in the middle of the execution of a method so we'd need to transition from a non-debug specialization to a debug specialization when that happens (and the contrary too). Indeed, we do that in the threaded interpreter by switching dispatch table when that happens.
+
+54:17-54:44
+Thu May 15 08:11:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a1cc41d_f9f593a7
+UUID: 2a58a819_afc47976
+Bytes: 67
+Maybe the switch can stay here, but the loop be in a caller method?
 

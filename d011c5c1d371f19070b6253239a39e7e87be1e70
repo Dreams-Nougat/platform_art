@@ -50,6 +50,16 @@ UUID: 4a531cfd_90b994de
 Bytes: 250
 We just do not get here. However, we CL https://android-review.googlesource.com/94334, we need to report DexPcChange events in RETURN if there is no listener for MethodExit events. I'm addressing this in https://android-review.googlesource.com/94701.
 
+53:12-53:16
+Thu May 15 09:24:52 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a531cfd_90b994de
+UUID: 2a58a819_4f55cdd5
+Bytes: 280
+Sorry the question wasn't clear. If a method only has a return, do we have code that will notify the method it entered. Answering my question, I can see the code line 73 handles it for all bytecode, so nevermind this question :)
+
+Maybe add as a comment what the code below is for.
+
 54:17-54:44
 Fri Apr 25 09:40:35 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -90,4 +100,30 @@ Parent: 2a58a819_afc47976
 UUID: 2a58a819_cf40dd1b
 Bytes: 180
 I'm worried about splitting interpreter in two methods. Even with inlining, this could cause performance penalties. Maybe you have a more precise idea and I may not see your point.
+
+54:17-54:44
+Thu May 15 09:24:52 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_cf40dd1b
+UUID: 2a58a819_2fdde926
+Bytes: 476
+I was thinking of:
+
+void MainInterpreterEntry() {
+  // Do something for first instruction
+  // BigSwitch(firstInst);
+  // Move to second instruction
+  while (true) {
+    // DexPcMovedEvent
+    BigSwitch(inst);
+  }
+}
+
+void BigSwitch(inst) {
+  switch(inst->Opcode(inst_data)) {
+    /// NO CALL TO PREAMBLE
+  }
+}
+
+It does indeed add a call for each instruction. Ideally, we would inline the second BigSwitch and not the first, but I doubt that's easily controllable. Nevermind :)
 

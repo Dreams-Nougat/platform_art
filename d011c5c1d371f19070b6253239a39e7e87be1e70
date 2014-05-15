@@ -25,6 +25,14 @@ UUID: 0a3da49e_ee803f3a
 Bytes: 106
 I see. Maybe add that as a comment, so this information does not get lost in a future refactoring/rewrite.
 
+2390:29-2390:40
+Thu May 15 09:12:31 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_ee803f3a
+UUID: 2a58a819_0f5bc50d
+Bytes: 64
+I'll address it in https://android-review.googlesource.com/94701
+
 File: runtime/interpreter/interpreter_switch_impl.cc
 
 53:12-53:16
@@ -33,6 +41,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a531cfd_d0279ca3
 Bytes: 43
 What happens if a method just has a return?
+
+53:12-53:16
+Thu May 15 09:12:31 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a531cfd_d0279ca3
+UUID: 4a531cfd_90b994de
+Bytes: 250
+We just do not get here. However, we CL https://android-review.googlesource.com/94334, we need to report DexPcChange events in RETURN if there is no listener for MethodExit events. I'm addressing this in https://android-review.googlesource.com/94701.
 
 54:17-54:44
 Fri Apr 25 09:40:35 2014 +0000
@@ -66,4 +82,12 @@ Parent: 0a1cc41d_f9f593a7
 UUID: 2a58a819_afc47976
 Bytes: 67
 Maybe the switch can stay here, but the loop be in a caller method?
+
+54:17-54:44
+Thu May 15 09:12:31 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_afc47976
+UUID: 2a58a819_cf40dd1b
+Bytes: 180
+I'm worried about splitting interpreter in two methods. Even with inlining, this could cause performance penalties. Maybe you have a more precise idea and I may not see your point.
 

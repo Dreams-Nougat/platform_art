@@ -9,6 +9,16 @@ UUID: 6a4e2058_28522825
 Bytes: 19
 owning basic block?
 
+275:0-275:17
+Fri May 16 18:45:08 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_28522825
+UUID: 6a4e2058_e8d02088
+Bytes: 747
+General comment: MIR is already larger than it needs to be.  As the TODO says, we've been planning on reducing its size via removal of the embedded DecodedInstruction.  Adding a bunch of new native pointers is clearly moving in the wrong direction.  Even beyond the footprint issue, I also share Ian's concern about switching a central data structure from a singly to doubly linked list with public access to the links.
+
+What portions of this change do you consider absolutely necessary?  For example, instead of adding a backlink to the containing basic block could you use the existing dex_pc_to_block_map_?  What is "copied_from"?  Is it needed on *every* MIR?  Is it exclusive with the other uses of meta - could it be added to the union? etc.
+
 276:0-276:12
 Fri May 16 18:07:08 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

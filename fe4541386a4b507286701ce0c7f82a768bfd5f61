@@ -1,5 +1,23 @@
 Revision: fe4541386a4b507286701ce0c7f82a768bfd5f61
 Patch-set: 2
+File: /COMMIT_MSG
+
+20
+Fri May 16 20:14:51 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a4e2058_c8a8bc02
+Bytes: 15
+Any bug number?
+
+File: oatdump/oatdump.cc
+
+424:66-424:78
+Fri May 16 20:14:51 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a4e2058_8be06ee4
+Bytes: 54
+I think this should drop '&' as we pass it as a value.
+
 File: runtime/class_linker-inl.h
 
 117:18-117:19
@@ -16,6 +34,15 @@ UUID: fffad42e_e4240e19
 Bytes: 66
 on the else side of this we should assert an exception is pending.
 
+File: runtime/entrypoints/interpreter/interpreter_entrypoints.cc
+
+48:6-48:41
+Fri May 16 20:14:51 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a4e2058_cbba765a
+Bytes: 140
+Does this assume that the method in shadow_frame gets updated when GC happens (along the line of my CL)? I guess the above TODO covers this.
+
 File: runtime/entrypoints/portable/portable_trampoline_entrypoints.cc
 
 320:63-320:69
@@ -31,6 +58,48 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a4e2058_b436786c
 Bytes: 4
 self
+
+File: runtime/handle.h
+
+57:17-57:53
+Fri May 16 20:14:51 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dff7d045_66c484d7
+Bytes: 357
+There's a slight chance that someone could accidentally call Assign() with a non-null value on a NullHandle and call ToJObject() to get the internal NullHandle::null_ref_ pointer as a jobject. 
+
+Is there a way to prevent this without extra performance cost?
+
+Maybe, if we get rid of Assign() and use operator= or the copy constructor instead, would it work?
+
+File: runtime/handle_scope.h
+
+154:12-154:26
+Fri May 16 20:14:51 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a4e2058_ab6c52d5
+Bytes: 35
+Is this equivalent to just "Get()"?
+
+File: runtime/interpreter/interpreter_common.h
+
+109:30-109:39
+Fri May 16 20:14:51 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dff7d045_26155c0f
+Bytes: 201
+I think we'd want to pass in shadow_frame.GetMethodAddress() (or call shadow_frame.SetMethod() later) if the reason to pass in ArtMethod** is that it may get moved (in the future when we move methods)?
+
+109:19-109:27
+Fri May 16 20:14:51 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fffad42e_b2e9a8cf
+Bytes: 213
+If we pass in &receiver (a pointer to a local variable), we would want to update the one in shadow_frame by doing something like:
+
+shadow_frame.SetVRegReference(vregC, receiver)
+
+after the FindMethodFromCode call?
 
 File: runtime/stack.h
 

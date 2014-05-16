@@ -16,3 +16,14 @@ UUID: 2a58a819_52bad25b
 Bytes: 35
 Change class_loader to a reference?
 
+2630:0-2633:53
+Fri May 16 16:25:11 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dff7d045_5deb9b44
+Bytes: 488
+For throw instructions before processing we:
+<quote>
+Make a copy of the previous register state. If the instruction can throw an exception, we will copy/merge this into the "catch" address rather than work_line, because we don't want the result from the "successful" code path (e.g. a check-cast that "improves" a type) to be visible to the exception handler.
+</quote>
+as this instruction is now a throw the same is necessary. There's an assumption here that the work-line wasn't changed.
+

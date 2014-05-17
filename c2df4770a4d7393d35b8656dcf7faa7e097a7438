@@ -1,5 +1,27 @@
 Revision: c2df4770a4d7393d35b8656dcf7faa7e097a7438
 Patch-set: 4
+File: compiler/driver/compiler_driver.cc
+
+1593:39-1593:41
+Sat May 17 00:52:32 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a3274d1_840a3a3a
+Bytes: 375
+This operator is overloaded to perform string comparison, but in my view, it could be confusing as the lhs is a const char*. I don't know what the style guide is on this, and it's probably a matter of taste.
+
+How about calling String::compare() explicitly, use GetDescriptorEquals() or put GetDescriptor() on the lhs at least?
+
+This comment applies to many places in this CL.
+
+File: runtime/interpreter/interpreter_common.cc
+
+120:70-120:75
+Sat May 17 00:52:32 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f15a02d_023c904d
+Bytes: 199
+I tend to get confused with this, there's no object lifetime issue between std::string and its c_str() (c_str() is still in use while std::string goes out of scope) here and in other places, correct?
+
 File: runtime/mirror/class-inl.h
 
 536:6-536:8
@@ -8,4 +30,13 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f0aac14_5bda7783
 Bytes: 9
 2 spaces?
+
+File: runtime/mirror/class.h
+
+780:2-780:8
+Sat May 17 00:52:32 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f10a43e_8e7a0bfe
+Bytes: 171
+Are these turned into static functions because we don't want to do the "h_this" thing? Any other reason? Why does ComputeName() use the h_this thing and while these don't?
 

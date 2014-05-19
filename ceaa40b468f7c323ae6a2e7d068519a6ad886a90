@@ -9,6 +9,14 @@ UUID: aa1c9852_62ea93c2
 Bytes: 223
 Was the issue that ScopedFastNativeObjectAccess used to be a subclass of ScopedThreadStateChange and so it performed redundant checks, etc. which it no longer does as it isn't a subclass of ScopedThreadStateChange any more?
 
+7
+Mon May 19 22:20:12 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1c9852_62ea93c2
+UUID: 7f10a43e_c8a0ed99
+Bytes: 103
+Yes, there was a redundant read and check of the thread state as well as a couple of other comparisons.
+
 File: runtime/scoped_thread_state_change.h
 
 176:18-176:26
@@ -18,12 +26,28 @@ UUID: aa1c9852_a21d6b55
 Bytes: 90
 The thread state was cached in thread_state_ before. Do we want to have it not cached now?
 
+176
+Mon May 19 22:20:12 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1c9852_a21d6b55
+UUID: 9f1ab865_399a2762
+Bytes: 85
+It was only cached to restore it in the destructor, so we no longer need to cache it.
+
 186:54-186:55
 Mon May 19 21:46:27 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f0fa825_a6d3b806
 Bytes: 14
 ALWAYS_INLINE?
+
+186
+Mon May 19 22:20:12 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f0fa825_a6d3b806
+UUID: 9f1ab865_f9b38fec
+Bytes: 4
+Done
 
 193:55-193:56
 Mon May 19 21:46:27 2014 +0000
@@ -32,10 +56,26 @@ UUID: 1f0fa825_86a0b498
 Bytes: 14
 ALWAYS_INLINE?
 
+193
+Mon May 19 22:20:12 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f0fa825_86a0b498
+UUID: 9f1ab865_99aa5b71
+Bytes: 4
+Done
+
 240:49-240:50
 Mon May 19 21:46:27 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aa1c9852_c2226796
 Bytes: 14
 ALWAYS_INLINE?
+
+240
+Mon May 19 22:20:12 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1c9852_c2226796
+UUID: 7f10a43e_e8aa9171
+Bytes: 4
+Done
 

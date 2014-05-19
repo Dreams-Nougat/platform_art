@@ -1,0 +1,47 @@
+Revision: f832284dd847ff077577bb5712225430bbbb3b67
+Patch-set: 5
+File: compiler/driver/compiler_driver.cc
+
+758:50-758:55
+Mon May 19 08:42:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3da49e_370e1ac2
+Bytes: 85
+Why is that not const Handle<mirror::Class>& c? How can the GC find this handle copy?
+
+763:64-763:65
+Mon May 19 08:42:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a531cfd_44584e0f
+Bytes: 69
+I don't understand this, seems like defeating the purpose of handles.
+
+775:23-775:24
+Mon May 19 08:42:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a531cfd_245b4a0e
+Bytes: 117
+Instead of doing this, why don't you create an empty handle at the beginning of the function and then Assign it here?
+
+File: runtime/class_linker.cc
+
+2405:4-2405:5
+Mon May 19 08:42:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3da49e_570ba6b0
+Bytes: 194
+Would it be worth it to have a DCHECK(!strcmp(descriptor, klass->GetDescriptor())
+
+How do we enforce these char* are canonicalized?
+
+(Comment also applies to all the strcmp -> == changes below).
+
+File: runtime/mirror/class-inl.h
+
+536:19-536:35
+Mon May 19 08:42:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3da49e_7708a2b3
+Bytes: 56
+Why is that not strcmp(GetDescriptor().c_str(), match) ?
+

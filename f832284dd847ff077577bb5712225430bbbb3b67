@@ -44,6 +44,16 @@ UUID: 8a3274d1_aad54456
 Bytes: 41
 The HandleScope holds the StackReference.
 
+758
+Mon May 19 17:44:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf1dbc5e_74b9c8d9
+UUID: 0a3da49e_02ce3a3b
+Bytes: 342
+I find it error prone that everyone can construct its own handle and pass it around. I can easily see this happening if someone's not careful (or new to the compiler, or even new to this kind of handles, which I am :-)).
+
+I think the Handle class should have no public constructor, but only a private constructor that the HandleScope can use.
+
 763:64-763:65
 Mon May 19 08:42:26 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -74,6 +84,20 @@ Parent: 4a531cfd_1f320fe6
 UUID: 1f0fa825_c0357461
 Bytes: 119
 Only if it is a const reference, I can always add a ConstHandle which doesn't have an Assign method to get around this.
+
+763
+Mon May 19 17:44:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f0fa825_c0357461
+UUID: 4a531cfd_df40871b
+Bytes: 338
+What's a ConstHandle?
+
+I see, you don't want the caller to have its handle changed, correct?
+
+I was confused about the comment, it looked as if it was GC related. It's not a "copy" that you want here, just a 'current' variable to update, right?
+
+About not changing the the called handle, I like the idea of making it a const reference :-)
 
 775:23-775:24
 Mon May 19 08:42:26 2014 +0000

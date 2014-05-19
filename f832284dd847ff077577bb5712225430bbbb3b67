@@ -17,6 +17,17 @@ UUID: 7f10a43e_3a57b601
 Bytes: 34
 Its a pointer to a StackReference.
 
+758
+Mon May 19 17:18:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f10a43e_3a57b601
+UUID: 0a3da49e_e2af6e6a
+Bytes: 259
+So this is relying on the fact another handle holds the StackReference right? For things passed as arguments, that's 
+OK, but othewrwise that's not OK.
+
+I find that very error prone, how about a DISALLOW_COPY_AND_ASSIGN on Handle and always pass as reference?
+
 763:64-763:65
 Mon May 19 08:42:26 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +42,14 @@ Parent: 4a531cfd_44584e0f
 UUID: bf1dbc5e_b42400cf
 Bytes: 113
 In this case it would be OK to do that but it would change the stack reference in the handle which was passed in.
+
+763
+Mon May 19 17:18:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf1dbc5e_b42400cf
+UUID: 4a531cfd_1f320fe6
+Bytes: 80
+So making the passed argument as a reference should prevent that problem, right?
 
 775:23-775:24
 Mon May 19 08:42:26 2014 +0000
@@ -68,6 +87,14 @@ UUID: df20b093_7ba5378f
 Bytes: 184
 I'll change it to DescriptorEquals, you are right that it would be confusing if GetDescriptor returned a char* instead of a string. We should use string::compare instead of operator ==
 
+2405
+Mon May 19 17:18:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df20b093_7ba5378f
+UUID: 2a58a819_43ff6613
+Bytes: 13
+SGTM, thanks.
+
 File: runtime/mirror/class-inl.h
 
 536:19-536:35
@@ -84,4 +111,12 @@ Parent: 0a3da49e_7708a2b3
 UUID: df20b093_5bd15bdb
 Bytes: 165
 Ian had some concerns that allocating a string would cause performance regressions in reflection, the current way avoids allocating a string in the else common case.
+
+536
+Mon May 19 17:18:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df20b093_5bd15bdb
+UUID: 2a58a819_83094e91
+Bytes: 149
+I see. It's a pity it's doing the same thing as GetDescriptor though, and this code is not trivial. Any way the code could be shared between the two?
 

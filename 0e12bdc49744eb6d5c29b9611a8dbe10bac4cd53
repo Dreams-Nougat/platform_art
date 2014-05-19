@@ -9,6 +9,19 @@ UUID: df20b093_78141da6
 Bytes: 33
 use of 32 and 64 rather than ISA?
 
+160:1-161:40
+Mon May 19 17:05:29 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df20b093_78141da6
+UUID: bf1dbc5e_34311010
+Bytes: 279
+right, this was the last thing to figure out that I had to work with Andreas on. the problem is it the build system wants 
+
+LOCAL_MODULE_STEM_32
+LOCAL_MODULE_STEM_64
+
+so this seems to be a wart that the build system expects the two architectures to be 32 and 64 bit conceptually.
+
 File: compiler/elf_writer_test.cc
 
 53:4-53:16
@@ -18,6 +31,14 @@ UUID: 7f10a43e_97a57b92
 Bytes: 35
 shouldn't this be elf_location now?
 
+53:4-53:16
+Mon May 19 17:05:29 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f10a43e_97a57b92
+UUID: bf1dbc5e_d4177c5c
+Bytes: 16
+done in followup
+
 File: runtime/class_linker.h
 
 283
@@ -26,6 +47,14 @@ Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a58a819_b88e7dab
 Bytes: 26
 const InstructionSet isa ?
+
+283
+Mon May 19 17:05:29 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_b88e7dab
+UUID: bf1dbc5e_34f6b0f9
+Bytes: 48
+Ian's asking me to take these out, not add more.
 
 File: runtime/common_runtime_test.h
 
@@ -38,6 +67,14 @@ This could just be
 
 CHECK_EQ(0, unlink( )); ?
 
+104
+Mon May 19 17:05:29 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a531cfd_e49ce25f
+UUID: 7f10a43e_9a7122bc
+Bytes: 92
+I don't like doing side effects in CHECKS. I fear someone turning things into DCHECKS later.
+
 File: runtime/utils.cc
 
 1209:44-1209:52
@@ -47,6 +84,14 @@ UUID: 7f10a43e_17b96bb6
 Bytes: 33
 out arguments belong on the right
 
+1209:44-1209:52
+Mon May 19 17:05:29 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f10a43e_17b96bb6
+UUID: df20b093_1bc88358
+Bytes: 113
+done, but to me that is more about when you are returning a new value, not simply a value you are side effecting.
+
 File: runtime/utils.h
 
 407:57-407:63
@@ -55,4 +100,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df20b093_58c4c1d6
 Bytes: 63
 its not clear to me why we're adding const to an enum argument.
+
+407:57-407:63
+Mon May 19 17:05:29 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df20b093_58c4c1d6
+UUID: bf1dbc5e_34523011
+Bytes: 177
+me neither, I was just following another example. in fact, the other reviewed asked me to add more. instead, I'll take them all out (because they had crept into a lot of places)
 

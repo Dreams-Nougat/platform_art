@@ -26,3 +26,11 @@ UUID: 9f1ab865_21b30588
 Bytes: 226
 I think it was there for the GetInstanceField() call and GetClass() call in the old version of this function and the new version does not access the heap. And, it does not fail the thread safety analysis. So, looks fine to me.
 
+378
+Tue May 20 22:05:27 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_21b30588
+UUID: 1f440856_a964915d
+Bytes: 134
+What if the GC is moving the roots and another thread reading java_lang_reflect_ArtField_ without the mutator lock? Sounds racy to me.
+

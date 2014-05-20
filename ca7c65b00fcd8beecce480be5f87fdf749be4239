@@ -9,6 +9,14 @@ UUID: ff281483_a2f14674
 Bytes: 81
 Curious. Is this referring to speeding up the verification with multiple threads?
 
+12
+Tue May 20 22:13:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff281483_a2f14674
+UUID: ff281483_0287fac1
+Bytes: 99
+Yes, since the threads are all suspended, this should provide a speed up without starving mutators.
+
 File: runtime/gc/heap.cc
 
 1872:2-1872:6
@@ -18,12 +26,28 @@ UUID: 1f440856_c93a35b9
 Bytes: 58
 Do we want to return the bool from the call to the caller?
 
+1872
+Tue May 20 22:13:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f440856_c93a35b9
+UUID: 1f440856_c9c23516
+Bytes: 179
+The caller is VisitObjectReferences, we would need to pass in another visitor to tell VisitObjectReferences what to do with the return values unless we just "anded' them together.
+
 1879:2-1879:6
 Tue May 20 21:53:02 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f440856_a937f1ce
 Bytes: 5
 Same.
+
+1879
+Tue May 20 22:13:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f440856_a937f1ce
+UUID: 9f1ab865_81ebf943
+Bytes: 6
+Ditto.
 
 1977:4-1977:10
 Tue May 20 21:53:02 2014 +0000
@@ -32,10 +56,26 @@ UUID: 9f1ab865_c1d691cf
 Bytes: 222
 Do we not want to log anything about ref at all if obj == nullptr? For example, when this function is called from the other operator()'s, they do not (currently) check the return values, which would miss logging a failure?
 
+1977
+Tue May 20 22:13:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_c1d691cf
+UUID: ff281483_c267b261
+Bytes: 211
+I think the current way is fine, we could add a LOG statement here but it would be redundant since there is no way to get a null object other than VerifyRootCallback. I made this operator private and renamed it.
+
 2021:2-2021:8
 Tue May 20 21:53:02 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f440856_4910851f
 Bytes: 97
 AtomicInteger is int32_t, as opposed to size_t. Do we care? Return int32_t or use Atomic<size_t>?
+
+2021
+Tue May 20 22:13:43 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f440856_4910851f
+UUID: 9f1ab865_c17a11c8
+Bytes: 24
+I'll use Atomic<size_t>.
 

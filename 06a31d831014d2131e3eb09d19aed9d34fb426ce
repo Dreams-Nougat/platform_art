@@ -1,0 +1,18 @@
+Revision: 06a31d831014d2131e3eb09d19aed9d34fb426ce
+Patch-set: 4
+File: runtime/mem_map.cc
+
+23
+Tue May 20 18:21:52 2014 +0000
+Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f1ab865_106975c7
+Bytes: 213
+all you'd need is something like
+
+  #if __BIONIC__ || __GLIBC_PREREQ(2, 16)
+  #define HAVE_GETAUXVAL 1
+  #include <sys/auxv.h>
+  #endif
+
+and then just use HAVE_GETAUXVAL everywhere you currently have __BIONIC__...
+

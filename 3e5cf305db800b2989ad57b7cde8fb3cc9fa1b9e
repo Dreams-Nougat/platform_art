@@ -9,3 +9,73 @@ UUID: bf4bfc72_cdc9215d
 Bytes: 138
 A side question: do we currently build with clang for host and with gcc for target (that is, we use std::atomic for host only) by default?
 
+138:93-138:99
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f3504d1_324da582
+Bytes: 130
+Should be "accesses".  We also need to guarantee that prior loads by the other thread do NOT see subsequent stores by this thread.
+
+146:93-146:99
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f5ee42c_be09714c
+Bytes: 10
+"accesses"
+
+187:2-187:11
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f5ee42c_de81c53b
+Bytes: 292
+I think this needs to be volatile for now.  Otherwise compilers can misoptimize relaxed loads and stores.  Sorry I missed that the first time.
+
+If that turns into a performance issue, we can add a separate primitive for non-racing accesses.  C++17 may end up with something like that as well.
+
+File: runtime/base/mutex.h
+
+353:2-353:40
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f3f0cb7_9789e3aa
+Bytes: 58
+Presumably this should also be converted to AtomicInteger?
+
+File: runtime/gc/accounting/atomic_stack.h
+
+132:33-132:46
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f5ee42c_5e1b9546
+Bytes: 400
+In what sense is this stack concurrent?  If someone can simultaneously add something to the stack, then those additions need to use release operations on the index, and this should be an acquire operation.  In any case, this change is improving matters, but I'm not sure whether it's actually fixing it.
+
+Similar issues arise elsewhere in this file where data is added to, or removed from, the stack.
+
+153:5-153:12
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f5ee42c_be03b1d9
+Bytes: 202
+This API looks dubious to me for a concurrent data structure.  Traversals using the resulting pointer are allowed only if everything else is stopped?  Again this CL is certainly not making things worse.
+
+File: runtime/gc/collector/mark_sweep.cc
+
+1218:32-1218:59
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f3504d1_526ca98a
+Bytes: 187
+I'm still not sure why you would use SequentiallyConsistent inside CHECK.  Since the rest of the code doesn't really see the outcome of the loads, it can't tell whether order is enforced.
+
+File: runtime/gc/space/bump_pointer_space-inl.h
+
+79:24-79:56
+Wed May 21 22:47:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f3504d1_72fc4d52
+Bytes: 296
+Complete aside:  This looks very slow to me, if we do this on a regular basis.  Three separate (atomic) accesses to contended locations.  The accounting could presumably use relaxed operations, but that might be minor compared to cache contention.
+
+Ignore this comment if this is an unusual path.
+

@@ -9,6 +9,14 @@ UUID: 9f2f188c_74c31e71
 Bytes: 19
 Also check alignof?
 
+42:17-42:51
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f2f188c_74c31e71
+UUID: 9f1ab865_74c3f43e
+Bytes: 4
+Done
+
 75:2-81:3
 Wed May 21 01:38:33 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 9f2f188c_94bd6af2
 Bytes: 210
 Should be explicit about memory order, at least in a comment.  SequentiallyConsistent for now?  Relaxed is also quite common for dumb counters.  Those should probably use a more scalable data structure, but ...
 
+75:2-81:3
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f2f188c_94bd6af2
+UUID: 9f2f188c_3f932fd6
+Bytes: 4
+Done
+
 350:2-350:32
 Wed May 21 01:38:33 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f2f188c_74443e30
 Bytes: 208
 Needs to follow the load, and should probably be LoadAny, with the proviso that ARMv8 ishld most probably doesn't work, in spite of the fact that it appears to.  Maybe leave as LoadLoad for now, and I'll fix.
+
+350:2-350:32
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f2f188c_74443e30
+UUID: 9f1ab865_34b45cd5
+Bytes: 17
+Good catch. Done.
 
 File: runtime/base/mutex-inl.h
 
@@ -32,6 +56,14 @@ UUID: 9f1ab865_6ec8c559
 Bytes: 297
 Very similar issue to the other code I'm reviewing.  I think this has to be ordered with respect to the CAS.  A release_cas probably doesn't do that.  This change doesn't break things any more, but I don't think the code is quite right.  I'm still trying to understand the right C++11 constraints.
 
+224:33-224:48
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_6ec8c559
+UUID: ff281483_cb7d8ac2
+Bytes: 118
+Agreed. I'll leave this as is, on the basis its no worse. I'd like to switch num_pending_readers to also being Atomic.
+
 File: runtime/base/mutex.cc
 
 74:64-74:72
@@ -41,12 +73,28 @@ UUID: 9f1ab865_aeeb7d43
 Bytes: 99
 Needs to be at least memory_order_acquire to keep accesses from moving out of the critical section.
 
+74:64-74:72
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_aeeb7d43
+UUID: 9f2f188c_9f2c63cf
+Bytes: 4
+Done
+
 79:64-79:72
 Wed May 21 01:38:33 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f2f188c_547f02ef
 Bytes: 28
 Needs to be at least release
+
+79:64-79:72
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f2f188c_547f02ef
+UUID: 9f2f188c_7ad54551
+Bytes: 4
+Done
 
 File: runtime/base/mutex.h
 
@@ -59,6 +107,14 @@ spelling of contetion (was there already)
 I'm not sure you need SequentiallyConsistent here any more than for any of the other relaxed uses.
 Neither problem matters much.
 
+168:14-168:78
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_8e6a01fe
+UUID: ff281483_eee5f443
+Bytes: 4
+Done
+
 File: runtime/gc/collector/mark_sweep.cc
 
 885:25-885:51
@@ -68,12 +124,28 @@ UUID: ff281483_d8f44266
 Bytes: 89
 Does this need to be sequentially consistent?  Is someone else accessing it concurrently?
 
+885:25-885:51
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff281483_d8f44266
+UUID: 9f2f188c_baf28d06
+Bytes: 55
+It doesn't. The parallel tasks are created below. Done.
+
 1218:32-1219:61
 Wed May 21 01:38:33 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff281483_98f7da6e
 Bytes: 132
 Does this really need to be sequentially consistent?  Is anything else still changing these?  If there's no race, it doesn't matter.
+
+1218:32-1219:61
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff281483_98f7da6e
+UUID: 3f58ec40_88ef9722
+Bytes: 121
+Agreed. The work created and removed is done concurrently so I'd be concerned about races. I'll leave this as is for now.
 
 File: runtime/gc/heap.cc
 
@@ -84,6 +156,14 @@ UUID: 9f1ab865_d921e1bd
 Bytes: 290
 The question again is whether you care about seeing all  memory accesses by other threads to other variables that preceded num_bytes_allocated getting its current value.  SequentiallyConsistent is clearly safe, but I'm not sure I understand why it's being used here and not in other places.
 
+1316:55-1316:76
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_d921e1bd
+UUID: ff281483_4e31a80e
+Bytes: 278
+The other relaxed uses are debug sanity checks and logging code. So a race is benign. A race here concerns me as its a GC ergonomics issue and may cause us to GC too much or little. Note the FetchAndAdd/Sub change makes the FetchAndSub on line 1058 also sequentially consistent.
+
 File: runtime/instrumentation.cc
 
 525:63-525:85
@@ -92,6 +172,14 @@ Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f1ab865_d98b2159
 Bytes: 107
 I don't think SequentiallyConsistent every helps in such a DCHECK.  We're not really looking at the result.
+
+525:63-525:85
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_d98b2159
+UUID: ff281483_8e4e7080
+Bytes: 160
+The enable/disable use FetchAndAdd/Sub which are sequentially consistent. Its more consistent to leave this as is, and its a DCHECK and not a performance issue.
 
 File: runtime/mirror/object.cc
 
@@ -102,6 +190,14 @@ UUID: 9f1ab865_396c55d8
 Bytes: 17
 Should be relaxed
 
+142:52-142:73
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f1ab865_396c55d8
+UUID: 9f2f188c_fa1a5586
+Bytes: 4
+Done
+
 File: runtime/thread_pool_test.cc
 
 85:21-85:46
@@ -110,4 +206,12 @@ Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f2f188c_3ff68ff9
 Bytes: 50
 Seems blatantly inconsistent with previous change.
+
+85:21-85:46
+Wed May 21 03:53:03 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f2f188c_3ff68ff9
+UUID: ff281483_ae380ce8
+Bytes: 39
+Fixed previous test to also be seq_cst.
 

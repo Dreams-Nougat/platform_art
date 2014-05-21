@@ -34,3 +34,15 @@ UUID: 1f440856_a964915d
 Bytes: 134
 What if the GC is moving the roots and another thread reading java_lang_reflect_ArtField_ without the mutator lock? Sounds racy to me.
 
+378
+Wed May 21 00:36:44 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f440856_a964915d
+UUID: 9f2f188c_d14b0493
+Bytes: 494
+Added the annotations back.
+
+So, my original thinking was that since those fields aren't part of the heap and are roots, we don't need a mutator lock when accessing those fields.
+
+But, it's right that even when GC has an exclusive lock on the mutator lock (and the heap), a mutator thread in the native mode could could call JNI routines, which in theory might accidentally lead to these functions. In that case, there's nothing that prevents accessing the fields while GC might be moving them.
+

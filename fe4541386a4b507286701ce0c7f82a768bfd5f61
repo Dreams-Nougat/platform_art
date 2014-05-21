@@ -9,6 +9,15 @@ UUID: 6a4e2058_c8a8bc02
 Bytes: 15
 Any bug number?
 
+20
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_c8a8bc02
+UUID: 3f0aac14_f81151e2
+Bytes: 124
+I suppose I can add the moving fields / methods bug.
+The compaction bug may not be related to any existing open bug reports.
+
 File: oatdump/oatdump.cc
 
 424:66-424:78
@@ -17,6 +26,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a4e2058_8be06ee4
 Bytes: 54
 I think this should drop '&' as we pass it as a value.
+
+424
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_8be06ee4
+UUID: 3f0aac14_5846fde0
+Bytes: 60
+Can I do it in another CL? This one is already fairly large.
 
 File: runtime/class_linker-inl.h
 
@@ -27,12 +44,28 @@ UUID: 6a4e2058_d4413cc8
 Bytes: 274
 I don't think this is WAI, you want to resolve when there is no dex-cache hit. oh.. you're just abstracting the dex-cache lookup. Make this private. Similarly for GetResolvedField. Prefer LookupResolvedMethod, LookupResolvedField to make it more distinct from ResolveMethod.
 
+117
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_d4413cc8
+UUID: 5f8840e2_21c3ee3f
+Bytes: 131
+This is called from FindMethodFromCode to avoid needing to have a handle scope unless we go slow path, is it OK to leave it public?
+
 139:2-139:3
 Fri May 16 17:51:04 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fffad42e_e4240e19
 Bytes: 66
 on the else side of this we should assert an exception is pending.
+
+139
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fffad42e_e4240e19
+UUID: 9f48f879_f841354c
+Bytes: 4
+Done
 
 File: runtime/entrypoints/interpreter/interpreter_entrypoints.cc
 
@@ -43,6 +76,14 @@ UUID: 6a4e2058_cbba765a
 Bytes: 140
 Does this assume that the method in shadow_frame gets updated when GC happens (along the line of my CL)? I guess the above TODO covers this.
 
+48
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_cbba765a
+UUID: 5f8840e2_2101ae9d
+Bytes: 78
+A main goal is to use Handles inside of the method helpers in the near future.
+
 File: runtime/entrypoints/portable/portable_trampoline_entrypoints.cc
 
 320:63-320:69
@@ -52,12 +93,28 @@ UUID: 6a4e2058_349fe80a
 Bytes: 14
 s/thread/self/
 
+320
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_349fe80a
+UUID: 7f5ee42c_3e74610f
+Bytes: 4
+Done
+
 382:35-382:52
 Fri May 16 17:51:04 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a4e2058_b436786c
 Bytes: 4
 self
+
+382
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_b436786c
+UUID: 3f3f0cb7_ba384ee8
+Bytes: 4
+Done
 
 File: runtime/handle.h
 
@@ -72,6 +129,14 @@ Is there a way to prevent this without extra performance cost?
 
 Maybe, if we get rid of Assign() and use operator= or the copy constructor instead, would it work?
 
+57
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dff7d045_66c484d7
+UUID: 9f48f879_b8c29d14
+Bytes: 158
+I am thinking of adding a super class to Handle called ConstHandle which doesn't have an Assign function. We can pass that one around to avoid these problems.
+
 File: runtime/handle_scope.h
 
 154:12-154:26
@@ -80,6 +145,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a4e2058_ab6c52d5
 Bytes: 35
 Is this equivalent to just "Get()"?
+
+154
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_ab6c52d5
+UUID: 9f48f879_d8e799ba
+Bytes: 61
+Yes, but when I had tried to do just Get() it didn't compile.
 
 File: runtime/interpreter/interpreter_common.h
 
@@ -101,6 +174,22 @@ shadow_frame.SetVRegReference(vregC, receiver)
 
 after the FindMethodFromCode call?
 
+109
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fffad42e_b2e9a8cf
+UUID: 5f8840e2_419872ef
+Bytes: 73
+The shadow frame should already be pushed, so we don't need to update it.
+
+109
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dff7d045_26155c0f
+UUID: 5f8840e2_019a6ae6
+Bytes: 61
+Shadow frame should be pushed, so the roots will get updated.
+
 File: runtime/stack.h
 
 401:8-401:10
@@ -109,6 +198,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a4e2058_141104b7
 Bytes: 45
 as with hiroshi's change, just lose the ifdef
+
+401
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_141104b7
+UUID: 9f48f879_1879b107
+Bytes: 4
+Done
 
 File: runtime/thread.cc
 
@@ -120,4 +217,12 @@ Bytes: 29
 I'm
 
 why are we hitting this?
+
+1967
+Wed May 21 23:50:02 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_b4091891
+UUID: 5f8840e2_e1350613
+Bytes: 8
+Deleted.
 

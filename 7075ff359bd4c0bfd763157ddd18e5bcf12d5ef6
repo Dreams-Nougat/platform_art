@@ -19,12 +19,32 @@ General comment: MIR is already larger than it needs to be.  As the TODO says, w
 
 What portions of this change do you consider absolutely necessary?  For example, instead of adding a backlink to the containing basic block could you use the existing dex_pc_to_block_map_?  What is "copied_from"?  Is it needed on *every* MIR?  Is it exclusive with the other uses of meta - could it be added to the union? etc.
 
+275:0-275:17
+Wed May 21 05:49:51 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_e8d02088
+UUID: 1f440856_89c30d70
+Bytes: 457
+the problem with the dex_pc_to_block_map is that it will need to be kept up to date as the different passes move code around and/or add extended mirs that then have to use the same offset as other MIRs (if there is even one in the block... if there is not, I would not know how to do it, add a new offset?)
+
+copied_from is when we peel an iteration to know where the original is in the non-peeled loop.
+
+So if I remove this bb, then I cannot do this anymore
+
 276:0-276:12
 Fri May 16 18:07:08 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a4e2058_e86660f3
 Bytes: 77
 doubly linked? I worry about maintaining this given the fields are public :-/
+
+276:0-276:12
+Wed May 21 05:49:51 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4e2058_e86660f3
+UUID: ff281483_c92112be
+Bytes: 201
+it makes the insertion easier though. Otherwise insert before because more complex. If we really do not want this, then we must remove the insert before due to them being more tricky at that point, no?
 
 278:0-278:19
 Fri May 16 18:07:08 2014 +0000
@@ -33,10 +53,26 @@ UUID: fffad42e_c797d463
 Bytes: 10
 what am I?
 
+278:0-278:19
+Wed May 21 05:49:51 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fffad42e_c797d463
+UUID: 9f2f188c_5a8e09b2
+Bytes: 75
+sorry used by the MIR when peeling, not yet used. I can remove this for now
+
 302:0-302:30
 Fri May 16 18:07:08 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dff7d045_23e42e48
 Bytes: 154
 Could you document the API here. Its not clear what the result means, the rewrite and same_bb arguments mean that you need to read the code to understand.
+
+302:0-302:30
+Wed May 21 05:49:51 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dff7d045_23e42e48
+UUID: 3f58ec40_4b53d925
+Bytes: 42
+ok I will do this when I rework this patch
 

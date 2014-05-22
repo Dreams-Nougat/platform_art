@@ -91,6 +91,14 @@ I see. Thanks for the explanation.
 
 About ARM64: let's not think about it, I'd like us to use vixl as much as possible.
 
+200:12-200:13
+Thu May 22 20:01:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_f8772514
+UUID: bfa05c5b_05fef816
+Bytes: 228
+I was thinking that we should use the vixl stuff but make the ARM64 assembler a derived class of ARMAssembler rather than Assembler.  There are a lot of common instructions the code generators could benefit from the commonality.
+
 372:19-372:27
 Wed May 14 10:16:44 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -201,6 +209,14 @@ UUID: 2a58a819_58675161
 Bytes: 84
 Ah yes, indeed, I missed that. So yeah, let's keep it. Shoult it be a DCHECK though?
 
+2172:17-2172:39
+Thu May 22 20:01:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_58675161
+UUID: ff965405_33957a28
+Bytes: 80
+I will change it do DCHECK.  Unlikely to make any performance difference though.
+
 2210:8-2210:15
 Wed May 14 10:16:44 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -306,6 +322,26 @@ Parent: 4a2cfc7a_bcdaf981
 UUID: 0a3da49e_77efc28f
 Bytes: 112
 That makes it easier, but is at odds with google's c++ style guide (that I know, we're not following fully....).
+
+489:17-489:32
+Thu May 22 20:01:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_77efc28f
+UUID: 9f9d5828_a43aa8b7
+Bytes: 925
+Looking at the C++ style guide, I think this is allowed:
+
+-----
+
+In fact it is a very strong convention in Google code that input arguments are values or const references while output arguments are pointers. Input parameters may be const pointers, but we never allow non-const reference parameters except when required by convention, e.g., swap().
+
+However, there are some instances where using const T* is preferable to const T& for input parameters. For example:
+
+You want to pass in a null pointer.
+The function saves a pointer or reference to the input.
+Remember that most of the time input parameters are going to be specified as const T&. Using const T* instead communicates to the reader that the input is somehow treated differently. So if you choose const T* rather than const T&, do so for a concrete reason; otherwise it will likely confuse readers by making them look for an explanation that doesn't exist.
+
+-----
 
 599:9-599:22
 Wed May 14 10:16:44 2014 +0000
@@ -438,6 +474,14 @@ Parent: 4a2cfc7a_bc03d92d
 UUID: 4a531cfd_04464634
 Bytes: 43
 Yes, AFAIR almost all of them (if not all).
+
+68:34-68:38
+Thu May 22 20:01:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a531cfd_04464634
+UUID: 9f9d5828_04559cd4
+Bytes: 129
+It will be hard to do this without getting access to the assembler.  I'll do some investigation about the best way to handle this
 
 102:32-102:35
 Wed May 14 10:16:44 2014 +0000

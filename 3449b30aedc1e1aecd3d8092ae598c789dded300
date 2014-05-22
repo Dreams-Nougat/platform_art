@@ -1,0 +1,66 @@
+Revision: 3449b30aedc1e1aecd3d8092ae598c789dded300
+Patch-set: 2
+File: compiler/dex/quick/mir_to_lir.h
+
+882
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3da49e_d5f22b50
+Bytes: 119
+This should be pure virtual now; mips can return false, arm/arm64 will have the old implementation and x86 the new one.
+
+File: compiler/dex/quick/x86/codegen_x86.h
+
+122:0-123:45
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a531cfd_cdad3ebe
+Bytes: 29
+Mark with the OVERRIDE macro.
+
+File: compiler/dex/quick/x86/fp_x86.cc
+
+446:8-446:16
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3da49e_55ff1b13
+Bytes: 8
+argument
+
+483:15-483:23
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a531cfd_2d6faacb
+Bytes: 30
+Naming conventions: sign_mask.
+
+486
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a531cfd_4d6ceed4
+Bytes: 107
+If rl_result.reg != rl_src.reg, you should avoid this copy by loading signMask directly into rl_result.reg.
+
+491
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a58a819_7b55ead5
+Bytes: 95
+If you go into the trouble of working directly on memory in GenInlinedAbsFloat(), why not here?
+
+File: compiler/dex/quick/x86/utility_x86.cc
+
+953
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3da49e_15cbd3e4
+Bytes: 150
+You don't need a CallInfo, you can get the optimization flags and method index directly from the MIR. (Get rid of the NewMemCallInfo() modifications.)
+
+958
+Thu May 22 16:11:06 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3da49e_b5e4bf73
+Bytes: 311
+I don't like the DoesIntrinsicUseDoubleArgument(). Can we instead modify IsIntrinsic() to take an additional InlineMethod* argument and fill it with the data if the method is indeed intrinsic? That would allow any other analysis we may need later without spilling x86 details into architecture-independent code.
+

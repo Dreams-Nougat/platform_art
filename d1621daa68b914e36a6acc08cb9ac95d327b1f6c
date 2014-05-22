@@ -1,0 +1,209 @@
+Revision: d1621daa68b914e36a6acc08cb9ac95d327b1f6c
+Patch-set: 1
+File: /COMMIT_MSG
+
+14:50-14:72
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f5ee42c_31cecff7
+Bytes: 111
+the dalvik-cache locations already use test.jar@classes.dex, so it would make sense to use the same convention.
+
+File: runtime/common_runtime_test.h
+
+161:32-161:35
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f6c24f1_9dd34790
+Bytes: 9
+dex_files
+
+163:0-163:21
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f6c24f1_3d98fbee
+Bytes: 17
+error? see below.
+
+178:4-185:33
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f3f0cb7_46cbcb2e
+Bytes: 70
+use LoadExpectSingleDexFile and move error logging from here to there?
+
+294:32-294:35
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f9d5828_044cbcaa
+Bytes: 18
+why not UniquePtr?
+
+301:4-301:21
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f9d5828_84752cdf
+Bytes: 126
+hmm, odd we need to track this separately and not just make it the callers problem? but I assume this is for test convenience.
+
+327:2-327:42
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfa05c5b_3074900f
+Bytes: 32
+same as LoadExpectSingleDexFile?
+
+File: runtime/dex_file.cc
+
+237:0-237:49
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f6c24f1_fdafe31a
+Bytes: 178
+odd that this isn't at the top of the file like usually. I was thinking this could become classes%s.dex and made into a helper function to return the right value based on an int.
+
+File: runtime/dex_file.h
+
+355:5-355:20
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f9d5828_8f01c528
+Bytes: 89
+Opens .dex files found in the container, guessing the format based on the file extension.
+
+357:48-357:61
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfa05c5b_10d7147f
+Bytes: 123
+dex_files (we use the term container here for the .zip/.apk/.jar or even a bare .dex, so reusing for the out var seems bad)
+
+369:75-369:88
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff965405_85b9a1dc
+Bytes: 9
+dex_files
+
+835:55-835:64
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f9d5828_2f31910f
+Bytes: 9
+dex_files
+
+839:0-843:37
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff965405_c5d6c9f8
+Bytes: 59
+so if we are going to add error_code, add an enum for them.
+
+File: runtime/dex_file_test.cc
+
+149:30-149:33
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f9d5828_ef41694c
+Bytes: 69
+dex_files... but why cant you use your common_runtime_test.h helpers?
+
+File: runtime/dex_method_iterator_test.cc
+
+25:89-25:98
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff965405_c5ad698c
+Bytes: 5
+files
+
+28:5-33:5
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfa05c5b_f04e28a5
+Bytes: 41
+could this user a helper from the parent?
+
+File: runtime/native/dalvik_system_DexFile.cc
+
+143:3-144:10
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfa05c5b_ab7d95c2
+Bytes: 88
+I'd drop the else, it makes me think there is some other path that can reach the bottom.
+
+145:33-145:36
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfa05c5b_6b5b0d68
+Bytes: 9
+dex_files
+
+145:4-145:31
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfa05c5b_8b477983
+Bytes: 199
+unique_ptr? the problem is with these, we don't want to just delete the vector, you would need to close the contents if something else went wrong. maybe we need a little holder class for cleanliness?
+
+152:18-152:31
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f3f0cb7_c1068539
+Bytes: 14
+zip_entry_name
+
+153:6-153:80
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f9d5828_8fc465d8
+Bytes: 83
+I'd move this logic to a helper and unit test it? I'd use it to replace kClassesDex
+
+156:6-167:8
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f3f0cb7_41361509
+Bytes: 78
+do we think we can share the logic with above. it seems a bit duped right now.
+
+207:2-214:3
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f5ee42c_146619a9
+Bytes: 40
+another motivation for a DexFiles holder
+
+255:0-283:1
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f5ee42c_b45cedd0
+Bytes: 149
+i was surprised to learn there are callers of this when Ian broke it the other day. 
+
+i wonder what they will say if there are duplicate class names.
+
+File: runtime/utils.cc
+
+1200:4-1200:39
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f6c24f1_9d0a6786
+Bytes: 90
+anywhere that uses kClassesDex (which assumes a single classes.dex) needs to be rethought.
+
+1223:12-1223:23
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f3f0cb7_216c31d8
+Bytes: 57
+this should probably be renamed DexLocationToOdexFilename
+
+1227:0-1230:0
+Thu May 22 22:45:37 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f3f0cb7_41805538
+Bytes: 86
+is this the right thing here? the odex file is the .oat file, there should only be one
+

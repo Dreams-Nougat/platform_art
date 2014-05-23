@@ -1,0 +1,55 @@
+Revision: d06149c46061f27847cf69fa971d2c60f33be285
+Patch-set: 2
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+1317:20-1317:44
+Fri May 23 17:50:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fe088ae_2f79a907
+Bytes: 204
+Not clear what the issue with the original CL was. Was it that we were returning nullptr casted as jobject (for NullHandle) where we should've returned a pointer to a StackReference that contains nullptr?
+
+1317:0-1317:47
+Fri May 23 17:50:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fd184e1_f238685b
+Bytes: 26
+Diff from the original CL.
+
+1331:0-1337:5
+Fri May 23 17:50:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fd184e1_b232e075
+Bytes: 26
+Diff from the original CL.
+
+1512:67-1512:74
+Fri May 23 17:50:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fd184e1_32a27056
+Bytes: 26
+Diff from the original CL.
+
+1540:75-1540:82
+Fri May 23 17:50:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fd680dc_7198f821
+Bytes: 26
+Diff from the original CL.
+
+File: runtime/handle.h
+
+63:21-63:33
+Fri May 23 17:50:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fd184e1_b2d0a083
+Bytes: 208
+This is fine if necessary, but the issue that a pointer to NullHandle::null_ref_ could leak with Assign() and ToJObject() that I mentioned in the original CL review would be worse with GetReference(). A TODO?
+
+63:0-65:3
+Fri May 23 17:50:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fd184e1_12740c0f
+Bytes: 26
+Diff from the original CL.
+

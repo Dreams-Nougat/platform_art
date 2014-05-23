@@ -343,6 +343,15 @@ UUID: 0a3da49e_8b5242ed
 Bytes: 4
 SGTM
 
+53:11-53:18
+Fri May 23 15:07:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_8b5242ed
+UUID: ff965405_4f3c1201
+Bytes: 521
+Fwiw, we solved a similar problem in iceland by taking the type information from the verifier. 0 is the most prevalent form of the problem, and is the only case used for object references. It is possible, but uncommon, to get a dex register used for two constant values (say 0 and 1) and for the 0 and 1 to get used in float and integer contexts, the 0 may even be used in object contexts.
+You should probably contrast your notion of union with the method verifier's notion of merge so that we can keep terminology clear.
+
 File: compiler/optimizing/ssa_liveness_analysis.cc
 
 132:51-132:55

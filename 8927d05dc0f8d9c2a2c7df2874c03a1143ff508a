@@ -9,6 +9,14 @@ UUID: 2a58a819_3887e888
 Bytes: 28
 Why not testing GetEnd too ?
 
+25:19-25:27
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_3887e888
+UUID: 2a58a819_2e56c28d
+Bytes: 62
+Because there is no GetEnd in the LiveInterval class (yet) :-)
+
 File: compiler/optimizing/nodes.h
 
 1016:2-1016:26
@@ -17,6 +25,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a531cfd_dac092c4
 Bytes: 112
 I preferred the previous version with the ending ';'. Could you modify DECLARE_INSTRUCTION so the ';' is needed?
+
+1016:2-1016:26
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a531cfd_dac092c4
+UUID: 0a3da49e_cb51aa21
+Bytes: 82
+DECLARE_INSTRUCTION is a list of functions. An extra ';' at the end is not needed.
 
 File: compiler/optimizing/register_allocator.cc
 
@@ -27,12 +43,28 @@ UUID: 4a531cfd_ba72eef7
 Bytes: 114
 Would be nice to have a utility function doing this for us. What about <typename T> T* AllocArray(size_t number) ?
 
+53:18-53:60
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a531cfd_ba72eef7
+UUID: 0a3da49e_cb760ab4
+Bytes: 66
+Done here and the other places that I wrote with the same pattern.
+
 83:26-83:27
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a58a819_bb4cb286
 Bytes: 30
 Start arguments here and wrap.
+
+83:26-83:27
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_bb4cb286
+UUID: 0a3da49e_0b81f23b
+Bytes: 4
+Done
 
 158:67-158:75
 Fri May 23 11:09:09 2014 +0000
@@ -41,12 +73,28 @@ UUID: 2a58a819_5b83c642
 Bytes: 14
 Full stop here
 
+158:67-158:75
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_5b83c642
+UUID: 0a3da49e_2b86ae53
+Bytes: 4
+Done
+
 159:11-159:81
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a58a819_9b8d2e6d
 Bytes: 116
 I don't understand the comment: is a word missing? ... Ooh, sounds like "covers" is missing somewhere in the middle?
+
+159:11-159:81
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_9b8d2e6d
+UUID: 2a58a819_ce9456f2
+Bytes: 63
+Yeah, there was a missing verb: "... have a lifetime hole ...".
 
 173:69-173:77
 Fri May 23 11:09:09 2014 +0000
@@ -55,12 +103,30 @@ UUID: 4a531cfd_6d2292c3
 Bytes: 14
 Full stop here
 
+173:69-173:77
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a531cfd_6d2292c3
+UUID: 9f7638c4_d327741b
+Bytes: 4
+Done
+
 192:4-192:19
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f7638c4_13f64cf9
 Bytes: 75
 Use an if-else and move comment (5) in the if and comment (6) in the else ?
+
+192:4-192:19
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f7638c4_13f64cf9
+UUID: 9f7638c4_53bfe44f
+Bytes: 153
+AllocateBlockedReg could allocate a reg, so I can't move (6) in the else.
+
+About (5), I prefer keeping it here, as it aligns nicely with the other steps.
 
 229:4-230:60
 Fri May 23 11:09:09 2014 +0000
@@ -69,12 +135,28 @@ UUID: 2a58a819_0e4c9e81
 Bytes: 147
 IMO, it's easier to read without the continue: "if (next_intersection != kNoLifetime) { free_until[inactive->GetRegister()] = next_intersection; }"
 
+229:4-230:60
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_0e4c9e81
+UUID: 9f7638c4_73c460d7
+Bytes: 4
+Done
+
 261:11-261:45
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f7638c4_f36870c5
 Bytes: 84
 What happens for float registers? Should we add a CHECK reg is not a float register?
+
+261:11-261:45
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f7638c4_f36870c5
+UUID: 0a3da49e_8b8de26c
+Bytes: 172
+reg is in the range [0, number_of_{core,fp}registers], so to know whether we are processing fp registers, we need to check the processing_core_registers_ flag. Check added.
 
 288:4-288:37
 Fri May 23 11:09:09 2014 +0000
@@ -83,12 +165,28 @@ UUID: 2a58a819_4e2f8679
 Bytes: 28
 Same comment about continue.
 
+288:4-288:37
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_4e2f8679
+UUID: 2a58a819_2e8402ba
+Bytes: 4
+Done
+
 300:4-300:37
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a3da49e_b8783609
 Bytes: 28
 Same comment about continue.
+
+300:4-300:37
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_b8783609
+UUID: 9f7638c4_13c96cee
+Bytes: 4
+Done
 
 File: compiler/optimizing/register_allocator_test.cc
 
@@ -99,12 +197,30 @@ UUID: 0a3da49e_d81b42d6
 Bytes: 66
 What about other targets? Are we only testing on the host for now?
 
+45:68-45:72
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_d81b42d6
+UUID: 9f7638c4_d3b21482
+Bytes: 264
+For this unit test, the target only impacts the number of registers available. I could make a dummy target, but it would be going overboard.
+
+In the future, if we want to adjust the number of available registers, we can just update the number of blocked registers.
+
 55:28-55:45
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a58a819_4e06a6eb
 Bytes: 20
 ValidateIntervals1 ?
+
+55:28-55:45
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_4e06a6eb
+UUID: 0a3da49e_4b6cdad4
+Bytes: 35
+I moved ValidateIntervals4 to here.
 
 118:28-118:46
 Fri May 23 11:09:09 2014 +0000
@@ -113,12 +229,28 @@ UUID: 0a3da49e_f810feb4
 Bytes: 20
 ValidateIntervals2 ?
 
+118:28-118:46
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_f810feb4
+UUID: 0a3da49e_6b6996c3
+Bytes: 49
+Leftover, I moved this test in ValidateIntervals.
+
 158:6-158:9
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f7638c4_93881c10
 Bytes: 5
 int ?
+
+158:6-158:9
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f7638c4_93881c10
+UUID: 2a58a819_8e8b2ec7
+Bytes: 4
+Done
 
 File: compiler/optimizing/ssa_builder.cc
 
@@ -129,6 +261,17 @@ UUID: 9f7638c4_d365349d
 Bytes: 165
 For my understanding, could please give an example of a case where union is required? I was thinking about boolean, byte, char and short implicit conversions to int.
 
+53:11-53:18
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f7638c4_d365349d
+UUID: 0a3da49e_8b66c2f2
+Bytes: 255
+Added a comment:
+          // We need to union the incoming types, as the Dex format does not
+          // guarantee the inputs have the same type. In particular the 0 constant is
+          // used for all types, but the graph builder treats it as an int.
+
 File: compiler/optimizing/ssa_liveness_analysis.cc
 
 132:51-132:55
@@ -138,12 +281,28 @@ UUID: 9f7638c4_53a5a48e
 Bytes: 4
 than
 
+132:51-132:55
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f7638c4_53a5a48e
+UUID: 0a3da49e_abbffeee
+Bytes: 4
+Done
+
 136:25-136:26
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a3da49e_98b7fa71
 Bytes: 58
 Maybe add in the comment above why '2' is the right value.
+
+136:25-136:26
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_98b7fa71
+UUID: 9f7638c4_b3b99865
+Bytes: 4
+Done
 
 File: compiler/optimizing/ssa_liveness_analysis.h
 
@@ -154,12 +313,28 @@ UUID: 0a3da49e_b8e4b673
 Bytes: 19
 HInstruction* const
 
+107:2-107:15
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_b8e4b673
+UUID: 0a3da49e_ebc9068d
+Bytes: 4
+Done
+
 108:2-108:8
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a58a819_2ecec262
 Bytes: 12
 const size_t
+
+108:2-108:8
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a58a819_2ecec262
+UUID: 2a58a819_4e6a262b
+Bytes: 4
+Done
 
 109:2-109:14
 Fri May 23 11:09:09 2014 +0000
@@ -168,10 +343,26 @@ UUID: 9f7638c4_93c25c15
 Bytes: 18
 UsePosition* const
 
+109:2-109:14
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f7638c4_93c25c15
+UUID: 9f7638c4_53e6047e
+Bytes: 4
+Done
+
 127:18-127:20
 Fri May 23 11:09:09 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a3da49e_d8e9824a
 Bytes: 87
 Add a kNoRegister constant ? Be careful, I think one already exists for Quick compiler.
+
+127:18-127:20
+Fri May 23 13:29:34 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a3da49e_d8e9824a
+UUID: 9f7638c4_13e08c5c
+Bytes: 5
+Done.
 

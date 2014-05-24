@@ -39,6 +39,16 @@ UUID: 9f9d5828_044cbcaa
 Bytes: 18
 why not UniquePtr?
 
+294:32-294:35
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f9d5828_044cbcaa
+UUID: 1fb968aa_e10f2a50
+Bytes: 318
+Is it gonna do move semantics correctly? I had to use std::move() when I wanted to assign it somewhere. I definitely don't want the unique_ptr objects to delete their payload when the local array is destroyed at the end of the scope...
+
+Also, we push all of them into opened_dex_files_, which had been that way before.
+
 301:4-301:21
 Thu May 22 22:45:37 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,6 +63,14 @@ UUID: bfa05c5b_3074900f
 Bytes: 32
 same as LoadExpectSingleDexFile?
 
+327:2-327:42
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfa05c5b_3074900f
+UUID: bf65bc2b_f424f8cf
+Bytes: 88
+Was to replace explicit calls to DexFile::Open when rewriting tests. So, yes, redundant.
+
 File: runtime/dex_file.cc
 
 96:6-96:25
@@ -62,6 +80,18 @@ UUID: 1f6b28de_174b94e8
 Bytes: 145
 We talk here of SyntheticLocations and entries, could we use just one term? Can we make filename a location if its not really a file we can open?
 
+96:6-96:25
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f6b28de_174b94e8
+UUID: ffad7469_8060aa17
+Bytes: 536
+I understand your comment. To clarify: Entries are specific to zip files and name a file inside of them. Synthetic locations are filenames or locations extended with an entry.
+
+This seemed the cleanest way to keep old terminology and satisfy the constraints of having different locations for all dex files in an oat file.
+
+The problem now is that functions are overloaded in meaning to make things a black box for the caller. For GetChecksum, the filename input can either be an actual file name for a physical file, or a synthetic one.
+
 237:0-237:49
 Thu May 22 22:45:37 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,12 +99,30 @@ UUID: 7f6c24f1_fdafe31a
 Bytes: 178
 odd that this isn't at the top of the file like usually. I was thinking this could become classes%s.dex and made into a helper function to return the right value based on an int.
 
+237:0-237:49
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f6c24f1_fdafe31a
+UUID: ffad7469_206a1600
+Bytes: 246
+I had started doing some work with a char* to avoid the std::string allocations in StringPrintF and make the loop a bit faster (e.g., for 2-9, one only has to change one char), but it became too tedious.
+
+So, yeah, that's certainly a cleaner way.
+
 947:22-947:46
 Thu May 22 23:00:19 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f6b28de_b75bc8af
 Bytes: 22
 shouldn't be necessary
+
+947:22-947:46
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f6b28de_b75bc8af
+UUID: bf65bc2b_940ca45d
+Bytes: 45
+Don't know. Didn't compile for me without it.
 
 File: runtime/dex_file.h
 
@@ -120,6 +168,14 @@ UUID: ff965405_c5d6c9f8
 Bytes: 59
 so if we are going to add error_code, add an enum for them.
 
+839:0-843:37
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff965405_c5d6c9f8
+UUID: 1fb968aa_c106a639
+Bytes: 188
+Technically I could clean this up, as I'm not really using the different levels. The only thing important is whether the entry was found or not, so we can warn when extraction/.../ failed.
+
 File: runtime/dex_file_test.cc
 
 149:30-149:33
@@ -128,6 +184,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f9d5828_ef41694c
 Bytes: 69
 dex_files... but why cant you use your common_runtime_test.h helpers?
+
+149:30-149:33
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f9d5828_ef41694c
+UUID: ffad7469_004cbaaa
+Bytes: 11
+I should...
 
 File: runtime/dex_method_iterator_test.cc
 
@@ -144,6 +208,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bfa05c5b_f04e28a5
 Bytes: 41
 could this user a helper from the parent?
+
+28:5-33:5
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfa05c5b_f04e28a5
+UUID: ffad7469_a0584665
+Bytes: 54
+If we do not want to extend the test to multidex, yes.
 
 File: runtime/native/dalvik_system_DexFile.cc
 
@@ -204,6 +276,14 @@ UUID: 3f3f0cb7_41361509
 Bytes: 78
 do we think we can share the logic with above. it seems a bit duped right now.
 
+156:6-167:8
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f3f0cb7_41361509
+UUID: ffad7469_c055422c
+Bytes: 11
+Definitely.
+
 187:36-187:45
 Thu May 22 23:00:19 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -257,4 +337,12 @@ Parent: 3f3f0cb7_41805538
 UUID: 9f9d5828_4a6f2b0f
 Bytes: 68
 The terms synthetic, location and base filename should be clarified.
+
+1227:0-1230:0
+Sat May 24 07:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f3f0cb7_41805538
+UUID: bf65bc2b_b441e04d
+Bytes: 103
+Probably currently cruft from me looking at the IsDexOptNeeded stuff in the system_dalvik_DexFile code.
 

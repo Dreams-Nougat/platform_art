@@ -9,3 +9,11 @@ UUID: 1fb968aa_f065b19c
 Bytes: 186
 How does this work if rl_arg is in an XMM register on x86?  There won't be a matching view.  You have to generate code to get the high word into the low word of an XMM register or a GPR.
 
+871
+Mon May 26 14:20:41 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fb968aa_f065b19c
+UUID: ffad7469_63c33571
+Bytes: 411
+In the current soft-float convention, rl_arg will not be an xmm register at this point (all arguments are passed via core registers).  In the upcoming hard-float convention we will no longer split long and double arguments across registers and frame.  Any long/double argument that doesn't fit entirely in register will be passed entirely in the frame.  So, we won't need to try to pull out the high-order word.
+

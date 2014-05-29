@@ -11,6 +11,15 @@ There are several places where RDI (Method*) is pushed to stack (push rdi). Coul
 
 I beleive push RDI should be replaced by something like "mod edi , [rsp]" if edi is method pointer. Is that correct?
 
+492
+Thu May 29 18:26:10 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_91e4dc71
+UUID: 3fef0c01_50842cba
+Bytes: 243
+Those pushes are in situations where we do not need a quick frame. The following calls are to artIsAssignableFromCode,
+which can neither throw exceptions nor allows a GC to run. So it is acceptable to store the complete pointer for simplicity.
+
 File: runtime/entrypoints/quick/quick_dexcache_entrypoints.cc
 
 50:67-50:85
@@ -37,4 +46,12 @@ if (m != old_method) {
   cur_quick_frame->Assign(m);
 }
 ...
+
+2012:0-2017:5
+Thu May 29 18:26:10 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fbaacee_de1835dc
+UUID: 3fef0c01_3091a8f8
+Bytes: 4
+Done
 

@@ -1,0 +1,75 @@
+Revision: 7bf87c4cda7cf94f75374dd5deacbb806d99962c
+Patch-set: 1
+File: runtime/atomic.h
+
+290:5-290:6
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fbfa8df_fa79c50b
+Bytes: 53
+Change 'w' to 'W' and add a full-stop (fs) aka period
+
+427:5-427:6
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfcdbca8_1795765a
+Bytes: 4
+W
+fs
+
+440:5-440:6
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fbfa8df_1a8eb9da
+Bytes: 4
+W
+fs
+
+File: runtime/base/mutex.cc
+
+333:4-334:48
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fbfa8df_5a6b1131
+Bytes: 161
+can we change state_ to be an art::Atomic and move the __sync_bool_compare_and_swap there. It should be clear from the Atomic API that the fence isn't necessary.
+
+File: runtime/mirror/object-inl.h
+
+405:2-405:7
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9fcab88f_16869a01
+Bytes: 54
+remove the const here to avoid the const_cast(s) below
+
+408:80-408:106
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9fcab88f_7666eea9
+Bytes: 39
+Add a LoadJavaDataVolatile for clarity?
+
+440:4-440:27
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9fcab88f_d676e258
+Bytes: 89
+use StoreJavaData(new_value) (and volatile) to match the GetField32 implementation above.
+
+473:1-478:17
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfcdbca8_f7ee7adc
+Bytes: 47
+use art::Atomic for consistency, here and below
+
+File: runtime/mirror/object.h
+
+106:0-108:76
+Thu May 29 22:30:47 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fbfa8df_3a0bbd8d
+Bytes: 20
+also define as weak?
+

@@ -17,6 +17,14 @@ UUID: 5fc5a077_99cd3bfc
 Bytes: 8
 seconded
 
+142
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fc5a077_99cd3bfc
+UUID: 1ff408d0_afc5391b
+Bytes: 128
+Testing purposes. Was set to the first one failing on ARM64. Shouldn't have been in the CL and will all be back before a commit.
+
 File: compiler/utils/arm64/assembler_arm64.cc
 
 659:5-659:13
@@ -25,6 +33,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5fea00f0_316650f7
 Bytes: 53
 "Increase" (since you're touching the comment anyway)
+
+659:5-659:13
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_316650f7
+UUID: 1ff408d0_8fca7529
+Bytes: 4
+Done
 
 File: runtime/arch/arch_test.cc
 
@@ -35,6 +51,14 @@ UUID: 5fea00f0_51b4340c
 Bytes: 91
 We don't really need a runtime test if we use COMPILE_ASSERT and #error as suggested below.
 
+431
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_51b4340c
+UUID: 3fef0c01_d01a5c42
+Bytes: 58
+Another CL may reformat the whole of arch_test to do that.
+
 433:0-434:55
 Thu May 29 10:43:05 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -42,12 +66,30 @@ UUID: bfe21c19_8c2ba772
 Bytes: 29
 This can be a COMPILE_ASSERT.
 
+433:0-434:55
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfe21c19_8c2ba772
+UUID: dfd51034_2d982d94
+Bytes: 205
+I haven't seen COMPILE_ASSERT used much in the code base, so that's why it's an actual runtime test (which I also trust a bit more to do what I want it to do).
+
+The more glaring mistake is HeapReference...
+
 436
 Thu May 29 10:43:05 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ffd8146d_eea9ffb5
 Bytes: 25
 This should be an #error.
+
+436
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd8146d_eea9ffb5
+UUID: dfd51034_4d9b7993
+Bytes: 99
+The 32b architectures haven't been furnished with the definitions, so this needs to be a soft fail.
 
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
@@ -62,6 +104,14 @@ to something like:
 
 | StackReference NULL  | <- SP (ArtMethod* NULL)
 
+694:4-694:34
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7fc0a468_5ad7957d
+UUID: 3fef0c01_90429420
+Bytes: 4
+Done
+
 1296
 Thu May 29 13:06:02 2014 +0000
 Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -72,6 +122,14 @@ Shouldn't this be
 
 to avoid loading the 4 bytes above and corrupting the method parameter?
 
+1296
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fef0c01_b0a358d2
+UUID: 3fef0c01_7058500f
+Bytes: 4
+Done
+
 1310
 Thu May 29 13:06:02 2014 +0000
 Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -79,12 +137,28 @@ UUID: dfd51034_2d66edf6
 Bytes: 16
 Ditto - ldr w2 ?
 
+1310
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dfd51034_2d66edf6
+UUID: 3fef0c01_50554cd3
+Bytes: 4
+Done
+
 1324
 Thu May 29 13:06:02 2014 +0000
 Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ff408d0_6f3191dd
 Bytes: 8
 ldr w3 ?
+
+1324
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ff408d0_6f3191dd
+UUID: dfd51034_cdae49bc
+Bytes: 4
+Done
 
 1363
 Thu May 29 13:06:02 2014 +0000
@@ -96,12 +170,28 @@ Again:
 
 to avoid method* loading top 4 bytes of potentially bad values?
 
+1363
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ff408d0_0f38c5be
+UUID: 3fef0c01_3052c8ed
+Bytes: 4
+Done
+
 1427
 Thu May 29 13:06:02 2014 +0000
 Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ff408d0_cf487d46
 Bytes: 8
 ldr w0 ?
+
+1427
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ff408d0_cf487d46
+UUID: dfd51034_ada3fdd1
+Bytes: 4
+Done
 
 1441
 Thu May 29 13:06:02 2014 +0000
@@ -110,12 +200,28 @@ UUID: 3fef0c01_90a854af
 Bytes: 8
 ldr w0 ?
 
+1441
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fef0c01_90a854af
+UUID: dfd51034_8da841af
+Bytes: 4
+Done
+
 1491
 Thu May 29 13:06:02 2014 +0000
 Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3fbaacee_b80d999c
 Bytes: 40
 While you're at it - RDI can be removed.
+
+1491
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fbaacee_b80d999c
+UUID: dfd51034_6d9e3585
+Bytes: 4
+Done
 
 File: runtime/entrypoints/quick/quick_dexcache_entrypoints.cc
 
@@ -126,6 +232,14 @@ UUID: ffd8146d_ceae43bc
 Bytes: 17
 line length > 100
 
+53
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd8146d_ceae43bc
+UUID: dfd51034_0d95715a
+Bytes: 44
+Done, though I do not like the way it looks.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 633
@@ -135,12 +249,28 @@ UUID: ffd8146d_2e982794
 Bytes: 17
 line length > 100
 
+633
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd8146d_2e982794
+UUID: 1ff408d0_6fe071ac
+Bytes: 4
+Done
+
 1751
 Thu May 29 10:43:05 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bfe21c19_ec434b27
 Bytes: 42
 line length > 100, here and 4 times below.
+
+1751
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfe21c19_ec434b27
+UUID: 1ff408d0_4fddadec
+Bytes: 44
+Done, though I do not like the way it looks.
 
 File: runtime/exception_test.cc
 
@@ -151,6 +281,14 @@ UUID: 5fea00f0_91a85caf
 Bytes: 17
 line length > 100
 
+195
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_91a85caf
+UUID: 1ff408d0_2fda69f6
+Bytes: 4
+Done
+
 File: runtime/reflection_test.cc
 
 484
@@ -160,6 +298,14 @@ UUID: ffd8146d_8e2b9b72
 Bytes: 34
 Why are these tests commented out?
 
+484
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd8146d_8e2b9b72
+UUID: 3fef0c01_b0f8f89d
+Bytes: 28
+Same as jni_compiler_test...
+
 File: runtime/stack.h
 
 571
@@ -168,4 +314,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bfe21c19_ac3d43ae
 Bytes: 17
 line length > 100
+
+571
+Thu May 29 14:56:02 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfe21c19_ac3d43ae
+UUID: dfd51034_cd21a994
+Bytes: 4
+Done
 

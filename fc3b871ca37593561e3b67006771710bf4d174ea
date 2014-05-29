@@ -17,3 +17,11 @@ UUID: 7fc0a468_4fda2df7
 Bytes: 3
 Yes
 
+773
+Thu May 29 23:52:12 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7fc0a468_4fda2df7
+UUID: dfd51034_9014da13
+Bytes: 476
+Those two return the function pointers for the trampoline code in the running system. This is in libart, and obviously at some random location. We know where the trampolines will be in the image, at least. That's the GetOadAddress with the quick_XXX_offset_. Now the only problem is that the class linker also gives us a pointer to where the oat code (to patch) is in the running system (somewhere mapped in memory), not with the oat file layout. So we fix up the differences.
+

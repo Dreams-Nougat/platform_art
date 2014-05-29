@@ -49,6 +49,74 @@ UUID: ffd8146d_eea9ffb5
 Bytes: 25
 This should be an #error.
 
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+694:4-694:34
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fc0a468_5ad7957d
+Bytes: 100
+| ArtMethod* NULL      | <- SP
+
+to something like:
+
+| StackReference NULL  | <- SP (ArtMethod* NULL)
+
+1296
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3fef0c01_b0a358d2
+Bytes: 108
+Shouldn't this be 
+  ldr w1, [sp...
+
+to avoid loading the 4 bytes above and corrupting the method parameter?
+
+1310
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dfd51034_2d66edf6
+Bytes: 16
+Ditto - ldr w2 ?
+
+1324
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ff408d0_6f3191dd
+Bytes: 8
+ldr w3 ?
+
+1363
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ff408d0_0f38c5be
+Bytes: 88
+Again:
+  ldr w1, [sp...
+
+to avoid method* loading top 4 bytes of potentially bad values?
+
+1427
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ff408d0_cf487d46
+Bytes: 8
+ldr w0 ?
+
+1441
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3fef0c01_90a854af
+Bytes: 8
+ldr w0 ?
+
+1491
+Thu May 29 13:06:02 2014 +0000
+Author: Stuart Monteith <1037216@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3fbaacee_b80d999c
+Bytes: 40
+While you're at it - RDI can be removed.
+
 File: runtime/entrypoints/quick/quick_dexcache_entrypoints.cc
 
 53

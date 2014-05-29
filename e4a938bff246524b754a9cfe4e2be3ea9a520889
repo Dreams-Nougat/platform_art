@@ -1,5 +1,16 @@
 Revision: e4a938bff246524b754a9cfe4e2be3ea9a520889
 Patch-set: 2
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+492
+Thu May 29 17:19:38 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fea00f0_91e4dc71
+Bytes: 280
+There are several places where RDI (Method*) is pushed to stack (push rdi). Could you please review them and update that logic if it is applicable to this change?
+
+I beleive push RDI should be replaced by something like "mod edi , [rsp]" if edi is method pointer. Is that correct?
+
 File: runtime/entrypoints/quick/quick_dexcache_entrypoints.cc
 
 50:67-50:85

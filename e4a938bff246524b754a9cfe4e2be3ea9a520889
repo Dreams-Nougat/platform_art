@@ -20,3 +20,21 @@ UUID: 5fea00f0_31f53060
 Bytes: 142
 In cases like this I break the line before the first parameter and I often put multiple parameters on the same line. (No strict rules though.)
 
+File: runtime/thread.cc
+
+2012:0-2017:5
+Thu May 29 17:51:21 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3fbaacee_de1835dc
+Bytes: 470
+This looks good, but it might be a little bit cleaner if we call GetCurrentQuickFrame() first and uses its StackReference return value, instead of accessing it twice in two ways via GetMethod() and GetCurrentQuickFrame(). As in,
+
+StackReference<mirror::ArtMethod>* cur_quick_frame = GetCurrentQuickFrame();
+mirror::ArtMethod* m = cur_quick_frame->AsMirrorPtr();
+mirror::ArtMethod* old_method = m;
+visitor_(...);
+if (m != old_method) {
+  cur_quick_frame->Assign(m);
+}
+...
+

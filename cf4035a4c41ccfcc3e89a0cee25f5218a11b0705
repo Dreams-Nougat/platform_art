@@ -9,10 +9,28 @@ UUID: ffd3b444_9cc76d49
 Bytes: 152
 Are we still reserving 8 bytes for the ArtMethod in the callee-save-method frame? It looks like to be different between the frame create by invoke-stub.
 
+157:0-157:83
+Fri May 30 14:51:08 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd3b444_9cc76d49
+UUID: 3fef0c01_f61d58fb
+Bytes: 237
+For simplicity, and to limit the size of the change, all callee-save frames have been left alone. The computation of callee-save methods has not been changed (the method reference is counted as a pointer), so the stubs are correct as is.
+
 1493:0-1493:30
 Fri May 30 07:08:36 2014 +0000
 Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ffd3b444_7ccdb167
 Bytes: 137
 Are we still reserving 8 bytes for the ArtMethod in the JNI frame? It looks like to be different between the frame create by invoke-stub.
+
+1493:0-1493:30
+Fri May 30 14:51:08 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd3b444_7ccdb167
+UUID: 3fef0c01_36f52060
+Bytes: 424
+Depends on the execution step. Before the call to artQuickGenericJniTrampoline, this is a full pointer for simplicity, as we do not need a working quick frame at that point.
+
+The C function will then rearrange things. For example, the handle scope will be inserted between the float saves and the method, we put down the method pointer as a stack reference, and we register the frame as the current top of the managed stack.
 

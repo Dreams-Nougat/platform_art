@@ -9,12 +9,28 @@ UUID: 3fbaacee_15a5638f
 Bytes: 28
 Did you mean FindArrayClass?
 
+7
+Fri May 30 20:58:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fbaacee_15a5638f
+UUID: dfd51034_f3cb2830
+Bytes: 4
+Done
+
 9:3-9:29
 Fri May 30 04:07:57 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5fc5a077_426323e6
 Bytes: 100
 This works, but this seems like a perfect use case for a handle. Is there a reason not use a handle?
+
+9
+Fri May 30 20:58:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fc5a077_426323e6
+UUID: 1ff408d0_def389c0
+Bytes: 166
+This way is more efficient for code which doesn't always need a handle. FindArrayClass has a cache which is the fast path so we usually don't need to create a handle.
 
 File: runtime/mirror/array.cc
 
@@ -25,6 +41,14 @@ UUID: 5fc5a077_e251170d
 Bytes: 64
 For example, why not pass the handle 'element_class' as is here?
 
+99
+Fri May 30 20:58:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fc5a077_e251170d
+UUID: dfd51034_b3c5a01b
+Bytes: 94
+Explained in other comment, though it would be nice to have a way to pass in a handle as well.
+
 File: runtime/native/java_lang_reflect_Array.cc
 
 53:2-53:37
@@ -33,4 +57,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3fbaacee_956613a7
 Bytes: 39
 Is this handle scope unused? Remove it?
+
+53
+Fri May 30 20:58:58 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fbaacee_956613a7
+UUID: 3fef0c01_99a87faf
+Bytes: 4
+Done
 

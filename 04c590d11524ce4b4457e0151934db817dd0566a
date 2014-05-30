@@ -102,6 +102,26 @@ UUID: 5fea00f0_3404fee0
 Bytes: 91
 This relies on r0 being available at every suspend check. I think we should use a temp reg.
 
+958:4-958:9
+Fri May 30 21:42:31 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_3404fee0
+UUID: bfcdbca8_ddbddfc6
+Bytes: 202
+yes - allocate a temp.
+
+RegStorage flags_reg = AllocTemp();
+
+LoadBaseDisp(...., flags_reg, kUnsignedHalf);
+
+LIR* res = OpCmpImmBranch(...)
+
+FreeTemp(flags_reg);
+
+return res;
+
+... or something like that.
+
 File: compiler/dex/quick/arm/target_arm.cc
 
 53:72-53:79
@@ -128,4 +148,12 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3fef0c01_f61c3858
 Bytes: 152
 We should make sure that this flag agrees with what's set in the compiler, but that's for another CL (we don't have a good place to put this right now).
+
+38:0-38:25
+Fri May 30 21:42:31 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fef0c01_f61c3858
+UUID: 9fcab88f_fc8add0c
+Bytes: 384
+Yea, but my inclination here would be to not have this #define at all.  If this change proves to be performance neutral or better across more than just Caffienemark and we can convince ourselves that suspend coverage is complete, then I'd just do it and remove the existing code.  If not, I'd revert this patch.  Conditionally compiled modes are an invitation for destructive bit rot.
 

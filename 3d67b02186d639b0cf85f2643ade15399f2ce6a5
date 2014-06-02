@@ -9,10 +9,30 @@ UUID: 9fcab88f_fcf1b849
 Bytes: 12
 use mir_next
 
+349:35-349:44
+Mon Jun 02 18:09:59 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fcab88f_fcf1b849
+UUID: dffef0bb_91cdff6a
+Bytes: 4
+Done
+
 353:0-355:59
 Mon Jun 02 17:07:50 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1fbfa8df_19147ea4
 Bytes: 143
 This is changing the meaning of the operands to this opcode, I'm surprised such a change is so isolated. For example, shouldn't dumping change?
+
+353:0-355:59
+Mon Jun 02 18:09:59 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fbfa8df_19147ea4
+UUID: 7f33447f_2c2cbcba
+Bytes: 334
+Actually I am fixing it. The original code is: 
+
+mir_next is an if compared to zero so vA is what we are comparing (result of mir's compare) and vB is the offset. But fused cmp is actually doing the compare using: vA and vB and the opcode in meta.ccode.
+
+Or did I miss this? I know that without this, it fails when generating a Fused.
 

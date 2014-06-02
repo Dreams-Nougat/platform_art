@@ -9,6 +9,14 @@ UUID: ffd8146d_5d3fa7d2
 Bytes: 137
 Maybe while you're at it, make this struct a class, and make it follow the conventions (private part at the end, fields ending with '_').
 
+66:1-66:8
+Mon Jun 02 22:46:46 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd8146d_5d3fa7d2
+UUID: dffef0bb_5136676d
+Bytes: 49
+That would likely go with the style guide better.
+
 91:7-91:18
 Mon Jun 02 20:58:00 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,4 +32,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bfe21c19_40c1fe60
 Bytes: 72
 Why are we sure the following accesses do not need a read barrier again?
+
+248:27-248:28
+Mon Jun 02 22:46:46 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfe21c19_40c1fe60
+UUID: 5fc5a077_87ca654f
+Bytes: 520
+If you mean the code after a call to ReadBarrierObjectPointersLocked() e.g., InternalGet(), we don't need the read barrier again because we rebuild the map (object_to_entry_) with the 'read-barriered' object pointers in ReadBarrierObjectPointersLocked(). As long as we don't have a situation where an ongoing GC ends and another GC invokes for the rest of the function after the ReadBarrierObjectPointersLocked() call, which, I believe, we do not, it's fine.
+
+If you mean something else, which ones are you referring to?
 

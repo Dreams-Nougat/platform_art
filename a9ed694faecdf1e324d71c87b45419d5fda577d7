@@ -1,0 +1,32 @@
+Revision: a9ed694faecdf1e324d71c87b45419d5fda577d7
+Patch-set: 1
+File: runtime/jni_internal.cc
+
+1962
+Tue Jun 03 02:18:57 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_5830da1f
+Bytes: 214
+Instead of calling is movable object here, you could see if its a copy by checking if chars is not an address in the s_chars array? This would handle the case that something moves from movable space -> non movable.
+
+1965
+Tue Jun 03 02:18:57 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fc5a077_cd875bbf
+Bytes: 56
+I don't think you need to decode java_string again here.
+
+1983
+Tue Jun 03 02:18:57 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_b3e6e74d
+Bytes: 177
+s could have moved during IncrementDisableMovingGC since this may cause thread suspension, you can store the offset before doing the IncrementDisableMovingGC to get around this.
+
+1996
+Tue Jun 03 02:18:57 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_d3304b0e
+Bytes: 34
+No need for this return statement.
+

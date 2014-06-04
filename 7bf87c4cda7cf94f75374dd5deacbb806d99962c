@@ -27,6 +27,14 @@ UUID: 1fbfa8df_fa79c50b
 Bytes: 53
 Change 'w' to 'W' and add a full-stop (fs) aka period
 
+290:5-290:6
+Wed Jun 04 00:59:38 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fbfa8df_fa79c50b
+UUID: 5fc5a077_4d1eabf8
+Bytes: 9
+All done.
+
 427:5-427:6
 Thu May 29 22:30:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,6 +60,14 @@ UUID: 1fbfa8df_5a6b1131
 Bytes: 161
 can we change state_ to be an art::Atomic and move the __sync_bool_compare_and_swap there. It should be clear from the Atomic API that the fence isn't necessary.
 
+333:4-334:48
+Wed Jun 04 00:59:38 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fbfa8df_5a6b1131
+UUID: bf505ca5_ffeafb3f
+Bytes: 85
+Let's postpone that to a separate CL. There are more opportunities along those lines.
+
 File: runtime/mirror/object-inl.h
 
 405:2-405:7
@@ -61,12 +77,28 @@ UUID: 9fcab88f_16869a01
 Bytes: 54
 remove the const here to avoid the const_cast(s) below
 
+405:2-405:7
+Wed Jun 04 00:59:38 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fcab88f_16869a01
+UUID: bf505ca5_052c38ba
+Bytes: 36
+Applied alternate fix to avoid them.
+
 408:80-408:106
 Thu May 29 22:30:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9fcab88f_7666eea9
 Bytes: 39
 Add a LoadJavaDataVolatile for clarity?
+
+408:80-408:106
+Wed Jun 04 00:59:38 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fcab88f_7666eea9
+UUID: dfd51034_3c605d89
+Bytes: 225
+If we eventually want to move to using the C++11 primitives directly, it's probably better to leave it as is.  C++11 memory_order_seq_cst and Java volatile should match exactly.  We're not losing anything by identifying them.
 
 440:4-440:27
 Thu May 29 22:30:47 2014 +0000
@@ -82,6 +114,16 @@ UUID: bfcdbca8_f7ee7adc
 Bytes: 47
 use art::Atomic for consistency, here and below
 
+473:1-478:17
+Wed Jun 04 00:59:38 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfcdbca8_f7ee7adc
+UUID: dffef0bb_3d5cdaa6
+Bytes: 464
+Did these.  Skipped GetFieldObject() for now, where some interface changes are needed. 
+
+I also left the CAS operations alone for now, since there seems to be ambiguity about whether they are intended to be weak or strong.  In particular, the sun.misc.unsafe interface seems seriously underspecified.  The current code seems quite conservative, and I'm hesitant to break things by guessing intent.  We could introduce the Strong operations and use them everywhere.
+
 File: runtime/mirror/object.h
 
 106:0-108:76
@@ -90,4 +132,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1fbfa8df_3a0bbd8d
 Bytes: 20
 also define as weak?
+
+106:0-108:76
+Wed Jun 04 00:59:38 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fbfa8df_3a0bbd8d
+UUID: 7f33447f_b655727f
+Bytes: 236
+I ended up documenting them as strong for now, after convincing myself that there is at least one client (monitor Install/Inflate when the lock is owned) that assumed no spurious failures.  This probably needs revisiting in a future CL.
 

@@ -9,3 +9,19 @@ UUID: 7f33447f_57edfd6e
 Bytes: 123
 Do we need all this accounting? I was under the impression we could read "/proc/self/maps" to see which maps already exist.
 
+147
+Wed Jun 04 19:33:40 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_57edfd6e
+UUID: 7f33447f_5742dd75
+Bytes: 1251
+I guess we might get by doing that, but here's my thinking:
+
+I'd like to extend this to do a similar sort of verification at the time immune region is populated (at the beginning of a GC), rather than just once in Heap::Heap(), in the future.
+
+For example, we might start reusing the same mem map between one of the bump pointer space and the main (free-list) space for background compaction like you suggested before. If we do that and have the GSS collector that puts the main space into the immune region, a check at the time the immune region is populated would likely be more assuring.
+
+I think an ART-internal accounting comes handy for this. For example, if there's already a large object map within the region we'd like to designate as the immune region, how would we detect that? Relying on the ashmem name string matching only does not seem very robust. Besides, ashmem does not work on host.
+
+Another concern is speed. Parsing text is heavier. Comparatively, I think the cost of this accounting with a multimap with 10-20 (+ # of LOS'es) entries, isn't bad. Lastly, we gain the ability to dump ART-internal view of memory maps more easily for debugging and crash diagnosis, as well as adding other sorts of checks on top of this accounting.
+

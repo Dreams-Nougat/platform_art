@@ -1,0 +1,35 @@
+Revision: 3e1f2ad49a8a82cbf7a0351a5c0ead36f9d68df5
+Patch-set: 1
+File: runtime/class_linker.cc
+
+1389:11-1389:30
+Thu Jun 05 01:00:06 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_c3ae4573
+Bytes: 403
+this is not the system class loader
+
+http://developer.android.com/reference/java/lang/ClassLoader.html#getSystemClassLoader()
+
+the system class loader is -classpath, this is -Xbootclasspath:
+
+we confuse this because we have FindSystemClass, but probably that should be removed or renamed FindBootClass
+
+so for the comments, I'd just say the boot class loader, or just say "// Search the boot class path"
+
+1395:9-1395:82
+Thu Jun 05 01:00:06 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_5fc0bc0c
+Bytes: 76
+// The boot class loader is typically searched ahead of other class loaders,
+
+File: runtime/runtime.cc
+
+695:43-695:72
+Thu Jun 05 01:00:06 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_2bcb3030
+Bytes: 23
+in the boot class path;
+

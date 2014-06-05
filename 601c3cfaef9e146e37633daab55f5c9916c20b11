@@ -37,6 +37,14 @@ UUID: 5fea00f0_baa8d0ae
 Bytes: 125
 Do you want to allow people to call std::atomic::load / store directly ? If not, consider composition or private inheritance.
 
+259
+Thu Jun 05 16:23:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_baa8d0ae
+UUID: bf505ca5_f9ec5076
+Bytes: 140
+Hans may have other intents, the original purpose for this structure is so that we can ultimately just lose art::Atomic and use std::atomic.
+
 261
 Thu Jun 05 09:54:52 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +52,28 @@ UUID: 5fea00f0_faae58bb
 Bytes: 248
 Perhaps this needs to be rewritten as [sizeof(T) == sizeof(Atomic<T>)] Given that you use this fact in Address. It's obviously true now, but won't be if anyone ever adds adds fields to this class. Unlikely I know, but thought I should point it out.
 
+261
+Thu Jun 05 16:23:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_faae58bb
+UUID: 3f162cdd_98550ad7
+Bytes: 4
+sgtm
+
 357
 Thu Jun 05 09:54:52 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5fea00f0_7ab4a80c
 Bytes: 52
 Does this really have to be a member of this class ?
+
+357
+Thu Jun 05 16:23:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_7ab4a80c
+UUID: 3f162cdd_b8f80e9e
+Bytes: 151
+what's the concern? We've fixed a number of uint/size_t type confusions, I believe where this is used is in a CAS to make the intent of the user clear.
 
 370
 Thu Jun 05 09:54:52 2014 +0000
@@ -65,6 +89,15 @@ UUID: 7f81844b_123b2cbf
 Bytes: 15
 Odd intendation
 
+File: runtime/base/mutex.cc
+
+333:0-334:48
+Thu Jun 05 16:23:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_fe01856c
+Bytes: 124
+// TODO: move state_ to be a art::Atomic and use an intention revealing CAS operation that exposes the barrier semantics :-)
+
 File: runtime/mirror/object-inl.h
 
 460
@@ -73,4 +106,29 @@ Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f81844b_722e3882
 Bytes: 3
 tws
+
+534:0-539:3
+Thu Jun 05 16:23:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_be68dd33
+Bytes: 17
+move to atomic.h?
+
+File: runtime/mirror/object.h
+
+111:0-113:36
+Thu Jun 05 16:23:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_38eddeda
+Bytes: 213
+I don't understand this comment. We CAS to thin lock and CAS to inflate in the monitor code, a spurious failure would just cause the whole lock or inflate logic to restart. I don't see a proper with weak behavior.
+
+File: runtime/monitor.cc
+
+697:25-697:60
+Thu Jun 05 16:23:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_591f84bc
+Bytes: 68
+I'd prefer if this mentioned that CasLockWord had acquire semantics.
 

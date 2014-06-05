@@ -27,3 +27,13 @@ Thanks you, I'll remove comment in a next patchset.
 
 Could you please provide some background on why we need these adjustments in reg_pool?
 
+633
+Thu Jun 05 02:58:16 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffd8146d_b5fd7f8d
+UUID: 3f162cdd_02b98bda
+Bytes: 747
+If I remember correctly, there were some fairly common code patterns in which the method did a small amount of computation/loading and then returned a result.  By starting temp allocation immediately after the return registers, we avoided using the return registers as temps for computation  or to hold a live Dalvik value.  In many cases, this saves a register-to-register copy to set up the return value (or something like that).  It's also entirely possible that this heuristic trick is no longer useful - I think it was done before we recognized special method patterns (for example, identity methods, single iget methods, methods return a constant, etc).  We now generate special patterns for those things. 
+
+In any event, it's a minor thing.
+

@@ -9,6 +9,14 @@ UUID: 7f33447f_61495747
 Bytes: 53
 if you are going to move it, move it to its own file?
 
+663:0-663:19
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_61495747
+UUID: 3f162cdd_d5e34b40
+Bytes: 133
+I just moved it up, as it's now used in a different method. I assumed it was just local to ClassLinker and should then stay that way.
+
 722:27-722:28
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,6 +31,16 @@ UUID: 7f33447f_81ed7bdc
 Bytes: 41
 so hopefully we have a lock on dex_files?
 
+734:2-734:64
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_81ed7bdc
+UUID: 7f33447f_019acb61
+Bytes: 302
+I am assuming that the caller has a local vector. That seems reasonable to me. I don't see a reason why the vector should be shared across threads.
+
+The rollback is for cases like dex2oat, which reads all inputs into a "big" vector. In those cases I don't want "half" of a multidex in there if we fail.
+
 812:2-812:56
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +50,16 @@ here is an example where I think we need to use all
 
 consider people that use multi-dex to combined separately built dex files, the first one may not change when others are updated.
 
+812:2-812:56
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_22eb6f46
+UUID: bf505ca5_a6e8e78c
+Bytes: 343
+I thought it added unnecessary complexity to add multidex scanning to the open-oat-file code. Instead I optimistically take the file and try to "multidex-open" it, and see if it fails the checksums then. If it does, it will try to regenerate.
+
+What might be wrong is me not closing the oat file I opened in step 2) when multidex-loading fails.
+
 995:0-995:83
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,12 +67,28 @@ UUID: 7f33447f_a14f5f45
 Bytes: 146
 the old code protected against races between generation and opening. can we open via fd to avoid the race? ah, I see there is more checking above.
 
+995:0-995:83
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_a14f5f45
+UUID: 7f33447f_0195eb26
+Bytes: 102
+Yeah, though there is one case above where I'm not sure what to lock (as we have a dex location only).
+
 1107:4-1107:20
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_41ef73d9
 Bytes: 89
 everywhere I see a delete of a local I think we should be using unique_ptr. why not here?
+
+1107:4-1107:20
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_41ef73d9
+UUID: 7f33447f_219a6f59
+Bytes: 8
+Will do.
 
 File: runtime/class_linker.h
 
@@ -62,6 +106,14 @@ UUID: 7f33447f_a1951f5c
 Bytes: 150
 comment that caller takes ownership of OatFile consistently? it just seems odd to say it for some cases but not all of the others that return OatFile*
 
+532:63-532:64
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_a1951f5c
+UUID: 7f33447f_61771756
+Bytes: 8
+Will do.
+
 533:0-535:1
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -70,6 +122,16 @@ Bytes: 295
 in all of these, the dex_location is the container right, which is why there is still a one-to-one mapping from dex to oat?
 
 however, shouldn't there be more than one dex_location_checksum. seems unsafe to assume just classes.dex matters. we could sum the checksums of all to keep things simple.
+
+533:0-535:1
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_813b3bbd
+UUID: bf505ca5_26237745
+Bytes: 310
+As mentioned in the corresponding .cc part, I thought the added complexity is not worth it, and the Open code will take care of checking the other checksums.
+
+I made all these methods, as far as I could, private, so they are not exposed to anything outside ClassLinker. Thus it should not be able to be abused.
 
 File: runtime/dex_file.h
 
@@ -80,6 +142,14 @@ UUID: 7f33447f_21d26f38
 Bytes: 94
 OpenAll doesn't really distinguish this from Open. Perhaps leave Open or rename to OpenFromZip
 
+368:9-368:21
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_21d26f38
+UUID: bf505ca5_e61caffd
+Bytes: 38
+Will use OpenFromZip, good suggestion.
+
 823:2-823:55
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -87,12 +157,28 @@ UUID: 3f162cdd_a26bff2f
 Bytes: 72
 doc with example of what is true and what is false. is this unit tested?
 
+823:2-823:55
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_a26bff2f
+UUID: bf505ca5_86128be5
+Bytes: 27
+Not yet, but will be added.
+
 825:0-827:89
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f162cdd_4268e332
 Bytes: 82
 again, please give example inputs and outputs (also hopefully this is unit tested?
+
+825:0-827:89
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_4268e332
+UUID: 7f33447f_a15d1fcd
+Bytes: 14
+Again not yet.
 
 829:2-829:62
 Thu Jun 05 05:49:14 2014 +0000
@@ -103,12 +189,28 @@ move with the other char* variant. do we need both (fine if it is used a lot.
 
 tests?
 
+829:2-829:62
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_e1b4870e
+UUID: 7f33447f_41a5338e
+Bytes: 176
+We use char* in one part of our code base, and std::string in another. To avoid c_str memory allocations it seemed prudent to use std::string functionality. Maybe not worth it?
+
 830:0-830:74
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf505ca5_66017fd0
 Bytes: 19
 example doc? tests?
+
+830:0-830:74
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_66017fd0
+UUID: 3f162cdd_350ac740
+Bytes: 23
+Will be in the next PS.
 
 File: runtime/dex_file_test.cc
 
@@ -119,6 +221,14 @@ UUID: bf505ca5_2677f756
 Bytes: 57
 isn't this one of the patterns from common_runtime_test.h
 
+148:2-152:28
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_2677f756
+UUID: bf505ca5_66097fb9
+Bytes: 197
+It is, but it is not available here. Note that this is not a member of a class, but a static function. I decided not to inline it into the test below or put it into DexFileTest as it wasn't before.
+
 File: runtime/dex_method_iterator_test.cc
 
 25:0-34:3
@@ -128,6 +238,14 @@ UUID: 3f162cdd_62d16786
 Bytes: 76
 replace with CommonRuntimeTest helper? or are path assumptions not the same.
 
+25:0-34:3
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_62d16786
+UUID: bf505ca5_e64fcff0
+Bytes: 315
+As seen below, the input to OpenDexFile is a simplified "name," and GetDexFileName does some translation. I left it structurally the way I found it (and it's the only "real" user of GetDexFileName in all tests), but I could refactor the functionality fully to CommonRuntimeTest (where GetDexFileName already lives).
+
 File: runtime/native/dalvik_system_DexFile.cc
 
 121:4-121:21
@@ -136,6 +254,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f162cdd_c292b3d0
 Bytes: 33
 again, local delete => unique_ptr
+
+121:4-121:21
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_c292b3d0
+UUID: 3f162cdd_d54cab87
+Bytes: 8
+Will do.
 
 148:0-148:2
 Thu Jun 05 05:49:14 2014 +0000
@@ -159,12 +285,31 @@ so the point is, the runtime has the ownership, so we can delete what is not reg
 
 so the loop can just null out what is registered, then call the usual helper to delete the rest of the container contents.
 
+148:0-148:2
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_61be37c4
+UUID: 7f33447f_c155c37e
+Bytes: 3
+OK.
+
 218:46-219:31
 Thu Jun 05 05:49:14 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f162cdd_0270abec
 Bytes: 40
 is that really a limit of unordered_set?
+
+218:46-219:31
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_0270abec
+UUID: 7f33447f_e1fec715
+Bytes: 499
+The description likely doesn't hold, but here are my assumptions, in descending order of importance:
+(1) Type ids are sorted, and so are classes in a dex file. It might never have been explicit, but I thought the array we returned would be sorted, too.
+(2) Storage space is constrained. Set has lower requirements than unordered_set.
+(3) I thought the implementation is not that bad and iterating over a larger backing array in unordered_set would make up for the tree costs. That might not be true.
 
 File: runtime/oat_file.cc
 
@@ -175,6 +320,14 @@ UUID: 3f162cdd_025bcb68
 Bytes: 273
 I worry about cases where we look with location and not also dex_location_checksum. you need to test with apps like https://play.google.com/store/apps/details?id=com.eclipsim.gpsstatus2 that use the same location more than once in the same runtime with different checksums.
 
+318:50-318:74
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_025bcb68
+UUID: 3f162cdd_15c8e38a
+Bytes: 78
+Yes, I will definitely need to check with apps that use dynamic dex/oat files.
+
 File: runtime/oat_file.h
 
 219:0-219:66
@@ -184,6 +337,16 @@ UUID: bf505ca5_86e04bad
 Bytes: 207
 as noted elsewhere, there is a reason that most everything search function with a dex_location also takes a dex_location_checksum, namely https://play.google.com/store/apps/details?id=com.eclipsim.gpsstatus2
 
+219:0-219:66
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_86e04bad
+UUID: 3f162cdd_d5a82bb0
+Bytes: 269
+I should have likely just used the function below with nullptr.
+
+There is a reason for this, but it's likely too contrived to be realistic. It was to allow secondaries without checksums, but keep the loading code minimal (shared over "oat found" and "oat regenerated").
+
 File: runtime/utils.cc
 
 1227:0-1229:60
@@ -192,6 +355,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f162cdd_62564739
 Bytes: 88
 this is only used for .odex next to container. location will never be a "multi-dex" name
+
+1227:0-1229:60
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_62564739
+UUID: 7f33447f_e1d7a77b
+Bytes: 62
+The method is "public," so I was erring on the side of safety.
 
 File: test/112-multidex/src/Main.java
 
@@ -210,4 +381,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_81d7bbf3
 Bytes: 4
 enh?
+
+17:0-17:69
+Thu Jun 05 07:08:23 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_81d7bbf3
+UUID: 7f33447f_0193abd5
+Bytes: 342
+Forgot to document this in the commit message. Two things:
+(1) I like enum classes (type safety FTW), and the tool didn't handle them.
+(2) After I made the change, I realized that the enum was private (as it's only used in private methods), so auto-generation will fail. So I added parsing a "  // private" comment to skip generating << code.
 

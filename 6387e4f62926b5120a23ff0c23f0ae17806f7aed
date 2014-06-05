@@ -1,0 +1,213 @@
+Revision: 6387e4f62926b5120a23ff0c23f0ae17806f7aed
+Patch-set: 4
+File: runtime/class_linker.cc
+
+663:0-663:19
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_61495747
+Bytes: 53
+if you are going to move it, move it to its own file?
+
+722:27-722:28
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_26905738
+Bytes: 1
+@
+
+734:2-734:64
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_81ed7bdc
+Bytes: 41
+so hopefully we have a lock on dex_files?
+
+812:2-812:56
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_22eb6f46
+Bytes: 181
+here is an example where I think we need to use all
+
+consider people that use multi-dex to combined separately built dex files, the first one may not change when others are updated.
+
+995:0-995:83
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_a14f5f45
+Bytes: 146
+the old code protected against races between generation and opening. can we open via fd to avoid the race? ah, I see there is more checking above.
+
+1107:4-1107:20
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_41ef73d9
+Bytes: 89
+everywhere I see a delete of a local I think we should be using unique_ptr. why not here?
+
+File: runtime/class_linker.h
+
+276:7-276:31
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_21a90fb2
+Bytes: 146
+OpenDexFilesFromOat (no need to say Multi) and I think you don't need the explanation in the doc then either about how it can be used for "single"
+
+532:63-532:64
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_a1951f5c
+Bytes: 150
+comment that caller takes ownership of OatFile consistently? it just seems odd to say it for some cases but not all of the others that return OatFile*
+
+533:0-535:1
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_813b3bbd
+Bytes: 295
+in all of these, the dex_location is the container right, which is why there is still a one-to-one mapping from dex to oat?
+
+however, shouldn't there be more than one dex_location_checksum. seems unsafe to assume just classes.dex matters. we could sum the checksums of all to keep things simple.
+
+File: runtime/dex_file.h
+
+368:9-368:21
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_21d26f38
+Bytes: 94
+OpenAll doesn't really distinguish this from Open. Perhaps leave Open or rename to OpenFromZip
+
+823:2-823:55
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_a26bff2f
+Bytes: 72
+doc with example of what is true and what is false. is this unit tested?
+
+825:0-827:89
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_4268e332
+Bytes: 82
+again, please give example inputs and outputs (also hopefully this is unit tested?
+
+829:2-829:62
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_e1b4870e
+Bytes: 86
+move with the other char* variant. do we need both (fine if it is used a lot. 
+
+tests?
+
+830:0-830:74
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_66017fd0
+Bytes: 19
+example doc? tests?
+
+File: runtime/dex_file_test.cc
+
+148:2-152:28
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_2677f756
+Bytes: 57
+isn't this one of the patterns from common_runtime_test.h
+
+File: runtime/dex_method_iterator_test.cc
+
+25:0-34:3
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_62d16786
+Bytes: 76
+replace with CommonRuntimeTest helper? or are path assumptions not the same.
+
+File: runtime/native/dalvik_system_DexFile.cc
+
+121:4-121:21
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_c292b3d0
+Bytes: 33
+again, local delete => unique_ptr
+
+148:0-148:2
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_61be37c4
+Bytes: 641
+unique_ptr (and init on one line).
+
+we always want to free. from libdvm code:
+
+    /*
+     * We can't just free arbitrary DEX files because they have bits and
+     * pieces of loaded classes.  The only exception to this rule is if
+     * they were never used to load classes.
+     *
+     * If we can't free them here, dvmInternalNativeShutdown() will free
+     * them when the VM shuts down.
+     */
+
+so the point is, the runtime has the ownership, so we can delete what is not registered, then delete the container. 
+
+so the loop can just null out what is registered, then call the usual helper to delete the rest of the container contents.
+
+218:46-219:31
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_0270abec
+Bytes: 40
+is that really a limit of unordered_set?
+
+File: runtime/oat_file.cc
+
+318:50-318:74
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_025bcb68
+Bytes: 273
+I worry about cases where we look with location and not also dex_location_checksum. you need to test with apps like https://play.google.com/store/apps/details?id=com.eclipsim.gpsstatus2 that use the same location more than once in the same runtime with different checksums.
+
+File: runtime/oat_file.h
+
+219:0-219:66
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_86e04bad
+Bytes: 207
+as noted elsewhere, there is a reason that most everything search function with a dex_location also takes a dex_location_checksum, namely https://play.google.com/store/apps/details?id=com.eclipsim.gpsstatus2
+
+File: runtime/utils.cc
+
+1227:0-1229:60
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_62564739
+Bytes: 88
+this is only used for .odex next to container. location will never be a "multi-dex" name
+
+File: test/112-multidex/src/Main.java
+
+20:0-20:6
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_c23b9308
+Bytes: 2
+WS
+
+File: tools/generate-operator-out.py
+
+17:0-17:69
+Thu Jun 05 05:49:14 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_81d7bbf3
+Bytes: 4
+enh?
+

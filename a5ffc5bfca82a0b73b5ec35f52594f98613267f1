@@ -1,0 +1,34 @@
+Revision: a5ffc5bfca82a0b73b5ec35f52594f98613267f1
+Patch-set: 1
+File: compiler/dex/quick/arm64/call_arm64.cc
+
+98
+Fri Jun 06 13:30:15 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df2c3030_03f74d6f
+Bytes: 28
+See comment in RegStorage.h.
+
+144
+Fri Jun 06 13:30:15 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_fa78b705
+Bytes: 6
+ditto.
+
+153
+Fri Jun 06 13:30:15 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df2c3030_23fcc950
+Bytes: 6
+ditto.
+
+File: compiler/dex/reg_storage.h
+
+241
+Fri Jun 06 13:30:15 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_9a6e5340
+Bytes: 649
+Let's not do this here.  RegStorage describes a hardware register, while RegisterInfo describes the relationship among registers and Dalvik values.  Although you may know that a different view of a register exists - that information in not available at the RegStorage level.  What you want here is  RegisterInfo's FindMatchingView().  There are a few examples of its use in the code, but basically you pass it a storage mask and it will return a matching aliased register (if it exists).   It's  little verbose, so if you like you could create similar As32bit() and As64Bit() helper functions in RegStorage in mir_to_lir.h.  These should be deleted.
+

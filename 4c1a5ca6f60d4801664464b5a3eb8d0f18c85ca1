@@ -1,0 +1,17 @@
+Revision: 4c1a5ca6f60d4801664464b5a3eb8d0f18c85ca1
+Patch-set: 3
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+1812
+Fri Jun 06 09:10:46 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fea00f0_fd7412e2
+Bytes: 435
+For performance, this should be
+
+  size_t pc_offset = callee_save->GetReturnPcOffsetInBytes(
+      runtime->GetCalleeSaveMethodFrameInfo(Runtime::kRefsAndArgs)
+          .FrameSizeInBytes());
+
+Retrieving the frame size this way can be optimized into a single load from the runtime. And, in the release build, the GetReturnPcOffsetInBytes() overload taking the frame size is just a substraction so the callee_save can be optimized away.
+

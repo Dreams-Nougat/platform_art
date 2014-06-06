@@ -9,12 +9,28 @@ UUID: 5fea00f0_1ac35c72
 Bytes: 89
 The style seems to be to align #if with the static, so that the code has a 2 char indent.
 
+171
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_1ac35c72
+UUID: df4350e0_3ad13fdd
+Bytes: 5
+Done.
+
 203
 Thu Jun 05 09:54:52 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f81844b_32be70ed
 Bytes: 16
 missing fullstop
+
+203
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f81844b_32be70ed
+UUID: df2c3030_034e6d81
+Bytes: 5
+Done.
 
 216
 Thu Jun 05 09:54:52 2014 +0000
@@ -23,12 +39,28 @@ UUID: 5fea00f0_fac77879
 Bytes: 8
 and here
 
+216
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_fac77879
+UUID: df2c3030_c3471561
+Bytes: 6
+Fixed.
+
 220
 Thu Jun 05 09:54:52 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f81844b_d2a924b6
 Bytes: 90
 Is this #elif correct ? You're already testing for __aarch64__ in the first #if statement.
+
+220
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f81844b_d2a924b6
+UUID: 1f1b2808_4f76c3b2
+Bytes: 216
+Good catch.  Thanks.  I changed it back to what it used to be for StoreStore, which is slightly more aggressive for ARM, but I believe still correct, if it's supported everywhere.  Since the old code used to work ...
 
 259
 Thu Jun 05 09:54:52 2014 +0000
@@ -45,6 +77,14 @@ UUID: bf505ca5_f9ec5076
 Bytes: 140
 Hans may have other intents, the original purpose for this structure is so that we can ultimately just lose art::Atomic and use std::atomic.
 
+259
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_f9ec5076
+UUID: df2c3030_03718db9
+Bytes: 101
+That was also still my intent.  Public inheritance probably makes that slightly easier, so I left it.
+
 261
 Thu Jun 05 09:54:52 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -59,6 +99,14 @@ Parent: 5fea00f0_faae58bb
 UUID: 3f162cdd_98550ad7
 Bytes: 4
 sgtm
+
+261
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_faae58bb
+UUID: df2c3030_83859d49
+Bytes: 239
+Agreed.  Unfortunately, that results in incomplete type error messages.  (Along with a truly impressive colllection of avalanche errors.)  Deleted these and instead augmented the assertion outside the template to check the important cases.
 
 357
 Thu Jun 05 09:54:52 2014 +0000
@@ -75,6 +123,14 @@ UUID: 3f162cdd_b8f80e9e
 Bytes: 151
 what's the concern? We've fixed a number of uint/size_t type confusions, I believe where this is used is in a CAS to make the intent of the user clear.
 
+357
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_b8f80e9e
+UUID: df2c3030_a382193e
+Bytes: 70
+This is unchanged from the last version.  I could take it or leave it.
+
 370
 Thu Jun 05 09:54:52 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -82,12 +138,28 @@ UUID: 5fea00f0_3a95005b
 Bytes: 45
 template<int SZ,... (remove extraneous space)
 
+370
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fea00f0_3a95005b
+UUID: df2c3030_235da921
+Bytes: 6
+Fixed.
+
 577
 Thu Jun 05 09:54:52 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f81844b_123b2cbf
 Bytes: 15
 Odd intendation
+
+577
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f81844b_123b2cbf
+UUID: df4350e0_badd4fef
+Bytes: 32
+Aligned with previous statement.
 
 File: runtime/base/mutex.cc
 
@@ -98,6 +170,14 @@ UUID: 7f33447f_fe01856c
 Bytes: 124
 // TODO: move state_ to be a art::Atomic and use an intention revealing CAS operation that exposes the barrier semantics :-)
 
+333:0-334:48
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_fe01856c
+UUID: df4350e0_7ad7c7cb
+Bytes: 21
+Did essentially that.
+
 File: runtime/mirror/object-inl.h
 
 460
@@ -107,12 +187,29 @@ UUID: 7f81844b_722e3882
 Bytes: 3
 tws
 
+460
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f81844b_722e3882
+UUID: df2c3030_a64f86a0
+Bytes: 6
+Fixed.
+
 534:0-539:3
 Thu Jun 05 16:23:58 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_be68dd33
 Bytes: 17
 move to atomic.h?
+
+534:0-539:3
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_be68dd33
+UUID: df2c3030_e3d1f133
+Bytes: 121
+We need some refactoring here to get rid of the explicit fences.  Added a TODO here and in the corresponding setter
+code.
 
 File: runtime/mirror/object.h
 
@@ -123,6 +220,14 @@ UUID: 3f162cdd_38eddeda
 Bytes: 213
 I don't understand this comment. We CAS to thin lock and CAS to inflate in the monitor code, a spurious failure would just cause the whole lock or inflate logic to restart. I don't see a proper with weak behavior.
 
+111:0-113:36
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_38eddeda
+UUID: 1f1b2808_9d589110
+Bytes: 390
+I may be misreading the code.  But it looked to me like InflateThinLocked() is expected by its callers to succeed.  If the current thread owns the thin lock, it just calls Inflate, which calls Install, which eventually calls CasLockWord.  If CasLockWord fails spuriously, Install returns false, causing Inflate not to do anything else, apparently causing InflateThinLocked to silently fail?
+
 File: runtime/monitor.cc
 
 697:25-697:60
@@ -131,4 +236,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf505ca5_591f84bc
 Bytes: 68
 I'd prefer if this mentioned that CasLockWord had acquire semantics.
+
+697:25-697:60
+Fri Jun 06 22:49:19 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_591f84bc
+UUID: 1f1b2808_3d1b8548
+Bytes: 6
+Fixed.
 

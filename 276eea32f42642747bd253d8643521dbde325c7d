@@ -9,12 +9,28 @@ UUID: bf505ca5_929de1e0
 Bytes: 41
 Combine these two if statements into one?
 
+3339
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_929de1e0
+UUID: df4350e0_9ae093ad
+Bytes: 4
+Done
+
 3356:8-3357:73
 Fri Jun 06 00:27:34 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f162cdd_443c6bdc
 Bytes: 26
 Combine the if statements?
+
+3357
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_443c6bdc
+UUID: df2c3030_c37ab595
+Bytes: 4
+Done
 
 File: runtime/debugger.cc
 
@@ -25,6 +41,14 @@ UUID: bf505ca5_d2dfe997
 Bytes: 117
 Should line 1552 be like here and just call m->GetDexFile() without going through GetDeclaringClass()->GetDexCache()?
 
+1606
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_d2dfe997
+UUID: 1f1b2808_cf82d33f
+Bytes: 51
+This way is probably correct actually, I'll fix it.
+
 File: runtime/entrypoints/entrypoint_utils.h
 
 689:52-689:53
@@ -33,6 +57,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf505ca5_f2cd45fa
 Bytes: 78
 This 'm' could have moved due to the GetReturnType() call above? Use a Handle?
+
+689
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_f2cd45fa
+UUID: df4350e0_5ada0bf7
+Bytes: 11
+Nice catch.
 
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
@@ -43,6 +75,14 @@ UUID: 3f162cdd_8984de84
 Bytes: 249
 If we use proxy_method directly for the PrettyMethod (in the same line), then we could use proxy_method directly within the DCHECK as well? And how about swapping lines 606 and 607 to avoid the look of using the method under wrapping it in a handle?
 
+607
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_8984de84
+UUID: 1f1b2808_8f8cdb72
+Bytes: 55
+Deleted the method helper here, it is no longer needed.
+
 File: runtime/handle.h
 
 105:5-105:11
@@ -51,6 +91,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf505ca5_d217e9d6
 Bytes: 84
 I wonder if there's an easy way to prevent Assign() from being called on NullHandle?
+
+105
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_d217e9d6
+UUID: df2c3030_6363a1e6
+Bytes: 152
+I plan on making it inherit ConstHandle instead of Handle but that requires changing most Handle parameters to be ConstHandles which will be another CL.
 
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
@@ -61,6 +109,14 @@ UUID: bf505ca5_d2c5a91a
 Bytes: 28
 Is this SetJ call necessary?
 
+361
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_d2c5a91a
+UUID: 1f1b2808_2f582f32
+Bytes: 98
+Not sure, it might be necessary to clear the other 32 bits of JValue? I'll add shertz as reviewer.
+
 File: runtime/interpreter/interpreter_switch_impl.cc
 
 269:15-269:19
@@ -70,6 +126,14 @@ UUID: 7f33447f_9216281d
 Bytes: 30
 Is this SetJ() call necessary?
 
+269
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_9216281d
+UUID: df2c3030_03c3cd71
+Bytes: 18
+See other comment.
+
 File: runtime/mirror/art_method.h
 
 82:7-82:15
@@ -78,6 +142,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f162cdd_89e37ef0
 Bytes: 117
 Why don't we have to call GetInterfaceMethodIfProxy() here? I guess I don't understand what a proxy method is really.
+
+82
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_89e37ef0
+UUID: df2c3030_23c8498b
+Bytes: 125
+I think we only need that at call sites where we used to use MethodHelper::IsStatic, I'll try to make sure I didn't miss any.
 
 File: runtime/object_utils.h
 
@@ -97,6 +169,14 @@ UUID: bf505ca5_9201616e
 Bytes: 126
 m could be moved after the GetClassFromTypeIdex() call? Use a handle around m by declaring a handle for m as a local variable?
 
+372
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_9201616e
+UUID: df2c3030_a3b4590d
+Bytes: 33
+I'll use a HandleWrapper for now.
+
 378:26-378:40
 Fri Jun 06 00:27:34 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -104,12 +184,28 @@ UUID: 3f162cdd_0989aea8
 Bytes: 106
 If this bug refers to the use of m after the GetClasFromTypeIdx() call, then use a Handle to fix this bug?
 
+378
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_0989aea8
+UUID: df2c3030_83b7dd11
+Bytes: 174
+Its actually related to the args since they could contain StackReferences. This will be hard to fix, I'll need to use a RememberForGC visitor like in the trampolines I think.
+
 383:45-383:46
 Fri Jun 06 00:27:34 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_7227e43d
 Bytes: 22
 Same comment as above.
+
+383
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_7227e43d
+UUID: df2c3030_43c1c560
+Bytes: 4
+Done
 
 File: runtime/verifier/method_verifier.cc
 
@@ -129,12 +225,28 @@ MethodHelper mh(h_called_method);
 
 ?
 
+2145
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_921e28f6
+UUID: df2c3030_03aaeda9
+Bytes: 4
+Done
+
 3837:45-3837:59
 Fri Jun 06 00:27:34 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf505ca5_928721c0
 Bytes: 70
 Same comment as above. Wrap mirror_method in a handle and use it here?
+
+3837
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_928721c0
+UUID: df2c3030_23afe9b9
+Bytes: 4
+Done
 
 File: test/ReferenceMap/stack_walk_refmap_jni.cc
 
@@ -144,6 +256,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f162cdd_e9fb1a27
 Bytes: 44
 Same comment as the one in stack_walk_jni.cc
+
+61
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f162cdd_e9fb1a27
+UUID: 1f1b2808_af6c3fd9
+Bytes: 4
+Done
 
 File: test/StackWalk/stack_walk_jni.cc
 
@@ -157,4 +277,12 @@ Maybe this MethodHelper isn't necessary?
 It's used in macro REG (through CHECK_REGS), but we just call GetMethod() to extract the method out of the MethodHelper there.
 
 Do we still need a Handle independent of MethodHelper if GC can happen in the following code?
+
+63
+Fri Jun 06 01:49:20 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_32464de0
+UUID: 1f1b2808_cf6973c9
+Bytes: 4
+Done
 

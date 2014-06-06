@@ -1,0 +1,160 @@
+Revision: 276eea32f42642747bd253d8643521dbde325c7d
+Patch-set: 2
+File: runtime/class_linker.cc
+
+3338:6-3339:71
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_929de1e0
+Bytes: 41
+Combine these two if statements into one?
+
+3356:8-3357:73
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_443c6bdc
+Bytes: 26
+Combine the if statements?
+
+File: runtime/debugger.cc
+
+1606:4-1606:19
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_d2dfe997
+Bytes: 117
+Should line 1552 be like here and just call m->GetDexFile() without going through GetDeclaringClass()->GetDexCache()?
+
+File: runtime/entrypoints/entrypoint_utils.h
+
+689:52-689:53
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_f2cd45fa
+Bytes: 78
+This 'm' could have moved due to the GetReturnType() call above? Use a Handle?
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+607:10-607:30
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_8984de84
+Bytes: 249
+If we use proxy_method directly for the PrettyMethod (in the same line), then we could use proxy_method directly within the DCHECK as well? And how about swapping lines 606 and 607 to avoid the look of using the method under wrapping it in a handle?
+
+File: runtime/handle.h
+
+105:5-105:11
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_d217e9d6
+Bytes: 84
+I wonder if there's an easy way to prevent Assign() from being called on NullHandle?
+
+File: runtime/interpreter/interpreter_goto_table_impl.cc
+
+361:11-361:15
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_d2c5a91a
+Bytes: 28
+Is this SetJ call necessary?
+
+File: runtime/interpreter/interpreter_switch_impl.cc
+
+269:15-269:19
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_9216281d
+Bytes: 30
+Is this SetJ() call necessary?
+
+File: runtime/mirror/art_method.h
+
+82:7-82:15
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_89e37ef0
+Bytes: 117
+Why don't we have to call GetInterfaceMethodIfProxy() here? I guess I don't understand what a proxy method is really.
+
+File: runtime/object_utils.h
+
+227:17-227:30
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_728e15dc
+Bytes: 83
+If this can cause a GC, which was the bug, how about adding a comment to note that?
+
+File: runtime/reflection.cc
+
+372:13-372:14
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_9201616e
+Bytes: 126
+m could be moved after the GetClassFromTypeIdex() call? Use a handle around m by declaring a handle for m as a local variable?
+
+378:26-378:40
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_0989aea8
+Bytes: 106
+If this bug refers to the use of m after the GetClasFromTypeIdx() call, then use a Handle to fix this bug?
+
+383:45-383:46
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_7227e43d
+Bytes: 22
+Same comment as above.
+
+File: runtime/verifier/method_verifier.cc
+
+2145:46-2145:59
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_921e28f6
+Bytes: 393
+If the above GetReturnType() could invoke a GC, then called_method directory here isn't moving GC-safe? Maybe store the Handle for called_method above in a local variable and use it here, as in,
+
+Handle<mirror::ArtMethod> h_called_method = hs.NewHandle(called_method);
+MethodHelper mh(h_called_method);
+
+...
+
+  return_type = &reg_types_.FromClass(h_called_method->GetReturnTypeDescriptor(),
+
+?
+
+3837:45-3837:59
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_928721c0
+Bytes: 70
+Same comment as above. Wrap mirror_method in a handle and use it here?
+
+File: test/ReferenceMap/stack_walk_refmap_jni.cc
+
+61:17-61:19
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f162cdd_e9fb1a27
+Bytes: 44
+Same comment as the one in stack_walk_jni.cc
+
+File: test/StackWalk/stack_walk_jni.cc
+
+63:17-63:19
+Fri Jun 06 00:27:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_32464de0
+Bytes: 263
+Maybe this MethodHelper isn't necessary?
+
+It's used in macro REG (through CHECK_REGS), but we just call GetMethod() to extract the method out of the MethodHelper there.
+
+Do we still need a Handle independent of MethodHelper if GC can happen in the following code?
+

@@ -9,6 +9,14 @@ UUID: df2c3030_06067ab5
 Bytes: 107
 I wonder if we should pretty-print non_proxy_method in addition to proxy_method in case of a check failure.
 
+606
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df2c3030_06067ab5
+UUID: df2c3030_86ba8a57
+Bytes: 4
+Done
+
 File: runtime/mirror/art_method.h
 
 93:32-93:57
@@ -17,6 +25,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bfe21c19_f67e6df1
 Bytes: 166
 I don't think we need this here. I believe a proxy method can't be static. Generated proxy class only has a constructor as direct method. There is no <clinit> method.
+
+93
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfe21c19_f67e6df1
+UUID: df2c3030_86d12a89
+Bytes: 4
+Done
 
 File: runtime/object_utils.h
 
@@ -27,12 +43,28 @@ UUID: df4350e0_e0f8069f
 Bytes: 144
 Here we get the dex file before going through GetInterfaceMethodIfProxy(). But we do it in the other order in GetReturnType(). Does this matter?
 
+184
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_e0f8069f
+UUID: df4350e0_c0b62ac5
+Bytes: 60
+GetDexFile already has an internal GetInterfaceMethodIfProxy
+
 226:32-226:68
 Fri Jun 06 19:02:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f1b2808_bde6b54d
 Bytes: 100
 Might it help simplify the code if we always call GetMethod() instead of accessing method_ directly?
+
+226
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f1b2808_bde6b54d
+UUID: 3f162cdd_4af475a8
+Bytes: 4
+Done
 
 263:30-263:37
 Fri Jun 06 19:02:06 2014 +0000
@@ -41,12 +73,28 @@ UUID: df4350e0_c0e06ae5
 Bytes: 72
 Same, but we are not calling GetInterfaceMethodIfProxy() here. Is it ok?
 
+263
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_c0e06ae5
+UUID: 7f33447f_b8478d82
+Bytes: 38
+It is called internally by GetDexFile.
+
 284:37-284:73
 Fri Jun 06 19:02:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f1b2808_7df01dff
 Bytes: 5
 Same.
+
+284
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f1b2808_7df01dff
+UUID: 3f162cdd_ca0725e6
+Bytes: 4
+Done
 
 309:32-309:39
 Fri Jun 06 19:02:06 2014 +0000
@@ -55,12 +103,28 @@ UUID: df4350e0_2016ee1e
 Bytes: 5
 same.
 
+309
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_2016ee1e
+UUID: bf505ca5_ad33e22c
+Bytes: 4
+Done
+
 320:11-320:45
 Fri Jun 06 19:02:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df4350e0_401bfa46
 Bytes: 5
 same.
+
+320
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_401bfa46
+UUID: bf505ca5_4d301e20
+Bytes: 4
+Done
 
 324:32-324:39
 Fri Jun 06 19:02:06 2014 +0000
@@ -69,6 +133,14 @@ UUID: df4350e0_0015f20d
 Bytes: 5
 Same.
 
+324
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_0015f20d
+UUID: 7f33447f_53df4271
+Bytes: 4
+Done
+
 337:32-337:39
 Fri Jun 06 19:02:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -76,10 +148,26 @@ UUID: df4350e0_a00afeef
 Bytes: 5
 Same.
 
+337
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_a00afeef
+UUID: 3f162cdd_6a04d9e1
+Bytes: 4
+Done
+
 380:32-380:39
 Fri Jun 06 19:02:06 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df2c3030_26937608
 Bytes: 5
 Same.
+
+380
+Fri Jun 06 20:06:38 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df2c3030_26937608
+UUID: 3f162cdd_8a012dd3
+Bytes: 4
+Done
 

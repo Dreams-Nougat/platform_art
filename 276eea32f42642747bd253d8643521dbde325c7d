@@ -117,6 +117,16 @@ UUID: 1f1b2808_2f582f32
 Bytes: 98
 Not sure, it might be necessary to clear the other 32 bits of JValue? I'll add shertz as reviewer.
 
+361
+Fri Jun 06 23:14:09 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f1b2808_2f582f32
+UUID: df4350e0_a0851e49
+Bytes: 194
+It seems 'result' is zero-initialized at line 327. MethodExitEvent takes it as a const reference where I don't expect a mutation to it. So, it should still be all zero at this point?
+
+Sebastien?
+
 File: runtime/interpreter/interpreter_switch_impl.cc
 
 269:15-269:19
@@ -192,6 +202,14 @@ UUID: df2c3030_83b7dd11
 Bytes: 174
 Its actually related to the args since they could contain StackReferences. This will be hard to fix, I'll need to use a RememberForGC visitor like in the trampolines I think.
 
+378
+Fri Jun 06 23:14:09 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df2c3030_83b7dd11
+UUID: df2c3030_06b43abd
+Bytes: 26
+I see. I guess another CL.
+
 383:45-383:46
 Fri Jun 06 00:27:34 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -265,6 +283,14 @@ UUID: 1f1b2808_af6c3fd9
 Bytes: 4
 Done
 
+61
+Fri Jun 06 23:14:09 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f1b2808_af6c3fd9
+UUID: 1f1b2808_d24cb8ad
+Bytes: 69
+Now we can/should remove the unused arg 'mh' from IS_IN_REF_BITMAP().
+
 File: test/StackWalk/stack_walk_jni.cc
 
 63:17-63:19
@@ -285,4 +311,12 @@ Parent: bf505ca5_32464de0
 UUID: 1f1b2808_cf6973c9
 Bytes: 4
 Done
+
+63
+Fri Jun 06 23:14:09 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f1b2808_cf6973c9
+UUID: 1f1b2808_72592c68
+Bytes: 38
+We can remove the 'mh' arg from REG().
 

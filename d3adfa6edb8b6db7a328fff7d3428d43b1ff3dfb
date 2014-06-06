@@ -9,12 +9,28 @@ UUID: 1f1b2808_09068bb5
 Bytes: 62
 I don't think you need this, but I might be missing something.
 
+580:2-580:14
+Fri Jun 06 10:52:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f1b2808_09068bb5
+UUID: bfe21c19_567e61be
+Bytes: 200
+It's not strictly necessary. This was to ensure that if we try to load different files the map will be cleared. We can do without it and let the profile be loaded from multiple files (if ever needed).
+
 631:13-631:18
 Thu Jun 05 18:37:51 2014 +0000
 Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df4350e0_fffd098c
 Bytes: 155
 This will cause the whole file to be ignored if it is incomplete.  I'd rather read what we can.  The process might have been killed mid-write or something.
+
+631:13-631:18
+Fri Jun 06 10:52:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_fffd098c
+UUID: 7f81844b_388c1171
+Bytes: 321
+It really depends on how much we manage to read. I think it's better to stop unless we have a threshold in place for a minimum number of samples (which we should have anyway). The danger is that we compile just a small number of methods in case of corruption which is worse than compiling all imo. We can revise it later.
 
 File: runtime/profiler.h
 
@@ -24,4 +40,12 @@ Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df2c3030_ed0560a9
 Bytes: 247
 Maybe.  A MethodReference requires a dex file pointer and method index.  Using these would make it very difficult to compare method names if the dex file is recompiled, even if the methods are the same and the change is simply adding a new method.
+
+213:17-213:32
+Fri Jun 06 10:52:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df2c3030_ed0560a9
+UUID: 5fea00f0_500ae540
+Bytes: 69
+Thanks for highlighting this. We should probably stick with the name.
 

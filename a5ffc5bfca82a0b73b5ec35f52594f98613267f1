@@ -32,3 +32,13 @@ UUID: df4350e0_9a6e5340
 Bytes: 649
 Let's not do this here.  RegStorage describes a hardware register, while RegisterInfo describes the relationship among registers and Dalvik values.  Although you may know that a different view of a register exists - that information in not available at the RegStorage level.  What you want here is  RegisterInfo's FindMatchingView().  There are a few examples of its use in the code, but basically you pass it a storage mask and it will return a matching aliased register (if it exists).   It's  little verbose, so if you like you could create similar As32bit() and As64Bit() helper functions in RegStorage in mir_to_lir.h.  These should be deleted.
 
+241
+Fri Jun 06 15:13:10 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_9a6e5340
+UUID: 7f1c24fb_307f35f0
+Bytes: 621
+Thanks for your observation. I was aware of the existence of FindMatchingView() and I did not use it on purpose. I felt FindMatchingView() was an overkill and not appropriate to be used in the functions I was working on.  In particular, I thought that the code in call_arm64.cc sits very close to the assembler level (and provides functions that often look like assembler macros). It knows very well that every x register has a w register, it feels somewhat unnatural to have to ask to the upper layers.
+
+Said that, I am happy to provide an alternative implementation which uses FindMatchingView() and see how that feels.
+

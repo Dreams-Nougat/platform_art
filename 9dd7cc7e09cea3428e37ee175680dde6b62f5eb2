@@ -1,5 +1,14 @@
 Revision: 9dd7cc7e09cea3428e37ee175680dde6b62f5eb2
 Patch-set: 3
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+606:55-606:67
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df2c3030_06067ab5
+Bytes: 107
+I wonder if we should pretty-print non_proxy_method in addition to proxy_method in case of a check failure.
+
 File: runtime/mirror/art_method.h
 
 93:32-93:57
@@ -8,4 +17,69 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bfe21c19_f67e6df1
 Bytes: 166
 I don't think we need this here. I believe a proxy method can't be static. Generated proxy class only has a constructor as direct method. There is no <clinit> method.
+
+File: runtime/object_utils.h
+
+184:30-184:37
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_e0f8069f
+Bytes: 144
+Here we get the dex file before going through GetInterfaceMethodIfProxy(). But we do it in the other order in GetReturnType(). Does this matter?
+
+226:32-226:68
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f1b2808_bde6b54d
+Bytes: 100
+Might it help simplify the code if we always call GetMethod() instead of accessing method_ directly?
+
+263:30-263:37
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_c0e06ae5
+Bytes: 72
+Same, but we are not calling GetInterfaceMethodIfProxy() here. Is it ok?
+
+284:37-284:73
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f1b2808_7df01dff
+Bytes: 5
+Same.
+
+309:32-309:39
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_2016ee1e
+Bytes: 5
+same.
+
+320:11-320:45
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_401bfa46
+Bytes: 5
+same.
+
+324:32-324:39
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_0015f20d
+Bytes: 5
+Same.
+
+337:32-337:39
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4350e0_a00afeef
+Bytes: 5
+Same.
+
+380:32-380:39
+Fri Jun 06 19:02:06 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df2c3030_26937608
+Bytes: 5
+Same.
 

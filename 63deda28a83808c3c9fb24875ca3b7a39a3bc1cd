@@ -33,6 +33,18 @@ UUID: 1f1b2808_18d56f51
 Bytes: 188
 This is used in a unique_ptr, we would still need the hack delete to call free or else we get the: "free() / delete / delete []" error due to allocating with malloc and freeing with delete
 
+54
+Sat Jun 07 00:06:00 2014 +0000
+Author: Dimitry Ivanov <1041673@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f1b2808_18d56f51
+UUID: bf505ca5_ee9241d0
+Bytes: 204
+if I understand this correctly:
+
+unique_ptr calls delete obj -> sequence of d-tor + operator delete()
+
+If create allocates using operator new instead of new uint8_t[], everything should become consistent?
+
 296
 Fri Jun 06 22:08:22 2014 +0000
 Author: Dimitry Ivanov <1041673@85c56323-6fa9-3386-8a01-6480fb634889>

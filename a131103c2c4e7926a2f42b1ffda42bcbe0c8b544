@@ -2,6 +2,22 @@ Revision: a131103c2c4e7926a2f42b1ffda42bcbe0c8b544
 Patch-set: 1
 File: compiler/elf_writer_quick.cc
 
+32:0-32:6
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_339b9eec
+Bytes: 232
+again, we typically don't put the inline. if you really need it, we have ALWAYS_INLINE which actually is paid attention to. "inline" itself was just a hint historically as I understand it and even without it the compiler may inline.
+
+135:4-135:17
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_eefb1f59
+Bytes: 188
+should the caller check for error we just CHECK(!fatal_error_); here?
+
+typically we use some kind of "std::string* error_msg" to return a reason for the error. are we doing that somewhere?
+
 154:2-167:48
 Thu Jun 05 21:36:50 2014 +0000
 Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -9,12 +25,162 @@ UUID: 7f1c24fb_c1ae3173
 Bytes: 103
 How about modularizing this too rather than the repeated code?  Likewise for all the similar code below
 
+154:2-167:48
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f1c24fb_c1ae3173
+UUID: 7f33447f_7bbedcc3
+Bytes: 419
+I think the issue is that most of the fields are optional? that said, its odd that we 0 some fields.
+
+that said, I could imagine a program header builder that understands the sections and builds all the above for you in out of line.
+
+ah, the real issue is that that many values aren't know until the bottom. still, here we could just create the builder to old the space and then at the end actually fill out everything?
+
+172:2-172:76
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_5ba0b897
+Bytes: 98
+since I wrote this I found that our dynamic linker always does this, so you could remove the TODO.
+
+176:0-176:76
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_d48a740d
+Bytes: 5
+ditto
+
+181:20-181:23
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_b1cd786a
+Bytes: 355
+we don't assign std::string. instead we use the constructor like:
+
+std::string dynstr(dynsym_builder_.GenerateStrtab());
+
+apparently this matters for at least some of the compilers we still use.
+
+however, I think this is one of the cases where the string is large, we should consider just
+
+unique_ptr<std::string> dynstr(dynsym_builder_.GenerateStrtab());
+
+202:4-202:46
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_9494ec2c
+Bytes: 28
+use unique_ptr to avoid copy
+
+227:37-227:45
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_5b72f867
+Bytes: 103
+if this is being changed, the convention is not to pass by reference but by pointer (as in "&shstrtab")
+
 228:0-228:51
 Thu Jun 05 21:36:50 2014 +0000
 Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf293c21_1d0a5740
 Bytes: 48
 Modularize this rather than repeated code below?
+
+255:6-255:21
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_7160508a
+Bytes: 111
+I'd call this something like
+
+IncludingDebugSymbols (vs "real")
+
+unless this somehow relates to your fake stuff
+
+287:2-287:69
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_9b60808b
+Bytes: 42
+again, i'd use unique_ptr and avoid a copy
+
+418:47-418:61
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_51aaf461
+Bytes: 81
+"until now"
+
+but also add for context
+
+",
+namely the size and the so_name offset"
+
+561:0-561:22
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_7bd1fcdb
+Bytes: 15
+return pointer?
+
+564:7-564:11
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_d4cb5430
+Bytes: 6
+const?
+
+578:1-578:22
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_74ddc0ec
+Bytes: 15
+return pointer?
+
+585:7-585:11
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf505ca5_b1b9f8b8
+Bytes: 6
+const?
+
+604:0-604:11
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_94006c9b
+Bytes: 14
+return pointer
+
+616:0-616:6
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_d4f6f471
+Bytes: 13
+remove inline
+
+644:0-644:20
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f33447f_dbe048ae
+Bytes: 14
+return pointer
+
+677:2-677:35
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_5455247c
+Bytes: 49
+why not just use the 32 ids per bucket case then?
+
+690:14-690:21
+Sat Jun 07 01:51:03 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff749443_f42c5025
+Bytes: 180
+would it be easier to use Elf32_Word? as i recall, this is the same even between 32 and 64 bit ELF
+
+PushWord may have come from the x86 CFI code, but I don't think we need it here.
 
 File: compiler/elf_writer_quick.h
 

@@ -36,6 +36,18 @@ UUID: bf505ca5_91015cd3
 Bytes: 56
 Fixed the typo.  Will check how to use 2 slots.  Thanks!
 
+92
+Sat Jun 07 01:39:30 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_91015cd3
+UUID: 7f33447f_bb5d44cd
+Bytes: 585
+To use 2 slots, you will have to add a new instruction format, so that ComputeSize can return the right size.  You will then have to Fix GenConstWide to call a LoadConstant(NoClobber?) that takes a int64_t value, and puts the high & low parts into 2 operands.   asssemble_x86.cc will then need to use the new instruction format to generate the correct instruction (and the disassembler will have to display it).
+
+Will a 32 bit move into a 64 bit register clear the upper word?  If so, you can optimize that case for positive 32 bit values.
+
+I suggest we use another CL for this change.
+
 1012
 Sat Jun 07 00:54:17 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>

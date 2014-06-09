@@ -1,0 +1,41 @@
+Revision: 36c0dcb915f8406d53d8f3b464a06966a23d5655
+Patch-set: 2
+File: runtime/gc/reference_processor.cc
+
+65
+Mon Jun 09 23:39:34 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bffcdced_903c24de
+Bytes: 77
+I think you can return finalizer reference referents if we aren't preserving.
+
+75
+Mon Jun 09 23:39:34 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5d74d3_604f2ea2
+Bytes: 35
+Combine into a single if statement?
+
+131
+Mon Jun 09 23:39:34 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bffcdced_1052d410
+Bytes: 205
+You could probably do this inside of the lock to be safe, but this should be OK since we have a fence after SetReferent which should ensure we see the updated referent before the reference is not enqueued.
+
+File: runtime/gc/reference_queue.cc
+
+70
+Mon Jun 09 23:39:34 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bffcdced_d0fb4ce2
+Bytes: 64
+How about using a default true parameter instead of overloading?
+
+96
+Mon Jun 09 23:39:34 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bffcdced_657b9ccd
+Bytes: 48
+the { should be in the function definition line.
+

@@ -9,6 +9,14 @@ UUID: 7f33447f_339b9eec
 Bytes: 232
 again, we typically don't put the inline. if you really need it, we have ALWAYS_INLINE which actually is paid attention to. "inline" itself was just a hint historically as I understand it and even without it the compiler may inline.
 
+32
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_339b9eec
+UUID: ff749443_9d4acfe2
+Bytes: 4
+Done
+
 135:4-135:17
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,6 +25,14 @@ Bytes: 188
 should the caller check for error we just CHECK(!fatal_error_); here?
 
 typically we use some kind of "std::string* error_msg" to return a reason for the error. are we doing that somewhere?
+
+135
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_eefb1f59
+UUID: 7f33447f_5413a5bb
+Bytes: 129
+This only really checks for if construction had failed for some reason (i.e. unknown architecture). Its unlikely to ever get hit.
 
 154:2-167:48
 Thu Jun 05 21:36:50 2014 +0000
@@ -37,6 +53,14 @@ that said, I could imagine a program header builder that understands the section
 
 ah, the real issue is that that many values aren't know until the bottom. still, here we could just create the builder to old the space and then at the end actually fill out everything?
 
+167
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_7bbedcc3
+UUID: 3f646c99_c8264fdc
+Bytes: 146
+This is all possible. Honestly I did it this way because these are unlikely to ever really change and this is much clearer then using indirection.
+
 172:2-172:76
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +68,28 @@ UUID: 7f33447f_5ba0b897
 Bytes: 98
 since I wrote this I found that our dynamic linker always does this, so you could remove the TODO.
 
+172
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_5ba0b897
+UUID: 7f33447f_14ff5d13
+Bytes: 4
+Done
+
 176:0-176:76
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff749443_d48a740d
 Bytes: 5
 ditto
+
+176
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_d48a740d
+UUID: ff749443_bd4f8bf1
+Bytes: 4
+Done
 
 181:20-181:23
 Sat Jun 07 01:51:03 2014 +0000
@@ -66,6 +106,14 @@ however, I think this is one of the cases where the string is large, we should c
 
 unique_ptr<std::string> dynstr(dynsym_builder_.GenerateStrtab());
 
+181
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_b1cd786a
+UUID: 7f33447f_54ce45f7
+Bytes: 4
+Done
+
 202:4-202:46
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -73,12 +121,28 @@ UUID: ff749443_9494ec2c
 Bytes: 28
 use unique_ptr to avoid copy
 
+202
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_9494ec2c
+UUID: 7f33447f_14b19d7c
+Bytes: 54
+Based on dans comment I don't think this is necessary.
+
 227:37-227:45
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_5b72f867
 Bytes: 103
 if this is being changed, the convention is not to pass by reference but by pointer (as in "&shstrtab")
+
+227
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_5b72f867
+UUID: 7f33447f_d4a4952e
+Bytes: 4
+Done
 
 228:0-228:51
 Thu Jun 05 21:36:50 2014 +0000
@@ -98,12 +162,28 @@ IncludingDebugSymbols (vs "real")
 
 unless this somehow relates to your fake stuff
 
+255
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_7160508a
+UUID: 1f696874_e7482246
+Bytes: 4
+Done
+
 287:2-287:69
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_9b60808b
 Bytes: 42
 again, i'd use unique_ptr and avoid a copy
+
+287
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_9b60808b
+UUID: 1f696874_078f7668
+Bytes: 54
+Based on dans comment I don't think this is necessary.
 
 418:47-418:61
 Sat Jun 07 01:51:03 2014 +0000
@@ -117,12 +197,28 @@ but also add for context
 ",
 namely the size and the so_name offset"
 
+418
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_51aaf461
+UUID: bf505ca5_e2aed072
+Bytes: 4
+Done
+
 561:0-561:22
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_7bd1fcdb
 Bytes: 15
 return pointer?
+
+561
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_7bd1fcdb
+UUID: 1f696874_a7ca2a29
+Bytes: 54
+Based on dans comment I don't think this is necessary.
 
 564:7-564:11
 Sat Jun 07 01:51:03 2014 +0000
@@ -131,12 +227,28 @@ UUID: ff749443_d4cb5430
 Bytes: 6
 const?
 
+564
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_d4cb5430
+UUID: 3f646c99_8800579b
+Bytes: 4
+Done
+
 578:1-578:22
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff749443_74ddc0ec
 Bytes: 15
 return pointer?
+
+578
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_74ddc0ec
+UUID: 1f696874_67dd12ed
+Bytes: 54
+Based on dans comment I don't think this is necessary.
 
 585:7-585:11
 Sat Jun 07 01:51:03 2014 +0000
@@ -145,12 +257,28 @@ UUID: bf505ca5_b1b9f8b8
 Bytes: 6
 const?
 
+585
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_b1b9f8b8
+UUID: ff5d74d3_e697beef
+Bytes: 4
+Done
+
 604:0-604:11
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff749443_94006c9b
 Bytes: 14
 return pointer
+
+604
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_94006c9b
+UUID: 3f646c99_e822333f
+Bytes: 54
+Based on dans comment I don't think this is necessary.
 
 616:0-616:6
 Sat Jun 07 01:51:03 2014 +0000
@@ -159,6 +287,14 @@ UUID: ff749443_d4f6f471
 Bytes: 13
 remove inline
 
+616
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_d4f6f471
+UUID: 7f33447f_9447ed82
+Bytes: 4
+Done
+
 644:0-644:20
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -166,12 +302,28 @@ UUID: 7f33447f_dbe048ae
 Bytes: 14
 return pointer
 
+644
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_dbe048ae
+UUID: 1f696874_27d71acd
+Bytes: 54
+Based on dans comment I don't think this is necessary.
+
 677:2-677:35
 Sat Jun 07 01:51:03 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff749443_5455247c
 Bytes: 49
 why not just use the 32 ids per bucket case then?
+
+677
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_5455247c
+UUID: 7f33447f_f436791d
+Bytes: 81
+Smaller bucket sizes are faster. Having more buckets then items will waste space.
 
 690:14-690:21
 Sat Jun 07 01:51:03 2014 +0000
@@ -181,6 +333,14 @@ Bytes: 180
 would it be easier to use Elf32_Word? as i recall, this is the same even between 32 and 64 bit ELF
 
 PushWord may have come from the x86 CFI code, but I don't think we need it here.
+
+690
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_f42c5025
+UUID: 3f646c99_e800f324
+Bytes: 4
+Done
 
 File: compiler/elf_writer_quick.h
 
@@ -332,6 +492,14 @@ Bytes: 327
 According to the spec, returning any non-argument local will first try to use the move constructor when returning a non-argument local: http://stackoverflow.com/a/9532647
 
 libc++ supports this behavior. The objdump of a trivial example I whipped up shows that gcc is doing the right thing as well, so I think this code is fine.
+
+169
+Mon Jun 09 18:27:35 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df4350e0_54a09f97
+UUID: 3f646c99_08aea787
+Bytes: 146
+OK. I'm leaving it like it is then (IMO its much easier to read, makes ownership & lifetime clearer etc.), unless you really want me to change it.
 
 186:6-186:29
 Fri Jun 06 21:17:17 2014 +0000

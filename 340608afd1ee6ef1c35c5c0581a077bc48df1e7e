@@ -13,6 +13,14 @@ LIBART_HOST_LDFLAGS :=
 
 to be clear its currently unused?
 
+197:0-197:21
+Mon Jun 09 06:52:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_f7f6903f
+UUID: bf505ca5_d7259413
+Bytes: 6
+agreed
+
 File: runtime/base/mutex.cc
 
 332:0-332:55
@@ -21,6 +29,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf505ca5_17fc5c1e
 Bytes: 32
 remove? or explain why disabled?
+
+332:0-332:55
+Mon Jun 09 06:52:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf505ca5_17fc5c1e
+UUID: bf505ca5_b72808ee
+Bytes: 136
+doh, I'll put it back.. I was trying to discover the other way to unlock a Mutex, the answer being to call Wait on a ConditionVariable..
 
 File: runtime/base/unix_file/fd_file.cc
 
@@ -67,6 +83,30 @@ UUID: ff749443_9d308f0d
 Bytes: 79
 the other oddities were linux specific. is this more of an apple vs unix issue?
 
+33:0-33:16
+Mon Jun 09 06:52:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff749443_9d308f0d
+UUID: ff749443_9d7acf94
+Bytes: 871
+From the Linux man pages its not clear that posix_madvise is the same behavior for DONTNEED as regular madvise. I think the Apple implementation does as much as the specification requires.
+
+POSIX_MADV_DONTNEED
+
+              Specifies  that  the application expects that it will not access
+              the specified range in the near future.
+
+vs.
+
+MADV_DONTNEED
+              Do not expect access in the near future.  (For the  time  being,
+              the  application is finished with the given range, so the kernel
+              can free resources associated with it.)  Subsequent accesses  of
+              pages  in this range will succeed, but will result either in re-
+              loading of the memory contents from the underlying  mapped  file
+              (see  mmap(2)) or zero-fill-on-demand pages for mappings without
+              an underlying file.
+
 File: runtime/utils.cc
 
 1101:1-1101:6
@@ -75,4 +115,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f33447f_542c0589
 Bytes: 81
 should we include something, even if just "(native stack not support on darwin)"?
+
+1101:1-1101:6
+Mon Jun 09 06:52:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f33447f_542c0589
+UUID: 7f33447f_343e21aa
+Bytes: 6
+agreed
 

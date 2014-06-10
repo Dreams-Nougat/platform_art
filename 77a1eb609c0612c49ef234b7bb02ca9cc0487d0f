@@ -1,0 +1,27 @@
+Revision: 77a1eb609c0612c49ef234b7bb02ca9cc0487d0f
+Patch-set: 4
+File: runtime/gc/reference_processor.cc
+
+132
+Tue Jun 10 00:55:40 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bffcdced_ab18d5da
+Bytes: 160
+I'm not sure this call is required since the ClearWhiteReferences below will dequeue all references enqueue cleared references in the cleared_references_ queue.
+
+File: runtime/gc/reference_queue.cc
+
+183
+Tue Jun 10 00:55:40 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5d74d3_6d7f2634
+Bytes: 132
+I don't think we need this boolean since the preserved callback should be doing all the work to decide which references to preserve.
+
+198
+Tue Jun 10 00:55:40 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bffcdced_0b9d8910
+Bytes: 199
+If we delete the conditional it would be equivalent to always enqueueing in the cleared list. Maybe you can add a way to iterate over the reference queue so that we don't need to enqueue and dequeue?
+

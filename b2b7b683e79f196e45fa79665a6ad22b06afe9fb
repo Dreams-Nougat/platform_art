@@ -1,0 +1,76 @@
+Revision: b2b7b683e79f196e45fa79665a6ad22b06afe9fb
+Patch-set: 1
+File: compiler/driver/compiler_driver.h
+
+108:26-108:51
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5d74d3_86e03fe4
+Bytes: 166
+this name doesn't seem clear to me.
+
+is this about saving debug symbols?
+
+why isn't this just in CompilerOptions above?
+
+is it also used for the intel dwarf case now?
+
+File: compiler/elf_writer_quick.cc
+
+810:39-810:58
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f696874_102c85ba
+Bytes: 53
+DidAddSymbols seems a clearer name from this context.
+
+818:6-818:17
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5d74d3_46ea47c4
+Bytes: 53
+if this is only used here, just inline accessor call?
+
+File: compiler/elf_writer_quick.h
+
+51:0-53:35
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f696874_302509ca
+Bytes: 483
+so I think we need to consider how this fits with ElfWriterMclinker. the MCLinker case always generates symbols and then we strip them in dex2oat using ELFStripper. it actually writes the unstripped version to $OUT/symbols/system and stripped verison to $OUT/system.
+
+I'm just wondering if at the high level, the dex2oat option should be about "keeping symbols" vs "omitting symbols" (--strip-symbols vs --no-strip-symbols) so that we can make your new options work for both linkers.
+
+File: compiler/oat_writer.cc
+
+57:24-57:55
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f696874_b030190d
+Bytes: 63
+can't we just get this from compiler-> options when we need it?
+
+354:8-354:41
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5d74d3_c614f714
+Bytes: 76
+is this for your own debug? then use
+
+const bool kForceDebugCapture = false;
+
+356:0-357:76
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bffcdced_a30ab93d
+Bytes: 118
+if this is just computed here, seems like we could just move it below the next "if" after we adjust quick_code_offset.
+
+411:46-411:62
+Tue Jun 10 06:54:16 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5d74d3_4601e7cf
+Bytes: 111
+specifically, Alex was trying to use quick_code_start but it needed to be updated for his case of deduped code.
+

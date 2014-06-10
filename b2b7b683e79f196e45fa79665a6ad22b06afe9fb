@@ -15,6 +15,16 @@ why isn't this just in CompilerOptions above?
 
 is it also used for the intel dwarf case now?
 
+108
+Tue Jun 10 20:47:26 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff5d74d3_86e03fe4
+UUID: ff5d74d3_f44f5af0
+Bytes: 100
+Moved to compilerOptions element. Renamed to IncludeDebugSymbols. 
+
+This is unused in intel's dwarf.
+
 File: compiler/elf_writer_quick.cc
 
 810:39-810:58
@@ -24,12 +34,28 @@ UUID: 1f696874_102c85ba
 Bytes: 53
 DidAddSymbols seems a clearer name from this context.
 
+810
+Tue Jun 10 20:47:26 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f696874_102c85ba
+UUID: ff5d74d3_b4e8028d
+Bytes: 4
+Done
+
 818:6-818:17
 Tue Jun 10 06:54:16 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff5d74d3_46ea47c4
 Bytes: 53
 if this is only used here, just inline accessor call?
+
+818
+Tue Jun 10 20:47:26 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff5d74d3_46ea47c4
+UUID: bffcdced_99f56c62
+Bytes: 32
+It's used in the line above too.
 
 File: compiler/elf_writer_quick.h
 
@@ -42,6 +68,14 @@ so I think we need to consider how this fits with ElfWriterMclinker. the MCLinke
 
 I'm just wondering if at the high level, the dex2oat option should be about "keeping symbols" vs "omitting symbols" (--strip-symbols vs --no-strip-symbols) so that we can make your new options work for both linkers.
 
+53
+Tue Jun 10 20:47:26 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f696874_302509ca
+UUID: 1f696874_64650358
+Bytes: 171
+Added --strip-symbols and --no-strip-symbols as aliases for the regular flags. Added a check before stripping code is executed to skip stripping if we are keeping symbols.
+
 File: compiler/oat_writer.cc
 
 57:24-57:55
@@ -50,6 +84,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f696874_b030190d
 Bytes: 63
 can't we just get this from compiler-> options when we need it?
+
+57
+Tue Jun 10 20:47:26 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f696874_b030190d
+UUID: ff5d74d3_54daeef6
+Bytes: 4
+Done
 
 354:8-354:41
 Tue Jun 10 06:54:16 2014 +0000
@@ -60,12 +102,28 @@ is this for your own debug? then use
 
 const bool kForceDebugCapture = false;
 
+354
+Tue Jun 10 20:47:26 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff5d74d3_c614f714
+UUID: 1f696874_a60f8302
+Bytes: 123
+No this is for intel's stuff so that even if we have capture_debug off we will still take the information needed for intel.
+
 356:0-357:76
 Tue Jun 10 06:54:16 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bffcdced_a30ab93d
 Bytes: 118
 if this is just computed here, seems like we could just move it below the next "if" after we adjust quick_code_offset.
+
+357
+Tue Jun 10 20:47:26 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bffcdced_a30ab93d
+UUID: 1f696874_e44fb3f0
+Bytes: 4
+Done
 
 411:46-411:62
 Tue Jun 10 06:54:16 2014 +0000

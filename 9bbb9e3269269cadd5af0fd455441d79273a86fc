@@ -9,6 +9,14 @@ UUID: bffcdced_8307bd34
 Bytes: 46
 should we make this subq to avoid the problem?
 
+1653:2-1653:6
+Tue Jun 10 12:55:23 2014 +0000
+Author: Aleksey V Ignatenko <1039894@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bffcdced_8307bd34
+UUID: 1fbc0831_ef3b0108
+Bytes: 200
+subq won't help in this particular place as soon as conversion is done in Immediate constructor. The right solution is to cast Immediate param to a signed type (same or similar way as it is done now).
+
 1685:0-1685:132
 Tue Jun 10 06:46:49 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: ff5d74d3_660ae3f3
 Bytes: 64
 morally the same as DecreaseFrameSize but no casts in that case?
 
+1685:0-1685:132
+Tue Jun 10 12:55:23 2014 +0000
+Author: Aleksey V Ignatenko <1039894@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff5d74d3_660ae3f3
+UUID: 1fbc0831_0f33e52e
+Bytes: 108
+It is clear input param in DecreaseFrameSize is always >=0, this is not to be an issue with type conversion.
+
 1694:2-1694:6
 Tue Jun 10 06:46:49 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff5d74d3_8607dfe6
 Bytes: 5
 subq?
+
+1694:2-1694:6
+Tue Jun 10 12:55:23 2014 +0000
+Author: Aleksey V Ignatenko <1039894@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff5d74d3_8607dfe6
+UUID: 1fbc0831_6f30b120
+Bytes: 21
+this should work out.
 
 1699:35-1699:41
 Mon Jun 09 05:11:51 2014 +0000

@@ -1,0 +1,27 @@
+Revision: 530e1b54887b6b5e7d648170096e22a5f1850ea8
+Patch-set: 8
+File: /COMMIT_MSG
+
+9:0-10:28
+Wed Jun 11 23:02:46 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f854c8a_80986b96
+Bytes: 326
+Just for my understanding, if we rephrase it, is the gist of the change that even while we are preserving references, if it's already marked (is_marked_callback returns a non-null reference) and it's not a finalizable reference, then we can return the non-null reference, without blocking, back to the caller of GetReferent()?
+
+File: runtime/gc/reference_processor.cc
+
+63:72-63:85
+Wed Jun 11 23:02:46 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f854c8a_9dd454f0
+Bytes: 38
+This ends in the middle of a sentence.
+
+75:66-75:90
+Wed Jun 11 23:02:46 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f854c8a_20579f00
+Bytes: 315
+Question: I may be misunderstanding this, but what is this IsEnqueued() call for? While we are preserving references (the case where preserving_references_ == true and we execute the code after the "||"), isn't the reference always enqueued (the pending_next field is non-null and IsEnqueued() always returns true)?
+

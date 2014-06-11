@@ -45,6 +45,15 @@ UUID: bf15bcf5_1739365e
 Bytes: 242
 we probably need to redesign the whole data structure that stores profile data if we don't want to use method pointers. In the current implementation, the hash function and the maps store the profile data heavily relies on the method pointer.
 
+376:71-376:77
+Wed Jun 11 21:31:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf15bcf5_1739365e
+UUID: 1f8a489d_216a45f7
+Bytes: 386
+Agreed. This code is broken as methods may move. For example a dynamically allocated Proxy class can allocate methods in the Java heap at any time, and we can compact these. This will break the key and sorting of the map.
+I agree this change isn't adding to the problems, my original comment was to add a comment to the profile_table_ explaining that its broken and should be rewritten.
+
 410:37-410:55
 Tue Jun 10 15:13:28 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -2,6 +2,15 @@ Revision: 4edcdaefebbb12028ff19d441096eccbfd906fb2
 Patch-set: 1
 File: runtime/gc/collector/garbage_collector.cc
 
+92:7-92:24
+Wed Jun 11 19:50:22 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f854c8a_f5301a0e
+Bytes: 205
+For example, it seems like the timing logger and the pause histogram should know the max values that the GcProfiler tries to extract and store for itself here.
+
+Also, why we care about the max values only?
+
 99
 Wed Jun 11 16:41:23 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,4 +42,29 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f8a489d_99eaabc1
 Bytes: 278
 I'm against guarding this stuff with a define macro. It is possible to do it without a real performance hit if it is put only in the instrumented allocation path. You can instrument / uninstrument the allocation entrypoints during runtime. See how start/stopAllocCounting works.
+
+66:16-66:37
+Wed Jun 11 19:50:22 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f804079_f60f4601
+Bytes: 316
+As this is on the hot allocation path, this seems very expensive in terms of speed. It would likely change the performance characteristics to such an extent that the run with the profiling enabled may be very different from that with the profiling disabled.
+
+Is this call thread-safe? How is the concurrency handled?
+
+116:6-116:18
+Wed Jun 11 19:50:22 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f8a489d_e8ae82bb
+Bytes: 76
+This is the existing runtime stats thing, which counts bytes allocated, etc.
+
+File: runtime/signal_catcher.cc
+
+138:11-138:25
+Wed Jun 11 19:50:22 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f8a489d_e81a0242
+Bytes: 86
+This is the existing SIGQUIT dump thing, which dumps the existing GC performance data.
 

@@ -9,6 +9,14 @@ UUID: ff77347c_1f1bef8c
 Bytes: 118
 Why is this not pointer sized?  I thought kVregSize was 4 but an ArtMethod* is a pointer.  It was kArmWordSize before.
 
+135:8-135:17
+Thu Jun 12 08:53:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff77347c_1f1bef8c
+UUID: 5f6920a1_3ce6fd4f
+Bytes: 217
+Quick and runtime have switch to a vreg size to make it consistent (a method is a GC object, and we only allocate in the first 4G memory range). The CL that changed it is: https://android-review.googlesource.com/96237
+
 File: compiler/optimizing/code_generator_x86.cc
 
 307:9-307:14
@@ -17,6 +25,14 @@ Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f854c8a_91251bcc
 Bytes: 64
 Why push/pop rather than mov?  To save a register?  It's slower.
+
+307:9-307:14
+Thu Jun 12 08:53:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f854c8a_91251bcc
+UUID: 1fd5e878_6d8f1168
+Bytes: 208
+This is only used for the baseline code generation, so not super important. I moved to using push/pop because there is no checks that guarantee the register is free (although it is for the baseline compiler).
 
 File: compiler/optimizing/parallel_move_resolver.cc
 
@@ -27,10 +43,26 @@ UUID: ff77347c_1f420f51
 Bytes: 55
 ++reg (yes, I do it all time too.  Old habits die hard_
 
+168:42-168:45
+Thu Jun 12 08:53:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff77347c_1f420f51
+UUID: 5f6920a1_5cf3b10c
+Bytes: 10
+:-). Done.
+
 178:44-178:47
 Thu Jun 12 02:17:41 2014 +0000
 Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f854c8a_314d2f82
 Bytes: 5
 ++reg
+
+178:44-178:47
+Thu Jun 12 08:53:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f854c8a_314d2f82
+UUID: 5f6920a1_7cf075ff
+Bytes: 4
+Done
 

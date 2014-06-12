@@ -1,0 +1,33 @@
+Revision: 9078aa96fbc94a4100a5bc154b65115545aee95c
+Patch-set: 1
+File: compiler/dex/quick/x86/fp_x86.cc
+
+342:0-343:59
+Thu Jun 12 18:24:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf713c8e_d7923ed0
+Bytes: 60
+isn't this unnecessary? I don't see explicit register usage.
+
+398:29-398:32
+Thu Jun 12 18:24:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf713c8e_374c52ab
+Bytes: 2
+AH
+
+398:0-402:34
+Thu Jun 12 18:24:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f6328c5_6369adc7
+Bytes: 167
+ah, EAX for Fstsw.. I wonder if we could allocate just EAX.
+There's also sahf which would have a shorter encoding than this AND, but its only available in 32-bit mode.
+
+404:2-406:25
+Thu Jun 12 18:24:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf713c8e_fa4c8187
+Bytes: 54
+fwiw, it may be nice to tag this as an unlikely branch
+

@@ -1,0 +1,11 @@
+Revision: e4af676da07f58eedea01489c68469b96fb0188e
+Patch-set: 11
+File: compiler/dex/quick/arm64/target_arm64.cc
+
+152
+Thu Jun 12 16:05:06 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ffc9f4e9_da70755d
+Bytes: 388
+This is broken (my fault - it was also previously broken).  A recent revision of the RegStorage encoding which moved the FP bit failed to update this code.  A core register should set a corresponding bit in 0..31, while a fp reg should set in 32..63.  Before the RegStorage encoding update, this code achieved that.  Now, we'll need something like what's done in x86's GetRegMaskCommon().
+

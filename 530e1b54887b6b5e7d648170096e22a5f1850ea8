@@ -9,6 +9,14 @@ UUID: 3f854c8a_80986b96
 Bytes: 326
 Just for my understanding, if we rephrase it, is the gist of the change that even while we are preserving references, if it's already marked (is_marked_callback returns a non-null reference) and it's not a finalizable reference, then we can return the non-null reference, without blocking, back to the caller of GetReferent()?
 
+10
+Thu Jun 12 23:40:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f854c8a_80986b96
+UUID: 9fc0f8c0_5763bce5
+Bytes: 188
+If it was already marked before we started preserving. We ensure this is the case by using the pending next. If it is null then the reference is not enqueued and must be already processed.
+
 File: runtime/gc/reference_processor.cc
 
 63:72-63:85
@@ -18,10 +26,26 @@ UUID: 3f854c8a_9dd454f0
 Bytes: 38
 This ends in the middle of a sentence.
 
+63
+Thu Jun 12 23:40:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f854c8a_9dd454f0
+UUID: 9fc0f8c0_97c7f47a
+Bytes: 32
+Yes, this should be fixed later.
+
 75:66-75:90
 Wed Jun 11 23:02:46 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f854c8a_20579f00
 Bytes: 315
 Question: I may be misunderstanding this, but what is this IsEnqueued() call for? While we are preserving references (the case where preserving_references_ == true and we execute the code after the "||"), isn't the reference always enqueued (the pending_next field is non-null and IsEnqueued() always returns true)?
+
+75
+Thu Jun 12 23:40:52 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f854c8a_20579f00
+UUID: 9fc0f8c0_b7c2f06a
+Bytes: 210
+IsEnqueued returns true if the pending next is non null. If we are preserving references, all of the references which were not enqueued due to being marked during the GC won't block since they wont be enqueued.
 

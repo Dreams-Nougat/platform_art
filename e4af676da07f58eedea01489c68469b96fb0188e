@@ -9,3 +9,15 @@ UUID: ffc9f4e9_da70755d
 Bytes: 388
 This is broken (my fault - it was also previously broken).  A recent revision of the RegStorage encoding which moved the FP bit failed to update this code.  A core register should set a corresponding bit in 0..31, while a fp reg should set in 32..63.  Before the RegStorage encoding update, this code achieved that.  Now, we'll need something like what's done in x86's GetRegMaskCommon().
 
+152
+Thu Jun 12 16:24:27 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffc9f4e9_da70755d
+UUID: 7fd6e483_d3c7be47
+Bytes: 139
+Should this be
+
+  (reg.IsFloat() ? kArm64FPReg0 : 0) + reg.GetRegNum())
+
+or do we need to take the StorageSize() into account as on X86_64?
+

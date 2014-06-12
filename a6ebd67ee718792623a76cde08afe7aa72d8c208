@@ -1,0 +1,16 @@
+Revision: a6ebd67ee718792623a76cde08afe7aa72d8c208
+Patch-set: 4
+File: runtime/profiler.cc
+
+297:0-304:3
+Thu Jun 12 10:54:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f6920a1_7cbeb5ed
+Bytes: 814
+sorry to come back to this. 
+
+There are some CLs which fix the SELinux policy for profiler files. The files are created by installd and their permission is update to restrict access just to the system server and the app (https://android-review.googlesource.com/#/c/97674/2). I fear that creating the file like this will actually leak details. I'll check with nnk@ as there are some details regarding permissions that I'm no fully familiar with.
+
+As a side note:
+I'm thinking that it might be cleaner and easier actually to update the original format and store the dex_pc in the current profile file. The disadvantage is that we'll take more space but I don't think we'll have so many different PC per functions to worry about it. One way to compact this is: "method/total_count/size/[pc_1:count_1,pc_2:count_2...]"
+

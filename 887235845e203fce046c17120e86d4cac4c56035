@@ -11,3 +11,11 @@ usage is out of date, perhaps
 
 ": override ANDROID_ROOT when looking for the boot image."
 
+143:16-143:85
+Fri Jun 13 20:42:32 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf713c8e_91952b5d
+UUID: 7f49844c_076f240f
+Bytes: 507
+android_root is used throughout the compiler, elf writer... Previously we were unconditionally setting it in the case of boot.art and I think that was a mistake as the GetAndroidRoot code is in effect being executed to set up android_root, except that logic also allows for the command line override. I don't follow the previous usage message and making this specific to the case of the boot image also doesn't seem right. For context, this change is necessary for the "oat-target" build dependency to work.
+

@@ -29,3 +29,13 @@ UUID: bf713c8e_3e36e61e
 Bytes: 309
 This is not the right fix. If you have different encoding kinds then the kind on the opcode should be different and there should be different Emit routines. Stop trying to shoe-horn instructions through EmitRegCond. This change is just continuing the mistake I've repeatedly complained about in these patches.
 
+806
+Fri Jun 13 19:31:42 2014 +0000
+Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf713c8e_3e36e61e
+UUID: df74307d_483122dd
+Bytes: 324
+I think we need two forms of r8_form_*.  Otherwise, inside this routine, we will never emit 0x40, if we only can pass raw_reg_b to EmitPrefix().
+
+I am ok to create a new type, such as kBaseCond that will call EmitBaseCond.  But, this new type and this new function won't fix the issue that I encounter in EmitPrefix.  Right?
+

@@ -9,10 +9,30 @@ UUID: bf713c8e_1e576a00
 Bytes: 88
 Should this be DexFile::kDexNoIndex16? or should we have a constexpr value for 0x10000U?
 
+1384:80-1384:88
+Fri Jun 13 16:58:25 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf713c8e_1e576a00
+UUID: bf713c8e_5e69e2c6
+Bytes: 211
+I should have made it a constant.
+
+This is *not* kDexNoIndex16, as that is a valid return (as in "I didn't find anything"). This, which is >16b, signals an error when trying to load something.
+
+Cleanup CL later.
+
 1805:0-1805:35
 Fri Jun 13 16:54:53 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf713c8e_3e6c26d8
 Bytes: 36
 This feels like kDexNoIndex16 to me.
+
+1805:0-1805:35
+Fri Jun 13 16:58:25 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf713c8e_3e6c26d8
+UUID: df74307d_12275da7
+Bytes: 134
+In this case I guess one could reuse kDexNoIndex16, but that check was missing before. For the "bigger" picture see the other comment.
 

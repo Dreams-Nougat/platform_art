@@ -24,10 +24,36 @@ Bytes: 167
 ah, EAX for Fstsw.. I wonder if we could allocate just EAX.
 There's also sahf which would have a shorter encoding than this AND, but its only available in 32-bit mode.
 
+398:0-402:34
+Fri Jun 13 20:05:08 2014 +0000
+Author: Alexei Zavjalov <1039893@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f6328c5_6369adc7
+UUID: 7fd6e483_7e9179f7
+Bytes: 183
+I think, I can change this to:
+
+MarkTemp(rs_rAX);
+FreeTemp(rs_rAX);
+LockTemp(rs_rAX);
+
+save FPU to AX and compare it with 0x400
+
+FreeTemp(rs_rAX);
+Clobber(rs_rAX);
+UnmarkTemp(rs_rAX);
+
 404:2-406:25
 Thu Jun 12 18:24:01 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf713c8e_fa4c8187
 Bytes: 54
 fwiw, it may be nice to tag this as an unlikely branch
+
+404:2-406:25
+Fri Jun 13 20:05:08 2014 +0000
+Author: Alexei Zavjalov <1039893@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf713c8e_fa4c8187
+UUID: 7fd6e483_dea18552
+Bytes: 93
+Ian, I'm sorry, I didn't catch your point on "unlikely branch". Could you specify this a bit?
 

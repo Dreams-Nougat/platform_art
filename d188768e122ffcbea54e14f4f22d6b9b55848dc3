@@ -79,6 +79,14 @@ UUID: 7f3264d4_13b77613
 Bytes: 75
 Clarify? Is there something you want me to address related to this comment?
 
+91
+Mon Jun 16 23:40:24 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_13b77613
+UUID: 9f439833_9f4d2387
+Bytes: 361
+This write is unconditionally non-atomic. In the old code, a GC implementation could choose to use an atomic write by passing a mark_callback that does an atomic write. I wonder if this would be a memory visibility issue for a concurrent moving collector. It might be ok as long as the ForwardSoftReferences call is surrounded by a lock for the concurrent case.
+
 File: runtime/gc/reference_queue.cc
 
 107:42-107:71
@@ -125,6 +133,14 @@ Parent: 9f439833_0e310bde
 UUID: bf469c40_126e8c41
 Bytes: 26
 Which name do you suggest?
+
+133
+Mon Jun 16 23:40:24 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf469c40_126e8c41
+UUID: 7f3264d4_59890f12
+Bytes: 146
+Just leave it as is. As we already have MarkHeapReferenceCallback, it is fine. I just need to remember that it may update the given HeapReference.
 
 File: runtime/mirror/reference.h
 

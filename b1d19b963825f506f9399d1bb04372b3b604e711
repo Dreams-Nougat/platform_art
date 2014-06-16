@@ -1,0 +1,43 @@
+Revision: b1d19b963825f506f9399d1bb04372b3b604e711
+Patch-set: 4
+File: compiler/dex/quick/dex_file_method_inliner.cc
+
+298:0-301:83
+Mon Jun 16 18:25:43 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df3990b5_adbd5dc7
+Bytes: 145
+We should not require intrinsic != nullptr.
+  bool res = ...;
+  if (res && intrinsic != nullptr) {
+    *intrinsic = it->second;
+  }
+  return res;
+
+File: compiler/dex/quick/x86/fp_x86.cc
+
+559:0-560:10
+Mon Jun 16 18:25:43 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df3990b5_cdc2a93a
+Bytes: 40
+This should be a single line:
+  } else {
+
+563
+Mon Jun 16 18:25:43 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fd5e878_417f7633
+Bytes: 87
+This is a NOP now, please remove or replace with
+  DCHECK(rl_result.reg == rl_src.reg);
+
+564
+Mon Jun 16 18:25:43 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df3990b5_edc76547
+Bytes: 61
+We're done using the sign_mask, so
+  FreeTemp(sign_mask)
+now.
+

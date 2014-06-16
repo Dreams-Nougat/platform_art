@@ -140,6 +140,18 @@ UUID: aaf9f8ff_dec88159
 Bytes: 185
 Another issue here, there is probably a race where other threads could miss the writes since there is no fence before the return. Maybe worth using a pre fence visitor to do the memcpy?
 
+98
+Mon Jun 16 22:00:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aaf9f8ff_dec88159
+UUID: 64ec997a_017eca36
+Bytes: 758
+I think we need to do the memcpy in the pre fence visitor, instead of here. The old string had final fields (offset, etc.), which meant that the compiler/runtime issues a store-store barrier at the end (after the char array content is copied) of the String constructor. Now, with the new string, we don't have that barrier. Currently, the allocator issues a barrier after the class and the string length are set but *before* the string contents are copied (this memcpy call). So, a string's context could temporarily look all zero to other threads.
+
+A fix would be to move this memcpy call to SetStringCountVisitor.
+
+Or, inserting a barrier at the end of the string construction to simulate the store-store barrier for final fields at the end of constructor.
+
 File: runtime/mirror/string.h
 
 47:39-47:47

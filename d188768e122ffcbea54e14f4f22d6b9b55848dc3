@@ -9,12 +9,28 @@ UUID: 9f439833_ae48f744
 Bytes: 116
 This does not have a write barrier while SetReferent() on the caller side before this CL had one. Is it as intended?
 
+658
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_ae48f744
+UUID: bf469c40_32e8e88b
+Bytes: 115
+If the reference is updated to point to the same object at a new address its not necessary to have a write barrier.
+
 660:9-660:16
 Mon Jun 16 19:27:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f3264d4_cd3b7d08
 Bytes: 60
 The return type is bool and we are returning an object here.
+
+660
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_cd3b7d08
+UUID: bf469c40_921d1cfd
+Bytes: 43
+Nice catch, I think I want != nullptr here.
 
 File: runtime/gc/reference_processor.cc
 
@@ -25,6 +41,14 @@ UUID: 7f3264d4_cd929dd0
 Bytes: 192
 Do we not really need a read barrier here (like the old GetReferent() call)? Maybe so since we call GetReferent() once above, assuming there's no thread suspension point between that and here.
 
+57
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_cd929dd0
+UUID: bf469c40_d221642b
+Bytes: 134
+I think we don't need a read barrier since thread suspension (checkpoint root updating) would never happen until the function is done.
+
 61:85-63:59
 Mon Jun 16 19:27:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +56,28 @@ UUID: 7f3264d4_6da4512d
 Bytes: 41
 This phrase is repeated in line 70 below.
 
+63
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_6da4512d
+UUID: 9f439833_9126fcda
+Bytes: 8
+Deleted.
+
 91:7-91:13
 Mon Jun 16 19:27:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f3264d4_ad5f2951
 Bytes: 78
 Same interface change (write on the caller side vs the callback side) comment.
+
+91
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_ad5f2951
+UUID: 7f3264d4_13b77613
+Bytes: 75
+Clarify? Is there something you want me to address related to this comment?
 
 File: runtime/gc/reference_queue.cc
 
@@ -48,6 +88,14 @@ UUID: bf469c40_52f3b40c
 Bytes: 134
 What's benefit of the interface change from side-effect free IsMarkedCallback to (non-side-effect-free) IsHeapReferenceMarkedCallback?
 
+107
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf469c40_52f3b40c
+UUID: bf469c40_b27e98f0
+Bytes: 92
+It makes it that you don't need to remember to update the referents if the object is marked.
+
 111:64-111:88
 Mon Jun 16 19:27:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -55,12 +103,28 @@ UUID: 7f3264d4_8dbee551
 Bytes: 313
 This does not have a read barrier, which is ok as we don't need it here. But I'd worry that some other code could accidentally use GetReferentReferenceAddr() and not have a read barrier. Turn GetReferentReferenceAddr() a private member and use friend for ReferenceQueue to use it and leave a comment on this note?
 
+111
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_8dbee551
+UUID: 7f3264d4_f3566202
+Bytes: 4
+Done
+
 133:52-133:70
 Mon Jun 16 19:27:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f439833_0e310bde
 Bytes: 124
 I think that the name IsHeapReferenceMarkedCallback suggests side effect free like IsMarkedCallback, which can be confusing.
+
+133
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_0e310bde
+UUID: bf469c40_126e8c41
+Bytes: 26
+Which name do you suggest?
 
 File: runtime/mirror/reference.h
 
@@ -71,6 +135,14 @@ UUID: 9f439833_ae5c7726
 Bytes: 276
 This provides a way to avoid a read barrier. I worry about accidental access without a read barrier. Maybe remove the template parameter as it isn't used? Leave a warning comment that says so, make this private, and add ReferenceQueue as a friend class? Is there a better way?
 
+50
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_ae5c7726
+UUID: 9f439833_f17f4082
+Bytes: 4
+Done
+
 File: runtime/object_callbacks.h
 
 74:8-74:12
@@ -79,4 +151,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f3264d4_2db09978
 Bytes: 66
 Leave a comment on what this does and what the return value means?
+
+74
+Mon Jun 16 21:02:13 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_2db09978
+UUID: 9f439833_d151640d
+Bytes: 4
+Done
 

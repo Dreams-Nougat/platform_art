@@ -18,6 +18,13 @@ Ditto.
 
 File: compiler/image_writer.cc
 
+600:0-614:1
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf469c40_6fab6d77
+Bytes: 220
+this is called from FixupObject. other cases such as fixing up methods are handled there. it would seem cleaner (and perhaps faster) to me to test the IsClass case once per instance instead of testing once per reference.
+
 648:70-648:74
 Fri Jun 13 22:08:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +39,16 @@ Parent: 1fd5e878_bb8adf0b
 UUID: 9f439833_6b4fe146
 Bytes: 126
 Out arguments should be pointers and not references, per the style guide. Why is this an out argument and not just the result?
+
+648:70-648:74
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_6b4fe146
+UUID: 9f439833_ce7aa395
+Bytes: 270
+and perhaps there should just be a separate helper to call to get the value?
+
+it seems like its adding unnecessary complexity since its only used in the copy==NULL case and usually doesn't look at the arguments, except in one case where we could ask the copy afterwards?
 
 654:16-654:20
 Mon Jun 16 16:20:06 2014 +0000
@@ -50,6 +67,50 @@ Bytes: 88
 document the arguments as the comment above doesn't explain why we have an out argument.
 
 File: runtime/class_linker.cc
+
+212:61-212:87
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f3264d4_6d653158
+Bytes: 84
+does class_linker_test check all these new constants to make sure they stay in sync?
+
+1281:6-1281:21
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f3264d4_adeac93e
+Bytes: 152
+i'm really not thrilled about temp classes and extra fields in libcore if it can be avoided. I don't have a concrete suggested yet on how to avoid this.
+
+1500:2-1500:33
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f439833_6e636fe6
+Bytes: 80
+add " << descriptor" for context.
+
+CHECK(new_class != NULL) << descriptor first?
+
+2407:2-2407:27
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f439833_aec7177a
+Bytes: 13
+<< descriptor
+
+2418:2-2418:26
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f439833_cecc63a1
+Bytes: 13
+<< descriptor
+
+2425:6-2425:31
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f3264d4_ad8d69b5
+Bytes: 13
+<< descriptor
 
 3486:36-3486:41
 Fri Jun 13 22:08:51 2014 +0000
@@ -78,6 +139,15 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5f6920a1_62d7ecf4
 Bytes: 7
 size_t*
+
+File: runtime/class_linker.h
+
+64:1-69:69
+Mon Jun 16 18:53:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f3264d4_0d4f55a2
+Bytes: 61
+as noted elsewhere, can we verify these in class_linker_test?
 
 File: runtime/class_linker_test.cc
 

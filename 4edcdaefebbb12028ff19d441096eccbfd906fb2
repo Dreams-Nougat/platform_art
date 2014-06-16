@@ -11,6 +11,14 @@ For example, it seems like the timing logger and the pause histogram should know
 
 Also, why we care about the max values only?
 
+92:7-92:24
+Mon Jun 16 02:32:23 2014 +0000
+Author: Lin Zang <1015885@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f854c8a_f5301a0e
+UUID: bf985cf6_2b422551
+Bytes: 182
+thanks, I will try to let GcProfiler extract info from pause histogram. the reason we record max value only is because we think it's important for reflecting GC's effect to mutators.
+
 99
 Wed Jun 11 16:41:23 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,12 +26,28 @@ UUID: 1f8a489d_f9f8179f
 Bytes: 214
 Are you sure this works? I believe the timing loggers use exclusive time, that is, the value for MarkingPhase will be the time spent in the marking phase split itself without adding the time of the children splits.
 
+99
+Mon Jun 16 02:32:23 2014 +0000
+Author: Lin Zang <1015885@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f8a489d_f9f8179f
+UUID: bf985cf6_cb52a121
+Bytes: 167
+Hi Mathieu, Thanks, you are right, I am trying to fix this issue. BTW, is there any other way to get marking phase time consumed instead of sum up all children splits?
+
 100
 Wed Jun 11 16:41:23 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f854c8a_341b688d
 Bytes: 9
 std::min?
+
+100
+Mon Jun 16 02:32:23 2014 +0000
+Author: Lin Zang <1015885@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f854c8a_341b688d
+UUID: df8b50a1_92d7eaca
+Bytes: 39
+will be fixed in next patch set. thanks
 
 File: runtime/gc/gcprofiler.cc
 
@@ -43,6 +67,14 @@ UUID: 1f8a489d_99eaabc1
 Bytes: 278
 I'm against guarding this stuff with a define macro. It is possible to do it without a real performance hit if it is put only in the instrumented allocation path. You can instrument / uninstrument the allocation entrypoints during runtime. See how start/stopAllocCounting works.
 
+63
+Mon Jun 16 02:32:23 2014 +0000
+Author: Lin Zang <1015885@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f8a489d_99eaabc1
+UUID: bf985cf6_6b3c2ddd
+Bytes: 34
+Thanks, I will try to refine this.
+
 66:16-66:37
 Wed Jun 11 19:50:22 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,12 +84,28 @@ As this is on the hot allocation path, this seems very expensive in terms of spe
 
 Is this call thread-safe? How is the concurrency handled?
 
+66:16-66:37
+Mon Jun 16 02:32:23 2014 +0000
+Author: Lin Zang <1015885@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f804079_f60f4601
+UUID: bf985cf6_0b800938
+Bytes: 199
+Thanks, It seems GcProfiler needs a lock here. but I believe it makes allocation much more heavier. I am considering other way to make the profiling of allocation, any suggestion will be appreciated.
+
 116:6-116:18
 Wed Jun 11 19:50:22 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f8a489d_e8ae82bb
 Bytes: 76
 This is the existing runtime stats thing, which counts bytes allocated, etc.
+
+116:6-116:18
+Mon Jun 16 02:32:23 2014 +0000
+Author: Lin Zang <1015885@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f8a489d_e8ae82bb
+UUID: bf985cf6_6b8fcd67
+Bytes: 51
+Thanks a lot. I am refining GcProfiler to reuse it.
 
 File: runtime/signal_catcher.cc
 
@@ -67,4 +115,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f8a489d_e81a0242
 Bytes: 86
 This is the existing SIGQUIT dump thing, which dumps the existing GC performance data.
+
+138:11-138:25
+Mon Jun 16 02:32:23 2014 +0000
+Author: Lin Zang <1015885@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f8a489d_e81a0242
+UUID: df8b50a1_f2174ed6
+Bytes: 270
+Hiroshi,
+  Seems it can only dump info as in LOG format. But actually GcProfiler tries to dump GC info as in binary file to an uniform place for post-processing. so is it ok to implement a similar method which dump GC performance data to a file in binary format?
+Thanks.
 

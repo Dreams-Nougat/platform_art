@@ -1,0 +1,71 @@
+Revision: f78c1e9d285608dd4332488cb512f5e51af9dbe1
+Patch-set: 1
+File: compiler/optimizing/builder.cc
+
+404:24-404:29
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6463b9f2_2949cd75
+Bytes: 85
+I think we should have a version of LoadLocal that just does not care about the type.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+429:24-429:32
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6463b9f2_c93fd1d0
+Bytes: 44
+I think you want one input to be a register.
+
+447:49-447:58
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6463b9f2_094e097e
+Bytes: 20
+Why is that not rhs?
+
+File: compiler/optimizing/nodes.h
+
+411:4-411:14
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 245d4132_e719a292
+Bytes: 154
+What is this instruction for? The non SSA-from will just update the local and the SSA form will just get rid of the local, so I don't see the need for it.
+
+753:6-753:17
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6463b9f2_e9197592
+Bytes: 71
+Why did you want an HExpression? To add a type to HTemplateInstruction>
+
+764:15-764:28
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c44b8572_a423a2c6
+Bytes: 39
+That's already in HTemplateInstruction.
+
+769:34-769:41
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 245d4132_a723aac6
+Bytes: 6
+ditto.
+
+852:11-852:14
+Tue Jun 17 08:11:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6463b9f2_694fc57d
+Bytes: 625
+I gave the boolean value directly to the if instruction to make it a bit more flexible for optimization passes (things like predicate simplifications, or GVN will prefer reasoning on individual instructions). While this change makes the codegen simpler, I think I'd prefer keeping the explicit condition, and optimize codegen to recognize that the condition does not need materialization. Initially something as simple as:
+
+NeedsMaterialization(HInstruction* instruction) {
+  if (instruction->number_of_uses == 1 && instruction->user isa HIf && instruction->next == instruction->user) {
+    return false;
+  }
+  return true;
+}
+

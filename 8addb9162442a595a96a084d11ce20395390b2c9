@@ -9,6 +9,14 @@ UUID: 24446156_3526b8ac
 Bytes: 30
 isn't this ws alignment worse?
 
+1039:41-1039:43
+Tue Jun 17 21:31:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24446156_3526b8ac
+UUID: 2492a112_3fd1c733
+Bytes: 107
+Sorry about all the formatting snafu. Eclipse went wild and I didn't notice how pervasive and *bad* it was.
+
 1084:0-1092:3
 Tue Jun 17 18:50:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 04291d85_11fd0e8b
 Bytes: 39
 This feels like it should be in utils.h
 
+1084:0-1092:3
+Tue Jun 17 21:31:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04291d85_11fd0e8b
+UUID: 2492a112_bfbcf7f3
+Bytes: 4
+Done
+
 1369:39-1369:40
 Tue Jun 17 18:50:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c432a5f0_efcbbd52
 Bytes: 6
 cruft?
+
+1369:39-1369:40
+Tue Jun 17 21:31:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c432a5f0_efcbbd52
+UUID: 2492a112_9f39f3c5
+Bytes: 4
+Done
 
 1469:19-1469:24
 Tue Jun 17 18:50:06 2014 +0000
@@ -31,6 +55,18 @@ Bytes: 201
 what's a basic native call? Native calls always have 1 handle (object for virtual, class for static).
 I think this needs more explanation, in particular what the overriding methods will do differently.
 
+1469:19-1469:24
+Tue Jun 17 21:31:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04291d85_d10786e7
+UUID: 448dd5f1_20f8ca9a
+Bytes: 320
+I wanted to avoid "JNI", but clarified this to "Non-JNI."
+
+This is not for a JNI call. This is purely the logic to fill the register and native call stacks. One can build a native call that does not need any JNI things.
+
+To build a JNI call, one should use the subclasses like ComputeGenericJniFrameSize and FillJniCall.
+
 1556:13-1556:15
 Tue Jun 17 18:50:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -38,10 +74,32 @@ UUID: 04291d85_9101fed3
 Bytes: 7
 * const
 
+1556:13-1556:15
+Tue Jun 17 21:31:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04291d85_9101fed3
+UUID: 2492a112_df19bb92
+Bytes: 251
+It isn't.
+
+For initialization reasons, I needed a Reset function to set the handle scope after allocation.
+
+We are modifying the contents of the scope, so it's also not denoting a const in that respect.
+
+So I feel having it non-const is the right way.
+
 1668:0-1668:20
 Tue Jun 17 18:50:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c432a5f0_cfc80159
 Bytes: 77
 while here, fix the comments to be "Run the visitor.", and other cases below.
+
+1668:0-1668:20
+Tue Jun 17 21:31:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c432a5f0_cfc80159
+UUID: 448dd5f1_e0e98290
+Bytes: 4
+Done
 

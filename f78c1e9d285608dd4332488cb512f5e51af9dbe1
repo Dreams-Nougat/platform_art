@@ -82,6 +82,14 @@ But the description of the instruction says (https://source.android.com/devices/
 
 So I don't see what could happen in between the call and the move-result.
 
+411:4-411:14
+Tue Jun 17 22:36:50 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c44b8572_e7663ca9
+UUID: 2492a112_45e39e42
+Bytes: 235
+OK, wasn't aware of that restriction.  And looking at the code I now see that the output location of an invoke is R0 on ARM, so that is where the input to the instruction is.  OK, got it.  I'll remove the CallResult as it's not needed.
+
 753:6-753:17
 Tue Jun 17 08:11:50 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -164,4 +172,12 @@ Parent: e44ec981_6b1fb5f3
 UUID: 245d4132_0aa03b94
 Bytes: 227
 Yeah, it's at odds with the DEX instruction set, but I think the DEX instruction set is not great for these kinds of optimizations. Indeed, it is great for code generation, but writing the optimizations IMO is a bit cumbersome.
+
+852:11-852:14
+Tue Jun 17 22:36:50 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 245d4132_0aa03b94
+UUID: 2492a112_a50aaa3c
+Bytes: 242
+I've been working on it today and have something that you might like.  I'm still not sure about how it will help with optimizations, but I have a good code sequence with the boolean instruction in place.  I'll upload tonight for your perusal.
 

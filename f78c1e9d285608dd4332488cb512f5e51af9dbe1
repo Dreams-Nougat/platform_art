@@ -70,6 +70,18 @@ If we don't have this instruction we would have keep R0 alive from the point of 
 
 This is all my understanding and is subject to correction as I get more familiar with this code.  In other words, I might be missing something.
 
+411:4-411:14
+Tue Jun 17 17:25:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0452fd22_2cde7775
+UUID: c44b8572_e7663ca9
+Bytes: 263
+But the description of the instruction says (https://source.android.com/devices/tech/dalvik/dalvik-bytecode.html):
+
+"This must be done as the instruction immediately after an invoke-kind "
+
+So I don't see what could happen in between the call and the move-result.
+
 753:6-753:17
 Tue Jun 17 08:11:50 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,6 +96,14 @@ Parent: 6463b9f2_e9197592
 UUID: 44587541_cb98e9ee
 Bytes: 189
 It's an HInstruction with type.  I saw that there was a pattern of adding a type to various instructions and wanted to consolidate it into a node that is an instruction and provides a type.
+
+753:6-753:17
+Tue Jun 17 17:25:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44587541_cb98e9ee
+UUID: c44b8572_c7634097
+Bytes: 5
+SGTM.
 
 764:15-764:28
 Tue Jun 17 08:11:50 2014 +0000
@@ -136,4 +156,12 @@ Parent: 6463b9f2_694fc57d
 UUID: e44ec981_6b1fb5f3
 Bytes: 389
 I'll have to think some more about this.  The existence of the instruction that simply does a comparison and puts the 1 or 0 into a register is at odds with the DEX instruction sequence which has already coded it into the IF_XX.  Admittedly I am not yet familiar with the implementation details of all the optimizations we want to do and you are most likely right but I want to understand.
+
+852:11-852:14
+Tue Jun 17 17:25:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e44ec981_6b1fb5f3
+UUID: 245d4132_0aa03b94
+Bytes: 227
+Yeah, it's at odds with the DEX instruction set, but I think the DEX instruction set is not great for these kinds of optimizations. Indeed, it is great for code generation, but writing the optimizations IMO is a bit cumbersome.
 

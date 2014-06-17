@@ -87,6 +87,14 @@ UUID: 9f439833_9f4d2387
 Bytes: 361
 This write is unconditionally non-atomic. In the old code, a GC implementation could choose to use an atomic write by passing a mark_callback that does an atomic write. I wonder if this would be a memory visibility issue for a concurrent moving collector. It might be ok as long as the ForwardSoftReferences call is surrounded by a lock for the concurrent case.
 
+91
+Tue Jun 17 01:31:36 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_9f4d2387
+UUID: 9f439833_c57efef1
+Bytes: 280
+The only place we should read this in another thread without a read barrier for concurrent moving GC should be in Reference.get right? I think thats OK since it will block until the reference is no longer enqueued, and we have an implied fence when we do StopPreservingReferences.
+
 File: runtime/gc/reference_queue.cc
 
 107:42-107:71
@@ -141,6 +149,14 @@ Parent: bf469c40_126e8c41
 UUID: 7f3264d4_59890f12
 Bytes: 146
 Just leave it as is. As we already have MarkHeapReferenceCallback, it is fine. I just need to remember that it may update the given HeapReference.
+
+133
+Tue Jun 17 01:31:36 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_59890f12
+UUID: c4046504_c53c70de
+Bytes: 67
+There's a comment in object_callbacks.h which should be sufficient.
 
 File: runtime/mirror/reference.h
 

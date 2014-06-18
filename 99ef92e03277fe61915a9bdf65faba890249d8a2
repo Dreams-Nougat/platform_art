@@ -19,6 +19,18 @@ Good question and something to think about. What should happen now (but I think 
 
 BTW, I am not sure how your implementation would work with the JNI compiler, either. I did not see any code that changed the signature of a call from the quick method to the native bridge one. Your system kind of worked because of the x86 calling convention placing everything on the stack, but for x86-64 this would have never worked.
 
+1896:9-1896:41
+Wed Jun 18 19:27:43 2014 +0000
+Author: Dong-Yuan Chen <1000428@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64d659dd_578844a3
+UUID: 4466b513_e1dadca5
+Bytes: 855
+In PS1, all method invocations to foreign JNI methods go through a native bridge wrapper set in entry_point_from_jni_ in ArtMethod. The original fnptr to the foreign JNI method is stored in the newly added field entry_point_from_native_bridge_ in ArtMethod. The native bridge wrapper function is set in RegisterNativeMethods at runtime. See line 2511 of jni_internal.cc in PS1.
+
+The native bridge wrapper function will interpret the calling convention properly based on the native function shorty and the ISA (x86 vs. x86-64.) It encapsulates the handling of calling convention differences inside the wrapper so it is transparent to ART.
+
+Having all native bridge JNI calls go thru generic JNI gives up the benefit of optimized code sequence from JNI compiler. It will be better to be able to leverage the JNI compiler for native bridge JNI calls as well.
+
 File: runtime/mirror/art_method.h
 
 138:4-138:91

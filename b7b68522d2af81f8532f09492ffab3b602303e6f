@@ -9,6 +9,14 @@ UUID: 8a6a7464_2d36196f
 Bytes: 92
 Perform a similar rewrite for dex-to-dex, perhaps fold into devirtualization for dex-to-dex?
 
+1085
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_2d36196f
+UUID: 6471f9c6_e89e3b82
+Bytes: 13
+Added as TODO
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 1312:0-1312:39
@@ -18,6 +26,14 @@ UUID: 8a6a7464_4d9eeddd
 Bytes: 48
 /* Build pointers to the start of string data */
 
+1312
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6a7464_4d9eeddd
+UUID: 84ba6d9a_4a17331c
+Bytes: 4
+Done
+
 File: runtime/asm_support.h
 
 58:8-58:27
@@ -26,6 +42,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aa5498b1_a359ba36
 Bytes: 126
 Update here, too, please. Note these numbers should be simply the values for the #ifndef USE_BAKER_OR_BROOKS_READ_BARRIER + 8.
+
+58
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa5498b1_a359ba36
+UUID: e44ec981_fa580d0f
+Bytes: 4
+Done
 
 File: runtime/interpreter/interpreter_common.cc
 
@@ -40,6 +64,14 @@ Maybe add a top-level comment that describes what new code fragments does? Or, a
 
 Do we have a test that matches the string constructors and the string factory methods signatures and detect inconsistencies between them?
 
+74
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a5e84cf_6f2881e9
+UUID: 2492a112_427ab4fc
+Bytes: 160
+I'll add some comments to explain what the new code blocks do. StringInitToStringFactoryMethodID gets the proper method and fatally fails if something is wrong.
+
 202:7-202:16
 Tue May 13 19:08:00 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,6 +80,16 @@ Bytes: 47
 What does this code do?
 
 What's the old string?
+
+202
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a5e84cf_cf78950a
+UUID: 2492a112_02d82cab
+Bytes: 557
+This code makes sure that all registers that hold a copy of the string get updated to contain the result of the StringFactory.
+
+The old string is created by a new-instance instruction, which now just allocates a dummy string. It's possible for the result of the new-instance to be copied into different registers before String.<init> is invoked. All copies of the dummy string have to be overwritten by the new StringFactory result, and this code sweeps the registers making sure that happens. I've changed the comment to explain this a little more clearly.
 
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
@@ -92,6 +134,14 @@ UUID: ca570cb3_6428aae9
 Bytes: 66
 We should pass in the read barrier (the enum) through to GetClass.
 
+346
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca570cb3_6428aae9
+UUID: 64d659dd_31a11052
+Bytes: 4
+Done
+
 351:18-351:30
 Tue May 13 19:08:00 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -99,12 +149,28 @@ UUID: 0a30447d_7fffc313
 Bytes: 5
 Same.
 
+351
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a30447d_7fffc313
+UUID: 64d659dd_d18524ba
+Bytes: 4
+Done
+
 397:33-397:51
 Tue May 13 19:08:00 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a30447d_1f0c8f9e
 Bytes: 128
 This looks like dangerously mixing a boolean and an enum. Please use the enum, everywhere. We no longer use the boolean version.
+
+397
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a30447d_1f0c8f9e
+UUID: 64d659dd_116dec85
+Bytes: 78
+This was an artifact of rebasing multiple times. I've updated it to use enums.
 
 File: runtime/mirror/object.h
 
@@ -115,6 +181,14 @@ UUID: ca570cb3_442b2ee7
 Bytes: 128
 We're using an enum "ReadBarrierOption kReadBarrierOption" instead of a boolean for the read barrier flag. Can you switch to it?
 
+161
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca570cb3_442b2ee7
+UUID: 64d659dd_918f9cd6
+Bytes: 4
+Done
+
 File: runtime/mirror/string-inl.h
 
 65:46-65:60
@@ -123,6 +197,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca570cb3_24b71274
 Bytes: 21
 This isn't necessary?
+
+65
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca570cb3_24b71274
+UUID: 2492a112_73eea8de
+Bytes: 4
+Done
 
 File: runtime/mirror/string.cc
 
@@ -152,6 +234,14 @@ A fix would be to move this memcpy call to SetStringCountVisitor.
 
 Or, inserting a barrier at the end of the string construction to simulate the store-store barrier for final fields at the end of constructor.
 
+98
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64ec997a_017eca36
+UUID: 2492a112_f4537e99
+Bytes: 67
+I've created visitors to handle the copying for these constructors.
+
 File: runtime/mirror/string.h
 
 47:39-47:47
@@ -161,6 +251,14 @@ UUID: 2a1b4808_c02cf488
 Bytes: 29
 Can we simply return &value_?
 
+47
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a1b4808_c02cf488
+UUID: 2492a112_737b0803
+Bytes: 45
+Not quite, but I can return something similar
+
 50:70-50:84
 Tue May 13 19:08:00 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -168,12 +266,28 @@ UUID: ca570cb3_2422b209
 Bytes: 12
 bool -> enum
 
+50
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca570cb3_2422b209
+UUID: 64d659dd_578a840d
+Bytes: 7
+removed
+
 154:2-154:9
 Tue May 13 19:08:00 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a30447d_5f6d2740
 Bytes: 32
 Should this be of type uint16_t?
+
+154
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a30447d_5f6d2740
+UUID: 64d659dd_b7be509a
+Bytes: 4
+Done
 
 File: runtime/native/java_lang_String.cc
 
@@ -186,6 +300,14 @@ chatAt used to a non-native method. Do we have a compiler intrinsic for this? I 
 
 Same for compareTo, concat, etc.
 
+30
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a30447d_9f109fb4
+UUID: 2492a112_73ec6874
+Bytes: 119
+charAt already has a compiler intrinsic. I'll consider adding intrinsics for other methods that were not native before.
+
 File: runtime/reflection.cc
 
 479:0-479:63
@@ -194,4 +316,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aa7bb835_bae30d68
 Bytes: 112
 this may evaluate to true for String.<clinit>, you can avoid this by placing in the "if (!m->IsStatic())" below.
+
+479
+Wed Jun 18 22:23:46 2014 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa7bb835_bae30d68
+UUID: 2492a112_b3a5102d
+Bytes: 4
+Done
 

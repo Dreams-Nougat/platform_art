@@ -1,0 +1,190 @@
+Revision: f2eb5db0327102422fcefdb78d8c74ed0f71f190
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+409:13-409:18
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04803dc3_361498a3
+Bytes: 49
+Do you plan on addressing this in a new patchset?
+
+File: compiler/optimizing/code_generator.cc
+
+54:10-54:17
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04803dc3_56bef453
+Bytes: 74
+I'd move this check to the visitor itself, it's very instruction specific.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+422:34-422:50
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04803dc3_16c87ce8
+Bytes: 76
+This should be Location::Any, and the register allocator will figure it out.
+
+428:2-428:7
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_377018eb
+Bytes: 13
+CHECK->DCHECK
+
+430:24-430:33
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04803dc3_f6ae201f
+Bytes: 61
+You should check if the compare instruction got materialized.
+
+File: compiler/optimizing/code_generator_arm.h
+
+36:16-36:17
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47c09a6_555a6c63
+Bytes: 48
+Move this to the .cc file? It's only used there.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+419:34-419:50
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04803dc3_16e15c62
+Bytes: 66
+Did something broke and required to change this? It should be Any.
+
+425:2-425:7
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47c09a6_3569f000
+Bytes: 6
+DCHECK
+
+426:11-426:14
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_9757a435
+Bytes: 56
+You should check if the condition has been materialized.
+
+438:13-438:14
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47c09a6_755f6852
+Bytes: 197
+No, this is guarded by LocationsBuilderX86::VisitCondition, which is a contract between the codegen and the register allocator. You are guaranteed to have the inputs at the locations you requested.
+
+501:34-501:44
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_3769f800
+Bytes: 119
+The following methods are very much alike. I'd do the same sharing as you did with LocationsBuilderX86::VisitCondition.
+
+File: compiler/optimizing/code_generator_x86.h
+
+36:17-36:29
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04803dc3_d6da04a6
+Bytes: 12
+Move to .cc.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+298:34-298:50
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_b7542831
+Bytes: 3
+Any
+
+304:2-304:7
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_57434c79
+Bytes: 6
+DCHECK
+
+305:2-305:10
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_7748d092
+Bytes: 45
+Check if the condition has been materialized.
+
+368:5-368:35
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_173dd4fb
+Bytes: 43
+Add a helper for the codegen methods below.
+
+File: compiler/optimizing/code_generator_x86_64.h
+
+34:17-34:32
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47c09a6_d54d1ca9
+Bytes: 16
+Move to cc file.
+
+File: compiler/optimizing/nodes.cc
+
+450:6-450:18
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47c09a6_f54a988e
+Bytes: 92
+Since the uses is a linked list, I'd prefer adding a HasOnlyOneUse method in the Node class.
+
+458:13-458:15
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47c09a6_55434c79
+Bytes: 200
+Maybe add a TODO that we could allow instructions in between but they should have no side effects. Alternatively, an optimization phase that moves instructions to their optimal place could also do it.
+
+File: compiler/optimizing/nodes.h
+
+527:15-527:30
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_97300422
+Bytes: 64
+You actually already have IsCondition and IsIf defined line 530.
+
+763:63-763:64
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_5ad4d156
+Bytes: 25
+I was told no space here.
+
+764:26-764:27
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 246b81de_7ad9958b
+Bytes: 6
+ditto.
+
+839:36-839:47
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04803dc3_568834a3
+Bytes: 93
+Remove the IfCondition, and let the condition instruction return it (it statically knows it).
+
+907:15-907:32
+Wed Jun 18 14:21:41 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47c09a6_b52d00cb
+Bytes: 21
+NeedsMaterialization?
+

@@ -31,6 +31,18 @@ The native bridge wrapper function will interpret the calling convention properl
 
 Having all native bridge JNI calls go thru generic JNI gives up the benefit of optimized code sequence from JNI compiler. It will be better to be able to leverage the JNI compiler for native bridge JNI calls as well.
 
+1896:9-1896:41
+Wed Jun 18 21:36:49 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4466b513_e1dadca5
+UUID: a4cbf13b_d11204e7
+Bytes: 476
+But your strategy *only* works on x86. On other architectures you do not have the leisure of having all arguments on the stack so that you can easily retrieve the args array. You cannot call an arbitrary native function from a JNI call - the signature has to match.
+
+So the proper approach for you would have been to override the signature of the Java method. But then you cannot use the JNI compiler, either, because it won't give you the right things.
+
+Do you see the issue?
+
 File: runtime/mirror/art_method.h
 
 138:4-138:91

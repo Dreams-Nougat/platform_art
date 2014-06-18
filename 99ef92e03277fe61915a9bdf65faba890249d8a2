@@ -9,3 +9,22 @@ UUID: 64d659dd_17c2bc3b
 Bytes: 277
 How do we know at compile time whether a method needs native bridge? The information is not available from the DEX file and can only be known when one tries to load a native library at runtime. From the DEX file, we know a method is native but don't know it uses a foreign ISA.
 
+1896:9-1896:41
+Wed Jun 18 01:38:21 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64d659dd_17c2bc3b
+UUID: 64d659dd_578844a3
+Bytes: 613
+Good question and something to think about. What should happen now (but I think is not completely implemented), is that the compiled code is thrown away (the entrypoint can be overwritten). In the end, the previous PS was doing a similar thing by hijacking the jni entrypoint.
+
+BTW, I am not sure how your implementation would work with the JNI compiler, either. I did not see any code that changed the signature of a call from the quick method to the native bridge one. Your system kind of worked because of the x86 calling convention placing everything on the stack, but for x86-64 this would have never worked.
+
+File: runtime/mirror/art_method.h
+
+138:4-138:91
+Wed Jun 18 01:38:21 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04975d03_d8d23504
+Bytes: 111
+Here is where we should throw away the existing entrypoint, and unconditionally set the generic JNI entrypoint.
+

@@ -1,0 +1,170 @@
+Revision: 39dcc1622b3dde9c151e0f8825567fbd3db5880c
+Patch-set: 3
+File: runtime/class_linker-inl.h
+
+201:6-201:25
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64d659dd_b45deecc
+Bytes: 85
+nit: It might make sense to have kMoveFieldArrays and set it to !kMarkCompactSupport.
+
+File: runtime/gc/collector/mark_compact.cc
+
+80:5-80:15
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04975d03_2d9c3913
+Bytes: 26
+s/Semi-space/Mark-compact/
+
+104:15-104:26
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24e0e1ae_0fa5c5d6
+Bytes: 99
+nit: 'alloc_size' might be a more accurate name as object_size might suggest what SizeOf() returns?
+
+104:52-104:68
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04975d03_4dfbc527
+Bytes: 48
+This should probably be BumpPointer::kAlignment?
+
+110:4-110:26
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44db1506_10f64442
+Bytes: 113
+This does not have to be a map with obj as the key because we always visit objects in the address order, correct?
+
+124:23-124:39
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24e0e1ae_4fb8add5
+Bytes: 24
+BumpPointer::kAlignment?
+
+162:49-162:65
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44db1506_30e6e87b
+Bytes: 70
+Does this need to be a IsHeapReferenceMarkCallback now after a rebase?
+
+240:2-240:34
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04c59d23_aef03770
+Bytes: 27
+There's no RecordFree here.
+
+335:18-335:21
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44db1506_13cc0e9d
+Bytes: 105
+It appears this obj is always non-null as Runtime::VisitRoots() does not call back if it's null, correct?
+
+343:18-343:41
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24e0e1ae_ef25e114
+Bytes: 90
+Is this function identical to UpdateRootCallback()? If so, merge them? Or, is this unused?
+
+393:43-393:84
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24e0e1ae_ef9881ee
+Bytes: 143
+Might it make sense to assert that "DCHECK(!kMovingClasses)" or that all the primitive array classes are in a non-moving space to be defensive?
+
+395:30-395:66
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44db1506_b38422fb
+Bytes: 171
+This is a second SweepSystemWeaks call. As I understand, the first one nulls out dead objects, and this second call updates the references for objects that moved. Correct?
+
+403:34-403:45
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6471f9c6_3ffd4f8b
+Bytes: 358
+We need to update this because we call ProcessReferences() before computing forwarding addresses. Correct?
+
+For a future note, would it alternatively be feasible (may not necessarily a good idea) to call SweepSystemWeaks() and ProcessReferences() after MoveObjects() and remove the need to call SweepSystemWeaks() twice and ReferenceProcessor::UpdateRoots()?
+
+526:12-526:21
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24e0e1ae_524ff27c
+Bytes: 55
+Is it worth doing DCHECK(space_.HasAddress(dest_addr))?
+
+File: runtime/gc/collector/mark_compact.h
+
+105:2-105:9
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64d659dd_f7e4d849
+Bytes: 29
+Does this need to be virtual?
+
+115:2-115:9
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2492a112_934a4c3a
+Bytes: 29
+Does this need to be virtual?
+
+165:2-165:9
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64d659dd_17f71cf7
+Bytes: 29
+Does this need to be virtual?
+
+223:5-224:12
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a49db127_1b0f3b94
+Bytes: 42
+Is this comment describing something else?
+
+File: runtime/gc/heap.cc
+
+1822:4-1822:11
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04975d03_ad04c9e3
+Bytes: 123
+This used to be Partial for SemiSpace before as SemiSpace::GetGcType() still returns Partial. I guess this does not matter.
+
+File: runtime/gc/reference_queue.h
+
+95:32-95:42
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2492a112_f3195892
+Bytes: 20
+So, is list_ a root?
+
+File: runtime/mirror/object-inl.h
+
+699:4-699:48
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4466b513_1e6ded85
+Bytes: 34
+This DCHECK is probably redundant.
+
+705:9-705:10
+Wed Jun 18 18:46:11 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2492a112_88769be9
+Bytes: 123
+How about putting DCHECK(!klass->IsVariableSize()) at the beginning of this else block to be defensive (eg the new String)?
+

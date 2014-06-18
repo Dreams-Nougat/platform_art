@@ -9,6 +9,14 @@ UUID: 7fd6e483_9ef1cd4b
 Bytes: 21
 Why not on all archs?
 
+659:35-659:39
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7fd6e483_9ef1cd4b
+UUID: 04975d03_be8ab953
+Bytes: 247
+Right now x86's call instruction implicitly loads quick entry point from method object, so this load isn't necessary. It should be possible later to change the call instruction to implicitly load from embedded imt/vtable. Might be a future change.
+
 728:35-728:39
 Fri Jun 13 22:08:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,6 +32,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf469c40_6fab6d77
 Bytes: 220
 this is called from FixupObject. other cases such as fixing up methods are handled there. it would seem cleaner (and perhaps faster) to me to test the IsClass case once per instance instead of testing once per reference.
+
+600:0-614:1
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf469c40_6fab6d77
+UUID: 04975d03_1e53ad16
+Bytes: 55
+I added a FixupClassVisitor for fixing up class object.
 
 648:70-648:74
 Fri Jun 13 22:08:51 2014 +0000
@@ -50,6 +66,14 @@ and perhaps there should just be a separate helper to call to get the value?
 
 it seems like its adding unnecessary complexity since its only used in the copy==NULL case and usually doesn't look at the arguments, except in one case where we could ask the copy afterwards?
 
+648:70-648:74
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_ce7aa395
+UUID: 448dd5f1_00e7c6bd
+Bytes: 53
+I refactored the code more and did a separate helper.
+
 654:16-654:20
 Mon Jun 16 16:20:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -66,6 +90,14 @@ UUID: 9f439833_2be079e2
 Bytes: 88
 document the arguments as the comment above doesn't explain why we have an out argument.
 
+147:0-147:100
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_2be079e2
+UUID: 64d659dd_5117f41b
+Bytes: 9
+Reverted.
+
 File: runtime/class_linker.cc
 
 212:61-212:87
@@ -75,12 +107,28 @@ UUID: 7f3264d4_6d653158
 Bytes: 84
 does class_linker_test check all these new constants to make sure they stay in sync?
 
+212:61-212:87
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_6d653158
+UUID: 04975d03_7ef3d1c2
+Bytes: 5
+Done.
+
 1281:6-1281:21
 Mon Jun 16 18:53:01 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f3264d4_adeac93e
 Bytes: 152
 i'm really not thrilled about temp classes and extra fields in libcore if it can be avoided. I don't have a concrete suggested yet on how to avoid this.
+
+1281:6-1281:21
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_adeac93e
+UUID: 04975d03_9ec1fd14
+Bytes: 41
+I removed temp_ and root_ from class def.
 
 1500:2-1500:33
 Mon Jun 16 18:53:01 2014 +0000
@@ -91,12 +139,28 @@ add " << descriptor" for context.
 
 CHECK(new_class != NULL) << descriptor first?
 
+1500:2-1500:33
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_6e636fe6
+UUID: 04975d03_5ecdb542
+Bytes: 5
+Done.
+
 2407:2-2407:27
 Mon Jun 16 18:53:01 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f439833_aec7177a
 Bytes: 13
 << descriptor
+
+2407:2-2407:27
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_aec7177a
+UUID: 04975d03_7ed2f1e3
+Bytes: 5
+Done.
 
 2418:2-2418:26
 Mon Jun 16 18:53:01 2014 +0000
@@ -105,12 +169,28 @@ UUID: 9f439833_cecc63a1
 Bytes: 13
 << descriptor
 
+2418:2-2418:26
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_cecc63a1
+UUID: 448dd5f1_40970ec1
+Bytes: 5
+Done.
+
 2425:6-2425:31
 Mon Jun 16 18:53:01 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f3264d4_ad8d69b5
 Bytes: 13
 << descriptor
+
+2425:6-2425:31
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_ad8d69b5
+UUID: 2492a112_9f60138c
+Bytes: 5
+Done.
 
 3486:36-3486:41
 Fri Jun 13 22:08:51 2014 +0000
@@ -119,12 +199,28 @@ UUID: 7fd6e483_defb4527
 Bytes: 15
 mirror::Class**
 
+3486:36-3486:41
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7fd6e483_defb4527
+UUID: 448dd5f1_009906f0
+Bytes: 5
+Done.
+
 3519
 Sat Jun 14 01:05:16 2014 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5f4e8057_fa69dd02
 Bytes: 4
 self
+
+3519
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f4e8057_fa69dd02
+UUID: 2492a112_5fa4cb94
+Bytes: 5
+Done.
 
 4024:70-4024:71
 Fri Jun 13 22:08:51 2014 +0000
@@ -133,12 +229,28 @@ UUID: 1fd5e878_9b8f1b1c
 Bytes: 7
 size_t*
 
+4024:70-4024:71
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fd5e878_9b8f1b1c
+UUID: 448dd5f1_40706eeb
+Bytes: 5
+Done.
+
 4057:74-4057:80
 Fri Jun 13 22:08:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5f6920a1_62d7ecf4
 Bytes: 7
 size_t*
+
+4057:74-4057:80
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f6920a1_62d7ecf4
+UUID: 2492a112_7fa98f69
+Bytes: 5
+Done.
 
 File: runtime/class_linker.h
 
@@ -149,6 +261,14 @@ UUID: 7f3264d4_0d4f55a2
 Bytes: 61
 as noted elsewhere, can we verify these in class_linker_test?
 
+64:1-69:69
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_0d4f55a2
+UUID: 64d659dd_11116c24
+Bytes: 34
+Added a test in class_linker_test.
+
 File: runtime/class_linker_test.cc
 
 589:67-589:94
@@ -157,6 +277,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1fd5e878_db999365
 Bytes: 128
 There are more fixed VTableLength then kJavaLangClassVTableLength and kJavaLangStringVTableLength. Where are they being checked?
+
+589:67-589:94
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fd5e878_db999365
+UUID: 04975d03_1e92cdd1
+Bytes: 13
+Added a test.
 
 File: runtime/mirror/class.cc
 
@@ -167,6 +295,14 @@ UUID: df74307d_d226bcdb
 Bytes: 30
 Call WriteBarrierEveryFieldOf?
 
+838
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df74307d_d226bcdb
+UUID: 2492a112_bfd15789
+Bytes: 5
+Done.
+
 File: runtime/mirror/class.h
 
 302:15-302:16
@@ -176,12 +312,28 @@ UUID: 7f3264d4_eafae7db
 Bytes: 5
 const
 
+302:15-302:16
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_eafae7db
+UUID: 04975d03_9e7eddbb
+Bytes: 21
+Deleted root_ member.
+
 310:15-310:16
 Mon Jun 16 16:20:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f3264d4_0a101b6d
 Bytes: 5
 const
+
+310:15-310:16
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_0a101b6d
+UUID: 448dd5f1_4316381e
+Bytes: 21
+Deleted temp_ member.
 
 1084:41-1084:42
 Mon Jun 16 16:20:06 2014 +0000
@@ -211,6 +363,14 @@ UUID: 9f439833_4b25c5c8
 Bytes: 40
 Can this be folded into the ClassStatus?
 
+1092:0-1095:16
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_4b25c5c8
+UUID: 2492a112_1f3de3fb
+Bytes: 20
+Removed this member.
+
 File: runtime/mirror/proxy.h
 
 32:0-41:3
@@ -220,12 +380,28 @@ UUID: 9f439833_2b2eb980
 Bytes: 103
 Add DCHECKs that the first and second fields are named interfaces and throws, have expected types, etc.
 
+32:0-41:3
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f439833_2b2eb980
+UUID: 2492a112_6517c21c
+Bytes: 5
+Done.
+
 44:0-45:57
 Mon Jun 16 16:20:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf469c40_4c523fee
 Bytes: 16
 unused so remove
+
+44:0-45:57
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf469c40_4c523fee
+UUID: 04975d03_07811c3b
+Bytes: 5
+Done.
 
 File: runtime/mirror/string.h
 
@@ -235,4 +411,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f3264d4_eafd878c
 Bytes: 163
 ugh.. this just exists so that sizeof operations on StringClass are successful during boot strapping in the class linker. Given the new structure can we remove it?
+
+161:0-169:2
+Wed Jun 18 00:08:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3264d4_eafd878c
+UUID: 04975d03_e70af0ef
+Bytes: 110
+I'll leave it on for now. Might delete it later together with other code if we permanently enable the feature.
 

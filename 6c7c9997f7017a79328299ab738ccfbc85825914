@@ -1,0 +1,43 @@
+Revision: 6c7c9997f7017a79328299ab738ccfbc85825914
+Patch-set: 2
+File: compiler/dex/quick/arm64/call_arm64.cc
+
+98
+Thu Jun 19 10:08:39 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4932916_ece173e9
+Bytes: 64
+I guess the 5th argument could become EncodeExtend(kA64Sxtw, 0).
+
+151
+Thu Jun 19 10:08:39 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4932916_0cdfff1e
+Bytes: 9
+As above.
+
+File: compiler/dex/quick/arm64/utility_arm64.cc
+
+648
+Thu Jun 19 10:08:39 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a49db127_0417dc5f
+Bytes: 185
+The 5th argument could be changed to allow using EncodeExtend. This function is currently returning a mere int. I have no strong opinions about whether this should be typed differently.
+
+665
+Thu Jun 19 10:08:39 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04ae7d65_262b1673
+Bytes: 234
+This seems a bit too strong, considering that you are using r_dest.Is64Bit() above to set widened_opcode. Also consider that the assembler will be able to detect such register misusages, once its checks are enabled to the full extent.
+
+674
+Thu Jun 19 10:08:39 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a49db127_a42388c6
+Bytes: 96
+This is not necessary if you use EncodeExtend. You could add,
+
+ DCHECK(IsExtendedEncoding(ext));
+

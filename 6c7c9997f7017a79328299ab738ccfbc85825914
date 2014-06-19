@@ -25,6 +25,14 @@ UUID: 04ae7d65_06005a99
 Bytes: 90
 For consistency, we should then also change OpRegRegRegShift and all the other friends :-)
 
+98
+Thu Jun 19 16:09:55 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04ae7d65_06005a99
+UUID: c4ce254b_466976ff
+Bytes: 15
+Another CL. :-)
+
 151
 Thu Jun 19 10:08:39 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -89,6 +97,14 @@ Personally, I believe that the two checks can be removed. Instructions like:
 
 are all valid and could be handled by this function.
 
+665
+Thu Jun 19 16:09:55 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ce254b_e6ff4211
+UUID: c4ce254b_665a7264
+Bytes: 137
+As long as the assembler swallows it, I'd be OK to drop them. Though I have just simplified them a bit in my next PS (under testing now).
+
 667
 Thu Jun 19 10:41:33 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -123,6 +139,20 @@ uxtx is a no-op, consider sxtb. Imagine the following instruction,
   OpRegRegRegExtend(WIDE(kA64Sub4RRre), rx1, rx2, rw3, EncodeExtend(kA64Stxb, 0));
 
 A user may think this is perfectly legitimate. But if we do not up-convert, then the assembler will see an attempt to use rw3 in an instruction which wants an x register as its third argument. It doesn't sound right to force the user to provide an x, when an stxb operation is done on it. On the other hand, up-conversion is only legitimate if sxtx and uxtx are not being used, so if we do this we should exclude these two cases.
+
+667
+Thu Jun 19 16:09:55 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24b9c1aa_b05adea9
+UUID: 44b4f5af_37726265
+Bytes: 322
+Thanks for the updates. I had seen my mistake. :-)
+
+But I don't understand why sxtx and uxtx are not legitimate. According to the encoding guide (I'm looking at "ARM®
+ Architecture Reference Manual
+ARMv8, for ARMv8-A architecture profile
+Errata markup
+Beta", p395), those values are perfectly fine in both 32 and 64 mode.
 
 674
 Thu Jun 19 10:08:39 2014 +0000

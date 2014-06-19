@@ -9,6 +9,14 @@ UUID: 64d659dd_b45deecc
 Bytes: 85
 nit: It might make sense to have kMoveFieldArrays and set it to !kMarkCompactSupport.
 
+201
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64d659dd_b45deecc
+UUID: c4ce254b_32b348da
+Bytes: 4
+Done
+
 File: runtime/gc/collector/mark_compact.cc
 
 80:5-80:15
@@ -32,12 +40,36 @@ UUID: 04975d03_4dfbc527
 Bytes: 48
 This should probably be BumpPointer::kAlignment?
 
+104
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24e0e1ae_0fa5c5d6
+UUID: 24b9c1aa_4773ae6b
+Bytes: 4
+Done
+
+104
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04975d03_4dfbc527
+UUID: c4ce254b_52cdb442
+Bytes: 4
+Done
+
 110:4-110:26
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44db1506_10f64442
 Bytes: 113
 This does not have to be a map with obj as the key because we always visit objects in the address order, correct?
+
+110
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44db1506_10f64442
+UUID: 24b9c1aa_a7ab8a74
+Bytes: 51
+Yes, we always visit the objects in the same order.
 
 124:23-124:39
 Wed Jun 18 18:46:11 2014 +0000
@@ -46,12 +78,28 @@ UUID: 24e0e1ae_4fb8add5
 Bytes: 24
 BumpPointer::kAlignment?
 
+124
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24e0e1ae_4fb8add5
+UUID: 24b9c1aa_678fd21c
+Bytes: 4
+Done
+
 162:49-162:65
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44db1506_30e6e87b
 Bytes: 70
 Does this need to be a IsHeapReferenceMarkCallback now after a rebase?
+
+162
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44db1506_30e6e87b
+UUID: 24b9c1aa_67a9126a
+Bytes: 4
+Done
 
 240:2-240:34
 Wed Jun 18 18:46:11 2014 +0000
@@ -60,12 +108,28 @@ UUID: 04c59d23_aef03770
 Bytes: 27
 There's no RecordFree here.
 
+240
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04c59d23_aef03770
+UUID: c4ce254b_321ee8f4
+Bytes: 4
+Done
+
 335:18-335:21
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44db1506_13cc0e9d
 Bytes: 105
 It appears this obj is always non-null as Runtime::VisitRoots() does not call back if it's null, correct?
+
+335
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44db1506_13cc0e9d
+UUID: 44b4f5af_ce833744
+Bytes: 28
+Yes, it may not return null.
 
 343:18-343:41
 Wed Jun 18 18:46:11 2014 +0000
@@ -74,6 +138,14 @@ UUID: 24e0e1ae_ef25e114
 Bytes: 90
 Is this function identical to UpdateRootCallback()? If so, merge them? Or, is this unused?
 
+343
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24e0e1ae_ef25e114
+UUID: 24b9c1aa_87da06f3
+Bytes: 72
+Delete, it used to be used when I was attempting to have moving classes.
+
 393:43-393:84
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -81,12 +153,28 @@ UUID: 24e0e1ae_ef9881ee
 Bytes: 143
 Might it make sense to assert that "DCHECK(!kMovingClasses)" or that all the primitive array classes are in a non-moving space to be defensive?
 
+393
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24e0e1ae_ef9881ee
+UUID: 24b9c1aa_27a1da51
+Bytes: 4
+Done
+
 395:30-395:66
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44db1506_b38422fb
 Bytes: 171
 This is a second SweepSystemWeaks call. As I understand, the first one nulls out dead objects, and this second call updates the references for objects that moved. Correct?
+
+395
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44db1506_b38422fb
+UUID: 44b4f5af_8ebf7fe8
+Bytes: 58
+Yes, though I suppose we could combine them in the future.
 
 403:34-403:45
 Wed Jun 18 18:46:11 2014 +0000
@@ -97,12 +185,28 @@ We need to update this because we call ProcessReferences() before computing forw
 
 For a future note, would it alternatively be feasible (may not necessarily a good idea) to call SweepSystemWeaks() and ProcessReferences() after MoveObjects() and remove the need to call SweepSystemWeaks() twice and ReferenceProcessor::UpdateRoots()?
 
+403
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6471f9c6_3ffd4f8b
+UUID: 44b4f5af_0e262fac
+Bytes: 409
+Yes, the main reference list can move, so we need to call this to update the "root". Also, you can't do ProcessReferences or SweepSystemWeaks after moving objects since ProcessReference can mark objects and SweepSystemWeaks needs to know if an object in the moving space was marked, and if so where did it move to, but since we clobber the lock words when we slide the objects over, this wouldn't be possible.
+
 526:12-526:21
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24e0e1ae_524ff27c
 Bytes: 55
 Is it worth doing DCHECK(space_.HasAddress(dest_addr))?
+
+526
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24e0e1ae_524ff27c
+UUID: 24b9c1aa_0775b60c
+Bytes: 4
+Done
 
 File: runtime/gc/collector/mark_compact.h
 
@@ -113,12 +217,28 @@ UUID: 64d659dd_f7e4d849
 Bytes: 29
 Does this need to be virtual?
 
+105
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64d659dd_f7e4d849
+UUID: 44b4f5af_8e521fec
+Bytes: 4
+Done
+
 115:2-115:9
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2492a112_934a4c3a
 Bytes: 29
 Does this need to be virtual?
+
+115
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2492a112_934a4c3a
+UUID: 44b4f5af_4eee67de
+Bytes: 4
+Done
 
 165:2-165:9
 Wed Jun 18 18:46:11 2014 +0000
@@ -127,12 +247,28 @@ UUID: 64d659dd_17f71cf7
 Bytes: 29
 Does this need to be virtual?
 
+165
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64d659dd_17f71cf7
+UUID: 24b9c1aa_671a72d3
+Bytes: 4
+Done
+
 223:5-224:12
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a49db127_1b0f3b94
 Bytes: 42
 Is this comment describing something else?
+
+224
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a49db127_1b0f3b94
+UUID: c4ce254b_b2a2d820
+Bytes: 4
+Done
 
 File: runtime/gc/heap.cc
 
@@ -143,6 +279,14 @@ UUID: 04975d03_ad04c9e3
 Bytes: 123
 This used to be Partial for SemiSpace before as SemiSpace::GetGcType() still returns Partial. I guess this does not matter.
 
+1822
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04975d03_ad04c9e3
+UUID: 44b4f5af_8eae9f85
+Bytes: 97
+This is the same behavior, before we always set it to kGcTypeFull after the if statement anyways.
+
 File: runtime/gc/reference_queue.h
 
 95:32-95:42
@@ -151,6 +295,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2492a112_f3195892
 Bytes: 20
 So, is list_ a root?
+
+95
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2492a112_f3195892
+UUID: 44b4f5af_8e877fff
+Bytes: 9
+Yes, Done
 
 File: runtime/mirror/object-inl.h
 
@@ -161,10 +313,26 @@ UUID: 4466b513_1e6ded85
 Bytes: 34
 This DCHECK is probably redundant.
 
+699
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4466b513_1e6ded85
+UUID: c4ce254b_123decfb
+Bytes: 4
+Done
+
 705:9-705:10
 Wed Jun 18 18:46:11 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2492a112_88769be9
 Bytes: 123
 How about putting DCHECK(!klass->IsVariableSize()) at the beginning of this else block to be defensive (eg the new String)?
+
+705
+Thu Jun 19 01:46:14 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2492a112_88769be9
+UUID: c4ce254b_55d4be56
+Bytes: 4
+Done
 

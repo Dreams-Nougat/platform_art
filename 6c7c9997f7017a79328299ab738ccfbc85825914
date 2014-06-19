@@ -17,6 +17,14 @@ UUID: 44b4f5af_9739cec5
 Bytes: 63
 See my reply in utility_arm64.cc I'd prefer (..., kA64Sxtw, 0).
 
+98
+Thu Jun 19 15:59:34 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_9739cec5
+UUID: 04ae7d65_06005a99
+Bytes: 90
+For consistency, we should then also change OpRegRegRegShift and all the other friends :-)
+
 151
 Thu Jun 19 10:08:39 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,6 +75,20 @@ UUID: 44b4f5af_d758a60f
 Bytes: 23
 Disregard my comment...
 
+665
+Thu Jun 19 15:59:34 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_7721ba92
+UUID: c4ce254b_e6ff4211
+Bytes: 209
+Personally, I believe that the two checks can be removed. Instructions like:
+
+  add w1, w2, w3, sxtb #0
+  add x1, x2, x3, sxtx #0
+  add x1, x2, w3, sxtb #0
+
+are all valid and could be handled by this function.
+
 667
 Thu Jun 19 10:41:33 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -89,6 +111,18 @@ Parent: 44b4f5af_17263eac
 UUID: c4ce254b_e63c2250
 Bytes: 152
 Oh, now I understand. This is not at all conforming to the specification in the documentation about the instruction set, as there the src_2 is always w.
+
+667
+Thu Jun 19 15:59:34 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_17263eac
+UUID: 24b9c1aa_b05adea9
+Bytes: 581
+uxtx is a no-op, consider sxtb. Imagine the following instruction,
+
+  OpRegRegRegExtend(WIDE(kA64Sub4RRre), rx1, rx2, rw3, EncodeExtend(kA64Stxb, 0));
+
+A user may think this is perfectly legitimate. But if we do not up-convert, then the assembler will see an attempt to use rw3 in an instruction which wants an x register as its third argument. It doesn't sound right to force the user to provide an x, when an stxb operation is done on it. On the other hand, up-conversion is only legitimate if sxtx and uxtx are not being used, so if we do this we should exclude these two cases.
 
 674
 Thu Jun 19 10:08:39 2014 +0000

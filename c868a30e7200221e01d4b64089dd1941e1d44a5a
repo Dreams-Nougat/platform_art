@@ -2,10 +2,134 @@ Revision: c868a30e7200221e01d4b64089dd1941e1d44a5a
 Patch-set: 3
 File: runtime/elf_file.cc
 
+132:2-132:18
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24b9c1aa_e7fc221f
+Bytes: 26
+don't define on same line.
+
+1004:44-1004:48
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ce254b_725f9052
+Bytes: 517
+is pool an ELF term? otherwise I'd just call it a string_table or similar. or call the method, FindStringInStringTable and call the argument begin. actually, we are trying to be consistent about using begin/size, or begin/end to match C++, so I'd do that here (replace both pool and len)
+
+note that this not guaranteed to find all strings. they are allowed to have
+
+foobar\0
+
+represent foobar and bar, just with different offsets.
+
+don't you need to check the start without \0, or does the table always start with \0?
+
+1022:0-1027:3
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24b9c1aa_27979ac2
+Bytes: 243
+this seems the opposite way around from how I would have done it, especially given the correctness issues with oddly compressed string tables. I would have just iterated over the sections and done
+
+name == GetString(shstrtab_sec, shdr.sh_name)
+
+1063:2-1063:42
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24b9c1aa_6776f2ec
+Bytes: 139
+these should all be separately declared. as part of that, we don't put the * with the variable, but with the type. also, can they be const?
+
 1064:35-1067:49
 Wed Jun 18 20:28:21 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4466b513_27f784f7
 Bytes: 81
 Constants? Or since I think they're limited and well-defined, maybe enumerations?
+
+1076:0-1081:64
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_eedddbed
+Bytes: 42
+i think we should just be doing this here.
+
+1118:27-1118:53
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ce254b_f59b6a8f
+Bytes: 4
+here
+
+1119:26-1119:30
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_ae33637b
+Bytes: 1
+0
+
+1163:0-1164:52
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_0e006f99
+Bytes: 16
+fix magic number
+
+1178:1-1179:47
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24b9c1aa_e7818274
+Bytes: 16
+fix magic number
+
+1227:31-1227:57
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ce254b_15539616
+Bytes: 4
+here
+
+1242:23-1242:60
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_ae060381
+Bytes: 113
+i'd make this a constant, and use it up above as well in the places it makes sense (search for that string above)
+
+1265:4-1265:67
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_4e298712
+Bytes: 4
+here
+
+1273:43-1273:44
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ce254b_b58ac253
+Bytes: 4
+here
+
+File: runtime/elf_file.h
+
+44:36-44:66
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ce254b_d228c4ed
+Bytes: 31
+", not just the program header"
+
+45:35-45:64
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_6e21eb92
+Bytes: 130
+I'm torn, we used to have more APIs like this but have tried to move away because people kept specifying nonsensical combinations.
+
+191:2-191:60
+Thu Jun 19 01:17:17 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_2efd338b
+Bytes: 41
+Is this supposed to die with this change?
 

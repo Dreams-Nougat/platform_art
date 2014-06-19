@@ -9,6 +9,14 @@ UUID: e47c09a6_78767dec
 Bytes: 100
 Having these two methods is confusing. I would go with just one, and make the default argument null.
 
+154:14-154:32
+Thu Jun 19 22:00:28 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e47c09a6_78767dec
+UUID: c4a70589_8d98e994
+Bytes: 144
+GetQuickCode() is shared by GetQuickEntryPoint() and FixupMethod(). It's added as part of code refactoring. I'll add some comments and DCHECK's.
+
 File: runtime/class_linker.cc
 
 1290:37-1290:46
@@ -18,12 +26,28 @@ UUID: e47c09a6_3bfc7fd6
 Bytes: 42
 How about passing a handle to this method?
 
+1290:37-1290:46
+Thu Jun 19 22:00:28 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e47c09a6_3bfc7fd6
+UUID: c4a70589_2da1b551
+Bytes: 94
+A handle isn't necessary if klass isn't temp here. I'll keep it the same as the original code.
+
 2394:18-2394:22
 Thu Jun 19 10:20:41 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 246b81de_dada21a6
 Bytes: 26
 We moved to using nullptr.
+
+2394:18-2394:22
+Thu Jun 19 22:00:28 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 246b81de_dada21a6
+UUID: c4a70589_6d800da4
+Bytes: 5
+Done.
 
 2958:6-2958:7
 Thu Jun 19 10:20:41 2014 +0000
@@ -32,12 +56,28 @@ UUID: e47c09a6_3869e500
 Bytes: 42
 the code below does not need to be nested.
 
+2958:6-2958:7
+Thu Jun 19 22:00:28 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e47c09a6_3869e500
+UUID: 0443dd81_c185c4ba
+Bytes: 30
+Done. Removed the outer block.
+
 3443:30-3443:47
 Thu Jun 19 10:20:41 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04803dc3_d96eb740
 Bytes: 87
 Why do you check? Don't you call this fixup once the temp can be replaced with the new?
+
+3443:30-3443:47
+Thu Jun 19 22:00:28 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04803dc3_d96eb740
+UUID: c4a70589_b8aba174
+Bytes: 206
+Good point. I'll add a parameter of temp_class, and only replace temp_class with new_class. There are some declaring classes that shouldn't be replaced, like miranda methods so some test is still necessary.
 
 File: runtime/mirror/class.cc
 
@@ -48,6 +88,14 @@ UUID: 04803dc3_39cd6bf9
 Bytes: 47
 Why do you need that now? Please add a comment.
 
+116:7-116:31
+Thu Jun 19 22:00:28 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04803dc3_39cd6bf9
+UUID: 6471f9c6_d652f5ec
+Bytes: 167
+Actually I moved this test from the if statement below so I don't need to do it later. Looks like I forgot to delete this test below from the if statement. I'll do it.
+
 File: runtime/runtime.h
 
 444:11-444:16
@@ -56,4 +104,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04803dc3_79ec435b
 Bytes: 57
 Why do we need this? Why can't you just always enable it?
+
+444:11-444:16
+Thu Jun 19 22:00:28 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04803dc3_79ec435b
+UUID: c4a70589_99bfc7e8
+Bytes: 275
+I plan to check in this with the feature disabled. Some people can play with it first. Then I'll enable the feature while keeping an eye on issues. If nothing goes wrong, I'll permanently enable the feature by removing the imt/vtable and leaving only the embedded imt/vtable.
 

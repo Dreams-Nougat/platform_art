@@ -44,6 +44,16 @@ Also the shstrtab section is required to start with '\0' so we can lead with tha
 
 Changed to do it the way you suggest below for the compaction edge case.
 
+1004
+Thu Jun 19 21:31:59 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24b9c1aa_30702eeb
+UUID: 6471f9c6_b6b0a116
+Bytes: 132
+yeah, but they encourage such overlapping string tricks in their example:
+
+http://www.sco.com/developers/gabi/latest/ch4.strtab.html
+
 1022:0-1027:3
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -90,6 +100,14 @@ Parent: 4466b513_27f784f7
 UUID: 84ba6d9a_73b0f215
 Bytes: 43
 Huh? I am not sure what you are suggesting.
+
+1067
+Thu Jun 19 21:31:59 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84ba6d9a_73b0f215
+UUID: 6471f9c6_b6218195
+Bytes: 119
+I assume he means to define named constants for these can be be referenced everywhere they are needed to prevent typos.
 
 1076:0-1081:64
 Thu Jun 19 01:17:17 2014 +0000
@@ -282,6 +300,14 @@ I'd say it would be good to put more of these things in, The flexibility is usef
 
 Also This will be useful for the patching code since it will let me modify the old ElfFile in place on a private mapping. (Or modify it in place using a shared mapping)
 
+45
+Thu Jun 19 21:31:59 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6471f9c6_2ec75b25
+UUID: 6471f9c6_f64ff943
+Bytes: 108
+right, but I think I'd make this in internal private version and add meaningfully named public entry points.
+
 191:2-191:60
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -296,4 +322,12 @@ Parent: 44b4f5af_2efd338b
 UUID: 84ba6d9a_139bb665
 Bytes: 177
 No. The changes to GdbJITSupport were purely added since they were easy and safe. I really don't want to rewrite that whole method, especially since I don't fully understand it.
+
+191
+Thu Jun 19 21:31:59 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84ba6d9a_139bb665
+UUID: e43fa9e6_000de8c5
+Bytes: 146
+I think we understand it enough to nuke this. you added the code to find the 8/9/10/11 sections by name, so I think we can pattern match the rest.
 

@@ -32,6 +32,13 @@ UUID: 04ae7d65_262b1673
 Bytes: 234
 This seems a bit too strong, considering that you are using r_dest.Is64Bit() above to set widened_opcode. Also consider that the assembler will be able to detect such register misusages, once its checks are enabled to the full extent.
 
+667
+Thu Jun 19 10:41:33 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44b4f5af_1c6bc503
+Bytes: 811
+The name of the instruction should be kA64Sub4RRre, meaning that one expects that the third argument is a w register for kA64Sub4RRre and an x register for WIDE(kA64Sub4RRre). This is not strictly conforming to how the instruction is documented. For example, one should write "add x1, x2, w3, uxtb #2" rather than "add x1, x2, x3, uxtb #2". The reason, however, is just aesthetical: "w3, uxtb #2" and "x3, uxtb #2" are two ways to write the same thing (and the the GNU assembler seems to tolerate the latter). It is therefore morally fine to name the instruction kA64Sub4RRre. What we may want to do is to up-convert r_src2, when necessary (w -> x). Down-converting (x -> w) will not work (it will make the assembler register check in assemble_arm64.cc fail for the 3rd argument of the add example given above).
+
 674
 Thu Jun 19 10:08:39 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>

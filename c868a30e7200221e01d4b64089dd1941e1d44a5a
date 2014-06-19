@@ -9,6 +9,14 @@ UUID: 24b9c1aa_e7fc221f
 Bytes: 26
 don't define on same line.
 
+132
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24b9c1aa_e7fc221f
+UUID: 24b9c1aa_90a55a2d
+Bytes: 4
+Done
+
 1004:44-1004:48
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,6 +32,18 @@ represent foobar and bar, just with different offsets.
 
 don't you need to check the start without \0, or does the table always start with \0?
 
+1004
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ce254b_725f9052
+UUID: 24b9c1aa_30702eeb
+Bytes: 287
+I honestly hadn't thought of the fact that strtabs could be deduped like that. I don't think any linkers actually do that though.
+
+Also the shstrtab section is required to start with '\0' so we can lead with that.
+
+Changed to do it the way you suggest below for the compaction edge case.
+
 1022:0-1027:3
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,12 +53,28 @@ this seems the opposite way around from how I would have done it, especially giv
 
 name == GetString(shstrtab_sec, shdr.sh_name)
 
+1027
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24b9c1aa_27979ac2
+UUID: 24b9c1aa_d0843287
+Bytes: 4
+Done
+
 1063:2-1063:42
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24b9c1aa_6776f2ec
 Bytes: 139
 these should all be separately declared. as part of that, we don't put the * with the variable, but with the type. also, can they be const?
+
+1063
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24b9c1aa_6776f2ec
+UUID: 6471f9c6_6eb8f3d5
+Bytes: 4
+Done
 
 1064:35-1067:49
 Wed Jun 18 20:28:21 2014 +0000
@@ -47,12 +83,32 @@ UUID: 4466b513_27f784f7
 Bytes: 81
 Constants? Or since I think they're limited and well-defined, maybe enumerations?
 
+1067
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4466b513_27f784f7
+UUID: 84ba6d9a_73b0f215
+Bytes: 43
+Huh? I am not sure what you are suggesting.
+
 1076:0-1081:64
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44b4f5af_eedddbed
 Bytes: 42
 i think we should just be doing this here.
+
+1081
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_eedddbed
+UUID: c4a70589_441c0e56
+Bytes: 438
+I assume you mean the TODO.
+
+Honestly the problem is I don't totally understand what this does, or why it does it. AIUI this seems to build a new elf file that has  a strtab and a symtab section in addition to the ones it already has. I am not sure why this is necessary.
+
+Also rewriting this would be a rather larger project than I really want to undertake at the moment, Especially for a feature few even know about and fewer still use.
 
 1118:27-1118:53
 Thu Jun 19 01:17:17 2014 +0000
@@ -61,12 +117,28 @@ UUID: c4ce254b_f59b6a8f
 Bytes: 4
 here
 
+1118
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ce254b_f59b6a8f
+UUID: c4a70589_8439a6c5
+Bytes: 32
+Not sure what you want me to do.
+
 1119:26-1119:30
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44b4f5af_ae33637b
 Bytes: 1
 0
+
+1119
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_ae33637b
+UUID: 6471f9c6_ceab3f74
+Bytes: 4
+Done
 
 1163:0-1164:52
 Thu Jun 19 01:17:17 2014 +0000
@@ -75,12 +147,30 @@ UUID: 44b4f5af_0e006f99
 Bytes: 16
 fix magic number
 
+1164
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_0e006f99
+UUID: 84ba6d9a_d32f5e7b
+Bytes: 71
+I am honestly not totally confident I know what the magic number means.
+
 1178:1-1179:47
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24b9c1aa_e7818274
 Bytes: 16
 fix magic number
+
+1179
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24b9c1aa_e7818274
+UUID: 84ba6d9a_53ee0ede
+Bytes: 197
+Again not totally confident I really know what it means. 
+
+Also this whole code path is super magical no matter what we do. Adding possibly misleading names for magic numbers seems like a bad idea.
 
 1227:31-1227:57
 Thu Jun 19 01:17:17 2014 +0000
@@ -126,10 +216,28 @@ UUID: 44b4f5af_6e21eb92
 Bytes: 130
 I'm torn, we used to have more APIs like this but have tried to move away because people kept specifying nonsensical combinations.
 
+45
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_6e21eb92
+UUID: 6471f9c6_2ec75b25
+Bytes: 267
+I'd say it would be good to put more of these things in, The flexibility is useful in many cases.
+
+Also This will be useful for the patching code since it will let me modify the old ElfFile in place on a private mapping. (Or modify it in place using a shared mapping)
+
 191:2-191:60
 Thu Jun 19 01:17:17 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44b4f5af_2efd338b
 Bytes: 41
 Is this supposed to die with this change?
+
+191
+Thu Jun 19 17:25:03 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_2efd338b
+UUID: 84ba6d9a_139bb665
+Bytes: 177
+No. The changes to GdbJITSupport were purely added since they were easy and safe. I really don't want to rewrite that whole method, especially since I don't fully understand it.
 

@@ -9,6 +9,14 @@ UUID: e4932916_ece173e9
 Bytes: 64
 I guess the 5th argument could become EncodeExtend(kA64Sxtw, 0).
 
+98
+Thu Jun 19 15:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4932916_ece173e9
+UUID: 44b4f5af_9739cec5
+Bytes: 63
+See my reply in utility_arm64.cc I'd prefer (..., kA64Sxtw, 0).
+
 151
 Thu Jun 19 10:08:39 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,6 +33,15 @@ UUID: a49db127_0417dc5f
 Bytes: 185
 The 5th argument could be changed to allow using EncodeExtend. This function is currently returning a mere int. I have no strong opinions about whether this should be typed differently.
 
+648
+Thu Jun 19 15:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a49db127_0417dc5f
+UUID: 44b4f5af_b795f25d
+Bytes: 197
+Personally I prefer to have these things explicit when we have types for them. So I would add an int for the amount,
+and make the body use EncodeExtend. But I'd like to hear Bill's opinion on that.
+
 665
 Thu Jun 19 10:08:39 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +49,30 @@ UUID: 04ae7d65_262b1673
 Bytes: 234
 This seems a bit too strong, considering that you are using r_dest.Is64Bit() above to set widened_opcode. Also consider that the assembler will be able to detect such register misusages, once its checks are enabled to the full extent.
 
+665
+Thu Jun 19 15:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04ae7d65_262b1673
+UUID: 44b4f5af_7721ba92
+Bytes: 219
+Yes, but we kind of have a problem. The widened_opcode choice is wrong, isn't it. Dest is always 64b. Here is one of the issues where I don't know what the clean approach is.
+
+I think the check should be against r_src2?
+
 667
 Thu Jun 19 10:41:33 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44b4f5af_1c6bc503
 Bytes: 811
 The name of the instruction should be kA64Sub4RRre, meaning that one expects that the third argument is a w register for kA64Sub4RRre and an x register for WIDE(kA64Sub4RRre). This is not strictly conforming to how the instruction is documented. For example, one should write "add x1, x2, w3, uxtb #2" rather than "add x1, x2, x3, uxtb #2". The reason, however, is just aesthetical: "w3, uxtb #2" and "x3, uxtb #2" are two ways to write the same thing (and the the GNU assembler seems to tolerate the latter). It is therefore morally fine to name the instruction kA64Sub4RRre. What we may want to do is to up-convert r_src2, when necessary (w -> x). Down-converting (x -> w) will not work (it will make the assembler register check in assemble_arm64.cc fail for the 3rd argument of the add example given above).
+
+667
+Thu Jun 19 15:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44b4f5af_1c6bc503
+UUID: 44b4f5af_17263eac
+Bytes: 34
+Why would we up-convert? For uxtx?
 
 674
 Thu Jun 19 10:08:39 2014 +0000
@@ -47,4 +82,12 @@ Bytes: 96
 This is not necessary if you use EncodeExtend. You could add,
 
  DCHECK(IsExtendedEncoding(ext));
+
+674
+Thu Jun 19 15:13:09 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a49db127_a42388c6
+UUID: 44b4f5af_d72f467b
+Bytes: 36
+I'll replace this with EncodeExtend.
 

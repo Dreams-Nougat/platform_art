@@ -9,6 +9,14 @@ UUID: 24b9c1aa_07113624
 Bytes: 39
 Turn this into just a return statement?
 
+3164
+Thu Jun 19 19:08:21 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24b9c1aa_07113624
+UUID: c4a70589_ca6ec740
+Bytes: 4
+Done
+
 File: runtime/reference_table.h
 
 44
@@ -18,6 +26,14 @@ UUID: c4ce254b_92879cff
 Bytes: 37
 Maybe we should add this to Add also?
 
+44
+Thu Jun 19 19:08:21 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ce254b_92879cff
+UUID: c4a70589_8a68cf32
+Bytes: 4
+Done
+
 File: runtime/scoped_thread_state_change.h
 
 168
@@ -26,4 +42,22 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ce254b_126dec85
 Bytes: 137
 I'm confused, you are passing in the address of the method but then also storing the return value? Shouldn't only one of these be needed?
+
+168
+Thu Jun 19 19:08:21 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ce254b_126dec85
+UUID: 0443dd81_a19b5890
+Bytes: 1086
+It's sort of the way I intended the RB interface to be currently: it's up to the read barrier implementation whether it updates the passed-in Object** (root) with the new reference, whereas the return value should be the new reference.
+
+The baker-style implementation I'm looking at does not currently update it (maybe it should after all, but we will see.)
+
+In this particular case, "method" (the local variable) plays the roles of an input param, and a potentially-updated (or potentially dummy) output param. Since jmethodID's are the roots we can't easily keep track of (as they are passed to the user code), we might imagine passing just Object* using a non-side-effect variant of the RB interface. But there are other normal-root cases where we'd like to use a variant with side effect.
+
+The current interface tries to handle both cases in one function.
+
+Note if we start moving methods (as the above CHECK would detect it), we would use a method ID table of some sort that would have normal-kind roots that we would want to pass in to the RB.
+
+I added comments to read_barrier.h.
 

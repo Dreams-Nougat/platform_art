@@ -1,0 +1,19 @@
+Revision: 0901fb18ba18add4b4c37f4c3329a88373cfd692
+Patch-set: 2
+File: compiler/dex/quick/gen_invoke.cc
+
+388
+Fri Jun 20 16:39:18 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4ede9ca_4dcd79f8
+Bytes: 745
+Please, have a look at the code above. I believe, without this fix we can experience crashes in rare circumstances. In particular, when invoking a helper with arguments w1, w0, the code below is generated,
+
+  mov w0, w1
+  mov w1, w0
+  # and helper is called.
+
+AFAICS, the problem is that (x.GetReg() == y.GetReg()) is not a good way of checking whether two RegStorage-s are referring to the same underlying physical register.
+
+In general, the function TargetReg() seems to need an update. Something like TargetReg(arg_num, arg_type, arg_size) would be good. Unfortunately, TargetReg is widely used in the quick compiler and, as far as I can see, it is responsible for a large number of instruction-misusage-check failures in the arm64 assembler.
+

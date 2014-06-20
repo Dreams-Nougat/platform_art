@@ -1,0 +1,23 @@
+Revision: cd7ca54ee36c503c5193439136079d325a816397
+Patch-set: 1
+File: runtime/verifier/method_verifier.cc
+
+720:0-725:22
+Fri Jun 20 22:19:38 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 442075de_f26355e4
+Bytes: 318
+I'd prefer if we fell-through here and then in CheckVarArgRegs we did:
+
+  if (vA <= 0 && inst->GetVerifyExtraFlags() == ...NonZero) {
+    Fail(VERIFY_ERROR_BAD_CLASS_HARD) << "invalid arg count (" << vA << ") in non-range invoke)";
+
+This helps keep the failure logic close together and this top-level function cleaner.
+
+733:0-737:22
+Fri Jun 20 22:19:38 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 442075de_72d12533
+Bytes: 33
+similar but for the range variant
+

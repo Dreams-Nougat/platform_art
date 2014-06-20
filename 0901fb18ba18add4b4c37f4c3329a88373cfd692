@@ -17,3 +17,20 @@ AFAICS, the problem is that (x.GetReg() == y.GetReg()) is not a good way of chec
 
 In general, the function TargetReg() seems to need an update. Something like TargetReg(arg_num, arg_type, arg_size) would be good. Unfortunately, TargetReg is widely used in the quick compiler and, as far as I can see, it is responsible for a large number of instruction-misusage-check failures in the arm64 assembler.
 
+388
+Fri Jun 20 16:54:55 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4ede9ca_4dcd79f8
+UUID: 642bb9c3_98e4c149
+Bytes: 425
+Yea, it is a bit messy - and particularly when considering arm32-style paired single registers.  I think a portable sameness test would be something like:
+
+  bool IsSameReg(RegStorage reg1, RegStorage reg2) {
+    RegisterInfo* info1 = GetRegInfo(reg1);
+    RegisterInfo* info2 = GetRegInfo(reg2);
+    return  (info1->Master() == info2->Master()) &&
+            ((info1->StorageMask() & info2->StorageMask()) != 0);
+  }
+
+Yuck.
+

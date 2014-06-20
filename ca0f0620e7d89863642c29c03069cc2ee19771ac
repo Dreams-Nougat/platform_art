@@ -1,0 +1,52 @@
+Revision: ca0f0620e7d89863642c29c03069cc2ee19771ac
+Patch-set: 5
+File: compiler/optimizing/nodes.h
+
+526:15-526:35
+Fri Jun 20 22:36:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c413859f_c7078035
+Bytes: 73
+I'd prefer moving this to HCondition, it's very specific to them for now.
+
+528:7-528:22
+Fri Jun 20 22:36:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c413859f_272654de
+Bytes: 202
+Not a huge fan of this method name. Feels like the node itself knows if it got materialized, whereas it's the codegen that does. Since it's only calling NeedsMaterialization, I suggest just removing it.
+
+533:11-533:23
+Fri Jun 20 22:36:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44d5d5fe_e03c62de
+Bytes: 79
+return uses_ != nullptr && uses_->tail == nullptr
+
+NumberOfUses is not cheap :(
+
+887:6-887:21
+Fri Jun 20 22:36:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e416c98e_48d1df32
+Bytes: 51
+Is that for another CL? I can't see any uses of it.
+
+890:19-890:31
+Fri Jun 20 22:36:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c413859f_072b58a4
+Bytes: 19
+Indentation is off.
+
+File: compiler/optimizing/register_allocator.cc
+
+114:9-114:20
+Fri Jun 20 22:36:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c413859f_67304c0d
+Bytes: 197
+Thinking about it, we could handle it with the Location object, just like we plan on optimizing constants: have a kImmediate for constants and kCondition for conditions.
+
+That's future work though.
+

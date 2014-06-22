@@ -1,0 +1,29 @@
+Revision: 0498223110174a055c743219c6cd82bee90d6034
+Patch-set: 1
+File: compiler/dex/quick/x86/int_x86.cc
+
+39:0-48:46
+Sun Jun 22 06:18:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84b42ddf_ba161161
+Bytes: 567
+This doesn't look efficient:
+
+xor temp, temp
+result = src1 - src2   <-- likely involves an extra mov
+setGT temp
+result = result ROL 1  <-- this doesn't feel like a fast instruction
+result = result AND 1
+result = -result
+add result, temp
+
+7 or 8 instructions. The same effect can be had from:
+
+cmp src1, src2  <-- 64-bit compare
+setGT result  <-- result8 = (src1 > src2) ? 1 : 0
+setLT temp <-- temp8 = (src1 < src2) ? 1 : 0
+sub8 result, temp  <-- result8 is 0, -1 or 1
+movsx result, result  <-- Sign extend the byte result in result to 32-bit
+
+which is 5 instructions.
+

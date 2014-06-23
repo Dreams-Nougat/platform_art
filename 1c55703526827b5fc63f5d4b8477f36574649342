@@ -1,5 +1,21 @@
 Revision: 1c55703526827b5fc63f5d4b8477f36574649342
 Patch-set: 1
+File: compiler/dex/quick/x86/assemble_x86.cc
+
+328:0-331:171
+Mon Jun 23 20:39:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c40963_040a40ad
+Bytes: 72
+This is unnecessary, use EXT_0F_ENCODING_MAP and pass REX as the prefix.
+
+337:0-341:173
+Mon Jun 23 20:39:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c1c553_bd6b632e
+Bytes: 74
+This is unnecessary, use EXT_0F_ENCODING_MAP and pass REX_w as the prefix.
+
 File: compiler/dex/quick/x86/int_x86.cc
 
 40
@@ -24,4 +40,35 @@ Parent: 44d5d5fe_038dd0dc
 UUID: e4c40963_fe5dd5cb
 Bytes: 100
 Ok.  I didn't notice the 8-bit sub and sign-extension.  Hopefully, this time is good.  Thanks a lot!
+
+43:0-43:75
+Mon Jun 23 20:39:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4db2937_6b7bbf02
+Bytes: 40
+This should be sign-extension to 32-bit.
+
+File: compiler/dex/quick/x86/utility_x86.cc
+
+611:0-613:9
+Mon Jun 23 20:39:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c40963_e4daa4f3
+Bytes: 23
+This looks very broken.
+
+618:10-618:71
+Mon Jun 23 20:39:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4db2937_6bbe5f54
+Bytes: 65
+res = LoadConstantNoClobber(...)
+the top bits are implicitly zero
+
+620:1-622:9
+Mon Jun 23 20:39:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4db2937_0bfddb18
+Bytes: 42
+move this into the "if (val_hi != 0)" case
 

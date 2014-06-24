@@ -1,0 +1,19 @@
+Revision: 0735999cf64313d403ea6ee9c9bdafe45a98681d
+Patch-set: 3
+File: compiler/dex/quick/gen_invoke.cc
+
+285
+Tue Jun 24 19:46:57 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e472491f_c8da0ff4
+Bytes: 409
+Note: the diff shown by Gerrit for the code below is not great at all. What I did is the following,
+
+  if (cu_->instruction_set == kArm64) {
+    NEW_CODE_TO_HANDLE_ARM64
+  } else {
+    OLD_CODE_WITHOUT_ARM64_CASE
+  }
+
+I guess it would be a good idea to clean this code up, but - as this touches several backends - I opted for handling the Arm64 case separately and use the old code for all the other backends.
+

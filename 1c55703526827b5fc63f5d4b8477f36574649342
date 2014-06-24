@@ -141,6 +141,15 @@ UUID: 6487392a_6935a5fb
 Bytes: 228
 No, r_dest :=1, r_dest <<= 32 and r_dest += 0x FF FF FF FF FF FF FF FF (due to sign extension of immediate for add). So it will be 0x 00 00 00 01 00 00 00 00 + 0x FF FF FF FF FF FF FF FF = 0x 00 00 00 00 FF FF FF FF as expected.
 
+611:0-613:9
+Tue Jun 24 08:53:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6487392a_6935a5fb
+UUID: 048d9d44_b74a8a8d
+Bytes: 356
+Can you address this in a comment, but I'm confused as to why you are doing it this way.
+If val_hi is 0 then use the B8 encoding with no REX.W prefix. If val_hi is -1 then use C7 with a REX.W prefix, so the immediate is sign-extended. For all other values use the B8 with REX.W prefix and a 64-bit immediate. You shouldn't be needing to do shifts and adds.
+
 618:10-618:71
 Mon Jun 23 20:39:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

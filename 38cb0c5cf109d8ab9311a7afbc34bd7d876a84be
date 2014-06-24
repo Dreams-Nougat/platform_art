@@ -1,0 +1,36 @@
+Revision: 38cb0c5cf109d8ab9311a7afbc34bd7d876a84be
+Patch-set: 3
+File: runtime/profiler.cc
+
+656:42-656:59
+Tue Jun 24 19:04:14 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6487392a_8c6667a8
+Bytes: 32
+you forgot to update the comment
+
+712:2-712:20
+Tue Jun 24 19:04:14 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6487392a_cc605f8d
+Bytes: 164
+Sorry for not noticing this before. This is a memory leak as clearing the map will not deallocate the memory reserved for PreviousContextMap (inside PreviousValue).
+
+902:0-906:3
+Tue Jun 24 19:04:14 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6487392a_ccc13f14
+Bytes: 89
+nit, only if you find it better as well :)
+
+return (i == children_.end()) ? nullptr : *i;
+
+File: runtime/profiler.h
+
+47:6-47:19
+Tue Jun 24 19:04:14 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e472491f_08cd0744
+Bytes: 179
+worth documenting the trie structure. mentioning the way the "path flows" in the trie, i.e. that the method from the top of the stack is not a root but a leaf or an internal node.
+

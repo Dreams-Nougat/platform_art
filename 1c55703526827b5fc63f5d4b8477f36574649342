@@ -96,6 +96,14 @@ UUID: 048d9d44_d7a5562c
 Bytes: 357
 Ugh, that looks like an instruction decode bug in movsx. A REX prefix without REX.W is generating a 64-bit result, and normalizing the byte register doesn't work :-/ movsxw and movzx at least have the decency to use a REX.W prefix. There will be a bug in the disassembler because of this, we should mask in REX.W when we see a blank REX with movsxb (0F BE).
 
+43:0-43:75
+Tue Jun 24 08:22:02 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048d9d44_d7a5562c
+UUID: e472491f_054fb27d
+Bytes: 50
+we'll try to look into this issue in disassembler.
+
 File: compiler/dex/quick/x86/utility_x86.cc
 
 611:0-613:9
@@ -124,6 +132,14 @@ r_dest := 1
 r_dest <<= 32
 r_dest += 0xFF FF FF FF
 which will lead to 0x1 FF FF FF FF in r_dest rather than 0xFF FF FF FF.
+
+611:0-613:9
+Tue Jun 24 08:22:02 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048d9d44_d7d4767b
+UUID: 6487392a_6935a5fb
+Bytes: 228
+No, r_dest :=1, r_dest <<= 32 and r_dest += 0x FF FF FF FF FF FF FF FF (due to sign extension of immediate for add). So it will be 0x 00 00 00 01 00 00 00 00 + 0x FF FF FF FF FF FF FF FF = 0x 00 00 00 00 FF FF FF FF as expected.
 
 618:10-618:71
 Mon Jun 23 20:39:16 2014 +0000

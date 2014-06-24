@@ -33,3 +33,44 @@ UUID: e4a7a9cf_9d9f634f
 Bytes: 87
 What if you make GetDexCacheCount and GetDexCache require the dex_lock_ does that work?
 
+217
+Tue Jun 24 20:38:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4a7a9cf_9d9f634f
+UUID: e4a7a9cf_430a1a88
+Bytes: 1797
+I tried this. There's one issue in ImageWriter::CreateImageRoots(). We'd need to allocate an ObjectArray of the exact size GetDexCacheCount(), but we can't do the allocation while holding dex_lock_, since that allocation could cause a thread suspension. So, we can't guarantee the atomicity between GetDexCacheCount() and GetDexCache(). The best we can do is to lock dex_lock_ twice, first to get the count, unlock it, allocate the ObjectArray, lock it again, check that the count hasn't changed, and copy the elements. Not sure if this is good.
+
+Before:
+
+  Handle<ObjectArray<Object>> dex_caches(
+      hs.NewHandle(ObjectArray<Object>::Alloc(self, object_array_class.Get(),
+                                             class_linker->GetDexCaches().size())));
+  int i = 0;
+  for (DexCache* dex_cache : class_linker->GetDexCaches()) {
+    dex_caches->Set<false>(i++, dex_cache);
+
+(note the 'before' code wasn't atomic w.r.t. the dex caches.)
+
+After:
+
+  size_t dex_cache_count;
+  {
+    ReaderMutexLock mu(Thread::Current(), *class_linker->DexLock());
+    dex_cache_count = class_linker->GetDexCacheCount();
+  }
+  Handle<ObjectArray<Object>> dex_caches(
+      hs.NewHandle(ObjectArray<Object>::Alloc(self, object_array_class.Get(),
+                                              dex_cache_count)));
+  CHECK(dex_caches.Get() != nullptr) << "Failed to allocate a dex cache array.";
+  {
+    ReaderMutexLock mu(Thread::Current(), *class_linker->DexLock());
+    CHECK_EQ(dex_cache_count, class_linker->GetDexCacheCount())
+        << "The number of dex caches changed.";
+    for (size_t i = 0; i < dex_cache_count; ++i) {
+      dex_caches->Set<false>(i, class_linker->GetDexCache(i));
+    }
+  }
+
+Copying the dex caches in a temporary container wouldn't work as that would hold Object* without being a root.
+

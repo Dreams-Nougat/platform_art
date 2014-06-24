@@ -9,3 +9,19 @@ UUID: 24a8e18f_af807938
 Bytes: 214
 This is only called a few places, it might be cleaner to delete it and add a GetDexCache which uses the read barrier and GetDexCacheCount. Also you could replace a lot of the places you modified to use GetDexCache.
 
+217
+Tue Jun 24 18:15:34 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24a8e18f_af807938
+UUID: 44a315b3_f7bfafe6
+Bytes: 737
+I thought of that way, too.
+
+An issue would be atomicity/race between GetDexCacheCount() and GetDexCache() as they need to acquire dex_lock_. It'd be possible after we call GetDexCacheCount(), the count could be changed by the time we call GetDexCache(). It might be ok if we can assume that dex_caches are never removed from the vector, or ImageWriter (the caller) won't violate the atomicity, thought that could be fragile.
+
+We could expose the dex_lock to the caller, but it seems to make this less cleaner than the current way.
+
+Another way is to return a copy of the vector, which would solve this issue and avoid the need to update the roots (line 225). As long as the number of dex caches is small, it might be ok.
+
+More thoughts?
+

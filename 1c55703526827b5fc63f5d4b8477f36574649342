@@ -72,6 +72,14 @@ UUID: c413859f_4d99f161
 Bytes: 192
 I do not see x86 instruction allowing us to do a sign extension from 8-bit to 32-bit and use the whole r0-r15 register set at the same time. So I decided to use 8-bit to 64-bit sign extension.
 
+43:0-43:75
+Tue Jun 24 04:22:45 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c413859f_4d99f161
+UUID: 649e596e_461a90d2
+Bytes: 84
+the same instruction without a REX_W prefix will do a 32-bit movsx, that is 0F BE /r
+
 File: compiler/dex/quick/x86/utility_x86.cc
 
 611:0-613:9
@@ -111,4 +119,13 @@ Parent: e4db2937_0bfddb18
 UUID: c413859f_ad7d053c
 Bytes: 20
 together with above.
+
+File: compiler/dex/quick/x86/x86_lir.h
+
+714:3-714:24
+Tue Jun 24 04:22:45 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048d9d44_b48288ae
+Bytes: 129
+Could you tweak the comment here, an empty REX prefix used to normalize the byte operations so that they apply to R4 through R15.
 

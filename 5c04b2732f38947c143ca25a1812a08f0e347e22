@@ -1,0 +1,94 @@
+Revision: 5c04b2732f38947c143ca25a1812a08f0e347e22
+Patch-set: 2
+File: compiler/dex/quick/gen_common.cc
+
+757
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4cd45a8_1d37d7d1
+Bytes: 297
+Thanks - this has potential to cause problems in the future, and should be revisited.  Could you add "FIXME: " to your //pGetXXXStatis comment above.  Also, in the non is_long_or_double case let's handle kRefRegs, so instead do:
+RegLocation rl_result = GetReturn(rl_dest.ref ? kRefReg : kCoreReg);
+
+File: compiler/dex/quick/gen_invoke.cc
+
+164
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4ca118f_a74d7282
+Bytes: 224
+For this and other reasons, TargetReg() needs changing throughout.  The TargetReg() cleanup will happen in another CL as part of the 64bit work.  It's fine to do this now to get you going, but note that the code will change.
+
+File: compiler/dex/quick/mips/int_mips.cc
+
+490
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4ca118f_e7748aab
+Bytes: 207
+Let's avoid having commented out code.  Delete the DCHECK (which looks wrong to me anyway - you certainly could have a const index, but backends are under no obligation to take advantage of that information.
+
+564
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84e50d1e_dbd83f8b
+Bytes: 14
+Same - delete.
+
+File: compiler/dex/quick/mips/mips_lir.h
+
+142
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4cd45a8_bd6c638a
+Bytes: 80
+What's the FR_BIT?  Also, in general we prefer to avoid conditional compilation.
+
+225
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4ca118f_47c0de5e
+Bytes: 171
+A recent change widened the def/use masks, so you should now have enough space to use fp regs 16 through 31 (though I'd get things running as-is first before adding them).
+
+File: compiler/dex/quick/mips/target_mips.cc
+
+547
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84e50d1e_db539f25
+Bytes: 22
+Delete invalid DCHECK.
+
+File: compiler/dex/quick/mips/utility_mips.cc
+
+347
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4ca118f_87b5d6d4
+Bytes: 139
+Let's minimize the amount of manual bit-twiddling to do a register conversion.  Introduce a function (local to MipsMir2Lir) that does this.
+
+479
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4cd45a8_7d136bec
+Bytes: 148
+as above - use a helper function.  The register encodings aren't changing as much lately has they were earlier, but they might need to change again.
+
+594
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4ca118f_a79fb24e
+Bytes: 23
+again, helper function.
+
+File: dex2oat/dex2oat.cc
+
+1141
+Wed Jun 25 22:40:05 2014 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4ca118f_223a70e0
+Bytes: 268
+Once the compiler is working, Mips should not be special-cased here - otherwise you'll miss out on ART_SMALL_MODE.  If we don't yet have a kMips64, go ahead and add it and use that here and allow 32-bit Mips to join x86, x86_64, arm and arm64 in the final else clause.
+

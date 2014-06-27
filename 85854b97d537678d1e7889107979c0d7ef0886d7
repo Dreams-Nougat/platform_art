@@ -9,6 +9,14 @@ UUID: 44aeb594_b8b1b9e7
 Bytes: 218
 I think the change should just move us over. I have concerns that by having feet in two implementations we're broken in some respect in both. At least if we move over we can fix the bugs in just the one implementation.
 
+42:0-46:39
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_b8b1b9e7
+UUID: 84e50d1e_86e81a1d
+Bytes: 133
+I'll leave the feature on then. I feel safer to have a kill switch if something goes wrong, and it's easier to gather some perf data.
+
 File: compiler/dex/quick/gen_invoke.cc
 
 683:10-683:61
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4e5b1f4_fb540f32
 Bytes: 115
 It feels weird this is a runtime option. I could codegen with a different option to runtime, which would be broken.
+
+683:10-683:61
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_fb540f32
+UUID: a4ca118f_02f65473
+Bytes: 59
+Anyway, this should be gone soon if there things go smooth.
 
 File: runtime/class_linker.cc
 
@@ -27,12 +43,28 @@ UUID: 84b42ddf_5a75f50b
 Bytes: 128
 Allocate a class with the status of not ready. For regular classes this object will be replaced when the Class becomes resolved.
 
+1447:1-1448:75
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_5a75f50b
+UUID: a4ca118f_e22d981f
+Bytes: 5
+Done.
+
 1492:21-1492:25
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_7a7ab9fc
 Bytes: 7
 nullptr
+
+1492:21-1492:25
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_7a7ab9fc
+UUID: a4ca118f_a227a03d
+Bytes: 5
+Done.
 
 2398:0-2398:19
 Mon Jun 23 00:11:07 2014 +0000
@@ -41,12 +73,28 @@ UUID: 84b42ddf_fa06c981
 Bytes: 28
 CHECK(klass->IsProxyClass())
 
+2398:0-2398:19
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_fa06c981
+UUID: a4ca118f_e21918de
+Bytes: 5
+Done.
+
 2392:0-2401:41
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4e5b1f4_7efc6dd7
 Bytes: 60
 CHECK(!existing->IsResolved()); CHECK(klass->IsResolving());
+
+2392:0-2401:41
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_7efc6dd7
+UUID: a4ca118f_a21320bc
+Bytes: 5
+Done.
 
 2411:0-2421:3
 Mon Jun 23 00:11:07 2014 +0000
@@ -55,12 +103,28 @@ UUID: a4e5b1f4_9e105970
 Bytes: 62
 I don't follow this, why aren't classes in the image resolved?
 
+2411:0-2421:3
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_9e105970
+UUID: 84e50d1e_8667faa4
+Bytes: 63
+I copied over the code from InsertClass(). Maybe not necessary?
+
 2944:29-2944:33
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44aeb594_7899e161
 Bytes: 7
 nullptr
+
+2944:29-2944:33
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_7899e161
+UUID: c4cd45a8_282ed3c5
+Bytes: 5
+Done.
 
 2946:30-2946:34
 Mon Jun 23 00:11:07 2014 +0000
@@ -76,6 +140,14 @@ UUID: a4e5b1f4_7b42bf73
 Bytes: 40
 why wasn't this done as part of linking?
 
+2954:0-2956:5
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_7b42bf73
+UUID: 84e50d1e_86001a6a
+Bytes: 56
+It's actually already done there. Will remove this code.
+
 2974:30-2974:34
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -90,12 +162,28 @@ UUID: 44aeb594_b87a993f
 Bytes: 84
 move declaration into "for (" as there's no need for this to have such a broad scope
 
+3440:2-3440:12
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_b87a993f
+UUID: 84e50d1e_06e78a7a
+Bytes: 5
+Done.
+
 3443:16-3443:20
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4e5b1f4_bb33672d
 Bytes: 10
 nullptr...
+
+3443:16-3443:20
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_bb33672d
+UUID: c4cd45a8_a3156411
+Bytes: 5
+Done.
 
 3521:2-3521:7
 Mon Jun 23 00:11:07 2014 +0000
@@ -104,12 +192,28 @@ UUID: a4e5b1f4_db303323
 Bytes: 53
 CHECK_EQ and then you don't need to report the sizes.
 
+3521:2-3521:7
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_db303323
+UUID: c4cd45a8_a3c6844c
+Bytes: 5
+Done.
+
 3533:33-3533:44
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_ba6b712e
 Bytes: 59
 .. waiters on the unresolved class that it is now resolved.
+
+3533:33-3533:44
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_ba6b712e
+UUID: a4ca118f_cdff6d43
+Bytes: 5
+Done.
 
 3537:4-3537:43
 Mon Jun 23 00:11:07 2014 +0000
@@ -118,12 +222,28 @@ UUID: a4e5b1f4_3ed9058d
 Bytes: 103
 This will notify waiters that saw the not yet resolved class in the class_table_ during EnsureResolved.
 
+3537:4-3537:43
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_3ed9058d
+UUID: 84e50d1e_6682d67a
+Bytes: 5
+Done.
+
 4017:34-4017:45
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_fa65e95a
 Bytes: 86
 nullptr, it'd be an error to set this out argument in the case of a non-static linking
+
+4017:34-4017:45
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_fa65e95a
+UUID: e4fec9bb_c5205a92
+Bytes: 5
+Done.
 
 4062:20-4062:41
 Mon Jun 23 00:11:07 2014 +0000
@@ -132,6 +252,14 @@ UUID: 44aeb594_586dfd84
 Bytes: 235
 I think I'd prefer this to move into a member function of mirror::Class, to capture that it ignores embedded tables and fields. Previously the fact it didn't include fields was some what evident in that this code is linking the fields.
 
+4062:20-4062:41
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_586dfd84
+UUID: c4fb85cc_a4cb2286
+Bytes: 77
+Not clear about this comment. Move sizeof(mirror:Class) to a member function?
+
 4063:4-4069:5
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -139,12 +267,28 @@ UUID: 84b42ddf_1aec5d73
 Bytes: 65
 Comment that this is placing the fields after the IMT and Vtable.
 
+4063:4-4069:5
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_1aec5d73
+UUID: a4f851d3_639f627f
+Bytes: 5
+Done.
+
 4191:2-4191:10
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44aeb594_9866b5a8
 Bytes: 43
 size_t (to be consistent with the argument)
+
+4191:2-4191:10
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_9866b5a8
+UUID: a4f851d3_e31b525d
+Bytes: 5
+Done.
 
 File: runtime/class_linker.h
 
@@ -155,6 +299,14 @@ UUID: a4e5b1f4_def10106
 Bytes: 155
 Don't do this! If you need a header file that's going to bring in half the codebase, move the code that requires it into a -inl.h, that's why we have them.
 
+31:19-31:20
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_def10106
+UUID: c4fb85cc_e41b5a5d
+Bytes: 5
+Done.
+
 64:0-69:69
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -162,12 +314,28 @@ UUID: 44aeb594_f8ab3173
 Bytes: 50
 These should move to the appropriate mirror class.
 
+64:0-69:69
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_f8ab3173
+UUID: e4fec9bb_e891ebff
+Bytes: 5
+Done.
+
 406:57-406:81
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_5af6d542
 Bytes: 146
 Document public methods, what is multiple_of_8bytes? It feels unnecessary unless we've exposed static field layout in a non-runtime dependent way.
+
+406:57-406:81
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_5af6d542
+UUID: e4fec9bb_c85e2f55
+Bytes: 109
+I moved it to private. Added some comment and here is more comment in the implementation about the parameter.
 
 File: runtime/mirror/class-inl.h
 
@@ -178,12 +346,29 @@ UUID: a4e5b1f4_7b69dfff
 Bytes: 34
 why doesn't this query the status?
 
+152:0-152:79
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_7b69dfff
+UUID: e4fec9bb_ebfc45db
+Bytes: 194
+This is actually IsInterface() when IsEmbeddedImtAndVTableEnabled() is removed and this method can be removed. I'll rename it to ShouldHaveEmbeddedImtAndVTable() which makes it a little clearer.
+
 536:0-545:1
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44aeb594_78a00196
 Bytes: 56
 why isn't this in the class linker? why is it necessary?
+
+536:0-545:1
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_78a00196
+UUID: c4fb85cc_c71980de
+Bytes: 418
+I'll add some comments:
+Many classes in class_roots_ of ClassLinker are allocated and inserted to class_roots_ first before they are linked, which opens up a chance for other classes to hold up references to them. It's hard to track those references if those classes in class_roots_ are replaced later. So it's safer to identify all those classes and allocate them with the right sizes so they won't be replaced later.
 
 File: runtime/mirror/class.cc
 
@@ -194,6 +379,14 @@ UUID: a4e5b1f4_9e193994
 Bytes: 142
 Add assertions that when new_status is >= Resolving vtable and static field invariants hold, and when < Resolving there aren't static fields..
 
+115:0-115:0
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_9e193994
+UUID: a4f851d3_f74e687f
+Bytes: 223
+Added a check below for sfields_start_ for resolved state. It's a little tricky to assert the size here since real size isn't known until linking is done. This function() on the other hand can be called in various statuses.
+
 116:0-118:3
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -202,6 +395,14 @@ Bytes: 235
 Avoid early returns unless they bring about clarity. In this function its important there are no early returns as at the end is when notification is performed.
 When you place a cut-out like this, add a comment saying why its necessary.
 
+116:0-118:3
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_b8c8d957
+UUID: a4f851d3_e9445132
+Bytes: 164
+The IsTemp() test below needs linker to be initialized (class_roots_ set). Also there is no need to to notify waiters when it's single threaded. I'll add a comment.
+
 120:1-121:86
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -209,12 +410,28 @@ UUID: 44aeb594_d8d58dee
 Bytes: 45
 The comment and the code are now out of sync.
 
+120:1-121:86
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_d8d58dee
+UUID: c4fb85cc_47d8f0ac
+Bytes: 35
+Comments still seem accurate to me.
+
 831:24-831:25
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_da8f45d5
 Bytes: 65
 why 0? Shouldn't this be at least the existing size of the Class?
+
+831:24-831:25
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_da8f45d5
+UUID: e4fec9bb_2bec9ddc
+Bytes: 29
+Will change to sizeof(Class).
 
 File: runtime/mirror/class.h
 
@@ -225,12 +442,28 @@ UUID: 44aeb594_d8602d8d
 Bytes: 121
 please don't add to the header files when avoidable. Check you need this (and object_array below) and move to the -inl.h.
 
+20:20-20:21
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_d8602d8d
+UUID: a4f851d3_222efbc5
+Bytes: 41
+Removed it by moving some code to -inl.h.
+
 82:0-86:4
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_7aa1d950
 Bytes: 64
 If this has to be unaligned then I'd prefer an int32 of padding.
+
+82:0-86:4
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_7aa1d950
+UUID: a4f851d3_2961498f
+Bytes: 89
+Not clear about this comment. imt/vtable entries need to be packed, no padding is needed.
 
 100:2-100:4
 Mon Jun 23 00:36:49 2014 +0000
@@ -239,12 +472,28 @@ UUID: 44aeb594_780561a9
 Bytes: 62
 document resolving/transitioning and the 2 class objects model
 
+100:2-100:4
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_780561a9
+UUID: c4fb85cc_e770fcf0
+Bytes: 5
+Done.
+
 125:11-125:24
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_1a929d03
 Bytes: 44
 Perhaps resolving rather than transitioning.
+
+125:11-125:24
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_1a929d03
+UUID: a4f851d3_491005de
+Bytes: 28
+Renamed to kStatusResolving.
 
 194:37-194:39
 Mon Jun 23 00:11:07 2014 +0000
@@ -253,12 +502,28 @@ UUID: a4e5b1f4_bb4a878d
 Bytes: 63
 This is inconsistent with all the other status checks in Class.
 
+194:37-194:39
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_bb4a878d
+UUID: e4fec9bb_4b64799f
+Bytes: 57
+It's similar to IsErrorneous() which tests for  equality.
+
 200:0-204:33
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_5a9c1514
 Bytes: 247
 why were they populated then? If we see a non-transitioned class in the GC will we erroneously visit static roots upon it? I would rather this wasn't done here, and there were assertions that StaticFields wasn't populated until the class is ready.
+
+200:0-204:33
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_5a9c1514
+UUID: c4fb85cc_ad48a572
+Bytes: 284
+They were populated in order to be cloned by new class. There are actually more guards in VisitReferences() to not to visit static fields in temp classes (those have incorrect size). I changed the comments to "Retired class shouldn't really be visited. Clear out some fields in case."
 
 309:4-309:66
 Mon Jun 23 00:11:07 2014 +0000
@@ -274,12 +539,28 @@ UUID: a4e5b1f4_db7e73bc
 Bytes: 27
 This shouldn't be necessary
 
+308:0-310:60
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_db7e73bc
+UUID: 448b1570_1369ee35
+Bytes: 72
+See the comments I'll add in class-inl.h about the reason for this test.
+
 312:0-314:60
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84b42ddf_ba8291ae
 Bytes: 217
 why can't we simply say a resolved class isn't temporary, and before this they are? I'd rather not add other notions to the status of the class other than the state machine of it chugging forward through resolution...
+
+312:0-314:60
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84b42ddf_ba8291ae
+UUID: c4fb85cc_6a3053db
+Bytes: 370
+This check is needed before class goes to resolved status. This type of classes will end up in retired status. It represents whether this class is allocated with the right size in the first place, regardless of the class status. A class can be non-temp even if they are not resolved. I previously use a member variable for this and now replaced it with a bunch of tests.
 
 File: runtime/mirror/proxy.h
 
@@ -290,12 +571,28 @@ UUID: a4e5b1f4_3e02e52c
 Bytes: 49
 Don't do this! Create a proxy-inl.h if necessary.
 
+20:25-20:26
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_3e02e52c
+UUID: 448b1570_79de1beb
+Bytes: 29
+Removed. Added a -inl.h file.
+
 29:0-52:2
 Mon Jun 23 00:11:07 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44aeb594_98b4f5d8
 Bytes: 107
 I don't think this class serves any purpose now that the fields within it aren't valid for offsets. Remove.
+
+29:0-52:2
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44aeb594_98b4f5d8
+UUID: a4f851d3_ec28df11
+Bytes: 111
+GetInterfaces() and GetThrows() are needed somewhere. I'll delete the static fields (add some comments though).
 
 File: runtime/mirror/string.h
 
@@ -305,4 +602,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4e5b1f4_db575334
 Bytes: 40
 why is having this class useful? Remove.
+
+161:0-169:2
+Fri Jun 27 22:49:04 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4e5b1f4_db575334
+UUID: c4fb85cc_6a005369
+Bytes: 289
+It's sort of convenient to allocate (sizeof(StringClass) + imt/vtable) as the class size. And the class_linker_test will still verify the size matches the java land. If we remove the class, we'll then need to add some testing to verify the sizes in art and java match. I'd like to keep it.
 

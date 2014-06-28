@@ -1,0 +1,146 @@
+Revision: 0dedf593d3a641bd849265afc55a3afe79c51446
+Patch-set: 1
+File: compiler/oat_test.cc
+
+141:2-141:11
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_5020c501
+Bytes: 38
+shouldn't this use STREQ or something?
+
+194:0-194:42
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 448b1570_d7710b61
+Bytes: 22
+can't this be removed?
+
+File: compiler/oat_writer.cc
+
+124:11-124:41
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2490e198_353738d2
+Bytes: 79
+Why not always have a non-empty store for simplicity? (verified in constructor)
+
+720:5-720:13
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2490e198_75df001e
+Bytes: 243
+as I say later, I find this confusing. this isn't an estimate, it is the actual size (estimate implies approximate). In the other location, I suggest making this a public static OatHeader::Create method and making OatHeader::OatHeader private.
+
+File: compiler/oat_writer.h
+
+276:2-278:2
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_10c31dd2
+Bytes: 66
+you need to add size stats for the key_value_store_ storage space.
+
+File: dex2oat/dex2oat.cc
+
+385:4-385:63
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2490e198_f549b047
+Bytes: 80
+again, i'd just make the caller pass one instead of hiding special cases inside.
+
+386:28-386:40
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_b0c7b1da
+Bytes: 6
+!empty
+
+1174:2-1174:22
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_d0ccb5fe
+Bytes: 167
+I kind of understand why you are reversing the name of this class from the old method name, but it is odd to me that all the arguments are about explicit, not implict.
+
+1388:22-1388:39
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_70b2a985
+Bytes: 76
+I'd add constants for these along where you defined the image file name one.
+
+File: oatdump/oatdump.cc
+
+174:1-179:0
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_b0e01160
+Bytes: 71
+I would just remove this and assume it will be part of the store below?
+
+File: runtime/class_linker.cc
+
+1166:0-1168:69
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 448b1570_575e7bc8
+Bytes: 90
+the check presumably should presumably be one or the other? it seems odd to tolerate both.
+
+File: runtime/oat.cc
+
+60:0-60:55
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_90d86dae
+Bytes: 112
+no, i don't think so. it is only used by apps to match the image right? not be the boot.oat to the boot.art IIRC
+
+414:18-414:26
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 448b1570_d7b26bd4
+Bytes: 23
+Estimate? or Calculate?
+
+File: runtime/oat.h
+
+100:0-100:91
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_30d50175
+Bytes: 202
+is this for the person allocating the OatHeader with data? Why not make the constructor private and have the creation be contained within OatHeadeR::Create or something to hide this from the public API?
+
+File: runtime/oat_file.cc
+
+83:0-83:29
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_50d2058e
+Bytes: 98
+I'd rather just return. having this implies there would be something else to do in the error case.
+
+90:6-90:46
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 448b1570_97b5c3bb
+Bytes: 125
+why not make it an CHECK error? presumably the oat version check comes first, so they are required for 036 version or higher.
+
+97:35-97:71
+Sat Jun 28 22:49:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64865967_f0877993
+Bytes: 347
+are you saying that is the runtime == nullptr case? as in the else case that doesn't exist? again it would be clearer to me to say
+
+if (runtime == nullptr) {
+  // Unstarted runtime, e.g., oatdump. Trust it's not going to be executed
+  return nullptr;
+}
+
+especially since it seems like this could be done before even bothering to parse the options.
+

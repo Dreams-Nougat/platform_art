@@ -1,0 +1,34 @@
+Revision: 1d5c418bb9f605735e724f3778a3981fa3fcb68a
+Patch-set: 4
+File: compiler/dex/quick/gen_invoke.cc
+
+533:11-533:16
+Mon Jun 30 04:32:06 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c450e5a6_7fafcb1b
+Bytes: 394
+General comment: please take a look into https://android-review.googlesource.com/#/c/99560/2/compiler/dex/quick/x86/target_x86.cc I think this simplifies a lot this utility. If we did a promotion we have already updated the ArgLocs with information about whether it is on promoted register or not. So I do not see the sense in looking into vmap table. We can simply use RegLocation information.
+
+File: compiler/dex/quick/ralloc_util.cc
+
+1140:7-1140:71
+Mon Jun 30 04:32:06 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6421f930_dc7061f1
+Bytes: 543
+If we consider the long and int as different things and sort array then without taking into account we can meet the following case: let's we have 1 promoted register and v4 used as int 5 times and as long 5 times while v6 used as int 6 times. As a result we will promoted v6. however taking into account that core register for long and int is the same we could better benefit if we would promote v4. So I would consider add use_count to lower part anyway or handle this later as it is done in https://android-review.googlesource.com/#/c/99080/
+
+1288:45-1288:46
+Mon Jun 30 04:32:06 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 841c2dfc_1d233711
+Bytes: 3
+&&?
+
+1305:14-1305:22
+Mon Jun 30 04:32:06 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6421f930_fc7525de
+Bytes: 117
+This code expects that long is always promoted to pair registers but I do not see this logic in AllocPreservedCoreReg
+

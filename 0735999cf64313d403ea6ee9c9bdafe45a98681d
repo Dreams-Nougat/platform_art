@@ -1,5 +1,14 @@
 Revision: 0735999cf64313d403ea6ee9c9bdafe45a98681d
 Patch-set: 3
+File: compiler/dex/quick/arm64/call_arm64.cc
+
+305:22-305:33
+Mon Jun 30 18:28:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 448b1570_abb3c225
+Bytes: 208
+If we make reg_card_no 64b, you save two of those As... conversions. We could save the last one if we allow index registers to be 64b in Load/StoreBaseIndexed, which is valid in Arm v8 as far as I understand.
+
 File: compiler/dex/quick/gen_invoke.cc
 
 285
@@ -16,4 +25,13 @@ Note: the diff shown by Gerrit for the code below is not great at all. What I di
   }
 
 I guess it would be a good idea to clean this code up, but - as this touches several backends - I opted for handling the Arm64 case separately and use the old code for all the other backends.
+
+File: compiler/dex/quick/mir_to_lir.h
+
+1117:4-1125:66
+Mon Jun 30 18:28:46 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 448b1570_8b591e14
+Bytes: 148
+Is there a reason to change to reg-storage? You can call TargetRefReg as well in these methods, as you know that the result should be a reference...
 

@@ -49,6 +49,14 @@ UUID: c47e2525_ac71a361
 Bytes: 122
 Being svelt-y, conserving memory? I found it more intuitive that if you don't have anything "to say," to just use nullptr.
 
+124:11-124:41
+Mon Jun 30 21:45:04 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c47e2525_ac71a361
+UUID: c429c520_8eaf0f1b
+Bytes: 150
+svelte is BS considering the potential heap sizes here and the fact that is is unlikely to be null except in tests. I'm more worried about logic bugs.
+
 720:5-720:13
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -243,6 +251,20 @@ UUID: 64865967_0971b4f2
 Bytes: 33
 Sorry, I'm not sure I understand.
 
+83:0-83:29
+Mon Jun 30 21:45:04 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_0971b4f2
+UUID: 241b8108_866cd447
+Bytes: 183
+change this to
+
+if (reg.get() == nullptr) {
+  return nullptr;
+}
+
+and unindent the rest. similar for the rest of the cases. the nesting just makes it harder for me to follow the logic.
+
 90:6-90:46
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -257,6 +279,14 @@ Parent: 448b1570_97b5c3bb
 UUID: 64865967_e96f900b
 Bytes: 119
 Is FATALing out the right way, though? Returning nullptr here would try to regenerate and only fail in case it can't...
+
+90:6-90:46
+Mon Jun 30 21:45:04 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_e96f900b
+UUID: 04759d3d_110d6ec5
+Bytes: 107
+my point is it should never get here, which is why I say CHECK. isn't that header required post version 36?
 
 97:35-97:71
 Sat Jun 28 22:49:32 2014 +0000
@@ -279,4 +309,12 @@ Parent: 64865967_f0877993
 UUID: a47bf135_cb7095f1
 Bytes: 250
 I was structuring it so that oatdump would have the same behavior as actually running it. I found it "weird" to let oatdump dump an oat file without error, but then when running you'd get malformed implicit check options. Open for discussion, though.
+
+97:35-97:71
+Mon Jun 30 21:45:04 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47bf135_cb7095f1
+UUID: 241b8108_86fdb41a
+Bytes: 87
+my point is, the comment seems to be about the opposite condition to the line it is on?
 

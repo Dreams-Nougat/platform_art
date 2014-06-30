@@ -9,12 +9,28 @@ UUID: 64865967_5020c501
 Bytes: 38
 shouldn't this use STREQ or something?
 
+141:2-141:11
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_5020c501
+UUID: c47e2525_2c85b3f5
+Bytes: 157
+As the right side is std::string (as GetImage... was before), this will convert the string literal on the left and use std::string ==, doing the right thing.
+
 194:0-194:42
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 448b1570_d7710b61
 Bytes: 22
 can't this be removed?
+
+194:0-194:42
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 448b1570_d7710b61
+UUID: 448b1570_8d513694
+Bytes: 4
+Done
 
 File: compiler/oat_writer.cc
 
@@ -25,12 +41,28 @@ UUID: 2490e198_353738d2
 Bytes: 79
 Why not always have a non-empty store for simplicity? (verified in constructor)
 
+124:11-124:41
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2490e198_353738d2
+UUID: c47e2525_ac71a361
+Bytes: 122
+Being svelt-y, conserving memory? I found it more intuitive that if you don't have anything "to say," to just use nullptr.
+
 720:5-720:13
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2490e198_75df001e
 Bytes: 243
 as I say later, I find this confusing. this isn't an estimate, it is the actual size (estimate implies approximate). In the other location, I suggest making this a public static OatHeader::Create method and making OatHeader::OatHeader private.
+
+720:5-720:13
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2490e198_75df001e
+UUID: c47e2525_8cc62726
+Bytes: 4
+Done
 
 File: compiler/oat_writer.h
 
@@ -41,6 +73,14 @@ UUID: 64865967_10c31dd2
 Bytes: 66
 you need to add size stats for the key_value_store_ storage space.
 
+276:2-278:2
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_10c31dd2
+UUID: 448b1570_4d5b4eb0
+Bytes: 60
+Was rolled into size_oat_header, but I separated it out now.
+
 File: dex2oat/dex2oat.cc
 
 385:4-385:63
@@ -50,12 +90,28 @@ UUID: 2490e198_f549b047
 Bytes: 80
 again, i'd just make the caller pass one instead of hiding special cases inside.
 
+385:4-385:63
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2490e198_f549b047
+UUID: c47e2525_2c7cd3c1
+Bytes: 4
+Done
+
 386:28-386:40
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64865967_b0c7b1da
 Bytes: 6
 !empty
+
+386:28-386:40
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_b0c7b1da
+UUID: 448b1570_2d584a63
+Bytes: 4
+Done
 
 1174:2-1174:22
 Sat Jun 28 22:49:32 2014 +0000
@@ -64,12 +120,28 @@ UUID: 64865967_d0ccb5fe
 Bytes: 167
 I kind of understand why you are reversing the name of this class from the old method name, but it is odd to me that all the arguments are about explicit, not implict.
 
+1174:2-1174:22
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_d0ccb5fe
+UUID: 448b1570_0d5f8652
+Bytes: 52
+Yeah, that's somewhat from Dave's naming convention.
+
 1388:22-1388:39
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64865967_70b2a985
 Bytes: 76
 I'd add constants for these along where you defined the image file name one.
+
+1388:22-1388:39
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_70b2a985
+UUID: c47e2525_0c7f97b9
+Bytes: 4
+Done
 
 File: oatdump/oatdump.cc
 
@@ -80,6 +152,14 @@ UUID: 64865967_b0e01160
 Bytes: 71
 I would just remove this and assume it will be part of the store below?
 
+174:1-179:0
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_b0e01160
+UUID: 64865967_a9d8a8ad
+Bytes: 4
+Done
+
 File: runtime/class_linker.cc
 
 1166:0-1168:69
@@ -88,6 +168,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 448b1570_575e7bc8
 Bytes: 90
 the check presumably should presumably be one or the other? it seems odd to tolerate both.
+
+1166:0-1168:69
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 448b1570_575e7bc8
+UUID: 64865967_0988d4a2
+Bytes: 141
+It tolerates either missing the entry entirely, or having an empty string there (as before). I think both say "I don't have it" equally well.
 
 File: runtime/oat.cc
 
@@ -98,12 +186,28 @@ UUID: 64865967_90d86dae
 Bytes: 112
 no, i don't think so. it is only used by apps to match the image right? not be the boot.oat to the boot.art IIRC
 
+60:0-60:55
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_90d86dae
+UUID: 64865967_298d98b2
+Bytes: 4
+Done
+
 414:18-414:26
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 448b1570_d7b26bd4
 Bytes: 23
 Estimate? or Calculate?
+
+414:18-414:26
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 448b1570_d7b26bd4
+UUID: c47e2525_0f6789f4
+Bytes: 64
+Changed it to Compute and made it a function local to this file.
 
 File: runtime/oat.h
 
@@ -114,6 +218,14 @@ UUID: 64865967_30d50175
 Bytes: 202
 is this for the person allocating the OatHeader with data? Why not make the constructor private and have the creation be contained within OatHeadeR::Create or something to hide this from the public API?
 
+100:0-100:91
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_30d50175
+UUID: 64865967_899cc4e2
+Bytes: 4
+Done
+
 File: runtime/oat_file.cc
 
 83:0-83:29
@@ -123,12 +235,28 @@ UUID: 64865967_50d2058e
 Bytes: 98
 I'd rather just return. having this implies there would be something else to do in the error case.
 
+83:0-83:29
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_50d2058e
+UUID: 64865967_0971b4f2
+Bytes: 33
+Sorry, I'm not sure I understand.
+
 90:6-90:46
 Sat Jun 28 22:49:32 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 448b1570_97b5c3bb
 Bytes: 125
 why not make it an CHECK error? presumably the oat version check comes first, so they are required for 036 version or higher.
+
+90:6-90:46
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 448b1570_97b5c3bb
+UUID: 64865967_e96f900b
+Bytes: 119
+Is FATALing out the right way, though? Returning nullptr here would try to regenerate and only fail in case it can't...
 
 97:35-97:71
 Sat Jun 28 22:49:32 2014 +0000
@@ -143,4 +271,12 @@ if (runtime == nullptr) {
 }
 
 especially since it seems like this could be done before even bothering to parse the options.
+
+97:35-97:71
+Mon Jun 30 21:31:27 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64865967_f0877993
+UUID: a47bf135_cb7095f1
+Bytes: 250
+I was structuring it so that oatdump would have the same behavior as actually running it. I found it "weird" to let oatdump dump an oat file without error, but then when running you'd get malformed implicit check options. Open for discussion, though.
 

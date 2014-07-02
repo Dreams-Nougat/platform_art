@@ -34,6 +34,14 @@ UUID: 440235bc_bea3018d
 Bytes: 165
 I did it like this because I think we should have the patch information regardless of how we compile it. ISTM that the option is only whether or not to write it out.
 
+96
+Wed Jul 02 19:54:15 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 440235bc_bea3018d
+UUID: 640d79e9_a2bc84c9
+Bytes: 198
+my point is, a lot of the diff is just to pass around this bool flag, it really should just be in the options. then we can document what it means one place, instead of through all all the call paths
+
 File: compiler/elf_writer_quick.cc
 
 832:32-832:42
@@ -99,6 +107,14 @@ Parent: 04f3dd1b_85e981cf
 UUID: c4fc65ef_65d8bcfb
 Bytes: 128
 Yes we need it. This is the File* that the elf_file is in. We need it to fully map in the elf file and add patching information.
+
+147
+Wed Jul 02 19:54:15 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4fc65ef_65d8bcfb
+UUID: 640d79e9_42cc886b
+Bytes: 60
+I see, this is my own confusing naming come back to bite me.
 
 802:0-804:65
 Wed Jul 02 01:20:35 2014 +0000
@@ -353,6 +369,14 @@ Between LOUSER and HIUSER is reserved for application use. This means that since
 
 Anyway if it becomes a problem it would be easy to change the value then.
 
+66
+Wed Jul 02 19:54:15 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4fc65ef_85d6a8f7
+UUID: 440235bc_c1d3786e
+Bytes: 65
+my point is that I don't think we need to use one, so I wouldn't.
+
 File: runtime/image.h
 
 159:2-159:23
@@ -369,6 +393,14 @@ Parent: a4a77122_f1480074
 UUID: 640d79e9_5f8d83db
 Bytes: 88
 We can have negative patch deltas and I think that the header should not hide that fact.
+
+159
+Wed Jul 02 19:54:15 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 640d79e9_5f8d83db
+UUID: 440235bc_7e316924
+Bytes: 133
+can we? I don't think so. the platform is going to have a minimal supported base address, and we are going to have a delta from that.
 
 File: runtime/oat_file.h
 

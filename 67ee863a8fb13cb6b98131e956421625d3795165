@@ -1,0 +1,127 @@
+Revision: 67ee863a8fb13cb6b98131e956421625d3795165
+Patch-set: 3
+File: compiler/compilers.cc
+
+96:37-96:58
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84d6ed80_adfc69da
+Bytes: 194
+can we just add this as a CompilerOptions that is in CompilerDriver so we don't have to pass it through all the layers explicitly? clearly we have it here at this point and even one layer below.
+
+File: compiler/elf_writer_quick.cc
+
+832:32-832:42
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a77122_2e3067da
+Bytes: 89
+if this is the same as include_patches, I'd call it the same name consistently thoughout.
+
+File: compiler/image_test.cc
+
+73:8-73:32
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a77122_4e0213d8
+Bytes: 175
+i'd probably add the comment explaining that it is unsupported for now. its obvious why this is here now, because i just saw the mclinker change, but it won't be obvious later
+
+File: compiler/image_writer.cc
+
+144:0-146:75
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_25118d25
+Bytes: 162
+i agree that we should have this comment, but is this the right place? somewhere where we are actually calculating the size of the patches makes more sense to me.
+
+147:25-147:39
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_85e981cf
+Bytes: 58
+we don't need the argument here right? it is in oat_file_?
+
+802:0-804:65
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84d6ed80_2d2999f0
+Bytes: 58
+this seems like a better place for the comment from above.
+
+851:4-851:14
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a77122_2e37c71c
+Bytes: 433
+while clever, I assumed this would be in SetPatchLocation. i see this way that the patch information is scoped to this function. but that could be done with an out argument. I thought you might be doing this because there were a lot of cases in SetPatchLocation, but there aren't, there is just one. plus you have kind of a hacky return value now where 0 implies relative vs absolute, which is just for the convenience of maybe_push.
+
+874:25-874:39
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_a5d63df7
+Bytes: 88
+I don't think we should be reserving our own section type, I'd just use a named section.
+
+887:29-887:30
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84d6ed80_4d204d02
+Bytes: 14
+space around *
+
+File: compiler/image_writer.h
+
+40:61-40:78
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_e5ede5e0
+Bytes: 57
+again in this case, it can be found via compiler options.
+
+File: compiler/oat_test.cc
+
+122:0-122:78
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84d6ed80_0d9935f1
+Bytes: 113
+i wondered why you didn't do this in the other test where you set to true but then set back to false if portable.
+
+File: patchoat/Android.mk
+
+33:78-33:106
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f3dd1b_05729164
+Bytes: 98
+do you depend on the compiler parts? if not, you can leave these out if you just need the runtime.
+
+File: runtime/elf_utils.h
+
+65:0-66:39
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84d6ed80_ed630122
+Bytes: 89
+I'd rather avoid using these I think some ABIs might have effectively used some of these.
+
+File: runtime/image.h
+
+159:2-159:23
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a77122_f1480074
+Bytes: 48
+don't we want to assume unsigned for simplicity?
+
+File: runtime/oat_file.h
+
+65:40-65:55
+Wed Jul 02 01:20:35 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a77122_11402c47
+Bytes: 67
+replace 'this oatfile." with << GetLocation() so we know which one.
+

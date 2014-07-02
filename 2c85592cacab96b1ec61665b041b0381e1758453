@@ -9,3 +9,20 @@ UUID: 64dbb9ad_0ce5b743
 Bytes: 284
 was this the signedness difference you were talking about? when Android, the Linux kernel, glibc, the BSDs, and elfutils all agree, i think llvm is wrong even if they're right :-) in this case, i assume it's an incorrect assumption on their part about the default signedness of enums.
 
+170
+Wed Jul 02 16:49:01 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64dbb9ad_0ce5b743
+UUID: 64dbb9ad_8c8ec71d
+Bytes: 482
+no the above is becasuse the compiler was complaining about unsigned vs signed with the ternary operator.
+
+No the original issue was the Elf32_Sword vs Elf32_Word change in https://android-review.googlesource.com/#/c/97640/3/compiler/elf_writer_quick.h
+
+linux elf.h says  Elf32_Sword d_val;
+LLVM elf.h says Elf32_Word d_val;
+elfutils says Elf32_Word d_val 
+http://www.sco.com/developers/gabi/latest/ch5.dynamic.html says Elf32_Word	d_val;
+
+so linux and therefore bionic seems wrong.
+

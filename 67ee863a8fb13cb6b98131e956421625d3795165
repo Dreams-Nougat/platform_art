@@ -211,6 +211,127 @@ UUID: 440235bc_1eb2edea
 Bytes: 4
 Done
 
+File: patchoat/patchoat.cc
+
+52:27-52:40
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4fc65ef_e504ccaf
+Bytes: 127
+rather than bake another copy of these strings here, I'd make this return InstructionSet, and then use GetInstructionSetString.
+
+72:2-72:18
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 440235bc_9efa7d54
+Bytes: 176
+i think we always call this error_msg. should we make it an argument and use it in place of the LOG(ERROR) and have the caller log? if not move to point of first use from here.
+
+80:9-80:13
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4fc65ef_a523e443
+Bytes: 82
+art_location -> image_location for consistency. also in the text part "image file"
+
+110:4-110:89
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 440235bc_feff3942
+Bytes: 24
+return false; after this
+
+174:31-174:36
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 440235bc_be1e61f4
+Bytes: 42
+WriteFully to deal with signal interrupts.
+
+189:31-189:36
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 440235bc_9e239d44
+Bytes: 10
+WriteFully
+
+208:19-208:29
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 640d79e9_1f4b0b95
+Bytes: 10
+relocation
+
+231:2-231:94
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 440235bc_3e1371ed
+Bytes: 226
+I think I'd just move this into InHeap and rename it "CheckHeapReference" so it can be reused with the below call. it can deal with the null case as well. it is a pretty common pattern for us to have CheckFoo helper functions.
+
+286:2-286:38
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 440235bc_5e0aa5ae
+Bytes: 23
+all the values of what?
+
+374:0-389:1
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4fc65ef_a52da420
+Bytes: 344
+I think we have this knowledge elsewhere. ah yes, in ElfFixup::FixupDynamic. can you move this to a shared helper in elf_utils.h?
+
+there are other cases you are missing because of this such as 
+
+              case DT_MIPS_BASE_ADDRESS:
+              case DT_MIPS_CONFLICT:
+              case DT_MIPS_LIBLIST:
+              case DT_MIPS_RLD_MAP:
+
+444:0-446:1
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 640d79e9_df41936f
+Bytes: 33
+just use "ELF32_ST_TYPE(st_info)"
+
+477:2-477:67
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4fc65ef_85698838
+Bytes: 69
+we look all these sections up in CheckOatFile, can we just save them?
+
+537:24-537:27
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4fc65ef_c5eb905b
+Bytes: 50
+again, we always call these image (here and below)
+
+671:1-686:7
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4fc65ef_459ca0e1
+Bytes: 89
+we should consider moving to a non-fatal form of GetInstructionSetFromString. add a TODO?
+
+688:0-688:27
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4fc65ef_85a6a835
+Bytes: 81
+I think it's clearer to do the parsing checks here, but the semantic checks later
+
+877:20-877:25
+Wed Jul 02 18:52:21 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 640d79e9_226a34bc
+Bytes: 6
+supply
+
 File: runtime/elf_utils.h
 
 65:0-66:39

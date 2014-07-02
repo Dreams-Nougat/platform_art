@@ -26,6 +26,14 @@ UUID: 84d6ed80_adfc69da
 Bytes: 194
 can we just add this as a CompilerOptions that is in CompilerDriver so we don't have to pass it through all the layers explicitly? clearly we have it here at this point and even one layer below.
 
+96
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d6ed80_adfc69da
+UUID: 440235bc_bea3018d
+Bytes: 165
+I did it like this because I think we should have the patch information regardless of how we compile it. ISTM that the option is only whether or not to write it out.
+
 File: compiler/elf_writer_quick.cc
 
 832:32-832:42
@@ -34,6 +42,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4a77122_2e3067da
 Bytes: 89
 if this is the same as include_patches, I'd call it the same name consistently thoughout.
+
+832
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a77122_2e3067da
+UUID: 640d79e9_ff91f7cd
+Bytes: 4
+Done
 
 File: compiler/image_test.cc
 
@@ -44,6 +60,14 @@ UUID: a4a77122_4e0213d8
 Bytes: 175
 i'd probably add the comment explaining that it is unsupported for now. its obvious why this is here now, because i just saw the mclinker change, but it won't be obvious later
 
+73
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a77122_4e0213d8
+UUID: 640d79e9_1f994bf1
+Bytes: 4
+Done
+
 File: compiler/image_writer.cc
 
 144:0-146:75
@@ -53,12 +77,28 @@ UUID: 04f3dd1b_25118d25
 Bytes: 162
 i agree that we should have this comment, but is this the right place? somewhere where we are actually calculating the size of the patches makes more sense to me.
 
+146
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_25118d25
+UUID: 440235bc_3eb891b1
+Bytes: 4
+Done
+
 147:25-147:39
 Wed Jul 02 01:20:35 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04f3dd1b_85e981cf
 Bytes: 58
 we don't need the argument here right? it is in oat_file_?
+
+147
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_85e981cf
+UUID: c4fc65ef_65d8bcfb
+Bytes: 128
+Yes we need it. This is the File* that the elf_file is in. We need it to fully map in the elf file and add patching information.
 
 802:0-804:65
 Wed Jul 02 01:20:35 2014 +0000
@@ -67,12 +107,28 @@ UUID: 84d6ed80_2d2999f0
 Bytes: 58
 this seems like a better place for the comment from above.
 
+804
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d6ed80_2d2999f0
+UUID: 440235bc_becca148
+Bytes: 4
+Done
+
 851:4-851:14
 Wed Jul 02 01:20:35 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4a77122_2e37c71c
 Bytes: 433
 while clever, I assumed this would be in SetPatchLocation. i see this way that the patch information is scoped to this function. but that could be done with an out argument. I thought you might be doing this because there were a lot of cases in SetPatchLocation, but there aren't, there is just one. plus you have kind of a hacky return value now where 0 implies relative vs absolute, which is just for the convenience of maybe_push.
+
+851
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a77122_2e37c71c
+UUID: 04cafddd_46ef9221
+Bytes: 29
+Rewrote using out parameters.
 
 874:25-874:39
 Wed Jul 02 01:20:35 2014 +0000
@@ -81,12 +137,28 @@ UUID: 04f3dd1b_a5d63df7
 Bytes: 88
 I don't think we should be reserving our own section type, I'd just use a named section.
 
+874
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_a5d63df7
+UUID: 440235bc_9ed1dde0
+Bytes: 30
+Changed It to search for name.
+
 887:29-887:30
 Wed Jul 02 01:20:35 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84d6ed80_4d204d02
 Bytes: 14
 space around *
+
+887
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d6ed80_4d204d02
+UUID: 440235bc_fec61926
+Bytes: 4
+Done
 
 File: compiler/image_writer.h
 
@@ -97,6 +169,14 @@ UUID: 04f3dd1b_e5ede5e0
 Bytes: 57
 again in this case, it can be found via compiler options.
 
+40
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_e5ede5e0
+UUID: 640d79e9_7fa68738
+Bytes: 135
+Again. It seems like this is more an option controlling whether it gets written out and doesn't seem to belong in the compiler_options.
+
 File: compiler/oat_test.cc
 
 122:0-122:78
@@ -105,6 +185,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84d6ed80_0d9935f1
 Bytes: 113
 i wondered why you didn't do this in the other test where you set to true but then set back to false if portable.
+
+122
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d6ed80_0d9935f1
+UUID: 640d79e9_3f29aff0
+Bytes: 118
+In the other test we just use the default compiler and it is not possible to determine the kind from a given compiler.
 
 File: patchoat/Android.mk
 
@@ -115,6 +203,14 @@ UUID: 04f3dd1b_05729164
 Bytes: 98
 do you depend on the compiler parts? if not, you can leave these out if you just need the runtime.
 
+33
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f3dd1b_05729164
+UUID: 440235bc_1eb2edea
+Bytes: 4
+Done
+
 File: runtime/elf_utils.h
 
 65:0-66:39
@@ -123,6 +219,18 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84d6ed80_ed630122
 Bytes: 89
 I'd rather avoid using these I think some ABIs might have effectively used some of these.
+
+66
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d6ed80_ed630122
+UUID: c4fc65ef_85d6a8f7
+Bytes: 421
+It shouldn't. Sections for specific processor ABI's should be between SHT_LOPROC and SHT_HIPROC. OS & associated tools sections (i.e. for BSD/GNU tools we use) are kept between SHT_LOOS and SHT_HIOS.
+
+Between LOUSER and HIUSER is reserved for application use. This means that since niether linux nor our loader uses it we should be free to do so.
+
+Anyway if it becomes a problem it would be easy to change the value then.
 
 File: runtime/image.h
 
@@ -133,6 +241,14 @@ UUID: a4a77122_f1480074
 Bytes: 48
 don't we want to assume unsigned for simplicity?
 
+159
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a77122_f1480074
+UUID: 640d79e9_5f8d83db
+Bytes: 88
+We can have negative patch deltas and I think that the header should not hide that fact.
+
 File: runtime/oat_file.h
 
 65:40-65:55
@@ -141,4 +257,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4a77122_11402c47
 Bytes: 67
 replace 'this oatfile." with << GetLocation() so we know which one.
+
+65
+Wed Jul 02 18:35:13 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a77122_11402c47
+UUID: c4fc65ef_05f8d89a
+Bytes: 4
+Done
 

@@ -1,5 +1,14 @@
 Revision: 08901f4924b4e14a5d88029d54e50c57b2f8787d
 Patch-set: 1
+File: /COMMIT_MSG
+
+9
+Thu Jul 03 10:03:10 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c6c9d8_0e7aca94
+Bytes: 12
+Elimination.
+
 File: compiler/dex/quick/gen_common.cc
 
 464:20-464:37
@@ -8,6 +17,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4c051c0_66dbb0f9
 Bytes: 121
 The SP is technically not a ref, but I wonder whether we need to disambiguate between "normal" pointer and ART reference.
+
+464
+Thu Jul 03 10:03:10 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4c051c0_66dbb0f9
+UUID: 445315fd_507f2cb8
+Bytes: 163
+Yes, I had the same thought. Disambiguating seems the right thing to do. Maybe, introduce a TargetPtrReg()? Don't mind whether this is done here or in a future CL.
 
 494:32-494:48
 Thu Jul 03 09:20:22 2014 +0000
@@ -157,4 +174,16 @@ Bytes: 240
 Just the private here? :-) Plus indentation is off.
 
 You copied the code from ARM64, which is a good start. If you have ideas about how to streamline it or and make it share-able so it doesn't pollute both backends, I'm very open for ideas.
+
+409
+Thu Jul 03 10:03:10 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4c051c0_06e75cbd
+UUID: e4c6c9d8_ce6f12d7
+Bytes: 651
+I would be careful with making this general. The As32BitReg() and As64BitReg() functions where born in the commit below,
+
+  https://android-review.googlesource.com/#/c/96939/
+
+When I created them I wanted them to be shared among the backends, but Bill argued that - in order for them to be shared - there was a need to make them use FindMatchingView(), which I found somewhat heavyweight (see discussion in the CL). The final agreement was to make them local. I later verified that these functions are inlined and produce no more than a couple of A64 instrucions when compiled for Arm64 (in non-debug builds). I would prefer that things stay this way.
 

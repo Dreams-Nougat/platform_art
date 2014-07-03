@@ -1,0 +1,152 @@
+Revision: 08901f4924b4e14a5d88029d54e50c57b2f8787d
+Patch-set: 1
+File: compiler/dex/quick/gen_common.cc
+
+464:20-464:37
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_66dbb0f9
+Bytes: 121
+The SP is technically not a ref, but I wonder whether we need to disambiguate between "normal" pointer and ART reference.
+
+494:32-494:48
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485d588_466a06bd
+Bytes: 9
+As above.
+
+621:27-621:51
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_677f2cb9
+Bytes: 67
+r_base is a RefReg, so it seems weird to make this non-wide (=32b).
+
+714:27-714:51
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_477cb0c2
+Bytes: 9
+As above.
+
+File: compiler/dex/quick/gen_invoke.cc
+
+156:67-156:72
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485d588_86640eef
+Bytes: 46
+Use arg0 instead of false, as it may be a ref.
+
+195:0-200:5
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485d588_c6c61680
+Bytes: 114
+We could clean this and similar up by implementing TargetReg(x, true) in the 32b case to build the pair. Opinions?
+
+319:10-320:99
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_875ea853
+Bytes: 25
+Also remove this, please.
+
+336:10-336:30
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485d588_e6cb1a85
+Bytes: 108
+Doesn't apply anymore, simplify. But put a DCHECK at the top of the else (for the kArm64 || kX86_64), maybe.
+
+347:8-347:28
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_e7631c22
+Bytes: 9
+As above.
+
+361:8-361:28
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_c768a0ff
+Bytes: 9
+As above.
+
+369:10-369:30
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485d588_06d1de33
+Bytes: 9
+As above.
+
+375:10-375:30
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485d588_26b6e217
+Bytes: 9
+As above.
+
+399:39-399:53
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_86fa2c54
+Bytes: 245
+Not necessary, IsSameReg will take care of that. If you do it this way, we should remove the IsSameReg.
+
+But Bill has concerns for 32b systems and overlap by pairs, that's why the complicated IsSameReg. I am not sure this applies here, though...
+
+400:41-400:55
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_274ed4a4
+Bytes: 5
+Same.
+
+526:17-526:34
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485d588_46b3e626
+Bytes: 9
+As above.
+
+589:20-589:37
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_6758cc64
+Bytes: 9
+As above.
+
+594:19-594:36
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_c60424b0
+Bytes: 24
+OK, gonna stop here. :-)
+
+618:27-618:43
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_4755d02a
+Bytes: 52
+Similar to SP - this is a pointer not into the heap.
+
+805:23-805:46
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_26ea5885
+Bytes: 28
+Self is also a full pointer.
+
+File: compiler/dex/quick/x86/codegen_x86.h
+
+407:1-409:10
+Thu Jul 03 09:20:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_06e75cbd
+Bytes: 240
+Just the private here? :-) Plus indentation is off.
+
+You copied the code from ARM64, which is a good start. If you have ideas about how to streamline it or and make it share-able so it doesn't pollute both backends, I'm very open for ideas.
+

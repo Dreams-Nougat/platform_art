@@ -17,6 +17,14 @@ UUID: 841c2dfc_fdc203cc
 Bytes: 112
 You're probably right (didn't get a chance to look at that one closely), but it can be considered independently.
 
+533:11-533:16
+Thu Jul 03 07:22:24 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 841c2dfc_fdc203cc
+UUID: c4c385c9_47a31027
+Bytes: 247
+I took the code for ARM64 as it was easier than fixing what was there. But I agree with Bill: the 32b case here can be fixed in a separate CL. We should actually be able to take advantage that both 64b backends have an overloaded implementation...
+
 File: compiler/dex/quick/ralloc_util.cc
 
 1140:7-1140:71
@@ -33,6 +41,14 @@ Parent: 6421f930_dc7061f1
 UUID: c450e5a6_1fbc8752
 Bytes: 202
 Yes, it would be better.  I'll leave it up to Andreas, but my inclination would be to patch it up later (keeping in mind that 32-bit targets would would need the high reg portion added to the next reg).
+
+1140:7-1140:71
+Thu Jul 03 07:22:24 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c450e5a6_1fbc8752
+UUID: 4485d588_4681263b
+Bytes: 76
+I'd like to get the CL in "as is" and then would be happy to accept patches.
 
 1288:45-1288:46
 Mon Jun 30 04:32:06 2014 +0000
@@ -67,12 +83,28 @@ The DCHECK issue is adressed by Andreas's https://android-review.googlesource.co
 
 Please revert ralloc_util.cc to state of patchset 3 and merge the promotion patch. The changes between patchset 3 and 4 in ralloc_util.cc relate to 64-bit ref support in backend, please separate it into another CL.
 
+1288
+Thu Jul 03 07:22:24 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44d07588_88535726
+UUID: a4c051c0_26b898b1
+Bytes: 29
+wide specialized to !kX86_64.
+
 1305:14-1305:22
 Mon Jun 30 04:32:06 2014 +0000
 Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6421f930_fc7525de
 Bytes: 117
 This code expects that long is always promoted to pair registers but I do not see this logic in AllocPreservedCoreReg
+
+1305:14-1305:22
+Thu Jul 03 07:22:24 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6421f930_fc7525de
+UUID: a4c051c0_06b59cb9
+Bytes: 32
+Could you explain what you mean?
 
 File: compiler/dex/quick/x86/target_x86.cc
 
@@ -85,6 +117,14 @@ Please remove changes from FlushIns since they cause merge conflict with Simplif
 
 The "Simplify Flushins patch" works correctly with patchset 3 of this CL.
 
+1890:53-1890:56
+Thu Jul 03 07:22:24 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44d07588_c84d4f82
+UUID: a4c051c0_c6b264d4
+Bytes: 39
+Merge conflict resolved by taking HEAD.
+
 1922:29-1922:32
 Wed Jul 02 17:19:16 2014 +0000
 Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -93,4 +133,12 @@ Bytes: 172
 Please remove changes from FlushIns since they cause merge conflict with Simplify FlushIns patch.
 
 The "Simplify Flushins patch" works correctly with patchset 3 of this CL.
+
+1922:29-1922:32
+Thu Jul 03 07:22:24 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44d07588_28434b57
+UUID: 4485d588_2684224c
+Bytes: 41
+Merge conflicted resolved by taking HEAD.
 

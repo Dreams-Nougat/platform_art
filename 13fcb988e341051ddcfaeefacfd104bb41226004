@@ -11,6 +11,15 @@ Removing kNullCheckElimination from here and doing: mma clean-oat && mma will hi
 
 You can also try running test 082 and it will fail in a similar way.
 
+File: compiler/dex/quick/arm64/int_arm64.cc
+
+500
+Thu Jul 03 11:48:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 445eb5fe_f80491af
+Bytes: 96
+Do we really need this? Shouldn't we just LoadValueWide() below and get rid of the As64BitReg()?
+
 File: compiler/dex/quick/arm64/utility_arm64.cc
 
 931
@@ -19,4 +28,27 @@ Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4c6c9d8_0517525f
 Bytes: 322
 The change above and the three analogous companions below are necessary to avoid problems with reference widths. Notice that without these changes, we would be asserting that references must be 32-bit wide. Notice that the one above is a hack, but a proper fix for this issue should probably come through a separate patch.
+
+File: compiler/dex/quick/gen_invoke.cc
+
+1702:4-1702:67
+Thu Jul 03 11:48:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 445eb5fe_183dc549
+Bytes: 128
+EvalLoc() calls EvalLocWide() for wide location. Why do we need to split this instead of initializing rl_result above as before?
+
+1703:0-1706:75
+Thu Jul 03 11:48:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a495b1be_1be13bb1
+Bytes: 77
+These can be merged, the LoadBaseIndexed() is correct for x86/x86_64 as well.
+
+1754:0-1757:75
+Thu Jul 03 11:48:12 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 445eb5fe_78340164
+Bytes: 78
+These can be merged, the StoreBaseIndexed() is correct for x86/x86_64 as well.
 

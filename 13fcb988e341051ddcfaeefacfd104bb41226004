@@ -30,12 +30,27 @@ I agree, this does not make sense. We'll change it as suggested.
 
 File: compiler/dex/quick/arm64/utility_arm64.cc
 
+898:2-898:26
+Thu Jul 03 23:43:53 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_4aacb78c
+Bytes: 56
+I was trying to find all cases where we get a 32b index.
+
 931
 Wed Jul 02 18:35:39 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4c6c9d8_0517525f
 Bytes: 322
 The change above and the three analogous companions below are necessary to avoid problems with reference widths. Notice that without these changes, we would be asserting that references must be 32-bit wide. Notice that the one above is a hack, but a proper fix for this issue should probably come through a separate patch.
+
+931
+Thu Jul 03 23:43:53 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c6c9d8_0517525f
+UUID: a4c051c0_86750ce0
+Bytes: 138
+This means we reach kReference through something that is not Load/Store*Ref*, and that is wrong, IMHO. I marked two cases in another file.
 
 File: compiler/dex/quick/gen_invoke.cc
 
@@ -69,6 +84,13 @@ UUID: 246381c5_bdc207cb
 Bytes: 12
 OK, will do.
 
+1714:4-1716:56
+Thu Jul 03 23:43:53 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_26853881
+Bytes: 45
+Should be LoadRefIndexed when you have a ref.
+
 1754:0-1757:75
 Thu Jul 03 11:48:12 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -83,4 +105,11 @@ Parent: 445eb5fe_78340164
 UUID: 04cafddd_7bf4e364
 Bytes: 8
 Will do.
+
+1766:4-1767:56
+Thu Jul 03 23:43:53 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4c385c9_aa89eb19
+Bytes: 44
+Should be StoreRefIndexed if you have a ref.
 

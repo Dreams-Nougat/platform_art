@@ -145,6 +145,14 @@ UUID: c498e5f7_3f8343b6
 Bytes: 207
 It's easy to miss and that's pretty dangerous. I would vote for getting rid of the Load/StoreRefIndexed() before it's widely used given that the Load/StoreBaseIndexed is supposed to handle kReference anyway.
 
+1716
+Fri Jul 04 10:52:07 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c498e5f7_3f8343b6
+UUID: 04cafddd_b07f95ec
+Bytes: 451
+The implicit scaling of the offset register in Load/StoreRefIndexed() is something I certainly would not expect as a "natural behaviour". I suspect that these functions should either not scale the index, or - if they do - be named differently (e.g. LoadRefScaleIndexed()?). Alternatively, they could take a boolean (to indicate whether to scale or not) or they could be removed, as you suggest. I have no strong opinions about what is the best option.
+
 1754:0-1757:75
 Thu Jul 03 11:48:12 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

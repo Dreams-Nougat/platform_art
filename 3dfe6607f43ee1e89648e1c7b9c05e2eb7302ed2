@@ -20,6 +20,22 @@ I prefer keeping AssertInitializedOrInitializingInThread. I find it easier to lo
 
 Maybe your concern is related to debug build? I thought using the "Assert" word would help remind we only do this in debug build.
 
+357:49-357:88
+Fri Jul 04 12:31:38 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c498e5f7_02354efb
+UUID: c498e5f7_a24e5a7e
+Bytes: 374
+What I find confusing is that it's not following the current standard of how we check. For example line 356 is:
+DCHECK(!shadow_frame.GetMethod()->IsNative());
+
+Not 
+shadow_frame.GetMethod()->AssertIsNotNative()
+
+Having just one and consistent logic around writing debug checks makes it easier when reading the code.
+
+Isn't the DCHECK outputing the C instruction that failed?
+
 File: runtime/interpreter/interpreter_common.cc
 
 763:60-763:66

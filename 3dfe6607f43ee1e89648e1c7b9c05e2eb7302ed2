@@ -36,6 +36,16 @@ Having just one and consistent logic around writing debug checks makes it easier
 
 Isn't the DCHECK outputing the C instruction that failed?
 
+357:49-357:88
+Fri Jul 04 12:49:12 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c498e5f7_a24e5a7e
+UUID: c498e5f7_42403648
+Bytes: 762
+I see your point. AssertInitializedOrInitializingInThread actually contains 2 CHECKS, each one with a specific failure message giving information known at runtime like the class' status. If I go the IsInitializedOrInitializingInThread route, I'd need to move these failure messages to a separate function to dump it with the DCHECK. Assuming the method's class is in "declaring_class" variable, I'd write something like "DCHECK(declaring_class->IsInitializedOrInitializingInThread(thread)) << class->DumpInitializationCheckFailureMessage(thread);". If you prefer this way, it's fine to me
+
+Note we already have Thread::AssertThreadSuspensionIsAllowable as sanity check for debug build. It's a bit more complex than AssertInitializedOrInitializingInThread though.
+
 File: runtime/interpreter/interpreter_common.cc
 
 763:60-763:66

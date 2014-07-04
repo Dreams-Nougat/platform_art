@@ -17,3 +17,11 @@ UUID: 445eb5fe_7bd87bfb
 Bytes: 326
 The ides is that most of instructions are byte to byte. In some cases it is byte to non-byte. So I'd like to see the byte_secode_operand equals to the first one and change it when I need only. Otherwise I will need to set byte_second_operand to true in all places where I set byte_operand to true. So I decided to use pointer.
 
+205:2-205:44
+Fri Jul 04 05:36:08 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 445eb5fe_7bd87bfb
+UUID: e4c6c9d8_84f4db65
+Bytes: 444
+Understandable, but that makes the meaning behind this somewhat hidden. How about a slightly different approach: a bool flag second_operand_override. You only ever set the second operand to true. So you could set the flag to true, and where you dereference the pointer right now, you do byte_operand || second_operand_override. This makes things a bit more explicit and avoids having to follow pointers when tracing the code. What do you think?
+

@@ -37,6 +37,14 @@ UUID: c4c385c9_4aacb78c
 Bytes: 56
 I was trying to find all cases where we get a 32b index.
 
+898
+Fri Jul 04 09:04:01 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4c385c9_4aacb78c
+UUID: c498e5f7_bf2d9320
+Bytes: 279
+There are a couple of them (you can easily find them by restoring the check, which will lead to assertion failures). Using a 32-bit register as an index is, however, a legitimate thing to do (e.g. if the index is loaded with ldr wN, [...]) and therefore it is good to support it.
+
 931
 Wed Jul 02 18:35:39 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,6 +59,36 @@ Parent: e4c6c9d8_0517525f
 UUID: a4c051c0_86750ce0
 Bytes: 138
 This means we reach kReference through something that is not Load/Store*Ref*, and that is wrong, IMHO. I marked two cases in another file.
+
+931
+Fri Jul 04 09:04:01 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4c051c0_86750ce0
+UUID: 043d9d9e_eee2ff3d
+Bytes: 1282
+OK. I now understand what your intentions are. I assumed that 
+
+  LoadBaseIndexed(r_base, r_index, r_dest_ref, 0, kReference);
+
+would be a perfectly legitimate thing do to for loading a reference. LoadRefIndexed() seems a specialisation of the function above. I assumed that one would use LoadRefIndexed(), when it is known that that the function-call always loads a reference. And I assumed that one would rather use LoadBaseIndexed(), when this is not known at compile time. In other words, I assumed that one would do:
+
+  OpSize size = SizeOfDest(r_dest);
+  int scale = ScaleOfDest(r_dest); // Or zero.
+  LoadBaseIndexed(r_base, r_index, r_dest, scale, size);
+
+Rather than:
+
+  if (DestIsReference(r_dest)) {
+    LoadRefIndexed(r_base, r_index, r_dest, 0);
+  } else {
+    OpSize size = SizeOfDest(r_dest);
+    int scale = ScaleOfDest(r_dest); // Or zero.
+    LoadBaseIndexed(r_base, r_index, r_dest, scale, size);
+  }
+
+I have still to get convinced that the latter is better than the former. But, we should - at least - clarify what the calling protocol is by adding a comment before LoadBaseIndexed such as "Do not use this to load a reference".
+
+A problem would still remain, as the current prototype of LoadRefIndexed cannot replace LoadBaseIndexed if the offset is not scaled.
 
 File: compiler/dex/quick/gen_invoke.cc
 
@@ -91,6 +129,14 @@ UUID: a4c051c0_26853881
 Bytes: 45
 Should be LoadRefIndexed when you have a ref.
 
+1716
+Fri Jul 04 09:04:01 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4c051c0_26853881
+UUID: 043d9d9e_eefbdfdd
+Bytes: 91
+AFAICS, LoadRefIndexed uses scale == 2, here we use scale == 0. I think this will not work.
+
 1754:0-1757:75
 Thu Jul 03 11:48:12 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -112,4 +158,12 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4c385c9_aa89eb19
 Bytes: 44
 Should be StoreRefIndexed if you have a ref.
+
+1767
+Fri Jul 04 09:04:01 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4c385c9_aa89eb19
+UUID: c498e5f7_1f3da749
+Bytes: 24
+Again, scale == 0, here.
 

@@ -153,6 +153,14 @@ UUID: 04cafddd_b07f95ec
 Bytes: 451
 The implicit scaling of the offset register in Load/StoreRefIndexed() is something I certainly would not expect as a "natural behaviour". I suspect that these functions should either not scale the index, or - if they do - be named differently (e.g. LoadRefScaleIndexed()?). Alternatively, they could take a boolean (to indicate whether to scale or not) or they could be removed, as you suggest. I have no strong opinions about what is the best option.
 
+1716
+Fri Jul 04 17:14:07 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04cafddd_b07f95ec
+UUID: 4485d588_466cc646
+Bytes: 432
+I have a strong opinion, and it's for keeping this. The reason to introduce the Ref functions was twofold: 1) to avoid having to check in the Base functions whether we have a small or a large register, and more importantly 2) so that all ref handling is in a "central" place. If/when we move to references being more than 32b pointers, this will allow us to easily and in very obvious places implement the compress/uncompress logic.
+
 1754:0-1757:75
 Thu Jul 03 11:48:12 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -46,6 +46,16 @@ I see your point. AssertInitializedOrInitializingInThread actually contains 2 CH
 
 Note we already have Thread::AssertThreadSuspensionIsAllowable as sanity check for debug build. It's a bit more complex than AssertInitializedOrInitializingInThread though.
 
+357:49-357:88
+Fri Jul 04 12:58:31 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c498e5f7_42403648
+UUID: 445eb5fe_9efc5ddb
+Bytes: 265
+OK. Maybe adding a redundant DCHECK at the call site would make things easier to read then. And also avoid the extra loads the compiler may not be able to remove:
+
+DCHECK(shadow_frame.GetMethod()->GetDeclaringClass()->AssertInitializedOrInitializingInThread(self));
+
 File: runtime/interpreter/interpreter_common.cc
 
 763:60-763:66

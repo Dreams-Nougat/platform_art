@@ -56,6 +56,14 @@ OK. Maybe adding a redundant DCHECK at the call site would make things easier to
 
 DCHECK(shadow_frame.GetMethod()->GetDeclaringClass()->AssertInitializedOrInitializingInThread(self));
 
+357:49-357:88
+Fri Jul 04 14:43:04 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 445eb5fe_9efc5ddb
+UUID: c498e5f7_425676e3
+Bytes: 435
+AssertInitializedOrInitializingInThread should return a bool then. We could still log failure reasons using LOG(ERROR) inside AssertInitializedOrInitializingInThread. They'd be printed in the logs to give more context about the error before the DCHECK fatal message. But I find it cumbersome: failure messages should be printed with the failing DCHECK itself. I fear one ignore them and focus only on the DCHECK failure message itself.
+
 File: runtime/interpreter/interpreter_common.cc
 
 763:60-763:66

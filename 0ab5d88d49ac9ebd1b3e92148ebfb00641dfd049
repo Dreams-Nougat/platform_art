@@ -1,5 +1,14 @@
 Revision: 0ab5d88d49ac9ebd1b3e92148ebfb00641dfd049
 Patch-set: 1
+File: compiler/dex/compiler_enums.h
+
+540
+Sat Jul 05 10:19:28 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 445eb5fe_5edba5f8
+Bytes: 130
+That's good. I disliked the true/false. Also, we may end up needing more than the 32 and 64 bit views (e.g. for vector registers).
+
 File: compiler/dex/quick/gen_invoke.cc
 
 302:33-302:77
@@ -8,4 +17,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4485d588_86b96e65
 Bytes: 150
 Note: this looks strange to me. That looks like on ARM we have a mixed soft-hard-float convention. arg0 is in farg0 if fp, but arg1 is always in arg1.
+
+302
+Sat Jul 05 10:19:28 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485d588_86b96e65
+UUID: c498e5f7_a23f3a4d
+Bytes: 890
+The first time I looked at this function I could not make sense of it. I preferred to split out the Arm64 case, rather than trying to extend the old (and pretty entropic) logic. I suspect for Arm (32-bit) we may never happen to call the function in a way where the hard/soft float mix matters. In other words, parts of this function may turn out to be dead code. As a positive side, the function is now hugely improved. One thing that may further help to clean up the code, is introducing a TargetArgReg(int n, RegLocation rl) which returns the n-th argument having the same "type" of rl (and would have a trivial implementation for Arm64). Another thing - that affects the whole quick compiler - is the wide/non-wide variants of functions. The code is literally scattered with
+
+  if (wide) UseWideVariant(); else UseNonWideVariant();
+
+But, addressing this issue is a huge refactoring task.
 

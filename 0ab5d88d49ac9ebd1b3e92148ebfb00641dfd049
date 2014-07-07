@@ -41,6 +41,15 @@ The correct use here is arg0, the reg location, which also has the ref flag. It 
 
 Maybe it makes sense to use OpSize, though? And maybe OpSize needs an element for pointer size.
 
+538:2-538:9
+Mon Jul 07 06:19:11 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04cafddd_613d4d49
+UUID: c498e5f7_a2e65a7b
+Bytes: 665
+For your example, you are right the best way to use arg0.
+If you really want to disambiguate kNotWide and  reference, can we add kRef? My understanding is as follows: this enum is for reading the common code. It should not know whether ref is 32-bit or 64-bit one. It should just specify what it needs: NotWide, Wide or Ref (at this moment ref and kNotwide are differed by usage TargetRefReg utility). And it decides it basing on VR information. VR for reference is actually 32-bit and in this term it is ok to use kNotWide for reference but if we really want to disambiguate them so let's introduce the kRef constant and use it (and eliminate TargetRefReg method).
+
 540
 Sat Jul 05 10:19:28 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -25,6 +25,22 @@ UUID: 043d9d9e_f15742fe
 Bytes: 119
 I guessed that this enum is not for refs. For refs we use TargetRefReg function without specifying wide kind, isn't it?
 
+538:2-538:9
+Mon Jul 07 06:04:19 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 043d9d9e_f15742fe
+UUID: 04cafddd_613d4d49
+Bytes: 426
+Yes, but we have a lot of code fragments that look like this:
+
+if (arg0.wide==0) {
+  TargetReg(kArg0, ???)
+}
+
+The correct use here is arg0, the reg location, which also has the ref flag. It is not correct to say kNotWide, even though it _sounds_ reasonable judging by the condition. This mixup I want to make as hard as possible.
+
+Maybe it makes sense to use OpSize, though? And maybe OpSize needs an element for pointer size.
+
 540
 Sat Jul 05 10:19:28 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>

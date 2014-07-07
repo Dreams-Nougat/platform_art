@@ -1,0 +1,39 @@
+Revision: a4249007b71c119fb9aea2c3d60cf8f839b9f811
+Patch-set: 1
+File: runtime/debugger.cc
+
+162
+Mon Jul 07 20:48:08 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84326dd1_508e446b
+Bytes: 46
+SHARED_LOCKS_REQUIRED(Locks::mutator_lock_)  ?
+
+193:0-193:20
+Mon Jul 07 20:48:08 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4462542_06aacea5
+Bytes: 67
+If SetMethod were part of the constructor then this could be const.
+
+194:0-194:19
+Mon Jul 07 20:48:08 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 643739c4_ef2af56c
+Bytes: 28
+This should have been const.
+
+197:2-197:33
+Mon Jul 07 20:48:08 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84326dd1_d0523411
+Bytes: 12
+const again.
+
+3093:0-3117:24
+Mon Jul 07 20:48:08 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84326dd1_f0981861
+Bytes: 445
+Here m is read and then written over a lock acquisition. Lock acquisition can clearly block, but won't give up the mutator lock. It'd be nicer to read m after the MutexLock. As this isn't hot code, it'd also be nice to not be using naked mirror::ArtMethod(s) but jmethodIDs to avoid the cognitive load of trying to spot safe points. That's probably a different CL, but moving the assignment to m below the MutexLock could be done in this change.
+

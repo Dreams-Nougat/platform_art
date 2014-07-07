@@ -9,10 +9,27 @@ UUID: c450e5a6_ff475b82
 Bytes: 78
 I think we were missing a destructor to delete the weak global for the method.
 
+65
+Mon Jul 07 17:30:24 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c450e5a6_ff475b82
+UUID: 04cafddd_97052be1
+Bytes: 293
+kWeakGlobalsMax is 51200 vs kDefaultNumAllocRecords which is 64k. So we need some type of deduplication to avoid overflowing the table. The eventual plans is to add a new weak global table specifically allocation records using the code from: 
+https://android-review.googlesource.com/#/c/94656/
+
 104:6-104:17
 Mon Jun 30 09:04:28 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c450e5a6_1f580763
 Bytes: 210
 Same than AllocRecordStackTraceElement: we were missing a destructor to delete the weak global for the type. This should have happened when disabling allocation tracking where we delete all AllocRecord objects.
+
+104
+Mon Jul 07 17:30:24 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c450e5a6_1f580763
+UUID: 04cafddd_179bfb65
+Bytes: 88
+Good point, but we would still overflow the weak global table even with this destructor.
 

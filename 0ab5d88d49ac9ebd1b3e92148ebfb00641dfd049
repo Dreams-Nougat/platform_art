@@ -9,6 +9,14 @@ UUID: c498e5f7_e2c782d9
 Bytes: 144
 Wide32 seems strange to me. I understand what you meant but it looks like wide is overloaded here. Can we do something like kNoneWide and KWide?
 
+538:2-538:9
+Mon Jul 07 05:04:17 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c498e5f7_e2c782d9
+UUID: c4462542_4f8eb16b
+Bytes: 186
+I had that before and changed it. The issue is that ref registers are "wide" on 64b systems. So reading kNonWide in the code is ambiguous, too, without changing the name of the function.
+
 540
 Sat Jul 05 10:19:28 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,4 +61,16 @@ Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 043d9d9e_d1524611
 Bytes: 91
 Could you please update a doc indicating that for wide case reg is expected to be only arg?
+
+1203:8-1203:81
+Mon Jul 07 05:04:17 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 043d9d9e_d1524611
+UUID: 04cafddd_41b5b1b8
+Bytes: 449
+The main question here is: when can you expect to get a correct result on a 32b system? My first attempt here was "when wide registers are a pair of consecutive registers," for which the arg regs made sense. I would have thought we need ret, too, for long returns, but I did not find such a use case in the code.
+
+So my try at documentation would be: must be k(F)Arg0-6 when on a 32b system, or any abstract register when on 64b.
+
+What do you think?
 

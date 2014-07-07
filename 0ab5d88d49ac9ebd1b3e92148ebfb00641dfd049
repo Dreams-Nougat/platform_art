@@ -60,6 +60,16 @@ In that case why not change it to OpSize, which basically has these already (exc
 
 And it is not OK to use kNotWide for references: the ARM64 backend is already written such that it (correctly) requires ref registers to be 64b (and has conversion in Load/StoreRefXXX where we could easily add compress/uncompress) - something I'd like the x86(-64) backend to get to, too.
 
+538:2-538:9
+Mon Jul 07 06:45:50 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4462542_effcbd90
+UUID: 445eb5fe_de0ed595
+Bytes: 254
+Right, x64 is also ready for compress/decompress I guess. So I suggest to use kRef.
+
+IMHO, OpSize is worse because TargetReg is supposed to be a portable way to get a RegStorage. So I think it is better if it will decide what size RegStorage is required.
+
 540
 Sat Jul 05 10:19:28 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>

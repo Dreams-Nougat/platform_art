@@ -9,12 +9,28 @@ UUID: 84326dd1_508e446b
 Bytes: 46
 SHARED_LOCKS_REQUIRED(Locks::mutator_lock_)  ?
 
+162
+Tue Jul 08 18:20:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84326dd1_508e446b
+UUID: c4462542_5d9c9c88
+Bytes: 4
+Done
+
 193:0-193:20
 Mon Jul 07 20:48:08 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4462542_06aacea5
 Bytes: 67
 If SetMethod were part of the constructor then this could be const.
+
+193:0-193:20
+Tue Jul 08 18:20:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4462542_06aacea5
+UUID: c4462542_1d44d42c
+Bytes: 209
+As Breakpoint is used as a value type (gBreakpoints is a vector<Breakpoint>), const on the three members didn't compile due to the internal copy operations in vector::erase() at line 3103. Left them non-const.
 
 194:0-194:19
 Mon Jul 07 20:48:08 2014 +0000
@@ -23,12 +39,28 @@ UUID: 643739c4_ef2af56c
 Bytes: 28
 This should have been const.
 
+194:0-194:19
+Tue Jul 08 18:20:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 643739c4_ef2af56c
+UUID: 643739c4_863ddbd9
+Bytes: 5
+Same.
+
 197:2-197:33
 Mon Jul 07 20:48:08 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84326dd1_d0523411
 Bytes: 12
 const again.
+
+197:2-197:33
+Tue Jul 08 18:20:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84326dd1_d0523411
+UUID: c4462542_3d599012
+Bytes: 5
+Same.
 
 365:4-365:75
 Tue Jul 08 07:45:56 2014 +0000
@@ -37,12 +69,28 @@ UUID: c498e5f7_908524f8
 Bytes: 204
 This function is called at each DEX instruction when debugging. Since Breakpoint::Method is more than an accessor now (and could be more expensive with moving methods), we should compare the dex pc first.
 
+365:4-365:75
+Tue Jul 08 18:20:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c498e5f7_908524f8
+UUID: 84326dd1_b41e8df4
+Bytes: 4
+Done
+
 3093:0-3117:24
 Mon Jul 07 20:48:08 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84326dd1_f0981861
 Bytes: 445
 Here m is read and then written over a lock acquisition. Lock acquisition can clearly block, but won't give up the mutator lock. It'd be nicer to read m after the MutexLock. As this isn't hot code, it'd also be nice to not be using naked mirror::ArtMethod(s) but jmethodIDs to avoid the cognitive load of trying to spot safe points. That's probably a different CL, but moving the assignment to m below the MutexLock could be done in this change.
+
+3093:0-3117:24
+Tue Jul 08 18:20:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84326dd1_f0981861
+UUID: 04267d9c_46f2120b
+Bytes: 4
+Done
 
 File: runtime/debugger.h
 
@@ -52,4 +100,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 043d9d9e_d46a34fe
 Bytes: 51
 Kind for consistency with the rest of your changes.
+
+158:7-158:14
+Tue Jul 08 18:20:15 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 043d9d9e_d46a34fe
+UUID: 04267d9c_061ada86
+Bytes: 88
+Agreed. But the 'Kind' name would collide with the enum name above and does not compile.
 

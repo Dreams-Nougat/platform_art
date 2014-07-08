@@ -9,12 +9,28 @@ UUID: 04267d9c_ef7e7186
 Bytes: 67
 Does this macro include the class name prefix? __PRETTY_FUNCTION__?
 
+304
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04267d9c_ef7e7186
+UUID: 643739c4_dac1636a
+Bytes: 4
+Done
+
 510:6-510:10
 Tue Jul 08 22:20:04 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 643739c4_d7a5bfa8
 Bytes: 66
 Insert a "// Fall-through" comment line between lines 509 and 510?
+
+510
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 643739c4_d7a5bfa8
+UUID: c41f0544_4724d0ce
+Bytes: 4
+Done
 
 1373:35-1373:40
 Tue Jul 08 22:20:04 2014 +0000
@@ -23,12 +39,28 @@ UUID: e474097d_a17c99c3
 Bytes: 81
 Maybe leave a TODO: Change this string "Empty" to "Released" if kPageMapReleased?
 
+1373
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e474097d_a17c99c3
+UUID: 84326dd1_c0a3378c
+Bytes: 4
+Done
+
 1566:0-1568:9
 Tue Jul 08 22:20:04 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4c051c0_d8a07950
 Bytes: 58
 Does the compiler remove this loop on the non-debug build?
+
+1568
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4c051c0_d8a07950
+UUID: 84326dd1_c03fb74c
+Bytes: 63
+It should be optimized out, but I'll put the if statement back.
 
 2111:13-2111:22
 Tue Jul 08 22:20:04 2014 +0000
@@ -37,12 +69,28 @@ UUID: 643739c4_9707c77d
 Bytes: 316
 This looks similar to Double-Checked Locking. I'm not sure if this works in C++ just because page_map_ is volatile. Are you sure this works? Perhaps, if we assume that this function won't be called by multiple threads simultaneously, which is currently the case (maybe worth leaving a comment if so), does this work?
 
+2111
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 643739c4_9707c77d
+UUID: c41f0544_a7202491
+Bytes: 121
+Good question, we have an implicit fence from when we acquire the mutex so I think it's sound? Maybe irogers can comment?
+
 2140:17-2140:33
 Tue Jul 08 22:20:04 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4c051c0_38542d82
 Bytes: 368
 I think we can assert (DCHECK) here that we are only receiving kPageMapEmpty pages (from 'start' to 'end'). Would it make more sense to assert that instead of checking if each entry is kPageMapEmpty before releasing it in the loop below? That would be more helpful to uncover a bug if, say, we accidentally call this function for non-kPageMapEmpty pages in the future.
+
+2140
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4c051c0_38542d82
+UUID: 84326dd1_606c4b47
+Bytes: 364
+I don't think this works since this is called from FreePageRun::ReleasePages which happens after combining adjacent free page ranges. It could happen that these are already released and then we would fail the DCHECK when we call ReleasePageRange. Regarding calling with non Empty pages, there is a DCHECK which ensures each page is a FreePage. Is that good enough?
 
 File: runtime/gc/allocator/rosalloc.h
 
@@ -53,6 +101,14 @@ UUID: 643739c4_f779e3a0
 Bytes: 87
 I prefer aligning the beginning of the comments at the ends of lines 446-451 as before.
 
+447
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 643739c4_f779e3a0
+UUID: 84326dd1_60fd2b18
+Bytes: 4
+Done
+
 File: runtime/gc/heap.cc
 
 2741:6-2741:34
@@ -61,4 +117,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84326dd1_a5bd75f0
 Bytes: 223
 This updates the target time because we request heap trim even when we don't do transition (that is, while we are still in the foreground), correct? Maybe worth renaming the variable to heap_transition_or_trim_target_time_.
+
+2741
+Tue Jul 08 23:21:19 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84326dd1_a5bd75f0
+UUID: 84326dd1_402907ef
+Bytes: 4
+Done
 

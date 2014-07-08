@@ -1,0 +1,64 @@
+Revision: a5b080ec116e5710cda81fdad1a2bcaca7eb7f30
+Patch-set: 2
+File: runtime/gc/allocator/rosalloc.cc
+
+304:38-304:50
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04267d9c_ef7e7186
+Bytes: 67
+Does this macro include the class name prefix? __PRETTY_FUNCTION__?
+
+510:6-510:10
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 643739c4_d7a5bfa8
+Bytes: 66
+Insert a "// Fall-through" comment line between lines 509 and 510?
+
+1373:35-1373:40
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e474097d_a17c99c3
+Bytes: 81
+Maybe leave a TODO: Change this string "Empty" to "Released" if kPageMapReleased?
+
+1566:0-1568:9
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_d8a07950
+Bytes: 58
+Does the compiler remove this loop on the non-debug build?
+
+2111:13-2111:22
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 643739c4_9707c77d
+Bytes: 316
+This looks similar to Double-Checked Locking. I'm not sure if this works in C++ just because page_map_ is volatile. Are you sure this works? Perhaps, if we assume that this function won't be called by multiple threads simultaneously, which is currently the case (maybe worth leaving a comment if so), does this work?
+
+2140:17-2140:33
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4c051c0_38542d82
+Bytes: 368
+I think we can assert (DCHECK) here that we are only receiving kPageMapEmpty pages (from 'start' to 'end'). Would it make more sense to assert that instead of checking if each entry is kPageMapEmpty before releasing it in the loop below? That would be more helpful to uncover a bug if, say, we accidentally call this function for non-kPageMapEmpty pages in the future.
+
+File: runtime/gc/allocator/rosalloc.h
+
+447:20-447:22
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 643739c4_f779e3a0
+Bytes: 87
+I prefer aligning the beginning of the comments at the ends of lines 446-451 as before.
+
+File: runtime/gc/heap.cc
+
+2741:6-2741:34
+Tue Jul 08 22:20:04 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84326dd1_a5bd75f0
+Bytes: 223
+This updates the target time because we request heap trim even when we don't do transition (that is, while we are still in the foreground), correct? Maybe worth renaming the variable to heap_transition_or_trim_target_time_.
+

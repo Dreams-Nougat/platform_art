@@ -13,6 +13,18 @@ This doesn't quite look like double-checked locking.  As far as I can tell, noth
 
 As a practical matter, since there doesn't seem to be an ordering issue, this is also extremely likely to work if page_map_ is volatile.
 
+2111:9-2111:27
+Wed Jul 09 22:42:32 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e474097d_d4a5d5a8
+UUID: b9015cf5_55cfec95
+Bytes: 462
+Thanks, Hans.
+
+I think that as long as we are okay with missing an opportunity to release pages occasionally (leaving an just-freed page as kPageMapEmpty rather than kPageMapReleased), it is fine.
+
+As I understand, in the 'lazy initialization or singleton' pattern (a common example of double-checked locking), the equivalent of missing an opportunity to release pages occasionally would correspond to returning an not-yet-fully-initialized object, which is bad.
+
 2157:4-2157:34
 Wed Jul 09 01:31:52 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -26,4 +38,12 @@ Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e474097d_14c74d4b
 Bytes: 68
 Can this ever be false?  Is it safe to do the madvise if it's false?
+
+2166:8-2166:43
+Wed Jul 09 22:42:32 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e474097d_14c74d4b
+UUID: f9f75445_925eaa24
+Bytes: 147
+This is safe as the case where it can be false is when it's already kPageMapReleased. The other cases are caught by the DHECK in the previous line.
 

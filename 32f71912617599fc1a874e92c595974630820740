@@ -9,6 +9,14 @@ UUID: b9015cf5_41f3b6be
 Bytes: 234
 I'm not sure what the required semantics are here.  Is LoadRelaxed() or LoadJavaData() appropriate?  Clearly even LoadRelaxed is only a hint when called from non-owner.  Is it OK to get a half-updated result outside the owning thread?
 
+241:11-241:28
+Wed Jul 09 22:32:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9015cf5_41f3b6be
+UUID: 995e582a_4aff53cd
+Bytes: 112
+Its really only used for debug, so other than for the current thread its going to be racy. I've added a comment.
+
 File: runtime/base/mutex.cc
 
 310:36-310:46
@@ -26,12 +34,28 @@ UUID: f9f75445_6362361b
 Bytes: 322
 Agreed.  It's also not guaranteed to be a fence, in that other earlier memory operations, including loads, may be delayed past it, as should be allowed.  It only affects the ordering of this particular load with respect to subsequent operations; it doesn't impose order between two sets of memory operations, as fences do.
 
+310:36-310:46
+Wed Jul 09 22:32:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9f75445_6362361b
+UUID: b9015cf5_75478836
+Bytes: 4
+Done
+
 353:8-353:64
 Wed Jul 09 09:44:56 2014 +0000
 Author: Calin Juravle <1050426@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 043d9d9e_828dcade
 Bytes: 117
 I don't think the comment adds anything as the function is pretty obvious now but I don't mind. (same for the others)
+
+353:8-353:64
+Wed Jul 09 22:32:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 043d9d9e_828dcade
+UUID: d9045004_307590d9
+Bytes: 4
+Done
 
 402:42-402:50
 Wed Jul 09 21:54:34 2014 +0000
@@ -43,6 +67,21 @@ This is too weak.  It means the num_contenders load can be reordered with the CA
 This is all very messy.  Certainly making everything sequentially consistent is correct.  Currently the increments and decrements of num_contenders are already sequentially consistent, which they may not need to be.  But that's off the critical path.
 
 I'm not convinced that making either the CAS or the later load seq_cst is officially enough to solve the problem.  We probably need both.  If we assume (correctly, I think) that futex contains a fence, then I would be OK with just adding a fence before the num_contenders_ load.  In the long run, I think this really needs a correctness argument in the code.
+
+402:42-402:50
+Wed Jul 09 22:32:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b92f9c8b_0b303d07
+UUID: d9045004_abedb525
+Bytes: 155
+Agreed. I think for now my intention is for the load to be sequentially consistent, but this has implied cost we could avoid by adding flag bits to state_.
+
+525:0-526:63
+Wed Jul 09 22:32:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9015cf5_35a5809f
+Bytes: 50
+Same issue as above, made sequentially consistent.
 
 File: runtime/base/mutex.h
 
@@ -56,4 +95,12 @@ Can we document the intended semantics?
 My guess is: Can be updated and reliably read by exclusive
 owner, and is read occasionally by other for logging purposes.
 In the latter case the result is only a hint, and may occasionally be garbage.
+
+356:2-356:37
+Wed Jul 09 22:32:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9f75445_43129aef
+UUID: f9f75445_77be7052
+Bytes: 116
+Its updated and cleared only when the lock is held. Reading it from other threads is racy. I'll improve the comment.
 

@@ -92,6 +92,16 @@ UUID: 84326dd1_606c4b47
 Bytes: 364
 I don't think this works since this is called from FreePageRun::ReleasePages which happens after combining adjacent free page ranges. It could happen that these are already released and then we would fail the DCHECK when we call ReleasePageRange. Regarding calling with non Empty pages, there is a DCHECK which ensures each page is a FreePage. Is that good enough?
 
+2140
+Wed Jul 09 22:41:45 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84326dd1_606c4b47
+UUID: b9015cf5_55a00c8f
+Bytes: 243
+Agreed.
+
+Might it be worth asserting that each page is either empty or released in a separate loop before doing memset or madvise? In a situation where the assertion fails, side effects like memset/madvise could complicate the crash diagnosis.
+
 File: runtime/gc/allocator/rosalloc.h
 
 447:20-447:22

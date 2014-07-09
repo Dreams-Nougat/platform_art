@@ -25,12 +25,28 @@ I think that as long as we are okay with missing an opportunity to release pages
 
 As I understand, in the 'lazy initialization or singleton' pattern (a common example of double-checked locking), the equivalent of missing an opportunity to release pages occasionally would correspond to returning an not-yet-fully-initialized object, which is bad.
 
+2111
+Wed Jul 09 23:30:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9015cf5_55cfec95
+UUID: 995e582a_6d2111bd
+Bytes: 51
+The race here should be benign. I'll add a comment.
+
 2157:4-2157:34
 Wed Jul 09 01:31:52 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e474097d_34cc496b
 Bytes: 152
 Can we do this when we resurrect the page instead?  Memset may bring this into the cache, which would be bad here, and might be useful at the other end.
+
+2157
+Wed Jul 09 23:30:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e474097d_34cc496b
+UUID: d9045004_961b3c65
+Bytes: 72
+I'll add TODO: I think only the mac build has that madvise doesn't zero.
 
 2166:8-2166:43
 Wed Jul 09 01:31:52 2014 +0000
@@ -46,4 +62,12 @@ Parent: e474097d_14c74d4b
 UUID: f9f75445_925eaa24
 Bytes: 147
 This is safe as the case where it can be false is when it's already kPageMapReleased. The other cases are caught by the DHECK in the previous line.
+
+2166
+Wed Jul 09 23:30:25 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9f75445_925eaa24
+UUID: d9045004_5625b496
+Bytes: 8
+Correct.
 

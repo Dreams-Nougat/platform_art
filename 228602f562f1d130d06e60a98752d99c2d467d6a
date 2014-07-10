@@ -1,5 +1,14 @@
 Revision: 228602f562f1d130d06e60a98752d99c2d467d6a
 Patch-set: 1
+File: runtime/interpreter/interpreter.cc
+
+98:21-98:63
+Thu Jul 10 21:17:33 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 395d6c32_cd347d15
+Bytes: 231
+If I understand the context correctly, I think these both need to be strong, since the sun.misc.unsafe versions are kind of documented to be strong, and j.u.c. definitely assumes they are.  This is a regression that we need to fix.
+
 File: runtime/mirror/object-inl.h
 
 134:2-134:33
@@ -23,4 +32,22 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9f75445_3ab9e804
 Bytes: 14
 Same as above?
+
+File: runtime/mirror/object.cc
+
+159:50-159:73
+Thu Jul 10 21:17:33 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d979b0b6_14f4f4ec
+Bytes: 69
+Relaxed should be fine here, and may be a measurable performance win.
+
+File: runtime/native/sun_misc_Unsafe.cc
+
+31:30-31:56
+Thu Jul 10 21:17:33 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99d1f8e4_52d37474
+Bytes: 38
+This and the next 3 need to be Strong.
 

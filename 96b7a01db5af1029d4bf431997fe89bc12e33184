@@ -103,3 +103,11 @@ For the exception case you want things to be "intact." That worked before as we 
 
 The entrypoint is easy to find. It's "qpoints->pInstanceofNonTrivial = artIsAssignableFromCode;" That's going directly from Quick to native code, potentially losing the "callee-save" FPs.
 
+898:0-898:36
+Thu Jul 10 19:41:53 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 598dc0f1_c01b1e8d
+UUID: 993578d4_35f59a32
+Bytes: 220
+Like a hint, instead of moving callee saved xmms to stack we can simply copy xmm12-15 to xmm8-11 due to no-one cares about xmm8-11 and then restore them after the call. It can help us to avoid memory operation, isn't it?
+

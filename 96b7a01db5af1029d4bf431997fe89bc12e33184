@@ -48,6 +48,14 @@ UUID: 7988c4e2_24a0dc8e
 Bytes: 99
 rbx is a callee saved in both native 32-bit and 64-bit ABI.  We should be skip rbx always.  Thanks!
 
+487
+Thu Jul 10 18:05:22 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7988c4e2_24a0dc8e
+UUID: 593f80b5_13006e99
+Bytes: 178
+Ok I see what you mean (native ABI). Unfortunately this function is also used in intrinsic before using register directly. To be able to use ebx safely we should clobber it here.
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 898:0-898:36

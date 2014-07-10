@@ -1,6 +1,170 @@
 Revision: f13ac6c038b5a5b6aefd3d6e62fa5cd79cdfd6e6
 Patch-set: 5
+File: runtime/gc/collector/gc_type.h
+
+45:10-45:23
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_26a0b7bc
+Bytes: 196
+Why use a namespace for one enum? How about removing the namespace and renaming the eum StickyCompactResult, for example?
+
+Also, I think we don't need to have this in this file. Move it to heap.h?
+
+48:2-48:10
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_03d12d8e
+Bytes: 64
+These enum value names are too generic. Use more specific names?
+
+File: runtime/gc/heap.cc
+
+99:19-99:31
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_112f3679
+Bytes: 17
+kMemMapSpaceName?
+
+222:45-224:76
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_033fed41
+Bytes: 41
+The order of these do not match the code.
+
+227:2-227:92
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_23a30924
+Bytes: 51
+Should do we do this on the parsed_options.cc side?
+
+233:4-233:70
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_2370a916
+Bytes: 16
+Remove this LOG?
+
+238:12-238:29
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_437bb5fe
+Bytes: 27
+how about main_space_1_map?
+
+257:62-257:72
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_1f3cdedb
+Bytes: 102
+More descriptive name? Probably we'd want to pass in  kRosAllocSpaceName[1] and kDlMallocSpaceName[1].
+
+262:0-265:5
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_43fa9523
+Bytes: 59
+I don't think this code is necessary or I don't understand.
+
+278:0-280:50
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_3fab1aa6
+Bytes: 141
+Can we allocate this one before the second one like the IsZygote case above? If we do this, we don't need the local variable 'request_begin'.
+
+291:4-291:45
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 995e582a_fedc8932
+Bytes: 29
+This comment seems misplaced.
+
+294:62-294:72
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_ff9c9291
+Bytes: 12
+Better name?
+
+630:8-630:34
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_ff2b7268
+Bytes: 82
+Have one call site with the first parameter conditioned on use_sticky_compaction_?
+
+916:10-916:36
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_3f41da1e
+Bytes: 113
+Why suspend threads here? Note the above comment. Does this work if Walk() may try to suspend threads internally?
+
+1304:0-1305:68
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 995e582a_3ec90161
+Bytes: 83
+I don't understand this. kErrorIgnore does not seem to mean what this comment says.
+
+1305:69-1305:93
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_03aa4d06
+Bytes: 56
+This is confusing. We aren't trying one more after this.
+
+1307:12-1307:37
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_bf4cca54
+Bytes: 52
+I am not sure this direct/indirect names make sense.
+
+1316:0-1319:34
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_bfe3aae6
+Bytes: 207
+Is kErrorMemMap used at all?
+
+If we don't do anything for these enum values, having enum values defined for these do not make a lot of sense.
+
+How about just use bool as the return value instead of the enum?
+
+1325:0-1335:74
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_e3b64172
+Bytes: 59
+I'm not sure the level of details of this log is necessary.
+
+1545:60-1545:74
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 995e582a_fed2490b
+Bytes: 128
+Just a note: Since rosalloc can madvise pages-by-pages, the reduction of Size() does not necessarily mean a RAM usage reduction.
+
 File: runtime/gc/heap.h
+
+158:73-158:74
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_117296b0
+Bytes: 20
+break the line here?
+
+507:0-511:5
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_915ea624
+Bytes: 98
+I don't think we follow this comment style. Remove it? Same for the other two places in this file.
 
 1008:5-1008:29
 Wed Jul 09 22:13:16 2014 +0000
@@ -16,6 +180,20 @@ Parent: f9f75445_571254ef
 UUID: f92594a9_90bfbae6
 Bytes: 4
 Done
+
+1009:22-1009:36
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_e3640172
+Bytes: 63
+I don't think the _bk_ name is good. I suggest "main_space_1_".
+
+1030:2-1030:18
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_a32ef915
+Bytes: 27
+Why is this one not Atomic?
 
 File: runtime/parsed_options.cc
 
@@ -34,6 +212,13 @@ UUID: 395d6c32_67c5b275
 Bytes: 4
 Done
 
+423:6-423:28
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 995e582a_cd4d9dab
+Bytes: 61
+Do we need to update background_collector_type_ as well here?
+
 File: runtime/parsed_options.h
 
 91:0-91:64
@@ -50,4 +235,31 @@ Parent: b9015cf5_95c57478
 UUID: 395d6c32_07d4b627
 Bytes: 4
 Done
+
+92:7-92:29
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_06b6db13
+Bytes: 292
+Why is it called 'sticky'?
+
+As the term 'sticky' is already used for sticky bitmap GC, we should use a different name to avoid confusion.
+
+Can we rename the whole thing to something like 'free list space compaction', 'background transition compaction', 'cms background transition compaction'?
+
+File: runtime/scoped_thread_state_change.h
+
+287:71-287:87
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9f75445_6981f03e
+Bytes: 36
+Why not hardcode this to kSuspended?
+
+291:4-291:13
+Thu Jul 10 04:29:18 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9045004_3130f207
+Bytes: 65
+Should we check that the current/old state is kRunnable, instead?
 

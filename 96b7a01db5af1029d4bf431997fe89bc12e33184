@@ -17,6 +17,14 @@ UUID: 993578d4_955e86cd
 Bytes: 248
 Yes, but we do not do external call directly, we do it using stubs which saves fr12-15, so we should be safe. Clobbering fr12-15 does not make any sense here because Clobber of promoted register does not make any sense (see Clobber implementation).
 
+482
+Thu Jul 10 17:44:05 2014 +0000
+Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 993578d4_955e86cd
+UUID: 598dc0f1_2081aa3f
+Bytes: 130
+Ok.  ART callee-saved registers (that are caller-saved in a native ABI) should not be included here.  This is kind of tricky.  :-)
+
 487
 Thu Jul 10 17:16:50 2014 +0000
 Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +39,14 @@ Parent: 7988c4e2_c1800271
 UUID: 19298885_b18aba07
 Bytes: 59
 rbx is caller save in 32-bit API but callee save in 64-bit.
+
+487
+Thu Jul 10 17:44:05 2014 +0000
+Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19298885_b18aba07
+UUID: 7988c4e2_24a0dc8e
+Bytes: 99
+rbx is a callee saved in both native 32-bit and 64-bit ABI.  We should be skip rbx always.  Thanks!
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 

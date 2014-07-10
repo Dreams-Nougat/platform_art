@@ -1,0 +1,14 @@
+Revision: 7b7593b77670b97d4b2f956c54e83cc5639e2d87
+Patch-set: 3
+File: compiler/dex/quick/gen_common.cc
+
+822:4-822:84
+Thu Jul 10 05:37:39 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 593f80b5_5026ecd6
+Bytes: 858
+I see that this code is already in AOSP with this FIXME.
+To me actually, the question is to fix this FIXME or not at all. As I understand the problem is that code rl_dest which fp can be associated with core reg. So the question whether we want to have a restriction that fp RegLocation contains only fp RegStorage and non-fp RegLocation contains only non-fp RegStorage. Please note that this condition is broken not only in this place but lowering of move bytecode can lead to the same situation. So we really want to have such restriction we should fix StoreValue and StoreWideValue from my point of view.
+
+Also please note that sGet should also be fixed, I have uploaded a patch for it: https://android-review.googlesource.com/#/c/100641/1/compiler/dex/quick/gen_common.cc. The only one think I cannot decide for now is whether kRefReg is required or not.
+

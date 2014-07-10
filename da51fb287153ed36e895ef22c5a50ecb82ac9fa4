@@ -35,3 +35,12 @@ UUID: f97cb4a5_f53858e9
 Bytes: 101
 Surely this is a 32 bit mov.  My understanding is that ...Offset<4> is correct for that.  Am I wrong?
 
+831
+Thu Jul 10 21:06:00 2014 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f97cb4a5_f53858e9
+UUID: 1980a8c3_561b5465
+Bytes: 277
+It is a 32 bit move, but the offset that it is to move from is in the 64 bit thread area.  I think Dmitry wants:
+NewLIR2(kX86Mov32RT, rs_rAX.GetReg(),  cu_->target64 ? Thread::ThreadSuspendTriggerOffset<8>().Int32Value() : Thread::ThreadSuspendTriggerOffset<4>().Int32Value());
+

@@ -2,6 +2,15 @@ Revision: 23966220770ea36235751b4893d22d99ee8186cf
 Patch-set: 2
 File: runtime/gc/allocator/rosalloc.cc
 
+2125:24-2125:38
+Thu Jul 10 22:20:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 396bacde_bad40dce
+Bytes: 345
+Maybe in addition to the race condition described here, is it possible that a coalesced free page run whose first part is released and the second part is empty could cause this DCHECK failure, without being racy with other threads?
+
+Can you describe the race condition situation referred to in this comment in more detail? I'm not sure I follow.
+
 2125:13-2126:50
 Thu Jul 10 19:12:52 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -10,4 +19,11 @@ Bytes: 257
 I don't understand the logic here, probably because I'm not seeing the big picture.  If this happened, wouldn't page_map_[i] have changed as part of the coalescing?  So how could we still get here?
 
 Pointers to the conflicting code might help me understand.
+
+2139:10-2139:11
+Thu Jul 10 22:20:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99d1f8e4_92b31cea
+Bytes: 79
+Don't we need to increment 'i' in the else case here to avoid an infinite loop?
 

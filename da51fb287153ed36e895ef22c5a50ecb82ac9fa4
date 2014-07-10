@@ -11,3 +11,11 @@ Please handle here cu_->target64 case:
 ... Thread::ThreadSuspendTriggerOffset<8> ...
 Is rs_rAX still applicable here for 64-bit?..
 
+831
+Thu Jul 10 09:11:43 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 593f80b5_3025a898
+UUID: 395d6c32_2add3f7f
+Bytes: 216
+What's the issue with rs_rAX? The reason for using the test operation on Intel rather than a load is to avoid needing a temporary register to clobber. The result is not used, we're relying on the load for a segfault.
+

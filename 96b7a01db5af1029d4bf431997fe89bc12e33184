@@ -9,12 +9,28 @@ UUID: d9045004_f94dd0aa
 Bytes: 69
 rs_fr12 to rs_fr15 are still clobbered by an external C call.  Right?
 
+482
+Thu Jul 10 17:31:19 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9045004_f94dd0aa
+UUID: 993578d4_955e86cd
+Bytes: 248
+Yes, but we do not do external call directly, we do it using stubs which saves fr12-15, so we should be safe. Clobbering fr12-15 does not make any sense here because Clobber of promoted register does not make any sense (see Clobber implementation).
+
 487
 Thu Jul 10 17:16:50 2014 +0000
 Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7988c4e2_c1800271
 Bytes: 88
 Can rs_rBX be skipped?  It is a callee-saved register in the native 32-bit ABI.  Thanks!
+
+487
+Thu Jul 10 17:31:19 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7988c4e2_c1800271
+UUID: 19298885_b18aba07
+Bytes: 59
+rbx is caller save in 32-bit API but callee save in 64-bit.
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
@@ -26,4 +42,14 @@ Bytes: 158
 This one will need better protection.
 
 There is also one entrypoint in entrypoints_init that is directly a C call. You will have to route that through a stub.
+
+898:0-898:36
+Thu Jul 10 17:31:19 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7988c4e2_c46810be
+UUID: 993578d4_55a81e61
+Bytes: 84
+you mean spill all callee saves (both gprs and fprs?)
+
+I will try to find which one.
 

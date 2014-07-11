@@ -9,10 +9,28 @@ UUID: 59b4e0af_4b8f39b0
 Bytes: 36
 Should this be a template parameter?
 
+74:4-74:34
+Fri Jul 11 20:24:14 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d979b0b6_1a673d2a
+Bytes: 49
+Looks dead, except for next statement?
+Eliminate?
+
 77:28-77:35
 Fri Jul 11 19:13:32 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79bfe48c_af5efdcc
 Bytes: 294
 So we need StoreStore semantics, that is the pre_fence_visitor's stores should happen ahead of any store of the object into a place a different thread may see it. When I read Acquire here I don't read StoreStore so maybe add a QuasiAtomic fence for this to make things more intention revealing.
+
+77:28-77:35
+Fri Jul 11 20:24:14 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bfe48c_af5efdcc
+UUID: 99d1f8e4_c6380258
+Bytes: 640
+I believe you want ThreadFenceForConstructor instead.  ThreadFenceRelease would also be OK, but might be slower.  ThreadFenceAcquire is technically wrong (we want to essentially turn later stores into release stores w.r.t prior memory operations, instead of turning earlier loads into acquire loads), but the generated fence is likely to be the same for the architectures we care about.
+
+In an ideal world, I believe ThreadFenceForConstructor would be the only fence we would ever use explicitly in ART.  Everything else should be part of an atomic ordering requirement.  (There are other use cases for fences elsewhere, e.g. for Seqlocks.)
 

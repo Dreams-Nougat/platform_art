@@ -9,3 +9,11 @@ UUID: 1980a8c3_85ff6ccc
 Bytes: 141
 I think we need a per-arch function to see if single/double regs alias for this to be done.  Otherwise, the old case is right (i.e. for ARM).
 
+1160
+Fri Jul 11 04:57:01 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1980a8c3_85ff6ccc
+UUID: 7971a4c6_3947af65
+Bytes: 365
+Mark is right here. If you look into DoPromotion method (how it promotes fp and core regs) you can see that for all platforms core regs are promoted independent on whether it is wide or not-wide. FP regs are promoted separately for kThumb2 and together for other platforms. So here we should be consistent with the algorithm of promoting. I will upload a new patch.
+

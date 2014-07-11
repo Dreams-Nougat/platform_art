@@ -11,6 +11,14 @@ Maybe in addition to the race condition described here, is it possible that a co
 
 Can you describe the race condition situation referred to in this comment in more detail? I'm not sure I follow.
 
+2125
+Fri Jul 11 00:15:17 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 396bacde_bad40dce
+UUID: 99d1f8e4_754d4285
+Bytes: 74
+I added handling for that case, we now still do a release if that happens.
+
 2125:13-2126:50
 Thu Jul 10 19:12:52 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -28,10 +36,26 @@ UUID: 1980a8c3_f957f389
 Bytes: 183
 The coalescing code is in FreePages(). It does not necessarily update page_map_ in such a way that kPageMapEmpty necessarily means there's a free page run that starts at the position.
 
+2126
+Fri Jul 11 00:15:17 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1980a8c3_f957f389
+UUID: 99d1f8e4_1581563f
+Bytes: 232
+Yes the problem arises when FreePages takes the lock and coalesces two page runs when we only processed the first one in the loop. This removes the free_page_run which starts at fpr and can result in not finding the page in the map.
+
 2139:10-2139:11
 Thu Jul 10 22:20:29 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99d1f8e4_92b31cea
 Bytes: 79
 Don't we need to increment 'i' in the else case here to avoid an infinite loop?
+
+2139
+Fri Jul 11 00:15:17 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99d1f8e4_92b31cea
+UUID: 99d1f8e4_152b969e
+Bytes: 30
+Fall through increments the i.
 

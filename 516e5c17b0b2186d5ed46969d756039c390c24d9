@@ -9,12 +9,35 @@ UUID: 79bfe48c_d5573f38
 Bytes: 2
 7?
 
+98:60-98:61
+Sat Jul 12 20:26:19 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bfe48c_d5573f38
+UUID: 79bfe48c_6848f676
+Bytes: 58
+Copied from my generic check. Should of course be changed.
+
+99:57-99:63
+Sat Jul 12 20:26:19 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1980a8c3_e7d41dcf
+Bytes: 37
+Just like this one should be smaller.
+
 101:27-101:38
 Sat Jul 12 18:36:14 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9a7f088_2a567b92
 Bytes: 69
 it'd be nice if MakeRegPair guarded against SP being part of the pair
+
+101:27-101:38
+Sat Jul 12 20:26:19 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9a7f088_2a567b92
+UUID: d9a7f088_aa058b78
+Bytes: 108
+MakeRegPair doesn't have access to the definitions of what SP is. So the DCHECK above is as good as it gets.
 
 File: compiler/dex/quick/x86/target_x86.cc
 
@@ -24,6 +47,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79bfe48c_d52e5fc0
 Bytes: 62
 CHECK(!target64) ? assertions are more powerful than comments.
+
+199:50-199:57
+Sat Jul 12 20:26:19 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bfe48c_d52e5fc0
+UUID: 79bfe48c_c81b228d
+Bytes: 261
+That's not how it works. This is a "helper" to the "general" TargetReg, which just gives a known size (as TargetReg(symbolic_reg) isn't specified strongly enough). What should be DCHECK-ed is whether we always return 32b, but that will be noticed in the caller.
 
 207:51-208:65
 Sat Jul 12 15:15:54 2014 +0000
@@ -40,10 +71,26 @@ UUID: 79bfe48c_b5316b23
 Bytes: 80
 Not that I'm aware of. It'd be quick to experiment with making this invalid too.
 
+207:51-208:65
+Sat Jul 12 20:26:19 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bfe48c_b5316b23
+UUID: 1980a8c3_67c9ed36
+Bytes: 148
+Yes, someone does. With my rewrite (that assumes TargetReg32 returns a 32b register) I got a FATAL. I think it's some generic offset code somewhere.
+
 214:37-214:38
 Sat Jul 12 18:36:14 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1980a8c3_0704b9e4
 Bytes: 2
 5?
+
+214:37-214:38
+Sat Jul 12 20:26:19 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1980a8c3_0704b9e4
+UUID: 1980a8c3_c7d7a1d1
+Bytes: 88
+Common code for x86 and x86-64. Intel chose to use InvalidReg instead of a FATAL here...
 

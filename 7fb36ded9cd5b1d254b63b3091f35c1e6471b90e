@@ -1,0 +1,28 @@
+Revision: 7fb36ded9cd5b1d254b63b3091f35c1e6471b90e
+Base-for-patch-set: 1
+File: runtime/thread.cc
+
+259
+Sun Jul 13 05:50:43 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7971a4c6_3ff9cfe5
+Bytes: 585
+This change can be recovered in AOSP by defining the "running_on_host=true" if HAVE_ANDROID_OS and __x86_64__ are defined.
+
+Please return back this change to AOSP :)
+
+diff --git a/runtime/thread.cc b/runtime/thread.cc	12
+index e5ccde5..045ed1d 100644	13
+--- a/runtime/thread.cc	14
++++ b/runtime/thread.cc	15
+@@ -256,8 +256,12 @@ void Thread::InstallImplicitProtection(bool is_main_stack) {	16
+ #ifndef HAVE_ANDROID_OS	17
+   bool running_on_host = true;	18
+ #else	19
++#ifdef __i386__	20
++  bool running_on_host = true;	21
++#else	22
+   bool running_on_host = false;	23
+ #endif	24
++#endif
+

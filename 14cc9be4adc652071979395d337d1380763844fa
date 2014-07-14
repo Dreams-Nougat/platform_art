@@ -9,12 +9,28 @@ UUID: 1980a8c3_71c9af36
 Bytes: 76
 Move this declaration to the else block of the if statement where it's used?
 
+58
+Mon Jul 14 17:57:49 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1980a8c3_71c9af36
+UUID: f93f54e6_7da0d78f
+Bytes: 22
+Can't do this anymore.
+
 65:4-65:7
 Sat Jul 12 00:01:32 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1980a8c3_d161a388
 Bytes: 117
 Shouldn't be a problem as we checked the tlab size. But how about DCHECK(obj != nullptr) with a proper error message?
+
+65
+Mon Jul 14 17:57:49 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1980a8c3_d161a388
+UUID: 19434882_5e0fd504
+Bytes: 4
+Done
 
 114:0-116:5
 Sat Jul 12 00:01:32 2014 +0000
@@ -23,6 +39,14 @@ UUID: 79bfe48c_3ef8fd98
 Bytes: 59
 Do we want to have this check for the TLAB case above, too?
 
+116
+Mon Jul 14 17:57:49 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bfe48c_3ef8fd98
+UUID: 19434882_be0379dd
+Bytes: 4
+Done
+
 149:28-149:51
 Sat Jul 12 00:01:32 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +54,28 @@ UUID: 1980a8c3_91748b51
 Bytes: 299
 AllocatorTypeTLAB could be paired with a concurrent GC. When the TLAB path is taken above, new_num_bytes_allocated is zero here. Calling CheckConcurrentGC with with new_num_bytes_allocated == 0 seems odd. How about adding "&& new_num_bytes_allocated != 0" as the third component of the if condition?
 
+149
+Mon Jul 14 17:57:49 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1980a8c3_91748b51
+UUID: f93f54e6_5da51b9e
+Bytes: 89
+That would add an extra check and could hurt performance, I don't think its what we want.
+
 234:21-234:46
 Sat Jul 12 00:01:32 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79bfe48c_9eb329ea
 Bytes: 266
 This means that we could throw an OOM a bit earlier with tlab allocator than before because we won't try to allocate into the fractional space at the end (in other words, we check OOM at the tlab granularity rather than at the individual object granularity) correct?
+
+234
+Mon Jul 14 17:57:49 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bfe48c_9eb329ea
+UUID: 19434882_9e003dd2
+Bytes: 53
+Correct, I don't think this will be an issue however.
 
 File: runtime/thread.h
 

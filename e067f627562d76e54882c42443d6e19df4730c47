@@ -1,6 +1,44 @@
 Revision: e067f627562d76e54882c42443d6e19df4730c47
 Patch-set: 3
+File: runtime/jni_internal.cc
+
+428:2-428:9
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d965302b_ae086bba
+Bytes: 50
+s/inline //
+inline is implied for member functions
+
+432:32-432:33
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9683404_642dd417
+Bytes: 5
+const
+
+432:2-432:9
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 196c2814_4b2ee518
+Bytes: 8
+and here
+
+471:5-471:37
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 196c2814_4b9545ef
+Bytes: 114
+// True if a native bridge is required, ie the JNI contained n the library is not compatible with the runtime ISA.
+
 File: runtime/native_bridge.cc
+
+37:19-37:23
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9683404_a4a9ac13
+Bytes: 4
+Init
 
 47
 Mon Jul 14 21:24:57 2014 +0000
@@ -9,6 +47,20 @@ UUID: d965302b_dd663f5f
 Bytes: 53
 typo:  PROP_ENABLE_NATIVE_BRIDGE -- not naive bridge.
 
+74:20-74:24
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9683404_04b7c06f
+Bytes: 4
+Load
+
+86:20-86:22
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d965302b_6ec813ec
+Bytes: 2
+Is
+
 134
 Mon Jul 14 21:24:57 2014 +0000
 Author: Abhay Kanhere <1037322@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +68,27 @@ UUID: 196c2814_ea66cf5e
 Bytes: 50
 Need to add these Shorty, Name strings into SIRT ?
 
+134
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 196c2814_ea66cf5e
+UUID: 196c2814_eb66d15e
+Bytes: 120
+They are const char*, and so not in the Java heap. There's also no suspension in this code, so handles aren't necessary.
+
 143
 Mon Jul 14 21:24:57 2014 +0000
 Author: Abhay Kanhere <1037322@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9683404_be037ddd
 Bytes: 18
 Same SIRT comment.
+
+File: runtime/native_bridge.h
+
+110:15-110:27
+Mon Jul 14 23:35:54 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9683404_c4aca825
+Bytes: 17
+GUARDED_BY(lock_)
 

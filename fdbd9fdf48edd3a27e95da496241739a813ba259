@@ -9,6 +9,14 @@ UUID: 390c8c77_55417c1d
 Bytes: 87
 I don't understand this comment standalone without more context. Can you add some more?
 
+491:0-495:3
+Tue Jul 15 22:42:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 390c8c77_55417c1d
+UUID: f9dbd436_26d3bc75
+Bytes: 4
+Done
+
 File: runtime/base/scoped_flock.h
 
 40:0-40:48
@@ -18,6 +26,14 @@ UUID: 19f188a2_51435677
 Bytes: 173
 the comment doesn't apply to both of these. I'd add its own comment since it is a utility function. we also have a scoped_flock_test which should be updated with the new API
 
+40:0-40:48
+Tue Jul 15 22:42:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19f188a2_51435677
+UUID: 39dacc33_45a8be61
+Bytes: 4
+Done
+
 File: runtime/class_linker.cc
 
 1108:0-1112:1
@@ -26,6 +42,18 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9f79c98_d11bc48c
 Bytes: 59
 this seems to be a much bigger change than i was expecting.
+
+1108:0-1112:1
+Tue Jul 15 22:42:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f79c98_d11bc48c
+UUID: f9dbd436_a6b8ac01
+Bytes: 404
+The problem was that the loading logic was spread all over the place, There were ~5 locations where OatFile::Open was called and there was little distinction between what was a location and what was a path.
+
+I decided that instead of dealing with that insanity this would be easier.
+
+This is also one reason I want tests that run with -Xnorelocate, to make sure this is still compatible with the old way.
 
 File: runtime/instruction_set.h
 
@@ -53,6 +81,14 @@ UUID: b9f79c98_91381ce9
 Bytes: 91
 can't the above just use the above as a helper? Just add an out argument with the error_msg
 
+1178:0-1191:1
+Tue Jul 15 22:42:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f79c98_91381ce9
+UUID: 39dacc33_657062ea
+Bytes: 4
+Done
+
 1241:0-1255:1
 Tue Jul 15 18:50:29 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -61,4 +97,12 @@ Bytes: 207
 I'd make the error an out argument as usual. then you can use that in the the implementation below as well, right? 
 
 in general, anytime you are cutting and pasting instead of refactoring it is probably bad.
+
+1241:0-1255:1
+Tue Jul 15 22:42:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f79c98_5147d463
+UUID: 39dacc33_659942fa
+Bytes: 4
+Done
 

@@ -11,6 +11,18 @@ my thought was that if the runtime found a -Ximage oat file that contained reloc
 
 I don't know if others have similar thoughts.
 
+7
+Tue Jul 15 16:38:05 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19f188a2_4e473364
+UUID: d9e8d0cd_a5b6e4c2
+Bytes: 664
+I did it this way because only the oat file needs specific support for relocation. This way in image space i don't need logic to find the oat file and check if we can relocate. Also this is just much simpler and has the nice effect that we can enforce the use of relocated images by changing the default value of a flag.
+
+As it is if there is an image in both DALVIK_CACHE and /system with the same checksums it will prefer the one in the cache, regardless of the flag.
+
+If you think it is necessary/preferable I can change it to either remove these flags or make it do the check of the oat file if none are given to it, but I think that the way it is now is fine.
+
 File: build/Android.common_build.mk
 
 212:41-212:51
@@ -29,6 +41,16 @@ UUID: b9f79c98_ab8a0959
 Bytes: 77
 i'm fine if we only test relocate. also, do the last two cases exist anymore?
 
+26
+Tue Jul 15 16:38:05 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f79c98_ab8a0959
+UUID: d9e8d0cd_e5646c72
+Bytes: 140
+Having non-relocated versions is useful for finding bugs in patchoat.
+
+The other two still do exist (I think, the make files are confusing).
+
 File: compiler/dex/compiler_ir.h
 
 68:0-68:19
@@ -44,6 +66,16 @@ compiler_driver.GetCompilerOptions().GetIncludePatchInformation();
 
 and perhaps rename it to include_patch_information_ for consistency.
 
+68
+Tue Jul 15 16:38:05 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f79c98_8b874d51
+UUID: d9e8d0cd_25f1f477
+Bytes: 51
+Done
+
+Cannot be const because of the way it is set.
+
 File: compiler/driver/compiler_callbacks_impl.h
 
 45:9-45:15
@@ -52,6 +84,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 19f188a2_ae3b37e4
 Bytes: 65
 PreferRelocation seems too optional? perhaps RelocateIfNecessary?
+
+45
+Tue Jul 15 16:38:05 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19f188a2_ae3b37e4
+UUID: d9e8d0cd_059078f7
+Bytes: 31
+Changed to IsRelocationPossible
 
 File: compiler/oat_writer.h
 
@@ -70,4 +110,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 19f188a2_8e38fbe8
 Bytes: 147
 not really glad to see a fork of this script. again, I always assumed the runtime would figure out what to do based on what the -Ximage looked like
+
+1
+Tue Jul 15 16:38:05 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19f188a2_8e38fbe8
+UUID: d9e8d0cd_454c4002
+Bytes: 225
+This script is nessecary (for testing) even if we do that. It tests the code path that relocating stuff that was dexpreopt (i.e. it was compiled against a non-relocated image and needs to be moved to a newly relocated image).
 

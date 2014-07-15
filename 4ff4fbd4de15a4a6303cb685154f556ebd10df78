@@ -1,0 +1,260 @@
+Revision: 4ff4fbd4de15a4a6303cb685154f556ebd10df78
+Patch-set: 4
+File: compiler/optimizing/stack_map_stream.h
+
+46:29-46:32
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_32accebe
+Bytes: 2
+to
+
+135:7-135:13
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_f13522ef
+Bytes: 314
+Looking at the code, we seem to make implicit copies of objects (StackMapEntry, DexRegisterEntry, ...) by getting them from GrowableArray::Get or CodeInfo<T>::GetStackMapAt.  Is it intentional or are we missing use of reference? It'd be nice to comment on this so we avoid anyone trying to fix while we should not.
+
+135:14-135:26
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_52ceb269
+Bytes: 80
+Is it intentional not using a reference? If so, it would be nice to comment why.
+
+156:25-156:28
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_5186b658
+Bytes: 65
+We get a copy here. Is it intentional? Should we use a reference?
+
+164:25-164:28
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_7181323f
+Bytes: 36
+Use copy constructor for const-ness.
+
+172:39-172:41
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_8e52bbf1
+Bytes: 19
+Getting a copy here
+
+179:27-179:30
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_12ab8a77
+Bytes: 20
+Use copy constructor
+
+File: runtime/memory_region.h
+
+87:7-87:13
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_b13b9ae4
+Bytes: 127
+I don't see any use in the code so you can remove it. That allows to make MemoryRegion::pointer_ and MemoryRegion::size_ const.
+
+108:2-108:6
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_72c93660
+Bytes: 30
+const void* if removing Extend
+
+109:2-109:8
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_8e2bdb69
+Bytes: 31
+const size_t if removing Extend
+
+File: runtime/stack_map.h
+
+43:31-43:32
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_2ec58776
+Bytes: 135
+const. MemoryRegion::Store is const so there is no reason why we can't make it const here. Most of the comment below are missing const.
+
+51:68-51:69
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_92d93a42
+Bytes: 5
+const
+
+60:9-60:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_720ad6f6
+Bytes: 9
+constexpr
+
+61:9-61:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_712bf29d
+Bytes: 9
+constexpr
+
+63:9-63:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_51307608
+Bytes: 9
+constexpr
+
+65:2-65:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_52f87299
+Bytes: 18
+const MemoryRegion
+
+97:82-97:83
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_1126eed5
+Bytes: 5
+const
+
+113:9-113:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_12154a17
+Bytes: 9
+constexpr
+
+115:0-115:2
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_6ecf8f96
+Bytes: 18
+const MemoryRegion
+
+144:33-144:34
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_91113e71
+Bytes: 5
+const
+
+152:32-152:33
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_520fd204
+Bytes: 5
+const
+
+160:48-160:49
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_f11ec27e
+Bytes: 5
+const
+
+168:49-168:50
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_d11bc68c
+Bytes: 5
+const
+
+176:37-176:38
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_8eb59b09
+Bytes: 5
+const
+
+184:44-184:45
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_2eac67be
+Bytes: 5
+const
+
+195
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_0eb1ab16
+Bytes: 5
+const
+
+201:9-201:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_114d4e86
+Bytes: 26
+constexpr (here and below)
+
+211:2-211:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_6ea66fde
+Bytes: 18
+const MemoryRegion
+
+237:38-237:39
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_4eabb3a4
+Bytes: 5
+const
+
+245:58-245:59
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_ae9fb784
+Bytes: 5
+const
+
+253:94-253:95
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_8e9c7b91
+Bytes: 5
+const
+
+259:51-259:52
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_ee99bf9f
+Bytes: 5
+const
+
+266:50-266:51
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 390c8c77_f2fd2680
+Bytes: 5
+const
+
+277:49-277:50
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_ce96836d
+Bytes: 5
+const
+
+290:9-290:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19f188a2_5147d663
+Bytes: 21
+constexpr (and below)
+
+300:2-300:14
+Tue Jul 15 13:47:44 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f79c98_2e1bc766
+Bytes: 18
+const MemoryRegion
+

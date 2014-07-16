@@ -9,6 +9,14 @@ UUID: d9961058_32794848
 Bytes: 84
 Otherwise some later instruction emitting fails saying the immediate cannot be held.
 
+172:9-172:13
+Wed Jul 16 16:35:58 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9961058_32794848
+UUID: 59ba20ef_d8fe0dd0
+Bytes: 37
+Interesting.  Do you know what fails?
+
 File: compiler/utils/arm/assembler_thumb2.cc
 
 880:15-880:17
@@ -17,4 +25,21 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 198d0845_94410cc0
 Bytes: 119
 Not sure about this, but it does emit the right code. If that's correct, should we also change other instructions here?
+
+880:15-880:17
+Wed Jul 16 16:35:58 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 198d0845_94410cc0
+UUID: 59ba20ef_5839ddea
+Bytes: 53
+I'll check.  The CMN below might also need 'rd = rn'.
+
+File: compiler/utils/arm/assembler_thumb2.h
+
+33:22-33:41
+Wed Jul 16 16:35:58 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ba20ef_b857d905
+Bytes: 178
+Prefer to pass an argument to the constructor if you really need this.  Other parts of the system use thumb2 assembler (JNI compiler, etc).  We don't want those affected by this.
 

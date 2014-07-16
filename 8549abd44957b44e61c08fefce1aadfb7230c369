@@ -1,6 +1,82 @@
 Revision: 8549abd44957b44e61c08fefce1aadfb7230c369
 Patch-set: 1
+File: compiler/dex/quick/arm/int_arm.cc
+
+207:77-207:84
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39a80c90_f2bd069f
+Bytes: 7
+rs_dest
+
+209
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 198d0845_5181763e
+Bytes: 388
+Make this shorter for two special cases:
+
+  if ((true_val == 0 && code == kCondEq) ||
+      (false_val == 0 && code == kCondNe)) {
+    OpRegRegReg(kOpSub, rl_dest, left_op, right_op);
+    DCHECK(last_lir_insn_->u.m.def_mask->HasBit(ResourceMask::kCCode));
+    LIR* it = OpIT(kCondNe, "");
+    LoadConstant(rl_dest, code == kCondEq ? false_val : true_val);
+    OpEndIt(it);
+    return;
+  }
+
 File: compiler/dex/quick/arm64/int_arm64.cc
+
+89
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9961058_4ff471ee
+Bytes: 1352
+Right at the beginning you should
+
+  if (false_val == 0 ||
+      true_val == 1 || true_val == 0xffffffff ||
+      true_val == false_val + 1) {
+    ccode = NegateComparison(ccode);
+    std::swap(true_val, false_val);
+  }
+
+That will make the special cases below much shorter even when including some new cases:
+
+  if (true_val == 0) {
+    left_op = zero_reg;
+  } else {
+    left_op = rs_dest.GetReg();
+    LoadConstantNoClobber(rs_dest, true_val);
+  }
+  if (false_val == 1) {  // Whether true_val == 0 or not.
+    right_op = zero_reg;
+    opcode = kA64Csinc4rrrc;
+  } else if (false_val == 0xffffffff) {  // Whether true_val == 0 or not.
+    right_op = zero_reg;
+    opcode = kA64Csinv4rrrc;
+  } else if (false_val == true_val + 1) {
+    right_op = left_op;
+    opcode = kA64Csinc4rrrc;
+  } else if (false_val == -true_val) {  // NOTE: New case.
+    right_op = left_op;
+    opcode = kA64Csneg4rrrc;
+  } else if (false_val == ~true_val) {  // NOTE: New case.
+    right_op = left_op;
+    opcode = kA64Csinv4rrrc;
+  } else if (true_val == 0) {
+    right_op = rs_dest.GetReg();
+    LoadConstantNoClobber(rs_dest, false_val);
+    opcode = kA64Csel4rrrc;
+  } else {
+    // Generic case.
+    // TODO:  Load false_val to a temp reg.
+    opcode = kA64Csel4rrrc;
+  }
+
+  NewLIR4(is_wide ? WIDE(opcode) : opcode,
+          rs_dest.GetReg(), left_op, right_op, code);
 
 109
 Wed Jul 16 10:49:30 2014 +0000
@@ -15,4 +91,52 @@ Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f9c4b462_efb35de8
 Bytes: 142
 Maybe, this could be improved as "(true_val == ~false_val) && (true_val == 0 || true_val == 0xffffffff)". I guess gcc will figure out, anyway.
+
+190
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39a80c90_f287c6fd
+Bytes: 59
+I assume this LOG shall be removed before final submission.
+
+File: compiler/dex/quick/gen_common.cc
+
+1171:6-1171:37
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9961058_0c443781
+Bytes: 343
+Assuming the ARM's new GenSelect (or GenSelectConst32) is modified according to my comments, this special case is useful only to save 2 bytes if one of check_class, object_class or result_reg isn't Low8(). In that case the SUB will be a 4-byte insn while the CMP is always a 2-byte insn. This tiny difference should not warrant a special case.
+
+1259
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9961058_8c502745
+Bytes: 103
+Reorder the load insn and slow_path_target in the fast path and drop this load insn from the slow path.
+
+File: compiler/dex/quick/mir_to_lir.h
+
+1386:17-1386:26
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9961058_8ca2e71c
+Bytes: 17
+GenSelectConst32?
+
+1387:27-1387:35
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9961058_4c70ffe9
+Bytes: 71
+Looking at ArmMir2Lir::GenSelect() I think we should make this int32_t.
+
+File: compiler/dex/quick/x86/codegen_x86.h
+
+207
+Wed Jul 16 11:17:49 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9961058_6cdf7b9f
+Bytes: 16
+Bad indentation.
 

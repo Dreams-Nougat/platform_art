@@ -9,6 +9,14 @@ UUID: 39a80c90_f2bd069f
 Bytes: 7
 rs_dest
 
+207:77-207:84
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39a80c90_f2bd069f
+UUID: 59ba20ef_78a38123
+Bytes: 4
+Done
+
 209
 Wed Jul 16 11:17:49 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -78,12 +86,30 @@ That will make the special cases below much shorter even when including some new
   NewLIR4(is_wide ? WIDE(opcode) : opcode,
           rs_dest.GetReg(), left_op, right_op, code);
 
+89
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9961058_4ff471ee
+UUID: 59ba20ef_78514147
+Bytes: 352
+While it makes the actual cases cleaner, it tears the logic apart. I don't like it, but I'll do it.
+
+Your new cases are nice, but don't happen in practice, btw. Values are either very simple, or very weird. A code size optimization would be to use a delta in the generic case, but it's not clear whether two 16b movs or an add with immediate is faster.
+
 109
 Wed Jul 16 10:49:30 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9c1b053_a98a4559
 Bytes: 160
 A quick look at this seems to suggest that you may be able to factor out this "widening" (e.g. use "opcode = kA64Csinc4rrrc;" here and do the "widening" below).
+
+109
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9c1b053_a98a4559
+UUID: 59ba20ef_deedd5da
+Bytes: 4
+Done
 
 111
 Wed Jul 16 10:49:30 2014 +0000
@@ -92,12 +118,28 @@ UUID: f9c4b462_efb35de8
 Bytes: 142
 Maybe, this could be improved as "(true_val == ~false_val) && (true_val == 0 || true_val == 0xffffffff)". I guess gcc will figure out, anyway.
 
+111
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f9c4b462_efb35de8
+UUID: 19c8a874_13d523c9
+Bytes: 15
+Basically done.
+
 190
 Wed Jul 16 11:17:49 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39a80c90_f287c6fd
 Bytes: 59
 I assume this LOG shall be removed before final submission.
+
+190
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39a80c90_f287c6fd
+UUID: 19c8a874_53f6bb70
+Bytes: 4
+Done
 
 File: compiler/dex/quick/gen_common.cc
 
@@ -108,12 +150,28 @@ UUID: d9961058_0c443781
 Bytes: 343
 Assuming the ARM's new GenSelect (or GenSelectConst32) is modified according to my comments, this special case is useful only to save 2 bytes if one of check_class, object_class or result_reg isn't Low8(). In that case the SUB will be a 4-byte insn while the CMP is always a 2-byte insn. This tiny difference should not warrant a special case.
 
+1171:6-1171:37
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9961058_0c443781
+UUID: 59ba20ef_bec8e15d
+Bytes: 235
+I had considered extending the signature of GenSelect[Const32] to signal a preloaded value in a follow-up. This would make sure you can always take the optimal case here, and would be another argument to then remove x86 special-casing.
+
 1259
 Wed Jul 16 11:17:49 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9961058_8c502745
 Bytes: 103
 Reorder the load insn and slow_path_target in the fast path and drop this load insn from the slow path.
+
+1259
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9961058_8c502745
+UUID: 59ba20ef_fe1779de
+Bytes: 273
+I'll do that for now, but there is a reason for this design: I want to allow other registers than kArg0, as this means potential movs on architectures with many registers. In that case the load in the fast path might be elided, but in the slow path we might have to reload.
 
 File: compiler/dex/quick/mir_to_lir.h
 
@@ -124,12 +182,28 @@ UUID: d9961058_8ca2e71c
 Bytes: 17
 GenSelectConst32?
 
+1386:17-1386:26
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9961058_8ca2e71c
+UUID: 79c52478_9fa3db53
+Bytes: 4
+Done
+
 1387:27-1387:35
 Wed Jul 16 11:17:49 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9961058_4c70ffe9
 Bytes: 71
 Looking at ArmMir2Lir::GenSelect() I think we should make this int32_t.
+
+1387:27-1387:35
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9961058_4c70ffe9
+UUID: 59ba20ef_de1cb505
+Bytes: 62
+Not that I think this one is better for some reason, but done.
 
 File: compiler/dex/quick/x86/codegen_x86.h
 
@@ -139,4 +213,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9961058_6cdf7b9f
 Bytes: 16
 Bad indentation.
+
+207
+Wed Jul 16 20:35:13 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9961058_6cdf7b9f
+UUID: 59ba20ef_be1101ec
+Bytes: 4
+Done
 

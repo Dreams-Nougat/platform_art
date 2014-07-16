@@ -9,6 +9,14 @@ UUID: 79c52478_dc1cc105
 Bytes: 57
 Update gc_allocator.cc to handle null Runtime::GetHeap()?
 
+684
+Wed Jul 16 17:54:32 2014 +0000
+Author: Stephen Hines <1010056@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79c52478_dc1cc105
+UUID: 79c52478_bc66ad2a
+Bytes: 42
+Huh? As written, the check is always true.
+
 1060:6-1060:10
 Wed Jul 16 08:08:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,4 +31,12 @@ Parent: d9961058_cc922f02
 UUID: 79c52478_3cd85d02
 Bytes: 69
 I don't think you want to delete both conditions of the if statement.
+
+1060
+Wed Jul 16 17:54:32 2014 +0000
+Author: Stephen Hines <1010056@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79c52478_3cd85d02
+UUID: 19c8a874_c0890fa0
+Bytes: 345
+I do, because "this == nullptr" is never true. It doesn't matter what verify_object_mode is if the first part is false. This code just doesn't work (or do what you think it is doing). Feel free to add in the appropriate check/validation that you want, but my intention with this CL is to unblock the LLVM rebase, not to improve ART verification.
 

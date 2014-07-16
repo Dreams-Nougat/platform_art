@@ -1,0 +1,27 @@
+Revision: 4c13a3ff475f206c4d0a86ee2595c45392fd942f
+Patch-set: 3
+File: runtime/gc/collector/semi_space.cc
+
+72:0-73:43
+Wed Jul 16 22:48:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59ef80ff_d0b01c15
+Bytes: 139
+This comment probably needs updating as we don't add or bind the main free list space or the non-moving space to the immune space any more.
+
+74:16-74:38
+Wed Jul 16 22:48:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f48cd0_af577905
+Bytes: 343
+Maybe remove "space == to_space_ ||" to detect the unexpected situation where we attempt a to-space only collection on a zygote compaction or a background/foreground transition case?
+
+In other words, if collect_from_space_only_ is true, then space with a non-null live bitmap must be either the primary free list space or the non-moving space?
+
+495:13-495:39
+Wed Jul 16 22:48:38 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f48cd0_cfb07d15
+Bytes: 93
+nit: same thing, but using to_space_live_bitmap_ might be more consistent with the else case.
+

@@ -96,6 +96,14 @@ While it makes the actual cases cleaner, it tears the logic apart. I don't like 
 
 Your new cases are nice, but don't happen in practice, btw. Values are either very simple, or very weird. A code size optimization would be to use a delta in the generic case, but it's not clear whether two 16b movs or an add with immediate is faster.
 
+89
+Thu Jul 17 09:50:00 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ba20ef_78514147
+UUID: 7938c45c_4188f20f
+Bytes: 195
+The most common cases of true_val == -false_val and true_val == ~false_val (i.e. 1, -1 and 0, -1) are already handled by other cases but I expect at least a few cases of 2, -2 to show up in code.
+
 109
 Wed Jul 16 10:49:30 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -172,6 +180,14 @@ Parent: d9961058_8c502745
 UUID: 59ba20ef_fe1779de
 Bytes: 273
 I'll do that for now, but there is a reason for this design: I want to allow other registers than kArg0, as this means potential movs on architectures with many registers. In that case the load in the fast path might be elided, but in the slow path we might have to reload.
+
+1259
+Thu Jul 17 09:50:00 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59ba20ef_fe1779de
+UUID: 7938c45c_81659a96
+Bytes: 149
+Agreed. But that should be a part of the CL that avoids the load in the fast path. While we don't do that, we shouldn't bloat the code unnecessarily.
 
 File: compiler/dex/quick/mir_to_lir.h
 

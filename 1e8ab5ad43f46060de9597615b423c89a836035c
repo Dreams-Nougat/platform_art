@@ -9,6 +9,14 @@ UUID: b9f87cd3_0369cebf
 Bytes: 99
 Could we make this part of the instruction set instead? Passing it to compiler options is annoying.
 
+1150:6-1150:26
+Thu Jul 17 16:52:04 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f87cd3_0369cebf
+UUID: 598b0070_b0aa589f
+Bytes: 85
+Can do.  I'll do it as a new CL though as it will affect many places in the compiler.
+
 File: runtime/arch/x86/fault_handler_x86.cc
 
 185:4-185:29
@@ -17,4 +25,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1902688d_badc5983
 Bytes: 180
 Presumably missing mutator_lock_, can you put a TODO saying why annotalysis fails (running in a signal handler) and put a dynamic assert Lock::mutator_lock_->AssertSharedHeld(self)
+
+185:4-185:29
+Thu Jul 17 16:52:04 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1902688d_badc5983
+UUID: 598b0070_90a5d4d1
+Bytes: 245
+There is already a check for the lock being held at fault_handler.cc:142 and that functions has a NO_THREAD_SAFETY_ANALYSIS incantation already.  Maybe the correct solution is to add it to the declaration of this function too in the header file?
 

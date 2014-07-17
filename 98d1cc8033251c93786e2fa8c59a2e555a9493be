@@ -1,0 +1,22 @@
+Revision: 98d1cc8033251c93786e2fa8c59a2e555a9493be
+Patch-set: 14
+File: runtime/class_linker.cc
+
+2564:27-2564:37
+Thu Jul 17 23:15:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d97e1025_60ddfa2b
+Bytes: 91
+This needs a read barrier because class_table_ is a root. See RemoveClass() for an example.
+
+File: runtime/mirror/class.cc
+
+833:14-833:20
+Thu Jul 17 23:15:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5964e099_a8851b4c
+Bytes: 239
+memcpy() below bypasses the read barrier as well as wrongfully copies the header word that contains the read barrier data (forward pointer, etc.)
+
+A proper way to copy an object is what Object::Clone() (and CopyObject() in object.cc) does.
+

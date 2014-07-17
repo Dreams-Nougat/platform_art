@@ -9,6 +9,14 @@ UUID: b9f87cd3_432c6681
 Bytes: 84
 Move these DCHECKs to the beginning of the function to cover the special case above.
 
+221:0-222:44
+Thu Jul 17 16:25:00 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f87cd3_432c6681
+UUID: 590860ab_9cb195cf
+Bytes: 118
+I've moved them up and added a TODO. While not currently used in any other way but with 0 and 1, it should be general.
+
 File: compiler/dex/quick/arm64/int_arm64.cc
 
 90:29-90:37
@@ -17,6 +25,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9fb70cc_043676d1
 Bytes: 8
 int32_t?
+
+90:29-90:37
+Thu Jul 17 16:25:00 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9fb70cc_043676d1
+UUID: 590860ab_1cd5a5c8
+Bytes: 4
+Done
 
 156
 Thu Jul 17 09:56:51 2014 +0000
@@ -28,6 +44,18 @@ This has a dependency on the previous load insn. It should not be used if the fa
 When we're doing this, we should also add another condition to the NegateComparison()+swap() at the beginning to prefer an inexpensive constant in true_val if all the previous conditions fail. That helps when we enter the function with true_val = 0x1001, false_val = 0x0FFF, for example.
 
 However, I don't think these cases will be very common. The whole delta encoding should probably be dropped because the logic is too complicated to be worth it for such a rare case.
+
+156
+Thu Jul 17 16:25:00 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f87cd3_635642ea
+UUID: 598b0070_d0d27c70
+Bytes: 380
+All 32b constants will be marked inexpensive with Matteo's CL. All can be encoded with a movz and a movk.
+
+It is not clear whether the dependency has a significant impact on runtime, but it saves a full instruction. And again I can just say: this would cover *all* the remaining cases I have seen when logging numbers.
+
+As such, I prefer to have the logic in here, but switchable.
 
 File: compiler/dex/quick/x86/int_x86.cc
 

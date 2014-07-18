@@ -1,0 +1,22 @@
+Revision: 379d209bd035f59f6eed2e4797089b1ce195f2eb
+Patch-set: 8
+File: runtime/instruction_set.h
+
+197:0-197:50
+Fri Jul 18 23:27:21 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 590220bc_984bb5ea
+Bytes: 313
+Can we remove this? Its only useful for the ARM vs Thumb2 case, and we care about that as thumb2 has a +1 in the low-bit of its PC. I worry we'll confuse ISA and standard ISA. Explicitly comparing both ARM and Thumb2 is less error prone as it means we need to handle the +1 difference everywhere when appropriate.
+
+File: test/run-test
+
+293:0-293:82
+Fri Jul 18 23:27:21 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 590220bc_5862bd64
+Bytes: 195
+how does this differ from the default with --prebuild? Presumably there are 4 combinations here:
+ (prebuild or no) x (relocate or no)
+Here we have 3 combinations and the default is somewhat grey.
+

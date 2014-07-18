@@ -25,6 +25,14 @@ UUID: b9f87cd3_66e530ad
 Bytes: 20
 Sounds good, thanks!
 
+1150:6-1150:26
+Fri Jul 18 15:44:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f87cd3_66e530ad
+UUID: f9ef5430_ac1f4b4f
+Bytes: 375
+We should move away from instruction set and instruction set features as enums, a class would be cleaner and then we can test properties on it. Andreas was looking at this but its an invasive change. We should reach a consensus on implementation strategy to avoid churn. This change is consistent with the current approach so following up is the most appropriate thing to do.
+
 File: runtime/arch/x86/fault_handler_x86.cc
 
 185:4-185:29
@@ -41,6 +49,14 @@ Parent: 1902688d_badc5983
 UUID: 598b0070_90a5d4d1
 Bytes: 245
 There is already a check for the lock being held at fault_handler.cc:142 and that functions has a NO_THREAD_SAFETY_ANALYSIS incantation already.  Maybe the correct solution is to add it to the declaration of this function too in the header file?
+
+185:4-185:29
+Fri Jul 18 15:44:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 598b0070_90a5d4d1
+UUID: f9ef5430_8c9a4f92
+Bytes: 160
+Right, the annotations belong on declarations. We should avoid NO_THREAD_SAFETY_ANALYSIS whenever possible or document when we do use it and add dynamic checks.
 
 199
 Thu Jul 17 17:49:36 2014 +0000

@@ -1,0 +1,83 @@
+Revision: 54447d94be1751fbc5fbeea4cf767723f4bcd5ea
+Patch-set: 2
+File: runtime/gc/heap.cc
+
+229:6-229:46
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9ef5430_f5f0f375
+Bytes: 135
+If we enable hspace-compaction just for oom and but use SS as the background collector, it still works as we reuse the mem maps, right?
+
+230:30-230:31
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79e44451_3539c8ec
+Bytes: 5
+'as'?
+
+231:10-231:21
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3969ec74_2d2ff9bd
+Bytes: 96
+This reads negated. It should say that we can't use the same space if we support homo..., right?
+
+244:23-244:51
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 790d24e9_8a8b495f
+Bytes: 273
+Maybe we should allocate the mem map for the non-moving space first because otherwise the main mem maps could be allocated at the address where we will intend to allocate the non-moving space and the non-moving space allocation could fail (if the preference isn't honored)?
+
+296:0-300:41
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 790d24e9_4a25b196
+Bytes: 119
+Shouldn't we create the backup main space only when the hspace compaction is enabled or the background collector is SS?
+
+321:5-321:33
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1975083e_42f6b470
+Bytes: 74
+I'm not sure I follow. Why did we add it in line 297 if we remove it here?
+
+379:61-379:75
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9ef5430_552c4781
+Bytes: 36
+This should be the non-moving space.
+
+396:14-396:42
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9ef5430_b59aeb91
+Bytes: 77
+This is only preferred as we decided to never immune the main space. Correct?
+
+1496:14-1496:38
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1975083e_222e0818
+Bytes: 47
+Just passing from_space instead may be clearer?
+
+1591:8-1591:11
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1975083e_c28624c5
+Bytes: 40
+How about CHECK(temp_space_ != nullptr)?
+
+File: runtime/gc/heap.h
+
+1014:2-1014:90
+Sat Jul 19 01:29:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79e44451_951ff47a
+Bytes: 55
+Does this mean that we weren't deleting it at shutdown?
+

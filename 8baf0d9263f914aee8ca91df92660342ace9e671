@@ -11,3 +11,13 @@ I already saw the use of sizeof to count the number of characters of a string el
 
 Still I wonder if there is not a difference of 1 in the count. If TOOL_PREFIX was a char[], sizeof would return the number of characters + 1 for the '\0'. Shouldn't we add 1 to strlen *or* was sizeof wrong from the start here?
 
+119:48-119:54
+Mon Jul 21 12:40:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 195ee8cf_8cfaab52
+UUID: f95af4db_0edd4f1a
+Bytes: 280
+You're right. Before, it used to be sizeof("arm-eabi-"), which would count the '\0'. So that was broken, I changed it to a constant because it is used in other places, which broke it in a different way (now it would return 4/8).
+
+We should stay with strlen. sizeof is too brittle.
+

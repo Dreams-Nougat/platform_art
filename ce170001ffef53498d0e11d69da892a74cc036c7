@@ -9,6 +9,14 @@ UUID: 195ee8cf_c943b579
 Bytes: 166
 This is a case where we request a particular kind of register. Maybe we should have a way to specify this to the register allocator so we get an appropriate register?
 
+1004:23-1004:42
+Mon Jul 21 09:40:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 195ee8cf_c943b579
+UUID: d957f0b2_4aa017be
+Bytes: 158
+Yes, we could have a ByteRegisterKind instead of specifying a specific register. I don't think it's worth the trouble for now though, this is specific to x86.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 875:6-875:108
@@ -18,6 +26,14 @@ UUID: 195ee8cf_29584969
 Bytes: 27
 nit: long line (>100 chars)
 
+875:6-875:108
+Mon Jul 21 09:40:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 195ee8cf_29584969
+UUID: f95af4db_0bcea1ed
+Bytes: 4
+Done
+
 File: compiler/utils/arm/assembler_thumb2.cc
 
 1378:8-1382:9
@@ -26,6 +42,16 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d957f0b2_8a804f3d
 Bytes: 49
 Shouldn't it be before line "Emit32(encoding);" ?
+
+1378:8-1382:9
+Mon Jul 21 09:40:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d957f0b2_8a804f3d
+UUID: f95af4db_cb8e49b3
+Bytes: 290
+Good catch. Moved to before Emit32. This path is probably not stressed much yet, and only the card marking uses it (and the encoding is correct in such case).
+
+Note that this was caught by the (unfortunately disabled due to different configuration on build servers) assembler_thumb_test.cc.
 
 File: test/401-optimizing-compiler/src/Main.java
 

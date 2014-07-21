@@ -1,0 +1,13 @@
+Revision: 8baf0d9263f914aee8ca91df92660342ace9e671
+Patch-set: 1
+File: compiler/utils/assembler_thumb_test.cc
+
+119:48-119:54
+Mon Jul 21 12:29:01 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 195ee8cf_8cfaab52
+Bytes: 438
+I already saw the use of sizeof to count the number of characters of a string elsewhere in ART. I suppose this is not working here because TOOL_PREFIX is a char* so sizeof would return 4 (or 8 on 64bit), right?
+
+Still I wonder if there is not a difference of 1 in the count. If TOOL_PREFIX was a char[], sizeof would return the number of characters + 1 for the '\0'. Shouldn't we add 1 to strlen *or* was sizeof wrong from the start here?
+

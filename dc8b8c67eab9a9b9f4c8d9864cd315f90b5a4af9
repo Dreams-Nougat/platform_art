@@ -1,0 +1,11 @@
+Revision: dc8b8c67eab9a9b9f4c8d9864cd315f90b5a4af9
+Patch-set: 4
+File: runtime/gc/heap.cc
+
+234:7-234:32
+Mon Jul 21 19:06:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9123c0c_fc573d04
+Bytes: 323
+Also, I think we need to have main_space == non_moving_space (that is, separate_non_moving_space = false) for GSS. Otherwise the zygote compaction won't work for GSS (and the device won't boot) since it does not compact from the main space to the non-moving space (only from the bump pointer space to the non-moving space).
+

@@ -9,6 +9,14 @@ UUID: 390c8c77_32accebe
 Bytes: 2
 to
 
+46:29-46:32
+Mon Jul 21 11:48:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 390c8c77_32accebe
+UUID: d957f0b2_6ab713d8
+Bytes: 4
+Done
+
 135:7-135:13
 Tue Jul 15 13:47:44 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +30,24 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 390c8c77_52ceb269
 Bytes: 80
 Is it intentional not using a reference? If so, it would be nice to comment why.
+
+135:7-135:13
+Mon Jul 21 11:48:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19f188a2_f13522ef
+UUID: 195ee8cf_cca503a3
+Bytes: 401
+So the assumption is that GrowableArray::Get is inlined. Otherwise we would do these useless copies. Note that typing the return value a reference or a value does not make a difference.
+
+The reason why GrowableArray::Get *must* be inlined is because otherwise typing GrowableArray as GrowableArray<MyStruct> would make it very inefficient, and we should change the code to returning a pointer instead.
+
+135:14-135:26
+Mon Jul 21 11:48:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 390c8c77_52ceb269
+UUID: f95af4db_2ec04b5e
+Bytes: 77
+MemoryRegion can be passed by value, it's actually part of its documentation.
 
 156:25-156:28
 Tue Jul 15 13:47:44 2014 +0000
@@ -60,6 +86,14 @@ UUID: 19f188a2_b13b9ae4
 Bytes: 127
 I don't see any use in the code so you can remove it. That allows to make MemoryRegion::pointer_ and MemoryRegion::size_ const.
 
+87:7-87:13
+Mon Jul 21 11:48:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19f188a2_b13b9ae4
+UUID: 195ee8cf_6cb72fd8
+Bytes: 157
+I'd rather clean up MemoryRegion in a different CL. Here I'm just using the current functionality and adding one. I agree the code could be tidied up though.
+
 108:2-108:6
 Tue Jul 15 13:47:44 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -83,6 +117,14 @@ UUID: b9f79c98_2ec58776
 Bytes: 135
 const. MemoryRegion::Store is const so there is no reason why we can't make it const here. Most of the comment below are missing const.
 
+43:31-43:32
+Mon Jul 21 11:48:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f79c98_2ec58776
+UUID: d957f0b2_2aecbb96
+Bytes: 302
+I think I'd prefer to keep it this way because I don't want the contract to imply const. The fact that it's const is an implementation detail (because I'm using MemoryRegion, but I could also use a growable memory), and may change if we move away from MemoryRegion (by using uleb encoding for example).
+
 51:68-51:69
 Tue Jul 15 13:47:44 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -96,6 +138,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 390c8c77_720ad6f6
 Bytes: 9
 constexpr
+
+60:9-60:14
+Mon Jul 21 11:48:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 390c8c77_720ad6f6
+UUID: f95af4db_0e9a2f94
+Bytes: 17
+Done (and below).
 
 61:9-61:14
 Tue Jul 15 13:47:44 2014 +0000
@@ -117,6 +167,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 390c8c77_52f87299
 Bytes: 18
 const MemoryRegion
+
+65:2-65:14
+Mon Jul 21 11:48:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 390c8c77_52f87299
+UUID: 195ee8cf_ec91df43
+Bytes: 115
+I'd prefer to keep it this way, to use the default copy constructor. All these classes can just be passed by value.
 
 97:82-97:83
 Tue Jul 15 13:47:44 2014 +0000

@@ -1,0 +1,28 @@
+Revision: 2728f6e41d2c40703745ce3d0f314bd666acc3a2
+Patch-set: 3
+File: compiler/dex/quick/ralloc_util.cc
+
+1178
+Tue Jul 22 16:56:55 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91530f5_657269b2
+Bytes: 1090
+Notice: the code above only affects Arm64, because:
+
+- for MIPS, Arm, x86, WideGPRsAreAliases() always returns false making this new version equivalent to the old,
+- for x86_64, the two versions are again equivalent due to how InexpensiveConstantLong() is implemented. This function returns true unconditionally for x86 and x86_64. This means that the old code never counts references for wide integer constants in the x86/x86_64 cases. The new code does the same and actually skips the second vreg in the wide constant as soon as it finds the first one. This proves that the new code and the old code behave in the same way when loc is a wide integer constants. In all the other cases (loc is not wide, is not integer, or is not a constant) it is quite easy to verify that the new and old version behave identically.
+
+For Arm64 the old code is particularly bad, because IsInexpensiveConstant(long_integer) is not unconditionally true (it was unconditionally false, but this patch changes this). The consequence was that it ended up promoting odd registers and messing up the promotion map.
+
+1233
+Tue Jul 22 16:56:55 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39bc8c31_af0f3906
+Bytes: 147
+We could alternatively change this to,
+
+  size_t core_reg_count_size = num_regs * 2;
+  size_t fp_reg_count_size = num_regs * 2;
+
+What do you think?
+

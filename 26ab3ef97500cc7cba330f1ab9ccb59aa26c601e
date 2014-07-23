@@ -91,6 +91,23 @@ So why didn't you pick new numbers?
 
 FYI: I've seen tests in the dalvik directory being moved because of number conflicts, which IIUC lead to not running the test in some test framework. We don't want to be in the same situation.
 
+75:5-75:6
+Wed Jul 23 17:12:08 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d998d0f7_df27bf36
+UUID: 39bc8c31_7dc05a5f
+Bytes: 507
+I wanted to run the oat tests before the "normal" run tests, to have similar behavior to before (e.g., when doing mm test-art-target). So now we do:
+
+000: nop = test run-test harness
+001: Main and HelloWorld, first oat tests
+002: sleep = simple run-test
+003: omnibus-opcodes = test opcodes
+004: rest of the old oat tests
+005-: other run tests
+
+And yes, I'm exactly talking about "outside" testing, which uses some dedicated numbers, so I tried to keep renaming minimal (the range 001-008 is impacted, only).
+
 File: test/run-test
 
 247:102-247:103

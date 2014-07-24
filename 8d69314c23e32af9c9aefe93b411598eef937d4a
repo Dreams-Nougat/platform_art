@@ -9,6 +9,16 @@ UUID: d9461042_2fb405ba
 Bytes: 84
 This will try over and over to load the library, even when it failed the first time.
 
+40:2-66:3
+Thu Jul 24 01:49:18 2014 +0000
+Author: Yong Wu <1050938@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9461042_2fb405ba
+UUID: 3931ecd1_87416624
+Bytes: 293
+It is kinda exception if it fails in the first time. Then we will be a little bit slower to handle it by trying to reload native-bridge the next time it was invoked.
+
+And we are okay to add a new field init_fail_ to indicate the first time init failure. In that case it returns false directly.
+
 File: runtime/native_bridge.h
 
 25:0-27:104
@@ -18,6 +28,14 @@ UUID: f93914b5_70d50ec8
 Bytes: 133
 Why this way? And even if you want to go with extern and not simply include the right header files, move all of this to the .cc file.
 
+25:0-27:104
+Thu Jul 24 01:49:18 2014 +0000
+Author: Yong Wu <1050938@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f93914b5_70d50ec8
+UUID: 3931ecd1_c7243e9e
+Bytes: 268
+Okay we can move them to .cc file. And we use extern C because inside native-bridge it may look up that symbol in some cases (for example, native-activity may call native-bridge and register native methods before ART), looking up a mangling name looks a bit unnatural.
+
 61:2-61:10
 Wed Jul 23 20:39:10 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,10 +43,26 @@ UUID: 193d089f_317e2a35
 Bytes: 90
 Better name here, there's no need for C-style obfuscation. NativeBridgeArtCallbacks maybe.
 
+61:2-61:10
+Thu Jul 24 01:49:18 2014 +0000
+Author: Yong Wu <1050938@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 193d089f_317e2a35
+UUID: 1926e89c_06a01abd
+Bytes: 5
+Okay.
+
 99:2-99:10
 Wed Jul 23 20:39:10 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 193d089f_518bb60d
 Bytes: 37
 Similar. NativeBridgeCallbacks maybe.
+
+99:2-99:10
+Thu Jul 24 01:49:18 2014 +0000
+Author: Yong Wu <1050938@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 193d089f_518bb60d
+UUID: 3931ecd1_c7f27eba
+Bytes: 5
+Okay.
 

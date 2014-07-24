@@ -1,0 +1,24 @@
+Revision: 6e17535dc2a0db4f24a92b3e6854b53cf949b360
+Patch-set: 3
+File: compiler/dex/quick/x86/utility_x86.cc
+
+576:0-576:44
+Thu Jul 24 16:45:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f93914b5_6ce7eef4
+Bytes: 168
+Is the bug that this is never true? Well it looks currently that it could be true, but that's a bug in that we should generating PC relative loads using RIP addressing.
+
+602:0-612:9
+Thu Jul 24 16:45:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f93914b5_cc14621d
+Bytes: 229
+which means we always come in here, and this code is 32-bit specific?
+Should this code do what the code below does and do:
+if (r_dest.IsPair()) {
+  ... what we have 32-bit code
+} else {
+  ... the code you added above for 64-bit
+}
+

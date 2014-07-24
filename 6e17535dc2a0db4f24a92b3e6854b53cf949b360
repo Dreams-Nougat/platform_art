@@ -25,6 +25,27 @@ Compiler generated loading through const pool in both x86 and x86_64 cases (with
 
 Seems like this (loading through const pool) is not the optimal method for x86_64, because compiler generates an additional call/pop in a beginning of the function and use the memory access to const pool, which can be expensive.
 
+576:0-576:44
+Thu Jul 24 17:39:58 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_4d5b0d68
+UUID: d9461042_a7be5198
+Bytes: 682
+The reason the call-pop is generated is that x86 doesn't have RIP addressing, while x86-64 does. The codegen choices are:
+
+mov rX, #value
+movd xmmY, rX
+
+or
+
+movd xmmY, rip:[literal pool offset to #value]
+
+my experience has been the latter is better in that it at least uses 1 fewer register.
+
+I'm happy to have the two implementation choices be available under an instruction set features flag. I'd like if we could fix the non-use of RIP addressing as that also impacts the switch implementation.
+
+I'm happy to take this code relatively as-is and follow up on the other issues, but I'd like the structure of the float code to match that of the int code below. As I commented below.
+
 602:0-612:9
 Thu Jul 24 16:45:23 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

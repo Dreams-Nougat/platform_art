@@ -43,6 +43,22 @@ UUID: 1926e89c_e6ff7e40
 Bytes: 166
 And we agree with you to use command-line parameter instead of property. Some other module (zygote?) need to do the property and pass it to ART. May you help on that?
 
+40:2-66:3
+Thu Jul 24 06:12:40 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 592ce07a_c86d2f82
+UUID: f93914b5_7606e1ad
+Bytes: 346
+The goal is to have this per app, and only to be pushing the parameter when necessary, i.e., we found an apk with .so files that are not host-compatible. So (a) we won't pay the price when it's unused and (b) when there is such a library, it's unlikely lazy initialization will help at all, as we should expect to be calling out into native code.
+
+40:2-66:3
+Thu Jul 24 06:12:40 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1926e89c_e6ff7e40
+UUID: d9461042_d61cf105
+Bytes: 180
+Yes, Google will take over. Will likely not be me (as I'm mainly working on Art only), but someone will take care of it. In the meantime I might accept the patch with the property.
+
 File: runtime/native_bridge.h
 
 25:0-27:104
@@ -89,4 +105,11 @@ Parent: 193d089f_518bb60d
 UUID: 3931ecd1_c7f27eba
 Bytes: 5
 Okay.
+
+112:9-112:17
+Thu Jul 24 06:12:40 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 193d089f_98929a90
+Bytes: 201
+If we make this a pointer, we can live with forward declarations in the .h file and hide all the callback structures in the .cc. You can take a look at the previous Art-Native-Bridge CL for comparison.
 

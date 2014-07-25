@@ -21,6 +21,16 @@ I think the switch would look the same whether here or in BuildArrayAccess. This
 
 In any case, I don't really care, do we have a non-macro guideline?
 
+735:1-735:40
+Fri Jul 25 15:01:57 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_4f930107
+UUID: b9431c33_f11020b7
+Bytes: 139
+I'm fine with it, it's just I prefer using macros as a last resort :)
+
+The Google C++ style guide just say to "be very cautious" with them.
+
 File: compiler/optimizing/code_generator_arm.cc
 
 114:2-114:10
@@ -68,6 +78,14 @@ UUID: 7937e4c3_8f7b3901
 Bytes: 134
 It is an optimization, but it's not related to constant propagation. It avoids allocating a register for the index if it's a constant.
 
+1242:34-1242:52
+Fri Jul 25 15:01:57 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_8f7b3901
+UUID: 7937e4c3_4fcea1ee
+Bytes: 103
+Aah I understand: an instruction "const v0, #3" is a constant in the IR so you handle this case, right?
+
 1254:55-1254:70
 Fri Jul 25 13:55:56 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,6 +102,14 @@ Parent: 7937e4c3_4f5061ea
 UUID: 7937e4c3_af80fda5
 Bytes: 66
 This applies for fields, but not for arrays, where data is packed.
+
+1254:55-1254:70
+Fri Jul 25 15:01:57 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_af80fda5
+UUID: 7937e4c3_2fa08d14
+Bytes: 114
+The Quick compiler does something wrong then. Quick and Optimizing compilers should both use the same data offset.
 
 1260:69-1260:70
 Fri Jul 25 13:55:56 2014 +0000
@@ -176,6 +202,14 @@ Parent: 9932d8d1_10384c08
 UUID: b9431c33_91943cf5
 Bytes: 175
 I think DataOffset is pretty much the shared method you're asking for. We could have one that takes a PrimitiveType and switch in it, but we're doing the switch here anyway...
+
+1248:62-1248:69
+Fri Jul 25 15:01:57 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9431c33_91943cf5
+UUID: 9932d8d1_135696e8
+Bytes: 102
+Yes but you have this code in each code generator. I meant we should share it between code generators.
 
 File: compiler/optimizing/code_generator_x86_64.cc
 

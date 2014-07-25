@@ -1,0 +1,73 @@
+Revision: d7eab1d539c78600293f85f1fcc0704a390b3380
+Patch-set: 2
+File: compiler/elf_writer_quick.cc
+
+834:2-836:87
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91ff043_99e8e7cc
+Bytes: 52
+Any particular reason for moving this onto the heap?
+
+849:0-854:3
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b91cfc52_32d1ce8f
+Bytes: 94
+Why the fore loop. Is only some of the dbg_info's having line information possible/meaningful?
+
+856
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91ff043_79e40bef
+Bytes: 124
+This seems like it could be wrong.
+
+Can we have one without the other?
+
+Do we actually handle having only one intelligently?
+
+1048:0-1050:1
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96e70794_b103ea9b
+Bytes: 30
+strcmp already does this IIRC.
+
+1090:2-1102:4
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96e70794_b1608a5c
+Bytes: 52
+A lambda or static function would probably be nicer.
+
+1230:0-1231:61
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b91cfc52_1d15c35b
+Bytes: 45
+I am fairly certain this is wrong, see below.
+
+1282
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b91cfc52_f242d672
+Bytes: 45
+I am fairly certain this is wrong. See below.
+
+1295
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96e70794_b181aa75
+Bytes: 45
+I am fairly certain this is wrong, see below.
+
+1312:0-1313:63
+Fri Jul 25 16:44:23 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b91cfc52_f26bb6f2
+Bytes: 305
+I think this will break current gdb behavior since IIRC the low_pc_/high_pc_ are offsets from the start of the text section already. We save them as that since we don't know what the actual addresses of these things will be until later when we have already loaded the oat file.
+
+See ElfFile::GdbJITSupport
+

@@ -1,5 +1,16 @@
 Revision: b308dd514d73d0447fe55506087322d5eb3c881a
 Patch-set: 1
+File: compiler/dex/quick/arm64/target_arm64.cc
+
+55:0-56:92
+Fri Jul 25 04:16:29 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3931ecd1_ade4896d
+Bytes: 308
+This comment is removed, since I've already tried this.
+
+It becomes slower. Probably, there are more transitions from managed code to runtime functions or jni than I expected. Also, we already have enough promote registers, so it is hardly to get much performance by simply enlarge the promote register pool.
+
 File: compiler/utils/arm64/assembler_arm64.cc
 
 647:61-647:62
@@ -9,12 +20,28 @@ UUID: 39bc8c31_8c2fd6bb
 Bytes: 1
 ?
 
+647:61-647:62
+Fri Jul 25 04:16:29 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39bc8c31_8c2fd6bb
+UUID: 3931ecd1_cdd9bdbc
+Bytes: 4
+Done
+
 650:38-650:41
 Wed Jul 23 07:17:47 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79b2845d_0ed47a27
 Bytes: 7
 Update.
+
+650:38-650:41
+Fri Jul 25 04:16:29 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79b2845d_0ed47a27
+UUID: 1926e89c_8ca26b81
+Bytes: 72
+This comment was removed, since it is duplicated with the comment later.
 
 681:2-681:37
 Wed Jul 23 07:17:47 2014 +0000
@@ -23,6 +50,14 @@ UUID: 79b2845d_8ec06a60
 Bytes: 192
 Please put a comment explicitly noting why the suspend count is not stored - this is a point that would need to be changed if we move to implicit suspend checks and using x19 for other things.
 
+681:2-681:37
+Fri Jul 25 04:16:29 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79b2845d_8ec06a60
+UUID: 592ce07a_6b035d9c
+Bytes: 111
+The comment is added to Arm64JniCallingConvention::CoreSpillMask(), since these code must match the spill mask.
+
 724:51-724:60
 Wed Jul 23 07:17:47 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +65,28 @@ UUID: 79b2845d_eeabf6a5
 Bytes: 7
 Update.
 
+724:51-724:60
+Fri Jul 25 04:16:29 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79b2845d_eeabf6a5
+UUID: 3931ecd1_ad93a9da
+Bytes: 4
+Done
+
 753:2-753:38
 Wed Jul 23 07:17:47 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39bc8c31_c7d7f95d
 Bytes: 32
 Similar to above, put a comment.
+
+753:2-753:38
+Fri Jul 25 04:16:29 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39bc8c31_c7d7f95d
+UUID: 592ce07a_8b46d1e0
+Bytes: 111
+The comment is added to Arm64JniCallingConvention::CoreSpillMask(), since these code must match the spill mask.
 
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
@@ -52,6 +103,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79b2845d_8e97ca68
 Bytes: 50
 So why aren't you chosing one randomly, e.g., x20?
+
+1548:7-1548:46
+Fri Jul 25 04:16:29 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79b2845d_8e97ca68
+UUID: 3931ecd1_cd98ddf9
+Bytes: 65
+Done
+
+Thanks, I forgot to modify this which would become a bug...
 
 File: runtime/arch/arm64/thread_arm64.cc
 

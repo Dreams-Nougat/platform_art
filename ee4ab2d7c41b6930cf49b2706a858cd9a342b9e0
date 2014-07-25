@@ -11,6 +11,16 @@ We should avoid using macros. It's comfortable to write code but it's not always
 
 Here only the type is changing. maybe you could do the type selection inside BuildArrayAccess (based on the instruction opcode) to simplify this switch.
 
+735:1-735:40
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_b01ce004
+UUID: 7937e4c3_4f930107
+Bytes: 327
+I think the switch would look the same whether here or in BuildArrayAccess. This macro is pretty similar to the one introduced by Dave for IF. It's small enough that I am tempted to just accept it. On the other hand, it's simple enough that we could fold it.
+
+In any case, I don't really care, do we have a non-macro guideline?
+
 File: compiler/optimizing/code_generator_arm.cc
 
 114:2-114:10
@@ -20,6 +30,14 @@ UUID: 7937e4c3_0fde69f1
 Bytes: 14
 const Location
 
+114:2-114:10
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_0fde69f1
+UUID: 9932d8d1_3312ba74
+Bytes: 4
+Done
+
 115:2-115:10
 Fri Jul 25 13:55:56 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,12 +45,28 @@ UUID: b9431c33_d1ac0477
 Bytes: 14
 const Location
 
+115:2-115:10
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9431c33_d1ac0477
+UUID: 7937e4c3_6f90c5f9
+Bytes: 4
+Done
+
 1242:34-1242:52
 Fri Jul 25 13:55:56 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9932d8d1_d01154eb
 Bytes: 47
 Is it an optimization for constant propagation?
+
+1242:34-1242:52
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_d01154eb
+UUID: 7937e4c3_8f7b3901
+Bytes: 134
+It is an optimization, but it's not related to constant propagation. It avoids allocating a register for the index if it's a constant.
 
 1254:55-1254:70
 Fri Jul 25 13:55:56 2014 +0000
@@ -43,12 +77,28 @@ The Quick compiler only uses data offset for 32-bit or 64-bit element (see ArmMi
 
 I know there is ongoing work to handle 8-bit and 16-bit element. Are you anticipating this change?
 
+1254:55-1254:70
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_4f5061ea
+UUID: 7937e4c3_af80fda5
+Bytes: 66
+This applies for fields, but not for arrays, where data is packed.
+
 1260:69-1260:70
 Fri Jul 25 13:55:56 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9932d8d1_f042d872
 Bytes: 32
 ", LSL, TIMES_1" for consistency
+
+1260:69-1260:70
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_f042d872
+UUID: 9932d8d1_3339daec
+Bytes: 283
+The thing about the assembler, is that you can express the same operation through multiple API. So at this level, you should use the simplest API. We could fix the assembler to always optimize the generated code, but the contract is that the caller pretty much knows what it's doing.
 
 1308:62-1308:70
 Fri Jul 25 13:55:56 2014 +0000
@@ -57,12 +107,28 @@ UUID: 9932d8d1_30d1d08f
 Bytes: 7
 int32_t
 
+1308:62-1308:70
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_30d1d08f
+UUID: 9932d8d1_7333520a
+Bytes: 75
+Done. (and FYI this fails the test, it was a bad refactoring from my side).
+
 1324:77-1324:84
 Fri Jul 25 13:55:56 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9431c33_51c1f412
 Bytes: 7
 TIMES_8
+
+1324:77-1324:84
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9431c33_51c1f412
+UUID: 7937e4c3_2f6ded3d
+Bytes: 17
+Done (and ditto).
 
 1368:55-1368:70
 Fri Jul 25 13:55:56 2014 +0000
@@ -71,12 +137,28 @@ UUID: 9932d8d1_50848483
 Bytes: 25
 Same as AGET_BOOLEAN, ...
 
+1368:55-1368:70
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_50848483
+UUID: b9431c33_b132187a
+Bytes: 6
+Ditto.
+
 1404:6-1408:7
 Fri Jul 25 13:55:56 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7937e4c3_0fe589ad
 Bytes: 59
 Dead code: it's handled below calling "pAputObject" helper.
+
+1404:6-1408:7
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_0fe589ad
+UUID: 7937e4c3_4f6a2127
+Bytes: 19
+nice catch, thanks.
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -86,6 +168,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9932d8d1_10384c08
 Bytes: 100
 Same than ARM. We should probably create a common method to compute array data offset based on type.
+
+1248:62-1248:69
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_10384c08
+UUID: b9431c33_91943cf5
+Bytes: 175
+I think DataOffset is pretty much the shared method you're asking for. We could have one that takes a PrimitiveType and switch in it, but we're doing the switch here anyway...
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -104,4 +194,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7937e4c3_af4b9de9
 Bytes: 14
 Missing a tab?
+
+46:18-46:21
+Fri Jul 25 14:44:26 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_af4b9de9
+UUID: b9431c33_d19ec412
+Bytes: 119
+Hmmm I think the comparison tool for checking we generate the same code does not differentiate between tabs and spaces.
 

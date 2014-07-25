@@ -1,0 +1,107 @@
+Revision: ee4ab2d7c41b6930cf49b2706a858cd9a342b9e0
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+735:1-735:40
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9932d8d1_b01ce004
+Bytes: 263
+We should avoid using macros. It's comfortable to write code but it's not always easy to follow when reading.
+
+Here only the type is changing. maybe you could do the type selection inside BuildArrayAccess (based on the instruction opcode) to simplify this switch.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+114:2-114:10
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7937e4c3_0fde69f1
+Bytes: 14
+const Location
+
+115:2-115:10
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9431c33_d1ac0477
+Bytes: 14
+const Location
+
+1242:34-1242:52
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9932d8d1_d01154eb
+Bytes: 47
+Is it an optimization for constant propagation?
+
+1254:55-1254:70
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7937e4c3_4f5061ea
+Bytes: 305
+The Quick compiler only uses data offset for 32-bit or 64-bit element (see ArmMir2Lir::GenArrayGet for instance). We should treat boolean, byte, char, short, int and float as 32-bit element for the moment.
+
+I know there is ongoing work to handle 8-bit and 16-bit element. Are you anticipating this change?
+
+1260:69-1260:70
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9932d8d1_f042d872
+Bytes: 32
+", LSL, TIMES_1" for consistency
+
+1308:62-1308:70
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9932d8d1_30d1d08f
+Bytes: 7
+int32_t
+
+1324:77-1324:84
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9431c33_51c1f412
+Bytes: 7
+TIMES_8
+
+1368:55-1368:70
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9932d8d1_50848483
+Bytes: 25
+Same as AGET_BOOLEAN, ...
+
+1404:6-1408:7
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7937e4c3_0fe589ad
+Bytes: 59
+Dead code: it's handled below calling "pAputObject" helper.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+1248:62-1248:69
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9932d8d1_10384c08
+Bytes: 100
+Same than ARM. We should probably create a common method to compute array data offset based on type.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1093:55-1093:70
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9431c33_31e2a8a6
+Bytes: 13
+Same than ARM
+
+File: compiler/utils/assembler_thumb_test_expected.cc.inc
+
+46:18-46:21
+Fri Jul 25 13:55:56 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7937e4c3_af4b9de9
+Bytes: 14
+Missing a tab?
+

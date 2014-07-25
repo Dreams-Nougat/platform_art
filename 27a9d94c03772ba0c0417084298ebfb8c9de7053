@@ -1,0 +1,27 @@
+Revision: 27a9d94c03772ba0c0417084298ebfb8c9de7053
+Patch-set: 1
+File: runtime/native_bridge.cc
+
+244:0-253:5
+Fri Jul 25 12:46:03 2014 +0000
+Author: Yong Wu <1050938@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 592ce07a_ce80d73e
+Bytes: 170
+Easier to be understand in this way:
+
+if ((callbacks_ != nullptr) && callbacks_->initialize(...))
+  available_ = true;
+else {
+  dlclose(handle);
+  callbacks_ = nullptr;
+}
+
+File: runtime/native_bridge.h
+
+32:14-32:36
+Fri Jul 25 12:46:03 2014 +0000
+Author: Yong Wu <1050938@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 592ce07a_ee859b4b
+Bytes: 95
+NativeLibrary may be easily confused with the native JNI library. What about SetBridgeLibrary ?
+

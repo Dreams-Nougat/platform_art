@@ -114,3 +114,12 @@ I think this will break current gdb behavior since IIRC the low_pc_/high_pc_ are
 
 See ElfFile::GdbJITSupport
 
+1312:0-1313:63
+Mon Jul 28 09:36:36 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b91cfc52_f26bb6f2
+UUID: 7937e4c3_12a3f223
+Bytes: 559
+I used 'dwarfdump -ka' to check the generated OAT file and found it needs VMA address (i.e. base + offset) in the .debug_line at least. That is why, to get the base address for .debug_* generation I had to split ElfBuilder::Write into ElfBuilder::Init and ElfBuilder::Write. Could you please describe the patching workflow and why/when it is needed? Why can not we use the standard Elf relocation? Why we have to patch boot.oat once it is generated?
+I believe that in GdbJITSupport we have to *offset* the debugging info rather than *set* a new .text address.
+

@@ -1,0 +1,20 @@
+Revision: efb13c060694ef32789433f1412a17b3411581ec
+Patch-set: 1
+File: compiler/optimizing/nodes.h
+
+440:4-440:18
+Mon Jul 28 17:33:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7937e4c3_f840fd1c
+Bytes: 314
+We want to make explicit clinit checks in the grpah, to remove redundant ones, so we should probably add them as well.
+
+Also, having an explicit data dependency between the clinit and the static field access will help code motion passes. So HStaticFieldGet and HStaticFieldSet would take as input the clinit check.
+
+1372:6-1372:21
+Mon Jul 28 17:33:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7937e4c3_7836cdd2
+Bytes: 178
+Because These methods call )or may call) into runtime, thye need an environment for knowing where dex registers are. So you need to add a NeedEnvirnment(){ return true; } to them
+

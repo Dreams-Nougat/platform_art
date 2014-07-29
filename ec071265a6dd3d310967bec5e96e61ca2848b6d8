@@ -1,5 +1,14 @@
 Revision: ec071265a6dd3d310967bec5e96e61ca2848b6d8
 Patch-set: 1
+File: compiler/dex/quick/arm64/assemble_arm64.cc
+
+524
+Tue Jul 29 11:04:33 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9431c33_7ad5e5c7
+Bytes: 40
+This should be "!0f, !1f, [!2X, #!3D]!!"
+
 File: compiler/dex/quick/arm64/int_arm64.cc
 
 1315
@@ -9,4 +18,26 @@ UUID: 7937e4c3_f810fdb6
 Bytes: 158
 This condition is the wrong way round.
 load/store pairs with pre/post indexing or offsets are restricted to 63 slots - not the subtract in SpillRegsFrameSize.
+
+1352
+Tue Jul 29 11:04:33 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7937e4c3_83eeb21e
+Bytes: 246
+I wonder whether,
+
+  stp dN, dN, ...
+
+would be preferable than,
+
+  stp d0, dN, ...
+
+The good thing about the former is that it requires less information, it can simplify the compiler code and it is more explicit about the redundancy of the store.
+
+1355
+Tue Jul 29 11:04:33 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9932d8d1_84623a62
+Bytes: 210
+I guess the instruction below could be replaced with a kA64StrPre3fXD (which should have the same immediate range and should thus be safe to use). The instruction is not in the encoding map, but could be added.
 

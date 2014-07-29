@@ -1,0 +1,11 @@
+Revision: febb3867b518f4a3cb6013b488a308196dac5f0f
+Patch-set: 1
+File: compiler/dex/quick/gen_invoke.cc
+
+1145:3-1147:93
+Tue Jul 29 23:10:59 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36f65b4a_ae0b70f7
+Bytes: 383
+checks like this belong in the compiler interface and not in compiled code. Its not robust to be operating on mirror types in compilers and it increases the surface area between the compiler and runtime interface. A pair of dex file and type index is a ClassReference. The failure to properly construct full references introduces bugs as seen here. I'd disable/revert this intrinsic.
+

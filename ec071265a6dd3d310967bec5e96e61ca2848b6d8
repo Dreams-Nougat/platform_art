@@ -9,6 +9,14 @@ UUID: b9431c33_7ad5e5c7
 Bytes: 40
 This should be "!0f, !1f, [!2X, #!3D]!!"
 
+524
+Tue Jul 29 17:42:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9431c33_7ad5e5c7
+UUID: 36f65b4a_2b6e373a
+Bytes: 8
+Will do.
+
 File: compiler/dex/quick/arm64/int_arm64.cc
 
 1315
@@ -18,6 +26,14 @@ UUID: 7937e4c3_f810fdb6
 Bytes: 158
 This condition is the wrong way round.
 load/store pairs with pre/post indexing or offsets are restricted to 63 slots - not the subtract in SpillRegsFrameSize.
+
+1315
+Tue Jul 29 17:42:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_f810fdb6
+UUID: 7615332e_16b84dc5
+Bytes: 251
+Yes, and this check makes sure that framesize is less than that, as the last spill is exactly to the top of the framesize. So the framesize can be maximally 63 * slots. I guess the RoundUp is unneeded, as I should assume that it's already 16B-aligned.
 
 1352
 Tue Jul 29 11:04:33 2014 +0000
@@ -34,10 +50,26 @@ would be preferable than,
 
 The good thing about the former is that it requires less information, it can simplify the compiler code and it is more explicit about the redundancy of the store.
 
+1352
+Tue Jul 29 17:42:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7937e4c3_83eeb21e
+UUID: 36f65b4a_0b3db345
+Bytes: 8
+Will do.
+
 1355
 Tue Jul 29 11:04:33 2014 +0000
 Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9932d8d1_84623a62
 Bytes: 210
 I guess the instruction below could be replaced with a kA64StrPre3fXD (which should have the same immediate range and should thus be safe to use). The instruction is not in the encoding map, but could be added.
+
+1355
+Tue Jul 29 17:42:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9932d8d1_84623a62
+UUID: 560aef14_e7d1ac90
+Bytes: 372
+Yes, this one could be, but I thought it easier to keep it simple. For completeness, I'd also have to add kA64StrPre3rXD, then, and so on. As things are 16B aligned, and we don't use acquire/release or exclusive, I somehow doubt that any aarch64 implementation should be worse with this than the str. But if you find out on Juno that it's the case, a follow-up is welcome.
 

@@ -48,6 +48,16 @@ UUID: f93914b5_afe8e8cb
 Bytes: 253
 You need to set BUILD_HOST_64bit=1, however, the x86-64 assembly code won't run on a Mac for the usual Mac screwed up their assembler reasons. My work around was to fill the x86-64 assembly code on the Mac with breakpoint instructions. Fixes welcome :-)
 
+File: runtime/arch/x86/x86_inst_len.cc
+
+80
+Tue Jul 29 22:54:28 2014 +0000
+Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 560aef14_35b107ce
+Bytes: 247
+FYI.  I got an issue when decoding "F30F105208        movss   xmm2, [edx + 8]".
+Should we check "if (opcode == 0x0f)" here?  Checking *pc or checking *pc_ may be wrong, because pc is the original pointer and pc_ has been incremented by 1.  Thanks!
+
 File: runtime/arch/x86/x86_inst_len.h
 
 34:0-89:3

@@ -9,6 +9,14 @@ UUID: f974b47c_f7780a46
 Bytes: 118
 DO NOT MERGE is an instruction to the automerger and you don't want it skipping merging this to goog/master I believe.
 
+9:0-9:12
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f974b47c_f7780a46
+UUID: 36f65b4a_ce99142c
+Bytes: 4
+Done
+
 File: Android.mk
 
 320:2-320:28
@@ -17,6 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f922f488_73ad030c
 Bytes: 48
 is this to tell it not to relocate the boot.oat?
+
+320:2-320:28
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f922f488_73ad030c
+UUID: 36f65b4a_f35cc165
+Bytes: 58
+Yes. Don't care about relocating while compiling the boot.
 
 File: patchoat/patchoat.cc
 
@@ -27,6 +43,14 @@ UUID: 360f3b26_17e17433
 Bytes: 26
 remove "true ||" I believe
 
+759:0-759:43
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 360f3b26_17e17433
+UUID: 1624f7a2_79be63c2
+Bytes: 4
+Done
+
 File: runtime/class_linker.cc
 
 1000:0-1007:3
@@ -36,12 +60,28 @@ UUID: b6016bf5_bbef471c
 Bytes: 131
 I've seen this pattern before, can we make a helper for this part and use it from where you copied it from (and search for others)?
 
+1000:0-1007:3
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6016bf5_bbef471c
+UUID: 36f65b4a_8e854c4e
+Bytes: 215
+If you want I can but the problem is that any way we do this (except via a macro) we will need to either to a 'new' or do a memcpy (since one of these returns a reference and one returns a newly allocated structure.
+
 1008:2-1008:90
 Tue Jul 29 19:17:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6016bf5_7bfbffe0
 Bytes: 196
 IsOatFilePatchable didn't lead me to guess what this was doing, which seems to be me making sure the oat files's image checksum matches the current image. perhaps rename to VerifyOatImageChecksum?
+
+1008:2-1008:90
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6016bf5_7bfbffe0
+UUID: 1624f7a2_799423f5
+Bytes: 4
+Done
 
 1011:18-1011:36
 Tue Jul 29 19:17:50 2014 +0000
@@ -52,6 +92,14 @@ VerifyOatChecksums -> VerifyOatChecksum (singular, it only checks one now, right
 
 also, it isn't clear when to use the above vs this from the names probably
 
+1011:18-1011:36
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 360f3b26_3780f83b
+UUID: 1624f7a2_b9919b00
+Bytes: 39
+Changed to VerifyOatAndDexFileChecksums
+
 File: runtime/class_linker.h
 
 275:0-276:95
@@ -60,6 +108,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f6f76345_fd3ca7dd
 Bytes: 64
 these need some basic doc (as suggested in the previous comment)
+
+275:0-276:95
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6f76345_fd3ca7dd
+UUID: 560aef14_952fb312
+Bytes: 4
+Done
 
 File: runtime/gc/space/image_space.h
 
@@ -72,6 +128,14 @@ I'd add some doc, especially noting when it is done in place and when it is not.
 
 also, I didn't see a definition added for the new one, is this just an accidental add?
 
+127:0-130:72
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 360f3b26_d7865c56
+UUID: 36f65b4a_2ec2c069
+Bytes: 50
+Removed InPlace version. Removed declaration here.
+
 File: runtime/native/dalvik_system_DexFile.cc
 
 278:0-278:33
@@ -81,12 +145,28 @@ UUID: f6f76345_5d7b9b97
 Bytes: 76
 presumably these match java values, I'd doc what they are here for grep hits
 
+278:0-278:33
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6f76345_5d7b9b97
+UUID: 36f65b4a_ce16b424
+Bytes: 4
+Done
+
 278:0-280:31
 Tue Jul 29 19:17:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 360f3b26_b793e896
 Bytes: 22
 should these be const?
+
+278:0-280:31
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 360f3b26_b793e896
+UUID: 1624f7a2_19440f7f
+Bytes: 4
+Done
 
 285:2-285:74
 Tue Jul 29 19:17:50 2014 +0000
@@ -109,12 +189,28 @@ UUID: f6f76345_fda027c0
 Bytes: 170
 I don't like the style of a return followed by an else. it increases the indent level of the remaining code and visually implies there is some code path that leads below.
 
+296:4-297:10
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6f76345_fda027c0
+UUID: 36f65b4a_4eb3c4d4
+Bytes: 4
+Done
+
 365:0-366:56
 Tue Jul 29 19:17:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6016bf5_3b80d73b
 Bytes: 21
 needs to be disabled.
+
+365:0-366:56
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6016bf5_3b80d73b
+UUID: 1624f7a2_5c7b9597
+Bytes: 4
+Done
 
 394:0-395:38
 Tue Jul 29 19:17:50 2014 +0000
@@ -123,6 +219,14 @@ UUID: 7615332e_51ffef41
 Bytes: 111
 are these used? if so, move closer to point of use. but I searched for the first one but didn't see a reference
 
+394:0-395:38
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7615332e_51ffef41
+UUID: 560aef14_f54cafae
+Bytes: 91
+Yes both are used to tell us if we need to deal with stuff wierdly due to the profile file.
+
 402:2-404:35
 Tue Jul 29 19:17:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -130,12 +234,28 @@ UUID: 36f65b4a_c67d82f5
 Bytes: 93
 some of these only seem to be used in the if, move them there so they aren't visible outside.
 
+402:2-404:35
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36f65b4a_c67d82f5
+UUID: 36f65b4a_eef05876
+Bytes: 30
+all 3 are used around line 540
+
 509:2-510:2
 Tue Jul 29 19:17:50 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7615332e_8cc32a42
 Bytes: 13
 is that used?
+
+509:2-510:2
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7615332e_8cc32a42
+UUID: 1624f7a2_7cc4117b
+Bytes: 12
+no. Removed.
 
 File: runtime/parsed_options.h
 
@@ -146,6 +266,16 @@ UUID: 36f65b4a_1a04daa2
 Bytes: 24
 do you want this on now?
 
+51:0-52:52
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36f65b4a_1a04daa2
+UUID: 560aef14_58f5d2e9
+Bytes: 43
+Yes. It should be true.
+
+Moved to globals.h
+
 File: runtime/utils.cc
 
 1239:0-1239:98
@@ -154,4 +284,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 36f65b4a_fa46d6e2
 Bytes: 76
 i think there is a unit test for this, so you should add a new case for .oat
+
+1239:0-1239:98
+Wed Jul 30 00:15:28 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36f65b4a_fa46d6e2
+UUID: 36f65b4a_0e3a5c4d
+Bytes: 4
+Done
 

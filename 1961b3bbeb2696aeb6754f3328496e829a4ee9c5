@@ -1,0 +1,20 @@
+Revision: 1961b3bbeb2696aeb6754f3328496e829a4ee9c5
+Patch-set: 1
+File: runtime/debugger.cc
+
+4168:22-4168:35
+Wed Jul 30 23:30:07 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 563f4fb5_b69ab090
+Bytes: 64
+Does this need to be rounded up by BumpPointerSpace::kAlignment?
+
+4214:0-4215:30
+Wed Jul 30 23:30:07 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1624f7a2_84c5441f
+Bytes: 237
+Is flushing the alloc stack necessary? It looks like none of the Walk() calls below relies on the live bitmap.
+
+If it is necessary, would there be a race condition between this and a thread pushing a new object onto the allocation stack?
+

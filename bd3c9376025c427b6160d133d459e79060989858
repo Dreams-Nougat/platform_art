@@ -1,0 +1,11 @@
+Revision: bd3c9376025c427b6160d133d459e79060989858
+Patch-set: 3
+File: runtime/thread.cc
+
+1211:33-1211:57
+Fri Aug 01 18:25:29 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 968387c4_c8bee3e9
+Bytes: 455
+Ian, I assume this is what you were talking about yesterday. This moves the RevokeThreadLocalBuffers call earlier from ~Thread() to Destroy(). The key is to ensure that the thread being destroyed won't try to allocate an object after this point (line 1211) (or else a buffer could be leaked). It looks fine though it's not the easiest for me see the whole code right now (due to the move). AssertThreadLocalBuffersAreRevoked() in line 1249 looks assuring.
+

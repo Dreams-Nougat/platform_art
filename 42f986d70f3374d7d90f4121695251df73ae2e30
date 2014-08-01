@@ -9,3 +9,19 @@ UUID: 968387c4_c52facba
 Bytes: 237
 Returning here would leak a dangling MemMap object in maps_. Instead, we should run the code in lines 394-403 for the reuse_ == false case? One way is to surround the munmap code (lines 388-391) with an "if (!reuse_) { ... } " statement.
 
+File: runtime/mem_map.h
+
+80:47-80:57
+Fri Aug 01 22:38:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 968387c4_b1374acf
+Bytes: 58
+gah, who added this and worse didn't document its meaning.
+
+155:0-155:63
+Fri Aug 01 22:38:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 968387c4_917b2697
+Bytes: 507
+The point of a MemMap is that it owns a mmap and release it upon destruction. I find this second use inappropriate and something that will make it prone for ART to release memory in one part of ART in use by other parts that said the brain death appears to have come in from a patch merged earlier than this one. If there's another MemMap that we're reusing, can we have a reference to it? Or add a set of child MemMaps to MemMap. I'd rather we just deleted this whole API and rewrote the ELF code properly.
+

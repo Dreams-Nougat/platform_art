@@ -11,6 +11,14 @@ I am very skeptical that this is wise.
 
 Why not just use the .debug_abbrev parsing code we already have to find all the addr's we need to fix.
 
+17:0-19:65
+Thu Aug 07 05:33:55 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d64c1fb5_775c6764
+UUID: 56390f00_ea26d81a
+Bytes: 122
+both .debug_info, .debug_line and eh_frame have they own syntaxes to parse. I suggest .rel.debug to not implement parsing.
+
 File: compiler/elf_fixup.cc
 
 65:30-65:32
@@ -20,6 +28,14 @@ UUID: d64c1fb5_97d3f341
 Bytes: 95
 Shouldn't this and all the above be 'to', not 'fo'?  Looks like copy/paste of the same message.
 
+65:30-65:32
+Thu Aug 07 05:33:55 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d64c1fb5_97d3f341
+UUID: 56390f00_2f7c55c6
+Bytes: 4
+Done
+
 File: compiler/elf_writer_quick.h
 
 129
@@ -28,6 +44,14 @@ Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f6684304_94ac9d75
 Bytes: 20
 Any reason for this?
+
+129
+Thu Aug 07 05:33:55 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6684304_94ac9d75
+UUID: 76029343_14009a24
+Bytes: 111
+just suggested to not make unnecessary copies by sending the parameter by value. Instead, send it by reference.
 
 File: patchoat/patchoat.cc
 
@@ -47,12 +71,42 @@ UUID: d64c1fb5_f7387709
 Bytes: 44
 Document what they are with comments please.
 
+1070:2-1075:4
+Thu Aug 07 05:33:55 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d64c1fb5_f7387709
+UUID: 56390f00_eaab7808
+Bytes: 623
+Added the following comment to elf_file.h:
+  // Normally debug sections do not have relocation tables in Elf files.
+  // But we need to be able to fixup addresses in the debug sections
+  // when we patchoat the file or prepare the sections for gdb. For these
+  // purposes we maintain .rel.debug section, which contains a sequence 
+  // of addresses to patch:
+  // struct {
+  //   byte section_index; // DEBUG_SECTION_INDEX
+  //   Elf32_Offs offset_to_patch; 
+  // }
+  // offset_to_patch refers to a relocated address in the debug section
+  // pointed by the section_index (either .debug_info, .debug_line
+  // or eh_frame)
+
 1078:0-1078:51
 Wed Aug 06 16:40:19 2014 +0000
 Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f6684304_f4bcf1a2
 Bytes: 57
 uintptr_t* rel_table = reinterpret_cast<uintptr_t*>(...)?
+
+1078:0-1078:51
+Thu Aug 07 05:33:55 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6684304_f4bcf1a2
+UUID: 76029343_94392aed
+Bytes: 216
+Bytes are read from .rel.debug using "rel_table[entry]".
+"offset" is in the patched section, pointed by "sec_id".
+patched_section[sec_id] is one of debug_info->sh_offset, debug_line->sh_offset or eh_frame->sh_offset.
 
 1079:0-1089:5
 Wed Aug 06 16:40:19 2014 +0000

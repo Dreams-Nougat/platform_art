@@ -1,0 +1,18 @@
+Revision: fe8f0f3e3545172d77096a37e3dd043fcef1220d
+Patch-set: 3
+File: runtime/oat_file.cc
+
+343:13-343:52
+Fri Aug 08 08:18:33 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6e5ebf4_e189c214
+Bytes: 279
+Even if we assume that load/store of a pointer/size_t is atomic, the store below is racy and this read can retrieve inconsistent data for the string, i.e. length not corresponding to the data pointer. That could potentially lead to SIGSEGV if we read beyond the allocated region.
+
+369
+Fri Aug 08 08:18:33 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6e5ebf4_417a763c
+Bytes: 143
+This is broken in an of itself. If 2 threads try to replace a non-empty string with something else, they may both try to free the same storage.
+

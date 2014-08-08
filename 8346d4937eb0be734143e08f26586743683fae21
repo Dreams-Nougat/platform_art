@@ -16,12 +16,28 @@ UUID: 96b467df_001eaac5
 Bytes: 171
 I think we should always warn here. At least during dogfood, so that it will be "scratch our eyes" if our assumption (this is very rare) is wrong. We can disable it later.
 
+342:4-342:8
+Fri Aug 08 12:00:59 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96b467df_001eaac5
+UUID: d6e89fcd_c50130d7
+Bytes: 31
+This would be extremely spammy.
+
 347:49-347:60
 Fri Aug 08 11:43:47 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96b467df_a026de19
 Bytes: 29
 why lower_bound and not find?
+
+347:49-347:60
+Fri Aug 08 12:00:59 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96b467df_a026de19
+UUID: d6e89fcd_a50424e8
+Bytes: 56
+So that I can use PutBefore() with the correct position.
 
 371:31-371:40
 Fri Aug 08 11:43:47 2014 +0000
@@ -32,6 +48,14 @@ why bother? does it matter?
 
 also, using null as values in the map doesn't seem ideal...
 
+371:31-371:40
+Fri Aug 08 12:00:59 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6e89fcd_45ed20d8
+UUID: 96b467df_80e0fa58
+Bytes: 199
+No, not really. The difference between Put() and PutBefore() is important only for large maps but I've grown a habit of using PutBefore() everywhere - because it's either better or it doesn't matter.
+
 File: runtime/oat_file.h
 
 307:62-307:73
@@ -41,10 +65,28 @@ UUID: d6e89fcd_8542c822
 Bytes: 11
 constructed
 
+307:62-307:73
+Fri Aug 08 12:00:59 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6e89fcd_8542c822
+UUID: b6e5ebf4_417c36c7
+Bytes: 4
+Done
+
 314:29-315:12
 Fri Aug 08 11:43:47 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6e89fcd_650bfcf8
 Bytes: 4
 why?
+
+314:29-315:12
+Fri Aug 08 12:00:59 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6e89fcd_650bfcf8
+UUID: d6e89fcd_45c36042
+Bytes: 390
+Because of the preceding sentence.
+
+I could go into a long discussion why this is not really required if the strings are "moved" and their character arrays (pointed to by the StringPiece) actually remain at the same position. But that's something the average reader really doesn't need to know. This is the backing storage for StringPieces and therefore those strings should not be touched.
 

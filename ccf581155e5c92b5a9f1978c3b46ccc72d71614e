@@ -9,6 +9,14 @@ UUID: 3681fb17_075c1663
 Bytes: 93
 we didn't come down here to set the interpreter entry point? or we do that elsewhere now? or?
 
+2286:0-2289:3
+Sat Aug 09 04:20:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3681fb17_075c1663
+UUID: 7687f329_2c7bbb98
+Bytes: 270
+The oat_class check line 2428 of the current version prevented calling LinkCode when being in a compiler environment (oat_class == nullptr meant being in a compiler runtime). So this is just keeping the previous behavior. A compiler runtime does some things its own way.
+
 File: runtime/parsed_options.cc
 
 782:0-782:44
@@ -17,6 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 567caff0_884f37a2
 Bytes: 126
 you can give a better description if you want. i just had put placeholders in for missing ones, they can use more elaboration.
+
+782:0-782:44
+Sat Aug 09 04:20:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 567caff0_884f37a2
+UUID: 7687f329_4c80ef3c
+Bytes: 4
+Done
 
 File: test/116-nodex2oat/nodex2oat.cc
 
@@ -27,6 +43,14 @@ UUID: 7687f329_ccef7f1b
 Bytes: 28
 WS (and line length I think)
 
+31:106-31:108
+Sat Aug 09 04:20:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7687f329_ccef7f1b
+UUID: 7687f329_6c85b34b
+Bytes: 4
+Done
+
 File: test/116-nodex2oat/run
 
 17:36-17:38
@@ -35,6 +59,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 567caff0_0845077f
 Bytes: 166
 test files when these two chars are removed? nice. I didn't know about the evil of .cc in run-tests now... does that work outside the build system? I'll have to look.
+
+17:36-17:38
+Sat Aug 09 04:20:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 567caff0_0845077f
+UUID: 7687f329_cc93ff95
+Bytes: 47
+Added one with -Xdex2oat, and without any flag.
 
 File: test/Android.libarttest.mk
 
@@ -53,4 +85,16 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7687f329_0cfb57e1
 Bytes: 98
 yuck, if anything I'd have some config in the test for this. do we have other hacky special cases?
+
+200:1-203:2
+Sat Aug 09 04:20:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7687f329_0cfb57e1
+UUID: 567caff0_8b0e5155
+Bytes: 519
+Yeah that's not pretty. I could disable the test with prebuild, but we're currently only running prebuild tests continuously....
+
+That's the only hacky special case. Unfortunately the prebuild is before we give any hooks to the tests. We could add a magic file in the test directory we could test against to disable prebuild. WDYT?
+
+Alternatively, I could change class_linker.cc to not use the oat file provided. But that's probably not the behavior we want, pretty silly to not use an oat file if it exists already....
 

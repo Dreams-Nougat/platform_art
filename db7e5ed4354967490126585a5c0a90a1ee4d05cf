@@ -1,0 +1,29 @@
+Revision: db7e5ed4354967490126585a5c0a90a1ee4d05cf
+Patch-set: 2
+File: compiler/dex/quick/arm/call_arm.cc
+
+360:7-360:18
+Mon Aug 11 19:38:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6ca4b8f_56877252
+Bytes: 91
+It'd be nice to clean this up: what is the difference between IsLargeFrame and large_frame?
+
+File: runtime/mirror/art_method.cc
+
+286:15-286:38
+Mon Aug 11 19:38:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76ea93f0_b458ee36
+Bytes: 91
+Feels strange to have this here, overflow checks should be handled by interpreter/compiler.
+
+File: runtime/reflection.cc
+
+452:15-452:38
+Mon Aug 11 19:38:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76ea93f0_f4c31672
+Bytes: 230
+How about doing this check at every JNI entry? The fact that we are calling a leaf frame elides the stack check, but any runtime code we call will also not do the stack check. So I think it's cleaner to have it for each JNI entry.
+

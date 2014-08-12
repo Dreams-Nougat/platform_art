@@ -20,6 +20,14 @@ This looks like an error.  I'm not saying that it is, it just looks like one.  Y
 
 Maybe GetDescriptor() is doing some magic I can't see here.
 
+682:2-684:2
+Tue Aug 12 16:42:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9633877e_c5c96c38
+UUID: b6ca4b8f_7f859ab8
+Bytes: 42
+It is, as described in the commit message.
+
 761:0-762:96
 Tue Aug 12 16:22:59 2014 +0000
 Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,6 +44,14 @@ UUID: f6d0433d_fe49b099
 Bytes: 32
 What was wrong with the typedef?
 
+106:38-106:59
+Tue Aug 12 16:42:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6d0433d_fe49b099
+UUID: b6ca4b8f_df76ee16
+Bytes: 195
+The typedef tells me nothing, a set is a thing with defined operations, as is a string. The typedef is more characters. The place where this gets annoying is with iterators and we use auto there.
+
 File: dex2oat/dex2oat.cc
 
 274:2-274:23
@@ -45,6 +61,14 @@ UUID: 9633877e_e5183012
 Bytes: 206
 So if we ever want to change the type of the DescriptoSet we have to go around and replace all these instances of std::set<std::string>.  Seems like an abstraction would be better here (like it was before).
 
+274:2-274:23
+Tue Aug 12 16:42:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9633877e_e5183012
+UUID: b6ca4b8f_5f6bfe28
+Bytes: 59
+a typedef isn't an abstraction, its just information hiding
+
 File: runtime/dex_file-inl.h
 
 57:9-57:27
@@ -53,6 +77,14 @@ Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6ca4b8f_3fbde29c
 Bytes: 113
 Is this faster than calling memcmp directly?  An extra compare and branch forward.  memcmp might be doing it too.
+
+57:9-57:27
+Tue Aug 12 16:42:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6ca4b8f_3fbde29c
+UUID: f6d0433d_81549de0
+Bytes: 140
+I've reverted this, it was from Mathieu's change and I don't think its sound. The string length is the utf16 length and so may be too short.
 
 File: runtime/utf-inl.h
 

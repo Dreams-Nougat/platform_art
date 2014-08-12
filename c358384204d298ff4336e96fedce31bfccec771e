@@ -68,6 +68,14 @@ UUID: 9633877e_c8d2e33e
 Bytes: 228
 The typedef might be changed to a class.  Maybe we want to store the strings in a hash table, or some sort of other storage other than a std::set (due to performance issues or something).  Removing the abstraction prevents this.
 
+106:38-106:59
+Tue Aug 12 16:58:28 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9633877e_c8d2e33e
+UUID: f6d0433d_c1f8552b
+Bytes: 301
+No, if you changed a std::set to a hash table by changing the typedef you'd have to fix up all the uses the same as with this. The point is to avoid gratuitous information hiding so that you can actually know what the type of an object is, not what someone thought was a cute typedef name on a Monday.
+
 File: dex2oat/dex2oat.cc
 
 274:2-274:23

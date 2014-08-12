@@ -1,0 +1,81 @@
+Revision: c358384204d298ff4336e96fedce31bfccec771e
+Patch-set: 1
+File: build/Android.common_build.mk
+
+275:35-275:57
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6d0433d_3ea968ff
+Bytes: 27
+Is this the default anyway?
+
+File: compiler/driver/compiler_driver.cc
+
+682:2-684:2
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9633877e_c5c96c38
+Bytes: 302
+This looks like an error.  I'm not saying that it is, it just looks like one.  You are passing the address of a temp string, taking its c_str() and adding that to a set.  When the std::string goes out of scope the c_str() is no longer valid.
+
+Maybe GetDescriptor() is doing some magic I can't see here.
+
+761:0-762:96
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9633877e_85dcc4f7
+Bytes: 185
+Like above, this descriptor will be invalid the second time around the loop.  At least that what it looks like to me.  If it's not, perhaps an explanation of how it works would be good.
+
+File: compiler/driver/compiler_driver.h
+
+106:38-106:59
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6d0433d_fe49b099
+Bytes: 32
+What was wrong with the typedef?
+
+File: dex2oat/dex2oat.cc
+
+274:2-274:23
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9633877e_e5183012
+Bytes: 206
+So if we ever want to change the type of the DescriptoSet we have to go around and replace all these instances of std::set<std::string>.  Seems like an abstraction would be better here (like it was before).
+
+File: runtime/dex_file-inl.h
+
+57:9-57:27
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6ca4b8f_3fbde29c
+Bytes: 113
+Is this faster than calling memcmp directly?  An extra compare and branch forward.  memcmp might be doing it too.
+
+File: runtime/utf-inl.h
+
+54:4-55:12
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6d0433d_c1f975e6
+Bytes: 18
+++ prefix operator
+
+78:6-78:14
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9633877e_6543c0c8
+Bytes: 5
+ditto
+
+File: runtime/utils.cc
+
+248:4-248:7
+Tue Aug 12 16:22:59 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6d0433d_6109814b
+Bytes: 3
+++c
+

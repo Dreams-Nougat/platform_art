@@ -147,6 +147,14 @@ UUID: f6d0433d_9414dd61
 Bytes: 112
 Slowing dex2oat by 10ms at most, either way you are clearly not optimizing the hottest functions in this change.
 
+41
+Tue Aug 12 17:15:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6d0433d_9414dd61
+UUID: 7638d35c_817d9a38
+Bytes: 508
+The slowest function is malloc caused by std::string usage. This is the performance regression and what this change fixes. The change cleans code up and doesn't resort to secondary runtime data structures in an attempt to hide a problem while creating a new one. The design of the dex file code is deliberate and we removed similar layers of caching in the past due to the fact that to set up the cache you must touch all the dex files. Look at the lazy initialization of the class table in the class linker.
+
 54:4-55:12
 Tue Aug 12 16:22:59 2014 +0000
 Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>

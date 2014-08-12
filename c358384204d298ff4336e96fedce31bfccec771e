@@ -28,6 +28,14 @@ UUID: b6ca4b8f_7f859ab8
 Bytes: 42
 It is, as described in the commit message.
 
+682:2-684:2
+Tue Aug 12 16:55:28 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6ca4b8f_7f859ab8
+UUID: f6d0433d_c1b055cc
+Bytes: 208
+Ah, the image_classes->insert() is constructing a new string out of the const char * returned (the same as temp).  Subtle.  Perhaps a comment in the code so that future people don't get confused and break it.
+
 761:0-762:96
 Tue Aug 12 16:22:59 2014 +0000
 Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,6 +60,14 @@ UUID: b6ca4b8f_df76ee16
 Bytes: 195
 The typedef tells me nothing, a set is a thing with defined operations, as is a string. The typedef is more characters. The place where this gets annoying is with iterators and we use auto there.
 
+106:38-106:59
+Tue Aug 12 16:55:28 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6ca4b8f_df76ee16
+UUID: 9633877e_c8d2e33e
+Bytes: 228
+The typedef might be changed to a class.  Maybe we want to store the strings in a hash table, or some sort of other storage other than a std::set (due to performance issues or something).  Removing the abstraction prevents this.
+
 File: dex2oat/dex2oat.cc
 
 274:2-274:23
@@ -68,6 +84,16 @@ Parent: 9633877e_e5183012
 UUID: b6ca4b8f_5f6bfe28
 Bytes: 59
 a typedef isn't an abstraction, its just information hiding
+
+274:2-274:23
+Tue Aug 12 16:55:28 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6ca4b8f_5f6bfe28
+UUID: f6d0433d_014bedea
+Bytes: 192
+It's a shorthand alias.  Replace it with a class and it's an abstraction.  The point is, as long as the interface is the same, the caller doesn't need to be aware of what it is.
+
+But whatever.
 
 File: runtime/dex_file-inl.h
 

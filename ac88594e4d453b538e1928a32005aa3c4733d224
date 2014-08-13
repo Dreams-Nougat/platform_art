@@ -1,0 +1,61 @@
+Revision: ac88594e4d453b538e1928a32005aa3c4733d224
+Patch-set: 3
+File: compiler/dex/quick/arm/call_arm.cc
+
+363:9-363:84
+Wed Aug 13 02:48:18 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 966aa764_aa542f8a
+Bytes: 105
+fold into large_frame to avoid retesting, rename large_frame as explicit_stack_overflow_check or similar?
+
+File: compiler/dex/quick/arm64/call_arm64.cc
+
+343:8-343:19
+Wed Aug 13 02:48:18 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 966aa764_6a57178d
+Bytes: 7
+similar
+
+File: compiler/dex/quick/x86/call_x86.cc
+
+222:2-222:7
+Wed Aug 13 02:48:18 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67b2b36_91763c16
+Bytes: 69
+const here is inconsistent with the same code in MIPS and ARM, remove
+
+File: runtime/arch/arm/asm_support_arm.h
+
+27:33-27:36
+Wed Aug 13 02:48:18 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67b2b36_910cfca0
+Bytes: 27
+Note, offset increased by 8
+
+File: runtime/thread.h
+
+961:23-961:28
+Wed Aug 13 02:48:18 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67b2b36_d11284c1
+Bytes: 1
+0
+
+1003:4-1003:12
+Wed Aug 13 02:48:18 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67b2b36_31050878
+Bytes: 100
+int32_t, bool is supposed to imply this isn't a count.. its 32-bit for the sake of ease of alignment
+
+1003:13-1003:29
+Wed Aug 13 02:48:18 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 966aa764_4a8813d2
+Bytes: 167
+offsets are increased by 8, but here we add only a 4-byte field. There's an implied pad, we should probably just make the pad explicit for clarity in cross-compilation
+

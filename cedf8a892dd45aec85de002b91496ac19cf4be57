@@ -51,6 +51,18 @@ I think the problem is easily solved by moving native_bridge_art_callbacks_ to b
 
 The bigger question is: do we need the implementation of the three callback methods to be in a separate .h + .cc. On the one hand it's a cleaner separation, on the other hand we can easily make the static globals in runtime.cc.
 
+34:0-34:39
+Wed Aug 13 12:17:30 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67b2b36_74d93e3e
+UUID: 361bbb08_fdec3fde
+Bytes: 480
+Yes, we can get rid of the extra .h and have it as a global (as it was before), or even more to move everything to runtime.cc (as Andreas suggested).
+
+I opted for different files (.h and .cc) because it seems much cleaner to me. Globals annoys me as they are hard to follow and runtime.cc is already very big IMO (adding them there will only decrease readability).
+
+Saying this, I don't have a very strong preference here :) so if you really prefer an alternative I can change it.
+
 615:31-615:32
 Wed Aug 13 04:14:19 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

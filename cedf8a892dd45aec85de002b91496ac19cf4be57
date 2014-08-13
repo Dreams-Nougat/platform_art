@@ -41,6 +41,16 @@ UUID: b64deb11_30e64efa
 Bytes: 57
 I'd prefer fewer .h files in .h files, prototype/pointer?
 
+34:0-34:39
+Wed Aug 13 05:14:45 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b64deb11_30e64efa
+UUID: b67b2b36_74d93e3e
+Bytes: 446
+I think the problem is easily solved by moving native_bridge_art_callbacks_ to be a static global in the cc file. Pointers don't seem to be the right solution here, as we exactly wanted to avoid all management issues.
+
+The bigger question is: do we need the implementation of the three callback methods to be in a separate .h + .cc. On the one hand it's a cleaner separation, on the other hand we can easily make the static globals in runtime.cc.
+
 615:31-615:32
 Wed Aug 13 04:14:19 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -1,0 +1,47 @@
+Revision: 98cc2ba24e045ee6058d9f0462485951379fa144
+Patch-set: 30
+File: compiler/dex/quick/gen_common.cc
+
+731:17-731:34
+Thu Aug 14 00:09:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 766ff376_dea601af
+Bytes: 78
+Is sign/zero extension missing from the get when we go via the runtime helper?
+
+File: compiler/dex/quick/x86/utility_x86.cc
+
+882:0-887:5
+Thu Aug 14 00:09:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 766ff376_7e54b5df
+Bytes: 86
+This is unnecessary for x86-64 where this code is also used. Use AllocateByteRegister.
+
+File: runtime/entrypoints/quick/quick_entrypoints_list.h
+
+51:0-54:37
+Thu Aug 14 00:09:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67b2b36_0a644eec
+Bytes: 173
+Add a comment noting its the caller's responsibility to sign/zero extend? I believe ARM32 may always sign extend to 32-bit smaller sizes. But for ARM64 and x86-32/64 differ.
+
+File: runtime/mirror/art_field.h
+
+127:0-132:93
+Thu Aug 14 00:09:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b64deb11_ada2ff1d
+Bytes: 151
+I'd like these to be GetBoolean, GetByte, GetShort.. ie Get then the Java primitive type name. Its non-intuitive that Get8 should be used for booleans.
+
+File: runtime/mirror/object.h
+
+251:31-251:32
+Thu Aug 14 00:09:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67b2b36_6db64cc7
+Bytes: 37
+Similarly byte/boolean rather than 8.
+

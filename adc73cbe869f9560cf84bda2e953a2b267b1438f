@@ -1,0 +1,28 @@
+Revision: adc73cbe869f9560cf84bda2e953a2b267b1438f
+Patch-set: 3
+File: compiler/dex/quick/local_optimizations.cc
+
+181:0-182:74
+Fri Aug 15 17:26:41 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16a1570c_718a520a
+Bytes: 126
+This is equivalent to
+
+  if (!this_mem_mask.Intersects(
+      kEncodeLiteral.Union(kEncodeDalvikReg).Union(kEncodeHeapRef))) {
+
+203:8-203:45
+Fri Aug 15 17:26:41 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56d02f88_8b907141
+Bytes: 249
+Condition always false. At the comment above we "continue" if we don't intersect one of three flags and all of them are in the kEncodeMem. (Btw, the second part of the condition here is implied by the first since kEncodeMem contains kEncodeLiteral.)
+
+251:12-251:50
+Fri Aug 15 17:26:41 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56d02f88_ab8bb511
+Bytes: 144
+Condition always false. alias_mem_mask is a subset of kEncodeMem and it's not empty in this branch, so it must necessarily intersect kEncodeMem.
+

@@ -19,6 +19,14 @@ UUID: 56d02f88_8b907141
 Bytes: 249
 Condition always false. At the comment above we "continue" if we don't intersect one of three flags and all of them are in the kEncodeMem. (Btw, the second part of the condition here is implied by the first since kEncodeMem contains kEncodeLiteral.)
 
+203:8-203:45
+Fri Aug 15 18:49:14 2014 +0000
+Author: Dave Allison <1036486@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56d02f88_8b907141
+UUID: 96ad47ff_b52e6a14
+Bytes: 508
+This seemed to fix the problem I was having.  Perhaps a better choice than kEncodeMem would be kEncodeHeapRef (or other single bit).  The intention was to check that only kEncodeLiteral was set and not the others.  The goal was to prevent kEncodeAll triggering the check for kEncodeLiteral.  Maybe this 'fix' was actually not fixing anything but preventing the optimization from happening.  That's entirely possible.  Since you have a better understanding of this than me, please feel free to fix it properly
+
 251:12-251:50
 Fri Aug 15 17:26:41 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -1,0 +1,27 @@
+Revision: e3ea83811d47152c00abea24a9b420651a33b496
+Patch-set: 19
+File: compiler/compiled_method.h
+
+109:0-111:21
+Mon Aug 18 15:29:34 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13fb2935_e1b7600c
+Bytes: 59
+This is a very peculiar order considering the signed "to_".
+
+146:4-146:15
+Mon Aug 18 15:29:34 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13fb2935_c1c46478
+Bytes: 132
+This order seems rather insufficient to find all duplicates for the equality below. It would be better to use std::less<SrcMapElem>.
+
+148:0-161:5
+Mon Aug 18 15:29:34 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9310f93f_9d36c766
+Bytes: 200
+Why not erase(std::unique(begin(), end(), <custom-equality-comparator>), end())?
+
+This custom approach reinvents the wheel... and makes it square: all the extra allocations needed for the push_back()!
+

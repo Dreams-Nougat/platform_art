@@ -9,12 +9,28 @@ UUID: 13fb2935_e1b7600c
 Bytes: 59
 This is a very peculiar order considering the signed "to_".
 
+109:0-111:21
+Tue Aug 19 11:50:35 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 13fb2935_e1b7600c
+UUID: 13fb2935_618350b4
+Bytes: 153
+Agree. This operator is used by DedupeSet when 'to_' is positive. Changed + to | for safety: mapped the pair to one 64-bit value, which implies < and ==.
+
 146:4-146:15
 Mon Aug 18 15:29:34 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 13fb2935_c1c46478
 Bytes: 132
 This order seems rather insufficient to find all duplicates for the equality below. It would be better to use std::less<SrcMapElem>.
+
+146:4-146:15
+Tue Aug 19 11:50:35 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 13fb2935_c1c46478
+UUID: 13fb2935_41f3b44c
+Bytes: 5
+fixed
 
 148:0-161:5
 Mon Aug 18 15:29:34 2014 +0000
@@ -24,4 +40,14 @@ Bytes: 200
 Why not erase(std::unique(begin(), end(), <custom-equality-comparator>), end())?
 
 This custom approach reinvents the wheel... and makes it square: all the extra allocations needed for the push_back()!
+
+148:0-161:5
+Tue Aug 19 11:50:35 2014 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9310f93f_9d36c766
+UUID: 13fb2935_61eeb06a
+Bytes: 192
+Thanks for pointing this out. One more task of this wheel is memory compaction :)
+To use std::unique we need to define operator ==.
+I rewrote it as you suggested: unique, resize, shrink_to_fit
 

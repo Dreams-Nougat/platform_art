@@ -88,6 +88,16 @@ We could either clean this up and generalize GetInstructionOffset. For FP load/s
 
 Of course with the optimizations on Quick dying down, it might just be the easiest thing to adjust GetInstructionOffset to return a negative value and treat it like an indexed store, stopping LSE here.
 
+190
+Wed Aug 20 09:54:16 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3344ad56_380c6d12
+UUID: 13fb2935_47fd0448
+Bytes: 276
+Since https://android-review.googlesource.com/97323 , we can't reconstruct the original offset based on zero or non-zero displacement.
+
+We could reuse the alias_info to hold the offset also for heap loads/stores, with some special value indicating it's out of supported range.
+
 227:56-228:62
 Tue Aug 19 12:45:42 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -98,6 +98,16 @@ Since https://android-review.googlesource.com/97323 , we can't reconstruct the o
 
 We could reuse the alias_info to hold the offset also for heap loads/stores, with some special value indicating it's out of supported range.
 
+190
+Wed Aug 20 22:16:33 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 13fb2935_47fd0448
+UUID: f34e9581_05c71227
+Bytes: 435
+How much improvement did that CL give us, actually, out of curiosity?
+
+I was thinking about the alias_info before. It's another horrible overloading, but we can easily use it. I guess 2^17-1 is a decent value, as that static displacement is pretty unlikely. Alternatively, 1 would be fine, too, as objects start with a class reference at 0. Note: I think we should not shift the displacement, as Fred's change might interact with this.
+
 227:56-228:62
 Tue Aug 19 12:45:42 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

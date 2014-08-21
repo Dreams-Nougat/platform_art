@@ -9,6 +9,14 @@ UUID: 766ff376_dea601af
 Bytes: 78
 Is sign/zero extension missing from the get when we go via the runtime helper?
 
+731:17-731:34
+Thu Aug 21 23:24:47 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 766ff376_dea601af
+UUID: 1630777d_8b3a9dde
+Bytes: 53
+Addressed in another comment (new entrypoints added).
+
 File: compiler/dex/quick/x86/utility_x86.cc
 
 882:0-887:5
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 766ff376_7e54b5df
 Bytes: 86
 This is unnecessary for x86-64 where this code is also used. Use AllocateByteRegister.
+
+882:0-887:5
+Thu Aug 21 23:24:47 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 766ff376_7e54b5df
+UUID: f62cc32f_ca9acf5d
+Bytes: 61
+Changed to AllocateByteRegister and added check for target64.
 
 File: runtime/entrypoints/quick/quick_entrypoints_list.h
 
@@ -27,6 +43,14 @@ UUID: b67b2b36_0a644eec
 Bytes: 173
 Add a comment noting its the caller's responsibility to sign/zero extend? I believe ARM32 may always sign extend to 32-bit smaller sizes. But for ARM64 and x86-32/64 differ.
 
+51:0-54:37
+Thu Aug 21 23:24:47 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67b2b36_0a644eec
+UUID: b6540bb2_97c7144d
+Bytes: 87
+Added additional entrypoints for signed/unsigned loads to make it easier on the caller.
+
 File: runtime/mirror/art_field.h
 
 127:0-132:93
@@ -36,6 +60,14 @@ UUID: b64deb11_ada2ff1d
 Bytes: 151
 I'd like these to be GetBoolean, GetByte, GetShort.. ie Get then the Java primitive type name. Its non-intuitive that Get8 should be used for booleans.
 
+127:0-132:93
+Thu Aug 21 23:24:47 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b64deb11_ada2ff1d
+UUID: 3663bbc5_ba984d28
+Bytes: 4
+Done
+
 File: runtime/mirror/object.h
 
 251:31-251:32
@@ -44,4 +76,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b67b2b36_6db64cc7
 Bytes: 37
 Similarly byte/boolean rather than 8.
+
+251:31-251:32
+Thu Aug 21 23:24:47 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67b2b36_6db64cc7
+UUID: 7669b3a1_fc43a576
+Bytes: 4
+Done
 

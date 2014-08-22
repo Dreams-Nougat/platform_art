@@ -9,6 +9,18 @@ UUID: 53076152_043a264d
 Bytes: 225
 I thought it was computed globally and initialized in the entry block. Which is a cost on all paths not just the one that needs the code pointer. That said for x86-64 we just shouldn't be generating code pointer calculations.
 
+12:0-13:49
+Fri Aug 22 17:09:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 53076152_043a264d
+UUID: 13f169a2_5d9c07e8
+Bytes: 826
+Let me clarify :)
+
+So the code pointer register is calculated at start of method and then spilled into its home location (temp VR on stack). All paths that need it load this register which is then cached by the backend temp system that tries to prevent reloads. Well when you have a diamond shape in the generated code (the code that generates is linear), then only one of the paths would have loaded the start of method register. Thus at merge of diamond shape it is not valid to say that the backend temp always is loaded in physical register even though the temp caching system says so.
+
+Regarding x86_64, I agree. All accesses should be done relative to instruction pointer (future feature). But I think you are right to note this because the code right now explicitly assumes that explicit non-rip register is being used.
+
 File: compiler/dex/quick/x86/fp_x86.cc
 
 733:0-733:36

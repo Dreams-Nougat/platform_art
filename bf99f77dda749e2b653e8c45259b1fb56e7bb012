@@ -9,3 +9,11 @@ UUID: 13f169a2_1a08bab9
 Bytes: 92
 Is that because MethodHelper needs a mutable handle (why?)? Seems like unnecessary overhead.
 
+3694:2-3694:44
+Sun Aug 24 19:30:21 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 13f169a2_1a08bab9
+UUID: 9399d985_f2bb48a6
+Bytes: 336
+Its used to be that going from DexCache to DexFile was expensive, it isn't as much now. We had a mutable ArtMethod* in MethodHelper so that changing a method while walking a vtable say, wouldn't cause fresh DexFile lookups if the DexCache didn't change. When ArtMethods became move-able then these fields in MethodHelper became handles.
+

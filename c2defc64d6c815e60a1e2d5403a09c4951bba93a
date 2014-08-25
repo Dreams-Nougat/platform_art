@@ -9,6 +9,14 @@ UUID: f389353b_a12c0686
 Bytes: 8
 LoadAny?
 
+460:10-461:19
+Mon Aug 25 23:18:26 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f389353b_a12c0686
+UUID: 739e256e_c5203a01
+Bytes: 129
+In what context do we actually need to generate an LFENCE?  This feels sufficiently esoteric that I wouldn't add it preemptively.
+
 462:10-462:20
 Mon Aug 25 22:41:13 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,28 @@ UUID: 9399d985_3c4afe71
 Bytes: 11
 StoreStore?
 
+462:10-462:20
+Mon Aug 25 23:18:26 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9399d985_3c4afe71
+UUID: 739e256e_e5cffee9
+Bytes: 402
+I would call this something like NTStoreStore, to make it clear that it orders non-temporal stores.  StoreStore should remain a no-op on x86.
+
+I was never clear on whether non-temporal stores just needed to be followed by an SFENCE to preserve TSO, or also needed to be preceded by a fence of some sort.  If we only need this after a nontemporal store, then NTStoreStore seems particularly appropriate.
+
 463:10-463:21
 Mon Aug 25 22:41:13 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f3c4d562_81fd5d4b
 Bytes: 20
 the same as AnyAny ?
+
+463:10-463:21
+Mon Aug 25 23:18:26 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f3c4d562_81fd5d4b
+UUID: 739e256e_45928ad6
+Bytes: 36
+Seems like it should just be AnyAny.
 

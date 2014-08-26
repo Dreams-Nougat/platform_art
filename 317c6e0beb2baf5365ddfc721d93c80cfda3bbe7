@@ -1,0 +1,52 @@
+Revision: 317c6e0beb2baf5365ddfc721d93c80cfda3bbe7
+Patch-set: 3
+File: runtime/debugger.cc
+
+2816:2-2816:63
+Tue Aug 26 09:35:08 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9382b917_13c7f681
+Bytes: 258
+Do we really need to handle these events with other ones. I mean could we move handling them into a separate method? This method is called for each instruction during debugging so I'd like we avoid increasing overhead (which we're trying to reduce currently)
+
+2831:2-2831:63
+Tue Aug 26 09:35:08 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 73c54578_39c50f72
+Bytes: 144
+Will we execute the following code if single step is not active? I'm concerned if this is the case as it will impact overall debugging overhead.
+
+2981:2-2984:3
+Tue Aug 26 09:35:08 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d3b431fe_5c50bd40
+Bytes: 62
+I don't think this is the right place to throw that exception.
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+515:6-515:123
+Tue Aug 26 09:35:08 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 33a66dd4_bf43375a
+Bytes: 34
+Too long line: 100 characters max.
+
+File: runtime/instrumentation.cc
+
+707:6-709:7
+Tue Aug 26 09:35:08 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 73c54578_d9cbb38b
+Bytes: 247
+I don't think the increment handling should be in this method, its place is in AddDeoptimizedMethod IMO. We should add a method that looks for the corresponding pair (or an iterator on this pair). Then FindDeoptimizedMethod could rely on this too.
+
+File: runtime/instrumentation.h
+
+117:4-118:41
+Tue Aug 26 09:35:08 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d3b431fe_dc63ad1e
+Bytes: 149
+I'm not sure they should be instrumentation events. IMO they are specific to debugger so we shouldn't need to modify instrumentation to handle these.
+

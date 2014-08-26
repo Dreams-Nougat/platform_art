@@ -9,3 +9,12 @@ UUID: 53a121b9_804016bd
 Bytes: 143
 The intent of this code was to support stepping out of an interpreted method into its compiled caller method. Does this CL still supports that?
 
+36:2-40:3
+Tue Aug 26 15:45:11 2014 +0000
+Author: Dániel Mihályi <1051274@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 53a121b9_804016bd
+UUID: b3b17d0f_3b0857ba
+Bytes: 369
+I have implemented step-out by adding a new InterpreterWillBeExited event to the InstrumentationListener and sending that event from artQuickToInterpreterBridge before returning.
+In response to that event the debugger will request a frame deoptimization by setting the deoptimization exception, thus we will be able to step into the upcall that was compiled originally.
+

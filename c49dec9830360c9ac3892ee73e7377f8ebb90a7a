@@ -9,6 +9,14 @@ UUID: 1376c912_ccc4e378
 Bytes: 54
 I believe we'd generally place these on the line above
 
+1364:6-1364:9
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1376c912_ccc4e378
+UUID: 9397195e_9654dcde
+Bytes: 4
+Done
+
 File: runtime/oat_file.h
 
 43:2-43:59
@@ -17,6 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f3c4d562_feb8705e
 Bytes: 50
 note that the returned oat file is not executable?
+
+43:2-43:59
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f3c4d562_feb8705e
+UUID: d3cd11a8_f719da13
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -35,12 +51,30 @@ UUID: 1376c912_6c3f6fa1
 Bytes: 203
 Its seems we're returning a count of errors but no error messages. Presumably these were sent to the log but the feeling is inconsistent with the rest of the code where we pass an error_msg out argument.
 
+561:0-567:81
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 138de944_b4d2888f
+UUID: d3cd11a8_fac66183
+Bytes: 212
+Yes this is done in the non-error case as well. Just way down in the ImageSpace startup during Heap initialization.
+
+Anyway this isn't a terribly heavy function. It is basically about 3-4 calls to OS::FileExists.
+
 568:0-568:36
 Tue Aug 26 04:27:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1376c912_cc4dc354
 Bytes: 326
 seems odd to rely on the caller to make *failures 0. As this is the intended behavior I'd either add a DCHECK_EQ(*failures, 0u) here or do the assignment here. Ie ensure an out argument is assigned on all return paths. Making *failures equal dex_files.size() would make more sense to me in the error case than leaving it as 0.
+
+568:0-568:36
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1376c912_cc4dc354
+UUID: 9397195e_16eb2ccb
+Bytes: 4
+Done
 
 571:0-574:75
 Mon Aug 25 22:45:04 2014 +0000
@@ -49,12 +83,28 @@ UUID: 739e256e_254586d8
 Bytes: 148
 probably should have a comment noting that we are falling back here to non-exec oat files and note why (motivation is that we might be out of space)
 
+571:0-574:75
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 739e256e_254586d8
+UUID: d3cd11a8_fa5b0132
+Bytes: 4
+Done
+
 589:2-589:16
 Tue Aug 26 04:27:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1376c912_cce863c9
 Bytes: 54
 but we relied on this fact for the other return paths?
+
+589:2-589:16
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1376c912_cce863c9
+UUID: d3cd11a8_da6045dd
+Bytes: 4
+Done
 
 613:6-613:32
 Mon Aug 25 22:45:04 2014 +0000
@@ -63,10 +113,26 @@ UUID: 13c88974_f0cfc0e9
 Bytes: 23
 !image_location.empty()
 
+613:6-613:32
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 13c88974_f0cfc0e9
+UUID: 9397195e_d677040f
+Bytes: 4
+Done
+
 685:2-685:54
 Tue Aug 26 04:27:16 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 33810d18_aa4f8fa3
 Bytes: 39
 only used at line 784, move next to use
+
+685:2-685:54
+Tue Aug 26 21:42:10 2014 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 33810d18_aa4f8fa3
+UUID: d3cd11a8_7a7011a6
+Bytes: 4
+Done
 

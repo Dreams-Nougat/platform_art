@@ -1,0 +1,87 @@
+Revision: 99bd6cb3da231a9b0d3784e4c346ba72c2ce9b69
+Patch-set: 3
+File: runtime/class_linker.cc
+
+2486:0-2486:6
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f3d0553d_ed68e0fc
+Bytes: 56
+Avoid inline (its a linker directive ;-) ), prefer HOT..
+
+2486:32-2486:41
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f3d0553d_0d643c25
+Bytes: 64
+out arguments should be on the right and pointers not references
+
+2506:41-2506:54
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13d4092d_36d3cde5
+Bytes: 17
+current_field_idx
+
+2506:39-2506:41
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 73c54578_b62da182
+Bytes: 60
+fix references to pointers, "* ", out arguments on the right
+
+2518:8-2518:16
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 73c54578_d627f59f
+Bytes: 139
+I'd avoid UNLIKELY in cases like this as it screws up inlining in the UNLIKELY path. One day we'll have proper profile guided optimization.
+
+File: runtime/class_linker.h
+
+532:0-532:47
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13d4092d_f6f79567
+Bytes: 48
+prefer a struct? What are first and second here?
+
+544:2-544:8
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 73c54578_763709cd
+Bytes: 6
+remove
+
+File: runtime/mirror/class-inl.h
+
+557:8-557:23
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f3d0553d_0d4b1c96
+Bytes: 36
+avoid macros, this seems unnecessary
+
+557:24-557:32
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13d4092d_76e4a5b2
+Bytes: 25
+and a "g bs s" to you too
+
+File: runtime/mirror/class.h
+
+510:9-510:15
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f3d0553d_cd440483
+Bytes: 30
+unnecessary, implicitly inline
+
+510:25-510:47
+Wed Aug 27 04:23:10 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 73c54578_b65481de
+Bytes: 43
+Add a comment explaining what this computes
+

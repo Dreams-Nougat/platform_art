@@ -70,3 +70,15 @@ This seems a bug to me.
 
 But I am not sure if separate_non_moving_space is false in your dex2oat situation. Can you instrument this function and see what the value separate_non_moving_space is (as well as, if you will, the result addresses of the MapAnonymousPreferredAddress() and MapAnonymous() which could be added to the error message of the LOG(FATAL) in line 417)?
 
+410:65-412:81
+Thu Aug 28 00:59:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7321c530_a8c68350
+UUID: 9333997e_564bd43e
+Bytes: 233
+It doesn't get to the gap. The aborting CHECK is in CheckNoGaps:
+
+Check failed: begin_map->BaseBegin() <= end_map->BaseBegin() (begin_map->BaseBegin()=0x70000000, end_map->BaseBegin()=0x5e3f000)
+
+Let me put in some debug info before.
+

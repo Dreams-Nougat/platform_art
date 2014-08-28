@@ -68,6 +68,16 @@ UUID: 531681dd_c7f648f3
 Bytes: 113
 this just uses "kRuntimeISA" inside, so you can use that instead of passing in here for PruneDexCache etc, right?
 
+146:22-146:65
+Thu Aug 28 08:48:19 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 531681dd_c7f648f3
+UUID: 1330897d_df193714
+Bytes: 302
+actually never mind. there is a different issue. we should not only prune /data/dalvik-cache/<isa> but /data/dalvik-cache, to remove old files from dalvik (before the <isa> dir).
+
+the code in PackageManagerService.java does that. it can be nuked with this change. and so can the installd path it calls.
+
 224
 Thu Aug 28 08:38:40 2014 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>

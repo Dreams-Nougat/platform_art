@@ -55,3 +55,18 @@ UUID: 7338e55c_950b94b8
 Bytes: 231
 With the current logic, the only time the compiler might attempt to immune the non moving space is if GSS is enabled. In this case separate_non_moving_space==true and hopefully we would have that the space is right after the image.
 
+410:65-412:81
+Thu Aug 28 00:55:07 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 931c79fc_ba449181
+UUID: 7321c530_a8c68350
+Bytes: 950
+If separate_non_moving_space is false in your dex2oat situation, the main space and the non-moving space are the same space, in which case we should allocate the main space right after the image, but to allocate the main space (main_mem_map_1) we use MapAnonymousPreferredAddress() which does not guarantee the result is at the specified address, instead of MapAnonymous() which does, as in:
+
+267:  main_mem_map_1.reset(MapAnonymousPreferredAddress(kMemMapSpaceName[0], request_begin, capacity_,
+268:                                         PROT_READ | PROT_WRITE, &error_str));
+
+This seems a bug to me.
+
+But I am not sure if separate_non_moving_space is false in your dex2oat situation. Can you instrument this function and see what the value separate_non_moving_space is (as well as, if you will, the result addresses of the MapAnonymousPreferredAddress() and MapAnonymous() which could be added to the error message of the LOG(FATAL) in line 417)?
+

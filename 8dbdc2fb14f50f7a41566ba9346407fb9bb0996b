@@ -110,3 +110,19 @@ OK, can't really follow the details of the discussion, not a GC person... :-)
 
 From Mathieu's comment, should the additional check actually be more "permissive"? The "hopefully" sounds bad. From his comment, I would change it to && (is_zygote || separate_non_moving_space).
 
+410:65-412:81
+Thu Aug 28 04:29:32 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 931c79fc_7d67d39f
+UUID: 7321c530_2e6cbb41
+Bytes: 389
+That's fine, too. To explicitly include the non-zygote GSS case, it'd be also good to have 
+
+  "&& (is_zygote || foreground_collector_ == kCollectorTypeGSS)".
+
+or even,
+
+  "&& (is_zygote || separate_non_moving_space || foreground_collector_ == kCollectorTypeGSS)".
+
+Right now, "foreground_collector_ == kCollectorTypeGSS" or "is_zygote == true" implies "separate_non_moving_space == true".
+

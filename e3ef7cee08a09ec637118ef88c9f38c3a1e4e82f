@@ -9,6 +9,14 @@ UUID: 73eaa5f0_5ae9e4c9
 Bytes: 6
 remove
 
+2486:0-2486:6
+Thu Aug 28 01:50:10 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 73eaa5f0_5ae9e4c9
+UUID: 330d8dbc_0a379b64
+Bytes: 4
+Done
+
 File: runtime/class_linker.h
 
 532:0-532:19
@@ -18,12 +26,30 @@ UUID: 73eaa5f0_9adf4c23
 Bytes: 134
 Add a comment to describe this. As you only need FieldGaps could you prototype FieldGaps and move the rest of this to class_linker.cc?
 
+532:0-532:19
+Thu Aug 28 01:50:10 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 73eaa5f0_9adf4c23
+UUID: 7338e55c_7588509d
+Bytes: 137
+Moved all the shuffling code to the cc file because there's no reason for them to be instance methods.
+
+Added comments for the field gap.
+
 546:84-546:93
 Wed Aug 27 22:04:06 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 93e5591e_67e410b3
 Bytes: 73
 for the sake of 3 kinds of gap (4, 2 and 1 byte) this feels high overhead
+
+546:84-546:93
+Thu Aug 28 01:50:10 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 93e5591e_67e410b3
+UUID: 931c79fc_1d8d7722
+Bytes: 257
+I don't think it'd be too much of an issue because there usually aren't many holes. Especially because we only layout the subclass only and the fields are already sorted. Additionally, it keeps the logic for pushing and popping gaps really straight forward.
 
 File: runtime/mirror/class-inl.h
 
@@ -34,6 +60,14 @@ UUID: 73eaa5f0_7a8028eb
 Bytes: 104
 This needs explanation. Static fields don't leave holes in super/sub classes so why the complexity here?
 
+581:0-607:33
+Thu Aug 28 01:50:10 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 73eaa5f0_7a8028eb
+UUID: 731385dc_0c31f71e
+Bytes: 75
+Now that I think about it, I don't think this is necessary at all, removed.
+
 File: runtime/mirror/class.h
 
 510:0-510:75
@@ -42,4 +76,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 73eaa5f0_fa7ad839
 Bytes: 27
 Explain what shuffle means?
+
+510:0-510:75
+Thu Aug 28 01:50:10 2014 +0000
+Author: Fred Shih <1047773@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 73eaa5f0_fa7ad839
+UUID: 330d8dbc_8aaf0b6a
+Bytes: 31
+Method is unnecessary, removed.
 

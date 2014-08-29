@@ -1,0 +1,35 @@
+Revision: d4826288171ddf02521febfed06230c82eecd4d5
+Patch-set: 1
+File: runtime/base/mutex.cc
+
+742:0-746:33
+Fri Aug 29 23:21:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13a1690c_3159eabf
+Bytes: 310
+I believe this isn't sound. Generally we're doing:
+
+synchronized(obj) {
+  while(!predicate()) {
+     obj.wait();
+   }
+}
+
+by releasing the lock and acquiring it again the predicate can have changed and the notify be missed. The reason the wait is done under a lock is to avoid races with the predicate changing.
+
+File: runtime/base/mutex.h
+
+393:58-393:83
+Fri Aug 29 23:21:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b3a7bd22_2e88679c
+Bytes: 108
+when defeating thread safety analysis we should comment as to why. See all the other functions that do this.
+
+393:6-393:7
+Fri Aug 29 23:21:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 13a1690c_b12b1a09
+Bytes: 72
+The TODO above was to get rid of special case ConditionVariable code :-)
+

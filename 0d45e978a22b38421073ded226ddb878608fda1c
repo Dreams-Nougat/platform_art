@@ -1,0 +1,13 @@
+Revision: 0d45e978a22b38421073ded226ddb878608fda1c
+Patch-set: 3
+File: compiler/driver/compiler_driver.cc
+
+1584:33-1584:37
+Sun Aug 31 00:38:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 936479c9_5aabb5fb
+Bytes: 387
+This change means we do more resolution here than in the verifier/compiler.
+true vs manager->GetCompiler()->IsImage()
+ie in the old code we only pre-resolve fields/methods for the image. This should help avoid resolution in the verifier/compiler and we have plenty of context here. I'm concerned that this will test the CheckAndClearResolveException code more and thereby introduce bugs.
+

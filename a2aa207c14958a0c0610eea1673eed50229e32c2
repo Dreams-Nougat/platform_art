@@ -1,0 +1,50 @@
+Revision: a2aa207c14958a0c0610eea1673eed50229e32c2
+Patch-set: 1
+File: compiler/optimizing/constant_propagation.cc
+
+22:5-22:12
+Mon Sep 01 13:59:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 133de99e_713512ea
+Bytes: 53
+Why are you collecting them instead of visiting them?
+
+38:10-38:19
+Mon Sep 01 13:59:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d398b1f7_1c88559c
+Bytes: 145
+I don't think you need a worklist. By doing a reverse post order visit you know you've visited the inputs before visiting the instruction itself.
+
+44:12-44:15
+Mon Sep 01 13:59:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 133de99e_11892e69
+Bytes: 121
+We probably need to encode that in the HInstruction itself, that knows how to statically execute itself (e.g. HAdd -> +).
+
+File: compiler/optimizing/constant_propagation.h
+
+39:1-39:8
+Mon Sep 01 13:59:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 133de99e_f1482278
+Bytes: 7
+Remove.
+
+File: compiler/optimizing/constant_propagation_test.cc
+
+47:2-47:21
+Mon Sep 01 13:59:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d398b1f7_5c82dd7b
+Bytes: 76
+Check that the returned graph only contains a constant + return instruction?
+
+101:0-101:1
+Mon Sep 01 13:59:50 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 33582d1a_2f216903
+Bytes: 33
+Also add tests with control flow?
+

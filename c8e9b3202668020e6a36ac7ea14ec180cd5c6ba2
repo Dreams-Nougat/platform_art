@@ -1,0 +1,57 @@
+Revision: c8e9b3202668020e6a36ac7ea14ec180cd5c6ba2
+Patch-set: 5
+File: runtime/debugger.cc
+
+3127:8-3127:22
+Mon Sep 01 13:56:45 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 133de99e_91227ec3
+Bytes: 161
+This should be the first test to know if we need to do something. After that, I'd test for native and proxy methods, then whether this is the right kind of step.
+
+3136:6-3136:7
+Mon Sep 01 13:56:45 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d398b1f7_3c9ef1de
+Bytes: 75
+m can be NULL in the case of an upcall, right? It's worth adding a comment.
+
+3138:8-3138:22
+Mon Sep 01 13:56:45 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d398b1f7_1cd69586
+Bytes: 15
+Same than above
+
+3141:4-3141:13
+Mon Sep 01 13:56:45 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 33582d1a_eff76135
+Bytes: 30
+This is a ReaderMutexLock now.
+
+3142:37-3142:38
+Mon Sep 01 13:56:45 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 133de99e_d1432659
+Bytes: 92
+Don't need to look for a breakpoint if m == NULL: we can't have set breakpoint in this case.
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+820:4-825:40
+Mon Sep 01 13:56:45 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d398b1f7_5cd01d88
+Bytes: 19
+Why is this needed?
+
+File: runtime/interpreter/interpreter_common.cc
+
+672:8-672:31
+Mon Sep 01 13:56:45 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d398b1f7_dc96edc7
+Bytes: 120
+Can we move that into Dbg::IsForcedInterpreterNeededForCalling please? I'd prefer we limit access to debugger internals.
+

@@ -62,6 +62,14 @@ UUID: 1326c99c_498dc521
 Bytes: 46
 It is defined as Mutex or do I miss something?
 
+3141:4-3141:13
+Tue Sep 02 17:37:54 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1326c99c_498dc521
+UUID: 1326c99c_09b58db5
+Bytes: 98
+Ah yes, nervermind. It's a change I'm working on and it's not merged yet. I'll submit it tomorrow.
+
 3142:37-3142:38
 Mon Sep 01 13:56:45 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -76,6 +84,14 @@ Parent: 133de99e_d1432659
 UUID: d398b1f7_453be0e2
 Bytes: 79
 I don't understand, I think at that line it is guaranteed that m is not nullptr
+
+3142:37-3142:38
+Tue Sep 02 17:37:54 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d398b1f7_453be0e2
+UUID: 133de99e_17e75eb9
+Bytes: 65
+Oh sorry, I misread the scope of the if above. Forget my comment.
 
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
@@ -93,6 +109,14 @@ Parent: d398b1f7_5cd01d88
 UUID: 1326c99c_2967a9a0
 Bytes: 398
 When we place a breakpoint in a static initialiser and it get caught, then in that state the upcall we can see in the stack (in Eclipse, for example) is the caller (method which called a static method that caused the static intialization), not the callee (static method that caused static initialization), but in interpreter mode the upcall is the callee and stepping out get us back to the callee.
+
+820:4-825:40
+Tue Sep 02 17:37:54 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1326c99c_2967a9a0
+UUID: 133de99e_97198e15
+Bytes: 126
+That's a bug in the interpreter then, I'll take a look. So you need this to properly step out of the class initializer, right?
 
 File: runtime/interpreter/interpreter_common.cc
 

@@ -1,0 +1,38 @@
+Revision: c0542af3e2170143ba40d89136e284997e16bf64
+Patch-set: 3
+File: runtime/indirect_reference_table-inl.h
+
+34:64-34:91
+Thu Sep 04 01:55:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f07ccba5_95d6c4d4
+Bytes: 224
+Now that the sentinel is a real object, this should enable the read barrier, as in just "Read()". Or else we would be comparing its to-space address and the from-space address of an object (which can be the sentinel object.)
+
+File: runtime/indirect_reference_table.cc
+
+266:19-266:23
+Thu Sep 04 01:55:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f093eb15_9179ec9e
+Bytes: 372
+I think this "ref : *this" invokes IrtIterator which skips null/invalid entries by using SkipNullsAndTombstones() (see the other comment.) This mean that we are not updating the sentinel object refs in this IRT here, which I think would break a moving GC. We need to update the sentinel object refs in this IRT by not skipping sentinel objects in SkipNullsAndTombstones().
+
+File: runtime/reference_table.cc
+
+217:35-217:62
+Thu Sep 04 01:55:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f093eb15_11139c77
+Bytes: 62
+Likewise, this should enable the read barrier, as in "Read()".
+
+File: runtime/runtime-inl.h
+
+32:0-34:3
+Thu Sep 04 01:55:01 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10979f03_a434e611
+Bytes: 136
+Should we check that it's not null when it's allocated and set at startup, turn this into a debug check, or turn this into a LOG(FATAL)?
+

@@ -51,3 +51,31 @@ UUID: 1024ffa2_b9387be4
 Bytes: 5
 Same.
 
+348
+Thu Sep 04 13:56:05 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0204b93_98e499f3
+Bytes: 239
+Without this patch, a check_lir pointing to "blr x30" is handled via the if-block below ("stop_here = true;"). This happens because LOAD_STORE_FILTER(check_flags) returns true if check_lir is a branch.
+
+With this patch... (continued below)
+
+360
+Thu Sep 04 13:56:05 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0a0a75c_dcad4d21
+Bytes: 884
+...the branch instruction is handled here and the DCHECK below fails.
+
+You may wonder why the branch is handled here. This happens because those LIR-s that have the branch flag set ((flag & IS_BRANCH) != 0) are handled (see mir_to_lir-inl.h) by setting,
+
+  lir->u.m.def_mask = lir->u.m.use_mask = &kEncodeAll;
+
+The effect is that alias_mem_mask.Equal(this_mem_mask) and thus the !alias_mem_mask.Equal(kEncodeNone) above is necessarily true.
+
+Probably, LOAD_STORE_FILTER() above needs to be replaced with a "wider" condition, to make sure that branches are handled as they were before. For example, replacing LOAD_STORE_FILTER(check_flags) && ... in the if above with
+
+  (check_flags & IS_BRANCH) || (LOAD_STORE_FILTER(check_flags) && ...)
+
+Seems to solve the problem. Alternatively, the code in mir_to_lir-inl.h which sets all the flags for branches should be revised. Probably, both.
+

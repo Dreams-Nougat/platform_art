@@ -9,6 +9,14 @@ UUID: 10807fc3_1922ef93
 Bytes: 119
 A future optimization here for stack size reduction is to only allocate space for temporaries that need spill location.
 
+45:35-45:57
+Thu Sep 04 08:56:32 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10807fc3_1922ef93
+UUID: b09df327_5b770354
+Bytes: 207
+This is the baseline codegen, which mostly follows Quick conventions wrt stack. The temporaries in that context always have a spill location (because we don't do register allocation in the baseline codegen).
+
 File: compiler/optimizing/ssa_liveness_analysis.h
 
 481:13-481:21
@@ -18,6 +26,16 @@ UUID: f04e8b81_a499579c
 Bytes: 83
 Is there a notion to distinguish between temps at different IR levels (MIR vs LIR)?
 
+481:13-481:21
+Thu Sep 04 08:56:32 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f04e8b81_a499579c
+UUID: b09df327_7b7c3f35
+Bytes: 377
+Just to make sure: MIR and LIR are Quick things. So I assume you're talking about HInstructions and the notion of temps in the register allocator?
+
+You're right that there is both a HTemporary and a notion of temp in the register allocator (the one highlighted here). I agree this is confusing, and welcome any other names. Maybe the HTemporary could have a better abstraction.
+
 File: runtime/mirror/art_method.h
 
 155:53-155:67
@@ -26,4 +44,12 @@ Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f04e8b81_845d3b28
 Bytes: 246
 Why is lack of GC map an "optimized" method? Seems that this is implying no suspend points in optimized methods. Or is this just being used as a temporary transition until correct GC maps are generated? If the latter, a comment here would help :)
+
+155:53-155:67
+Thu Sep 04 08:56:32 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f04e8b81_845d3b28
+UUID: 90d1cfe4_325cb026
+Bytes: 59
+Yes, that's the latter. Good point about the comment. Done.
 

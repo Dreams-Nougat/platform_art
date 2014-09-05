@@ -1,0 +1,54 @@
+Revision: 31d025877f4ccf39ddb7dd34d31a8927c8f1b1aa
+Patch-set: 2
+File: runtime/gc/reference_processor.cc
+
+86:4-86:6
+Fri Sep 05 15:08:12 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30b903ab_2ad51f24
+Bytes: 173
+a general comment I started making elsewhere first, it'd be pretty cheap to switch this to a while and a while would have the advantage of being robust to spurious wake ups.
+
+File: runtime/gc/reference_processor.h
+
+98:7-98:25
+Fri Sep 05 15:08:12 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90baaf9a_732792d5
+Bytes: 123
+should this be GUARDED_BY(lock_)? That'd require MutexLock for the Enable/Disable paths but might be a worthwhile addition.
+
+File: runtime/intern_table.cc
+
+216:4-216:6
+Fri Sep 05 15:08:12 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90baaf9a_132c16b5
+Bytes: 5
+while
+
+File: runtime/java_vm_ext.cc
+
+479:4-479:6
+Fri Sep 05 15:08:12 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30b903ab_aa67cfed
+Bytes: 107
+I think it'd also be fine for this to be a while, it may avoid some lock acquisitions in the spurious case.
+
+576:4-576:6
+Fri Sep 05 15:08:12 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90baaf9a_d30c3e62
+Bytes: 49
+I think it'd also be fine for this to be a while.
+
+File: runtime/monitor.cc
+
+1108:4-1108:6
+Fri Sep 05 15:08:12 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90baaf9a_33311a0c
+Bytes: 5
+while
+

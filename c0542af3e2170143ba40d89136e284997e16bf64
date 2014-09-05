@@ -16,6 +16,14 @@ UUID: 50dbd705_44cbae59
 Bytes: 374
 Also, we likely haven't updated/forwarded the sentinel root ref in the runtime at this point if we are scanning the local indirect reference table during the root visit, because we visit Thread::VisitRoots() (which calls IRT::VisitRoots() for local jni refs, which in turns calls this function) before Runtime::VisitNonThreadRoots()  (which scans/updates the sentinel root.)
 
+34:64-34:91
+Fri Sep 05 20:16:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f07ccba5_95d6c4d4
+UUID: 10979f03_e84b9c3b
+Bytes: 4
+Done
+
 File: runtime/indirect_reference_table.cc
 
 266:19-266:23
@@ -42,4 +50,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 10979f03_a434e611
 Bytes: 136
 Should we check that it's not null when it's allocated and set at startup, turn this into a debug check, or turn this into a LOG(FATAL)?
+
+32:0-34:3
+Fri Sep 05 20:16:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10979f03_a434e611
+UUID: 10979f03_68f9cc99
+Bytes: 59
+I added the allocation check and turned this into a DCHECK.
 

@@ -50,3 +50,25 @@ UUID: 10807fc3_f5e7d9f5
 Bytes: 266
 Skipping nulls and tombstones doesn't sound worth it, we should just process the sentinel references and upto to the to space. There's no correctness about scanning the sentinels just a performance one. The old code needed to skip as otherwise it could break the GC.
 
+34:10-34:71
+Mon Sep 08 17:22:41 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10807fc3_f5e7d9f5
+UUID: 10807fc3_5d3353e0
+Bytes: 1550
+I thought more about this over the weekend, and it seems that if we just remove line 34 (without changing IsClearedJniWeakGlobal()), it seems to work out.
+
+Here's a long version:
+
+If we just remove line 34, things will work out in the following way:
+
+For CMS, objects don't move. So, no issue.
+
+For SS/GSS, the sentinel is moved at the beginning of a GC run, and at the end of a GC run, invalid weak globals entries that contain the old sentinel ref will be updated with the new sentinel ref by SweepJniWeakGlobals() as IrtIterator does not skip the (old) sentinel ref. Since they are non-concurrent collectors, we don't have to worry about a mutator calling DecodeJObject() and interacting with the sentinel during a GC run.
+
+For a read barrier based collector, like SS/GSS, the sentinel is moved at the beginning of a GC run, and at the end of a GC run, invalid weak globals entries that contain the old sentinel ref will be updated with the new sentinel ref by SweepJniWeakGlobals(). Since it's concurrent, a mutator may call DecodeJObject() and interact with the sentinel during a GC run, but at that point, the sentinel is already moved, and when a weak global entry is read by DecodeJObject(), the object in the entry gets moved by the read barrier, IsClearedJniWeakGlobal() compares two moved (or to-space) references (as opposed mixing up (a from-space and a to-space refs) and works correctly.
+
+I believe this matches Ian's comment. As Ian says, we can probably remove the null-skipping code as well.
+
+I will send a new patch set to this CL.
+

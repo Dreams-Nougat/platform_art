@@ -1,0 +1,70 @@
+Revision: 4c96204bf0d62abaa78906c76e5de18a381bfe81
+Patch-set: 4
+File: runtime/class_linker.cc
+
+834:9-834:57
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fd4f75_f564f29c
+Bytes: 26
+is this multi-thread safe?
+
+File: runtime/dex_file.h
+
+855:29-855:43
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90d1cfe4_4cf99399
+Bytes: 206
+Could you use "dex location" here? I'd avoid to introduce or reference anything that would sound like yet another type of location ("plain"). The same for other places where you refer to the plain location.
+
+869:9-869:20
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_ae5efba1
+Bytes: 194
+funny :) https://android-review.googlesource.com/#/c/101420/1/runtime/dex_file.h@833
+
+(I guess I should have also added the offline discussions whether or not this would be efficient enough :) )
+
+872:8-872:22
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90d1cfe4_2cfc4f4b
+Bytes: 292
+After seeing how this works I think it might be better to make sure that GetOatDexFile is called just once... After examining the code I don't think we redundantly compute the canonical location too many times. Feel free to contradict me :)
+
+A specific concern here is multi-threading safety.
+
+File: runtime/oat_file.cc
+
+324:6-324:96
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90d1cfe4_4ccbd359
+Bytes: 51
+do we have the guarantee that the files are sorted?
+
+325:4-340:5
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_6e16c3b4
+Bytes: 311
+this is duplication of GetCanonicalDexFileLocation logic. I'm not a big fan of it...
+
+This makes me think if it's not better to cache the canonical file in the DexFile class itself and add a method: GetCanonicalDexLocation(DexFile* relatedDexfile) which can use the base canonical path of the provided dex file.
+
+354:4-354:29
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_eeaab306
+Bytes: 102
+Wouldn't you miss adding the keys for the multidex parts (e.g. base:classes2.dex) with this condition?
+
+451:51-451:78
+Mon Sep 08 16:44:46 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_ce249717
+Bytes: 159
+do we really need this? If so, maybe LocationHelper is a better choice?. Anyhow I find it a bit messy to need to add this in addition to the dex_file_location.
+

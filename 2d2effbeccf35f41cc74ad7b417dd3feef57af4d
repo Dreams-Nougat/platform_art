@@ -9,6 +9,14 @@ UUID: 50075752_f0340013
 Bytes: 58
 when cross compiling, uintptr_t might not be right either?
 
+45:0-45:56
+Tue Sep 09 19:54:15 2014 +0000
+Author: Tong Shen <1051650@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50075752_f0340013
+UUID: b04973a6_67c95d3b
+Bytes: 4
+Done
+
 File: compiler/image_writer.cc
 
 809:0-809:28
@@ -17,6 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50075752_13d54e56
 Bytes: 21
 similar here I think.
+
+809:0-809:28
+Tue Sep 09 19:54:15 2014 +0000
+Author: Tong Shen <1051650@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50075752_13d54e56
+UUID: f0684b04_94fc9d4d
+Bytes: 4
+Done
 
 File: runtime/elf_file.cc
 
@@ -27,6 +43,16 @@ UUID: f0684b04_2f4c55aa
 Bytes: 77
 old fashioned macro for all these boilerplate delegations based on is_elf64_?
 
+2625:0-2633:1
+Tue Sep 09 19:54:15 2014 +0000
+Author: Tong Shen <1051650@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0684b04_2f4c55aa
+UUID: f0684b04_741aa104
+Bytes: 208
+Yeah I'd like that too, but we need to set "Load(executable, error_msg)" as the macro parameter, which is not allowed by clang.
+
+I'm really not familiar with macros; so if there's a way please point it out...
+
 File: runtime/elf_file.h
 
 80:0-89:52
@@ -35,4 +61,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50075752_d058dc68
 Bytes: 148
 I was trying to keep any "oat" specific code out of ElfFile. stripping and relocation perhaps fit that, not sure if our custom relocations fit that.
+
+80:0-89:52
+Tue Sep 09 19:54:15 2014 +0000
+Author: Tong Shen <1051650@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50075752_d058dc68
+UUID: b04973a6_e7e56db2
+Bytes: 243
+Those "oat" specific code requires implementation details of ElfFileImpl; so if we move them elsewhere, we will have to expose declaration of ElfFileImpl, which others seems opposed to.
+
+If you really want them out, I can do that of course :-)
 

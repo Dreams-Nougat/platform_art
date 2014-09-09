@@ -9,6 +9,14 @@ UUID: 30b903ab_2ad51f24
 Bytes: 173
 a general comment I started making elsewhere first, it'd be pretty cheap to switch this to a while and a while would have the advantage of being robust to spurious wake ups.
 
+86:4-86:6
+Tue Sep 09 17:30:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30b903ab_2ad51f24
+UUID: 50075752_645332a1
+Bytes: 4
+Done
+
 File: runtime/gc/reference_processor.h
 
 98:7-98:25
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90baaf9a_732792d5
 Bytes: 123
 should this be GUARDED_BY(lock_)? That'd require MutexLock for the Enable/Disable paths but might be a worthwhile addition.
+
+98:7-98:25
+Tue Sep 09 17:30:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90baaf9a_732792d5
+UUID: 50075752_a4219a05
+Bytes: 232
+Ideally so. DisableSlowPath takes lock_ while EnableSlowPath() is called under the exclusive mutator lock. I guess the lack of guarded_by is an optimization (the comment in line 53-54) to avoid a lock in the GetReferent() fast path.
 
 File: runtime/intern_table.cc
 
@@ -27,6 +43,14 @@ UUID: 90baaf9a_132c16b5
 Bytes: 5
 while
 
+216:4-216:6
+Tue Sep 09 17:30:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90baaf9a_132c16b5
+UUID: 50075752_44ba6e5b
+Bytes: 4
+Done
+
 File: runtime/java_vm_ext.cc
 
 479:4-479:6
@@ -36,12 +60,28 @@ UUID: 30b903ab_aa67cfed
 Bytes: 107
 I think it'd also be fine for this to be a while, it may avoid some lock acquisitions in the spurious case.
 
+479:4-479:6
+Tue Sep 09 17:30:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30b903ab_aa67cfed
+UUID: b04973a6_7a83b04a
+Bytes: 4
+Done
+
 576:4-576:6
 Fri Sep 05 15:08:12 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90baaf9a_d30c3e62
 Bytes: 49
 I think it'd also be fine for this to be a while.
+
+576:4-576:6
+Tue Sep 09 17:30:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90baaf9a_d30c3e62
+UUID: f0edabca_cdecc99b
+Bytes: 4
+Done
 
 File: runtime/monitor.cc
 
@@ -51,4 +91,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90baaf9a_33311a0c
 Bytes: 5
 while
+
+1108:4-1108:6
+Tue Sep 09 17:30:58 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90baaf9a_33311a0c
+UUID: 50075752_e4b4426a
+Bytes: 4
+Done
 

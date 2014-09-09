@@ -9,6 +9,14 @@ UUID: 90fd4f75_f564f29c
 Bytes: 26
 is this multi-thread safe?
 
+834:9-834:57
+Tue Sep 09 10:05:17 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fd4f75_f564f29c
+UUID: f0aa0b52_8e5bff63
+Bytes: 47
+LocationHelper is never shared between threads.
+
 File: runtime/dex_file.h
 
 855:29-855:43
@@ -27,6 +35,16 @@ funny :) https://android-review.googlesource.com/#/c/101420/1/runtime/dex_file.h
 
 (I guess I should have also added the offline discussions whether or not this would be efficient enough :) )
 
+869:9-869:20
+Tue Sep 09 10:05:17 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_ae5efba1
+UUID: f0aa0b52_991fcb78
+Bytes: 160
+I was just trying to keep these together.
+
+Regarding performance, I've inspired by https://android-review.googlesource.com/#/c/103969/3/runtime/mirror/class.h .
+
 872:8-872:22
 Mon Sep 08 16:44:46 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,6 +54,16 @@ After seeing how this works I think it might be better to make sure that GetOatD
 
 A specific concern here is multi-threading safety.
 
+872:8-872:22
+Tue Sep 09 10:05:17 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90d1cfe4_2cfc4f4b
+UUID: f0aa0b52_19dafb84
+Bytes: 187
+LocationHelper is never shared between threads.
+
+If you're concerned about concurrently changing file system, then I'd need to call the whole notion of canonical dex location ill-defined.
+
 File: runtime/oat_file.cc
 
 324:6-324:96
@@ -44,6 +72,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90d1cfe4_4ccbd359
 Bytes: 51
 do we have the guarantee that the files are sorted?
+
+324:6-324:96
+Tue Sep 09 10:05:17 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90d1cfe4_4ccbd359
+UUID: 90fd4f75_1549b6f2
+Bytes: 90
+No, but multi-dex apps should really have the same base location for all dex files anyway.
 
 325:4-340:5
 Mon Sep 08 16:44:46 2014 +0000
@@ -60,6 +96,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0aa0b52_eeaab306
 Bytes: 102
 Wouldn't you miss adding the keys for the multidex parts (e.g. base:classes2.dex) with this condition?
+
+354:4-354:29
+Tue Sep 09 10:05:17 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_eeaab306
+UUID: 90fd4f75_b5570a8b
+Bytes: 118
+"base:classesN.dex" is already added above. This condition makes sure we add "path:classesN.dex" only if path != base.
 
 451:51-451:78
 Mon Sep 08 16:44:46 2014 +0000

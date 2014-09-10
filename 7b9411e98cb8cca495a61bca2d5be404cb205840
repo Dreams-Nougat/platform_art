@@ -9,6 +9,14 @@ UUID: f0aa0b52_5ac62187
 Bytes: 61
 nit: if you changed the above you should change this as well.
 
+611:83-611:100
+Wed Sep 10 14:51:52 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_5ac62187
+UUID: d0fa6781_d2ec649b
+Bytes: 4
+Done
+
 File: runtime/dex_file.cc
 
 966:23-966:25
@@ -17,6 +25,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0fa6781_d2e464f4
 Bytes: 13
 const char* ?
+
+966:23-966:25
+Wed Sep 10 14:51:52 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0fa6781_d2e464f4
+UUID: f0aa0b52_faccad70
+Bytes: 133
+Though it doesn't make difference for the code as it stands right now, I consider the array operations more appropriate for the path.
 
 969:4-971:3
 Wed Sep 10 13:46:25 2014 +0000
@@ -30,6 +46,14 @@ else {
 }
 
 should be enough.
+
+969:4-971:3
+Wed Sep 10 14:51:52 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_9ac3396f
+UUID: f0aa0b52_dacf7163
+Bytes: 200
+I realized that. But this allows the compiler to move the base_location instead of constructing a new string. Also I'm not sure if the compiler is smart enough to optimize away the redundant strlen().
 
 File: runtime/oat_file.cc
 
@@ -48,12 +72,36 @@ I think it will be clearer if we use a local map to store the cache of dex_locat
 
 std::string DexFile::UpdateBaseLocation(std::string& dex_location, std::string& new_base_location)?
 
+324:3-339:5
+Wed Sep 10 14:51:52 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_3af9e59a
+UUID: f0aa0b52_da81b1f1
+Bytes: 534
+I'm trying to come up with some API in DexFile that would support our use cases (namely boot.oat with multiple different dex files and a multi-dex app oat file) without forcing extra realname()s here. Maybe
+
+  void UpdateCanonicalLocation(const std::string& dex_location,
+                               std::string* base_location,
+                               std::string* canonical_location);
+
+where base_location and canonical_location are both in/out.
+
+I think I'll also stop trying to save memory by the "empty if same" pattern.
+
 407:8-407:56
 Wed Sep 10 13:46:25 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90262ff7_ed8b810c
 Bytes: 50
 this looks pretty silly with the if just above it.
+
+407:8-407:56
+Wed Sep 10 14:51:52 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90262ff7_ed8b810c
+UUID: 90262ff7_6d15d1d4
+Bytes: 99
+Yeah. It made sense in PS4 with DCHECK_STRNE() but since we're back to std::string, this should go.
 
 451:51-451:78
 Wed Sep 10 13:46:25 2014 +0000
@@ -65,4 +113,14 @@ L355: you already have the canonical location
 L440: the key is the canonical location.
 
 I don't see other usages.
+
+451:51-451:78
+Wed Sep 10 14:51:52 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_ba99559c
+UUID: f0aa0b52_7aaafd74
+Bytes: 315
+L440: The key is _not_ the canonical location; that assumption was always wrong. And I should clearly rewrite that debugging output to use oat_dex_files_storage_ now that the oat_dex_files_ can contain duplicates.
+
+Besides, this is a convenient place to store the canonical location without using the string_cache_.
 

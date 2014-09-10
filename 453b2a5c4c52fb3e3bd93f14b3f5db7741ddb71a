@@ -9,6 +9,14 @@ UUID: d013479f_edd9bd2c
 Bytes: 44
 Why method entry? Quick prefers method exit.
 
+10:19-10:31
+Wed Sep 10 17:37:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d013479f_edd9bd2c
+UUID: 90262ff7_d06734ed
+Bytes: 181
+It's currently easier with the code generators: a return instruction just returns and we don't need to cache and share a slow path for the method exit suspend check between returns.
+
 File: compiler/optimizing/builder.cc
 
 473:6-473:24
@@ -17,6 +25,14 @@ Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d013479f_8d03e9df
 Bytes: 124
 Agreed with comment below. This check is a bit too conservative and should be updated once loops are properly identified. :)
+
+473:6-473:24
+Wed Sep 10 17:37:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d013479f_8d03e9df
+UUID: 90262ff7_30c69086
+Bytes: 120
+Note that we already identify them in the compiler. But I haven't put any optimizations to remove the suspend check yet.
 
 File: compiler/optimizing/nodes.h
 

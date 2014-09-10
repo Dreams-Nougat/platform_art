@@ -1,0 +1,68 @@
+Revision: 7b9411e98cb8cca495a61bca2d5be404cb205840
+Patch-set: 6
+File: runtime/class_linker.h
+
+611:83-611:100
+Wed Sep 10 13:46:25 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_5ac62187
+Bytes: 61
+nit: if you changed the above you should change this as well.
+
+File: runtime/dex_file.cc
+
+966:23-966:25
+Wed Sep 10 13:46:25 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_d2e464f4
+Bytes: 13
+const char* ?
+
+969:4-971:3
+Wed Sep 10 13:46:25 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_9ac3396f
+Bytes: 71
+you don't need this.
+
+else {
+ return dex_location;
+}
+
+should be enough.
+
+File: runtime/oat_file.cc
+
+324:3-339:5
+Wed Sep 10 13:46:25 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_3af9e59a
+Bytes: 782
+The followings are just my preferences. Feel free to disagree though and keep the current version :)
+
+1) This only works if the entries are sorted. If we already know that all the files will have the same base location then why not asserting it and computing just for the first? 
+
+I think it will be clearer if we use a local map to store the cache of dex_location->canonical_location. It will obviously have just one element in the current setup.
+
+2) I'd prefer if the logic for creating/splitting multidex names stay in DexFile. If we ever need to update or fix stuff it will spare us to remember that there's a duplication here. Since we already have GetBaseLocation, how about 
+
+std::string DexFile::UpdateBaseLocation(std::string& dex_location, std::string& new_base_location)?
+
+407:8-407:56
+Wed Sep 10 13:46:25 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90262ff7_ed8b810c
+Bytes: 50
+this looks pretty silly with the if just above it.
+
+451:51-451:78
+Wed Sep 10 13:46:25 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_ba99559c
+Bytes: 146
+This seems pretty useless to me:
+L355: you already have the canonical location
+L440: the key is the canonical location.
+
+I don't see other usages.
+

@@ -96,6 +96,16 @@ UUID: d0fa6781_327fa8ec
 Bytes: 187
 Or we could just ignore the multi-dex use case performance for the moment (there won't be that many dex files anyway) and call GetDexCanonicalLocation() to keep this particular CL simple.
 
+324:3-339:5
+Wed Sep 10 15:11:02 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0fa6781_327fa8ec
+UUID: f0aa0b52_1aaae95a
+Bytes: 126
+I'd be ok with that. I prefer clarity much more over micro-optimization. 
+
+If I compare PS6 and PS9 I'd definitely prefer PS9.
+
 407:8-407:56
 Wed Sep 10 13:46:25 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -131,4 +141,12 @@ Bytes: 315
 L440: The key is _not_ the canonical location; that assumption was always wrong. And I should clearly rewrite that debugging output to use oat_dex_files_storage_ now that the oat_dex_files_ can contain duplicates.
 
 Besides, this is a convenient place to store the canonical location without using the string_cache_.
+
+451:51-451:78
+Wed Sep 10 15:11:02 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_7aaafd74
+UUID: d0fa6781_92f81c26
+Bytes: 189
+I don't really mind. Still it seems a bit wasteful to cache this just to print it in debug builds. I think it will be acceptable to just query for the canonical location again in that case.
 

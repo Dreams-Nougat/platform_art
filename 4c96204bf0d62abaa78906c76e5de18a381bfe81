@@ -45,6 +45,16 @@ I was just trying to keep these together.
 
 Regarding performance, I've inspired by https://android-review.googlesource.com/#/c/103969/3/runtime/mirror/class.h .
 
+869:9-869:20
+Wed Sep 10 15:24:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_991fcb78
+UUID: 101a3fb4_757e3286
+Bytes: 738
+Sadly we added that pattern due to std::string allocation performance issues related to GetDescriptor next to never returning something requiring a std::string and GetDescriptor being very hot at dex2oat time. In general its nice to observe the return value optimization:
+http://en.wikipedia.org/wiki/Return_value_optimization
+but for std::string where the std::string is just wrapping a 'const char*' this leads to a malloc and strcpy. Do we care enough here to bother optimizing? Do we have yet another C++ string implementation that could avoid the malloc and strcpy when its known the backing storage is not going to get freed? I think ideally we wouldn't be copying the anti-pattern in GetDescriptor elsewhere - unless we have to :-/
+
 872:8-872:22
 Mon Sep 08 16:44:46 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,6 +73,14 @@ Bytes: 187
 LocationHelper is never shared between threads.
 
 If you're concerned about concurrently changing file system, then I'd need to call the whole notion of canonical dex location ill-defined.
+
+872:8-872:22
+Wed Sep 10 15:24:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_19dafb84
+UUID: 101a3fb4_554a166e
+Bytes: 337
+This shouldn't be in dex file, which captures the binary representation of a dex file on disk. This and path related utilities should be moved to the class linker. The motivation for this is that dex_file.h/cc is the eventual successor for a lot of tools like dexdump. As such we want to avoid clutter, and clutter that will cause churn.
 
 File: runtime/oat_file.cc
 
@@ -111,4 +129,13 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0aa0b52_ce249717
 Bytes: 159
 do we really need this? If so, maybe LocationHelper is a better choice?. Anyhow I find it a bit messy to need to add this in addition to the dex_file_location.
+
+File: runtime/utils.h
+
+506:0-516:50
+Wed Sep 10 15:24:55 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0168b8e_4e53a7a0
+Bytes: 92
+iirc we used to pick up UniquePtr from libnativehelper, should these similarly be pushed up?
 

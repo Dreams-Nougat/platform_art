@@ -9,6 +9,14 @@ UUID: f0aa0b52_b16adbb4
 Bytes: 21
 GetLoopEffects(block)
 
+75:60-75:98
+Thu Sep 11 17:28:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_b16adbb4
+UUID: d0fa6781_fb821b7a
+Bytes: 4
+Done
+
 File: compiler/optimizing/gvn.h
 
 56:6-56:14
@@ -18,12 +26,28 @@ UUID: 90262ff7_73c65255
 Bytes: 183
 Please add ArenaUnorderedSet to arena_containers.h and use it to reimplement this class. (Or get rid of this class completely; Kill() can be a static function in GlobalValueNumberer.)
 
+56:6-56:14
+Thu Sep 11 17:28:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90262ff7_73c65255
+UUID: 90262ff7_3e4b0176
+Bytes: 295
+This class will get refined based on the load it gets compiling representative apps. As long as we haven't profiled this load, I'm a bit reluctant into creating some generic implementation that this will "customize". So I'd rather wait for this class to stabilize before considering refactoring.
+
 210:2-210:15
 Thu Sep 11 16:10:30 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90262ff7_73981264
 Bytes: 58
 Use ArenaVector please, I want to deprecate GrowableArray.
+
+210:2-210:15
+Thu Sep 11 17:28:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90262ff7_73981264
+UUID: 90262ff7_7ef3b905
+Bytes: 155
+The optimizing compiler makes heavy use of GrowableArray. I'd rather use it uniformly and change it once GrowableArray gets removed than use a mix of both.
 
 File: compiler/optimizing/nodes.cc
 
@@ -34,10 +58,26 @@ UUID: f0aa0b52_6ee8fe5b
 Bytes: 67
 DCHECK_EQ(); do we have operator<<(std::ostream&, InstructionKind)?
 
+474:2-474:40
+Thu Sep 11 17:28:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_6ee8fe5b
+UUID: d0fa6781_bb88939c
+Bytes: 109
+Done. And no about the InstructionKind, but that's ok, as the check is mostly making sure one macro is right.
+
 482:2-482:56
 Thu Sep 11 16:10:30 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0aa0b52_ce69f231
 Bytes: 11
 DCHECK_EQ()
+
+482:2-482:56
+Thu Sep 11 17:28:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0aa0b52_ce69f231
+UUID: 90262ff7_1e271dd6
+Bytes: 4
+Done
 

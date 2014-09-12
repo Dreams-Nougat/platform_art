@@ -9,6 +9,20 @@ UUID: 90d1cfe4_b5672aee
 Bytes: 115
 Actually, you might want to check this while iterating over the phis, to avoid keeping this within_phi_list around.
 
+116:6-116:22
+Fri Sep 12 10:24:07 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90d1cfe4_b5672aee
+UUID: d0fa6781_601afa04
+Bytes: 802
+The problem is, the lists of phis and instructions within a HBasicBlock are both implemented as HInstructionList objects.  As HPhi inherits from HInstruction, relying on VisitPhi and VisitInstruction only (using the default visitor traversal based on Accept) to catch phi-in-instruction-list or instruction-in-phi-list errors would not be enough.
+
+I thought about two implementation strategies for this issue:
+1. re-implement iterations on phi- and instruction-lists instead of using the Accept/Visit idiom of the Visitor design pattern (implemented in patch sets 1 & 2) ;
+2. use VisitPhi and VisitInstruction to implement these checks, but keep a marker of the type of instructions we should be expecting (phi or non-phi) while browsing a list (implemented in patch sets 3, 4 & 5).
+
+What do you think?
+
 123:12-123:16
 Thu Sep 04 14:09:36 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,10 +37,26 @@ UUID: d0a0a75c_9fd6d7d4
 Bytes: 74
 This can stay here, as it is shared between phis and regular instructions.
 
+131:24-131:25
+Fri Sep 12 10:24:07 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0a0a75c_9fd6d7d4
+UUID: 90262ff7_7e79f902
+Bytes: 4
+Done
+
 134:8-134:14
 Thu Sep 04 14:09:36 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0a0a75c_7ff74b6b
 Bytes: 75
 Instead of passing that by parameter, you could just do instruction->IsPhi.
+
+134:8-134:14
+Fri Sep 12 10:24:07 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0a0a75c_7ff74b6b
+UUID: d0fa6781_669b32f0
+Bytes: 4
+Done
 

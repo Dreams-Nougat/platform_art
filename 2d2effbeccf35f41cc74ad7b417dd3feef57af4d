@@ -53,6 +53,18 @@ Yeah I'd like that too, but we need to set "Load(executable, error_msg)" as the 
 
 I'm really not familiar with macros; so if there's a way please point it out...
 
+2625:0-2633:1
+Fri Sep 12 03:16:34 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0684b04_741aa104
+UUID: f0c4cb62_777e4386
+Bytes: 419
+Breaking up the whole call would help. Do a varargs macro with the first parameter being the method name and the varargs part being the parameters. Something like this (for only one part):
+
+DELEGATE_RET(Name,...) return elf_.elf32-> Name ( __VA_ARGS__ );
+
+If you want to be really fancy, you can use varargs with recursive macros to do the whole thing. Your varargs are then a list of type and name of the parameters...
+
 File: runtime/elf_file.h
 
 80:0-89:52

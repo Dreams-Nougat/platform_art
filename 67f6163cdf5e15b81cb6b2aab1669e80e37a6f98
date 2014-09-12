@@ -23,6 +23,26 @@ I thought about two implementation strategies for this issue:
 
 What do you think?
 
+116:6-116:22
+Fri Sep 12 10:31:18 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0fa6781_601afa04
+UUID: f0aa0b52_c488f312
+Bytes: 314
+I think I'd prefer doing the check in the iteration:
+
+for (HInstructionIterator it(block->GetPhis()); !it.Done(); it.Advance()) {
+  // check is a phi
+  // call Accept.
+}
+
+for (HInstructionIterator it(block->GetPhis()); !it.Done(); it.Advance()) {
+  // check is not a phi.
+  // call Accept.
+}
+
+Does that make sense?
+
 123:12-123:16
 Thu Sep 04 14:09:36 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

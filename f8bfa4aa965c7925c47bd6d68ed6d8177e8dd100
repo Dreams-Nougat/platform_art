@@ -1,0 +1,20 @@
+Revision: f8bfa4aa965c7925c47bd6d68ed6d8177e8dd100
+Patch-set: 7
+File: compiler/optimizing/dead_code_elimination.cc
+
+23:5-23:24
+Fri Sep 12 23:37:08 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 709e1b6e_86839849
+Bytes: 59
+So much cleaner than last time I reviewed :) Liking it now.
+
+33:17-33:31
+Fri Sep 12 23:37:08 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0c4cb62_2cdb9036
+Bytes: 574
+Okay, so I am not familiar with the HIR yet. But in MIR, I prefer side effects for anything with memory effects, thread effect, etc. And thus things like branches don't get captured as having side effects, they have well defined behavior. Therefore having a check for HasDefs allows keeping instructions that fall in this bucket because clearly if it defines nothing, it must have some semantic meaning. :)
+
+Anyway, from looking later in patch I see branch semantics are expressed as side effects and thus this code is legal :) But wanted to offer possibly a different view.
+

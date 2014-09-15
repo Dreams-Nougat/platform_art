@@ -1,0 +1,18 @@
+Revision: 648d7112609dd19c38131b3e71c37bcbbd19d11e
+Patch-set: 4
+File: runtime/reflection.cc
+
+514
+Mon Sep 15 20:39:03 2014 +0000
+Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0933369_88c486dc
+Bytes: 294
+Hi Dave,  I got an assertion from this stack end check.
+Ex:
+InvokeVirtualOrInterfaceWithVarArg -> ThrowStackOverflowError -> 
+art::JNI::GetFieldID -> art::FindFieldID -> art::ClassLinker::FindClass ->
+art::Thread::AssertNoPendingException -> LOG(FATAL)
+
+Is this behavior expected?
+Thanks a lot!
+

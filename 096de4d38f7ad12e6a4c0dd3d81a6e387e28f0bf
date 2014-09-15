@@ -1,0 +1,151 @@
+Revision: 096de4d38f7ad12e6a4c0dd3d81a6e387e28f0bf
+Patch-set: 7
+File: compiler/optimizing/graph_checker.cc
+
+17:25-17:26
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_223c57d8
+Bytes: 51
+Please also add direct stl dependencies (like map).
+
+122:21-122:28
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_66278ea3
+Bytes: 55
+No need to check, the visitor pattern ensures it's not.
+
+122:45-122:62
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_46229294
+Bytes: 43
+Add a VisitBinaryOperation in this visitor?
+
+124:9-124:23
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_261d9655
+Bytes: 155
+BinaryOperation will only have two inputs, so you can just check whether InputAt(0) is a constant or not.
+
+Note that having two constants as input is fine.
+
+158:35-158:36
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_963be9b3
+Bytes: 50
+The following two methods could be in the .h file.
+
+164:0-164:1
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_82742ba8
+Bytes: 22
+Remove extra new line.
+
+File: compiler/optimizing/graph_checker.h
+
+27:31-27:36
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_f6998d9b
+Bytes: 148
+arena -> allocator (I know I may have left a few places that called it arena, but we should really call them allocator, as there is an Arena class).
+
+65:49-65:51
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_2213f777
+Bytes: 13
+Add new line.
+
+File: compiler/optimizing/graph_checker_test.cc
+
+28:8-28:17
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_86a2cac7
+Bytes: 80
+Maybe move this to optimizing_unit_test.h, and change the other tests to use it?
+
+100:19-100:23
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_56186165
+Bytes: 5
+CFG2?
+
+110:19-110:23
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_a69fc680
+Bytes: 5
+CFG3?
+
+126:44-126:46
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_9622c991
+Bytes: 68
+Add a check that the graph is valid before you're making it invalid?
+
+142:44-142:46
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_76275da3
+Bytes: 5
+ditto
+
+File: compiler/optimizing/nodes.cc
+
+396:75-396:76
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_a250471e
+Bytes: 68
+Add DCHECK_EQ(instruction1->GetBlock() == instruction2->GetBlock());
+
+398:34-398:36
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_c69cc28e
+Bytes: 49
+Why this check? You're returning line 400 anyway.
+
+406:13-406:14
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_4245d35d
+Bytes: 108
+Add LOG(FATAL) << "Can't find an order between two instructions of the same block".
+
+Or something like that.
+
+409:61-409:62
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_56418123
+Bytes: 5
+const
+
+424:46-424:47
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_624a4f6f
+Bytes: 292
+There is no order in phis (conceptually they are done in parallel).
+
+I think we should either return false or LOG(FATAL). The latter seems best for now, as it's probably an error if we want to check dominance between two phis. Also, returning false would render this function non-commutative.
+
+File: compiler/optimizing/nodes.h
+
+590:27-590:36
+Mon Sep 15 09:13:42 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_023fdbcf
+Bytes: 21
+dominates -> dominate
+

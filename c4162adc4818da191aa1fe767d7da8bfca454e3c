@@ -1,0 +1,64 @@
+Revision: c4162adc4818da191aa1fe767d7da8bfca454e3c
+Patch-set: 7
+File: compiler/optimizing/constant_propagation.cc
+
+35:35-35:62
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_26ef56d5
+Bytes: 78
+Please use visitor pattern (have a VisitBinaryOperation method in this class).
+
+35:15-35:17
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_e64b7e3b
+Bytes: 8
+No need.
+
+47:15-47:17
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_76cbdd59
+Bytes: 8
+No need.
+
+51:32-51:33
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0aa0b52_2285374c
+Bytes: 80
+The following code is duplicating what's happening line 40, please add a helper.
+
+File: compiler/optimizing/nodes.cc
+
+468:11-468:23
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_56bce1c5
+Bytes: 145
+It feels weird to have a constant evaluate something. I think I'd prefer having the logic in the binary operation, that would switch on the type.
+
+File: compiler/optimizing/nodes.h
+
+1224:38-1224:43
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0fa6781_f6fd0d7c
+Bytes: 128
+Remove const on pointers. On parameters, const should mostly be used for references (see google c++ style guide for the reason).
+
+1229:38-1229:43
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_c64e824e
+Bytes: 5
+ditto
+
+1371:6-1371:32
+Mon Sep 15 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1076bf12_a65186ef
+Bytes: 69
+Didn't we say this class should just be folded into HBinaryOperation?
+

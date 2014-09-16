@@ -9,12 +9,38 @@ UUID: 10d4ff2c_b6f24800
 Bytes: 111
 I think this should be the other way around? If the second is a constant but the first is not, that's an error.
 
+127:30-127:31
+Tue Sep 16 12:08:20 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10d4ff2c_b6f24800
+UUID: 70c53b78_d983b3b3
+Bytes: 570
+I just had a look at the implementation of art::HGraphBuilder and both cases seem to happen.  For instance the Dex instruction
+
+  add-int/lit16 v1, v0, #+2
+
+produces a HAdd node with a left-hand non-constant input and a right-hand constant one, while the Dex instruction
+
+  rsub-int v1, v0, #+2
+
+produces a HSub node with a left-hand constant input and a right-hand non-constant one.
+
+Or maybe this check on constant inputs is not meant for graphs directly produced by art::HGraphBuilder, but rather for graphs that underwent some sort of canonization prior to checking?
+
 140:46-140:49
 Tue Sep 16 08:23:38 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 70c53b78_19eb6b13
 Bytes: 141
 Oh yes, we need a new visitor for that. I think a visitor where each non-overridden method just delegates to its super class might be useful.
+
+140:46-140:49
+Tue Sep 16 12:08:20 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70c53b78_19eb6b13
+UUID: 10d4ff2c_d67b843c
+Bytes: 36
+Agreed.  Will try to implement this.
 
 File: compiler/optimizing/graph_checker_test.cc
 
@@ -25,6 +51,24 @@ UUID: 10d4ff2c_96f74cf0
 Bytes: 120
 I find auto mostly useful for large types. In such a case I would just put the type (and get rid of the utility import).
 
+151:2-151:6
+Tue Sep 16 12:08:20 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10d4ff2c_96f74cf0
+UUID: 10d4ff2c_96750c4a
+Bytes: 220
+OK, done.  FWIW, I believe all statements following this pattern:
+
+  Type* val = new Type(...);
+
+should use `auto' to prevent information duplication. :-)
+
+As for
+
+  #include <utility>
+
+this was a stray statement, sorry.
+
 File: compiler/optimizing/nodes.cc
 
 310:18-310:36
@@ -34,12 +78,30 @@ UUID: 50baf7ee_f84af16f
 Bytes: 232
 The name is too close to ReplaceWith, which will make it difficult to know which does what. Since this is only used for tests, I think I'd prefer having it there (and with a longer name? for example ReplaceAndRemoveInstructionWith).
 
+310:18-310:36
+Tue Sep 16 12:08:20 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50baf7ee_f84af16f
+UUID: 10d4ff2c_d6a4a491
+Bytes: 141
+HBasicBlock::ReplaceInstruction is also used later in ConstantPropagation::Run.
+
+The name is admittedly confusing; your suggestion is better.
+
 312:18-312:26
 Tue Sep 16 08:23:38 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50baf7ee_98309509
 Bytes: 26
 A pointer check is enough.
+
+312:18-312:26
+Tue Sep 16 12:08:20 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50baf7ee_98309509
+UUID: 10d4ff2c_b6a92868
+Bytes: 4
+Done
 
 414:75-414:80
 Tue Sep 16 08:23:38 2014 +0000
@@ -50,10 +112,26 @@ Missing '.'.
 
 Cannot -> Did not ?
 
+414:75-414:80
+Tue Sep 16 12:08:20 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50baf7ee_382069b6
+UUID: 70c53b78_99f65b3b
+Bytes: 4
+Done
+
 433:30-433:37
 Tue Sep 16 08:23:38 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50baf7ee_58131d77
 Bytes: 115
 The "cannot compute" sounds like we should :) Maybe just say "There is no dominance between phis of a same block" ?
+
+433:30-433:37
+Tue Sep 16 12:08:20 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50baf7ee_58131d77
+UUID: 50baf7ee_780f01c5
+Bytes: 4
+Done
 

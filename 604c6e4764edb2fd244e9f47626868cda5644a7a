@@ -9,6 +9,14 @@ UUID: 300d83bc_165fc2a0
 Bytes: 120
 This is brittle for loops with multiple back edges (since preheader may be at an unknown location in predecessors list).
 
+199:2-199:72
+Wed Sep 17 16:58:01 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 300d83bc_165fc2a0
+UUID: 50baf7ee_41656895
+Bytes: 139
+The code above makes sure there is only one back edge (by making all back edges jump to a sythesized block that will become the back edge).
+
 File: compiler/optimizing/ssa_phi_elimination.cc
 
 110:4-111:69
@@ -17,4 +25,12 @@ Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 300d83bc_962bb205
 Bytes: 183
 Defensive programming might still be the better approach instead of making this assumption. I am worried of improper update to predecessors and someone assuming preheader comes first.
+
+110:4-111:69
+Wed Sep 17 16:58:01 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 300d83bc_962bb205
+UUID: 50baf7ee_a1756449
+Bytes: 105
+That's the reason we will have a graph checker after each pass that will ensure these assumptions remain.
 

@@ -1,0 +1,53 @@
+Revision: d98cac7e768a4e00c66f4d172a0c2cbd3b8d86b2
+Patch-set: 1
+File: compiler/optimizing/constant_propagation.h
+
+45:8-45:33
+Thu Sep 18 08:32:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9081cf4e_321d107f
+Bytes: 149
+Do we need a method for each binary instructions? If Evaluate was virtual on the HBinaryOperation we could just have one VisitBinaryOperation, right?
+
+57:21-57:22
+Thu Sep 18 08:32:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508bd76f_b049f87a
+Bytes: 68
+O -> I for instruction (and document that it's an HBinaryOperation).
+
+58:13-58:40
+Thu Sep 18 08:32:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9081cf4e_72139877
+Bytes: 36
+I'd remove the Dispatch in the name.
+
+73:12-73:20
+Thu Sep 18 08:32:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508bd76f_9044f463
+Bytes: 182
+I think it would look less magic without the StaticEvaluation method. It's convenient because it allows you to avoid doing "new HIntConstant", but I think you do loose in readbility.
+
+74:7-74:23
+Thu Sep 18 08:32:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9081cf4e_f226a8d7
+Bytes: 19
+Indentation is off.
+
+79:9-79:15
+Thu Sep 18 08:32:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508bd76f_d04a7c70
+Bytes: 16
+Make it private.
+
+105:18-105:35
+Thu Sep 18 08:32:27 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508bd76f_703cf0d8
+Bytes: 142
+Does this need to be a field? I think we can just create it temporarily in the Run method. Keeping state around (like result_) is error-prone.
+

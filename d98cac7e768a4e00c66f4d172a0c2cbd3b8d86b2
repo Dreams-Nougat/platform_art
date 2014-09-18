@@ -9,12 +9,32 @@ UUID: 9081cf4e_321d107f
 Bytes: 149
 Do we need a method for each binary instructions? If Evaluate was virtual on the HBinaryOperation we could just have one VisitBinaryOperation, right?
 
+45:8-45:33
+Thu Sep 18 14:44:01 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9081cf4e_321d107f
+UUID: 9081cf4e_b2ad80ba
+Bytes: 480
+Yes.  But if Evaluate is virtual, then it cannot not be a method template.  Thus we would need to either
+* duplicate Evaluate for each type of constants (arguments) (int32_t/int64_t or possibly HIntConstant/HLongConstant); or
+* move and duplicate the switch on constant (argument) types in each Evaluate method.
+
+I went for the first solution in https://android-review.googlesource.com/#/c/105964/14 as it was the shortest one and it factored the code switching on argument types.
+
 57:21-57:22
 Thu Sep 18 08:32:27 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 508bd76f_b049f87a
 Bytes: 68
 O -> I for instruction (and document that it's an HBinaryOperation).
+
+57:21-57:22
+Thu Sep 18 14:44:01 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 508bd76f_b049f87a
+UUID: 9081cf4e_929e3c57
+Bytes: 4
+Done
 
 58:13-58:40
 Thu Sep 18 08:32:27 2014 +0000
@@ -23,12 +43,28 @@ UUID: 9081cf4e_72139877
 Bytes: 36
 I'd remove the Dispatch in the name.
 
+58:13-58:40
+Thu Sep 18 14:44:01 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9081cf4e_72139877
+UUID: f02ccb2f_55b98cc8
+Bytes: 4
+Done
+
 73:12-73:20
 Thu Sep 18 08:32:27 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 508bd76f_9044f463
 Bytes: 182
 I think it would look less magic without the StaticEvaluation method. It's convenient because it allows you to avoid doing "new HIntConstant", but I think you do loose in readbility.
+
+73:12-73:20
+Thu Sep 18 14:44:01 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 508bd76f_9044f463
+UUID: f02ccb2f_75b608dc
+Bytes: 112
+This code (actually the whole visitor) has been removed in https://android-review.googlesource.com/#/c/105964/14
 
 74:7-74:23
 Thu Sep 18 08:32:27 2014 +0000
@@ -37,6 +73,14 @@ UUID: 9081cf4e_f226a8d7
 Bytes: 19
 Indentation is off.
 
+74:7-74:23
+Thu Sep 18 14:44:01 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9081cf4e_f226a8d7
+UUID: f02ccb2f_15b314eb
+Bytes: 9
+Likewise.
+
 79:9-79:15
 Thu Sep 18 08:32:27 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,10 +88,26 @@ UUID: 508bd76f_d04a7c70
 Bytes: 16
 Make it private.
 
+79:9-79:15
+Thu Sep 18 14:44:01 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 508bd76f_d04a7c70
+UUID: 508bd76f_b0c7b825
+Bytes: 9
+Likewise.
+
 105:18-105:35
 Thu Sep 18 08:32:27 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 508bd76f_703cf0d8
 Bytes: 142
 Does this need to be a field? I think we can just create it temporarily in the Run method. Keeping state around (like result_) is error-prone.
+
+105:18-105:35
+Thu Sep 18 14:44:01 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 508bd76f_703cf0d8
+UUID: 9081cf4e_92707c5a
+Bytes: 9
+Likewise.
 

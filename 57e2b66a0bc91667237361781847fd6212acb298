@@ -1,0 +1,29 @@
+Revision: 57e2b66a0bc91667237361781847fd6212acb298
+Patch-set: 1
+File: compiler/optimizing/graph_checker.cc
+
+167:24-167:27
+Fri Sep 19 08:43:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9081cf4e_f590d2cf
+Bytes: 67
+-> Loop pre-header is not the first predecessor of the loop header.
+
+169:4-169:5
+Fri Sep 19 08:43:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508bd76f_96562c08
+Bytes: 89
+Also ensure the loop header only has two predecessors, and the last one is the back edge?
+
+196:11-196:19
+Fri Sep 19 08:43:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9081cf4e_9595c6be
+Bytes: 271
+I'd remove the IsInLoop check. A phi should never have itself as a first input.
+
+Also, we should check that:
+1) The number of phi inputs is the same as the number of predecessors
+2) The phi input is either in the predecessor, or in a block that dominates the predecessor.
+

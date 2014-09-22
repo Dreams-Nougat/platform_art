@@ -1,0 +1,25 @@
+Revision: 5389ae0f27072d4fcbfb63d814480fe222d46068
+Patch-set: 3
+File: compiler/optimizing/graph_checker.cc
+
+265:9-265:23
+Mon Sep 22 15:36:30 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9081cf4e_616bc06d
+Bytes: 133
+I would just use an index over the input:
+for (size_t i = 0, e = phi->InputCount(); i < e; ++i)
+
+And get rid of the 'index' variable.
+
+269:9-269:11
+Mon Sep 22 15:36:30 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b05413b2_69d4017e
+Bytes: 162
+I'm not going to check precedence, but it'd be more readable with:
+
+if (!(input->GetBlock() == predecessor || input->GetBlock()->Dominates(predecessor)) {
+  ...
+}
+

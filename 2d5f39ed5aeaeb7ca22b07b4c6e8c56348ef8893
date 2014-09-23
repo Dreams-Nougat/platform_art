@@ -1,0 +1,43 @@
+Revision: 2d5f39ed5aeaeb7ca22b07b4c6e8c56348ef8893
+Patch-set: 1
+File: runtime/class_linker.cc
+
+5073:0-5119:58
+Tue Sep 23 01:28:07 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5002f7bb_fedc59a9
+Bytes: 36
+Use a ScopedAssertoThreadSuspension?
+
+File: runtime/gc/heap.cc
+
+1455:23-1455:28
+Tue Sep 23 01:28:07 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5002f7bb_dee1955f
+Bytes: 333
+Add a "here be dragons" comment? Re-materialization of const member variables means that a const mirror pointer may not be updated by a read barrier. Generally we've avoided making such member variables const, here there is a reliance on no thread suspension. Perhaps assert that no thread suspension is allowable in the constructor.
+
+1500:24-1500:29
+Tue Sep 23 01:28:07 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10307f7d_934f33a3
+Bytes: 5
+ditto
+
+File: runtime/thread.h
+
+1191:16-1191:17
+Tue Sep 23 01:28:07 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5002f7bb_3ed7f184
+Bytes: 5
+const
+
+1197:13-1197:14
+Tue Sep 23 01:28:07 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10307f7d_335c1f5b
+Bytes: 5
+const
+

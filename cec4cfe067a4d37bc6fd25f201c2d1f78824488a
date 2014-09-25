@@ -9,6 +9,14 @@ UUID: 30d58379_ad73c9be
 Bytes: 229
 Could please explain why you need this? A deoptimized method should use the interpreter entrypoints (artQuickToInterpreter and artInterpreterToInterpreter bridges). What is the case where relying on the entrypoints is not enough?
 
+3148:4-3153:5
+Thu Sep 25 14:17:28 2014 +0000
+Author: Dániel Mihályi <1051274@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30d58379_ad73c9be
+UUID: f0c68bd8_0bdac1f9
+Bytes: 511
+If a static initialiser calls a static method A and that A calls an another one B from the same class and that B method has a breakpoint placed in it, then in the case where the whole static call is handled by artQuickResolutionTrampoline the trampoline will return GetQuickOatCodeFor(B), because the class will still be in its initialisation phase. But this will not work for situations where we issue a continue jdwp command (thus no single step control), because the other static call will run in quick mode.
+
 File: runtime/debugger.h
 
 515:5-515:12
@@ -17,4 +25,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9081cf4e_469a5291
 Bytes: 6
 Forced
+
+515:5-515:12
+Thu Sep 25 14:17:28 2014 +0000
+Author: Dániel Mihályi <1051274@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9081cf4e_469a5291
+UUID: 10ca3fde_ec0adf85
+Bytes: 4
+Done
 

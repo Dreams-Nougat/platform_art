@@ -9,12 +9,28 @@ UUID: 103ddf9e_54b3a4e9
 Bytes: 87
 Put back the forward declaration and avoid spaghetti #include including other #incldes.
 
+23:0-23:21
+Fri Sep 26 20:03:21 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 103ddf9e_54b3a4e9
+UUID: b0433333_d1c24417
+Bytes: 70
+The forward declaration was not adequate since we call DexFile method.
+
 32:6-32:15
 Fri Sep 26 17:36:40 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704e1b58_bd102ab8
 Bytes: 22
 this looks unnecessary
+
+32:6-32:15
+Fri Sep 26 20:03:21 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704e1b58_bd102ab8
+UUID: b0433333_d1fb2453
+Bytes: 227
+It was actually necessary for 64-bit debug build because there is a DCHECK for correctness that uses memcmp. Though that problem could be addressed with an overloaded equality. Let me do that since it will make it look cleaner.
 
 89:0-89:37
 Fri Sep 26 17:36:40 2014 +0000
@@ -23,12 +39,28 @@ UUID: 103ddf9e_74b0a0dc
 Bytes: 87
 you want the packed to make this unaligned on 64-bit? Perhaps just re-order the fields.
 
+89:0-89:37
+Fri Sep 26 20:03:21 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 103ddf9e_74b0a0dc
+UUID: b0433333_b11f78f4
+Bytes: 126
+I just wanted to avoid compiler inserted nops for alignment so they wouldn't be considered in memcmp. But see my answer above.
+
 92:6-92:15
 Fri Sep 26 17:36:40 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704e1b58_5d22de09
 Bytes: 24
 Prefer not to have this.
+
+92:6-92:15
+Fri Sep 26 20:03:21 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704e1b58_5d22de09
+UUID: 9032afd1_aa48efef
+Bytes: 47
+Possible to get rid of it. Let me look into it.
 
 162:1-162:38
 Fri Sep 26 17:36:40 2014 +0000
@@ -37,10 +69,26 @@ UUID: b0433333_cbf375bc
 Bytes: 65
 Why would this be useful? Why not just get the CodeItem as above?
 
+162:1-162:38
+Fri Sep 26 20:03:21 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0433333_cbf375bc
+UUID: 9032afd1_2a3ebf41
+Bytes: 156
+Agreed. I used this for some debugging but I guess it is not necessarily useful when you have code item. I will need to check that I don't use this anymore.
+
 198:0-198:29
 Fri Sep 26 17:36:40 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704e1b58_ddbece4c
 Bytes: 70
 Why not just derive this from target_dex_file_ and target_method_idx_?
+
+198:0-198:29
+Fri Sep 26 20:03:21 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704e1b58_ddbece4c
+UUID: 9032afd1_4a621369
+Bytes: 98
+I did not realize I could do that. Let me see if I can figure out a solution with your suggestion.
 

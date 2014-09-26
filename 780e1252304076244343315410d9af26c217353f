@@ -9,6 +9,14 @@ UUID: 704e1b58_bd5caa2a
 Bytes: 56
 should this just be CHECK(!have_pending_hard_failure_) ?
 
+3740:0-3740:63
+Fri Sep 26 17:08:35 2014 +0000
+Author: Stephen Kyle <1053354@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704e1b58_bd5caa2a
+UUID: 30d58379_16130278
+Bytes: 300
+The idea is to see if GetInstanceField has caused a hard failure, so we store the state beforehand, and check if it changed after. If it has changed, and we now have a hard error, we don't want to continue and potentially raise a soft error in this function (see line 3789), so we return immediately.
+
 3812:0-3812:63
 Fri Sep 26 16:48:37 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

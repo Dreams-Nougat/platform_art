@@ -1,0 +1,34 @@
+Revision: edaad91ad7215356320ae98a537845a593ae765c
+Patch-set: 1
+File: compiler/dex/quick/arm64/utility_arm64.cc
+
+348:6-348:72
+Fri Sep 26 22:45:15 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7069bba1_22a40fa5
+Bytes: 161
+this seems a little convoluted and leads to a signed/unsigned conversion, prefer:
+
+if (value != INT_MIN) {
+  int32_t abs_value = std::abs
+  ..
+}
+return false;
+
+?
+
+812:28-812:29
+Fri Sep 26 22:45:15 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 907b8f5f_c946228d
+Bytes: 49
+&& ?
+-LLONG_MIN == LLONG_MIN so why special case?
+
+945:0-945:70
+Fri Sep 26 22:45:15 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0c347c9_ffc71824
+Bytes: 5
+ditto
+

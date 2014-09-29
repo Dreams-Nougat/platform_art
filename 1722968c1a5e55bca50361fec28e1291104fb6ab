@@ -19,3 +19,11 @@ Both of these are probably caused by the same core issue now, but perhaps not in
 
 I would split this into two similar tests:  One is like this one without the synchronized blocks.  The other is like the first, except state is not volatile and instead all accesses to state are within a synchronized block.  It's also OK to leave this as a third test, but I would emphasize the ones that can fail in response to a single failure in the analysis.  This one seems to require two similar failures.
 
+9850:2-9872:3
+Mon Sep 29 18:38:38 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 303103d2_9676f255
+UUID: f0e76c92_059ed43d
+Bytes: 161
+I though volatile load/store doesn't affect the visibility of non-volatile fields. If it does, I'll also need to fix the processing of volatile IGET/IPUT in GVN.
+

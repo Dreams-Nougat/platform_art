@@ -33,6 +33,18 @@ UUID: 103ddf9e_150113a2
 Bytes: 147
 My understanding is that although in practice this is the case, negation of LLONG_MIN is technically undefined.  Any language lawyers in the house?
 
+812
+Mon Sep 29 11:02:34 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 103ddf9e_150113a2
+UUID: 10ca3fde_205236f3
+Bytes: 434
+My understanding is that signed-unsigned conversions are always well defined by the C++ standard (4.7-2, conv.integral). The same holds for negation of unsigned integers (5.3.1-8, expr.unary.op). An alternative could then be,
+
+  uint64_t abs_value = (neg) ? -(uint64_t)value : value;
+
+It may be worth doing this in a separate function (e.g. having a couple of abs functions mapping "int32_t" to "uint32_t" and "int64_t" to "uint64_t".
+
 945:0-945:70
 Fri Sep 26 22:45:15 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -27,3 +27,13 @@ UUID: f0e76c92_059ed43d
 Bytes: 161
 I though volatile load/store doesn't affect the visibility of non-volatile fields. If it does, I'll also need to fix the processing of volatile IGET/IPUT in GVN.
 
+9850:2-9872:3
+Mon Sep 29 18:50:51 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0e76c92_059ed43d
+UUID: 90f63048_df48bb27
+Bytes: 536
+They do.  They contribute to the "synchronization order" (http://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html#jls-17.4.4) just like lock acquisitions and releases.  This changed with the 2005 memory model revision.
+
+The basic principle is that any code that has races only on volatiles and locks (i.e. that disallows simultaneous access to any other variables unless they are all read accesses) has sequentially consistent, i.e. interleaving semantics.  Your test code without the synchronized blocks satisfies that constraint.
+

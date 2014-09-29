@@ -1,0 +1,23 @@
+Revision: 740475d5f45b8caa2c3c6fc51e657ecf4f3547e5
+Patch-set: 1
+File: compiler/optimizing/register_allocator.cc
+
+825:16-825:58
+Mon Sep 29 10:41:27 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0c68bd8_1f4f9ba4
+Bytes: 263
+Just a light suggestion: if I understand correctly,
+
+  previous->GetLifetimePosition() != position
+
+should imply
+
+  previous->GetLifetimePosition() < position
+
+here? If so, maybe we could have and use something like
+
+  #DCHECK_IMPLIES(A, B) DCHECK(!(A) || (B))
+
+?
+

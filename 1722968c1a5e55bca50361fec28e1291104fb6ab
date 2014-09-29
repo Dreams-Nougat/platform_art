@@ -1,0 +1,21 @@
+Revision: 1722968c1a5e55bca50361fec28e1291104fb6ab
+Patch-set: 2
+File: test/083-compiler-regressions/src/Main.java
+
+9850:2-9872:3
+Mon Sep 29 18:30:03 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 303103d2_9676f255
+Bytes: 905
+I believe this should be fine even without the synchronized blocks.  State is declared volatile and values is always accessed by one thread at a time.  The read into vs2 should be treated as a lock acquisition, which kills all available expressions.
+
+If this is currently failing, there are in a sense two bugs:
+
+1) Locks are not handled correctly, and
+
+2) volatile reads are not handled correctly.
+
+Both of these are probably caused by the same core issue now, but perhaps not in the future.
+
+I would split this into two similar tests:  One is like this one without the synchronized blocks.  The other is like the first, except state is not volatile and instead all accesses to state are within a synchronized block.  It's also OK to leave this as a third test, but I would emphasize the ones that can fail in response to a single failure in the analysis.  This one seems to require two similar failures.
+

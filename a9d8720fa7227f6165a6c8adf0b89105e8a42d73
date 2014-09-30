@@ -1,0 +1,11 @@
+Revision: a9d8720fa7227f6165a6c8adf0b89105e8a42d73
+Patch-set: 5
+File: test/123-compiler-regressions-mt/src/Main.java
+
+113:4-113:25
+Tue Sep 30 18:22:05 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0150830_33c8087f
+Bytes: 278
+I would delete this synchronized block.  Values cannot be modified while we're reading it since we already saw state as 2.  It's also OK to move the prior accesses to values to before the synchronized blocks they are currently in, but it may be a better test without doing that.
+

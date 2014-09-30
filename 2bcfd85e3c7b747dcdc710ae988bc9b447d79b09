@@ -17,3 +17,21 @@ UUID: d0ec287c_44f060f5
 Bytes: 142
 Did you figure that out? I guess it's working because it doesn't matter whether we use movq or movl. Would you need to negl still with a movl?
 
+1994:2-1994:6
+Tue Sep 30 19:24:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ec287c_44f060f5
+UUID: d0150830_28c8937e
+Bytes: 643
+I think this movq in fact loads a 64-bit quantity (loads the next field as well), but it happens to work if the upper half is just ignored after that. In the use case in the JNI compiler, it's stored into a stack slot with a movl (see StoreRef).
+
+      0x005c11d9:               488B4708        movq    rax, [rdi + 8]
+      0x005c11dd:                   F7D8        neg     eax
+      0x005c11df:               89442410        mov     [rsp + 16], eax
+
+But it should probably be a movl. If one tried to load a (64-bit) field from this ref using a movq, it'd likely segfault.
+
+I will upload a CL.
+
+negl is necessary for heap poisoning regardless.
+

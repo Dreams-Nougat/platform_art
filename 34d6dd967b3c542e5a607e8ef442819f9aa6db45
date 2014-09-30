@@ -9,3 +9,21 @@ UUID: 101b206c_6798fadb
 Bytes: 64
 This should be target and GCC 4.9 specific, not a global C flag.
 
+160
+Tue Sep 30 19:11:04 2014 +0000
+Author: Duane Sand <1010669@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 101b206c_6798fadb
+UUID: 100240f8_e4341001
+Bytes: 848
+The visibly-erroneous result happened this time with 4.9 gcc and two specific mips arch variants.  We believe the front-end confusions about the programmer's intent could possibly give bad results on on any target and any version of gcc or clang.
+
+We think the 4.9 compiler drift that exposed the problem in 4.9 mips builds, was some seemingly-harmless change to codeopt methods, not a front end change to aliasing analysis.
+
+I tried packaging this flag change in the new style as
+
+ART_TARGET_CFLAGS_mips := -fno-strict_aliasing
+
+but found that the generic XYZ_mips flag mechanism wasn't yet implemented here.  I'll use explicit conditional assigns here, if you wish.
+
+I also tried my hand at modifying runtime/handle.h along the lines suggested by Gilmore in the gcc buzilla record, but I don't know enough C++ to get it right, or even compilable.
+

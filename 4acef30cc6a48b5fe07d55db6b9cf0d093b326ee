@@ -18,3 +18,14 @@ Bytes: 321
 The `Register` type does not encode the width of the registers, but only a register id, so we can't check that here.
 The requirements for register sizes between codegen stubs are implicit. The arm64 port will propose a different approach enforcing register size coherency (which will certainly come with its own issues!).
 
+524:9-524:42
+Tue Sep 30 10:45:36 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 508bd76f_253944e8
+UUID: b05413b2_6c872fc5
+Bytes: 275
+Yeah, the register allocator would need to know we need a register byte (we already do that in this file).
+
+Since requesting byte registers are annoying, I decided to go with doing a xor before moving the setcc result. See:
+https://android-review.googlesource.com/#/c/108513/
+

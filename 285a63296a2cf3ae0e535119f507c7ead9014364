@@ -9,3 +9,13 @@ UUID: 70529c24_86e66aea
 Bytes: 26
 What motivated this check?
 
+469:14-469:31
+Wed Oct 01 11:24:39 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70529c24_86e66aea
+UUID: 504f587e_a5783e33
+Bytes: 395
+Before this change, the case of a phi having itself as input was not handled properly: it would abort with the "There is no dominance between phis of a same block" error.
+
+I came across this issue when I started to use HOptimization with existing optimization passes such as SsaDeadPhiElimination and SsaRedundantPhiElimination (see this CL: https://android-review.googlesource.com/#/c/109480/).
+

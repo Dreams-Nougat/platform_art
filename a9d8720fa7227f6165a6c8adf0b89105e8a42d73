@@ -9,3 +9,11 @@ UUID: d0150830_33c8087f
 Bytes: 278
 I would delete this synchronized block.  Values cannot be modified while we're reading it since we already saw state as 2.  It's also OK to move the prior accesses to values to before the synchronized blocks they are currently in, but it may be a better test without doing that.
 
+113:4-113:25
+Wed Oct 01 11:12:40 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0150830_33c8087f
+UUID: 70529c24_66e6cec4
+Bytes: 138
+Done. I'll keep "vs1 = values" inside the first synchronized block so that there's only one MONITOR_ENTER between that and "vs2 = values".
+

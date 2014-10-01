@@ -9,3 +9,14 @@ UUID: 70529c24_c67b42af
 Bytes: 166
 I guess you're only using this in your backend :) We shouldn't need this though, as currently a constant in between the condition and if will force a materialization.
 
+1138:7-1138:30
+Wed Oct 01 09:26:11 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70529c24_c67b42af
+UUID: 70529c24_a68de63e
+Bytes: 620
+Oops I forgot a line in the patch. Re-uploading.
+
+In the tests I use this function to ensure the condition is materialized. NeedsMaterialization() returns true if a 'force materialization' has been required.
+I don't see how inserting an HConstant would make a difference in NeedsMaterialization(): The test 'GetNext() != user' is after the 'merge with if' test. I thought about using the result of the HCondition in another operation to have multiple uses (and thus force materialization), but I didn't want to rely on the implementation of NeedsMaterialization(). This is not ideal, but it makes the test more reliable.
+

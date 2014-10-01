@@ -11,3 +11,19 @@ Maybe I'm a bit old fashioned, but I find it a lot more readable without the mac
 
 Any other reason you got rid of the standard number list?
 
+25:8-25:20
+Wed Oct 01 08:42:30 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 100240f8_e4077084
+UUID: 70529c24_06515a24
+Bytes: 459
+I added the macro to shorten the size of the code while I was at it. It spares about 100 lines of code.
+
+The cleanup deals with the enum values for SP, XZR, and WZR. Before the patch we had
+
+SP = 31
+XZR = 32
+WZR = 31
+
+This would make translating the enum value to a vixl::Register annoying. After the change, the only special case is SP (enum value 32), otherwise the enum value for a register can be directly used as the register code for the vixl::Register.
+

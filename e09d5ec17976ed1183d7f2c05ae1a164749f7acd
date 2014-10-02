@@ -21,6 +21,22 @@ if (UNLIKELY(self->IsExceptionPending())) {
 
 ?
 
+556
+Thu Oct 02 05:08:32 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d07188c8_0e91375a
+UUID: d0bfc88a_49442176
+Bytes: 4
+Done
+
+556
+Thu Oct 02 05:08:32 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10cc0053_8b7d2d0d
+UUID: 90b9d0ac_27431a6d
+Bytes: 4
+Done
+
 File: test/080-oom-throw/src/Main.java
 
 24:44-24:45
@@ -30,6 +46,22 @@ UUID: 30cf4449_af003523
 Bytes: 19
 Why change to 1022?
 
+24
+Thu Oct 02 05:08:32 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30cf4449_af003523
+UUID: d0bfc88a_093e29e4
+Bytes: 1016
+With 1022 the finalizer bug is 100% reproducible on 256Mb heap on host (default "./run-test --host 080")
+
+I had to keep allocated arrays in heap in order to leave only small amount of free heap for finalizeable instance test. Otherwise (with 256Mb heap) the "finalizeable instance" test failed with timeout, since GC pauses grows up to 30 seconds each (non-finalizeable instance test case have gc pauses 2-3 seconds on 256Mb heap).
+
+After that change in "holder", I had to make sure that heap have enough free space after array allocations, since they are not removed by GC after the arrays test case.
+
+The idea is to leave enough free heap memory for correct throwing OutOfmemory exception, in case of 256Mb heap it is 256/2(number of arrays allocated)*2*2*1024 = 128*4Kb = ~512Kb will be free after array allocation. This is enough for next test case (instance and finalizeable instance).
+
+With --gcstress heap setting the first array could not be allocated so other two instance test cases have enough memory too.
+
 69:10-69:26
 Wed Oct 01 21:01:58 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -37,10 +69,28 @@ UUID: f0ba0c9b_2a70bffb
 Bytes: 56
 Indent by 4 spaces, though this code is copy-and-pasted.
 
+69
+Thu Oct 02 05:08:32 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ba0c9b_2a70bffb
+UUID: 50c2f81e_2d7a0daf
+Bytes: 4
+Done
+
 105:11-105:63
 Wed Oct 01 21:01:58 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0ba0c9b_ed064141
 Bytes: 133
 holder is dead after the triggerArrayOOM() call. A compiler could detect this and compute the gc map such that it can be deallocated?
+
+105
+Thu Oct 02 05:08:32 2014 +0000
+Author: Dmitry Petrochenko <1039576@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ba0c9b_ed064141
+UUID: d0bfc88a_2943ed6c
+Bytes: 151
+Theoretically: yes, but practically - it does not happens.
+
+Hopefully assigning holder static class member will extend its liveness (see next patchset)
 

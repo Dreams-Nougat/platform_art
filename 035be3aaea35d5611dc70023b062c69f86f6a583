@@ -9,6 +9,14 @@ UUID: 900c7079_2ff7493a
 Bytes: 111
 we used to do include the value to do CHECK or DCHECK validation on the consuming it. I guess that is now gone?
 
+458
+Fri Oct 03 09:42:00 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 900c7079_2ff7493a
+UUID: 50c2f81e_13adf47c
+Bytes: 293
+I understand you are referring to the kIsDebugBuild checks in elf_writer.cc:ElfPatcher::SetPatchLocation(). I believe the answer is "Yes, they are gone together with elf_writer.cc". This is what I conclude by inspecting oat_writer.cc. Vladimir is - probably - the right person to confirm this.
+
 770:2-770:43
 Fri Oct 03 05:32:49 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,4 +25,26 @@ Bytes: 82
 is there a better sizeof constant?
 
 sizeof(mirror::HeapReference<mirror::Object>)?
+
+770
+Fri Oct 03 09:42:00 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0fdac73_7b42b389
+UUID: 90b9d0ac_4d58adfc
+Bytes: 988
+I don't think there is a better sizeof constant, yet.
+
+I agree that sizeof(uint32_t) feels wrong. On the other hand, uint32_t is really what the patchoat tool and oat_writer.cc write. I also considered using mirror::HeapReference<...>, but I concluded this is formally wrong. By "formally wrong" I mean that it fails as soon as sizeof(mirror:HeapReference<...>) != sizeof(uint32_t), even if - in practice - this may never happen.
+
+The right thing to do would be to introduce a new constant somewhere. And make sure it appears every time a piece of code makes an explicit (e.g. line above) or implicit (e.g. PushUnpatchedReference) reference to the size of oat patches. For example,
+
+  constexpr size_t kOatPatchSize = 4;
+
+and,
+
+  // Write an oat patch.
+  DCHECK_EQ(kOatPatchSize, sizeof(uint32_t));
+  Push32(buf, UINT32_C(0));
+
+Not sure where the constant definition should go, though. Possibly inside a header file which can be included by patchoat.cc, oat_writer.cc and codegen_util.cc.
 

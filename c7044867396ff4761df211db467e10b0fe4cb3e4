@@ -1,0 +1,25 @@
+Revision: c7044867396ff4761df211db467e10b0fe4cb3e4
+Patch-set: 1
+File: runtime/jni_internal.cc
+
+2384:17-2384:30
+Mon Oct 06 21:55:35 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0cbec63_e84fe7fb
+Bytes: 30
+Should this just be check JNI?
+
+2385:58-2385:95
+Mon Oct 06 21:55:35 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10116099_17a8a46c
+Bytes: 313
+match. When a primitive array is "got" a copy may or may not be returned. If a copy is returned and then updated and then the operation aborted, no changes will be made to the original array. We warn as updating the copied version is unusual as had a copy not been given, the changes would have occurred in place.
+
+2386:25-2386:53
+Mon Oct 06 21:55:35 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0cbec63_a855df91
+Bytes: 158
+Releasing a copied primitive array with JNI_ABORT. The copy doesn't match the original array but because of the JNI_ABORT the original array won't be updated.
+

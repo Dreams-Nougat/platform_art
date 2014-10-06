@@ -9,10 +9,41 @@ UUID: 90b9d0ac_364106d3
 Bytes: 84
 What does lint say? It'd be nice to either fix our lint, or know how to fix it here.
 
+33:76-33:87
+Mon Oct 06 18:35:15 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90b9d0ac_364106d3
+UUID: d0bfc88a_e30ace8e
+Bytes: 496
+Cpplint was erroneously complaining about using old C-style casts here:
+
+  Using deprecated casting style.  Use static_cast<bool>(...) instead  [readability/casting] [4]
+
+But I noticed that disabling cpplint on this line was no longer needed, since the return type of the function is now `void'; indeed the template parameter
+
+  void(HGraph*)
+
+is no longer treated as a cast by cpplint.
+
+I've uploaded a patch to prevent this false alarm here: https://android-review.googlesource.com/#/c/109945/.
+
 112:4-112:15
 Mon Oct 06 15:14:55 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50c2f81e_7cf1a529
 Bytes: 141
 So this works? Did you try forcing a failure and see what it does? I remember having problems when ASSERT_* were not called in a TEST method.
+
+112:4-112:15
+Mon Oct 06 18:35:15 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50c2f81e_7cf1a529
+UUID: d0bfc88a_a3d2960c
+Bytes: 252
+It does work. :)  For instance, if I turn the part you highlighted into ASSERT_FALSE, I get the following message:
+
+  art/compiler/optimizing/constant_propagation_test.cc:112: Failure
+  Value of: inst->IsIntConstant()
+    Actual: true
+  Expected: false
 

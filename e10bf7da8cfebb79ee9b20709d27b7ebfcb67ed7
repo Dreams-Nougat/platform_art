@@ -9,3 +9,15 @@ UUID: 90b9d0ac_9b781b34
 Bytes: 66
 What's the purpose of this change? Could you add a comment please?
 
+1106:23-1106:81
+Mon Oct 06 09:43:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90b9d0ac_9b781b34
+UUID: d0bfc88a_d8e21932
+Bytes: 478
+Indeed, that's a bit obscure. I changed the way temps are being represented in the regalloc by not refering to the instruction that requires the temp. Therefore defined_by_ is only set if the live interval corresponds to the live interval of the instruction.
+
+Since the temp and the instruction that requires the temp share the same lifetime start, calling GetInstructionFromPosition returns the instrurtion that returns the temp.
+
+I've added a helper method, and some comments.
+

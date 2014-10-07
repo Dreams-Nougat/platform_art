@@ -1,0 +1,57 @@
+Revision: 4fb42cb85649cc0b0e96e5924e08597c22ca7c23
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm.cc
+
+461:12-462:9
+Tue Oct 07 14:01:23 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0bfc88a_b26e619c
+Bytes: 93
+I know this is not part of your change, but maybe add
+
+  DCHECK(source.IsStackSlot());
+
+here?
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+357:4-369:5
+Tue Oct 07 14:01:23 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50c2f81e_197c2ea7
+Bytes: 151
+Should't this block be put between the
+
+  if (destination.IsRegister()) { /* ... */ }
+
+and the
+
+  if (destination.IsStackSlot()) { /* ... */ }
+
+blocks?
+
+File: compiler/optimizing/code_generator_x86_64.h
+
+58:11-58:21
+Tue Oct 07 14:01:23 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90b9d0ac_d08aed23
+Bytes: 42
+Maybe document this (these) attributes(s)?
+
+File: compiler/optimizing/locations.h
+
+55:4-55:20
+Tue Oct 07 14:01:23 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90b9d0ac_30110946
+Bytes: 206
+I guess it would be more natural to define `kFpuRegister' just after `kRegister'; but maybe this would break existing code or require a lot or rewriting?  Also, it seems value 5 was saved for this occasion.
+
+206:4-206:14
+Tue Oct 07 14:01:23 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0bfc88a_32011174
+Bytes: 26
+Maybe add LOG(FATAL) here?
+

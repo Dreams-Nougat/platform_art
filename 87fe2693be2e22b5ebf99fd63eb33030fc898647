@@ -9,6 +9,14 @@ UUID: 10116099_69b30193
 Bytes: 23
 this deserves a comment
 
+1540:6-1540:74
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10116099_69b30193
+UUID: d0bfc88a_be286df0
+Bytes: 8
+Will do.
+
 File: compiler/dex/quick/arm/arm_lir.h
 
 309:7-309:33
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 10116099_89991d0e
 Bytes: 101
 longer term it'd be nice to either have 1 ABI or a arm_soft and arm_hard ABI. Ifdefs lead to bit rot.
+
+309:7-309:33
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10116099_89991d0e
+UUID: d0bfc88a_5ec5b1c8
+Bytes: 171
+Agree. It will make the code clean to only support 1 ABI. It seems there is no much performance regression with this patch. We can remove soft fp support in a later patch.
 
 File: compiler/dex/quick/arm/codegen_arm.h
 
@@ -27,6 +43,14 @@ UUID: 10116099_2990e9da
 Bytes: 24
 Comment saying what I am
 
+29:8-29:28
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10116099_2990e9da
+UUID: 50c2f81e_42d4007d
+Bytes: 8
+Will do.
+
 36:8-36:31
 Mon Oct 06 18:23:05 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,12 +58,30 @@ UUID: 30fbc487_60b2fade
 Bytes: 59
 what am I? Isn't ARM implied from the declaration location?
 
+36:8-36:31
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30fbc487_60b2fade
+UUID: 50c2f81e_e2b88c4e
+Bytes: 302
+This portion of code follows arm64 and x86_64 implementation. Bill left comment saying that the code will be refactored in arm64 and x86 backend. So I just keep the code in a similar form to make the refactor work easier.
+
+InToRegStorageMapper and InToRegStorageMapping can be shared with all backends.
+
 50:8-50:29
 Mon Oct 06 18:23:05 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 30fbc487_00c17627
 Bytes: 99
 what am I? Its unforunate this class name is only 2/3 characters different from InRegStorageMapper.
+
+50:8-50:29
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30fbc487_00c17627
+UUID: d0bfc88a_7ecaf5db
+Bytes: 70
+Will add comment. The class name is copied from arm64 and x86 backend.
 
 File: compiler/dex/quick/arm/fp_arm.cc
 
@@ -50,6 +92,14 @@ UUID: 30fbc487_60895a03
 Bytes: 71
 for hard float shouldn't we just provide a hard float assembly routine?
 
+94:46-94:56
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30fbc487_60895a03
+UUID: 50c2f81e_0c494a29
+Bytes: 135
+Will do. And all the other helper functions which takes floating point arguments or returns floating point value need assembly routine.
+
 File: compiler/dex/quick/gen_invoke.cc
 
 106:15-106:25
@@ -58,6 +108,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 10116099_c91155c2
 Bytes: 181
 I dislike this change. Its motivated by the fmod being the wrong soft/hard-ness, this should be fixed by changing that entrypoint. Runtime helpers are inherently using the quick ABI
+
+106:15-106:25
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10116099_c91155c2
+UUID: 50c2f81e_2c5206db
+Bytes: 285
+Agree. At fist, I define this for performance consideration. But now I found that there are too many function calls need to be updated. Also, this change make the code a bit difficult to maintain. Sometimes it is not easy to tell whether it is calling to a C function or a Java method.
 
 File: compiler/dex/quick/ralloc_util.cc
 
@@ -68,6 +126,14 @@ UUID: f0cbec63_a510a870
 Bytes: 45
 without the C return variants this can all go
 
+1368:0-1397:1
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0cbec63_a510a870
+UUID: 50c2f81e_4c5752ca
+Bytes: 8
+Will do.
+
 File: runtime/arch/arm/quick_entrypoints_cc_arm.cc
 
 24:0-98:1
@@ -77,6 +143,18 @@ UUID: 30fbc487_205d92ec
 Bytes: 65
 why aren't we following the pattern of the other hard float ABIs?
 
+24:0-98:1
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30fbc487_205d92ec
+UUID: 50c2f81e_cc426203
+Bytes: 684
+The arm32 hard float ABI defined in aapcs is a bit more complicated than arm64. On arm64, all registers are 64-bit. While on arm32, we have different view of registers. The floating point registers can be regarded as 32-bit registers or 64-bit registers. And aapcs try to make best use of the registers and avoid holes in argument registers, so we have fpr_index and fpr_double_index to track the fp register status.
+
+So I choose to implement the logic in C/C++ to make the code easier to read.
+
+And yes, there is another choice. We can regard all floating point registers as 64-bit just like arm64. In this way, the logic will be simple but left more holes in the argument registers.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 65:65-65:69
@@ -85,4 +163,12 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0cbec63_8543a46a
 Bytes: 4
 soft
+
+65:65-65:69
+Wed Oct 08 03:51:00 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0cbec63_8543a46a
+UUID: 50c2f81e_ec4b9e21
+Bytes: 7
+Thanks.
 

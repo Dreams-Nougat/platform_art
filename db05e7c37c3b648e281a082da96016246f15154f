@@ -9,3 +9,21 @@ UUID: d0bfc88a_8693dbbf
 Bytes: 48
 Isn't that covered by the code below (line 667)?
 
+663:0-663:73
+Thu Oct 09 10:40:59 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0bfc88a_8693dbbf
+UUID: d087c827_e9bfd530
+Bytes: 721
+No, as `cmp' (ARM) and `cmpl' (x86 & x86-64) instructions cannot take more than one immediate value.  This CL is mostly a workaround, as I believe the right approach is to get rid of the (run-time) comparison altogether (see https://android-review.googlesource.com/#/c/109783/6).
+
+Without this change, `InstructionCodeGenerator*::VisitIf' methods trigger an assertion when `cond' is an `art::HConstant'.  For instance in the x86 codegen, it aborts with:
+
+  dex2oatd F 38247 38278 art/compiler/optimizing/locations.h:166] Check failed: IsStackSlot() || IsDoubleStackSlot()
+
+triggered by this this statement:
+
+  __ cmpl(Address(ESP, lhs.GetStackIndex()), Immediate(0))
+
+in art/compiler/optimizing/code_generator_x86.cc:618.
+

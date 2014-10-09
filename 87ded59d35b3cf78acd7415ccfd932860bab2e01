@@ -1,0 +1,25 @@
+Revision: 87ded59d35b3cf78acd7415ccfd932860bab2e01
+Patch-set: 2
+File: runtime/mirror/object-inl.h
+
+897
+Thu Oct 09 21:05:17 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9081d019_2afc7f1b
+Bytes: 393
+Did you benchmark this to make sure that it is faster than using  CLZ/CTZ? How about something like this,so you can avoid the branch of the if statement.
+
+while (ref_offsets) {
+
+size_t shift = CTZ(ref_offsets)
+
+field_offset += shift * sizeof(heap reference);
+
+ref_offsets >>= shift + 1;
+
+visitor(this, MemberOffset(field_offset), kIsStatic);
+
+field_offset += sizeof(sizeof(heap reference));
+
+}
+

@@ -23,3 +23,11 @@ field_offset += sizeof(sizeof(heap reference));
 
 }
 
+897
+Thu Oct 09 21:25:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9081d019_2afc7f1b
+UUID: 10bfa0c3_722e5133
+Bytes: 335
+The most common values, by a long way, post change are 0, 1, and 3. CTZ has higher cost than a shift and post change there are as many shifts as there were with the change. As the number of operations is less and the common patterns trivially handled with this code I've not done a benchmark analysis. I did analyze the encoded values.
+

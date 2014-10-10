@@ -13,6 +13,14 @@ It's always nice to say a few words what exactly was clean-up.
 - easier to follow the evolution
 - easier to review since you know what to expect (at least for starters :) )
 
+7:0-7:36
+Fri Oct 10 11:35:46 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90bf10de_d7d93c39
+UUID: 90bf10de_579bec4c
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator.cc
 
 158:0-160:3
@@ -22,12 +30,28 @@ UUID: b0ba54ec_38eaa9b2
 Bytes: 7
 memset?
 
+158:0-160:3
+Fri Oct 10 11:35:46 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0ba54ec_38eaa9b2
+UUID: 70d45c2e_16121cc6
+Bytes: 233
+I actually find a loop clearer. Also memset you need to know the datastructure size (that is do sizeof(bool) * GetNumberOfcoreRegisters()), and if ever change the definition of that data structure, we would not catch the misuse here.
+
 178:6-178:32
 Fri Oct 10 10:34:03 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0ba54ec_98b1b5db
 Bytes: 121
 I think the comment at L174 is enough. Eventually you can push it before the if and change to "DCHECK that a register..."
+
+178:6-178:32
+Fri Oct 10 11:35:46 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0ba54ec_98b1b5db
+UUID: 90bf10de_f770c081
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator.h
 
@@ -37,6 +61,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0ba54ec_1895a514
 Bytes: 93
 since these are fields I find "Temporary" a bit misleading. (i.e. What makes them temporary?)
+
+192:5-192:14
+Fri Oct 10 11:35:46 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0ba54ec_1895a514
+UUID: 90bf10de_b77a485e
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -48,4 +80,12 @@ Bytes: 160
 This asserts (indirectly, through checks that happen during FromRegisterPair) that you always have a free register. Is that true?
 
 (similar for the other cases)
+
+191:19-191:32
+Fri Oct 10 11:35:46 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90bf10de_573f6cac
+UUID: 70d45c2e_562f74fa
+Bytes: 236
+Yes, otherwise your location summary does not match what the underlying architecture can provide you. For example if your summary says you want three registers, but the architecture only has two, you have a problem.... I added a DCHECK.
 

@@ -1,0 +1,164 @@
+Revision: 902b030729bfad9fbda065cbd2e3e366dca81e18
+Patch-set: 3
+File: compiler/dex/compiler_enums.h
+
+63:0-70:10
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_c22744a3
+Bytes: 29
+that's a lot of arguments :-)
+
+File: compiler/dex/quick/arm/codegen_arm.h
+
+34:72-34:73
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_204dca03
+Bytes: 6
+const?
+
+40:31-40:32
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_6053d2ac
+Bytes: 7
+FINAL ?
+
+47:64-47:65
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_022e4c83
+Bytes: 41
+const? Normally accessors should be const
+
+48:0-48:11
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_a040bacf
+Bytes: 193
+I'm surprised this will lint. If you Android tree do:
+
+cd art
+mma -j12 test-art-host
+
+it will run lint ahead of building. There's usually a warning if a line of whitespace isn't before private:
+
+49:4-49:7
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_821b7c65
+Bytes: 123
+prefer uint32_t? Presumably negative is meaningless, but if its easier for integration with the rest of quick leave as int.
+
+55:29-55:30
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_4050ce9d
+Bytes: 5
+FINAL
+
+61:25-61:26
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_22227098
+Bytes: 5
+const
+
+61
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_4225749e
+Bytes: 71
+Add more vertical whitespace ('\n') to make the methods easier to read.
+
+68
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d09c2886_61819688
+Bytes: 5
+const
+
+332:0-332:81
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_a0b79a7c
+Bytes: 49
+extra parentheses would make this easier to read.
+
+332:30-332:31
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d09c2886_417e9208
+Bytes: 4
+" 2"
+
+File: compiler/dex/quick/arm/target_arm.cc
+
+107:0-107:33
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d09c2886_810b7a93
+Bytes: 159
+create a "static constexpr bool kArm32IsSoftFp" and then rewrite the ifdefs here to be "if (kArm....)" so that we build both paths even though one is disabled.
+
+726:0-726:34
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_40a7ae48
+Bytes: 5
+ditto
+
+918:8-918:11
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_223950c6
+Bytes: 16
+prefer uint32_t?
+
+927:0-932:5
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_20a4aa41
+Bytes: 61
+turn into a comment, we generally don't write TODOs like this
+
+938:10-938:25
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_e2d92839
+Bytes: 100
+as cur_fp_reg_ is signed then "% 2" can return -1 (e.g. -1 % 2 == -1), prefer "cur_fp_reg_ & 1 == 0"
+
+1009:1-1009:6
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d09c2886_01f76a39
+Bytes: 14
+useless ifdef?
+
+File: compiler/dex/quick/quick_compiler.cc
+
+554:10-554:20
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d09c2886_e1c926e7
+Bytes: 20
+place on line above?
+
+File: compiler/jni/quick/arm/calling_convention_arm.cc
+
+49:0-49:33
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0a174bc_a08e7aba
+Bytes: 64
+prefer using a "if (kArm...)" to cause both paths to be compiled
+
+122:0-122:33
+Fri Oct 10 03:39:01 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a630d2_c2de241f
+Bytes: 5
+ditto
+

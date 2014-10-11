@@ -1,5 +1,29 @@
 Revision: 55c1ce5da88e8aae195f355c6e0efe7147afad1b
 Patch-set: 6
+File: /COMMIT_MSG
+
+10:23-10:46
+Sat Oct 11 02:15:14 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b016d4da_982d1537
+Bytes: 136
+The previous logic was different, the case for compiled code more heavily optimized. Ultimately we're going to want multiple approaches.
+
+19:0-20:44
+Sat Oct 11 02:15:14 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10f960d6_b7ac7081
+Bytes: 47
+Common case O(log(n)) lookups rather than O(1).
+
+27:0-30:75
+Sat Oct 11 02:15:14 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d038a85e_76d376e5
+Bytes: 188
+The bit encoding is orthogonal to changing the underlying implementation (hash vs binary search) and both schemes would save equally.
+Changing the structure of the code is also orthogonal.
+
 File: runtime/gc_map.h
 
 134:0-151:3
@@ -22,4 +46,12 @@ Average case is O(lg(n)) vs O(1).
 Worst case is O(lg(n)) vs O(n)
 
 Its a trade off but I think if we do more samples we might see the 99% worst case CI would be better with the O(lg(n)) approach.
+
+151
+Sat Oct 11 02:15:14 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b016d4da_b8b1f9da
+UUID: b016d4da_f838d179
+Bytes: 268
+To get into the worst case behavior for the hash table you have to have a poor hash. I did some measure measurements during the original implementation and collisions were infrequent with the hash we have - ie I haven't observed worst case performance in our encoding.
 

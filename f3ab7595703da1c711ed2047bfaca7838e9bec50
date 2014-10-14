@@ -1,0 +1,190 @@
+Revision: f3ab7595703da1c711ed2047bfaca7838e9bec50
+Patch-set: 2
+File: compiler/optimizing/code_generator_arm64.cc
+
+45:37-45:42
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_e81d67d5
+Bytes: 133
+I'd just get rid of these consts. Style is to put const for reference arguments, and I find it confusing when they're not references.
+
+49:7-49:12
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_18da69a0
+Bytes: 48
+Same for return type. Can this be just Register?
+
+72:8-72:11
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03df44e_490819c4
+Bytes: 43
+Can't we just use vixl? Why two assemblers?
+
+78:37-78:45
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03df44e_89fe213f
+Bytes: 19
+indentation is off.
+
+89:32-89:47
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_a8175fb1
+Bytes: 19
+indentation is off.
+
+91:32-91:48
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_c81c23d8
+Bytes: 6
+ditto.
+
+181:29-181:46
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03df44e_0939b17b
+Bytes: 136
+SetReturnLocation sounds like you're updating the CallingConvention. I suggest just returning the register and let the caller do SetOut.
+
+199:22-199:24
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_882ffbf9
+Bytes: 182
+The last argument is for pairs for handling long values. Because this is a 64bits backend, you don't need any. For clarity, you could introduce a named constexpr to make it explicit.
+
+203:7-203:9
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03df44e_a92d2536
+Bytes: 48
+Shouldn't that be at the beginning of this file?
+
+242:58-242:66
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_38ae45f5
+Bytes: 60
+If they don't fit on one line, one argument per line please.
+
+348:36-348:44
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03df44e_896ce176
+Bytes: 9
+One line?
+
+363:7-363:9
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_b87815ef
+Bytes: 139
+How about r20 and r29, that are callee saved in Quick? Note that the optimizing compiler currently does not support callee saved registers.
+
+377:11-377:14
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03df44e_094771ea
+Bytes: 41
+LOG(FATAL) if the type is floating point?
+
+382:4-382:21
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_1888297c
+Bytes: 33
+Why not use blocked_fp_registers?
+
+385:10-385:11
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_788b5d7b
+Bytes: 9
+Fix what?
+
+387:6-387:9
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_c8eae334
+Bytes: 82
+Or DCHECK instead, I don't think we can recover from being unable to allocate one.
+
+434:4-434:9
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_a89c3fcf
+Bytes: 122
+Note that this is unnecessary anymore. The constructor already registers itself. You can fix it here and other uses below.
+
+598:18-598:30
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_68a7171b
+Bytes: 28
+This can't happen (anymore).
+
+768:17-768:26
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_a86aff0b
+Bytes: 125
+We should make this consistent with the other backends, and currently the art method is not in the calling convention object.
+
+887:3-887:7
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_dbf5cbe8
+Bytes: 31
+What is "this" in this context?
+
+904:5-904:9
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_1b04a336
+Bytes: 136
+This is done now, you can see how it is being dealt in the other backends (the optimization pipeline will do it, the baseline will not).
+
+1035:5-1035:9
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_bb2b2fa8
+Bytes: 6
+Ditto.
+
+1050:5-1050:10
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_485c9371
+Bytes: 125
+For the kCallOnSlowPath. The linear scan register allocator needs to know what kind of call the suspend check might be doing.
+
+1074:4-1074:22
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9042b0da_e847a798
+Bytes: 48
+Didn't you work towards having them be the same?
+
+File: compiler/optimizing/code_generator_arm64.h
+
+125:10-125:14
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b03df44e_a900c570
+Bytes: 48
+I'd just drop the using. They look foreign here.
+
+File: compiler/utils/arm64/assembler_arm64.h
+
+185:15-185:30
+Tue Oct 14 10:21:51 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 502d9828_7b3597f9
+Bytes: 112
+This sucks. We should not need to do this. Could we templatized The users (like CodeGenerator) of Label instead?
+

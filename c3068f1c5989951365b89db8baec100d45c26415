@@ -1,5 +1,14 @@
 Revision: c3068f1c5989951365b89db8baec100d45c26415
 Patch-set: 3
+File: compiler/optimizing/code_generator.h
+
+117:15-117:41
+Wed Oct 15 22:16:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 901b9006_6f2f0ca9
+Bytes: 145
+A more complete explanation for this would be appreciated. Is it not enough to have the register blocked? Why do you also need to block the pair?
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1172:5-1172:24
@@ -10,4 +19,15 @@ Bytes: 250
 There's no code actually that can generate this yet... and there's no dex instruction for multiply a long with a literal. 
 
 I wonder if we should bother. Left it as TODO since we might want to consider it for optimizations (?). same for other arches.
+
+1172:5-1172:24
+Wed Oct 15 22:16:23 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_2c1ffbf7
+UUID: 901b9006_af3524fc
+Bytes: 279
+const-wide/high16 v2, #ff
+mul-long v0, v0, v2
+
+I would guess that for this case the HGraph actually creates a constant node for second operand location. In fact, I bet that the TODO here is a functional problem since it will go to memory case which may not have updated location.
 

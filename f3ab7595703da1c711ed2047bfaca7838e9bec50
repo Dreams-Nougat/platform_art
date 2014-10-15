@@ -16,12 +16,36 @@ UUID: 502d9828_db794bf6
 Bytes: 91
 Suggestion: use an unnamed namespace for local helper routines instead of static functions.
 
+45:37-45:42
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_e81d67d5
+UUID: b08b346f_106004ef
+Bytes: 4
+Done
+
+45:0-45:6
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_db794bf6
+UUID: d06fc874_493821f5
+Bytes: 5
+Done.
+
 49:7-49:12
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 502d9828_18da69a0
 Bytes: 48
 Same for return type. Can this be just Register?
+
+49:7-49:12
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_18da69a0
+UUID: b08b346f_706390fe
+Bytes: 4
+Done
 
 72:8-72:11
 Tue Oct 14 10:21:51 2014 +0000
@@ -30,12 +54,29 @@ UUID: b03df44e_490819c4
 Bytes: 43
 Can't we just use vixl? Why two assemblers?
 
+72:8-72:11
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b03df44e_490819c4
+UUID: d086e864_3122f098
+Bytes: 257
+We use VIXL most of the time.
+For now we only use the Arm64Assembler to provide an interface to resolve branches to art::Labels (see also comments in assembler_arm64.h). In the future the Arrm64Assembler could also be used to introduce a few codegen macros.
+
 78:37-78:45
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b03df44e_89fe213f
 Bytes: 19
 indentation is off.
+
+78:37-78:45
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b03df44e_89fe213f
+UUID: 502d9828_1bdd83ee
+Bytes: 4
+Done
 
 89:32-89:47
 Tue Oct 14 10:21:51 2014 +0000
@@ -44,12 +85,28 @@ UUID: 9042b0da_a8175fb1
 Bytes: 19
 indentation is off.
 
+89:32-89:47
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_a8175fb1
+UUID: 502d9828_3bdabff7
+Bytes: 4
+Done
+
 91:32-91:48
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9042b0da_c81c23d8
 Bytes: 6
 ditto.
+
+91:32-91:48
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_c81c23d8
+UUID: d086e864_d12da487
+Bytes: 4
+Done
 
 93:7-93:10
 Tue Oct 14 16:18:46 2014 +0000
@@ -58,12 +115,30 @@ UUID: 502d9828_9b73d312
 Bytes: 73
 Use LoadFromOffset instead of Ldr (and likewise everywhere in this file)?
 
+93:7-93:10
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_9b73d312
+UUID: d06fc874_0989c948
+Bytes: 380
+I would rather not.
+I am in favour of using Arm64Assembler macros when they provide a significant benefit, and I do/will use them in incoming patches.
+But here the LoadFromOffset would be awful. It does not clarify the code, and is a simple wrapper that would only do exactly what this instruction does, while requiring additional translation of vixl::Register to enum XRregister.
+
 181:29-181:46
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b03df44e_0939b17b
 Bytes: 136
 SetReturnLocation sounds like you're updating the CallingConvention. I suggest just returning the register and let the caller do SetOut.
+
+181:29-181:46
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b03df44e_0939b17b
+UUID: b08b346f_f0a7809b
+Bytes: 4
+Done
 
 199:22-199:24
 Tue Oct 14 10:21:51 2014 +0000
@@ -72,12 +147,28 @@ UUID: 9042b0da_882ffbf9
 Bytes: 182
 The last argument is for pairs for handling long values. Because this is a 64bits backend, you don't need any. For clarity, you could introduce a named constexpr to make it explicit.
 
+199:22-199:24
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_882ffbf9
+UUID: b08b346f_f00b0015
+Bytes: 4
+Done
+
 203:7-203:9
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b03df44e_a92d2536
 Bytes: 48
 Shouldn't that be at the beginning of this file?
+
+203:7-203:9
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b03df44e_a92d2536
+UUID: b08b346f_b0b1f8da
+Bytes: 4
+Done
 
 220:5-220:8
 Tue Oct 14 16:18:46 2014 +0000
@@ -86,12 +177,28 @@ UUID: 502d9828_1b5fc368
 Bytes: 72
 Use StoreToOffset instead of Str (and likewise everywhere in this file)?
 
+220:5-220:8
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_1b5fc368
+UUID: f06a0c65_0a60dbee
+Bytes: 46
+Same arguments as before for LoadFromOffset().
+
 242:58-242:66
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 502d9828_38ae45f5
 Bytes: 60
 If they don't fit on one line, one argument per line please.
+
+242:58-242:66
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_38ae45f5
+UUID: d086e864_71495829
+Bytes: 45
+Done here and other occurrences in this file.
 
 271:4-271:72
 Tue Oct 14 16:18:46 2014 +0000
@@ -100,12 +207,28 @@ UUID: b08b346f_50552c46
 Bytes: 32
 Have one argument per line here?
 
+271:4-271:72
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b08b346f_50552c46
+UUID: f06a0c65_eabd47e0
+Bytes: 58
+Yes. Fixed here and in all other occurrences I could find.
+
 348:36-348:44
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b03df44e_896ce176
 Bytes: 9
 One line?
+
+348:36-348:44
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b03df44e_896ce176
+UUID: 502d9828_7bdd9796
+Bytes: 4
+Done
 
 363:7-363:9
 Tue Oct 14 10:21:51 2014 +0000
@@ -114,12 +237,28 @@ UUID: 502d9828_b87815ef
 Bytes: 139
 How about r20 and r29, that are callee saved in Quick? Note that the optimizing compiler currently does not support callee saved registers.
 
+363:7-363:9
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_b87815ef
+UUID: b08b346f_709ab002
+Bytes: 137
+Blocking all quick compiler callee saved registers for now, and adding a TODO to see if we should instead allow to allocate but preserve.
+
 377:11-377:14
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b03df44e_094771ea
 Bytes: 41
 LOG(FATAL) if the type is floating point?
+
+377:11-377:14
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b03df44e_094771ea
+UUID: 502d9828_bb6faf1b
+Bytes: 4
+Done
 
 382:4-382:21
 Tue Oct 14 10:21:51 2014 +0000
@@ -128,12 +267,28 @@ UUID: 502d9828_1888297c
 Bytes: 33
 Why not use blocked_fp_registers?
 
+382:4-382:21
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_1888297c
+UUID: d086e864_110b2cc3
+Bytes: 46
+Removed now that there is a LOG(FATAL) for FP.
+
 385:10-385:11
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 502d9828_788b5d7b
 Bytes: 9
 Fix what?
+
+385:10-385:11
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_788b5d7b
+UUID: 502d9828_7b527761
+Bytes: 8
+Removed.
 
 387:6-387:9
 Tue Oct 14 10:21:51 2014 +0000
@@ -142,12 +297,28 @@ UUID: 9042b0da_c8eae334
 Bytes: 82
 Or DCHECK instead, I don't think we can recover from being unable to allocate one.
 
+387:6-387:9
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_c8eae334
+UUID: d086e864_912ddc36
+Bytes: 4
+Done
+
 434:4-434:9
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9042b0da_a89c3fcf
 Bytes: 122
 Note that this is unnecessary anymore. The constructor already registers itself. You can fix it here and other uses below.
+
+434:4-434:9
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_a89c3fcf
+UUID: b08b346f_f065403d
+Bytes: 4
+Done
 
 598:18-598:30
 Tue Oct 14 10:21:51 2014 +0000
@@ -156,12 +327,29 @@ UUID: 9042b0da_68a7171b
 Bytes: 28
 This can't happen (anymore).
 
+598:18-598:30
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_68a7171b
+UUID: b08b346f_7052b061
+Bytes: 51
+Removed.
+Also added a TODO for the missing support.
+
 768:17-768:26
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9042b0da_a86aff0b
 Bytes: 125
 We should make this consistent with the other backends, and currently the art method is not in the calling convention object.
+
+768:17-768:26
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_a86aff0b
+UUID: f06a0c65_6ad077d7
+Bytes: 4
+Done
 
 887:3-887:7
 Tue Oct 14 10:21:51 2014 +0000
@@ -170,12 +358,28 @@ UUID: 502d9828_dbf5cbe8
 Bytes: 31
 What is "this" in this context?
 
+887:3-887:7
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_dbf5cbe8
+UUID: b08b346f_d3a2868e
+Bytes: 8
+Removed.
+
 904:5-904:9
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 502d9828_1b04a336
 Bytes: 136
 This is done now, you can see how it is being dealt in the other backends (the optimization pipeline will do it, the baseline will not).
+
+904:5-904:9
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_1b04a336
+UUID: 502d9828_1e25719f
+Bytes: 4
+Done
 
 1035:5-1035:9
 Tue Oct 14 10:21:51 2014 +0000
@@ -184,6 +388,14 @@ UUID: 502d9828_bb2b2fa8
 Bytes: 6
 Ditto.
 
+1035:5-1035:9
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_bb2b2fa8
+UUID: 502d9828_de2db987
+Bytes: 4
+Done
+
 1050:5-1050:10
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -191,12 +403,29 @@ UUID: 9042b0da_485c9371
 Bytes: 125
 For the kCallOnSlowPath. The linear scan register allocator needs to know what kind of call the suspend check might be doing.
 
+1050:5-1050:10
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_485c9371
+UUID: b08b346f_13c1ee27
+Bytes: 7
+Removed
+
 1074:4-1074:22
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9042b0da_e847a798
 Bytes: 48
 Didn't you work towards having them be the same?
+
+1074:4-1074:22
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9042b0da_e847a798
+UUID: d086e864_11c32cc2
+Bytes: 370
+I did. Switching XZR/WZR to use 31 required fixes and changes in the non-opt-compiler code. It was less effort to treat the ZR registers as special cases here. Anyway we have to handle SP separately.
+So the patch in question (https://android-review.googlesource.com/#/c/110246/) now only cleans and fixes a few issues around this, but does not switch SP/XZR enum values.
 
 File: compiler/optimizing/code_generator_arm64.h
 
@@ -207,12 +436,28 @@ UUID: b08b346f_1046c418
 Bytes: 59
 Shouldn't this be restricted to implementation (.cc) files?
 
+27:0-27:21
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b08b346f_1046c418
+UUID: f06a0c65_ea56a71e
+Bytes: 13
+Yes! Deleted.
+
 125:10-125:14
 Tue Oct 14 10:21:51 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b03df44e_a900c570
 Bytes: 48
 I'd just drop the using. They look foreign here.
+
+125:10-125:14
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b03df44e_a900c570
+UUID: b08b346f_1089e448
+Bytes: 4
+Done
 
 File: compiler/optimizing/optimizing_compiler.cc
 
@@ -223,6 +468,14 @@ UUID: b08b346f_d3892608
 Bytes: 68
 Maybe place each comparison on its own line for readability purpose?
 
+216:6-217:31
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b08b346f_d3892608
+UUID: d06fc874_292feda9
+Bytes: 57
+Split on multiple lines and sorted in alphabetical order.
+
 File: compiler/utils/arm64/assembler_arm64.h
 
 185:15-185:30
@@ -231,4 +484,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 502d9828_7b3597f9
 Bytes: 112
 This sucks. We should not need to do this. Could we templatized The users (like CodeGenerator) of Label instead?
+
+185:15-185:30
+Wed Oct 15 10:52:12 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 502d9828_7b3597f9
+UUID: d06fc874_e96f95ec
+Bytes: 243
+Yes this is not ideal.
+I can try templatizing things, but will likely require significant changes to non-arm64 files and take a little time. Would you agree getting this in for now to have something working, and I'll look at improving it soon?
 

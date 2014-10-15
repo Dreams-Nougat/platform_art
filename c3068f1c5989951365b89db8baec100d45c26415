@@ -9,6 +9,16 @@ UUID: 901b9006_6f2f0ca9
 Bytes: 145
 A more complete explanation for this would be appreciated. Is it not enough to have the register blocked? Why do you also need to block the pair?
 
+117:15-117:41
+Wed Oct 15 23:12:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 901b9006_6f2f0ca9
+UUID: f06a0c65_8d9ce5cf
+Bytes: 363
+When we allocate a register pair we only look at the blocked_register_pairs_. This is basically to keep it in sync with bloked_core_registers_. Otherwise we could allocate for example EAX_EDX when EAX is already allocated.
+
+Obviously, we could just do extra tests during allocations but this way seems simpler, cleaner and also keeps things in a consistent state.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1172:5-1172:24
@@ -30,4 +40,14 @@ const-wide/high16 v2, #ff
 mul-long v0, v0, v2
 
 I would guess that for this case the HGraph actually creates a constant node for second operand location. In fact, I bet that the TODO here is a functional problem since it will go to memory case which may not have updated location.
+
+1172:5-1172:24
+Wed Oct 15 23:12:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 901b9006_af3524fc
+UUID: f06a0c65_ed97a1a9
+Bytes: 130
+yea... I agree :) hence the TODO. I added the comment to get this kind of feedback.
+
+I'll fill the missing bits in a follow up CL.
 

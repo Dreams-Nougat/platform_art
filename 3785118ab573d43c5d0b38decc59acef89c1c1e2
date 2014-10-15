@@ -1,0 +1,69 @@
+Revision: 3785118ab573d43c5d0b38decc59acef89c1c1e2
+Patch-set: 2
+File: compiler/optimizing/code_generator_x86.cc
+
+1149:11-1149:29
+Wed Oct 15 10:25:47 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_471b2e66
+Bytes: 18
+input_in_register?
+
+1163:6-1189:31
+Wed Oct 15 10:25:47 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_679bd24d
+Bytes: 1161
+What about using a template here to abstract the location of the second operand?  Maybe something like this:
+
+  template <typename T>
+  void LongMul(const Register& eax, const Register& edx,
+               const Register& in1_reg_hi, const Register& in1_reg_lo,
+               const T& in2_H, const T& in2_L) {
+    // input: in1 - 64 bits, in2 - 64 bits
+    // outut: in1
+    // formula: in1.hi : in1.lo = (in1.lo * in2.hi + in1.hi * in2.lo)* 2^32 + in1.lo * in2.lo
+    // parts: in1.hi = in1.lo * in2.hi + in1.hi * in2.lo + (in1.lo * in2.lo)[63:32]
+    // parts: in1.lo = (in1.lo * in2.lo)[31:0]
+    __ movl(eax, in2_H);
+    // eax <- in1.lo * in2.hi
+    __ imull(eax, in1_reg_lo);
+    // in1.hi <- in1.hi * in2.lo
+    __ imull(in1_reg_hi, in2_L);
+    // in1.hi <- in1.lo * in2.hi + in1.hi * in2.lo
+    __ addl(in1_reg_hi, eax);
+    // move in1_reg_lo to eax to prepare for double precision
+    __ movl(eax, in1_reg_lo);
+    // edx:eax <- in1.lo * in2.lo
+    __ imull(in2_L);
+    // in1.hi <- in2.hi * in1.lo +  in2.lo * in1.hi + (in1.lo * in2.lo)[63:32]
+    __ addl(in1_reg_hi, edx);
+    // in1.lo <- (in1.lo * in2.lo)[31:0];
+    __ movl(in1_reg_lo, eax);
+  }
+
+1941
+Wed Oct 15 10:25:47 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_6991655a
+Bytes: 44
+If this is a trailing blank line, remove it.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+251:2-251:40
+Wed Oct 15 10:25:47 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_a7e30ae7
+Bytes: 100
+If this method has no use in the x86_64 code generator, maybe use LOG(FATAL) and UNREACHABLE() here?
+
+File: test/411-optimizing-arith/info.txt
+
+1:0-1:4
+Wed Oct 15 10:25:47 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_27d07a04
+Bytes: 4
+Test
+

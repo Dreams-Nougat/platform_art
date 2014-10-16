@@ -49,6 +49,14 @@ UUID: d06fc874_cc1dffd5
 Bytes: 34
 Explain why we should not use R15.
 
+1125:27-1125:30
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_cc1dffd5
+UUID: f06a0c65_f09778a9
+Bytes: 4
+Done
+
 1129:26-1129:27
 Thu Oct 16 08:38:13 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -65,6 +73,14 @@ Parent: 9069d076_8ddf05e3
 UUID: d06fc874_0f1b0995
 Bytes: 341
 I think instructions should request only what they really need to used. There's no point in asking for more if you know you won't use it. And this knowledge is at the codegen level. An allocator will need to have very specific knowledge about how an instruction might be implemented based on the type of operands to be able to optimize this.
+
+1129:26-1129:27
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_0f1b0995
+UUID: d06fc874_8fdff9e2
+Bytes: 32
+we clarified this offline. done.
 
 1135:34-1135:50
 Thu Oct 16 08:38:13 2014 +0000
@@ -83,12 +99,28 @@ sorry, it doesn't save any move. I was in x86 mindset when writing the comment. 
 
 It does however make the operation use less registers and possibly avoiding spills. The input cannot kDieFirst (otherwise the implementation would be over complicated) so if you want different regs you end up using 6 register + IP for the mul.
 
+1135:34-1135:50
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f06a0c65_50c9a461
+UUID: d06fc874_4ffa6157
+Bytes: 27
+we clarified offline. done.
+
 1167:20-1167:29
 Thu Oct 16 08:38:13 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d06fc874_ec224315
 Bytes: 37
 Add a check that we're not using R15?
+
+1167:20-1167:29
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_ec224315
+UUID: d06fc874_0f222941
+Bytes: 126
+I think it's enough to add it to the int case where it's possible to get R15 (which I did). Here, there are no pairs with R15.
 
 1168:13-1168:30
 Thu Oct 16 11:17:15 2014 +0000
@@ -127,6 +159,30 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9069d076_ade449b7
 Bytes: 29
 One argument per line please.
+
+1121:42-1121:47
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9069d076_ade449b7
+UUID: d06fc874_2f1fedf7
+Bytes: 35
+a bit overkill for this one but ok.
+
+1121:48-1121:56
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_0c2c7703
+UUID: 9069d076_b0325e94
+Bytes: 4
+Done
+
+1121:58-1121:61
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_2c293bf4
+UUID: 9069d076_f038d679
+Bytes: 4
+Done
 
 1172:5-1172:24
 Wed Oct 15 22:09:42 2014 +0000
@@ -175,6 +231,14 @@ UUID: d06fc874_ccc41fd0
 Bytes: 159
 You probably want to do it now, as code in the wild can give you a constant. Or you can just change the requirements to have the second input be in a register.
 
+1098:15-1098:24
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_ccc41fd0
+UUID: 9069d076_f05f76ba
+Bytes: 4
+Done
+
 File: test/411-optimizing-arith/info.txt
 
 1:16-1:27
@@ -184,6 +248,14 @@ UUID: 9069d076_6df7316c
 Bytes: 41
 It's ok to just be a mult operation test.
 
+1:16-1:27
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9069d076_6df7316c
+UUID: d06fc874_af699d69
+Bytes: 146
+eh, maybe I'd avoid having an extra one for div, mod etc... so I prefer putting them here in one place. unless you have a really strong opinion :)
+
 File: test/411-optimizing-arith/src/Main.java
 
 22:21-22:33
@@ -192,4 +264,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d06fc874_8cce27ec
 Bytes: 72
 Add an int version. You don't want to have implicit conversions in play.
+
+22:21-22:33
+Thu Oct 16 16:24:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_8cce27ec
+UUID: 9069d076_d05a72cd
+Bytes: 4
+Done
 

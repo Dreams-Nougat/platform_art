@@ -11,6 +11,16 @@ I think I'd prefer having this call in SetupBlockedRegisters (or SetupBlockedReg
 
 Reason is that I dislike dissociating things: by dissociating it, you *must* call UpdateBlockedPairRegisters if you call SetupBlockedRegisters, so you have to duplicate it the pattern in other places where we call SetupBlockedRegisters.
 
+202:2-202:28
+Thu Oct 16 10:14:28 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_0c1557ad
+UUID: d06fc874_af42fd65
+Bytes: 340
+I was thinking about it actually... The reason I didn't do it is that SetupBockedRegisters seems to be targeted to specially reserved registers, whereas this op you'd like to call any time you block a core register. Having it there obscures things a bit imo...
+
+I don't have a strong preference though so if you want it there I can move it.
+
 File: compiler/optimizing/code_generator.h
 
 117:15-117:41
@@ -48,12 +58,30 @@ This looks like register allocator-ish. If you need a register pair for the seco
 
 By forcing the use of R8 and R9 you might do worth things like spilling, that you don't control at this level. It's the register allocator's job to do tricks like the one you just wrote.
 
+1129:26-1129:27
+Thu Oct 16 10:14:28 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9069d076_8ddf05e3
+UUID: d06fc874_0f1b0995
+Bytes: 341
+I think instructions should request only what they really need to used. There's no point in asking for more if you know you won't use it. And this knowledge is at the codegen level. An allocator will need to have very specific knowledge about how an instruction might be implemented based on the type of operands to be able to optimize this.
+
 1135:34-1135:50
 Thu Oct 16 08:38:13 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d06fc874_6c2f33fb
 Bytes: 106
 What moves does it save? Looking at the code below, it seems operations can work with different registers.
+
+1135:34-1135:50
+Thu Oct 16 10:14:28 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_6c2f33fb
+UUID: f06a0c65_50c9a461
+Bytes: 337
+sorry, it doesn't save any move. I was in x86 mindset when writing the comment. I'll update.
+
+It does however make the operation use less registers and possibly avoiding spills. The input cannot kDieFirst (otherwise the implementation would be over complicated) so if you want different regs you end up using 6 register + IP for the mul.
 
 1167:20-1167:29
 Thu Oct 16 08:38:13 2014 +0000

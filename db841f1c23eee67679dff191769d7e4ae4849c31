@@ -1,0 +1,27 @@
+Revision: db841f1c23eee67679dff191769d7e4ae4849c31
+Patch-set: 1
+File: compiler/optimizing/code_generator_arm.cc
+
+63:6-63:21
+Thu Oct 16 12:42:33 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_b0501e22
+Bytes: 167
+SlowPathCodeARM, SlowPathCodeX86 and SlowPathCodeX86_64 are similar; maybe there's an opportunity to factor common code through a common base class or a template here?
+
+114:36-114:71
+Thu Oct 16 12:42:33 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_0f8ea939
+Bytes: 104
+I am not familiar with casting conventions used in ART, but shouldn't this be a (DCHECK'd) dynamic_cast?
+
+File: compiler/optimizing/code_generator_arm.h
+
+190:0-200:37
+Thu Oct 16 12:42:33 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_2fd04d04
+Bytes: 219
+Likewise, GetLabelOf, Initialize and block_labels_ have similar implementations in CodeGeneratorARM, CodeGeneratorX86 and CodeGeneratorX86_64; they could be factored in a common base class inheriting from CodeGenerator.
+

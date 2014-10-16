@@ -1,5 +1,16 @@
 Revision: c3068f1c5989951365b89db8baec100d45c26415
 Patch-set: 3
+File: compiler/optimizing/code_generator.cc
+
+202:2-202:28
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_0c1557ad
+Bytes: 362
+I think I'd prefer having this call in SetupBlockedRegisters (or SetupBlockedRegisters explicitly do it as it currently is).
+
+Reason is that I dislike dissociating things: by dissociating it, you *must* call UpdateBlockedPairRegisters if you call SetupBlockedRegisters, so you have to duplicate it the pattern in other places where we call SetupBlockedRegisters.
+
 File: compiler/optimizing/code_generator.h
 
 117:15-117:41
@@ -19,7 +30,60 @@ When we allocate a register pair we only look at the blocked_register_pairs_. Th
 
 Obviously, we could just do extra tests during allocations but this way seems simpler, cleaner and also keeps things in a consistent state.
 
+File: compiler/optimizing/code_generator_arm.cc
+
+1125:27-1125:30
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_cc1dffd5
+Bytes: 34
+Explain why we should not use R15.
+
+1129:26-1129:27
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_8ddf05e3
+Bytes: 321
+This looks like register allocator-ish. If you need a register pair for the second input, just say so whether it's a constant or not.
+
+By forcing the use of R8 and R9 you might do worth things like spilling, that you don't control at this level. It's the register allocator's job to do tricks like the one you just wrote.
+
+1135:34-1135:50
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_6c2f33fb
+Bytes: 106
+What moves does it save? Looking at the code below, it seems operations can work with different registers.
+
+1167:20-1167:29
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_ec224315
+Bytes: 37
+Add a check that we're not using R15?
+
 File: compiler/optimizing/code_generator_x86.cc
+
+1121:48-1121:56
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_0c2c7703
+Bytes: 83
+By convention, Register should only be an int, so it's ok to just pass it by value.
+
+1121:58-1121:61
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_2c293bf4
+Bytes: 50
+Should you dcheck that eax == EAX? and edx == EDX?
+
+1121:42-1121:47
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_ade449b7
+Bytes: 29
+One argument per line please.
 
 1172:5-1172:24
 Wed Oct 15 22:09:42 2014 +0000
@@ -58,4 +122,31 @@ Parent: f06a0c65_ed97a1a9
 UUID: 305824e5_d81dbdd5
 Bytes: 212
 Sounds good to me. I only wrote that because your previous comment seemed to allude that it would only be possible as result of optimizations when it could be result of real code. Anyway, thanks for the answer :)
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1098:15-1098:24
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_ccc41fd0
+Bytes: 159
+You probably want to do it now, as code in the wild can give you a constant. Or you can just change the requirements to have the second input be in a register.
+
+File: test/411-optimizing-arith/info.txt
+
+1:16-1:27
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_6df7316c
+Bytes: 41
+It's ok to just be a mult operation test.
+
+File: test/411-optimizing-arith/src/Main.java
+
+22:21-22:33
+Thu Oct 16 08:38:13 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_8cce27ec
+Bytes: 72
+Add an int version. You don't want to have implicit conversions in play.
 

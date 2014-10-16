@@ -9,6 +9,14 @@ UUID: 9069d076_b0501e22
 Bytes: 167
 SlowPathCodeARM, SlowPathCodeX86 and SlowPathCodeX86_64 are similar; maybe there's an opportunity to factor common code through a common base class or a template here?
 
+63:6-63:21
+Thu Oct 16 14:16:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9069d076_b0501e22
+UUID: f06a0c65_b07820ef
+Bytes: 428
+As discussed, sharing code between backends seems like a natural things to do, but, as the vixl example shows, often ends up being premature, or over-engineered. I'm fine with trying to share as much once we have a stable product, but as long as we're building it, I'd rather not block (or force unfortunate engineering decisions like mapping between art::Label and vixl::Label) individual backends for the sake of code sharing.
+
 114:36-114:71
 Thu Oct 16 12:42:33 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,6 +31,14 @@ Parent: d06fc874_0f8ea939
 UUID: d06fc874_efa7959b
 Bytes: 70
 We have down_cast in runtime/base/cast.h. However it uses static_cast.
+
+114:36-114:71
+Thu Oct 16 14:16:00 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_efa7959b
+UUID: 9069d076_d00cb2e0
+Bytes: 43
+Did not know about down_cast, thanks. Done.
 
 File: compiler/optimizing/code_generator_arm.h
 

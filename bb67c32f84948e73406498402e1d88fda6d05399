@@ -1,0 +1,15 @@
+Revision: bb67c32f84948e73406498402e1d88fda6d05399
+Patch-set: 4
+File: runtime/class_linker.h
+
+417:0-417:55
+Thu Oct 16 06:37:27 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 901b9006_cc52e15f
+Bytes: 407
+In refactoring the runtime entrypoints, these image entrypoints look very error prone. Generally we're writing code of the form:
+if (entry_point == linker->Get...Trampoline()) ...
+this will be true in the image case but not in the runtime case. I will replace these with:
+if (linker->Is...Trampoline(entry_point)) ...
+where the Is... test can do the right thing by trampolines in the image and direct calls.
+

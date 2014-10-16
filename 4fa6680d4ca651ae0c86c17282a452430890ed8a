@@ -16,12 +16,36 @@ UUID: d06fc874_b2426666
 Bytes: 29
 reference -> reference manual
 
+1117:44-1117:47
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_923de2e8
+UUID: 9069d076_bbdd5f73
+Bytes: 4
+Done
+
+1117:9-1117:18
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_b2426666
+UUID: d06fc874_d22d9a87
+Bytes: 4
+Done
+
 1120:38-1120:54
 Thu Oct 16 16:45:25 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d06fc874_12325213
 Bytes: 137
 Are you requesting R0 and R1 because you don't want the register allocator to use R15? R15 is the PC anyway, and will never be allocated.
+
+1120:38-1120:54
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06fc874_12325213
+UUID: d06fc874_f2321ee7
+Bytes: 30
+yea. I removed the constraint.
 
 1121:38-1121:60
 Thu Oct 16 16:45:25 2014 +0000
@@ -30,12 +54,28 @@ UUID: f06a0c65_7391525a
 Bytes: 43
 It's not really a byte register you want...
 
+1121:38-1121:60
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f06a0c65_7391525a
+UUID: f06a0c65_d3fb5e8c
+Bytes: 101
+yea, thought the function can just drop the Byte prefix as it's more like RegisterLocationOrConstant.
+
 1162:11-1162:24
 Thu Oct 16 16:45:25 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f06a0c65_93996689
 Bytes: 97
 On ARM, you want to avoid doing this too often, so I think we should require a register at input.
+
+1162:11-1162:24
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f06a0c65_93996689
+UUID: d06fc874_723f0ead
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -46,12 +86,28 @@ UUID: f06a0c65_338bda2a
 Bytes: 88
 Don't use temps for moving inputs. If you want the inputs to be a register, just say so.
 
+1109:19-1109:26
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f06a0c65_338bda2a
+UUID: d06fc874_1225729f
+Bytes: 156
+As discussed, this was to allow the stack case but we can have the input in the registers always to simply things and avoid moving stuff in the instruction.
+
 1193:10-1193:11
 Thu Oct 16 16:45:25 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9069d076_30850e63
 Bytes: 62
 If you're doing moves in an instruction, something is fishy...
+
+1193:10-1193:11
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9069d076_30850e63
+UUID: 9069d076_9bd89b84
+Bytes: 9
+as above.
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -61,4 +117,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f06a0c65_531bee65
 Bytes: 176
 Don't use TMP for inputs. The register allocator might decide to load the constant in a specific register already, so you don't need to load it in TMP. Just require a register.
+
+1101:24-1101:27
+Thu Oct 16 17:19:15 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f06a0c65_531bee65
+UUID: f06a0c65_b3fa6a85
+Bytes: 4
+Done
 

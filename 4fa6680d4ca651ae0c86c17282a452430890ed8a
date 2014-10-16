@@ -1,0 +1,64 @@
+Revision: 4fa6680d4ca651ae0c86c17282a452430890ed8a
+Patch-set: 4
+File: compiler/optimizing/code_generator_arm.cc
+
+1117:44-1117:47
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_923de2e8
+Bytes: 11
+bot- > not.
+
+1117:9-1117:18
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_b2426666
+Bytes: 29
+reference -> reference manual
+
+1120:38-1120:54
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06fc874_12325213
+Bytes: 137
+Are you requesting R0 and R1 because you don't want the register allocator to use R15? R15 is the PC anyway, and will never be allocated.
+
+1121:38-1121:60
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f06a0c65_7391525a
+Bytes: 43
+It's not really a byte register you want...
+
+1162:11-1162:24
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f06a0c65_93996689
+Bytes: 97
+On ARM, you want to avoid doing this too often, so I think we should require a register at input.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+1109:19-1109:26
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f06a0c65_338bda2a
+Bytes: 88
+Don't use temps for moving inputs. If you want the inputs to be a register, just say so.
+
+1193:10-1193:11
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9069d076_30850e63
+Bytes: 62
+If you're doing moves in an instruction, something is fishy...
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1101:24-1101:27
+Thu Oct 16 16:45:25 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f06a0c65_531bee65
+Bytes: 176
+Don't use TMP for inputs. The register allocator might decide to load the constant in a specific register already, so you don't need to load it in TMP. Just require a register.
+

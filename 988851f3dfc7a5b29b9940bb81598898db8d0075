@@ -1,0 +1,62 @@
+Revision: 988851f3dfc7a5b29b9940bb81598898db8d0075
+Patch-set: 3
+File: compiler/optimizing/code_generator_x86_64.cc
+
+604:32-604:50
+Fri Oct 17 15:52:17 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90d5507b_c76ffe1a
+Bytes: 17
+kNoOutputOverlap?
+
+File: compiler/optimizing/live_ranges_test.cc
+
+76:11-76:13
+Fri Oct 17 15:52:17 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70ca9cdf_e9de511e
+Bytes: 31
+what triggered the change here?
+
+File: compiler/optimizing/locations.h
+
+452:46-452:51
+Fri Oct 17 15:52:17 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0d09489_2be34538
+Bytes: 47
+is this the index of the input or the register?
+
+473:7-473:23
+Fri Oct 17 15:52:17 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70ca9cdf_69ea61b3
+Bytes: 523
+I would add a comment on what this means with some examples and what effect will have. I think it's important since it's not immediate in what way they overlap. 
+e.g. add eax, ebx:
+a) input and output are the same, so you can say they overlap.
+b) there's no overlap wrt computation, input and output do not interfere during computation (they can share the same registers)
+
+Something like ...
+
+// Specify if the output overlaps with input (temps included?): i.e. b) case above... 
+// e.g. addition on x86: (add eax, ebx) ...
+
+File: compiler/optimizing/register_allocator.cc
+
+221:13-221:51
+Fri Oct 17 15:52:17 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0d09489_ebef6d13
+Bytes: 28
+shouldn't it be non-negated?
+
+File: compiler/optimizing/ssa_liveness_analysis.h
+
+192:13-192:41
+Fri Oct 17 15:52:17 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70ca9cdf_89d99d3a
+Bytes: 51
+wrap in () or break as long lines will read easier.
+

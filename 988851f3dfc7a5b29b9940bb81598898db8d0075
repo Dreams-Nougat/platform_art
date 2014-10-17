@@ -9,6 +9,14 @@ UUID: 90d5507b_c76ffe1a
 Bytes: 17
 kNoOutputOverlap?
 
+604:32-604:50
+Fri Oct 17 16:01:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90d5507b_c76ffe1a
+UUID: 309904fa_5c1bbd93
+Bytes: 160
+No, the instruction does xorq on the output at the beginning, so it should not be an input (test is in CL: https://android-review.googlesource.com/#/c/106209/).
+
 File: compiler/optimizing/live_ranges_test.cc
 
 76:11-76:13
@@ -18,6 +26,14 @@ UUID: 70ca9cdf_e9de511e
 Bytes: 31
 what triggered the change here?
 
+76:11-76:13
+Fri Oct 17 16:01:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70ca9cdf_e9de511e
+UUID: 1096c0c9_1b0a1b48
+Bytes: 177
+The return instruction requests its input to be in EAX. Because that's a physical register, the live range of the input ends at the beginning of the instruction, not the middle.
+
 File: compiler/optimizing/locations.h
 
 452:46-452:51
@@ -26,6 +42,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0d09489_2be34538
 Bytes: 47
 is this the index of the input or the register?
+
+452:46-452:51
+Fri Oct 17 16:01:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0d09489_2be34538
+UUID: 309904fa_7c187996
+Bytes: 48
+The index of the input. I renamed the parameter.
 
 473:7-473:23
 Fri Oct 17 15:52:17 2014 +0000
@@ -42,6 +66,14 @@ Something like ...
 // Specify if the output overlaps with input (temps included?): i.e. b) case above... 
 // e.g. addition on x86: (add eax, ebx) ...
 
+473:7-473:23
+Fri Oct 17 16:01:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70ca9cdf_69ea61b3
+UUID: 1096c0c9_7b015f26
+Bytes: 4
+Done
+
 File: compiler/optimizing/register_allocator.cc
 
 221:13-221:51
@@ -51,6 +83,14 @@ UUID: b0d09489_ebef6d13
 Bytes: 28
 shouldn't it be non-negated?
 
+221:13-221:51
+Fri Oct 17 16:01:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0d09489_ebef6d13
+UUID: 1096c0c9_9b1c6b92
+Bytes: 119
+No. If the output does not overlap, we can shift the interval's start so that it can re-use the register form an input.
+
 File: compiler/optimizing/ssa_liveness_analysis.h
 
 192:13-192:41
@@ -59,4 +99,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 70ca9cdf_89d99d3a
 Bytes: 51
 wrap in () or break as long lines will read easier.
+
+192:13-192:41
+Fri Oct 17 16:01:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70ca9cdf_89d99d3a
+UUID: 1096c0c9_5b1bc393
+Bytes: 4
+Done
 

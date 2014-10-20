@@ -9,6 +9,14 @@ UUID: 1096c0c9_a12d7a88
 Bytes: 9
 One line?
 
+1022:51-1022:66
+Mon Oct 20 17:12:55 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1096c0c9_a12d7a88
+UUID: 309904fa_a20c9adf
+Bytes: 208
+The line would be longer than 80 columns.  By the way, what is the rule here?  The Google C++ Style Guide guide says 80 columns, but I think I've read something about 100 columns in an Android-related source.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 963:51-963:66
@@ -25,12 +33,28 @@ UUID: 309904fa_22fa4a56
 Bytes: 189
 in is Any but you DCHECK that's not constant. Add a note why is that. Probably because x86 doesn't have a neg with constants? If so, does it worth doing '-a = 0 - a'? or some other pattern?
 
+987:6-987:30
+Mon Oct 20 17:12:55 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309904fa_22fa4a56
+UUID: f064ccc9_20b96e51
+Bytes: 211
+Yes, the negl instruction only takes a register or memory location as operand.  Constant operands would be likely addressed by the constant folding pass (see https://android-review.googlesource.com/#/c/111393/).
+
 988:21-988:29
 Mon Oct 20 16:37:36 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f064ccc9_409ae201
 Bytes: 44
 Shouldn't you handle stack location as well?
+
+988:21-988:29
+Mon Oct 20 17:12:55 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f064ccc9_409ae201
+UUID: 309904fa_021c6e0c
+Bytes: 188
+I limited inputs and outputs to registers because art::x86::X86Assembler::negl only accepts a Register as argument.  Can I (should I) extend this method to accept memory locations as well?
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -64,6 +88,14 @@ UUID: 1096c0c9_c10b6615
 Bytes: 33
 Make this one a UnaryInstruction?
 
+487:4-487:7
+Mon Oct 20 17:12:55 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1096c0c9_c10b6615
+UUID: f064ccc9_a0ebbe3a
+Bytes: 301
+I did at first, but a naive implementation did not work as intended, as this class does not seem to fit in the same pattern as HNeg.  HNot is tied to a Boolean input in the current implementation and seems to be meant to work on logical expressions only (and not bit-level one's complement negations).
+
 File: test/411-optimizing-arith/src/Main.java
 
 67:4-68:64
@@ -72,4 +104,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f064ccc9_80123ac4
 Bytes: 34
 is this part of the standard spec?
+
+67:4-68:64
+Mon Oct 20 17:12:55 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f064ccc9_80123ac4
+UUID: 309904fa_02338e9a
+Bytes: 186
+I did not check the Java Language Specification, but on a more general level I believe this behavior follows the definition of two's complement.  I'll check the specification to be sure.
 

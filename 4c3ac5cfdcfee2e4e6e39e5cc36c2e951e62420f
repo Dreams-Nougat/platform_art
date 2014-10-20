@@ -18,6 +18,13 @@ Smells like an operator()-> on MethodHelper would be nice :)
 
 File: runtime/mirror/class-inl.h
 
+620
+Mon Oct 20 22:52:14 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30202482_6422aa99
+Bytes: 84
+Can you fix this comment also? It's not accurate. I think it should just be deleted.
+
 622:19-622:29
 Wed Oct 08 21:06:13 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,4 +39,13 @@ Parent: d09ee86b_54116244
 UUID: 10e6c0ff_10ea7208
 Bytes: 29
 Agreed, this would be useful.
+
+622:19-622:29
+Mon Oct 20 22:52:14 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10e6c0ff_10ea7208
+UUID: 30202482_273fd4ad
+Bytes: 331
+This case can certainly happen. If it's an abstract class/interface that have static fields, loaded but not linked yet. And gc happens.
+However in that case, all static fields should just be null. So I guess it's a not real crash in production. But it's better to get rid of the assertion error and skip some useless visits anyway.
 

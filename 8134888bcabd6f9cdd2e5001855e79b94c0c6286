@@ -9,10 +9,34 @@ UUID: 106fa0ad_0270f4fb
 Bytes: 66
 Its not clear this is necessary, it feels like kQuickSoftFloatAbi.
 
+63:0-63:98
+Tue Oct 21 02:17:15 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 106fa0ad_0270f4fb
+UUID: 309904fa_0270eefb
+Bytes: 533
+Consider prototype like "void foo(float a, double b)", ignoring method reference and this.
+
+If it is soft-float, the argument registers would be "a(r0), b(r1/r2)". This is fine.
+
+But if it is hard-float and we do not align doubles, the argument register would be "a(s0), b(s1/s2)". This can work. But when moving b to a promoted d-register, for example d8. We will need "vmov s16, s1 ;  vmov s17, s2". For some reason, this is much slower than "vmov d8, d1". So if we align doubles to put b in (s2/s3), we can get better performance.
+
 427:0-427:77
 Tue Oct 21 01:02:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3072e491_69b18d55
 Bytes: 53
 Remove this and just compute based off of fpr_index_.
+
+427:0-427:77
+Tue Oct 21 02:17:15 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3072e491_69b18d55
+UUID: 309904fa_2255ea47
+Bytes: 275
+This depends on how we define the ABI. For function prototype like "void foo(float a, double b, float c);".
+
+Now the argument registers would be "a(s0), b(s2/s3=d1), c(s1)".
+
+We could remove this unless we define ABI to use argument registers like "a(s0), b(s2/s3=d1), c(s4)"
 

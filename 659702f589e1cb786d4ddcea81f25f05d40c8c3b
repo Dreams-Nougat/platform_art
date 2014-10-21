@@ -9,6 +9,14 @@ UUID: 1096c0c9_64c1c027
 Bytes: 102
 Does that mean that you actually end up tripling (int + float + double) all the constant in the graph?
 
+139:4-139:63
+Tue Oct 21 10:32:40 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1096c0c9_64c1c027
+UUID: 309904fa_c538d07a
+Bytes: 70
+No just doubling. double constants are associated with long constants.
+
 144:44-144:68
 Tue Oct 21 10:24:56 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,6 +28,16 @@ I would add wrappers to this. Maybe it's just me but I always forget the directi
 
 How about adding int_to_float or something like that. Same for the others .
 
+144:44-144:68
+Tue Oct 21 10:32:40 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309904fa_45f7606b
+UUID: f064ccc9_c34c3cc0
+Bytes: 237
+Thing about something like this is that what kind of conversion is it? A bit_cast or a static_cast?
+
+I'll keep it this way for now, as it's consistent to what ART already does. We might have to train our brain to just read it properly :)
+
 File: test/410-floats/src/Main.java
 
 101:21-101:40
@@ -29,6 +47,14 @@ UUID: 309904fa_055718ca
 Bytes: 162
 I think I'm missing something with this test and the ones below. What does it actually want to tests? Is there a specific dex instruction that this translates to?
 
+101:21-101:40
+Tue Oct 21 10:32:40 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309904fa_055718ca
+UUID: 1096c0c9_446204b3
+Bytes: 293
+Remember that these tests are testing very low-level code, in this case the register allocator and the code generator. So they are simple, but they expose cases that a register allocator has to handle properly. Regression tests can also often end up being simple, yet obscure, like these ones.
+
 112:0-112:2
 Tue Oct 21 10:24:56 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,10 +62,26 @@ UUID: 1096c0c9_e4deb01e
 Bytes: 15
 trailing spaces
 
+112:0-112:2
+Tue Oct 21 10:32:40 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1096c0c9_e4deb01e
+UUID: 309904fa_65229c42
+Bytes: 4
+Done
+
 123:0-124:2
 Tue Oct 21 10:24:56 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1096c0c9_04e47ced
 Bytes: 15
 trailing spaces
+
+123:0-124:2
+Tue Oct 21 10:32:40 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1096c0c9_04e47ced
+UUID: 309904fa_851fa8f5
+Bytes: 4
+Done
 

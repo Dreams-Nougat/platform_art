@@ -9,3 +9,13 @@ UUID: 309904fa_bca7619c
 Bytes: 214
 is there a reason why this check isn't in ResumeAllForDebugger? the reason i gave +1 rather than +2 was that i was expecting someone who works more on art to complain about the race here. or am i missing something?
 
+2395
+Tue Oct 21 09:49:10 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309904fa_bca7619c
+UUID: 1096c0c9_643c60b7
+Bytes: 269
+I used the same pattern than for resuming one thread. But yes, I guess a race with suspend count is possible here so it'd be safer to have that logic in ResumeAllForDebugger.
+
+We should probably do the same for ThreadList::Resume, it's not only used by debugger though.
+

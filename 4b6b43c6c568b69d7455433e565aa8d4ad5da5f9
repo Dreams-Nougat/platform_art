@@ -24,6 +24,14 @@ UUID: d53a5ac4_513a7470
 Bytes: 89
 This function seems to be a special case of BuildFillArrayData.  Why a dedicated routine?
 
+552:20-552:42
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d53a5ac4_513a7470
+UUID: 351e565a_f4b7185c
+Bytes: 133
+Because it calls GetLongConstant instead of GetIntConstant. I could templatize it even further with a boolean, would you prefer that?
+
 872:30-872:35
 Wed Oct 22 10:06:42 2014 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,6 +57,14 @@ Maybe add
   DCHECK_LE(number_of_vreg_arguments, 5)
 
 ?
+
+877:15-877:39
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d53a5ac4_d1b2e4db
+UUID: f5359ed2_f2328864
+Bytes: 171
+Things would be very broken if not (we assume the verifier already ran). In general, when it comes to instruction format, we trust the instruction is of the correct shape.
 
 File: compiler/optimizing/builder.h
 
@@ -82,6 +98,14 @@ UUID: f5359ed2_9239fcc6
 Bytes: 30
 Maybe document this attribute.
 
+181:18-181:29
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_9239fcc6
+UUID: f5359ed2_f2b7285c
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 412
@@ -95,12 +119,28 @@ Add
 
 as in code_generator_x86.cc?
 
+412
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 351e565a_b4776043
+UUID: f5359ed2_d22f84f8
+Bytes: 4
+Done
+
 422
 Wed Oct 22 11:35:20 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 351e565a_744308e0
 Bytes: 6
 Ditto?
+
+422
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 351e565a_744308e0
+UUID: f5359ed2_b22c0005
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -113,6 +153,16 @@ This is probably a nit-picking issue, but shouldn't we try to keep this list sor
 - sort using alphabetical order on node name;
 - sort using alphabetical order on super class name, then on node name.
 
+510:2-510:26
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 351e565a_b4eac0ae
+UUID: 351e565a_14ecd44d
+Bytes: 89
+Sure. Let's compete on who does this first :-)
+
+Strong preference would be suggestion 1).
+
 File: test/Android.run-test.mk
 
 288:2-288:15
@@ -122,6 +172,14 @@ UUID: f5359ed2_122e2c80
 Bytes: 72
 Do you whether it is a problem with the test or with the Quick compiler?
 
+288:2-288:15
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_122e2c80
+UUID: 351e565a_f4e03854
+Bytes: 68
+With Quick. The interpreter works fine for example. I'll file a bug.
+
 File: test/etc/default-build
 
 31:5-31:7
@@ -130,4 +188,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d53a5ac4_f156089d
 Bytes: 20
 Or use `-d' instead?
+
+31:5-31:7
+Wed Oct 22 13:00:55 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d53a5ac4_f156089d
+UUID: f5359ed2_72c458cf
+Bytes: 46
+I made it consistent with test line 27 and 37.
 

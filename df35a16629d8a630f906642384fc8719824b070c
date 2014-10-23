@@ -11,6 +11,14 @@ Perhaps..
 
 If fpr_index is odd then its pointing at a hole next to an existing float argument. If we encounter a float argument then pick it up from that hole. In the case fpr_index is even, ensure that we don't pick up an argument that overlaps with with a double from fpr_double_index. In either case, take care not to go beyond the maximum number of floating point arguments.
 
+64:0-65:48
+Thu Oct 23 11:10:13 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9592a210_c2a24438
+UUID: 7597ee02_1ec2cd61
+Bytes: 4
+Done
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 63:24-63:52
@@ -22,12 +30,28 @@ Perhaps,
 
 kQuickFloatArgumentsAreBackFilled
 
+63:24-63:52
+Thu Oct 23 11:10:13 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f583dec2_89453a75
+UUID: f5359ed2_d8fc4549
+Bytes: 138
+I changed it to kQuickDoubleRegAlignedFloatBackFilled. Because if it is false, we won't back fill float and also doubles won't be aligned.
+
 255:8-255:84
 Thu Oct 23 07:00:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f583dec2_a94a7e7f
 Bytes: 169
 We should avoid too much unlikely as it break any kind of inlining and forces space (ie -Os) style optimization. I'd lose the comment, but upstream a bug if appropriate.
+
+255:8-255:84
+Thu Oct 23 11:10:13 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f583dec2_a94a7e7f
+UUID: 351e565a_5a3a7570
+Bytes: 59
+I will try to see if it can be reproduced by a simple case.
 
 292:65-293:53
 Thu Oct 23 07:00:47 2014 +0000
@@ -36,6 +60,42 @@ UUID: b58de6f4_a35dc46f
 Bytes: 16
 why this change?
 
+292:65-293:53
+Thu Oct 23 11:10:13 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b58de6f4_a35dc46f
+UUID: 7597ee02_1e264de2
+Bytes: 1521
+On 32-bit soft-float, the high_half of split long is always the first stack argument. On 64-bit, there will never be a split long. But there will still be a split long in current defined arm32 hard-float as I didn't change the algorithm for gpr arguments.
+
+But we won't know the stack index for its high half, unless we parsed the shorty. For example, "void foo(int a, double b, long c)"
+
+soft-float:
+R0 - ArtMethod
+R1 - this        - stack[0]   <- stack_args, current implementation
+R2 - a           - stack[4]
+R3 - b low_half  - stack[8]
+NA - b high_half - stack[12]  <- stack_args, original implementation, the high_half of split long/double is always on this position.
+...
+
+hard-float:
+R0 - ArtMethod
+R1 - this        - stack[0]  <- stack_args points here
+R2 - a           - stack[4]
+S0 - b low_half  - stack[8]
+S1 - b high_half - stack[12]
+R3 - c low_half  - stack[16]
+NA - c high_half - stack[20] <- the stack index of the high_half of split long need to be calculated by the shorty.
+
+In the original implementation :
+1. soft-float : stack_args points to stack[12], stack_index only increases when visit an argument on stack.
+2. hard-float : stack_args points to stack[0], stack_index always increases when visit an argument.
+
+In current implementation :
+I always use the hard-float logic for stack_args and stack_index to make the logic simple. 
+
+See the related change in StackArgumentStartFromShorty() and VisitArguments() on stack_args_ and stack_index_. I think current implementation is much clean and simple.
+
 426:50-426:51
 Thu Oct 23 07:00:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,10 +103,26 @@ UUID: b58de6f4_c35a4875
 Bytes: 101
 in the case of back filling, may index a hole while fpr_double_index_ holds a higher register number.
 
+426:50-426:51
+Thu Oct 23 11:10:13 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b58de6f4_c35a4875
+UUID: 351e565a_9a1fedf5
+Bytes: 4
+Done
+
 427:34-427:77
 Thu Oct 23 07:00:47 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9592a210_429074d9
 Bytes: 137
 Only used with floating point argument back filling. Next available double register indexed in terms of singles, may be behind fpr_index.
+
+427:34-427:77
+Thu Oct 23 11:10:13 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9592a210_429074d9
+UUID: 7597ee02_be84f930
+Bytes: 4
+Done
 

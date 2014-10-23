@@ -9,3 +9,15 @@ UUID: 7597ee02_8102fce0
 Bytes: 62
 Alternatively, can we not pass raw objects but always handles?
 
+45:51-45:57
+Thu Oct 23 15:07:26 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7597ee02_8102fce0
+UUID: 351e565a_dd6aff58
+Bytes: 417
+Good point. Having the use of Handle here make things easier. But it does nothing for the caller.
+
+Most of the time, the object is not used after the call ("registry->Add(obj->GetClass())" for instance) so having a handle as parameter adds a constraint. But there are still a few places where it's not like this, like in a loop.
+
+I could add an alternative InternalAdd function taking a Handle instead for such cases.
+

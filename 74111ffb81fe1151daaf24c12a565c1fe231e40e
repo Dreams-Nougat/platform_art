@@ -9,6 +9,16 @@ UUID: f5359ed2_e6a8869a
 Bytes: 40
 I'm not sure I understand this sentence.
 
+104:7-104:9
+Thu Oct 23 23:05:27 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_e6a8869a
+UUID: b58de6f4_15b37ee1
+Bytes: 942
+Usually you would expect inactive intervals to be first moved from active set at some point, so the start of any inactive interval should be before the current interval being processed during linear scan, but it's inactive since it's in a hole at the current instruction position. Basically any interval starting after the current instruction is in unhandled set. I found it a little surprising during some debugging to see inactive intervals that start after the current instruction being processed. And I found those are fixed intervals, and they start in inactive set instead of unhandled. So I added some comment to make it clear. Or should it be stated with more clarity?
+
+I saw some algorithm that adds fixed intervals to unhandled set first, so you don't need to process them (like doing intersecting with the current interval) until they really start. I think the way we do it is fine but just want to make it clear with some comment.
+
 File: compiler/optimizing/register_allocator_test.cc
 
 418:28-418:29
@@ -17,4 +27,18 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7597ee02_217528f7
 Bytes: 43
 I don't understand the change in this file.
+
+418:28-418:29
+Thu Oct 23 23:05:27 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7597ee02_217528f7
+UUID: 9592a210_a834bad4
+Bytes: 540
+The old artificial intervals break this rule:
+// Thanks to SSA, a non-split interval starting in a hole of an
+// inactive interval should never intersect with that inactive interval.
+
+So I tuned the intervals somewhat to make it work with that rule (add a split). I changed it to non-temp interval since I added an assertion somewhere that temp intervals don't have holes (well, that's my understanding from the code, they have a single range) so they won't be added to inactive set.
+
+So basically I just try to work around some assertions.
 

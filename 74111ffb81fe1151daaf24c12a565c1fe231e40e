@@ -19,6 +19,32 @@ Usually you would expect inactive intervals to be first moved from active set at
 
 I saw some algorithm that adds fixed intervals to unhandled set first, so you don't need to process them (like doing intersecting with the current interval) until they really start. I think the way we do it is fine but just want to make it clear with some comment.
 
+104:7-104:9
+Fri Oct 24 14:54:56 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b58de6f4_15b37ee1
+UUID: f5359ed2_c12c4c06
+Bytes: 150
+Oh I see. So should we move them to unhandled and then skip them in in the LinearScan loop?
+
+That would make things consistent and unsurprising, WDYT?
+
+617:8-617:16
+Fri Oct 24 14:54:56 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5359ed2_81c404d0
+Bytes: 116
+So you're doing this to ensure all inactive pass the DCHECK line 611?
+
+I think I'd prefer a dedicated loop for that.
+
+676:21-676:28
+Fri Oct 24 14:54:56 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5359ed2_61c920e4
+Bytes: 5
+ditto
+
 File: compiler/optimizing/register_allocator_test.cc
 
 418:28-418:29
@@ -41,4 +67,13 @@ The old artificial intervals break this rule:
 So I tuned the intervals somewhat to make it work with that rule (add a split). I changed it to non-temp interval since I added an assertion somewhere that temp intervals don't have holes (well, that's my understanding from the code, they have a single range) so they won't be added to inactive set.
 
 So basically I just try to work around some assertions.
+
+File: compiler/optimizing/ssa_liveness_analysis.h
+
+162:23-162:35
+Fri Oct 24 14:54:56 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 351e565a_8359c801
+Bytes: 134
+Maybe change the call sites that use the constructor and make them use this factory method? Then you can make the constructor private.
 

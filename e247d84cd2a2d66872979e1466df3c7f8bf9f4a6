@@ -1,0 +1,18 @@
+Revision: e247d84cd2a2d66872979e1466df3c7f8bf9f4a6
+Patch-set: 1
+File: runtime/entrypoints/quick/quick_alloc_entrypoints.cc
+
+31
+Sat Oct 25 00:45:22 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5594aafe_f709409a
+Bytes: 251
+Another idea here is adding a kMinimumLargeObjectSize in heap and using kMinimumLargeObjectSize / sizeof(jlong) instead of  tlab_fast_path_array_length_threshold. What do you think of this approach? It should be faster since it doesn't require a load.
+
+126
+Sat Oct 25 00:45:22 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 956b82dc_864a1480
+Bytes: 191
+Can you put this code in AllocArrayFromCode so that the interpreter can also use it, as well as not requiring the annoying "\" at the end of the lines? Assuming this doesn't cause a slowdown.
+

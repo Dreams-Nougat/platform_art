@@ -1,0 +1,27 @@
+Revision: b4e2779c5ad08196715ff786e8ee5eec785161be
+Patch-set: 1
+File: runtime/arch/mips/quick_entrypoints_mips.S
+
+109:44-109:73
+Sat Oct 25 23:08:45 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7580cec4_000b474b
+Bytes: 370
+I believe the intent was to reserve space for argument words in the callee save frame, however, given the Method* is at the bottom this looks broken. Should we move the Method* to be at offset 24 with space for a0 to a3 below. This would also require adjusting the callee save frame sizes. I think there's inherently a collision between the Method* and a0 as things are.
+
+555:4-556:24
+Sat Oct 25 23:08:45 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d5d6dada_25e1c6a8
+Bytes: 95
+Having the SETUP_REFS_ONLY.. include argument space would mean we could avoid these operations.
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+900:0-900:38
+Sat Oct 25 23:08:45 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 95e0e2b0_f85365aa
+Bytes: 115
+Remove the TODO? Also, need to add kMips in compiler_driver.cc to the list of architectures supporting generic JNI.
+

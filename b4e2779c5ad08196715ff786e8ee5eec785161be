@@ -9,12 +9,28 @@ UUID: 7580cec4_000b474b
 Bytes: 370
 I believe the intent was to reserve space for argument words in the callee save frame, however, given the Method* is at the bottom this looks broken. Should we move the Method* to be at offset 24 with space for a0 to a3 below. This would also require adjusting the callee save frame sizes. I think there's inherently a collision between the Method* and a0 as things are.
 
+109
+Sat Oct 25 23:51:14 2014 +0000
+Author: Douglas Leung <1003299@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7580cec4_000b474b
+UUID: f55e7e2a_b44d0d05
+Bytes: 76
+I agree. Does moving Method* require changing architecture independent code?
+
 555:4-556:24
 Sat Oct 25 23:08:45 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d5d6dada_25e1c6a8
 Bytes: 95
 Having the SETUP_REFS_ONLY.. include argument space would mean we could avoid these operations.
+
+556
+Sat Oct 25 23:51:14 2014 +0000
+Author: Douglas Leung <1003299@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5d6dada_25e1c6a8
+UUID: f55e7e2a_d45081a0
+Bytes: 141
+I was worry about the $a0 slot (Method*) being cobbler. Also, the SP was being passed into the function in the previous version of this file.
 
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 

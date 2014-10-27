@@ -17,6 +17,14 @@ UUID: f55e7e2a_b44d0d05
 Bytes: 76
 I agree. Does moving Method* require changing architecture independent code?
 
+109
+Mon Oct 27 15:39:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f55e7e2a_b44d0d05
+UUID: 7580cec4_130de354
+Bytes: 321
+The callee save layouts are all architecture dependent. They are declared in runtime.cc. There was an attempt to fold the outgoings are into the frame set up that this change causes to mean we have two areas in the stack reserved for outgoing arguments. My preference is for one, but perhaps that should be clean-up work.
+
 555:4-556:24
 Sat Oct 25 23:08:45 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +39,14 @@ Parent: d5d6dada_25e1c6a8
 UUID: f55e7e2a_d45081a0
 Bytes: 141
 I was worry about the $a0 slot (Method*) being cobbler. Also, the SP was being passed into the function in the previous version of this file.
+
+556
+Mon Oct 27 15:39:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f55e7e2a_d45081a0
+UUID: 7580cec4_333fbfe0
+Bytes: 155
+Agreed, we've cleaned it up now so that the called function isn't initialzing state in the caller. There's still little bits of assembly to tidy like this.
 
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 

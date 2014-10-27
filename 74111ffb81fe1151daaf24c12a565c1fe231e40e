@@ -29,6 +29,15 @@ Oh I see. So should we move them to unhandled and then skip them in in the Linea
 
 That would make things consistent and unsurprising, WDYT?
 
+104:7-104:9
+Mon Oct 27 17:17:00 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_c12c4c06
+UUID: d5d6dada_2b4d1588
+Bytes: 366
+I thought a little more. Actually adding to inactive may generate better code since it tries to avoid assigning to a register that might be blocked later. Another way to think of fixed interval is it begins with a hole (even though its official start position is later). Then it makes sense it's in inactive first.
+The statements in added comment are still accurate.
+
 617:8-617:16
 Fri Oct 24 14:54:56 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -37,6 +46,14 @@ Bytes: 116
 So you're doing this to ensure all inactive pass the DCHECK line 611?
 
 I think I'd prefer a dedicated loop for that.
+
+617:8-617:16
+Mon Oct 27 17:17:00 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_81c404d0
+UUID: 35cf3649_12008c6f
+Bytes: 243
+It's the assert on line 623. debug version will try to verify that an SSA value starting in a hole of an inactive interal won't intersect. Non-debug version will just skip the intersection completely as an optimization due to the SSA property.
 
 676:21-676:28
 Fri Oct 24 14:54:56 2014 +0000
@@ -76,4 +93,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 351e565a_8359c801
 Bytes: 134
 Maybe change the call sites that use the constructor and make them use this factory method? Then you can make the constructor private.
+
+162:23-162:35
+Mon Oct 27 17:17:00 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 351e565a_8359c801
+UUID: d5d6dada_2bc2f561
+Bytes: 8
+Will do.
 

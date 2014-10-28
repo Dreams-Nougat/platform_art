@@ -38,6 +38,17 @@ Bytes: 366
 I thought a little more. Actually adding to inactive may generate better code since it tries to avoid assigning to a register that might be blocked later. Another way to think of fixed interval is it begins with a hole (even though its official start position is later). Then it makes sense it's in inactive first.
 The statements in added comment are still accurate.
 
+615:60-615:68
+Tue Oct 28 14:51:01 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 55abca56_089ce7cc
+Bytes: 84
+Add:
+
+Only if it's not fixed, because fixed intervals don't come from SSA.
+
+(right?)
+
 617:8-617:16
 Fri Oct 24 14:54:56 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -55,12 +66,28 @@ UUID: 35cf3649_12008c6f
 Bytes: 243
 It's the assert on line 623. debug version will try to verify that an SSA value starting in a hole of an inactive interal won't intersect. Non-debug version will just skip the intersection completely as an optimization due to the SSA property.
 
+617:8-617:16
+Tue Oct 28 14:51:01 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35cf3649_12008c6f
+UUID: 55abca56_c8a56f14
+Bytes: 123
+OK so I suggest computing the intersection and doing the DCHECK here instead of line 623 (and you can just remove 622-624).
+
 676:21-676:28
 Fri Oct 24 14:54:56 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5359ed2_61c920e4
 Bytes: 5
 ditto
+
+676:21-676:28
+Tue Oct 28 14:51:01 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_61c920e4
+UUID: 55abca56_e8a2ab09
+Bytes: 35
+DCHECK intersection is no lifetime?
 
 File: compiler/optimizing/register_allocator_test.cc
 

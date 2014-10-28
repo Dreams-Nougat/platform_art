@@ -84,6 +84,16 @@ Can you elaborate please?
 
 It is just as persistent as anything else in the dex cache (and if we are worried about a symlink pointing to a /system oat file that no longer exists, that won't happen since every time there is an OTA the dex cache gets wiped IIUC). Except to avoid changing the code to load boot.art/boot.oat from separate paths, we made a symlink here instead.
 
+290:53-290:60
+Tue Oct 28 17:46:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5396603_09787130
+UUID: 75ae0e67_cfab3595
+Bytes: 216
+Yeah, so the symlink is from /data to /system, correct?
+
+My understanding is that we want to be compile PIC only in the future, so this symlink will not be needed: we will use just one boot image, the one in /system.
+
 365:78-365:81
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -100,6 +110,14 @@ Bytes: 208
 I originally intentionally left this lowercase to emphasize the *not*, I apologize if there's some style this is violating.
 
 Can you elaborate why this should or should not be lower case for future reference?
+
+365:78-365:81
+Tue Oct 28 17:46:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75436e81_c49e723c
+UUID: 55abca56_0b8b81ad
+Bytes: 71
+because you're using PIC in other places. So it's just for consistency.
 
 377:38-377:43
 Tue Oct 28 10:30:54 2014 +0000
@@ -119,6 +137,20 @@ Bytes: 191
 I don't understand. It's logically const here, i.e. this function does not mutate the ElfFile in any way.
 
 From what I understand Ian thinks the code base should be const as much as possible.
+
+377:38-377:43
+Tue Oct 28 17:46:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5396603_a95345ab
+UUID: 55abca56_cb84899d
+Bytes: 339
+From the C++ style guide:
+
+"So if you choose const T* rather than const T&, do so for a concrete reason; otherwise it will likely confuse readers by making them look for an explanation that doesn't exist."
+
+http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#Reference_Arguments
+
+I personally agree wih the "confusion" comment.
 
 379:36-379:39
 Tue Oct 28 10:30:54 2014 +0000
@@ -197,6 +229,14 @@ UUID: 953e22e9_c5b78e5c
 Bytes: 45
 Ian asked to get rid of this in an earlier PS
 
+1225:19-1225:21
+Tue Oct 28 17:46:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953e22e9_c5b78e5c
+UUID: 55abca56_8b7e9105
+Bytes: 183
+But there must be some reason. If it ends up taking longer than expected, a co-worker might look at this code and not understand why we should get rid of it. Having the context helps.
+
 1244:10-1244:14
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -215,6 +255,14 @@ I apologize, in my rush to get this CL out the door, I didn't take the time to l
 Briefly looking at LogMessageData it seems like it can set any minimum logging level programatically, so it's not obvious what the minimum logging level is at runtime.
 
 I'll have to take a look at that more closely. With that in mind, is it even right to wrap it in a 'if (kIsDebugBuild)' if the other parts of the runtime is already filtering out logs above a certain severity?
+
+1244:10-1244:14
+Tue Oct 28 17:46:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953e22e9_85e7466d
+UUID: 75ae0e67_6fa6c1cc
+Bytes: 175
+The logging framework is prior my time, so I'm also unfamiliar with it. I just find it akward to have a kIsDebugBuild and DEBUG logging option, but they may just be unrelated.
 
 1264:29-1264:37
 Tue Oct 28 10:30:54 2014 +0000
@@ -292,6 +340,14 @@ If I had to guess, the offset between every field must be 32bits (i.e. the field
 
 Does that seem right?
 
+170:15-170:16
+Tue Oct 28 17:46:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953e22e9_c5a5ce14
+UUID: 354d76af_5c487da6
+Bytes: 212
+Sure, but the idea is that this is a a class representing data in a file, where we need to be careful about the layout (contrary to regular C++ objects where we usually don't care about the layout of the object).
+
 File: runtime/oat.cc
 
 476:35-476:42
@@ -310,4 +366,12 @@ Bytes: 257
 Sorry, this code is basically from Andreas' earlier patchset, except that I moved it from OatFile into OatHeader.
 
 I imagine it would still need a string matching of some sort since something could be storing "01.." or "10.." etc instead of just "0" and "1"
+
+476:35-476:42
+Tue Oct 28 17:46:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953e22e9_e5ac52fd
+UUID: 55abca56_0b1941e5
+Bytes: 48
+Probably. Andreas may give us some context here.
 

@@ -40,12 +40,32 @@ UUID: f5359ed2_9c06aa0e
 Bytes: 6
 Agree.
 
+149:0-151:97
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_9c06aa0e
+UUID: 953e22e9_c584ae9d
+Bytes: 335
+I discussed this with Brian offline, basically it just prints whether the image header is PIC or not in a debug build.
+
+I can rip out this code but then nothing will exercise the image header's PIC field at all, and I was advised by Andreas to leave the field in the image header. Should I then remove the field in ImageHeader as well?
+
 244:0-248:1
 Tue Oct 28 03:40:23 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d5bfba8a_bd8b9726
 Bytes: 30
 even more confused, why twice?
+
+244:0-248:1
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5bfba8a_bd8b9726
+UUID: 75436e81_e4bc4eaf
+Bytes: 185
+This is in a separate function (overloaded). Only one of the Patch functions gets called per run (depending on command line arguments).
+
+I apologize if I have misunderstood this remark.
 
 290:53-290:60
 Tue Oct 28 10:30:54 2014 +0000
@@ -54,12 +74,32 @@ UUID: 75ae0e67_8998dd4e
 Bytes: 102
 The symlink is in /data and will point to the one in /system Is that temporary? Should you add a TODO?
 
+290:53-290:60
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ae0e67_8998dd4e
+UUID: b5396603_09787130
+Bytes: 375
+Can you elaborate please? 
+
+It is just as persistent as anything else in the dex cache (and if we are worried about a symlink pointing to a /system oat file that no longer exists, that won't happen since every time there is an OTA the dex cache gets wiped IIUC). Except to avoid changing the code to load boot.art/boot.oat from separate paths, we made a symlink here instead.
+
 365:78-365:81
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 55abca56_a585be65
 Bytes: 10
 pic -> PIC
+
+365:78-365:81
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55abca56_a585be65
+UUID: 75436e81_c49e723c
+Bytes: 208
+I originally intentionally left this lowercase to emphasize the *not*, I apologize if there's some style this is violating.
+
+Can you elaborate why this should or should not be lower case for future reference?
 
 377:38-377:43
 Tue Oct 28 10:30:54 2014 +0000
@@ -70,12 +110,30 @@ Nit: use const with references, not pointers.
 
 (I know we're not following this in all places, but that's what the style guide suggests for keeping things consistent).
 
+377:38-377:43
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ae0e67_6975616f
+UUID: b5396603_a95345ab
+Bytes: 191
+I don't understand. It's logically const here, i.e. this function does not mutate the ElfFile in any way.
+
+From what I understand Ian thinks the code base should be const as much as possible.
+
 379:36-379:39
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 55abca56_45608a2e
 Bytes: 11
 fie -> file
+
+379:36-379:39
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55abca56_45608a2e
+UUID: 75436e81_04997a51
+Bytes: 13
+Good catch :)
 
 398:81-398:84
 Tue Oct 28 10:30:54 2014 +0000
@@ -84,12 +142,30 @@ UUID: 75ae0e67_097aad5e
 Bytes: 10
 pic -> PIC
 
+398:81-398:84
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ae0e67_097aad5e
+UUID: 75436e81_e4956e17
+Bytes: 7
+See 365
+
 408:85-408:87
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5359ed2_3c2e9e80
 Bytes: 137
 FD -> file descriptor (here and other places below). I don't think it's obvious FD means file descriptor, at least in the error messages.
+
+408:85-408:87
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_3c2e9e80
+UUID: 75436e81_847aaa5c
+Bytes: 246
+The only way it can go down this path is if someone uses --output-oat-fd (fd is in the command line).
+
+That being said, this is a good point and while I can't think of anything else that FD could stand for, it's better to avoid 2 letter acronyms.
 
 908:2-908:7
 Tue Oct 28 10:30:54 2014 +0000
@@ -98,6 +174,14 @@ UUID: 55abca56_256f8e1d
 Bytes: 112
 Not your code, but you're using both kIsDebugBuild and debug. Looks like this variable is just adding confusion.
 
+908:2-908:7
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55abca56_256f8e1d
+UUID: 953e22e9_65d32297
+Bytes: 168
+I can only guess that this was originally here so that the person could write 'const bool debug = true' (instead of doing #define kIsDebugBuild true or using patchoatd)
+
 1225:19-1225:21
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -105,12 +189,32 @@ UUID: 75ae0e67_896d3da2
 Bytes: 12
 Explain why?
 
+1225:19-1225:21
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ae0e67_896d3da2
+UUID: 953e22e9_c5b78e5c
+Bytes: 45
+Ian asked to get rid of this in an earlier PS
+
 1244:10-1244:14
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5359ed2_fc3ff6a9
 Bytes: 59
 Should that be LOG(DEBUG) instead? (here and other places).
+
+1244:10-1244:14
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_fc3ff6a9
+UUID: 953e22e9_85e7466d
+Bytes: 564
+I apologize, in my rush to get this CL out the door, I didn't take the time to learn the differences between LOG and ALOG so I wasn't sure if the log functions do any extra filtering. 
+
+Briefly looking at LogMessageData it seems like it can set any minimum logging level programatically, so it's not obvious what the minimum logging level is at runtime.
+
+I'll have to take a look at that more closely. With that in mind, is it even right to wrap it in a 'if (kIsDebugBuild)' if the other parts of the runtime is already filtering out logs above a certain severity?
 
 1264:29-1264:37
 Tue Oct 28 10:30:54 2014 +0000
@@ -128,12 +232,28 @@ UUID: 55abca56_a55a9e73
 Bytes: 50
 Add '.' at end of comments. Here and other places.
 
+44:24-44:28
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55abca56_a55a9e73
+UUID: 953e22e9_45925ebe
+Bytes: 63
+Good catch, I think we will need to add this rule to the linter
+
 79:6-79:13
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75ae0e67_695ec1e9
 Bytes: 21
 Too much indentation.
+
+79:6-79:13
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ae0e67_695ec1e9
+UUID: b5396603_6905bd7f
+Bytes: 35
+Surprised linter didn't catch this.
 
 File: runtime/elf_file.h
 
@@ -160,6 +280,18 @@ UUID: 75ae0e67_e9495129
 Bytes: 58
 Please add a comment why this field can't be typed 'bool'.
 
+170:15-170:16
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ae0e67_e9495129
+UUID: 953e22e9_c5a5ce14
+Bytes: 276
+This probably needs a larger comment block in general (around line 133?) about what the structure is supposed to look like.
+
+If I had to guess, the offset between every field must be 32bits (i.e. the fields could be smaller but with padding in between).
+
+Does that seem right?
+
 File: runtime/oat.cc
 
 476:35-476:42
@@ -168,4 +300,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5359ed2_bc396ec6
 Bytes: 62
 Wouldn't it be simpler to be 0 or 1? instead of true or false.
+
+476:35-476:42
+Tue Oct 28 16:59:01 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5359ed2_bc396ec6
+UUID: 953e22e9_e5ac52fd
+Bytes: 257
+Sorry, this code is basically from Andreas' earlier patchset, except that I moved it from OatFile into OatHeader.
+
+I imagine it would still need a string matching of some sort since something could be storing "01.." or "10.." etc instead of just "0" and "1"
 

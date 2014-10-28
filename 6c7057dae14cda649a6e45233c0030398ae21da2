@@ -94,6 +94,14 @@ Done (I mean, to be done).
 
 What is the best way to load an immediate value in an xmm register?
 
+1016:0-1019:60
+Tue Oct 28 23:08:17 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55abca56_eba8659a
+UUID: d5bfba8a_43795ab7
+Bytes: 649
+The values of 0 and 0xFFFF...FF are special and can be generated using instructions. In the past I've preferred using RIP addressing and having literals at the end of code. This requires assembler support which is worth getting in early so that you don't generate awkward patterns like this. On x86-32 there's no PIC addressing. For 32-bit immediates on integer code its not a problem, but for SSE we could materialize a PC value (we have such a mechanism in the quick assembler the PC is always the PC of the start of the method so the value can be computed once and shared) or place the constant into regular registers and move to an SSE register.
+
 1026:0-1029:60
 Tue Oct 28 15:18:02 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

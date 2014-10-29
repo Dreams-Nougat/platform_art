@@ -24,3 +24,15 @@ Agreed, this is something of a pre-existing condition rather than something this
 
 so the exception should never occur, in which case this can be a GetWithoutChecks (which has a bounds DCHECK).
 
+205:15-205:27
+Wed Oct 29 15:47:21 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5594aafe_cb21f3ca
+UUID: 75ae0e67_55cef6bf
+Bytes: 457
+Right, we should fail verification with a hard failure (see MethodVerifier::CheckStringIndex). Since the verification fail, we shouldn't execute the method and end up here. Using GetWithoutChecks would avoid the cost of checking index again.
+
+Actually we do the same for class, method and field resolution where we always test the index validity at runtime when accessing the DEX cache. I believe we could do the same change.
+
+I'll file a bug to track that.
+

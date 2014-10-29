@@ -1,0 +1,21 @@
+Revision: 597ad0bc889cb0654efb5195590eece337234719
+Patch-set: 2
+File: dex2oat/dex2oat.cc
+
+764
+Wed Oct 29 16:29:21 2014 +0000
+Author: Abhay Kanhere <1037322@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 756c4e15_59dd2770
+Bytes: 529
+For intel ISA these are mostly clean supersets 
+avx2 ==> avx ==> sse4.2 ==> sse4.1 => ssse3.
+other orthogonal features are
+tsx popcount 
+
+So we could expect 'avx2,popcount' to be passes as a feature set. But not 'avx2,avs,sse4_2,sse4_2,popcount'
+
+Do you expect instruction_set_feature will be set to 'avx sse4_1 sse4_2' ?
+If not, SetSSE4.1 should also SetHasSSSE3 and so on.
+
+The 'HasFeatureX' queries should centralize the logic of this set inclusion. So optimizer/backend can query for just HasSSE4.1 and get true even for avx.
+

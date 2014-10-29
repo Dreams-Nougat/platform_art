@@ -1,5 +1,51 @@
 Revision: e52b09958211c33ed527c3a4bcd7b9678fac9afd
 Patch-set: 1
+File: compiler/optimizing/builder.cc
+
+280:71-280:81
+Wed Oct 29 14:19:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 354d76af_420c16de
+Bytes: 84
+Do you really need to pass the input type? It ca be deducted from the input already.
+
+File: compiler/optimizing/nodes.h
+
+478:4-478:14
+Wed Oct 29 14:19:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75ae0e67_ba1f19f5
+Bytes: 29
+Conversion -> TypeConversion?
+
+1750:30-1750:40
+Wed Oct 29 14:19:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 354d76af_22110af8
+Bytes: 44
+As suggested, I'd get rid of the input type.
+
+1755:7-1755:11
+Wed Oct 29 14:19:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75ae0e67_5a5aa5cd
+Bytes: 31
+I'd just keep the second check.
+
+1766:2-1766:9
+Wed Oct 29 14:19:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75ae0e67_1a642d90
+Bytes: 110
+I was told the preferred way is no virtual when you already override, but use the OVERRIDE annotation instead.
+
+1768:18-1768:30
+Wed Oct 29 14:19:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 354d76af_82161eee
+Bytes: 181
+This should just return true, because if you enter here, the input between `this` and `other` is known to be the same. Which is another argument for just getting rid of input_type_.
+
 File: test/418-optimizing-type-conversion/src/Main.java
 
 35:4-35:16
@@ -15,4 +61,13 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 55abca56_f9359ffc
 Bytes: 6
 Ditto.
+
+File: test/Android.run-test.mk
+
+338:6-338:16
+Wed Oct 29 14:19:53 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 55abca56_d97d43a5
+Bytes: 79
+Just thought about this, the 'optimizing' in the name is probably too much now.
 

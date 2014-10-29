@@ -1,0 +1,13 @@
+Revision: 6786a58659420c0631a1ebe1f2fde434b8bcd1e4
+Patch-set: 1
+File: runtime/interpreter/interpreter_common.h
+
+205:15-205:27
+Wed Oct 29 09:21:40 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 55abca56_2e2e8b80
+Bytes: 329
+We may have a pending ArrayIndexOutOfBounds if the string_idx is bad (thrown by ObjectArray::Get). I believe that would happen only if we do runtime verification.
+
+We should either return so this exception is handled in the interpreter OR clear it before resolving the string (which may throw an exception if something is wrong).
+

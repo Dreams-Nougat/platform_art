@@ -11,3 +11,16 @@ We may have a pending ArrayIndexOutOfBounds if the string_idx is bad (thrown by 
 
 We should either return so this exception is handled in the interpreter OR clear it before resolving the string (which may throw an exception if something is wrong).
 
+205:15-205:27
+Wed Oct 29 15:27:16 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55abca56_2e2e8b80
+UUID: 5594aafe_cb21f3ca
+Bytes: 369
+Agreed, this is something of a pre-existing condition rather than something this change adds. The method verifier checks string indices in VerifyInstruction:
+
+    case Instruction::kVerifyRegBString:
+      result = result && CheckStringIndex(inst->VRegB());
+
+so the exception should never occur, in which case this can be a GetWithoutChecks (which has a bounds DCHECK).
+

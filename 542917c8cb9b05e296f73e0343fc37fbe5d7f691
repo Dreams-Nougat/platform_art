@@ -20,3 +20,11 @@ The thread is suspended by the debugger. The visitor terminates at the frame we'
 
 I can get back to the previous version if doing it that way is a problem. Both visitors has similar functionality, except access 'this' object.
 
+2498:27-2498:50
+Thu Oct 30 18:56:37 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75dfee23_e16d40a1
+UUID: 15bf92c3_13a1acb2
+Bytes: 261
+It feels brittle. The Get.. methods in the visitor are intended for other visitors and not for external use. Clearly this one was made public. I worry that we could inadvertently break this code by changes in the stack visitor and so would prefer a local cache.
+

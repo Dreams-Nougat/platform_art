@@ -1,0 +1,38 @@
+Revision: c24025e387148b0a4ee57358ddce800daf1695a5
+Patch-set: 1
+File: compiler/optimizing/code_generator_arm.cc
+
+547:9-547:23
+Thu Oct 30 18:19:09 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5aec691_1b2fff7f
+Bytes: 136
+How about blocking a D register and using it for both single and double stack moves?
+
+We could call this D DTMP and its equivalent STMP.
+
+2007:5-2007:28
+Thu Oct 30 18:19:09 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75dfee23_61acd080
+Bytes: 133
+We need the same fix(es) for the moves and exchanges in the parallel move resolver (used when we do linear scan register allocation).
+
+File: compiler/utils/arm/assembler_thumb2.cc
+
+2487:22-2487:49
+Thu Oct 30 18:19:09 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5aec691_5b109742
+Bytes: 134
+I don't think we should do this. IP is for internal use only and if the code generators use it, they must use it with very extra care.
+
+File: test/419-large-frame/src/Main.java
+
+22:9-22:19
+Thu Oct 30 18:19:09 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75dfee23_a1b5f8c6
+Bytes: 17
+check the result?
+

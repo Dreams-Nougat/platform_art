@@ -9,6 +9,14 @@ UUID: b5d5e601_8042b6d6
 Bytes: 186
 I know it's an optimization, but readability is lower because of that. We normally don't load too many oat files, so I think it's OK to go for readability and just put !oat_file->IsPic()
 
+1167:6-1167:30
+Thu Oct 30 04:45:49 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5d5e601_8042b6d6
+UUID: b5d5e601_60e7726e
+Bytes: 63
+right, the way it is now, it doesn't seem to match the comment.
+
 File: test/117-nopatchoat/src/Main.java
 
 19:4-22:5
@@ -24,4 +32,18 @@ Readability. I think it's better to split up the computation into the branches o
  } else {
    executable_correct = hasExecutableOat() == isDex2OatEnabled();
  }
+
+19:4-22:5
+Thu Oct 30 04:45:49 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5d09a11_849008db
+UUID: d5d09a11_e488f47d
+Bytes: 249
+I think even
+
+boolean executable_correct = (isPic()) ?
+                              hasExecutableOat() == true :
+                              hasExecutableOat() == isDex2OatEnabled());
+
+might be better. assigning and overwriting is not very clear.
 

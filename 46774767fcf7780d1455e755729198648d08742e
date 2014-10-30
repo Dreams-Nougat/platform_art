@@ -50,6 +50,14 @@ I discussed this with Brian offline, basically it just prints whether the image 
 
 I can rip out this code but then nothing will exercise the image header's PIC field at all, and I was advised by Andreas to leave the field in the image header. Should I then remove the field in ImageHeader as well?
 
+149:0-151:97
+Thu Oct 30 07:32:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953e22e9_c584ae9d
+UUID: b5d5e601_83e640bf
+Bytes: 56
+if nothing really needs it in the end, we can remove it.
+
 244:0-248:1
 Tue Oct 28 03:40:23 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -214,6 +222,14 @@ UUID: 953e22e9_65d32297
 Bytes: 168
 I can only guess that this was originally here so that the person could write 'const bool debug = true' (instead of doing #define kIsDebugBuild true or using patchoatd)
 
+908:2-908:7
+Thu Oct 30 07:32:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953e22e9_65d32297
+UUID: d5d09a11_87900adb
+Bytes: 117
+yes we have done this const bool debug thing elsewhere, as well as in frameworks code, to make it easier to reenable.
+
 1225:19-1225:21
 Tue Oct 28 10:30:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -279,6 +295,16 @@ Parent: 953e22e9_85e7466d
 UUID: 75ae0e67_6fa6c1cc
 Bytes: 175
 The logging framework is prior my time, so I'm also unfamiliar with it. I just find it akward to have a kIsDebugBuild and DEBUG logging option, but they may just be unrelated.
+
+1244:10-1244:14
+Thu Oct 30 07:32:32 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ae0e67_6fa6c1cc
+UUID: b5d5e601_e3f46c69
+Bytes: 214
+LOG(DEBUG) (and ALOGD) are never meant to be checked in. We grepped and removed them all once. that is more of an Android style thing.
+
+If anything, shouldn't this be (debug), not (kIsDebugBuild) to match the rest?
 
 1264:29-1264:37
 Tue Oct 28 10:30:54 2014 +0000

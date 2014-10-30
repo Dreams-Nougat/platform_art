@@ -26,12 +26,30 @@ UUID: 154a3299_f0336634
 Bytes: 140
 I thought the issue was about reading uninitialized memory. The memory with or without valgrind must be zeroed. Can you improve the comment.
 
+375:1-376:73
+Thu Oct 30 00:51:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 154a3299_f0336634
+UUID: 55402a75_fafa2053
+Bytes: 308
+What was the valgrind issue that motivates this change?
+
+This kCheckZeroMemory has nothing to do with valgrind, I think. RosAlloc has to return zero memory, it zero memory, either at the allocation time or free time, and we current check that we return zero memory from the Alloc routines in the debug build.
+
 377:14-377:16
 Wed Oct 29 05:45:46 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d55dfa60_3bbdbadf
 Bytes: 7
 why Do?
+
+377:14-377:16
+Thu Oct 30 00:51:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d55dfa60_3bbdbadf
+UUID: 55402a75_daf7646b
+Bytes: 61
+If we keep this function, how about "Should" instead of "Do"?
 
 File: runtime/gc/space/dlmalloc_space.cc
 
@@ -50,6 +68,29 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 95570241_ba56ed9b
 Bytes: 26
 yes.. no, this is horrible
+
+131:0-142:4
+Thu Oct 30 00:51:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 95570241_ba56ed9b
+UUID: 55402a75_9a42fcd6
+Bytes: 551
+It seems that the param lists are identical except the allocator (rosalloc/mspace) and the low_memory_mode param between DlMallocSpace and RosAllocSpace.
+
+How about the following approach?
+
+1) Retain the original constructor param list style, as opposed to the struct.
+2) Add the low_memory_mode param to DlMallocSpace which we will ignore for now.
+3) As ValgrindMallocSpace is parameterized with the AllocatorType, we have no problem passing the allocator param of different types (void* vs RosAlloc*) through ValgrindMallocSpace to the constructors.
+
+File: runtime/gc/space/rosalloc_space.cc
+
+38:50-38:55
+Thu Oct 30 00:51:55 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 55402a75_3a780831
+Bytes: 44
+Should this be allocator::RosAlloc* instead?
 
 File: runtime/gc/space/rosalloc_space.h
 

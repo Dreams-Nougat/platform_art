@@ -9,12 +9,30 @@ UUID: 95570241_5ad35196
 Bytes: 109
 Or could equally be being used to ensure we're saving all the registers to aid debugging. This looks brittle.
 
+526:0-527:84
+Fri Oct 31 15:49:49 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 95570241_5ad35196
+UUID: b5a166bc_e30a4c11
+Bytes: 64
+Note that this isn't something I'm changing, it's already there.
+
 553:0-556:2
 Wed Oct 29 06:45:34 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 95570241_1ac9d9e4
 Bytes: 75
 This makes no sense to me. Why are we implementing visitors with iterators?
+
+553:0-556:2
+Fri Oct 31 15:49:49 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 95570241_1ac9d9e4
+UUID: b5a166bc_831a605f
+Bytes: 230
+The visitor just helps the instrumentation case (all the checks above). Without the checks, we don't really need the visitor.
+
+So I believe the instrumentation case can be handled in StackVisitor, would you prefer to see it there?
 
 File: runtime/stack.h
 
@@ -25,10 +43,30 @@ UUID: 154a3299_c47aefaa
 Bytes: 100
 why are you making this virtual? Do you plan to override with a sub-class which isn't a quick frame?
 
+453:2-453:10
+Fri Oct 31 15:49:49 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 154a3299_c47aefaa
+UUID: f5975e5c_857ee49e
+Bytes: 91
+No, I wasn't aware of the convention "virtual -> tell intent of overloading in subclasses".
+
 579:0-581:20
 Wed Oct 29 06:45:34 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 154a3299_446fffed
 Bytes: 1148
 I think this is where the abstraction you are trying to create has fallen apart. The "quick frame" is really holding the state of the stack visitor when traversing frames. Setting a PC is a quick frame is entirely a fiction, its just updating information for iteration, whereas the setting the return PC is actually modifying the frame. Setting the dex PC within a shadow frame actually modifies that dex pc. The change is breaking apart StackVisitor and introduce 3 new types but I'm not sure its gaining any clarity. The reason visitor didn't group a quick method's sp with its PC is that logically one belongs to the former, the context belongs all over the stack. While previously the WalkStack function captured the idiosyncrasies of this, now the logic is distributed and so tracking bugs requires looking at the StackVisitor, the iterator and the quick frame. It seems the QuickFrame should really be owned by the stack visitor and hidden as its state, but your change is trying to promote the reverse and exposing this. I want to see what I can do with what you're trying to do, but on the face of it I'm opposed to making the change as is.
+
+579:0-581:20
+Fri Oct 31 15:49:49 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 154a3299_446fffed
+UUID: f5975e5c_e557f01a
+Bytes: 477
+That comment is a lot to grasp. I'll try to decompose it in simple questions:
+- Are you saying these three fields should be const?
+- What do you mean by ownership in "quick frame should be owned by visitor"?
+- I don't understand how you're using "distributed": what is distributed? Obviously creating abstractions distribute things because the code is not in one place anymore.
+- So I'm unsure if you're actually against creating frame abstractions make things too complicated?
 

@@ -2,10 +2,257 @@ Revision: 924ddc653aa4f7eb4af007cb43f99113eba9d9b8
 Patch-set: 1
 File: compiler/optimizing/bounds_check_elimination.cc
 
+22:44-22:54
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_62b51653
+Bytes: 30
+But why do we want that order?
+
+39:13-39:17
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5a166bc_43057833
+Bytes: 45
+If we don't handle overflow , are we correct?
+
+46:22-46:23
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_22bf0e33
+Bytes: 19
+ditto for underflow
+
 28:0-55:1
 Thu Oct 30 20:34:09 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5d5e601_f4bfc0a0
 Bytes: 86
 It's easy to be more aggressive here and try to use value ranges for the phi operands.
+
+28:0-55:1
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5d5e601_f4bfc0a0
+UUID: d59c1a86_61a3d60f
+Bytes: 50
+Agree, the reverse post order is not helping here.
+
+58:32-58:35
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_c174e2fc
+Bytes: 27
+I don't see the '+ c' here.
+
+72:19-72:32
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_2186ee70
+Bytes: 88
+All these is checks smell like you need a visitor. You'll also handle IsSub, IsMul, etc.
+
+115:20-115:21
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_e1648643
+Bytes: 29
+be critical -> be no critical
+
+119:20-119:21
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_c1698219
+Bytes: 5
+ditto
+
+142:16-142:26
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_415e926b
+Bytes: 83
+Do you need this method? The method above can itself do the, e.g. IsLessThan calls.
+
+218:24-218:29
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_e14da6b9
+Bytes: 41
+Lots of Is checks -> change to a visitor.
+
+File: compiler/optimizing/bounds_check_elimination.h
+
+30:66-30:75
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5a166bc_4037ae23
+Bytes: 22
+constant_ -> constant.
+
+40:16-40:30
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_412d72fe
+Bytes: 5
+const
+
+41:6-41:17
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_212a6ee8
+Bytes: 5
+const
+
+43:21-43:23
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_820a5a8d
+Bytes: 5
+const
+
+43:7-43:21
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_c1e62271
+Bytes: 42
+HasArrayLength -> IsRelativeToArrayLength?
+
+47:17-47:19
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_62075687
+Bytes: 5
+const
+
+51:7-51:15
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_e1c806e3
+Bytes: 51
+Add a comment on what useful means in this context.
+
+56:2-56:8
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_421452b2
+Bytes: 29
+Why static (here and below) ?
+
+62:9-62:13
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_22114ec2
+Bytes: 45
+Use the ? ternary operator (here and below) ?
+
+79:30-79:31
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_021f6acd
+Bytes: 14
+: returns ....
+
+89:15-89:25
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5a166bc_e3d24c64
+Bytes: 17
+ternary operator?
+
+95:25-95:30
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5a166bc_03ce50be
+Bytes: 13
+: returns ...
+
+105:8-105:14
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_e1f1262d
+Bytes: 17
+Ternary operator?
+
+113:13-113:23
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_a1eb1e37
+Bytes: 12
+return this?
+
+118:11-118:20
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5a166bc_63df5c68
+Bytes: 44
+Please explain why you take the upper limit.
+
+125:11-125:21
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_61de3695
+Bytes: 20
+Why the lower limit.
+
+138:2-138:14
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_02c40acd
+Bytes: 6
+const?
+
+139:6-139:15
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_41db32a3
+Bytes: 6
+const?
+
+161:7-161:15
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_c2cd02f1
+Bytes: 47
+Add a comment on what it means in this context.
+
+211:6-211:19
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_823dba05
+Bytes: 61
+If we templatize the one for GVN, could you use that instead?
+
+303:13-303:29
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d59c1a86_84102872
+Bytes: 208
+These linear dominator lookup scare me a bit. Did you consider adding a ValueRange object in instructions where it makes sense? And then add a NarrowingRangeInstruction whenever a branch + comparison is done?
+
+File: compiler/optimizing/bounds_check_elimination_test.cc
+
+28:0-28:62
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_e5d25064
+Bytes: 82
+Note that you can also express this in DEX if that's easier, but that's up to you.
+
+31:34-31:41
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5a166bc_03b890ee
+Bytes: 71
+To make it clearer at the call site, I'd just avoid the default values.
+
+File: compiler/optimizing/nodes.h
+
+1952:9-1952:24
+Fri Oct 31 15:16:33 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5975e5c_a2043e84
+Bytes: 173
+The logic of going from checked instruction to real isntruction could probably be moved to the top ComputeHashCode and Equals function.
+
+But why do you need it in your case?
 

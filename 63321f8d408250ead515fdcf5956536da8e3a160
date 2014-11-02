@@ -1,0 +1,30 @@
+Revision: 63321f8d408250ead515fdcf5956536da8e3a160
+Patch-set: 2
+File: compiler/Android.mk
+
+176:0-176:1
+Sun Nov 02 11:06:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15b23212_e496d0af
+Bytes: 17
+whitespace, done.
+
+File: runtime/lock_word.h
+
+55:0-55:97
+Sun Nov 02 11:06:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d5c5fa79_fc58a5fd
+Bytes: 529
+Note, this kind of thing looks odd. I'm adding a name so the enum gets caught by generate-operator-out.py but then declaring it private so that the script ignores it. This is to make sure we're pairing "};" properly as otherwise the "};" will close the class and we'll generate the wrong operator outs.
+Previously we'd done a similar thing by breaking the "{" onto a new line and marking that NOLINT. This breaks after this change as "};" is no longer required to be at the start of the line, ie classes with enums can be nested.
+
+File: runtime/transaction.cc
+
+387:45-387:62
+Sun Nov 02 11:06:19 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d5c5fa79_dc5de1eb
+Bytes: 181
+Note,  I failed to get the ostream operator working here as kind is nested twice in private regions and friend-ing wasn't enough to be able to let the ostream operator see the enum.
+

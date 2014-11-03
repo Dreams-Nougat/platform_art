@@ -9,6 +9,14 @@ UUID: 95bf02de_77b6f0d2
 Bytes: 111
 Add a TODO that we should revisit this with a new ABI. Combination of linear scan + quick ABI may break things.
 
+345:25-345:30
+Mon Nov 03 18:48:08 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 95bf02de_77b6f0d2
+UUID: 95bf02de_97b62481
+Bytes: 4
+Done
+
 File: runtime/arch/arm/registers_arm.h
 
 90:2-90:7
@@ -17,4 +25,33 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75d44e2e_96dcec75
 Bytes: 57
 Does this work with the current ABI? Is S24 caller-saved?
+
+90:2-90:7
+Mon Nov 03 18:48:08 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75d44e2e_96dcec75
+UUID: f5975e5c_eb3341eb
+Bytes: 1091
+It doesn't seem to break the current ABI, as all run-tests pass after this change.  However, I'm not sure I haven't broken the ABI. I gathered the following information from the code:
+
+* In compiler/optimizing/code_generator_arm.hh, registers S0 to S15 are marked as parameter FPU registers; and in compiler/optimizing/code_generator_arm.cc, registers S16 to S23 are already blocked (by art::CodeGeneratorARM::SetupBlockedRegisters).  I haven't seen other requirements about S registers, but I haven't looked everywhere.  I picked S24 as it seemed to be the first available S register.
+
+* Regarding Quick, compiler/dex/quick/arm/arm_lir.h reads:
+
+  Floating pointer registers
+  s0-s31
+  d0-d15, where d0={s0,s1}, d1={s2,s3}, ... , d15={s30,s31}
+ 
+  s16-s31 (d8-d15) preserved across C calls
+  s0-s15 (d0-d7) trashed across C calls
+ 
+  s0-s15/d0-d7 used as codegen temp/scratch
+  s16-s31/d8-d31 can be used for promotion.
+
+and also defines this:
+
+  // First FP callee save.
+  #define ARM_FP_CALLEE_SAVE_BASE 16
+
+This suggest that S24 is callee-save.  Can we use it in the optimizing compiler?
 

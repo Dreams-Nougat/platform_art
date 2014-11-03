@@ -11,12 +11,30 @@ How about blocking a D register and using it for both single and double stack mo
 
 We could call this D DTMP and its equivalent STMP.
 
+547:9-547:23
+Mon Nov 03 15:29:34 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5aec691_1b2fff7f
+UUID: f5975e5c_a2b0bed6
+Bytes: 365
+Yes, I also initially thought about this, but I also thought it might be a bit costly to reserve one register (or two) for this purpose.  The new patch set implements this strategy.
+
+I also tried to play with the stack to work around this issue -- which would be a better solution IMHO, as it requires fewer and more local changes -- but I haven't succeeded so far.
+
 2007:5-2007:28
 Thu Oct 30 18:19:09 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75dfee23_61acd080
 Bytes: 133
 We need the same fix(es) for the moves and exchanges in the parallel move resolver (used when we do linear scan register allocation).
+
+2007:5-2007:28
+Mon Nov 03 15:29:34 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75dfee23_61acd080
+UUID: f5975e5c_6854d793
+Bytes: 4
+Done
 
 File: compiler/utils/arm/assembler_thumb2.cc
 
@@ -27,6 +45,14 @@ UUID: b5aec691_5b109742
 Bytes: 134
 I don't think we should do this. IP is for internal use only and if the code generators use it, they must use it with very extra care.
 
+2487:22-2487:49
+Mon Nov 03 15:29:34 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5aec691_5b109742
+UUID: d59c1a86_c152a2db
+Bytes: 25
+Right; I got rid of this.
+
 File: test/419-large-frame/src/Main.java
 
 22:9-22:19
@@ -35,4 +61,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75dfee23_a1b5f8c6
 Bytes: 17
 check the result?
+
+22:9-22:19
+Mon Nov 03 15:29:34 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75dfee23_a1b5f8c6
+UUID: d59c1a86_8a0b8f4a
+Bytes: 4
+Done
 

@@ -1,0 +1,150 @@
+Revision: 9e775e0e45f0e8aacd679c660b865bb81099455b
+Patch-set: 5
+File: runtime/gc/allocator/rosalloc.cc
+
+1923:12-1923:91
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15e07212_919f3c69
+Bytes: 93
+How about
+
+start += ::art::gc::space::kDefaultValgrindRedZoneBytes;
+
+instead, like line 2099?
+
+1927:19-1927:27
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75d9ae6e_4805a333
+Bytes: 71
+I think we need to a dd the red zone size to obj_size in these CHECK_*.
+
+2102:39-2102:59
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75d9ae6e_1d347f1c
+Bytes: 304
+Since the variable is called obj_size which suggests a true object size that does not include the red zone, can you add valgrind_modifier to it inside the following CHECK_*, as opposed to defining obj_size to include the red zone? Or, create another variable that stands for obj_size + valgrind_modifier?
+
+File: runtime/gc/allocator/rosalloc.h
+
+375:5-375:86
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15e07212_4e3a530d
+Bytes: 115
+I'm still not clear on what this means exactly and why we do not check zero memory under valgrind. Can you explain?
+
+File: runtime/gc/space/dlmalloc_space.cc
+
+149:43-152:64
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 35e3b620_95684664
+Bytes: 100
+Can we reorder the param list to match the constructor's? I think it'd be less error-prone that way.
+
+File: runtime/gc/space/rosalloc_space-inl.h
+
+39:19-41:56
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15e07212_91473c98
+Bytes: 195
+Instead of disabling the check for the valgrind case, would the following work
+
+  size_t size_by_ptr = rosalloc_->UsableSize(reinterpret_cast<uint8_t*>(obj_ptr) - kDefaultValgrindRedZoneBytes)
+
+?
+
+File: runtime/gc/space/rosalloc_space.cc
+
+80:50-80:55
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 35e3b620_75d27ae3
+Bytes: 79
+It might compile fine as is, but should this be "allocator::RosAlloc*" instead?
+
+83:41-83:42
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15e07212_51079486
+Bytes: 20
+2 spaces -> 1 space.
+
+172:43-174:64
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75d9ae6e_a841a7d5
+Bytes: 100
+Can we reorder the param list to match the constructor's? I think it'd be less error-prone that way.
+
+File: runtime/gc/space/space_test.h
+
+70:6-70:37
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75d9ae6e_e857af1a
+Bytes: 28
+Why is this always the case?
+
+File: runtime/gc/space/valgrind_malloc_space-inl.h
+
+30:10-30:26
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15e07212_f469ceea
+Bytes: 36
+Why do we need this extra namespace?
+
+36:6-36:25
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15e07212_14869a70
+Bytes: 124
+I think we can assume bytes_allocated param is always non-null (unlike usable_size). So we don't need to check its nullness.
+
+43:0-47:5
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f533de7c_a23c5e5a
+Bytes: 66
+Why not do the same for both cases (either of line 44 or line 46)?
+
+64:0-64:33
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75d9ae6e_a879a7f2
+Bytes: 31
+Remove this commented-out code?
+
+67:0-70:5
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 35e3b620_f5f54a31
+Bytes: 31
+Remove this commented-out code?
+
+75:0-75:6
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 35e3b620_d5236e19
+Bytes: 7
+inline?
+
+143:0-147:5
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 35e3b620_e096aaaf
+Bytes: 49
+Similarly, why not doing the same for both cases?
+
+165:27-165:41
+Tue Nov 04 23:21:59 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f533de7c_02750a6f
+Bytes: 87
+If we call S::AllocationSize() here instead, can the following if statement be removed?
+

@@ -1,0 +1,64 @@
+Revision: edf8aade4469176bf35d14ee1929006fe3f3d4c9
+Patch-set: 1
+File: runtime/jdwp/jdwp_event.cc
+
+370:0-370:35
+Tue Nov 04 09:42:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15b23212_a933f468
+Bytes: 15
+Make it static?
+
+399:24-399:48
+Tue Nov 04 09:42:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 55d10a3e_3702ab2d
+Bytes: 15
+Update comment.
+
+526:0-533:1
+Tue Nov 04 09:42:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5e59e1c_8cb6fbcf
+Bytes: 123
+It looks like if you provide event_list_ as a parameter, you can remove it from JdwpState and make it local to the cc file.
+
+539:25-539:26
+Tue Nov 04 09:42:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5e59e1c_ccabe367
+Bytes: 30
+Since you're here, capitalize.
+
+910:2-923:3
+Tue Nov 04 09:42:22 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 55d10a3e_97105f72
+Bytes: 866
+We could try variadic templates to factor this out. Something like this maybe:
+
+ template <typename T, typename... R>
+ static void FindMatches(ModBasket& basket, std::vector<JdwpEvent*>* match_list, T t, R... r) {
+   FindMatchingEvents(t, basket, match_list);
+   if (sizeof...(r)) {
+     FindMatch(basket, match_list, r);
+   }
+ }
+ template <typename... T>
+ static bool FindMatches(ModBasket& basket, std::vector<JdwpEvent*>* match_list, size_t event_list_size, T... t) {
+   MutexLock...
+   reserve...
+   FindMatches(basked, match_list, t);
+   return match_list->empty();
+ }
+
+Then it should be a "simple"
+
+ std::vector<JdwpEvent*> match_list;
+ if (!FindMatches(basked, &match_list, event_list_size_,
+                  is_mod ? EK_FIELD_MODIFICATION : EK_F...)) {
+   return;
+ }
+
+Disclaimer: Untested, don't know if it compiles, but should according to some google-ing.
+

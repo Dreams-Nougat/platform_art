@@ -2,6 +2,17 @@ Revision: 9e775e0e45f0e8aacd679c660b865bb81099455b
 Patch-set: 5
 File: runtime/gc/allocator/rosalloc.cc
 
+1873:7-1873:26
+Tue Nov 04 23:47:57 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f533de7c_055f54bc
+Bytes: 526
+One more thing about modularity:
+
+Since the ValgrindMallocSpace thing now requires internal changes in the rosalloc allocator code (this CL), if we use RosAlloc from code other than ValgrindMallocSpace and we run it on valgrind, this additional code would not make sense.
+
+How about passing in a bool parameter (something like "running_with_ valgrind_malloc_space") to the RosAlloc constructor, and act accordingly in Verify() and Run::Verify(), rather than directly checking RUNNING_ON_VALGRIND in Verify() and Run::Verify()?
+
 1923:12-1923:91
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>

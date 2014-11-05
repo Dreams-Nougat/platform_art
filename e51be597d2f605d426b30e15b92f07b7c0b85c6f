@@ -9,7 +9,30 @@ UUID: b516c6da_d8694deb
 Bytes: 5
 input
 
+File: compiler/optimizing/builder.cc
+
+542:24-542:37
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d5217a32_99843bee
+Bytes: 94
+At build time, I would avoid adding the zero check if the second input is a non-zero constant.
+
 File: compiler/optimizing/code_generator_x86.cc
+
+1405:14-1405:15
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b516c6da_78ee01c7
+Bytes: 65
+These will be unused on non-debug build. I'd avoid defining them.
+
+1414:9-1414:13
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b516c6da_98abd568
+Bytes: 106
+As discussed, you can just compare if second is -1 and then do a neg on first. This saves you a cmp + jmp.
 
 1417:43-1417:47
 Wed Nov 05 11:28:06 2014 +0000
@@ -27,7 +50,28 @@ Use `testl' instead of `cmpl' to generate shorter code? I.e.:
 
   __ testl(obj.As<Register>(), obj.As<Register>());
 
+1472:33-1472:46
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7530ce7e_f65d40eb
+Bytes: 58
+This DCHECK looks wrong (the constant must always be 0??).
+
 File: compiler/optimizing/code_generator_x86_64.cc
+
+1331:18-1331:21
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d5217a32_b97edf4f
+Bytes: 43
+rax and rdx are unused in non-debug builds.
+
+1339:9-1339:13
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7530ce7e_766130ad
+Bytes: 28
+same comment about using neg
 
 1342:43-1342:47
 Wed Nov 05 11:28:06 2014 +0000
@@ -36,12 +80,42 @@ UUID: d5217a32_19990b52
 Bytes: 6
 Ditto.
 
+1386:90-1386:101
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7530ce7e_366bb88d
+Bytes: 14
+Line too long.
+
 1393:4-1393:49
 Wed Nov 05 11:28:06 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7530ce7e_1699dc51
 Bytes: 6
 Ditto.
+
+1398:13-1398:14
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b516c6da_f88f7107
+Bytes: 17
+This looks wrong.
+
+File: compiler/optimizing/nodes.h
+
+1702:66-1702:67
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d5217a32_794a871f
+Bytes: 118
+Does this still work now that we do support int divisions? What happens if y is 0, isn't the constant folder crashing?
+
+1718:2-1718:9
+Wed Nov 05 11:44:54 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d5217a32_d95873fe
+Bytes: 68
+I was told we should not put virtual here, but use OVERRIDE instead.
 
 File: test/417-optimizing-arith-div/src/Main.java
 

@@ -1,0 +1,35 @@
+Revision: 58f44adc2b04bde2a73be60b5c1ba173d1a0dbfa
+Patch-set: 3
+File: compiler/optimizing/builder.h
+
+119:0-122:43
+Wed Nov 05 19:20:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5572ea58_8d84e1ed
+Bytes: 295
+Fwiw, it can be handy to have a div/mod node so that CSE can replace the node for cases like:
+
+for ...
+int cur_val = num  % base;
+int remainder = num / base;
+
+the codegen then needs to be smart about not generate one value or the other if its not used. On Intel both values are generated anyway.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+1425:0-1428:25
+Wed Nov 05 19:20:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75752e3d_aecc3743
+Bytes: 44
+TODO: avoid branch overs and use slow-paths.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1350:0-1355:21
+Wed Nov 05 19:20:48 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 357f3623_4c959f47
+Bytes: 47
+// TODO: use slow paths and avoid branch overs.
+

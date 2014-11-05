@@ -9,6 +9,14 @@ UUID: b516c6da_d8694deb
 Bytes: 5
 input
 
+11:10-11:14
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b516c6da_d8694deb
+UUID: 7530ce7e_19334f19
+Bytes: 4
+Done
+
 File: compiler/optimizing/builder.cc
 
 542:24-542:37
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d5217a32_99843bee
 Bytes: 94
 At build time, I would avoid adding the zero check if the second input is a non-zero constant.
+
+542:24-542:37
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5217a32_99843bee
+UUID: d5217a32_d99153ba
+Bytes: 4
+sgtm
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -27,6 +43,14 @@ UUID: b516c6da_78ee01c7
 Bytes: 65
 These will be unused on non-debug build. I'd avoid defining them.
 
+1405:14-1405:15
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b516c6da_78ee01c7
+UUID: d5217a32_b9a01f05
+Bytes: 4
+Done
+
 1414:9-1414:13
 Wed Nov 05 11:44:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,12 +58,28 @@ UUID: b516c6da_98abd568
 Bytes: 106
 As discussed, you can just compare if second is -1 and then do a neg on first. This saves you a cmp + jmp.
 
+1414:9-1414:13
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b516c6da_98abd568
+UUID: 7530ce7e_165ebc6a
+Bytes: 4
+Done
+
 1417:43-1417:47
 Wed Nov 05 11:28:06 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b516c6da_78c5a144
 Bytes: 3
 has
+
+1417:43-1417:47
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b516c6da_78c5a144
+UUID: d5217a32_59a6a320
+Bytes: 8
+obsolete
 
 1467:4-1467:46
 Wed Nov 05 11:28:06 2014 +0000
@@ -50,12 +90,30 @@ Use `testl' instead of `cmpl' to generate shorter code? I.e.:
 
   __ testl(obj.As<Register>(), obj.As<Register>());
 
+1467:4-1467:46
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7530ce7e_76b370e1
+UUID: b516c6da_18db45a4
+Bytes: 99
+test does a logical AND. 0 & anything = 0 so I don't think it's possible or correct to use it here.
+
 1472:33-1472:46
 Wed Nov 05 11:44:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7530ce7e_f65d40eb
 Bytes: 58
 This DCHECK looks wrong (the constant must always be 0??).
+
+1472:33-1472:46
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7530ce7e_f65d40eb
+UUID: 7530ce7e_365bb87b
+Bytes: 125
+it was wrong.
+
+Now that the builder doesn't generate the check for non-zero constant it's better to leave the assertion here.
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -66,12 +124,28 @@ UUID: d5217a32_b97edf4f
 Bytes: 43
 rax and rdx are unused in non-debug builds.
 
+1331:18-1331:21
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5217a32_b97edf4f
+UUID: 7530ce7e_9642cc88
+Bytes: 4
+Done
+
 1339:9-1339:13
 Wed Nov 05 11:44:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7530ce7e_766130ad
 Bytes: 28
 same comment about using neg
+
+1339:9-1339:13
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7530ce7e_766130ad
+UUID: 7530ce7e_b647c897
+Bytes: 4
+Done
 
 1342:43-1342:47
 Wed Nov 05 11:28:06 2014 +0000
@@ -80,12 +154,28 @@ UUID: d5217a32_19990b52
 Bytes: 6
 Ditto.
 
+1342:43-1342:47
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5217a32_19990b52
+UUID: 7530ce7e_763a900d
+Bytes: 8
+obsolete
+
 1386:90-1386:101
 Wed Nov 05 11:44:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7530ce7e_366bb88d
 Bytes: 14
 Line too long.
+
+1386:90-1386:101
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7530ce7e_366bb88d
+UUID: d5217a32_19b02b52
+Bytes: 4
+Done
 
 1393:4-1393:49
 Wed Nov 05 11:28:06 2014 +0000
@@ -94,12 +184,28 @@ UUID: 7530ce7e_1699dc51
 Bytes: 6
 Ditto.
 
+1393:4-1393:49
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7530ce7e_1699dc51
+UUID: d5217a32_39adeff6
+Bytes: 5
+ditto
+
 1398:13-1398:14
 Wed Nov 05 11:44:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b516c6da_f88f7107
 Bytes: 17
 This looks wrong.
+
+1398:13-1398:14
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b516c6da_f88f7107
+UUID: 7530ce7e_3634181d
+Bytes: 13
+same comment.
 
 File: compiler/optimizing/nodes.h
 
@@ -125,6 +231,14 @@ UUID: d5217a32_d95873fe
 Bytes: 68
 I was told we should not put virtual here, but use OVERRIDE instead.
 
+1718:2-1718:9
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5217a32_d95873fe
+UUID: d5217a32_b979fff2
+Bytes: 4
+Done
+
 File: test/417-optimizing-arith-div/src/Main.java
 
 71:6-71:25
@@ -133,4 +247,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b516c6da_9873d5db
 Bytes: 77
 Maybe also add division-by-zero tests where the divisor (0) is not a literal?
+
+71:6-71:25
+Wed Nov 05 16:53:55 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b516c6da_9873d5db
+UUID: b516c6da_f89691af
+Bytes: 155
+I don't think this will be a literal. The generated code is in optDiv and 0 is just an argument.
+
+However, fair point!. I'll add another test for literals.
 

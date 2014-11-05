@@ -13,6 +13,14 @@ Since the ValgrindMallocSpace thing now requires internal changes in the rosallo
 
 How about passing in a bool parameter (something like "running_with_ valgrind_malloc_space") to the RosAlloc constructor, and act accordingly in Verify() and Run::Verify(), rather than directly checking RUNNING_ON_VALGRIND in Verify() and Run::Verify()?
 
+1873:7-1873:26
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f533de7c_055f54bc
+UUID: 15e07212_c53e1ee2
+Bytes: 8
+Will do.
+
 1923:12-1923:91
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,6 +32,14 @@ start += ::art::gc::space::kDefaultValgrindRedZoneBytes;
 
 instead, like line 2099?
 
+1923:12-1923:91
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15e07212_919f3c69
+UUID: 35e3b620_bb3c535a
+Bytes: 77
+start is a void*, so that doesn't work directly. I need to change its type...
+
 1927:19-1927:27
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,12 +47,28 @@ UUID: 75d9ae6e_4805a333
 Bytes: 71
 I think we need to a dd the red zone size to obj_size in these CHECK_*.
 
+1927:19-1927:27
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75d9ae6e_4805a333
+UUID: f533de7c_6557409a
+Bytes: 13
+Yes, will do.
+
 2102:39-2102:59
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75d9ae6e_1d347f1c
 Bytes: 304
 Since the variable is called obj_size which suggests a true object size that does not include the red zone, can you add valgrind_modifier to it inside the following CHECK_*, as opposed to defining obj_size to include the red zone? Or, create another variable that stands for obj_size + valgrind_modifier?
+
+2102:39-2102:59
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75d9ae6e_1d347f1c
+UUID: 15e07212_25172268
+Bytes: 8
+Will do.
 
 File: runtime/gc/allocator/rosalloc.h
 
@@ -47,6 +79,14 @@ UUID: 15e07212_4e3a530d
 Bytes: 115
 I'm still not clear on what this means exactly and why we do not check zero memory under valgrind. Can you explain?
 
+375:5-375:86
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15e07212_4e3a530d
+UUID: 35e3b620_9b1d17d3
+Bytes: 100
+I will check again, but last time it failed. I think the issue is the protection status of the page.
+
 File: runtime/gc/space/dlmalloc_space.cc
 
 149:43-152:64
@@ -55,6 +95,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35e3b620_95684664
 Bytes: 100
 Can we reorder the param list to match the constructor's? I think it'd be less error-prone that way.
+
+149:43-152:64
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_95684664
+UUID: f533de7c_c5d2cc92
+Bytes: 53
+Sure, this was to keep the API change the smallest...
 
 File: runtime/gc/space/rosalloc_space-inl.h
 
@@ -69,6 +117,14 @@ Instead of disabling the check for the valgrind case, would the following work
 
 ?
 
+39:19-41:56
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15e07212_91473c98
+UUID: f533de7c_c5ebac36
+Bytes: 7
+Likely.
+
 File: runtime/gc/space/rosalloc_space.cc
 
 80:50-80:55
@@ -77,6 +133,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35e3b620_75d27ae3
 Bytes: 79
 It might compile fine as is, but should this be "allocator::RosAlloc*" instead?
+
+80:50-80:55
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_75d27ae3
+UUID: 15e07212_253a82ba
+Bytes: 4
+Yes.
 
 83:41-83:42
 Tue Nov 04 23:21:59 2014 +0000
@@ -92,6 +156,14 @@ UUID: 75d9ae6e_a841a7d5
 Bytes: 100
 Can we reorder the param list to match the constructor's? I think it'd be less error-prone that way.
 
+172:43-174:64
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75d9ae6e_a841a7d5
+UUID: 15e07212_a5e2f2e2
+Bytes: 36
+Yes, see comment for dlmalloc_space.
+
 File: runtime/gc/space/space_test.h
 
 70:6-70:37
@@ -101,6 +173,14 @@ UUID: 75d9ae6e_e857af1a
 Bytes: 28
 Why is this always the case?
 
+70:6-70:37
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75d9ae6e_e857af1a
+UUID: 35e3b620_bb9b33d6
+Bytes: 177
+I guess we do not trigger an OOM (that's the only way I could see this violated), or know when we do and do not have the usable_size output? I'll constrain the check a bit more.
+
 File: runtime/gc/space/valgrind_malloc_space-inl.h
 
 30:10-30:26
@@ -109,6 +189,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 15e07212_f469ceea
 Bytes: 36
 Why do we need this extra namespace?
+
+30:10-30:26
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15e07212_f469ceea
+UUID: f533de7c_25893880
+Bytes: 46
+Just to keep implementation details "private."
 
 36:6-36:25
 Tue Nov 04 23:21:59 2014 +0000
@@ -123,6 +211,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f533de7c_a23c5e5a
 Bytes: 66
 Why not do the same for both cases (either of line 44 or line 46)?
+
+43:0-47:5
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f533de7c_a23c5e5a
+UUID: 35e3b620_3b5e236b
+Bytes: 173
+Line 46 doesn't work with RosAlloc, as we won't detect overflow (as usable_size almost always > num_bytes). The other case is the "traditional" one used for dlmalloc before.
 
 64:0-64:33
 Tue Nov 04 23:21:59 2014 +0000
@@ -158,4 +254,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f533de7c_02750a6f
 Bytes: 87
 If we call S::AllocationSize() here instead, can the following if statement be removed?
+
+165:27-165:41
+Wed Nov 05 00:08:28 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f533de7c_02750a6f
+UUID: 15e07212_65540a94
+Bytes: 267
+I don't think so. For one, dlmalloc needs the adjustment to ptr for AllocationSize, as it needs the start of the chunk. Also, I wanted to clearly separate the cases: for dlmalloc, it is not correct to UNDEFINE allocation_size, as that will UNDEFINE dlmalloc metadata.
 

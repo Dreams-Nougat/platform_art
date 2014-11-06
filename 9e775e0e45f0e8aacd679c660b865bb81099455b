@@ -87,6 +87,16 @@ UUID: 35e3b620_9b1d17d3
 Bytes: 100
 I will check again, but last time it failed. I think the issue is the protection status of the page.
 
+375:5-375:86
+Thu Nov 06 00:14:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_9b1d17d3
+UUID: 755e0ed1_868a8aa7
+Bytes: 247
+The original meaning of kCheckZeroMemory was that we check we always return zeroed memory for allocation requests.
+
+As RosAlloc::Run::FreeSlot() always zeroes the slot (see the memset call), we should have all slots zeroed including the red zones.
+
 File: runtime/gc/space/dlmalloc_space.cc
 
 149:43-152:64
@@ -125,6 +135,14 @@ UUID: f533de7c_c5ebac36
 Bytes: 7
 Likely.
 
+39:19-41:56
+Thu Nov 06 00:14:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f533de7c_c5ebac36
+UUID: 755e0ed1_262ab6e8
+Bytes: 25
+Can you make that change?
+
 File: runtime/gc/space/rosalloc_space.cc
 
 80:50-80:55
@@ -141,6 +159,14 @@ Parent: 35e3b620_75d27ae3
 UUID: 15e07212_253a82ba
 Bytes: 4
 Yes.
+
+80:50-80:55
+Thu Nov 06 00:14:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15e07212_253a82ba
+UUID: b564069b_0b8f8135
+Bytes: 53
+Can you change it from void* to allocator::RosAlloc*?
 
 83:41-83:42
 Tue Nov 04 23:21:59 2014 +0000
@@ -181,6 +207,14 @@ UUID: 35e3b620_bb9b33d6
 Bytes: 177
 I guess we do not trigger an OOM (that's the only way I could see this violated), or know when we do and do not have the usable_size output? I'll constrain the check a bit more.
 
+70:6-70:37
+Thu Nov 06 00:14:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_bb9b33d6
+UUID: 755e0ed1_26bf1633
+Bytes: 223
+I think Alloc() could round up the requested bytes (bytes) by some alignment, or do a page granularity allocation, in which cases it could be usable_size > bytes. RosAlloc does that. So, I wondered why you added this check.
+
 File: runtime/gc/space/valgrind_malloc_space-inl.h
 
 30:10-30:26
@@ -220,12 +254,28 @@ UUID: 35e3b620_3b5e236b
 Bytes: 173
 Line 46 doesn't work with RosAlloc, as we won't detect overflow (as usable_size almost always > num_bytes). The other case is the "traditional" one used for dlmalloc before.
 
+43:0-47:5
+Thu Nov 06 00:14:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_3b5e236b
+UUID: 755e0ed1_e696deaf
+Bytes: 85
+I think line 44 would be a more strict check against an overrun for dlmalloc as well?
+
 64:0-64:33
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75d9ae6e_a879a7f2
 Bytes: 31
 Remove this commented-out code?
+
+64:0-64:33
+Thu Nov 06 00:14:08 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75d9ae6e_a879a7f2
+UUID: 555bcae0_658c2691
+Bytes: 51
+Do you mean to want to keep the commented-out code?
 
 67:0-70:5
 Tue Nov 04 23:21:59 2014 +0000

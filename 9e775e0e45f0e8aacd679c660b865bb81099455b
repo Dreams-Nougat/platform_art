@@ -97,6 +97,14 @@ The original meaning of kCheckZeroMemory was that we check we always return zero
 
 As RosAlloc::Run::FreeSlot() always zeroes the slot (see the memset call), we should have all slots zeroed including the red zones.
 
+375:5-375:86
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 755e0ed1_868a8aa7
+UUID: 55f02a0f_66cf2464
+Bytes: 93
+This is not the case. Gtests fail in the checking code. I will leave this for a follow-up CL.
+
 File: runtime/gc/space/dlmalloc_space.cc
 
 149:43-152:64
@@ -143,6 +151,14 @@ UUID: 755e0ed1_262ab6e8
 Bytes: 25
 Can you make that change?
 
+39:19-41:56
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 755e0ed1_262ab6e8
+UUID: d5b25a5b_b1e680c1
+Bytes: 4
+Done
+
 File: runtime/gc/space/rosalloc_space.cc
 
 80:50-80:55
@@ -168,12 +184,28 @@ UUID: b564069b_0b8f8135
 Bytes: 53
 Can you change it from void* to allocator::RosAlloc*?
 
+80:50-80:55
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b564069b_0b8f8135
+UUID: b5b7a64b_10c5c445
+Bytes: 56
+The whole template parameter is unnecessary and removed.
+
 83:41-83:42
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 15e07212_51079486
 Bytes: 20
 2 spaces -> 1 space.
+
+83:41-83:42
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15e07212_51079486
+UUID: b5b7a64b_70d25011
+Bytes: 4
+Done
 
 172:43-174:64
 Tue Nov 04 23:21:59 2014 +0000
@@ -214,6 +246,14 @@ Parent: 35e3b620_bb9b33d6
 UUID: 755e0ed1_26bf1633
 Bytes: 223
 I think Alloc() could round up the requested bytes (bytes) by some alignment, or do a page granularity allocation, in which cases it could be usable_size > bytes. RosAlloc does that. So, I wondered why you added this check.
+
+70:6-70:37
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 755e0ed1_26bf1633
+UUID: 95bc6233_0ff8055a
+Bytes: 121
+This was a sanity check during "upbringing". Also note that it only says >=, so covers your case. I'll remove this again.
 
 File: runtime/gc/space/valgrind_malloc_space-inl.h
 
@@ -262,6 +302,14 @@ UUID: 755e0ed1_e696deaf
 Bytes: 85
 I think line 44 would be a more strict check against an overrun for dlmalloc as well?
 
+43:0-47:5
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 755e0ed1_e696deaf
+UUID: 95bc6233_8f1075f5
+Bytes: 117
+Does it actually matter for dlmalloc, I am wondering? Does it ever supply memory that's larger than what's requested?
+
 64:0-64:33
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -277,12 +325,28 @@ UUID: 555bcae0_658c2691
 Bytes: 51
 Do you mean to want to keep the commented-out code?
 
+64:0-64:33
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 555bcae0_658c2691
+UUID: d5b25a5b_d1e504b5
+Bytes: 20
+No, will be removed.
+
 67:0-70:5
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35e3b620_f5f54a31
 Bytes: 31
 Remove this commented-out code?
+
+67:0-70:5
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_f5f54a31
+UUID: d5b25a5b_11f82c5a
+Bytes: 4
+Done
 
 75:0-75:6
 Tue Nov 04 23:21:59 2014 +0000
@@ -291,12 +355,30 @@ UUID: 35e3b620_d5236e19
 Bytes: 7
 inline?
 
+75:0-75:6
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_d5236e19
+UUID: d5b25a5b_31fbb05a
+Bytes: 4
+Done
+
 143:0-147:5
 Tue Nov 04 23:21:59 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35e3b620_e096aaaf
 Bytes: 49
 Similarly, why not doing the same for both cases?
+
+143:0-147:5
+Thu Nov 06 08:08:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35e3b620_e096aaaf
+UUID: d5b25a5b_f115a8e3
+Bytes: 239
+The original code used usable_size here, so I wanted to keep that code path.
+
+Please note that it allows testing "over-provisioning," where we grow an array after the fact. It didn't work immediately with RosAlloc, so I split up the paths.
 
 165:27-165:41
 Tue Nov 04 23:21:59 2014 +0000

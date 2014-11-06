@@ -9,6 +9,18 @@ UUID: f5975e5c_62b51653
 Bytes: 30
 But why do we want that order?
 
+22:44-22:54
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_62b51653
+UUID: 75752e3d_c3e2b4e4
+Bytes: 324
+I added some comment:
+  // We want to visit in the dominator-based order since if a value is known to
+  // be bounded by a range at one instruction, it must be true that all uses of
+  // that value dominated by that instruction fits in that range. Range of that
+  // value can be narrowed further down in the dominator tree.
+
 39:13-39:17
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +28,28 @@ UUID: b5a166bc_43057833
 Bytes: 45
 If we don't handle overflow , are we correct?
 
+39:13-39:17
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5a166bc_43057833
+UUID: 5572ea58_7c64c505
+Bytes: 36
+I added overflow/underflow handling.
+
 46:22-46:23
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5975e5c_22bf0e33
 Bytes: 19
 ditto for underflow
+
+46:22-46:23
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_22bf0e33
+UUID: 5572ea58_3c5e3d32
+Bytes: 5
+Done.
 
 28:0-55:1
 Thu Oct 30 20:34:09 2014 +0000
@@ -38,12 +66,29 @@ UUID: d59c1a86_61a3d60f
 Bytes: 50
 Agree, the reverse post order is not helping here.
 
+28:0-55:1
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_61a3d60f
+UUID: 75752e3d_83b34ce0
+Bytes: 243
+This approach doesn't build extended ssa form. A value can be bounded by different ranges at different location in the dominator tree.
+I thought about doing union of ranges for phi nodes, but I can't think of easy cases where there is benefit.
+
 58:32-58:35
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_c174e2fc
 Bytes: 27
 I don't see the '+ c' here.
+
+58:32-58:35
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_c174e2fc
+UUID: 5572ea58_fc33d5ea
+Bytes: 49
+At line 67 below it tries to detect this pattern.
 
 72:19-72:32
 Fri Oct 31 15:16:33 2014 +0000
@@ -52,12 +97,28 @@ UUID: d59c1a86_2186ee70
 Bytes: 88
 All these is checks smell like you need a visitor. You'll also handle IsSub, IsMul, etc.
 
+72:19-72:32
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_2186ee70
+UUID: 5572ea58_dcd37918
+Bytes: 115
+I changed HandleIf, HandleAdd, etc. to a visitor pattern. But for pattern finding, we still need those IsXXX tests.
+
 115:20-115:21
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_e1648643
 Bytes: 29
 be critical -> be no critical
+
+115:20-115:21
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_e1648643
+UUID: 75752e3d_2347f816
+Bytes: 5
+Done.
 
 119:20-119:21
 Fri Oct 31 15:16:33 2014 +0000
@@ -66,6 +127,14 @@ UUID: d59c1a86_c1698219
 Bytes: 5
 ditto
 
+119:20-119:21
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_c1698219
+UUID: 5572ea58_5cc8e95d
+Bytes: 5
+Done.
+
 142:16-142:26
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -73,12 +142,28 @@ UUID: d59c1a86_415e926b
 Bytes: 83
 Do you need this method? The method above can itself do the, e.g. IsLessThan calls.
 
+142:16-142:26
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_415e926b
+UUID: 357f3623_41200038
+Bytes: 124
+This is now a visitor method VisitIf(HIf*). It gets more details and calls the above HandleIf() to do the various narrowing.
+
 218:24-218:29
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_e14da6b9
 Bytes: 41
 Lots of Is checks -> change to a visitor.
+
+218:24-218:29
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_e14da6b9
+UUID: 75752e3d_c3339499
+Bytes: 100
+I now use visitor for those. Also I removed the Sub case since it seems we generate Add(-1) for i--.
 
 File: compiler/optimizing/bounds_check_elimination.h
 
@@ -89,6 +174,14 @@ UUID: b5a166bc_4037ae23
 Bytes: 22
 constant_ -> constant.
 
+30:66-30:75
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5a166bc_4037ae23
+UUID: 357f3623_41756038
+Bytes: 5
+Done.
+
 40:16-40:30
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -96,12 +189,28 @@ UUID: d59c1a86_412d72fe
 Bytes: 5
 const
 
+40:16-40:30
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_412d72fe
+UUID: 357f3623_215134a3
+Bytes: 5
+Done.
+
 41:6-41:17
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_212a6ee8
 Bytes: 5
 const
+
+41:6-41:17
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_212a6ee8
+UUID: 357f3623_e1a7ac4d
+Bytes: 5
+Done.
 
 43:21-43:23
 Fri Oct 31 15:16:33 2014 +0000
@@ -117,6 +226,22 @@ UUID: d59c1a86_c1e62271
 Bytes: 42
 HasArrayLength -> IsRelativeToArrayLength?
 
+43:7-43:21
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_c1e62271
+UUID: 5572ea58_7c9cc542
+Bytes: 5
+Done.
+
+43:21-43:23
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_820a5a8d
+UUID: 5572ea58_1c990152
+Bytes: 5
+Done.
+
 47:17-47:19
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -131,12 +256,28 @@ UUID: d59c1a86_e1c806e3
 Bytes: 51
 Add a comment on what useful means in this context.
 
+51:7-51:15
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_e1c806e3
+UUID: b50246b9_b85839fd
+Bytes: 5
+Done.
+
 56:2-56:8
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5975e5c_421452b2
 Bytes: 29
 Why static (here and below) ?
+
+56:2-56:8
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_421452b2
+UUID: 75752e3d_83deec91
+Bytes: 153
+Changed. I was originally doing ValueBound as ArenaObject, and static avoids some scattered nullptr checks. It's now a ValueObject so that issue is gone.
 
 62:9-62:13
 Fri Oct 31 15:16:33 2014 +0000
@@ -145,12 +286,28 @@ UUID: f5975e5c_22114ec2
 Bytes: 45
 Use the ? ternary operator (here and below) ?
 
+62:9-62:13
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_22114ec2
+UUID: 75752e3d_b5f0fff7
+Bytes: 56
+A little lengthy for ternary. And there is some comment.
+
 79:30-79:31
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5975e5c_021f6acd
 Bytes: 14
 : returns ....
+
+79:30-79:31
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_021f6acd
+UUID: 75752e3d_f5f687f4
+Bytes: 5
+Done.
 
 89:15-89:25
 Fri Oct 31 15:16:33 2014 +0000
@@ -159,12 +316,28 @@ UUID: b5a166bc_e3d24c64
 Bytes: 17
 ternary operator?
 
+89:15-89:25
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5a166bc_e3d24c64
+UUID: 75752e3d_d5f58be6
+Bytes: 5
+Done.
+
 95:25-95:30
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5a166bc_03ce50be
 Bytes: 13
 : returns ...
+
+95:25-95:30
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5a166bc_03ce50be
+UUID: 75752e3d_750b774b
+Bytes: 5
+Done.
 
 105:8-105:14
 Fri Oct 31 15:16:33 2014 +0000
@@ -173,12 +346,28 @@ UUID: d59c1a86_e1f1262d
 Bytes: 17
 Ternary operator?
 
+105:8-105:14
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_e1f1262d
+UUID: 357f3623_f3521f2d
+Bytes: 5
+Done.
+
 113:13-113:23
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_a1eb1e37
 Bytes: 12
 return this?
+
+113:13-113:23
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_a1eb1e37
+UUID: 357f3623_f3b77fff
+Bytes: 5
+Done.
 
 118:11-118:20
 Fri Oct 31 15:16:33 2014 +0000
@@ -187,12 +376,28 @@ UUID: b5a166bc_63df5c68
 Bytes: 44
 Please explain why you take the upper limit.
 
+118:11-118:20
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5a166bc_63df5c68
+UUID: 357f3623_33b66700
+Bytes: 5
+Done.
+
 125:11-125:21
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_61de3695
 Bytes: 20
 Why the lower limit.
+
+125:11-125:21
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_61de3695
+UUID: 357f3623_130b2b17
+Bytes: 5
+Done.
 
 138:2-138:14
 Fri Oct 31 15:16:33 2014 +0000
@@ -201,12 +406,28 @@ UUID: f5975e5c_02c40acd
 Bytes: 6
 const?
 
+138:2-138:14
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_02c40acd
+UUID: 357f3623_d314c337
+Bytes: 5
+Done.
+
 139:6-139:15
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_41db32a3
 Bytes: 6
 const?
+
+139:6-139:15
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_41db32a3
+UUID: 5572ea58_3c7cfd0b
+Bytes: 5
+Done.
 
 161:7-161:15
 Fri Oct 31 15:16:33 2014 +0000
@@ -215,6 +436,14 @@ UUID: f5975e5c_c2cd02f1
 Bytes: 47
 Add a comment on what it means in this context.
 
+161:7-161:15
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_c2cd02f1
+UUID: 357f3623_f31e9fcf
+Bytes: 5
+Done.
+
 211:6-211:19
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -222,12 +451,30 @@ UUID: f5975e5c_823dba05
 Bytes: 61
 If we templatize the one for GVN, could you use that instead?
 
+211:6-211:19
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_823dba05
+UUID: 75752e3d_d57eeb50
+Bytes: 44
+Sure. Or is it ok to use ScopedArenaSafeMap?
+
 303:13-303:29
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d59c1a86_84102872
 Bytes: 208
 These linear dominator lookup scare me a bit. Did you consider adding a ValueRange object in instructions where it makes sense? And then add a NarrowingRangeInstruction whenever a branch + comparison is done?
+
+303:13-303:29
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d59c1a86_84102872
+UUID: b564069b_cb5889fe
+Bytes: 655
+I thought about it. An instruction may be associated with different ranges, dependent on where it's used. If we add new instructions for each narrowing, we need to rewrite all possible uses after that narrowing. And then we need to deal with merge. It's sort of extended SSA idea. Also we need to get rid of those instructions later. There seems to be much more complexity.
+
+I have a TODO optimization which only proceses the block for range-bookkeeping/narrowing only if it dominates some array accesses, plus only processes a block if it has array accesses. This info can be collected in a previous pass, like during ssa builder or gvn, any suggestions?
 
 File: compiler/optimizing/bounds_check_elimination_test.cc
 
@@ -238,12 +485,28 @@ UUID: f5975e5c_e5d25064
 Bytes: 82
 Note that you can also express this in DEX if that's easier, but that's up to you.
 
+28:0-28:62
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_e5d25064
+UUID: 755e0ed1_29304909
+Bytes: 71
+Sorry, can you explain that more clearly? How do I express this in DEX?
+
 31:34-31:41
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5a166bc_03b890ee
 Bytes: 71
 To make it clearer at the call site, I'd just avoid the default values.
+
+31:34-31:41
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5a166bc_03b890ee
+UUID: 555bcae0_083d47b1
+Bytes: 5
+Done.
 
 File: compiler/optimizing/nodes.h
 
@@ -255,4 +518,14 @@ Bytes: 173
 The logic of going from checked instruction to real isntruction could probably be moved to the top ComputeHashCode and Equals function.
 
 But why do you need it in your case?
+
+1952:9-1952:24
+Thu Nov 06 07:22:09 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5975e5c_a2043e84
+UUID: b564069b_cb0ba9c5
+Bytes: 857
+Currently we have two array.length instructions, both take in a null check instruction (Actually when we build HArrayLength instruction for Instruction::ARRAY_LENGTH in builder.cc, we seem to miss a null check). And they are treated as different values since they have different inputs. The second null check may be gvn'ed but then still the two array length instructions have different inputs, one with a null check and the other with an array. This change peels off that null check instruction so gvn will be able to rewrite the second array.length to the first array.length. So the two array.length instructions are treated as the same as long as they correspond to the same array value.
+
+This does cut off the dependency between the array length instruction and the null check instruction, do you see that as a problem? such as for possible code motion.
 

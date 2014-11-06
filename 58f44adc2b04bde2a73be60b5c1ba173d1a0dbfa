@@ -15,6 +15,14 @@ int remainder = num / base;
 
 the codegen then needs to be smart about not generate one value or the other if its not used. On Intel both values are generated anyway.
 
+119:0-122:43
+Thu Nov 06 12:19:27 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5572ea58_8d84e1ed
+UUID: 35165601_d457bcc8
+Bytes: 78
+Agree and I'll probably change it like this when I get to the rem instruction.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1425:0-1428:25
@@ -37,12 +45,28 @@ __ cdq
 __ idivl
 __ Bind(slow_path->exit)
 
+1425:0-1428:25
+Thu Nov 06 12:19:27 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_9457041c
+UUID: 35165601_746ea89d
+Bytes: 4
+Done
+
 1476:29-1476:34
 Thu Nov 06 09:22:19 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 15131213_f33e50e1
 Bytes: 88
 We might still after optimizations, so you have to check the value of the constant here.
+
+1476:29-1476:34
+Thu Nov 06 12:19:27 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15131213_f33e50e1
+UUID: 15131213_93a6fca0
+Bytes: 114
+I'd argue that you should be able to avoid generating this but there's no downside of checking the value anyway :)
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -53,10 +77,26 @@ UUID: 357f3623_4c959f47
 Bytes: 47
 // TODO: use slow paths and avoid branch overs.
 
+1350:0-1355:21
+Thu Nov 06 12:19:27 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 357f3623_4c959f47
+UUID: 950702cb_776eb09d
+Bytes: 4
+Done
+
 1403:25-1403:28
 Thu Nov 06 09:22:19 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 950702cb_5730cc09
 Bytes: 20
 Same comment as x86.
+
+1403:25-1403:28
+Thu Nov 06 12:19:27 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 950702cb_5730cc09
+UUID: 15131213_7399a051
+Bytes: 4
+Done
 

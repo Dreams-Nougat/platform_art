@@ -24,6 +24,26 @@ UUID: 75752e3d_aecc3743
 Bytes: 44
 TODO: avoid branch overs and use slow-paths.
 
+1425:0-1428:25
+Thu Nov 06 09:22:19 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75752e3d_aecc3743
+UUID: 35165601_9457041c
+Bytes: 186
+Agree, the negl could probably be done on a slow path, so you'd get something like:
+__ cmpl(second_reg, Immediate(-1))
+__ j(kNotEqual, slow_path)
+__ cdq
+__ idivl
+__ Bind(slow_path->exit)
+
+1476:29-1476:34
+Thu Nov 06 09:22:19 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15131213_f33e50e1
+Bytes: 88
+We might still after optimizations, so you have to check the value of the constant here.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 1350:0-1355:21
@@ -32,4 +52,11 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 357f3623_4c959f47
 Bytes: 47
 // TODO: use slow paths and avoid branch overs.
+
+1403:25-1403:28
+Thu Nov 06 09:22:19 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 950702cb_5730cc09
+Bytes: 20
+Same comment as x86.
 

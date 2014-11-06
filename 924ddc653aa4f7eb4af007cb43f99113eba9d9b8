@@ -21,6 +21,14 @@ I added some comment:
   // that value dominated by that instruction fits in that range. Range of that
   // value can be narrowed further down in the dominator tree.
 
+22:44-22:54
+Thu Nov 06 13:37:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75752e3d_c3e2b4e4
+UUID: 15131213_93955cce
+Bytes: 20
+Sounds good, thanks!
+
 39:13-39:17
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -75,6 +83,16 @@ Bytes: 243
 This approach doesn't build extended ssa form. A value can be bounded by different ranges at different location in the dominator tree.
 I thought about doing union of ranges for phi nodes, but I can't think of easy cases where there is benefit.
 
+28:0-55:1
+Thu Nov 06 13:37:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75752e3d_83b34ce0
+UUID: 950702cb_1782d48e
+Bytes: 234
+Should we just extend the SSA form? I'm thinking in the lines of a BoundsConversion(instruction) that would be used in place of the instruction in uses dominated by a bounds condition.
+
+It might actually be simpler and avoid the maps.
+
 58:32-58:35
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -89,6 +107,14 @@ Parent: d59c1a86_c174e2fc
 UUID: 5572ea58_fc33d5ea
 Bytes: 49
 At line 67 below it tries to detect this pattern.
+
+58:32-58:35
+Thu Nov 06 13:37:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5572ea58_fc33d5ea
+UUID: 35165601_5411ecc0
+Bytes: 108
+Yeah, I did not realize the comment applied to the whole method. Maybe put the comment on the method itself?
 
 72:19-72:32
 Fri Oct 31 15:16:33 2014 +0000
@@ -459,6 +485,14 @@ UUID: 75752e3d_d57eeb50
 Bytes: 44
 Sure. Or is it ok to use ScopedArenaSafeMap?
 
+211:6-211:19
+Thu Nov 06 13:37:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75752e3d_d57eeb50
+UUID: 950702cb_97fa641e
+Bytes: 149
+Sure, if that makes your life simpler. But do we really need a map? With extended SSA and the range in the instruction itself, maybe we can avoid it.
+
 303:13-303:29
 Fri Oct 31 15:16:33 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -492,6 +526,14 @@ Parent: f5975e5c_e5d25064
 UUID: 755e0ed1_29304909
 Bytes: 71
 Sorry, can you explain that more clearly? How do I express this in DEX?
+
+28:0-28:62
+Thu Nov 06 13:37:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 755e0ed1_29304909
+UUID: 35165601_b41e80ce
+Bytes: 33
+For example look at codegen_test.
 
 31:34-31:41
 Fri Oct 31 15:16:33 2014 +0000
@@ -528,4 +570,14 @@ Bytes: 857
 Currently we have two array.length instructions, both take in a null check instruction (Actually when we build HArrayLength instruction for Instruction::ARRAY_LENGTH in builder.cc, we seem to miss a null check). And they are treated as different values since they have different inputs. The second null check may be gvn'ed but then still the two array length instructions have different inputs, one with a null check and the other with an array. This change peels off that null check instruction so gvn will be able to rewrite the second array.length to the first array.length. So the two array.length instructions are treated as the same as long as they correspond to the same array value.
 
 This does cut off the dependency between the array length instruction and the null check instruction, do you see that as a problem? such as for possible code motion.
+
+1952:9-1952:24
+Thu Nov 06 13:37:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b564069b_cb0ba9c5
+UUID: 35165601_f418f8e3
+Bytes: 254
+(I fixed the missing null check on the array length, so it should not be a problem anymore).
+
+I think better code motion/gvn will require these "from checked to unchecked" decoding, but I'd like to understand if bounds checks elimination really needs it.
 

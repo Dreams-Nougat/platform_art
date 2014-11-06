@@ -98,6 +98,26 @@ UUID: b516c6da_18db45a4
 Bytes: 99
 test does a logical AND. 0 & anything = 0 so I don't think it's possible or correct to use it here.
 
+1467:4-1467:46
+Thu Nov 06 14:24:29 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b516c6da_18db45a4
+UUID: 35165601_745ea86b
+Bytes: 334
+I mean, instead of using:
+
+  __ cmpl(obj.As<Register>(), Immediate(0));
+  // ...
+  __ j(kEqual, slow_path->GetEntryLabel());
+
+use this:
+
+  __ testl(obj.As<Register>(), obj.As<Register>());
+  // ...
+  __ j(kEqual, slow_path->GetEntryLabel());
+
+I think this pattern is used several times elsewhere in the x86 and x86-64 code generators.
+
 1472:33-1472:46
 Wed Nov 05 11:44:54 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

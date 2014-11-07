@@ -9,12 +9,28 @@ UUID: 956382c3_fd1abf10
 Bytes: 19
 indentation is off.
 
+46:2-46:6
+Fri Nov 07 16:35:31 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 956382c3_fd1abf10
+UUID: d5697aa3_3fa98f9d
+Bytes: 4
+Done
+
 50:2-50:6
 Fri Nov 07 16:08:21 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7578ce6f_1c393df8
 Bytes: 5
 ditto
+
+50:2-50:6
+Fri Nov 07 16:35:31 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7578ce6f_1c393df8
+UUID: 956382c3_bd5e87bd
+Bytes: 4
+Done
 
 117:17-117:26
 Fri Nov 07 16:08:21 2014 +0000
@@ -23,12 +39,30 @@ UUID: 956382c3_3dfd1743
 Bytes: 42
 The IsFPType already covers the void kind.
 
+117:17-117:26
+Fri Nov 07 16:35:31 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 956382c3_3dfd1743
+UUID: 956382c3_fd68ff64
+Bytes: 4
+Done
+
 138:62-138:70
 Fri Nov 07 16:08:21 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d5697aa3_df4c138e
 Bytes: 78
 This will convert a float from the app to a double. Is it really what we want?
+
+138:62-138:70
+Fri Nov 07 16:35:31 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5697aa3_df4c138e
+UUID: d5697aa3_7f8ce73e
+Bytes: 248
+If the float is a normalized value this should work fine, as any further cast to float should yield the same value. Can we get NaNs or denormal values from these constants?
+
+Anyway since we use it only in one place for now I will remove the helper.
 
 417:32-417:38
 Fri Nov 07 16:08:21 2014 +0000
@@ -37,6 +71,18 @@ UUID: d5697aa3_ff51d726
 Bytes: 29
 The rhs of the || is useless.
 
+417:32-417:38
+Fri Nov 07 16:35:31 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d5697aa3_ff51d726
+UUID: d5697aa3_ff147737
+Bytes: 178
+Why?
+I added this to enforce coherence between the widths of the destination and the source.
+Replaced with
+  DCHECK(dst.Is64Bits() == source.IsDoubleStackSlot());
+here and above.
+
 448:6-448:10
 Fri Nov 07 16:08:21 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,10 +90,26 @@ UUID: 956382c3_9d346386
 Bytes: 20
 Do a DCHECK instead.
 
+448:6-448:10
+Fri Nov 07 16:35:31 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 956382c3_9d346386
+UUID: 956382c3_fdb63f81
+Bytes: 191
+Done. I have been wondering what the policy is on using DCHECK or LOG(FATAL). I would have a tendency to use DCHECK everywhere, but that wouldn't catch issues in release mode. Any guidelines?
+
 532:26-532:32
 Fri Nov 07 16:08:21 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 956382c3_bd39277d
 Bytes: 16
 You mean callee?
+
+532:26-532:32
+Fri Nov 07 16:35:31 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 956382c3_bd39277d
+UUID: d5697aa3_5f2483a4
+Bytes: 11
+Yes. Fixed.
 

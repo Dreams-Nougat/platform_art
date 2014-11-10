@@ -9,6 +9,14 @@ UUID: baf15352_e353ec5f
 Bytes: 7
 unused?
 
+1288:6-1288:31
+Mon Nov 10 11:29:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baf15352_e353ec5f
+UUID: 3a0563fe_7cf5392d
+Bytes: 83
+It's passed to CanAccessTypeWithoutChecks. But otherwise, yes, it's unused for now.
+
 File: compiler/optimizing/code_generator_arm.cc
 
 276:2-276:9
@@ -25,12 +33,36 @@ UUID: baf15352_834ae0a3
 Bytes: 89
 Fwiw, when is the code your emitting not native? This naming isn't conveying any meaning.
 
+276:2-276:9
+Mon Nov 10 11:29:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 151dd24d_86f6ccf3
+UUID: fa358bd2_3230108b
+Bytes: 158
+Will clean up in another CL. Your suggestion about FINAL is to add it to the declaration of the class? Do we get warnings when using virtual in a FINAL class?
+
+276:19-276:25
+Mon Nov 10 11:29:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baf15352_834ae0a3
+UUID: 3a0563fe_1c04f583
+Bytes: 50
+Yeah, this naming was taken from past Dart naming.
+
 2647:0-2649:35
 Sun Nov 09 19:53:25 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 151dd24d_a6fbc8da
 Bytes: 138
 There's no point doing this comparison if the type is known to be abstract as you can't have an instance of an abstract or interface type.
+
+2647:0-2649:35
+Mon Nov 10 11:29:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 151dd24d_a6fbc8da
+UUID: 9af64f48_5f3b8b72
+Bytes: 185
+Yes. I wanted to have at first a simple fast path case and then fall back. But all these simple decisions will be (re-)considered once we have greater code coverage and start profiling.
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -59,10 +91,28 @@ UUID: baf15352_2372f403
 Bytes: 39
 prefer ATTRIBUTE_UNUSED on the argument
 
+2345:4-2345:10
+Mon Nov 10 11:29:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baf15352_2372f403
+UUID: 9af64f48_3f30c78a
+Bytes: 8
+Will do.
+
 2350:13-2350:64
 Sun Nov 09 19:53:25 2014 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 151dd24d_26dfd868
 Bytes: 68
 check cast may throw an exception, instanceof is pretty much atomic.
+
+2350:13-2350:64
+Mon Nov 10 11:29:06 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 151dd24d_26dfd868
+UUID: 9af64f48_ff293f29
+Bytes: 168
+So we agree instanceof (assuming the class is loaded) cannot be debugged at the DEX level when in runtime, right?
+
+Otherwise, yes, a checkcast location can be debugged.
 

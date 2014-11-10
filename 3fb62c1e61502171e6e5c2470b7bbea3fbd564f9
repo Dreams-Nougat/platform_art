@@ -71,6 +71,14 @@ UUID: 3a0563fe_3c30d18a
 Bytes: 44
 Yeah, just change default to case kPrimVoid.
 
+744:4-744:11
+Mon Nov 10 10:59:55 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a0563fe_3c30d18a
+UUID: fa358bd2_b2708078
+Bytes: 3
+Ok.
+
 815:34-815:38
 Fri Nov 07 16:14:28 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -108,6 +116,18 @@ Parent: d5697aa3_5f3d63b0
 UUID: 3a0563fe_1c35157b
 Bytes: 93
 So what's the consequences of using a vixl reg? vixl is going to spill and restore it, right?
+
+824:28-824:33
+Mon Nov 10 10:59:55 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a0563fe_1c35157b
+UUID: 9af64f48_3fc7a724
+Bytes: 541
+No additional instructions are generated here.
+VIXL reserves a couple of registers for local use (eg. to generate constants when they cannot be encoded in the immediate field). These registers are not given to the register allocator.
+Requiring a register this way does not add  spilling/restoring. It just forbids VIXL from using them while the scope is active so we can use them as a local temporary. If we requested all of VIXL temps and then tried to generate
+   'add x0, x0, <value not encodable in imm field>'
+VIXL would fire an assert.
 
 1050:91-1050:102
 Fri Nov 07 16:14:28 2014 +0000

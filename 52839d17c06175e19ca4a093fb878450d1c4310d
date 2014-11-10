@@ -27,6 +27,16 @@ UUID: 5a4f777e_a876d342
 Bytes: 295
 Not sure I follow the question, you want called methods not to trash R12/IP? The hidden argument register is required to be IP for the stub, but this could be changed. You'd be better off not having magic hidden register usage in the assemblers, this was the status pre-optimizing compiler work.
 
+1180:61-1180:64
+Mon Nov 10 20:04:44 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a4f777e_a876d342
+UUID: fa83cbc2_a2ea9e09
+Bytes: 412
+This is a bit paranoid: when we take pointer to the invoke stub, are we sure it points right to the stub and not to a different compiler (GCC/clang) generated stub that would dispatch it to the invoke stub while trashing IP?
+
+And I think we're safe because the compiler needs to ensure that pointers to the function always compare equal and that would not be possible if it was returning pointers to extra stubs.
+
 File: test/423-invoke-interface/src/Main.java
 
 38:15-38:23

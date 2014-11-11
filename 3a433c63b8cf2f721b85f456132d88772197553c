@@ -9,12 +9,28 @@ UUID: 35165601_54ad6cf5
 Bytes: 14
 Line too long.
 
+96:97-96:107
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_54ad6cf5
+UUID: 7aaefb66_2649d6ad
+Bytes: 6
+Fixed.
+
 109:105-109:108
 Thu Nov 06 14:09:02 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 950702cb_f7cda0f0
 Bytes: 5
 ditto
+
+109:105-109:108
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 950702cb_f7cda0f0
+UUID: 7aaefb66_86376a20
+Bytes: 6
+Fixed.
 
 196:6-196:11
 Thu Nov 06 14:09:02 2014 +0000
@@ -23,12 +39,28 @@ UUID: 15131213_f3cdb0f0
 Bytes: 54
 Why limiting to constants? You could use a ValueBound.
 
+196:6-196:11
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15131213_f3cdb0f0
+UUID: 5a4f777e_d673e451
+Bytes: 431
+I was feeling it's not particularly useful. Constant is useful since it's easy to check it's >=0. For non-constant, accessing array[i] again will not need bounds-check due to gvn. Accessing array[i+1] still need bounds-check due to upper bound can't be guaranteed. Accessing array[i-1] still need bounds-check unless we also can prove i>0. I can write a such a case but it's sort of artificial. So I decided to save some work here.
+
 201:95-201:100
 Thu Nov 06 14:09:02 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35165601_b47a00e7
 Bytes: 14
 Line too long.
+
+201:95-201:100
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_b47a00e7
+UUID: 7aaefb66_69d24163
+Bytes: 6
+Fixed.
 
 213:29-213:42
 Thu Nov 06 14:09:02 2014 +0000
@@ -37,12 +69,28 @@ UUID: 35165601_14de5493
 Bytes: 56
 Why do you need this? The VisitBoundsCheck should do it.
 
+213:29-213:42
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_14de5493
+UUID: 5aabf756_a5fe1ec3
+Bytes: 81
+Good point. I removed it and put HandleArrayAccess stuffs under VisitBoundsCheck.
+
 220:29-220:42
 Thu Nov 06 14:09:02 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 950702cb_d71dfcd1
 Bytes: 5
 ditto
+
+220:29-220:42
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 950702cb_d71dfcd1
+UUID: 5aabf756_052932b2
+Bytes: 8
+Removed.
 
 File: compiler/optimizing/bounds_check_elimination.h
 
@@ -53,12 +101,31 @@ UUID: 950702cb_3733986b
 Bytes: 34
 Not sure I understand the comment.
 
+53:37-53:41
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 950702cb_3733986b
+UUID: 5a4f777e_16517ca0
+Bytes: 21
+I deleted the method.
+
 97:25-97:31
 Thu Nov 06 14:09:02 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 15131213_13b5cc53
 Bytes: 26
 Do we get this case today?
+
+97:25-97:31
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15131213_13b5cc53
+UUID: 5aabf756_65558610
+Bytes: 101
+Yes. That's how
+// int[] array = new array[10];
+// for (int i=0; i<10; i++) { array[i] = 10; }
+works.
 
 117:44-117:50
 Thu Nov 06 14:09:02 2014 +0000
@@ -67,12 +134,28 @@ UUID: 35165601_b49160bb
 Bytes: 18
 bigger -> greatest
 
+117:44-117:50
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_b49160bb
+UUID: 7aaefb66_c99b354a
+Bytes: 5
+Done.
+
 130:44-130:51
 Thu Nov 06 14:09:02 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35165601_9496e4ae
 Bytes: 17
 smaller -> lowest
+
+130:44-130:51
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_9496e4ae
+UUID: 7aaefb66_e998714f
+Bytes: 5
+Done.
 
 202:56-202:62
 Thu Nov 06 14:09:02 2014 +0000
@@ -81,12 +164,28 @@ UUID: 35165601_d4a05c06
 Bytes: 16
 Remove 'stuffs'.
 
+202:56-202:62
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_d4a05c06
+UUID: 5aabf756_25e6aefa
+Bytes: 5
+Done.
+
 225:28-225:39
 Thu Nov 06 14:09:02 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35165601_34a6f01f
 Bytes: 31
 I don't understand the comment.
+
+225:28-225:39
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_34a6f01f
+UUID: 5a4f777e_56edb44c
+Bytes: 22
+I deleted this method.
 
 File: compiler/optimizing/bounds_check_elimination_test.cc
 
@@ -96,4 +195,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 35165601_d4797cf2
 Bytes: 104
 I could not find where in the bounds check elimination do we know that (max i) is equal to array length?
+
+265:19-265:21
+Tue Nov 11 23:40:51 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35165601_d4797cf2
+UUID: 7aaefb66_c90255a8
+Bytes: 96
+It's the ValueBound::LessThanOrEqual() where it checks for constant array length of a NEW_ARRAY.
 

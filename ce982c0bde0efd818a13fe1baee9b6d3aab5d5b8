@@ -1,5 +1,14 @@
 Revision: ce982c0bde0efd818a13fe1baee9b6d3aab5d5b8
 Patch-set: 3
+File: /COMMIT_MSG
+
+10:19-10:27
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_2663028c
+Bytes: 11
+assembly :)
+
 File: compiler/optimizing/builder.cc
 
 546:45-546:52
@@ -24,6 +33,51 @@ UUID: ba8dd3f4_a64dd208
 Bytes: 172
 Yeah I guess it started out as naming like others do, and then when creating instructions that needed it, it naturally got named 'dex_pc'. I agree se should rename it here.
 
+File: compiler/optimizing/code_generator_arm.cc
+
+44:75-44:77
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_263a225e
+Bytes: 50
+It this change OK with respect to the current ABI?
+
+1660:55-1660:61
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_463f264d
+Bytes: 226
+It is strange that this pair is made of two non-consecutive registers.  Is this a requirement of the instruction set?  Or is it because you reuse the first register of the operands' pairs?  Maybe add a comment line about this.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+39:78-39:81
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_86b0ce85
+Bytes: 6
+Ditto.
+
+661:8-661:31
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: da88c7e4_aa3913c6
+Bytes: 11
+Good catch!
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1611
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: da88c7e4_8adc4f27
+Bytes: 54
+Maybe add
+
+  DCHECK_EQ(type, Primitive::kPrimLong);
+
+?
+
 File: compiler/optimizing/nodes.h
 
 1766:17-1766:24
@@ -34,4 +88,38 @@ Bytes: 94
 perhaps evidence that you should do:
 s/dex_offset/dex_pc/g
 but not necessarily in this change.
+
+File: compiler/utils/x86_64/assembler_x86_64.cc
+
+909
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa83cbc2_28abcf6c
+Bytes: 81
+Nit: add a newline here (there are two blank lines between methods in this file).
+
+1235
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: da88c7e4_aa227398
+Bytes: 19
+Nit: add a newline.
+
+1238:2-1238:17
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: da88c7e4_0a16ff39
+Bytes: 189
+This method is usually not directly called by methods generating instructions; maybe add another overloaded EmitRex64 method calling
+
+  EmitOptionalRex(false, true, false, false, false);
+
+?
+
+1241
+Wed Nov 12 10:53:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa83cbc2_6888f704
+Bytes: 19
+Nit: add a newline.
 

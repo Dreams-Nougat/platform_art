@@ -1,0 +1,29 @@
+Revision: ce982c0bde0efd818a13fe1baee9b6d3aab5d5b8
+Patch-set: 3
+File: compiler/optimizing/builder.cc
+
+546:45-546:52
+Wed Nov 12 01:04:29 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aa8035b_24455271
+Bytes: 187
+the use of "_reg" here is ambiguous, dalvik vs machine vs.. perhaps use a typedef for uint16_t to "dalvik_reg_t" make the code more intention revealing. Or maybe just first_dalvik_reg, ..
+
+549:45-549:55
+Wed Nov 12 01:04:29 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aa8035b_6424aadb
+Bytes: 291
+why are we referring to these as dex_offsets? the term dex offset comes from Dalvik where these were addresses in memory. Currently these should be dex PCs, namely offsets from the start of code items. Quick lacks this clean up but there's no need to bring over the convention to optimizing.
+
+File: compiler/optimizing/nodes.h
+
+1766:17-1766:24
+Wed Nov 12 01:04:29 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aabf756_6e5ec3c0
+Bytes: 94
+perhaps evidence that you should do:
+s/dex_offset/dex_pc/g
+but not necessarily in this change.
+

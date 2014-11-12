@@ -33,6 +33,13 @@ UUID: ba8dd3f4_a64dd208
 Bytes: 172
 Yeah I guess it started out as naming like others do, and then when creating instructions that needed it, it naturally got named 'dex_pc'. I agree se should rename it here.
 
+559:6-559:7
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_46bac665
+Bytes: 17
+weird indentation
+
 File: compiler/optimizing/code_generator_arm.cc
 
 44:75-44:77
@@ -42,12 +49,49 @@ UUID: ba8dd3f4_263a225e
 Bytes: 50
 It this change OK with respect to the current ABI?
 
+855:9-855:20
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa83cbc2_8878db66
+Bytes: 14
+This is wrong.
+
+1646:73-1646:80
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_a6a8721b
+Bytes: 100
+You need to say that it will call for long division. Otherwise the live registers will not be saved.
+
 1660:55-1660:61
 Wed Nov 12 10:53:28 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ba8dd3f4_463f264d
 Bytes: 226
 It is strange that this pair is made of two non-consecutive registers.  Is this a requirement of the instruction set?  Or is it because you reuse the first register of the operands' pairs?  Maybe add a comment line about this.
+
+1697:16-1697:33
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa83cbc2_4882d3da
+Bytes: 176
+This should only be used on slow paths.
+
+Also, you won't get any live registers saved, as the register allocator only records the set on instructions that that kCallOnSlowPath.
+
+1699:16-1699:28
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_268c62c6
+Bytes: 41
+InvokeRuntime already calls RecordPcInfo.
+
+1700:16-1700:36
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_469166d9
+Bytes: 7
+Remove.
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -65,6 +109,13 @@ UUID: da88c7e4_aa3913c6
 Bytes: 11
 Good catch!
 
+1683:16-1683:33
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_e6851a99
+Bytes: 41
+Same comments as the ones in arm backend.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 1611
@@ -79,6 +130,22 @@ Maybe add
 ?
 
 File: compiler/optimizing/nodes.h
+
+1748:86-1748:92
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa83cbc2_485973fa
+Bytes: 154
+Don't give a default value, make all callers pass it. Otherwise it is confusing to have a dex pc that does not match the actual pc of the div instruction.
+
+1759:7-1759:23
+Wed Nov 12 11:02:17 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba8dd3f4_e608ba9a
+Bytes: 153
+The long operation is atomic, so you don't need an environment.
+
+(An environment is only for instructions at which the debugger could inspect the stack).
 
 1766:17-1766:24
 Wed Nov 12 01:04:29 2014 +0000

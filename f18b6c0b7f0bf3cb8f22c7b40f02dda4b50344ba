@@ -9,6 +9,14 @@ UUID: fab4abdf_9d9ea7f2
 Bytes: 51
 Aren't you doing it in the assembler_thum2_test.cc?
 
+13:0-13:4
+Thu Nov 13 17:42:49 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fab4abdf_9d9ea7f2
+UUID: fab4abdf_7d91d3d9
+Bytes: 178
+I meant, "don't forget to check (and fix) the implementation of art::arm::Thumb2Assembler::sbfx as it does not always produce the expected results".  It's gone in PS2 anyway.  :)
+
 File: compiler/utils/assembler_test.h
 
 403:14-403:17
@@ -25,4 +33,14 @@ Parent: fab4abdf_5db5ef72
 UUID: 3ac2c357_54194c1b
 Bytes: 64
 Yes, would be nice to know why the shell around it is necessary.
+
+403:14-403:17
+Thu Nov 13 17:42:49 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fab4abdf_5db5ef72
+UUID: fab4abdf_3d211b13
+Bytes: 466
+I am using the same strategy as in AssemblerTest::Objdump and AssemblerTest::DisassembleBinary to let AssemblerTest::GetAssemblerCommand contain arguments and be used with Exec, by encaspulating the whole shell command line in a single string passed to /bin/sh.  Otherwise (i.e. before this change), the shell would complain that is cannot find a file (a program) named "/path/to/as -mthumb".
+
+Should I add this explanation to one (or possibly all) of these methods?
 

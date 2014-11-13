@@ -9,12 +9,30 @@ UUID: 1ae6dfff_fb1faf4a
 Bytes: 44
 Is that just while debugging? I'd remove it.
 
+245:15-245:48
+Thu Nov 13 10:10:56 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ae6dfff_fb1faf4a
+UUID: 9adacf31_02acecfc
+Bytes: 160
+I prefer to have it here. Once we have more assembler tests, it is nice to just override that function in the one you're working on and just have that impacted.
+
 644:18-644:51
 Thu Nov 13 09:46:53 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fab4abdf_ba60d1f3
 Bytes: 65
 add a kDeleteIntermediatesOnSizeMismatch if you really want this.
+
+644:18-644:51
+Thu Nov 13 10:10:56 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fab4abdf_ba60d1f3
+UUID: 9adacf31_227810ee
+Bytes: 142
+I like OOP. :-)
+
+I'd do it through a template parameter. The whole point of this is that a specific assembler test can decide what it wants...
 
 File: compiler/utils/x86_64/assembler_x86_64.cc
 
@@ -27,6 +45,14 @@ As discussed, this sounds a bit overkill, when you actually just have to check i
 
 I'd still keep a helper + comment though.
 
+42:9-42:24
+Thu Nov 13 10:10:56 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fab4abdf_3ac0415a
+UUID: 5adcd72f_00c228bd
+Bytes: 4
+Done
+
 File: compiler/utils/x86_64/assembler_x86_64_test.cc
 
 42:62-42:87
@@ -36,10 +62,26 @@ UUID: 3ae9e3cf_1c50d520
 Bytes: 24
 Do you really need this?
 
+42:62-42:87
+Thu Nov 13 10:10:56 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ae9e3cf_1c50d520
+UUID: 9adacf31_427d14dd
+Bytes: 75
+It makes the function declarations/definitions below a lot more readable...
+
 275:20-275:45
 Thu Nov 13 09:46:53 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ae6dfff_5b26e3ab
 Bytes: 40
 Why isn't that just X86_64AssemblerTest?
+
+275:20-275:45
+Thu Nov 13 10:10:56 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ae6dfff_5b26e3ab
+UUID: 7adfdb23_412434db
+Bytes: 246
+Because I did not want to templatize AssemblerTest over the type of the subclass. As AssemblerTest has the generic infrastructure to create an assembler object and call the given function, you only know at that point that it's an AssemblerTest...
 

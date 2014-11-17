@@ -9,12 +9,68 @@ UUID: 5a8a1730_ede8c5bb
 Bytes: 66
 Maybe turn these into compile-time assertions using static_assert?
 
+56:40-56:42
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_e077e273
+Bytes: 116
+I think this is trying to be too clever. I'd much prefer a switch here, or the negative (!float && !double && !ref).
+
+140:50-140:61
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aa857a2_bd81ffdf
+Bytes: 84
+I don't understand this. Why are you returning a CPU register from a floating point?
+
+146:20-146:31
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aa857a2_9d8643f4
+Bytes: 5
+ditto
+
 254:8-254:25
 Fri Nov 14 18:17:20 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ae6dfff_445fe4e2
 Bytes: 49
 Don't forget to #undef it at the end of the file.
+
+272:2-272:10
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_e05ec2e5
+Bytes: 7
+Remove.
+
+279:2-279:9
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9aa64fd2_ffe3ffb2
+Bytes: 7
+Remove.
+
+283:19-283:29
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_8067f6c3
+Bytes: 109
+You need a parallel move here (I changed the other backends to do so, you can take a look at how they do it).
+
+303:2-303:9
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aa857a2_7d9c9742
+Bytes: 15
+Remove virtual.
+
+325:2-325:9
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_4071ee7a
+Bytes: 7
+Remove.
 
 342
 Fri Nov 14 18:17:20 2014 +0000
@@ -23,12 +79,62 @@ UUID: 5a8a1730_cdbea9a5
 Bytes: 35
 Maybe add DCHECK(out.IsRegister())?
 
+372:2-372:9
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_206eea9e
+Bytes: 7
+Remove.
+
+402:2-402:9
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aa857a2_1d935331
+Bytes: 7
+Remove.
+
+421:2-421:9
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9aa64fd2_3fdba7fb
+Bytes: 7
+Remove.
+
 424:4-425:81
 Fri Nov 14 18:17:20 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fab4abdf_03831462
 Bytes: 86
 Shouldn't live registers be saved before the call to InvokeRuntime and restored after?
+
+424:4-425:81
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fab4abdf_03831462
+UUID: baa153bc_604bd225
+Bytes: 109
+Yes, please save them (though it won't change anything today as you haven't enabled the linear scan regalloc)
+
+454:2-454:9
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_4048ce26
+Bytes: 7
+Remove.
+
+605:27-605:43
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_2045ca0c
+Bytes: 97
+Isn't this dead code while you're not supporting the regalloc? I'd just do UNIMPLEMENTED for now.
+
+611:27-611:46
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aa857a2_3d716f7c
+Bytes: 5
+ditto
 
 683:4-683:72
 Fri Nov 14 18:17:20 2014 +0000
@@ -52,6 +158,20 @@ Maybe add
 
 ?
 
+761:0-761:83
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_a0cb1a2e
+Bytes: 32
+Replace with Is64BitsType(type).
+
+787:0-787:83
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9aa64fd2_1fefc393
+Bytes: 5
+ditto
+
 1057:46-1057:47
 Fri Nov 14 18:17:20 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -65,6 +185,27 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5a8a1730_ad631db6
 Bytes: 77
 Maybe recall in a comment that TypeCheckSlowPathARM64 is not yet implemented?
+
+1217:0-1217:97
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: baa153bc_40db2efa
+Bytes: 164
+I guess you just want an fatal here, right? Having this check with the condition line 1214 makes it kind of funny :-). I'd just do LOG(FATAL) << "Divisions by ...."
+
+1243:28-1243:32
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aa857a2_9d5883f9
+Bytes: 27
+Is the TODO still relevant?
+
+1977:17-1977:19
+Mon Nov 17 10:18:03 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9aa64fd2_1f0a23bf
+Bytes: 60
+DCHECK instead. today, we should not be in such a situation.
 
 1989:77-1989:85
 Fri Nov 14 18:17:20 2014 +0000

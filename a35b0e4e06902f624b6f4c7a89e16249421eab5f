@@ -9,6 +9,14 @@ UUID: 5a8a1730_ede8c5bb
 Bytes: 66
 Maybe turn these into compile-time assertions using static_assert?
 
+52:0-55:54
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a8a1730_ede8c5bb
+UUID: baa153bc_e0a5a297
+Bytes: 4
+Done
+
 56:40-56:42
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,29 @@ UUID: baa153bc_e077e273
 Bytes: 116
 I think this is trying to be too clever. I'd much prefer a switch here, or the negative (!float && !double && !ref).
 
+56:40-56:42
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_e077e273
+UUID: 5aa857a2_ddc16b10
+Bytes: 20
+Changed to a switch.
+
 140:50-140:61
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aa857a2_bd81ffdf
 Bytes: 84
 I don't understand this. Why are you returning a CPU register from a floating point?
+
+140:50-140:61
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa857a2_bd81ffdf
+UUID: 5aa857a2_9dcbe32e
+Bytes: 222
+vixl::CPURegister is the base class for vixl::Register and vixl::FPRegister. This allows simplifiying code paths that don't need to make a distinction between core and fp registers.
+See for example VisitInstanceFieldGet().
 
 146:20-146:31
 Mon Nov 17 10:18:03 2014 +0000
@@ -37,12 +62,28 @@ UUID: 1ae6dfff_445fe4e2
 Bytes: 49
 Don't forget to #undef it at the end of the file.
 
+254:8-254:25
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ae6dfff_445fe4e2
+UUID: baa153bc_c0aa9e67
+Bytes: 41
+This is a .cc file. Do we really need it?
+
 272:2-272:10
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: baa153bc_e05ec2e5
 Bytes: 7
 Remove.
+
+272:2-272:10
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_e05ec2e5
+UUID: 5aa857a2_1dd8f3fa
+Bytes: 4
+Done
 
 279:2-279:9
 Mon Nov 17 10:18:03 2014 +0000
@@ -51,12 +92,29 @@ UUID: 9aa64fd2_ffe3ffb2
 Bytes: 7
 Remove.
 
+279:2-279:9
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9aa64fd2_ffe3ffb2
+UUID: 9aa64fd2_1f21033d
+Bytes: 119
+Removed here and for other slow paths.
+Also removed it in the arm codegen. Let me now if you prefer me to restore them.
+
 283:19-283:29
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: baa153bc_8067f6c3
 Bytes: 109
 You need a parallel move here (I changed the other backends to do so, you can take a look at how they do it).
+
+283:19-283:29
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_8067f6c3
+UUID: baa153bc_a01d5a09
+Bytes: 93
+Ok. Replaced with a breakpoint and a TODO for now. Parallel moves will come in my next patch.
 
 303:2-303:9
 Mon Nov 17 10:18:03 2014 +0000
@@ -65,12 +123,28 @@ UUID: 5aa857a2_7d9c9742
 Bytes: 15
 Remove virtual.
 
+303:2-303:9
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa857a2_7d9c9742
+UUID: 5aa857a2_1defd393
+Bytes: 4
+Done
+
 325:2-325:9
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: baa153bc_4071ee7a
 Bytes: 7
 Remove.
+
+325:2-325:9
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_4071ee7a
+UUID: baa153bc_800376ac
+Bytes: 4
+Done
 
 342
 Fri Nov 14 18:17:20 2014 +0000
@@ -79,12 +153,28 @@ UUID: 5a8a1730_cdbea9a5
 Bytes: 35
 Maybe add DCHECK(out.IsRegister())?
 
+342
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a8a1730_cdbea9a5
+UUID: 9aa64fd2_5f642bbe
+Bytes: 4
+Done
+
 372:2-372:9
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: baa153bc_206eea9e
 Bytes: 7
 Remove.
+
+372:2-372:9
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_206eea9e
+UUID: baa153bc_6000729f
+Bytes: 4
+Done
 
 402:2-402:9
 Mon Nov 17 10:18:03 2014 +0000
@@ -93,12 +183,28 @@ UUID: 5aa857a2_1d935331
 Bytes: 7
 Remove.
 
+402:2-402:9
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa857a2_1d935331
+UUID: 5aa857a2_fd0e67d8
+Bytes: 4
+Done
+
 421:2-421:9
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9aa64fd2_3fdba7fb
 Bytes: 7
 Remove.
+
+421:2-421:9
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9aa64fd2_3fdba7fb
+UUID: 5aa857a2_dd13abfc
+Bytes: 4
+Done
 
 424:4-425:81
 Fri Nov 14 18:17:20 2014 +0000
@@ -115,12 +221,35 @@ UUID: baa153bc_604bd225
 Bytes: 109
 Yes, please save them (though it won't change anything today as you haven't enabled the linear scan regalloc)
 
+424:4-425:81
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fab4abdf_03831462
+UUID: 5aa857a2_9de523ef
+Bytes: 4
+Done
+
 454:2-454:9
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: baa153bc_4048ce26
 Bytes: 7
 Remove.
+
+454:2-454:9
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_4048ce26
+UUID: 5aa857a2_9d1d230a
+Bytes: 4
+Done
+
+456
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9aa64fd2_3f71677c
+Bytes: 18
+Added a TODO here.
 
 605:27-605:43
 Mon Nov 17 10:18:03 2014 +0000
@@ -129,12 +258,28 @@ UUID: baa153bc_2045ca0c
 Bytes: 97
 Isn't this dead code while you're not supporting the regalloc? I'd just do UNIMPLEMENTED for now.
 
+605:27-605:43
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_2045ca0c
+UUID: 9aa64fd2_9f675395
+Bytes: 9
+Reverted.
+
 611:27-611:46
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aa857a2_3d716f7c
 Bytes: 5
 ditto
+
+611:27-611:46
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa857a2_3d716f7c
+UUID: baa153bc_0036468a
+Bytes: 9
+Reverted.
 
 683:4-683:72
 Fri Nov 14 18:17:20 2014 +0000
@@ -147,6 +292,14 @@ Shouldn't this line be
 
 instead?
 
+683:4-683:72
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ae6dfff_84cc8c47
+UUID: 9aa64fd2_ff59bfff
+Bytes: 17
+It should. Fixed.
+
 730
 Fri Nov 14 18:17:20 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -158,12 +311,28 @@ Maybe add
 
 ?
 
+730
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a8a1730_8d9bc14a
+UUID: 5aa857a2_1dd2330c
+Bytes: 95
+The checks are performed down the call chain by `GetStackIndex()`. Added the check for clarity.
+
 761:0-761:83
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: baa153bc_a0cb1a2e
 Bytes: 32
 Replace with Is64BitsType(type).
+
+761:0-761:83
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_a0cb1a2e
+UUID: 5aa857a2_1d0a33bf
+Bytes: 4
+Done
 
 787:0-787:83
 Mon Nov 17 10:18:03 2014 +0000
@@ -172,12 +341,28 @@ UUID: 9aa64fd2_1fefc393
 Bytes: 5
 ditto
 
+787:0-787:83
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9aa64fd2_1fefc393
+UUID: 5aa857a2_fd35477e
+Bytes: 4
+Done
+
 1057:46-1057:47
 Fri Nov 14 18:17:20 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ae6dfff_84e3acb0
 Bytes: 24
 `cls' is input 1, not 0.
+
+1057:46-1057:47
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ae6dfff_84e3acb0
+UUID: baa153bc_40bfaea1
+Bytes: 6
+Fixed!
 
 1060:62-1060:86
 Fri Nov 14 18:17:20 2014 +0000
@@ -186,12 +371,29 @@ UUID: 5a8a1730_ad631db6
 Bytes: 77
 Maybe recall in a comment that TypeCheckSlowPathARM64 is not yet implemented?
 
+1060:62-1060:86
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a8a1730_ad631db6
+UUID: 5aa857a2_fda0a789
+Bytes: 145
+I added a TODO in the slow path.
+This will be implemented in the incoming patch adding support for the parallel move resolver and reg allocation.
+
 1217:0-1217:97
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: baa153bc_40db2efa
 Bytes: 164
 I guess you just want an fatal here, right? Having this check with the condition line 1214 makes it kind of funny :-). I'd just do LOG(FATAL) << "Divisions by ...."
+
+1217:0-1217:97
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: baa153bc_40db2efa
+UUID: 9aa64fd2_5f6aeb5d
+Bytes: 4
+Done
 
 1243:28-1243:32
 Mon Nov 17 10:18:03 2014 +0000
@@ -200,6 +402,16 @@ UUID: 5aa857a2_9d5883f9
 Bytes: 27
 Is the TODO still relevant?
 
+1243:28-1243:32
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa857a2_9d5883f9
+UUID: 5aa857a2_5d279b53
+Bytes: 142
+Yes. Eventually I'd like something similar to:
+  __ Unreachable();
+that would take care of generating a breakpoint and comments for debugging.
+
 1977:17-1977:19
 Mon Nov 17 10:18:03 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -207,10 +419,27 @@ UUID: 9aa64fd2_1f0a23bf
 Bytes: 60
 DCHECK instead. today, we should not be in such a situation.
 
+1977:17-1977:19
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9aa64fd2_1f0a23bf
+UUID: 9aa64fd2_1f746339
+Bytes: 4
+Done
+
 1989:77-1989:85
 Fri Nov 14 18:17:20 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ae6dfff_643a205f
 Bytes: 143
 Does using `min_size` here produces the expected results for byte-to-short and byte-to-char conversions? (Check with test/422-type-conversion).
+
+1989:77-1989:85
+Mon Nov 17 14:39:20 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ae6dfff_643a205f
+UUID: 9aa64fd2_bfc69724
+Bytes: 115
+Yes I think so.
+The tests are not running for me right now so I can't double check, but I will as soon as possible.
 

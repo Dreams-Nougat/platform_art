@@ -1,0 +1,180 @@
+Revision: 2f865713eb606dbfd4789e6e73521559f4cb4f46
+Patch-set: 4
+File: compiler/optimizing/bounds_check_elimination.cc
+
+121:17-121:27
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_45b6bcfc
+Bytes: 62
+Add a comment on what next_bound is (I find 'next' confusing).
+
+125:0-125:83
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aff77b8_88a037ae
+Bytes: 70
+I'm having a hard time associating this comment with the <= 0 check...
+
+137:42-137:47
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_65966054
+Bytes: 12
+Explain why.
+
+154:43-154:48
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aff77b8_4816bf3a
+Bytes: 6
+ditto.
+
+157:8-157:13
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3afc83c4_c7098021
+Bytes: 54
+Then add a DCHECK(increment_ < 0) in the else instead.
+
+174:38-174:42
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aff77b8_68405b30
+Bytes: 68
+This method is only true for loop phis. Should you check that first?
+
+203:22-203:26
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_85936461
+Bytes: 102
+Why the bool? Just check that the returned ValueBound is Max.
+
+(Also, I'm not a big fan of std::pair).
+
+320:18-320:28
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_050af414
+Bytes: 95
+Aren't they all conditions? Should you check IsCondition instead and then ask for GetCondition?
+
+357:67-357:75
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_252378a0
+Bytes: 149
+I'd be careful with such statements. Who knows what proguard might do for example. So it might make sense to also do something similar than VisitSub.
+
+357:18-357:26
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3afc83c4_2723b4a0
+Bytes: 21
+geneates -> generates
+
+File: compiler/optimizing/bounds_check_elimination.h
+
+68:44-68:52
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_e5459074
+Bytes: 217
+Shouldn't that be the name of the function? And it should be static? There's no notion of lower and upper in a ValueBound, so the name is confusing.
+
+How about:
+static ValueBound Max(ValueBound one, ValueBound two)
+
+?
+
+82:13-82:29
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_a53f88dc
+Bytes: 6
+ditto?
+
+100:15-100:16
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_c5440c77
+Bytes: 7
+const ?
+
+101:2-101:5
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3afc83c4_0784382f
+Bytes: 6
+const?
+
+186:12-186:23
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aff77b8_487a3fac
+Bytes: 35
+Do the dcheck after the null check.
+
+208:6-208:28
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_056e74f4
+Bytes: 268
+Coud you please make most of this class private to the implementation? I plan on moving all visitors to .cc files, so optimizations can only have a Run method.
+
+I actually think most of this file can go to the .cc. And we should have one .h with all the optimizations.
+
+222:24-222:36
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aff77b8_c854ef16
+Bytes: 108
+This is scary, will it compare pointers? I'd rather have something deterministic and compare instruction id.
+
+243:7-243:22
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3afc83c4_67640c08
+Bytes: 66
+Please put high-level comments on all those non-visitor functions.
+
+256:5-256:7
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aff77b8_884ef784
+Bytes: 77
+This could just be a GrowableArray whose size is the number of blocks, right?
+
+File: compiler/optimizing/bounds_check_elimination_test.cc
+
+30:24-30:25
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3afc83c4_275e1432
+Bytes: 109
+Add comment on which bounds check should remain, and which shouldn't.
+
+(Same applies to other methods below).
+
+126:2-126:11
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_857a84a9
+Bytes: 78
+This is probably too low-level. Maybe add a helper: CheckInstructionIsInGraph?
+
+128:2-128:11
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa33cb7c_45847c30
+Bytes: 27
+CheckInstructionIsRemoved ?
+
+662:0-662:15
+Tue Nov 18 15:35:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5aff77b8_88c95788
+Bytes: 120
+Wow, very nice that you wrote that direclty in C++! :) But wouldn't it have been easier to write it in DEX instructions?
+

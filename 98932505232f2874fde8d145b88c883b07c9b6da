@@ -1,0 +1,16 @@
+Revision: 98932505232f2874fde8d145b88c883b07c9b6da
+Patch-set: 1
+File: runtime/fault_handler.cc
+
+180:7-180:27
+Wed Nov 19 18:15:26 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9ad56f7b_caf263fb
+Bytes: 263
+If self == null it can just mean this is a pthread that's not attached to ART. I think the test you are after is:
+
+if (Runtime::Current() != nullptr && Runtime::Current()->IsStarted()) {
+  ... code below that tries to do a fancy dump ...
+}
+InvokeUserSignalHandler
+

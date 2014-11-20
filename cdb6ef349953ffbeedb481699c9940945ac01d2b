@@ -9,3 +9,13 @@ UUID: 9ff64148_8547867d
 Bytes: 93
 Isn't converting to uint32_t, doing the shift, and converting back, easier and more readable?
 
+1871:4-1871:49
+Thu Nov 20 19:08:50 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ff64148_8547867d
+UUID: ffe73d92_4883d3e7
+Bytes: 285
+I'm not deep enough in the code. But does this take Java semantics (preserved by dex) into account, i.e., is y in the right range when this is called? y is implicitly masked by 0x1f...
+
+This has an impact here as you are not ensuring that y is non-negative, which is required in C/C++.
+

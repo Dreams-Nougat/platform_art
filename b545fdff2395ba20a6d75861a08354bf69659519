@@ -1,0 +1,30 @@
+Revision: b545fdff2395ba20a6d75861a08354bf69659519
+Patch-set: 1
+File: compiler/optimizing/code_generator_arm64.cc
+
+817
+Fri Nov 21 14:09:27 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_cf2d9d04
+Bytes: 109
+This is inherited from 32bit ARM.  What if class->status_ > kStatusInitialized ? Shouldn't it be B(ne, ...) ?
+
+826
+Fri Nov 21 14:09:27 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_0fee054a
+Bytes: 133
+Hans: Do we always have a "dmb ish st" before setting the class status to initialised? If so this relaxed order should be sufficient.
+
+1298
+Fri Nov 21 14:09:27 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_efb9814e
+Bytes: 205
+Would it be worth moving  this logic in VisitSuspend? (following->IsGoto() ?)
+
+There are currently 3 places where we decide to add/remove Suspend Checks:
+* HGoto
+* HSuspendCheck
+* instruction_simplifier.cc
+

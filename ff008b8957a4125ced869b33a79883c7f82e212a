@@ -43,6 +43,15 @@ UUID: 7f526d24_46eab288
 Bytes: 241
 Yes, that's great you've removed the assumption that 64-bit register is always 32-bit pairs in all these places, so that we can also remove the redundant source code in int_arm.cc and utility_arm.cc which has TODO comment talking about this.
 
+410:0-411:31
+Fri Nov 21 11:29:02 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_46eab288
+UUID: 9f448158_8f931530
+Bytes: 76
+I think I've already done it in this patch :)
+May be there are other places?
+
 File: compiler/dex/quick/mir_to_lir.h
 
 1777:25-1777:87
@@ -67,6 +76,14 @@ Parent: 7f526d24_c6990252
 UUID: 9f448158_8fbaf5ad
 Bytes: 178
 I think parse the char is more clean. And we parse char or PrimitiveType directly to map in registers in all other places, such as trampoline , jni compiler, optimising compiler.
+
+1777:25-1777:87
+Fri Nov 21 11:29:02 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_8fbaf5ad
+UUID: 9f448158_4f776d77
+Bytes: 210
+Potentially I'm ok with that. But instead of char I would suggest to pass some class as ArgumentType with constructor ArgumentType(char type) and implement getters there for fp, wide and ref. What do you think?
 
 1786:22-1786:36
 Fri Nov 21 10:30:42 2014 +0000

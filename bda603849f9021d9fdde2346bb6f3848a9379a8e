@@ -1,0 +1,34 @@
+Revision: bda603849f9021d9fdde2346bb6f3848a9379a8e
+Patch-set: 3
+File: /COMMIT_MSG
+
+12:1-13:29
+Fri Nov 21 10:55:13 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df3a79c4_b1b760f9
+Bytes: 97
+This was deliberate. But if you want to run or re-run the pass later, we can relax the condition.
+
+18:0-19:13
+Fri Nov 21 10:55:13 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_6f2d9187
+Bytes: 214
+SplitBlock() was never meant to be used that late. But, as with the NCE pass, we can relax the condition. Then the removal of the DCHECK is the right thing to do, we don't want to update it for every extended insn.
+
+File: compiler/dex/mir_optimization.cc
+
+806
+Fri Nov 21 10:55:13 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f526d24_06af1a77
+Bytes: 14
+Line too long.
+
+808:0-814:23
+Fri Nov 21 10:55:13 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df3a79c4_71045809
+Bytes: 234
+Can you elaborate on the failure case? As I see it, you just replaced this bit with a slower version that writes MIR::bb in all moved insns twice and needs to look for a predecessor in RemoveMIRList(). (OTOH it's a bit more readable.)
+

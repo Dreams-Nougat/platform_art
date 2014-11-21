@@ -27,6 +27,22 @@ UUID: 9f448158_0faf2577
 Bytes: 218
 By the way the similar pattern can be met in several other places (everywhere we should handle split long). They are LoadArg, LoadArgDirect and GenDalvikArgs. If we decide to fix this we should fix that places as well.
 
+410:0-411:31
+Fri Nov 21 11:21:44 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_11a2acb6
+UUID: 7f526d24_86454a10
+Bytes: 53
+It is something could do, but I don't it is critical.
+
+410:0-411:31
+Fri Nov 21 11:21:44 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_0faf2577
+UUID: 7f526d24_46eab288
+Bytes: 241
+Yes, that's great you've removed the assumption that 64-bit register is always 32-bit pairs in all these places, so that we can also remove the redundant source code in int_arm.cc and utility_arm.cc which has TODO comment talking about this.
+
 File: compiler/dex/quick/mir_to_lir.h
 
 1777:25-1777:87
@@ -43,6 +59,14 @@ Parent: df3a79c4_512394d4
 UUID: 7f526d24_c6990252
 Bytes: 220
 This is an interface to implement by each arch, so in the case of "char type" each architecture will need to parse this char. So I prefer to do it in common code and provide only required information. That was my intent.
+
+1777:25-1777:87
+Fri Nov 21 11:21:44 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_c6990252
+UUID: 9f448158_8fbaf5ad
+Bytes: 178
+I think parse the char is more clean. And we parse char or PrimitiveType directly to map in registers in all other places, such as trampoline , jni compiler, optimising compiler.
 
 1786:22-1786:36
 Fri Nov 21 10:30:42 2014 +0000

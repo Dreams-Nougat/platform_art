@@ -9,3 +9,52 @@ UUID: df3a79c4_11cbcc2e
 Bytes: 96
 I plan to remove the runtime call once I figure out why my assembly doesn't work on negatives :)
 
+File: compiler/optimizing/nodes.h
+
+1842:67-1842:69
+Fri Nov 21 18:32:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5e5d2a_9331060e
+Bytes: 252
+no masking? This could be an issue running on ARM32. x86 implicitly masks for you, but on RISC architectures typically "x << 33 == 0" rather than "x << 33 == x << 1".
+You appear to have forgotten to document any of these behaviors and the requirements.
+
+1885:19-1885:26
+Fri Nov 21 18:32:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f5d6134_ad24a94f
+Bytes: 82
+I'd be tempted to have this as a uint32_t as the shift value is always a uint32_t.
+
+File: compiler/utils/x86/assembler_x86.cc
+
+1137:19-1137:24
+Fri Nov 21 18:32:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f5d6134_ed54e194
+Bytes: 133
+is the use of CL just implied here? Avoid errors and improve readability by explicitly passing and DCHECK-ing the passed value is CL.
+
+File: compiler/utils/x86_64/assembler_x86_64_test.cc
+
+322
+Fri Nov 21 18:32:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff5e5d2a_73a332be
+Bytes: 5
+count
+
+369
+Fri Nov 21 18:32:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bf586542_ae85c330
+Bytes: 5
+count
+
+415:35-415:36
+Fri Nov 21 18:32:49 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f5d6134_0db9756e
+Bytes: 5
+count
+

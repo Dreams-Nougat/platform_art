@@ -9,6 +9,16 @@ UUID: 9f448158_8f5b153f
 Bytes: 123
 This generates more ldr/str for split long(ignoring arm soft-float), but it really make things easier and fits all targets.
 
+410:0-411:31
+Fri Nov 21 10:50:16 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_8f5b153f
+UUID: df3a79c4_11a2acb6
+Bytes: 476
+I agree with you. If it is an performance problem we can handle this in more optimal way, say to add a check if destination is promoted reg then run virtual function like OpRegCopy(dest_wide_reg, reg, mem location) and each architecture can implement this in its way (taking into account that dest_wide_reg can be fp).
+
+I would prefer to do this optimization (if it is required) in a separate CL if you do not mind. If this is a critical, let me know and I will update a code.
+
 File: compiler/dex/quick/mir_to_lir.h
 
 1777:25-1777:87
@@ -18,10 +28,26 @@ UUID: df3a79c4_512394d4
 Bytes: 34
 How about "GetNextReg(char type)"?
 
+1777:25-1777:87
+Fri Nov 21 10:50:16 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_512394d4
+UUID: 7f526d24_c6990252
+Bytes: 220
+This is an interface to implement by each arch, so in the case of "char type" each architecture will need to parse this char. So I prefer to do it in common code and provide only required information. That was my intent.
+
 1786:22-1786:36
 Fri Nov 21 10:30:42 2014 +0000
 Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f526d24_4604f2ef
 Bytes: 37
 How about const char* or std::string?
+
+1786:22-1786:36
+Fri Nov 21 10:50:16 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_4604f2ef
+UUID: 9f448158_afd37910
+Bytes: 222
+I guess shorty iterator is a more general case (you may extend it and provide any implementation you want). If we provide shorty as string we need also provide whether call is static or not. So I decided to do in this way.
 

@@ -9,12 +9,28 @@ UUID: fa33cb7c_45b6bcfc
 Bytes: 62
 Add a comment on what next_bound is (I find 'next' confusing).
 
+121:17-121:27
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_45b6bcfc
+UUID: da69a7a3_1fa5ab13
+Bytes: 42
+I rewrote this logic so this part is gone.
+
 125:0-125:83
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aff77b8_88a037ae
 Bytes: 70
 I'm having a hard time associating this comment with the <= 0 check...
+
+125:0-125:83
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aff77b8_88a037ae
+UUID: 9ad56f7b_f60e2e26
+Bytes: 206
+I rewrote the overflow logic and it's easier to understand. Even better, it can now eliminate bounds-check for some increment-by-more-than-1 cases in addition to i++ cases. I added some test cases for that.
 
 137:42-137:47
 Tue Nov 18 15:35:47 2014 +0000
@@ -23,12 +39,28 @@ UUID: fa33cb7c_65966054
 Bytes: 12
 Explain why.
 
+137:42-137:47
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_65966054
+UUID: 9ad56f7b_3640c62f
+Bytes: 175
+I changed to pick this instead. It's probably not that important which range to pick if we can't narrow. Picking this may allow further chances to narrow this monotonic range.
+
 154:43-154:48
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aff77b8_4816bf3a
 Bytes: 6
 ditto.
+
+154:43-154:48
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aff77b8_4816bf3a
+UUID: fad66b81_a4775e74
+Bytes: 20
+Same, now pick this.
 
 157:8-157:13
 Tue Nov 18 15:35:47 2014 +0000
@@ -37,12 +69,28 @@ UUID: 3afc83c4_c7098021
 Bytes: 54
 Then add a DCHECK(increment_ < 0) in the else instead.
 
+157:8-157:13
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3afc83c4_c7098021
+UUID: da69a7a3_6287ec36
+Bytes: 5
+Done.
+
 174:38-174:42
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aff77b8_68405b30
 Bytes: 68
 This method is only true for loop phis. Should you check that first?
+
+174:38-174:42
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aff77b8_68405b30
+UUID: 9ad56f7b_16ce623c
+Bytes: 82
+Added a phi->IsInLoop() test to quickly skip non-loop phis. Is that what you mean?
 
 203:22-203:26
 Tue Nov 18 15:35:47 2014 +0000
@@ -53,12 +101,28 @@ Why the bool? Just check that the returned ValueBound is Max.
 
 (Also, I'm not a big fan of std::pair).
 
+203:22-203:26
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_85936461
+UUID: fad66b81_64a6064f
+Bytes: 172
+Changed. At some point during the coding I probably wanted to distinguish between returning ValueBound::Max() and this boolean value, but looks like it's not necessary now.
+
 320:18-320:28
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fa33cb7c_050af414
 Bytes: 95
 Aren't they all conditions? Should you check IsCondition instead and then ask for GetCondition?
+
+320:18-320:28
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_050af414
+UUID: 9ad56f7b_36544691
+Bytes: 33
+Thanks. That simplifies it a lot.
 
 357:67-357:75
 Tue Nov 18 15:35:47 2014 +0000
@@ -74,6 +138,14 @@ UUID: 3afc83c4_2723b4a0
 Bytes: 21
 geneates -> generates
 
+357:67-357:75
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_252378a0
+UUID: fad66b81_dfe5ffed
+Bytes: 48
+ok. Added some handling similarly to VisitAdd().
+
 File: compiler/optimizing/bounds_check_elimination.h
 
 68:44-68:52
@@ -87,6 +159,14 @@ How about:
 static ValueBound Max(ValueBound one, ValueBound two)
 
 ?
+
+68:44-68:52
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_e5459074
+UUID: da69a7a3_cd546917
+Bytes: 307
+If we use Max, it's not accurate when the two bounds are not comparable. Putting narrow lower bound in the name will tolerate that case since it's allowable to pick even the lowest of the two. It's just that picking the greatest of the two gives better result. I'll change it to static and add some comment.
 
 82:13-82:29
 Tue Nov 18 15:35:47 2014 +0000
@@ -102,6 +182,20 @@ UUID: fa33cb7c_c5440c77
 Bytes: 7
 const ?
 
+100:15-100:16
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_c5440c77
+UUID: fad66b81_711a478e
+Bytes: 204
+I have some cases where a stack ValueBound value is reassigned, such as:
+ValueBound upper = ...
+if (xxx) {
+  upper = ...;
+}
+use upper;
+So I can't keep instruction_ const. Or do you have a better solution?
+
 101:2-101:5
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -116,6 +210,14 @@ UUID: 5aff77b8_487a3fac
 Bytes: 35
 Do the dcheck after the null check.
 
+186:12-186:23
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aff77b8_487a3fac
+UUID: da69a7a3_4d6a195e
+Bytes: 5
+Done.
+
 208:6-208:28
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -125,12 +227,28 @@ Coud you please make most of this class private to the implementation? I plan on
 
 I actually think most of this file can go to the .cc. And we should have one .h with all the optimizations.
 
+208:6-208:28
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_056e74f4
+UUID: 3f1e355a_037c98a4
+Bytes: 79
+Done. The .h file is really small now. Please check if I did what you expected.
+
 222:24-222:36
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aff77b8_c854ef16
 Bytes: 108
 This is scary, will it compare pointers? I'd rather have something deterministic and compare instruction id.
+
+222:24-222:36
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aff77b8_c854ef16
+UUID: fad66b81_11402b61
+Bytes: 39
+Ok, I changed it to use instruction id.
 
 243:7-243:22
 Tue Nov 18 15:35:47 2014 +0000
@@ -139,12 +257,28 @@ UUID: 3afc83c4_67640c08
 Bytes: 66
 Please put high-level comments on all those non-visitor functions.
 
+243:7-243:22
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3afc83c4_67640c08
+UUID: ba5eb3fb_78b6c1fc
+Bytes: 5
+Done.
+
 256:5-256:7
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aff77b8_884ef784
 Bytes: 77
 This could just be a GrowableArray whose size is the number of blocks, right?
+
+256:5-256:7
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aff77b8_884ef784
+UUID: ba5eb3fb_5823bd9e
+Bytes: 145
+Since ArenaSafeMap has a std::map, I want to make sure it's destructed correctly. So I use a std::vector and unique_ptr for it. Any better ideas?
 
 File: compiler/optimizing/bounds_check_elimination_test.cc
 
@@ -157,12 +291,28 @@ Add comment on which bounds check should remain, and which shouldn't.
 
 (Same applies to other methods below).
 
+30:24-30:25
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3afc83c4_275e1432
+UUID: ba5eb3fb_78932130
+Bytes: 5
+Done.
+
 126:2-126:11
 Tue Nov 18 15:35:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fa33cb7c_857a84a9
 Bytes: 78
 This is probably too low-level. Maybe add a helper: CheckInstructionIsInGraph?
+
+126:2-126:11
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa33cb7c_857a84a9
+UUID: 3f1e355a_c3858030
+Bytes: 40
+Added a IsRemoved(HInstruction*) helper.
 
 128:2-128:11
 Tue Nov 18 15:35:47 2014 +0000
@@ -177,4 +327,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aff77b8_88c95788
 Bytes: 120
 Wow, very nice that you wrote that direclty in C++! :) But wouldn't it have been easier to write it in DEX instructions?
+
+662:0-662:15
+Sat Nov 22 08:47:53 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aff77b8_88c95788
+UUID: ba5eb3fb_d818ad1b
+Bytes: 164
+I need to assert some IR nodes are eliminated. Does that require doing what I did?
+It's not that bad. I seem to be more familiar with this IR than DEX instructions.
 

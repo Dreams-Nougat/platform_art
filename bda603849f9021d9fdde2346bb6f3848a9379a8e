@@ -9,12 +9,28 @@ UUID: df3a79c4_b1b760f9
 Bytes: 97
 This was deliberate. But if you want to run or re-run the pass later, we can relax the condition.
 
+12:1-13:29
+Sat Nov 22 01:56:39 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_b1b760f9
+UUID: df151930_3c17bdb3
+Bytes: 13
+Thank you! :)
+
 18:0-19:13
 Fri Nov 21 10:55:13 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f448158_6f2d9187
 Bytes: 214
 SplitBlock() was never meant to be used that late. But, as with the NCE pass, we can relax the condition. Then the removal of the DCHECK is the right thing to do, we don't want to update it for every extended insn.
+
+18:0-19:13
+Sat Nov 22 01:56:39 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_6f2d9187
+UUID: ff101d40_ddef9fc2
+Bytes: 13
+Thank you! :)
 
 File: compiler/dex/mir_optimization.cc
 
@@ -25,10 +41,30 @@ UUID: 7f526d24_06af1a77
 Bytes: 14
 Line too long.
 
+806
+Sat Nov 22 01:56:39 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_06af1a77
+UUID: bf0a2512_129dfc3d
+Bytes: 4
+Done
+
 808:0-814:23
 Fri Nov 21 10:55:13 2014 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df3a79c4_71045809
 Bytes: 234
 Can you elaborate on the failure case? As I see it, you just replaced this bit with a slower version that writes MIR::bb in all moved insns twice and needs to look for a predecessor in RemoveMIRList(). (OTOH it's a bit more readable.)
+
+808:0-814:23
+Sat Nov 22 01:56:39 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_71045809
+UUID: bf0a2512_5255b4bf
+Bytes: 639
+So the main issue is that the instruction links are not correctly created. Namely, there is no link from the old last instruction to the throw instruction (via next ptr).
+
+However, there is also another issue not really visible here - which is that the code assumes the overwrite of kMirOpCheck MIR is safe and that the bookkeeping done is all that needs updated. But that may not be the case (imagine we add a prev field to MIR). For that reason, it is preferred to use the utility methods because they will update all that needs updated when two blocks get merged like this. :)
+
+Finally, I also think it is a bit more readable as well :)
 

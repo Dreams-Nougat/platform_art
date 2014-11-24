@@ -280,6 +280,14 @@ UUID: ba5eb3fb_5823bd9e
 Bytes: 145
 Since ArenaSafeMap has a std::map, I want to make sure it's destructed correctly. So I use a std::vector and unique_ptr for it. Any better ideas?
 
+256:5-256:7
+Mon Nov 24 16:42:08 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ba5eb3fb_5823bd9e
+UUID: df3a79c4_851e5285
+Bytes: 202
+Since ArenaSafeMap and GrowableArray are used in an arena environment, you should not care about destruction (it's a bug in these data structures if you have to care). So I'd just go with GrowableArray.
+
 File: compiler/optimizing/bounds_check_elimination_test.cc
 
 30:24-30:25

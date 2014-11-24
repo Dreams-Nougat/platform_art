@@ -24,6 +24,16 @@ UUID: 7f526d24_2f6c2929
 Bytes: 80
 I don't understand. If it's greater or equal it's initialized, so nothing to do.
 
+817
+Mon Nov 24 16:39:46 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_2f6c2929
+UUID: 7f526d24_7acc21c8
+Bytes: 259
+What I meant here is - if class->status_ has a random, higher than kStatusInitialized value we should not go through. Thus for every != kStatusInitialized value of class->status_ we should go to slow_path->GetEntryLabel().
+
+__ B(ne, slow_path->GetEntryLabel()
+
 826
 Fri Nov 21 14:09:27 2014 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -61,4 +71,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f526d24_8f831d62
 Bytes: 82
 We're not using counters on arm anymore. Can we get rid of this as well for arm64?
+
+47
+Mon Nov 24 16:39:46 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_8f831d62
+UUID: 9f448158_f86b855e
+Bytes: 8
+Will do.
 

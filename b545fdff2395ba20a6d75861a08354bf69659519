@@ -2,12 +2,27 @@ Revision: b545fdff2395ba20a6d75861a08354bf69659519
 Patch-set: 1
 File: compiler/optimizing/code_generator_arm64.cc
 
+634:10-634:21
+Mon Nov 24 16:30:04 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_38dfcde2
+Bytes: 109
+No need any more, the compiler falls back to interpreter and there is no quick frame to deal with at runtime.
+
 817
 Fri Nov 21 14:09:27 2014 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f448158_cf2d9d04
 Bytes: 109
 This is inherited from 32bit ARM.  What if class->status_ > kStatusInitialized ? Shouldn't it be B(ne, ...) ?
+
+817
+Mon Nov 24 16:30:04 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_cf2d9d04
+UUID: 7f526d24_2f6c2929
+Bytes: 80
+I don't understand. If it's greater or equal it's initialized, so nothing to do.
 
 826
 Fri Nov 21 14:09:27 2014 +0000
@@ -27,4 +42,23 @@ There are currently 3 places where we decide to add/remove Suspend Checks:
 * HGoto
 * HSuspendCheck
 * instruction_simplifier.cc
+
+1298
+Mon Nov 24 16:30:04 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_efb9814e
+UUID: 9f448158_780e75da
+Bytes: 239
+So the logic in the backends should be where to place these suspend checks. instruciton_simplifier will just remove them from the graph.
+
+A backend could as well decide not to do anything and generate the suspend checks where it sees them.
+
+File: compiler/optimizing/code_generator_arm64.h
+
+47:0-47:71
+Mon Nov 24 16:30:04 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f526d24_8f831d62
+Bytes: 82
+We're not using counters on arm anymore. Can we get rid of this as well for arm64?
 

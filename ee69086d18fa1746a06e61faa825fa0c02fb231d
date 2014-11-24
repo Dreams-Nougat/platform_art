@@ -17,6 +17,19 @@ UUID: df3a79c4_f7115873
 Bytes: 186
 Will do, it makes me thinking is that we need a method returning the first in mem mapping after last register mapped. Because we do not have an information about wideness here otherwise.
 
+811:10-811:41
+Mon Nov 24 10:40:02 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_0c13bb4d
+UUID: df3a79c4_b7851031
+Bytes: 647
+After thinking about this a bit more we need to do more things here. For example let's 3 is index of input VR which is wide and should be split. The question is where 4-th VR should be handled. Three possible ways: bulk copy, mapped to memory and mapped to physical.
+
+With the current code it will be handled in part of the code responsible for physical mapping.
+
+If we adjust lat_mapped_in and implement GetMaxMappedIn as it is in arm64 right now then we should understand where it should be handled. It seems to me that it would be too complex. A lot of code for corner case. Any thought on this?
+I'm still thinking myself how to do that better.
+
 File: compiler/dex/quick/mir_to_lir.cc
 
 64:0-64:52

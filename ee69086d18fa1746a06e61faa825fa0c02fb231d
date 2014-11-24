@@ -9,6 +9,14 @@ UUID: 7f526d24_0c13bb4d
 Bytes: 99
 Probably adjust the value of last_mapped_in is better, since we do not want to rely on RegLocation.
 
+811:10-811:41
+Mon Nov 24 09:23:34 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_0c13bb4d
+UUID: df3a79c4_f7115873
+Bytes: 186
+Will do, it makes me thinking is that we need a method returning the first in mem mapping after last register mapped. Because we do not have an information about wideness here otherwise.
+
 File: compiler/dex/quick/mir_to_lir.cc
 
 64:0-64:52
@@ -18,12 +26,28 @@ UUID: 7f526d24_4cbf73d6
 Bytes: 7
 remove?
 
+64:0-64:52
+Mon Nov 24 09:23:34 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_4cbf73d6
+UUID: 9f448158_55fa5cd6
+Bytes: 3
+Yes
+
 87
 Mon Nov 24 08:59:53 2014 +0000
 Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df7199c8_b9089fc5
 Bytes: 89
 Should we add some TODO/TUNING comments here, so that we know this can be improved later?
+
+87
+Mon Nov 24 09:23:34 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df7199c8_b9089fc5
+UUID: 7f526d24_2c2797a9
+Bytes: 5
+Sure.
 
 114:0-114:52
 Mon Nov 24 08:59:53 2014 +0000
@@ -32,12 +56,28 @@ UUID: 9f448158_b2387e10
 Bytes: 7
 remove?
 
+114:0-114:52
+Mon Nov 24 09:23:34 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_b2387e10
+UUID: 9f448158_f5083051
+Bytes: 4
+Yes.
+
 137
 Mon Nov 24 08:59:53 2014 +0000
 Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bf0a2512_1f650405
 Bytes: 89
 Should we add some TODO/TUNING comments here, so that we know this can be improved later?
+
+137
+Mon Nov 24 09:23:34 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf0a2512_1f650405
+UUID: 9f448158_35efd818
+Bytes: 5
+Sure.
 
 1336:7-1336:21
 Mon Nov 24 08:59:53 2014 +0000
@@ -48,6 +88,14 @@ This is not the max mapped in v-reg index or number. I know this is taken from x
 Would you please take a look at https://android-review.googlesource.com/#/c/99350/ which fixes the counting issue of max_mapped_in_?
 Or would you please add more verbose comment on this variable if you want to keep this implementation?
 
+1336:7-1336:21
+Mon Nov 24 09:23:34 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_d7053439
+UUID: 9f448158_15f4d4e6
+Bytes: 158
+I think arm64 is ok. I will think a bit more about this in the new patch set. This should be re-worked taking into account all your comments about this stuff.
+
 File: compiler/dex/quick/mir_to_lir.h
 
 1801:10-1801:24
@@ -57,4 +105,12 @@ UUID: 7f526d24_2c0e7727
 Bytes: 165
 It would be better to add some comments here. It is counting v-reg rather than shorty.
 As we changed the input from RegLocation to shorty, it becomes not so obvious.
+
+1801:10-1801:24
+Mon Nov 24 09:23:34 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_2c0e7727
+UUID: df3a79c4_d70e5453
+Bytes: 79
+I can add a comment. It actually means the last VR mapped to physical register.
 

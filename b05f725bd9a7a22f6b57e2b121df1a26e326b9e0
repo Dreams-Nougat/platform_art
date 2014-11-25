@@ -1,0 +1,18 @@
+Revision: b05f725bd9a7a22f6b57e2b121df1a26e326b9e0
+Patch-set: 3
+File: compiler/dex/quick/gen_invoke.cc
+
+820:82-820:91
+Tue Nov 25 07:02:54 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f526d24_3ab46978
+Bytes: 595
+This is a bit different with the original code, and it is better since it avoids duplicated copy.
+
+But I think the correct algorithm should be :
+  first_after_last_mapped_in += adjust;
+  regs_left_to_pass_via_stack -= adjust;
+  regs_left_to_pass_via_stack = GenDalvikArgsBulkCopy(info, first_after_last_mapped_in, regs_left_to_pass_via_stack);
+
+Otherwise, first_after_last_mapped_in + regs_left_to_pass_via_stack will be wrong which is used by the below loop which handles the stack arguments. But maybe we need to find a better name for first_after_last_mapped_in, for example, stack_map_start.
+

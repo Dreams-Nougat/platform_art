@@ -30,3 +30,24 @@ Now in the reg part we will iterate up to the last mapped (which is low part) an
 
 So everything seems correct to me.
 
+820:82-820:91
+Tue Nov 25 08:15:09 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_baa7394b
+UUID: 7f526d24_7a9301e8
+Bytes: 482
+The problem is not on the high part split register. There is problem with the last stack register.
+
+For example, we have the map like, 012(register/stack) 3(high part of 2) 456(stack). first_after_last_mapped_in = 3, regs_left_to_pass_via_stack = 4, adjust = 1. It is correct without adjustment.
+
+After GenDalvikArgsBulkCopy(info, 3+1, 4-1), if we copied nothing in the function, regs_left_to_pass_via_stack becomes **3**. It will introduce bug in the next loop. See below comments.
+
+832:13-832:69
+Tue Nov 25 08:15:09 2014 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df3a79c4_45d06a88
+Bytes: 227
+Continue with the comments in line 820.
+
+This will be 6. We know register 3 will be handled in the next loop and regs_left_to_pass_via_stack was reduced by one. But in this loop, we cover registers 012345. register 6 is missed.
+

@@ -16,3 +16,17 @@ But I think the correct algorithm should be :
 
 Otherwise, first_after_last_mapped_in + regs_left_to_pass_via_stack will be wrong which is used by the below loop which handles the stack arguments. But maybe we need to find a better name for first_after_last_mapped_in, for example, stack_map_start.
 
+820:82-820:91
+Tue Nov 25 07:55:22 2014 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_3ab46978
+UUID: 7f526d24_baa7394b
+Bytes: 886
+In both loops below (for stack and reg arguments) we are starting from the first parameter and iterates by the size of the argument. split wide we'd like to handle in reg handling part. So consider the cases:
+1) no split of last wide arg. Then no problem at all. In the loop below we are iterating from the beginning up to the end (if bulk did not copied) or till the last mapped (if bulk did its job).
+2) last wide is split. In the loop for stack we sill iterate from the beginning up to the end (if bulk did not copied) and split will be skipped because we increment iterator by argument size and we will not consider high part (for the low part valid register will be reported). Or up to the last mapped. split will be skipped as well.
+
+Now in the reg part we will iterate up to the last mapped (which is low part) and will handle high part there.
+
+So everything seems correct to me.
+

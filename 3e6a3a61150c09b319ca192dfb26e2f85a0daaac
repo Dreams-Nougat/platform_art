@@ -30,6 +30,14 @@ UUID: 9f448158_fe400d32
 Bytes: 19
 *table -> table[0].
 
+77:21-77:27
+Tue Nov 25 17:32:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_de3d49b2
+UUID: 1fcc1153_9fe9e317
+Bytes: 72
+I think we do have a mask in Instruction, will replace when cleaning up.
+
 86:25-86:28
 Tue Nov 25 10:27:45 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +52,36 @@ UUID: 9f448158_1ee511ee
 Bytes: 41
 Can that be int32_t for the entry itself?
 
+86:25-86:28
+Tue Nov 25 17:32:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_40d61857
+UUID: ffbadd9a_79a8d396
+Bytes: 27
+Sure, will make the change.
+
+86:8-86:15
+Tue Nov 25 17:32:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_1ee511ee
+UUID: 1fcc1153_dfdf6b65
+Bytes: 171
+I have to put the chained "if" blocks somewhere. So currently I put then at the fake addresses and was using the pointer directly. With GetDexPcForIndex, this is obsolete.
+
 284:2-284:9
 Tue Nov 25 10:27:45 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df3a79c4_c538da11
 Bytes: 23
 How can it be negative?
+
+284:2-284:9
+Tue Nov 25 17:32:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_c538da11
+UUID: 5fc2091f_aa6d76f8
+Bytes: 116
+Well, I messed this one up because of same-sign things. However, it is *not* a size_t. It can only ever be uint32_t.
 
 300:0-300:40
 Tue Nov 25 10:27:45 2014 +0000
@@ -65,12 +97,28 @@ UUID: 9f448158_9e37c1d0
 Bytes: 36
 do we have a MAX_INT16 or something?
 
+310:26-310:31
+Tue Nov 25 17:32:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_9e37c1d0
+UUID: 5fc2091f_0a7ccaa4
+Bytes: 98
+I don't think we do. Inttypes has this, I just didn't want to include another header. Will change.
+
 311:28-311:29
 Tue Nov 25 10:27:45 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df3a79c4_80cc00c9
 Bytes: 31
 Add a comment why starting a 1.
+
+311:28-311:29
+Tue Nov 25 17:32:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_80cc00c9
+UUID: 5fc2091f_2a7986b4
+Bytes: 54
+OK, I need to move the comment from line 306 closer...
 
 876:21-876:26
 Tue Nov 25 10:27:45 2014 +0000
@@ -85,4 +133,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f448158_dec66954
 Bytes: 42
 Can we have backward branches in a switch?
+
+882:4-882:30
+Tue Nov 25 17:32:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_dec66954
+UUID: ffbadd9a_39133b4e
+Bytes: 184
+Yes, switch statements are like normal branches, this is a signed offset. I guess the dx people thought they really, really needed to be able to optimize a switch at the end of a loop?
 

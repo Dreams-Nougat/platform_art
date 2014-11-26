@@ -9,6 +9,19 @@ UUID: ff581d71_c0401233
 Bytes: 27
 Is this nop here necessary?
 
+1091
+Wed Nov 26 01:01:40 2014 +0000
+Author: Duane Sand <1010669@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff581d71_c0401233
+UUID: df7199c8_621ecc88
+Bytes: 401
+The existing code clobbered v0 (but not v1) in the exception case.
+If that is okay, this nop could be safely dropped, with some comment about v0 getting harmlessly clobbered.
+
+When performance isn't critical, I prefer not dropping half of a sometime-2-opcode macro into a delay slot.
+
+Code is much easier to maintain in reorder mode.  Is it important to be using noreorder mode throughout this module?
+
 1200:4-1200:7
 Wed Nov 26 00:34:25 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,4 +35,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3f4d55af_859aa8ce
 Bytes: 21
 Please fix this, too.
+
+1238
+Wed Nov 26 01:01:40 2014 +0000
+Author: Duane Sand <1010669@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f4d55af_859aa8ce
+UUID: 9fb9e1ac_aa182f93
+Bytes: 239
+I don't understand what you want done.
+
+I was puzzled at this instance of saving $f0/$f1 using +4 and +0 offsets into their stack area, whereas everywhere else the code has been using +0 and +4.  It didn't look to me like it mattered here.
 

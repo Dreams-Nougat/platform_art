@@ -42,6 +42,14 @@ UUID: 9f448158_b82a9de8
 Bytes: 54
 Can we have something greater than kStatusInitialized?
 
+817
+Wed Nov 26 12:01:19 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_b82a9de8
+UUID: 9f448158_2478c8e9
+Bytes: 148
+It seems not, I do not know why the first time I have looked at this I was under the impression that there can be other states > kStatusInitialized.
+
 818:73-818:79
 Wed Nov 26 01:22:25 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,6 +59,14 @@ It's probably unflushed store buffers and outstanding loads rather than caches. 
 // Even if the initialized flag is set, we need to ensure consistent ...
 
 That's not part of the proposed change, but while we're touching this comment ...
+
+818
+Wed Nov 26 12:01:19 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f4d55af_3095d0a2
+UUID: 9f448158_048dc48f
+Bytes: 7
+Will do
 
 826
 Fri Nov 21 14:09:27 2014 +0000
@@ -70,6 +86,14 @@ AFAICT, we effectively set the initialized flag using a Java volatile store.  Th
 Theoretically an acquire load should be cheaper.  You might know whether it is in practice.
 
 This may not be the best way to do the initialization check due to the barrier/ordering costs.  We've been discussing some possible alternatives. But that's a separate issue.
+
+826
+Wed Nov 26 12:01:19 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f572141_dad00106
+UUID: 1f633129_f31b708e
+Bytes: 103
+Thanks Hans! Will remove the comments. For now, the Dmb(Domain, Read) is cheaper than the load-acquire.
 
 1298
 Fri Nov 21 14:09:27 2014 +0000

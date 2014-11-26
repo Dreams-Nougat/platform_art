@@ -42,12 +42,34 @@ UUID: 9f448158_b82a9de8
 Bytes: 54
 Can we have something greater than kStatusInitialized?
 
+818:73-818:79
+Wed Nov 26 01:22:25 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f4d55af_3095d0a2
+Bytes: 353
+It's probably unflushed store buffers and outstanding loads rather than caches.  And this isn't the place to teach people about memory ordering.  Maybe just delete that part of the comment, leaving
+// Even if the initialized flag is set, we need to ensure consistent ...
+
+That's not part of the proposed change, but while we're touching this comment ...
+
 826
 Fri Nov 21 14:09:27 2014 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f448158_0fee054a
 Bytes: 133
 Hans: Do we always have a "dmb ish st" before setting the class status to initialised? If so this relaxed order should be sufficient.
+
+826
+Wed Nov 26 01:22:25 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_0fee054a
+UUID: 9f572141_dad00106
+Bytes: 653
+AFAICT, we effectively set the initialized flag using a Java volatile store.  That's overkill, but it'll do, and it's not performance critical.  I suspect just a dmb st would not be correct because loads in the initialization code could see stores in code that follows the initialization.  You probably need a full dmb.  Thus the comment looks wrong to me, but the code looks correct.
+
+Theoretically an acquire load should be cheaper.  You might know whether it is in practice.
+
+This may not be the best way to do the initialization check due to the barrier/ordering costs.  We've been discussing some possible alternatives. But that's a separate issue.
 
 1298
 Fri Nov 21 14:09:27 2014 +0000

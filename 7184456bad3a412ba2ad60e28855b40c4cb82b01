@@ -9,3 +9,15 @@ UUID: 5f404975_fdb7c7f7
 Bytes: 148
 This confuses me. Are key/value pairs leaked out of the internal data structure, and users of the map assume that pair they fetched is always in it?
 
+738:0-738:70
+Wed Nov 26 09:37:47 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f404975_fdb7c7f7
+UUID: ff2f3db3_b693a061
+Bytes: 420
+The only user of this list is just above: DumpThreadList. The map stores the names of threads when they get unregistered in ThreadList. It's a std::string, so memory management is not an issue.
+
+From test failures it seems that we get the same tid being unregistered twice. (Can happen if you attach - detach - re-attach - detach a thread, I think.)
+
+The issue is with Put. In SafeMap, you cannot Put the same key twice.
+

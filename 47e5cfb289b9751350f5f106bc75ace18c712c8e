@@ -1,0 +1,138 @@
+Revision: 47e5cfb289b9751350f5f106bc75ace18c712c8e
+Patch-set: 6
+File: compiler/dex/compiler_enums.h
+
+175:2-175:4
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_b2b75ef9
+Bytes: 51
+Nit: mixing non-doxygen comments with doxygen tags?
+
+File: compiler/dex/mir_dataflow.cc
+
+965:0-970:7
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_52c1520e
+Bytes: 58
+4 repetitions, that's almost asking for a helper function.
+
+1201:0-1208:7
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f526d24_49af6528
+Bytes: 16
+Helper function?
+
+File: compiler/dex/mir_graph.cc
+
+1341:6-1341:8
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f526d24_29b42978
+Bytes: 16
+Missing comment?
+
+File: compiler/dex/mir_optimization.cc
+
+532:24-532:42
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f633129_569fb2bf
+Bytes: 35
+Not extending to if-cc (non-Z) yet?
+
+532:66-532:75
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f404975_834bc275
+Bytes: 47
+Don't compare bool to "false", use "!" instead.
+
+532:6-532:20
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_3bcb422f
+Bytes: 79
+Always false. You can DCHECK() that but it should not be part of the condition.
+
+551:0-557:49
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_7b466af2
+Bytes: 35
+I'd prefer "if (...) return false";
+
+562:19-562:79
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f404975_63c95684
+Bytes: 310
+Are you not extending this to (ft_tk != nullptr) && (ft_tk == tk_ft || ft_tk == tk_tk) yet?
+
+Once extended, to make this readable it should really be
+  BasicBlock* ft_next = (ft_tk != nullptr) ? ft_tk : ft_ft;
+  BasicBlock* tk_next = (tk_tk != nullptr) ? tk_tk : tk_ft;
+  bool cond_join = (ft_next == tk_next);
+
+575:8-585:74
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_7b3c2a69
+Bytes: 190
+This is messy and allows GOTO only in the taken branch. Create a SelectKind(BasicBlock*) overload, use it to get kinds for both branches and then check they are the same and not kSelectNone.
+
+591:0-599:7
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_1b2bde21
+Bytes: 43
+Simplify using the tk_next suggested above.
+
+609:0-610:78
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f633129_7673ce11
+Bytes: 191
+You're starting to overwrite *mir straight away? Since you introduced the GenSelectGate() I thought you would create a new MIR, intialize it and ask GenSelectGate() whether it's OK to use it.
+
+File: compiler/dex/mir_optimization_test.cc
+
+940
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f404975_c33aeae9
+Bytes: 14
+Line too long.
+
+941:0-942:52
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f633129_96514aa4
+Bytes: 178
+These should be ASSERT_EQ(). The loops below MUST NOT be executed if the sizes differ. (Could read beyond the end of mirs_ or crash on the DCHECK() in MIRGraph::GetBasicBlock().)
+
+975:0-983:4
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f448158_9b5b4ef6
+Bytes: 108
+This is repeated in all select tests for "success". Move the array to the base class SelectOptimizationTest.
+
+1134:0-1142:4
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f404975_a3787eb1
+Bytes: 102
+This is the same as the bbs in PrepareDiamond(). Move that one out of PrepareDiamond() and reuse here.
+
+File: compiler/dex/quick/mir_to_lir.cc
+
+1211:28-1211:37
+Thu Nov 27 12:41:57 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f404975_63467680
+Bytes: 63
+Don't compare bools to "false" or "true", use "!" in this case.
+

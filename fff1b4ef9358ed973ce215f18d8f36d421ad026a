@@ -9,6 +9,14 @@ UUID: 5f404975_200464ef
 Bytes: 66
 1? (and if it passes as it is, are we missing some test coverage?)
 
+1274:44-1274:45
+Thu Nov 27 14:28:52 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f404975_200464ef
+UUID: 1f633129_16f9ba28
+Bytes: 176
+Thanks!  Yes, Location::As<T>() does not check whether its argument is a core or an FPU register.  Should we introduce Location::AsRegister<T>() and Location::AsFpuRegister<T>?
+
 File: compiler/optimizing/register_allocator.cc
 
 1274:32-1274:48
@@ -17,4 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5f404975_80f9f891
 Bytes: 113
 Should that be FpuRegisterLocation if the type is double? What about ARM where a double is represented as a pair?
+
+1274:32-1274:48
+Thu Nov 27 14:28:52 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f404975_80f9f891
+UUID: 9f448158_fb837a92
+Bytes: 232
+Yes, I've changed the location to FpuRegisterLocation in the case of kPrimDouble.
+
+I'm not sure about what we should do for ARM.  I believe this code is not used in the ARM back end (yet), so I've just added a DCHECK for the moment.
 

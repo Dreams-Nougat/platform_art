@@ -47,3 +47,23 @@ UUID: bfaea591_dbc3c7c1
 Bytes: 124
 I get what you mean - you are worried about back-edges that are gotos. Yes, please do what you said because you are right :)
 
+327:2-327:24
+Mon Dec 01 19:41:21 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfaea591_dbc3c7c1
+UUID: 3f70f517_67130c4d
+Bytes: 287
+I'm worried about back-edges like this:
+
+  const v0, #0
+  goto :loop_head
+  :top
+  add-int/lit8 v0, v0, #1
+  // fall-through back-edge here: insert a "goto :loop_head"
+  :loop_head
+  const v1, #100
+  if-ge v0, v1, :exit
+  [loop body]
+  goto :top                // not a back-edge
+  :exit
+

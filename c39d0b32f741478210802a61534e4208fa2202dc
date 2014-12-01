@@ -1,0 +1,29 @@
+Revision: c39d0b32f741478210802a61534e4208fa2202dc
+Patch-set: 2
+File: runtime/debugger.cc
+
+3246:9-3246:57
+Mon Dec 01 22:47:17 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fab4d9e_8165bc06
+Bytes: 184
+If this were:
+m->IsImageClass()
+then I think the code would be more intention revealing and it clearer of where we'd need to fix the API were we to provide image classes with a loader.
+
+3259:8-3259:51
+Mon Dec 01 22:47:17 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fab4d9e_61abd098
+Bytes: 72
+I wonder if this kind of logic would be best hidden in the class linker?
+
+3293:12-3293:44
+Mon Dec 01 22:47:17 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff99fd83_679dd06f
+Bytes: 235
+I think the cleanest style here would be to make this:
+class_linker->IsCompiledImageMethod(m)
+and then embed MayBe... into ClassLinker as IsCompiledImageMethod. It'd be nice to avoid exposing the debugger to inner notions of oat files.
+

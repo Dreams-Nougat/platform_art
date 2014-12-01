@@ -1,0 +1,23 @@
+Revision: 5976857e65d3d0e7be0c4e3183e9483c85a76bb8
+Patch-set: 3
+File: compiler/optimizing/register_allocator.cc
+
+105:6-116:7
+Mon Dec 01 11:31:25 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f8a0930_8df2e1a9
+Bytes: 504
+Suggestion (might be over-engineering):
+
+  auto check_instructions = [&](const HInstructionList& instructions) {
+    for (HInstructionIterator inst_it(instructions);
+         !inst_it.Done();
+         inst_it.Advance()) {
+      HInstruction* instruction = inst_it.Current();
+      DCHECK_LE(current_liveness, instruction->GetLifetimePosition());
+      current_liveness = instruction->GetLifetimePosition();
+    }
+  }
+  check_instructions(block->GetPhis());
+  check_instructions(block->GetInstructions());
+

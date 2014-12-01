@@ -1,0 +1,17 @@
+Revision: 7ab2fce83cd72c0963128b098a78606e77ea15d5
+Base-for-patch-set: 4
+File: compiler/dex/compiler_enums.h
+
+327:2-327:24
+Mon Dec 01 15:49:19 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dfb999d9_b9937f61
+Bytes: 1142
+Vladimir,
+
+We would like if you can keep this and all BE logic associated with this flag. We want the suspend check semantic to be completely expressible through the graph (instead of using side structures). We also want it expressible at the ME level (which is done now too but too late for us). Now let me explain why:
+
+So by design, it was decided that all branching instructions would be overloaded to express suspend check semantics. This is way too conservative but it was done in absence of having a separate suspend check instruction. As per specifications from Ian, all "safepoints" must be safe interaction points with interpreter and runtime. For that reason, we do not allow code motion across these points. However, since we have a loop framework, we accurately identify back edges.
+
+So at the ME level, we now rely on this flag to determine whether we will have runtime interaction on branches. Since we do things at instruction level and at ME level, we really need this functionality to be left in. Your new logic can still work while leaving this in. We need this flag for compatibility. Hopefully, this is okay for you guys.
+

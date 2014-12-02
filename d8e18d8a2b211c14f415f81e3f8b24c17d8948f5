@@ -11,6 +11,16 @@ Sorry, my bad. This whole section isn't really true, as we allow "mixed" compila
 
 For boot classpath classes, this test needs to be that we are running in a "full-pic" environment, that is, all loaded oat files are PIC. I still think the added complexity is justified, as it will allow halfway decent debugging speeds...
 
+5929:0-5945:1
+Tue Dec 02 18:14:18 2014 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fb25112_04a3fcbe
+UUID: 3f70f517_aa522b5c
+Bytes: 246
+I see. I think we can test only the method's oat file is PIC iff the method can't be called from outside this oat file. I especially think about private methods. We'd avoid a full deopt for these.
+
+Otherwise, we test all loaded oat files are PIC.
+
 File: runtime/mirror/class.h
 
 1046:2-1046:67

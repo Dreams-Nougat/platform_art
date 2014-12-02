@@ -44,3 +44,21 @@ UUID: 3f70f517_aadf8b8c
 Bytes: 4
 Done
 
+1584:9-1584:24
+Tue Dec 02 17:58:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fb25112_240958c9
+Bytes: 47
+// TODO: use a slow path and avoid branch-over.
+
+1586:9-1588:25
+Tue Dec 02 17:58:23 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ffc01d6a_2383982c
+Bytes: 816
+float comparisons on x86 set unsigned flags, so less-than is CF=1. By comparing with MAX_INT as float and the appropriate < or >, you can then use subtract with borrow (SBB) to adjust the unorderered result (MIN_INT - 0x8000000) to MAX_INT - 0x7FFFFFF. This can avoid the branch over too. Something like this here:
+
+http://git.codehaus.org/gitweb.cgi?p=mrp.git;a=blob;f=rvm/src/org/jikesrvm/compilers/baseline/ia32/BaselineCompilerImpl.java#l1826
+
+I see this is a literal bring over of the quick code that I whinged at Intel was sub-optimal at the time. The general issue is how to compare with a float constant? The best way is to place it in a literal pool at the end of the code and RIP encode the loading. I don't think the Intel assemblers support PC relative literals yet - something they lack compared to ARM.
+

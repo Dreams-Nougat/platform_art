@@ -1,5 +1,14 @@
 Revision: c810ebded1f476ce32b097392f63118e04086976
 Patch-set: 3
+File: runtime/quick_argument_visitor.h
+
+199:0-212:3
+Tue Dec 02 17:30:53 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfba25ec_fbd54bfb
+Bytes: 386
+This function is static and using constants, it doesn't motivate moving all this code into a header file. You need just make a public declaration of this function (or a function to call this function), the definition needn't be fast and can remain in the .cc file. If the issue is the function is declared in a class, don't declare it in a class or declare a global function to call it.
+
 File: runtime/stack.cc
 
 129:16-129:29

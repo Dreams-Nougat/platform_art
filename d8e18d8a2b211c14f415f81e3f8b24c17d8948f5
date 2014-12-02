@@ -1,5 +1,16 @@
 Revision: d8e18d8a2b211c14f415f81e3f8b24c17d8948f5
 Patch-set: 3
+File: runtime/class_linker.cc
+
+5929:0-5945:1
+Tue Dec 02 17:28:11 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1fb25112_04a3fcbe
+Bytes: 436
+Sorry, my bad. This whole section isn't really true, as we allow "mixed" compilation: the boot.oat may be pic, and the app may be non-pic. Then the app still makes direct calls into boot.oat code.
+
+For boot classpath classes, this test needs to be that we are running in a "full-pic" environment, that is, all loaded oat files are PIC. I still think the added complexity is justified, as it will allow halfway decent debugging speeds...
+
 File: runtime/mirror/class.h
 
 1046:2-1046:67

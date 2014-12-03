@@ -1,0 +1,45 @@
+Revision: f68f83c1710757d7fada275c907c7c52b4b0a453
+Patch-set: 1
+File: compiler/optimizing/code_generator.cc
+
+502:7-502:22
+Wed Dec 03 18:22:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ffc75c4_44634eb9
+Bytes: 51
+Please add a comment here on why we are doing this.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+1444:0-1444:68
+Wed Dec 03 18:22:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_85b8226c
+Bytes: 53
+You need to tell locations that there will be a call.
+
+1638:20-1638:33
+Wed Dec 03 18:22:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ffc75c4_e45a3af2
+Bytes: 197
+If this passes, we're missing a check in InvokeRuntime. I think the check should be instruction->GetLocations()->MayCall() in case the instruction is not a bounds check, zero check, null check, ...
+
+File: compiler/optimizing/code_generator_x86.cc
+
+1409:10-1409:19
+Wed Dec 03 18:22:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f8a0930_414602f2
+Bytes: 37
+Need to say that locations will call.
+
+File: compiler/optimizing/nodes.h
+
+2014:14-2014:28
+Wed Dec 03 18:22:35 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ffc75c4_a45442c5
+Bytes: 126
+I'd remove this part. This is not relevant for the HGraph. Implementation details of the code generator might actually use it.
+

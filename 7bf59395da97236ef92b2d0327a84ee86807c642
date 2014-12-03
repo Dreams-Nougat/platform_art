@@ -9,12 +9,29 @@ UUID: 9f448158_7841d5d7
 Bytes: 38
 I don't think you need the const here.
 
+253:2-253:7
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_7841d5d7
+UUID: 3f971556_923afce8
+Bytes: 116
+The super's AsMonotonicValueRange has a const so it's needed here. I mimic this signature to HInstruction's AsXXX().
+
 314:16-314:23
 Mon Nov 24 16:59:04 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df3a79c4_c51b3a8f
 Bytes: 80
 If you need these casts, why not making everything int64_t instead of int, then?
+
+314:16-314:23
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_c51b3a8f
+UUID: 9fa641d2_423b34bd
+Bytes: 526
+I thought about using int64_t as the constant part of a ValueBound (is that what you mean here?). It's more accurate to use an int since we need to do overflow/underflow checks anyway and using an int mirrors what's happening in java more closely. Plus right now ValueBound is passed by value so using an int saves a little space.
+We need the cast here to avoid the overflow for this computation. Maybe it's not even needed (overflow would still give the same result as with casting) but I just to buy some peace of mind here.
 
 372:32-372:36
 Mon Nov 24 16:59:04 2014 +0000
@@ -23,6 +40,14 @@ UUID: 7f526d24_ba02992d
 Bytes: 106
 Please avoid too many stl magic. Can't you allocate the arena with the allocator and then put it in maps_?
 
+372:32-372:36
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_ba02992d
+UUID: 3f971556_72c91084
+Bytes: 228
+As discussed in email with Vladimir, I couldn't get around some debug assertions due to destructors not called on ArenaSafeMap. So right now it seems to be the best I can do. Maybe we can enhance it later (with Vladimir's help)?
+
 454:23-454:45
 Mon Nov 24 16:59:04 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +55,29 @@ UUID: 7f526d24_7a1e6188
 Bytes: 45
 Why don't you get the range of right instead?
 
+454:23-454:45
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_7a1e6188
+UUID: df87d927_8f2ad91a
+Bytes: 201
+We first try to detect array_length_c format, or a constant. If not, we try to use the range of right, down at line 461 below.
+I'll rename it to DetectValueBoundFromValue. Maybe it makes it more clear.
+
 549:8-549:49
 Mon Nov 24 16:59:04 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: df3a79c4_8551b228
 Bytes: 108
 Can't you just replace this with phi->IsLoopHeaderPhi? And then add a DCHECK that it has exactly two inputs?
+
+549:8-549:49
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_8551b228
+UUID: 9fa641d2_42be94a5
+Bytes: 5
+Done.
 
 File: compiler/optimizing/bounds_check_elimination.h
 
@@ -46,12 +88,28 @@ UUID: 9f448158_d851e1a2
 Bytes: 9
 One line?
 
+27:8-27:21
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_d851e1a2
+UUID: 9fa641d2_22bb90b5
+Bytes: 5
+Done.
+
 29:0-29:2
 Mon Nov 24 16:59:04 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f526d24_fa113173
 Bytes: 19
 private DISALLOW...
+
+29:0-29:2
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f526d24_fa113173
+UUID: df87d927_2f5d6dc1
+Bytes: 5
+Done.
 
 File: compiler/optimizing/bounds_check_elimination_test.cc
 
@@ -62,6 +120,14 @@ UUID: df3a79c4_2550c61e
 Bytes: 45
 You could move this to optimizing_unit_test.h
 
+28:12-28:21
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df3a79c4_2550c61e
+UUID: 5fa849a2_63a19607
+Bytes: 5
+Done.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 201:25-201:29
@@ -70,4 +136,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9f448158_d89a01fd
 Bytes: 23
 You can call it bce :-)
+
+201:25-201:29
+Wed Dec 03 00:50:47 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9f448158_d89a01fd
+UUID: 3fb555f8_bf99f3dd
+Bytes: 5
+Done.
 

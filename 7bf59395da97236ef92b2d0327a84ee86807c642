@@ -33,6 +33,14 @@ Bytes: 526
 I thought about using int64_t as the constant part of a ValueBound (is that what you mean here?). It's more accurate to use an int since we need to do overflow/underflow checks anyway and using an int mirrors what's happening in java more closely. Plus right now ValueBound is passed by value so using an int saves a little space.
 We need the cast here to avoid the overflow for this computation. Maybe it's not even needed (overflow would still give the same result as with casting) but I just to buy some peace of mind here.
 
+314:16-314:23
+Wed Dec 03 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fa641d2_423b34bd
+UUID: 5f8a0930_96967252
+Bytes: 71
+Please add this as a comment in the code, to explain the int64_t casts.
+
 372:32-372:36
 Mon Nov 24 16:59:04 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -47,6 +55,16 @@ Parent: 7f526d24_ba02992d
 UUID: 3f971556_72c91084
 Bytes: 228
 As discussed in email with Vladimir, I couldn't get around some debug assertions due to destructors not called on ArenaSafeMap. So right now it seems to be the best I can do. Maybe we can enhance it later (with Vladimir's help)?
+
+372:32-372:36
+Wed Dec 03 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f971556_72c91084
+UUID: ff82dd17_33a5da98
+Bytes: 217
+At this point, I'd rather either use the current ValueSet in gvn.h or build our own. If STL starts being in the way, let's not force us to use it.
+
+So I'd really appreciate a follow-up cleanup CL that removes this :-)
 
 454:23-454:45
 Mon Nov 24 16:59:04 2014 +0000
@@ -63,6 +81,14 @@ UUID: df87d927_8f2ad91a
 Bytes: 201
 We first try to detect array_length_c format, or a constant. If not, we try to use the range of right, down at line 461 below.
 I'll rename it to DetectValueBoundFromValue. Maybe it makes it more clear.
+
+454:23-454:45
+Wed Dec 03 09:52:02 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df87d927_8f2ad91a
+UUID: 3f70f517_6daf6d76
+Bytes: 113
+But isn't the map already containing the bound? The input has already been visited, so it should be there, right?
 
 549:8-549:49
 Mon Nov 24 16:59:04 2014 +0000

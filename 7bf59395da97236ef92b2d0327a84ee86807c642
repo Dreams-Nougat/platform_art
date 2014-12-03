@@ -41,6 +41,14 @@ UUID: 5f8a0930_96967252
 Bytes: 71
 Please add this as a comment in the code, to explain the int64_t casts.
 
+314:16-314:23
+Wed Dec 03 22:55:32 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f8a0930_96967252
+UUID: bf0865ac_513e66ae
+Bytes: 5
+Done.
+
 372:32-372:36
 Mon Nov 24 16:59:04 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -66,6 +74,14 @@ At this point, I'd rather either use the current ValueSet in gvn.h or build our 
 
 So I'd really appreciate a follow-up cleanup CL that removes this :-)
 
+372:32-372:36
+Wed Dec 03 22:55:32 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff82dd17_33a5da98
+UUID: 5fd68940_36819e8b
+Bytes: 35
+I'll follow up on it with Vladimir.
+
 454:23-454:45
 Mon Nov 24 16:59:04 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -89,6 +105,20 @@ Parent: df87d927_8f2ad91a
 UUID: 3f70f517_6daf6d76
 Bytes: 113
 But isn't the map already containing the bound? The input has already been visited, so it should be there, right?
+
+454:23-454:45
+Wed Dec 03 22:55:32 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f70f517_6daf6d76
+UUID: 5fd68940_81ca4a57
+Bytes: 504
+The approach I used don't keep value range for all values. So those pure computations/comparisons not related to array indexing won't carry the (memory) overhead of calculating ranges.
+
+I added this comment to class ValueRange.
+ * Currently a ValueRange may be generated as a result of the following:
+ * comparisons related to array bounds, array bounds check, add/sub on top
+ * of an existing value range, or a loop phi corresponding to an
+ * incrementing/decrementing array index (MonotonicValueRange).
 
 549:8-549:49
 Mon Nov 24 16:59:04 2014 +0000

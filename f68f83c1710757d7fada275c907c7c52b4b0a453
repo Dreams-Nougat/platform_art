@@ -2,12 +2,35 @@ Revision: f68f83c1710757d7fada275c907c7c52b4b0a453
 Patch-set: 1
 File: compiler/optimizing/code_generator.cc
 
+501:82-501:97
+Wed Dec 03 18:40:43 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_c5973ad1
+Bytes: 346
+I don't think this is the best way to do it (i.e. having this parameter). It's like defining a function and having a parameter which say that "you should not call this actually".
+
+How about we just "inline" the special cases and add a comment mentioning why there are special:
+
+if (instruction->IsShr() || ...) {
+  // explain why here
+  return;
+}
+
 502:7-502:22
 Wed Dec 03 18:22:35 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ffc75c4_44634eb9
 Bytes: 51
 Please add a comment here on why we are doing this.
+
+File: compiler/optimizing/code_generator.h
+
+139:9-139:24
+Wed Dec 03 18:40:43 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_a58c3ec6
+Bytes: 21
+see my other comment.
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -18,12 +41,28 @@ UUID: 5fff69b8_85b8226c
 Bytes: 53
 You need to tell locations that there will be a call.
 
+1444:0-1444:68
+Wed Dec 03 18:40:43 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fff69b8_85b8226c
+UUID: 5f8a0930_81b9ca70
+Bytes: 20
+i.e. kCall at L1364.
+
 1638:20-1638:33
 Wed Dec 03 18:22:35 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ffc75c4_e45a3af2
 Bytes: 197
 If this passes, we're missing a check in InvokeRuntime. I think the check should be instruction->GetLocations()->MayCall() in case the instruction is not a bounds check, zero check, null check, ...
+
+1638:20-1638:33
+Wed Dec 03 18:40:43 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ffc75c4_e45a3af2
+UUID: 5f8a0930_a19de6f7
+Bytes: 2
++1
 
 File: compiler/optimizing/code_generator_x86.cc
 

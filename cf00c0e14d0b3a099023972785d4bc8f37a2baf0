@@ -1,0 +1,50 @@
+Revision: cf00c0e14d0b3a099023972785d4bc8f37a2baf0
+Patch-set: 8
+File: compiler/optimizing/bounds_check_elimination.cc
+
+139:40-139:48
+Wed Dec 03 10:10:43 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f70f517_8db3c9de
+Bytes: 100
+If constant part -> If the constant part of this ValueBound overflows/underflows, then we cannot ...
+
+141:69-141:70
+Wed Dec 03 10:10:43 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff82dd17_93b3e6de
+Bytes: 114
+Is this for correctness or optimization? Please add a comment.
+
+If for correctness, do we have a test to cover it?
+
+153:15-153:30
+Wed Dec 03 10:10:43 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff82dd17_f3ba62ae
+Bytes: 133
+I did not find a place where you actually use the return value in case of overflow. Do you really need the for_lower_bound parameter?
+
+635:43-635:44
+Wed Dec 03 10:10:43 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3f70f517_edba7dae
+Bytes: 12
+extra space.
+
+642:71-642:76
+Wed Dec 03 10:10:43 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff82dd17_738112d5
+Bytes: 355
+I think there is something off in the algorithm if you need to detect things here. When you arrive to a sub, both inputs must have a range. You could special case constants to avoid creating unnecessary ranges, but I think it will make the code much easier if it could assume most instructions involved in integer arithmetic have a range in the range map.
+
+File: compiler/optimizing/bounds_check_elimination.h
+
+28:10-28:13
+Wed Dec 03 10:10:43 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff82dd17_1389b607
+Bytes: 9
+OVERRIDE.
+

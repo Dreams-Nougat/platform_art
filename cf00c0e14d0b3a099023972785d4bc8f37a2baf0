@@ -9,6 +9,14 @@ UUID: 3f70f517_8db3c9de
 Bytes: 100
 If constant part -> If the constant part of this ValueBound overflows/underflows, then we cannot ...
 
+139:40-139:48
+Wed Dec 03 22:56:21 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f70f517_8db3c9de
+UUID: df38b95e_c18082d4
+Bytes: 5
+Done.
+
 141:69-141:70
 Wed Dec 03 10:10:43 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,12 +26,29 @@ Is this for correctness or optimization? Please add a comment.
 
 If for correctness, do we have a test to cover it?
 
+141:69-141:70
+Wed Dec 03 22:56:21 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff82dd17_93b3e6de
+UUID: ff33bd7c_626c1678
+Bytes: 136
+Added comment "for correctness, just return ...".
+I have OverflowArrayBoundsElimination and UnderflowArrayBoundsElimination to cover it.
+
 153:15-153:30
 Wed Dec 03 10:10:43 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff82dd17_f3ba62ae
 Bytes: 133
 I did not find a place where you actually use the return value in case of overflow. Do you really need the for_lower_bound parameter?
+
+153:15-153:30
+Wed Dec 03 22:56:21 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff82dd17_f3ba62ae
+UUID: bf3dc54e_c3c88883
+Bytes: 41
+It's used at line 482 and similar places.
 
 635:43-635:44
 Wed Dec 03 10:10:43 2014 +0000
@@ -32,12 +57,28 @@ UUID: 3f70f517_edba7dae
 Bytes: 12
 extra space.
 
+635:43-635:44
+Wed Dec 03 22:56:21 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f70f517_edba7dae
+UUID: ff33bd7c_68f397b0
+Bytes: 8
+Removed.
+
 642:71-642:76
 Wed Dec 03 10:10:43 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff82dd17_738112d5
 Bytes: 355
 I think there is something off in the algorithm if you need to detect things here. When you arrive to a sub, both inputs must have a range. You could special case constants to avoid creating unnecessary ranges, but I think it will make the code much easier if it could assume most instructions involved in integer arithmetic have a range in the range map.
+
+642:71-642:76
+Wed Dec 03 22:56:21 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff82dd17_738112d5
+UUID: ff33bd7c_889a9b44
+Bytes: 249
+As commented elsewhere for when we generate ranges, right now the algorithm only generates ranges under certain circumstances. So we need to check for existing range and make sure they are for the same array_length plus matching some other patterns.
 
 File: compiler/optimizing/bounds_check_elimination.h
 
@@ -47,4 +88,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff82dd17_1389b607
 Bytes: 9
 OVERRIDE.
+
+28:10-28:13
+Wed Dec 03 22:56:21 2014 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff82dd17_1389b607
+UUID: ff33bd7c_e871e783
+Bytes: 5
+Done.
 

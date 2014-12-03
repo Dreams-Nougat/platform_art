@@ -45,3 +45,13 @@ UUID: 7f8d0d44_d43474ff
 Bytes: 202
 I'm not sure I'm following the pattern of semi-hiding the hash. Perhaps we can completely hide it and rely on the "pure" attribute to remove the ComputeModifiedUtf8Hash recomputation in findLoadedClass.
 
+29:0-30:21
+Wed Dec 03 09:21:45 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f8d0d44_d43474ff
+UUID: ff82dd17_93c92666
+Bytes: 251
+It looks like this is just because we want to save the ComputeModifiedUtf8Hash being computed twice. I suggest either
+1) Do the computation twice an don't bother.
+2) Moving the logic of LookupClass; if (null) FindClassInPathClassLoader to ClassLinker.
+

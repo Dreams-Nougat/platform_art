@@ -17,6 +17,21 @@ UUID: 1fe09112_ebbb3199
 Bytes: 78
 I'd be fine with it, but I wanted a minimal change. I'll let Nicolas decide...
 
+28:0-28:60
+Wed Dec 03 09:28:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fe09112_ebbb3199
+UUID: 3f70f517_0dffd977
+Bytes: 102
+A new static mutex is not free, it pollutes the binary. Can't we use an existing compiler-related one?
+
+183:0-183:36
+Wed Dec 03 09:28:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f8a0930_f65b363d
+Bytes: 85
+Can't you have a VisitConstant? And move this VisitInstruction to a PrintInstruction?
+
 File: compiler/optimizing/graph_visualizer.h
 
 75
@@ -43,4 +58,11 @@ Bytes: 233
 The comments for DumpGraph and Finalizable are trying to do that, I'll extend.
 
 oss_ had to be mutable because the whole class is used in a const context somewhere (I didn't want to heap-allocate, so it's not a pointer like output_).
+
+79:2-79:9
+Wed Dec 03 09:28:47 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff82dd17_f3d0a205
+Bytes: 78
+If you need a mutable, I think I'd prefer to drop the constness at call sites.
 

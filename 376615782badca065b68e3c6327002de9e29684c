@@ -25,6 +25,16 @@ UUID: 3f70f517_0dffd977
 Bytes: 102
 A new static mutex is not free, it pollutes the binary. Can't we use an existing compiler-related one?
 
+28:0-28:60
+Wed Dec 03 17:29:45 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f70f517_0dffd977
+UUID: 1fe09112_b10d982b
+Bytes: 169
+I don't think there is a reasonable one exposed anywhere. I can try to refactor the compiler driver to expose its stats lock.
+
+Is a 100 or so B really that unreasonable?
+
 183:0-183:36
 Wed Dec 03 09:28:47 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,6 +49,16 @@ Parent: 5f8a0930_f65b363d
 UUID: 3f70f517_ed727d4f
 Bytes: 2
 +1
+
+183:0-183:36
+Wed Dec 03 17:29:45 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f70f517_ed727d4f
+UUID: 1fe09112_71ae10aa
+Bytes: 266
+Currently the printer is a visitor that's forwarding everything here. So I used this setup as VisitConstant will mean all the things around (the rest of the output) has to be duplicated.
+
+I can refactor some more, but I don't think it becomes more readable that way.
 
 File: compiler/optimizing/graph_visualizer.h
 
@@ -73,4 +93,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff82dd17_f3d0a205
 Bytes: 78
 If you need a mutable, I think I'd prefer to drop the constness at call sites.
+
+79:2-79:9
+Wed Dec 03 17:29:45 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff82dd17_f3d0a205
+UUID: 5fd68940_3039a614
+Bytes: 18
+I'll look into it.
 

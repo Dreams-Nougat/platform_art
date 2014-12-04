@@ -1,0 +1,104 @@
+Revision: 9a58a7f6ce64f3fbf4f9df1f6a03d18e5621e27b
+Patch-set: 5
+File: compiler/dex/quick/arm/target_arm.cc
+
+941:2-941:15
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_e8f32b4a
+Bytes: 478
+As long as the kArm32CodeUseSoftFloat constant exists, we should preserve the functionality:
+
+  if (kArm32CodeUseSoftFloat) {
+    return Mir2Lir::GenDalvikArgsBulkCopy(...);
+  }
+
+Also add an appropriate TODO for hard-float ABI. The old code contains this:
+
+      /*
+       * TODO: Improve by adding block copy for large number of arguments.  This
+       * should be done, if possible, as a target-depending helper.  For now, just
+       * copy a Dalvik vreg at a time.
+       */
+
+File: compiler/dex/quick/arm64/target_arm64.cc
+
+821
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_e8fe8b79
+Bytes: 14
+Line too long.
+
+846
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_c8218f15
+Bytes: 287
+Please add an appropriate TODO here. The old code contains this:
+
+      /*
+       * TODO: Improve by adding block copy for large number of arguments.  This
+       * should be done, if possible, as a target-depending helper.  For now, just
+       * copy a Dalvik vreg at a time.
+       */
+
+File: compiler/dex/quick/gen_invoke.cc
+
+762:31-762:36
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_48f0ffa1
+Bytes: 14
+Extra "first".
+
+File: compiler/dex/quick/mips/target_mips.cc
+
+127:8-127:11
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ffc75c4_a727a4de
+Bytes: 6
+size_t
+
+127:46-128:35
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_0838c7bd
+Bytes: 38
+arraysize(coreArgMappingToPhysicalReg)
+
+File: compiler/dex/quick/mir_to_lir.h
+
+1792:8-1792:28
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ffc75c4_e71d9c8a
+Bytes: 187
+I don't like the extra heap allocations by the std::string. You can initialize cur_ to the shorty and keep two booleans (initialized_ and pending_this_) to provide the same functionality.
+
+1816:6-1816:31
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_a89c1374
+Bytes: 29
+ArenaSafeMap<int, RegStorage>
+
+File: compiler/dex/quick/x86/codegen_x86.h
+
+48:46-48:48
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f8a0930_3c6d9df7
+Bytes: 22
+m2l (as in slow paths)
+
+File: compiler/dex/quick/x86/target_x86.cc
+
+2424:0-2425:36
+Thu Dec 04 13:53:26 2014 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ffc75c4_6712cc79
+Bytes: 20
+size_t and arraysize
+

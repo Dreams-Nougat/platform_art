@@ -9,6 +9,14 @@ UUID: 5fff69b8_0b0fa19e
 Bytes: 44
 better to DCHECK (as well) then? same below.
 
+969:30-970:14
+Thu Dec 04 18:36:44 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fff69b8_0b0fa19e
+UUID: 5f2da928_7b6277fe
+Bytes: 357
+I don't think so. For one, we were trying hard to not abort for compiler errors anymore (there's an open bug about this somewhere). Also, a DCHECK wouldn't protect us in practice if something ever slips through (and it's usually apps that would trigger this, as we have full control over framework and such). So I feel that punting is the right thing to do.
+
 976:47-976:58
 Thu Dec 04 18:26:17 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,32 @@ UUID: 5f8a0930_07096ac8
 Bytes: 12
 static_cast?
 
+976:47-976:58
+Thu Dec 04 18:36:44 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f8a0930_07096ac8
+UUID: 1f7c112d_ae80b7d2
+Bytes: 55
+This one works without. Do you want it for consistency?
+
 982:20-982:37
 Thu Dec 04 18:26:17 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5fff69b8_ab164db3
 Bytes: 110
 The sparse and packed variant are so similar that I would just have a single function with a few conditionals.
+
+982:20-982:37
+Thu Dec 04 18:36:44 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fff69b8_ab164db3
+UUID: 7f750d3d_3128aaf0
+Bytes: 396
+Nicolas, your opinion? I like the clean separation, as the setup and some key parameters are different.
+
+Note: I was thinking about a function pointer to unify this more, but we're not very happy with lambdas and such.
+
+Also note: if we ever implement optimized versions, these will become significantly different (packed is a table lookup, sparse can be optimized to a binary search at runtime).
 
 File: compiler/optimizing/builder.h
 
@@ -31,4 +59,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ffc75c4_ea71e383
 Bytes: 118
 I'd avoid introducing such ordering, even if it implies some repetition. Or better, you can remove the entire comment.
+
+213:20-213:25
+Thu Dec 04 18:36:44 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ffc75c4_ea71e383
+UUID: 7f750d3d_d1c5a6cd
+Bytes: 24
+Will remove the comment.
 

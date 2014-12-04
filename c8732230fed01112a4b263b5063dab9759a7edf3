@@ -2,6 +2,20 @@ Revision: c8732230fed01112a4b263b5063dab9759a7edf3
 Patch-set: 2
 File: compiler/optimizing/builder.cc
 
+383:0-383:91
+Thu Dec 04 18:41:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f8a0930_c7276253
+Bytes: 31
+Move this logic to SwitchTable?
+
+386:22-386:23
+Thu Dec 04 18:41:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5f8a0930_e7245e51
+Bytes: 70
+Aha, you're starting from 0 now :-) Do you still need the larger type?
+
 969:30-970:14
 Thu Dec 04 18:26:17 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,6 +30,14 @@ Parent: 5fff69b8_0b0fa19e
 UUID: 5f2da928_7b6277fe
 Bytes: 357
 I don't think so. For one, we were trying hard to not abort for compiler errors anymore (there's an open bug about this somewhere). Also, a DCHECK wouldn't protect us in practice if something ever slips through (and it's usually apps that would trigger this, as we have full control over framework and such). So I feel that punting is the right thing to do.
+
+969:30-970:14
+Thu Dec 04 18:41:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fff69b8_0b0fa19e
+UUID: 5fff69b8_cbcaa9db
+Bytes: 33
+I think I'd also prefer a DCHECK.
 
 976:47-976:58
 Thu Dec 04 18:26:17 2014 +0000
@@ -50,6 +72,13 @@ Nicolas, your opinion? I like the clean separation, as the setup and some key pa
 Note: I was thinking about a function pointer to unify this more, but we're not very happy with lambdas and such.
 
 Also note: if we ever implement optimized versions, these will become significantly different (packed is a table lookup, sparse can be optimized to a binary search at runtime).
+
+989:8-989:12
+Thu Dec 04 18:41:20 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fff69b8_abcf6de9
+Bytes: 7
+DCHECK?
 
 File: compiler/optimizing/builder.h
 

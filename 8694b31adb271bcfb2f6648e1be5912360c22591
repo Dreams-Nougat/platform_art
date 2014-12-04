@@ -9,6 +9,14 @@ UUID: 5f8a0930_dc3499ff
 Bytes: 23
 this should be a dcheck
 
+502:6-502:17
+Thu Dec 04 11:54:59 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f8a0930_dc3499ff
+UUID: 5fff69b8_48c7df50
+Bytes: 101
+I actually faced a case where `instruction` was null when building the boot image.  Is it legitimate?
+
 504:66-504:70
 Thu Dec 04 11:13:58 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 3ffc75c4_27ea940b
 Bytes: 9
 I'd drop.
 
+504:66-504:70
+Thu Dec 04 11:54:59 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ffc75c4_27ea940b
+UUID: 3ffc75c4_8745c873
+Bytes: 4
+Done
+
 507:35-507:61
 Thu Dec 04 11:13:58 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5fff69b8_48159f2c
 Bytes: 27
 or "they cannot join a GC".
+
+507:35-507:61
+Thu Dec 04 11:54:59 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fff69b8_48159f2c
+UUID: 3ffc75c4_673becef
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -32,6 +56,14 @@ UUID: 5f8a0930_1c47017f
 Bytes: 15
 Use a kFooBar ?
 
+1620:36-1620:55
+Thu Dec 04 11:54:59 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f8a0930_1c47017f
+UUID: 3ffc75c4_4738f0f0
+Bytes: 4
+Done
+
 File: compiler/utils/x86_64/assembler_x86_64.cc
 
 675:4-675:13
@@ -40,4 +72,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5fff69b8_e8d56bfb
 Bytes: 96
 if the tests previously pass, does it mean that our assembler tests can't catch this kind error?
+
+675:4-675:13
+Thu Dec 04 11:54:59 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5fff69b8_e8d56bfb
+UUID: 5fff69b8_c8a4ef9d
+Bytes: 462
+I would not call that an error, as setting a REX.W prefix here is not a requirement, but an option.  When present, it changes the size of the integer operand (dst) from default doubleword (32-bit) to quadword (64-bit).
+
+I choose to implement this with a boolean flag on the existing instruction generator (as I did with other x86-64 SSE type conversion instructions) to factor common code, but we can also do it the Quick way, by implementing it as a new method.
 

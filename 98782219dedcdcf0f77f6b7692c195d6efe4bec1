@@ -9,6 +9,14 @@ UUID: df219932_59ca235a
 Bytes: 77
 Is NanoTime too inaccurate to use here? It would make the code a lot simpler.
 
+65
+Thu Dec 04 02:17:27 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: df219932_59ca235a
+UUID: 1f4ed10c_2f5fd12d
+Bytes: 88
+Sounds good to me.  Will do.  It's not a lot shorter, but the exercise did expose a bug.
+
 File: runtime/barrier_test.cc
 
 72:42-72:45
@@ -19,4 +27,12 @@ Bytes: 84
 Does this make the test timing dependent?
 
 Maybe we don't need wait_forever_barrier?
+
+72:42-72:45
+Thu Dec 04 02:17:27 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f4ed10c_04eafc87
+UUID: 1f4ed10c_648740a2
+Bytes: 379
+If this times out too soon before the other threads get a chance to advance, then this vacuously succeeds.  I decided not to include a count1 check here to avoid timing dependent failures.  Alternatively, we could check count1 and wait again while it doesn't have the right number.  Failure would manifest as a hung process.  Is that OK?  Is there a timeout on gtests as a whole?
 

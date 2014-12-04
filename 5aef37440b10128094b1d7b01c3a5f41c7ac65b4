@@ -35,6 +35,14 @@ UUID: 9fb3a1f9_e6f2b078
 Bytes: 174
 Hi Vmarko, since this is SSA based optimization, it depends on preceding multiply op's SSA. I find that it is not easy to handle it in the methods you pointed out. Any ideas?
 
+902:2-902:3
+Thu Dec 04 06:42:27 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fb3a1f9_e6f2b078
+UUID: bf16a5da_f831b1e2
+Bytes: 842
+Ningsheng, this comment is not about necessarily maintaining the ssa (because I think you already have logic to do that), but to allow regeneration in case we need it. One way to test it is to mark the pass as having "dirtied" the CFG and it will run the post-opts (just for testing because preferred approach is still to maintain in pass to prevent useless work). Therefore, you do not worry about the previous multiply's ssa. As long as you express the new semantics via the methods Vmarko recommended, you should be fine. Just make sure you remove the multiply and replace the add with the multiply-add. Then if ssa needs regenerated, as long as you express the semantics you already captured via the definition, then it will just work automatically. Vmarko will likely reply if he has anything else to add (or if he disagrees with me :)).
+
 File: compiler/dex/mir_graph.h
 
 1276

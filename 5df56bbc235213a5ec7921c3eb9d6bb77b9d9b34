@@ -1,0 +1,27 @@
+Revision: 5df56bbc235213a5ec7921c3eb9d6bb77b9d9b34
+Patch-set: 1
+File: runtime/arch/arm/portable_entrypoints_arm.S
+
+43
+Fri Dec 05 19:24:36 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f6fb1ad_f32cb0c2
+Bytes: 271
+SUSPEND_CHECK_INTERVAL was set 1000. A "mov" then worked fine. Now that SUSPEND_CHECK_INTERVAL is 997, a literal pool load is needed. Note that this line does not appear inside a "#ifdef ARM_R4_SUSPEND_FLAG...#endif". Changing 1000 to 997 thus causes a compilation error.
+
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+422
+Fri Dec 05 19:24:36 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: df4ef955_f1f3c8fe
+Bytes: 145
+This update was made for consistency, to make sure that - in the case ARM_R4_SUSPEND_FLAG is defined - we wouldn't encounter a compilation error.
+
+857
+Fri Dec 05 19:24:36 2014 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f6fb1ad_13120c78
+Bytes: 5
+Same.
+

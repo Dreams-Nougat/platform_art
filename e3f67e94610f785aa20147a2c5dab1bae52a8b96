@@ -33,3 +33,12 @@ UUID: bfe9452d_0328d0ac
 Bytes: 299
 While I agree that avoiding side effects is definitely good, I don't want to change the signature.  The purpose of this is to allow general analysis for ANY purpose.  It is not there just to compute store_method_address, and the routines are overriden to compute more information in a derived class.
 
+905:2-905:6
+Fri Dec 05 16:08:32 2014 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfe9452d_0328d0ac
+UUID: 9fbc8133_353b98f0
+Bytes: 529
+If there is a use-case in a derived class that's not part of AOSP we have no means to test or maintain its correctness - such things are treated as though they don't exist and this is certainly not a justification for a -1.
+As I explained above, the code is able to serve multiple purposes if you return a tuple to cover other conditions. For the up-stream AOSP code this code is clearly more optimal as we avoid a traversal of the IR on x86-64, as well as terminating early on x86 as soon as one base of code ptr is encountered.
+

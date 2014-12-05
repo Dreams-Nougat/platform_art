@@ -1,0 +1,15 @@
+Revision: a89d7ed6f091ac495cd43560ece6988776d14d61
+Patch-set: 3
+File: runtime/class_linker.cc
+
+1702:6-1702:78
+Fri Dec 05 22:16:42 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c43aaec4_b1be4032
+Bytes: 350
+I think it's the case that we currently don't and can't execute the interpreter in a cross-compiling dex2oat because it's not possible to store a 64-bit bridge function pointer in a 32-bit entry point field in ArtMethods.
+
+So, it seems currently OK not to update the entry points here if runtime->IsCompiler() == true.
+
+Leave a short comment on this?
+

@@ -9,12 +9,30 @@ UUID: a48dbaf4_e0ebc2b1
 Bytes: 128
 When does it actually matter what type a move is? Don't you reference the same register, whether you're an X or W? (or S and D?)
 
+578:43-578:59
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_e0ebc2b1
+UUID: 84927610_1fc5e31b
+Bytes: 632
+Thinking about it now, the type is actually only useful when moving from a constant or between two (core of fp) registers. We have 32bit move instructions that are preferable to the 64bit variants. In other situations the Locations will contain all the information we need.
+
+This function was required in this patch because `MoveLocation()` was built to require the type as an argument to use 32bit moves when possible. I think this was when there was no FP support yet, and before this the type was always available. So now we could make that argument optional. If that's ok with you I'll look at refactoring that in another patch.
+
 610:37-610:38
 Fri Dec 05 16:18:29 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ffad7dfd_7287f86f
 Bytes: 15
 Nit: extra `.'.
+
+610:37-610:38
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffad7dfd_7287f86f
+UUID: 84927610_3fca272d
+Bytes: 8
+Removed.
 
 614:5-614:41
 Fri Dec 05 16:18:29 2014 +0000
@@ -23,12 +41,28 @@ UUID: 1f133113_b31cd8d6
 Bytes: 35
 Shouldn't we add a DCHECK for that?
 
+614:5-614:41
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f133113_b31cd8d6
+UUID: 84927610_dfce9b3f
+Bytes: 13
+We can. Done.
+
 935:4-936:46
 Fri Dec 05 16:18:29 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f133113_f3cf70e8
 Bytes: 56
 Shouldn't `loc_2` and `loc_1' be swapped in those lines?
+
+935:4-936:46
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f133113_f3cf70e8
+UUID: a48dbaf4_40caae2d
+Bytes: 6
+Fixed.
 
 1541:6-1543:5
 Fri Dec 05 16:18:29 2014 +0000
@@ -45,12 +79,28 @@ UUID: 64974203_5ef8558c
 Bytes: 75
 The comment is a good enough reason for me :). though it could be improved.
 
+1541:6-1543:5
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64974203_5ef8558c
+UUID: 64974203_5e5cd5f4
+Bytes: 21
+Detailed the comment.
+
 2137:2-2137:8
 Mon Dec 08 10:15:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_bfe2b7d1
 Bytes: 58
 Trend is to put ATTRIBUTE_UNUSED on the parameter instead.
+
+2137:2-2137:8
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_bfe2b7d1
+UUID: 64974203_7e6191a3
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm64.h
 
@@ -60,6 +110,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_7fac2f7e
 Bytes: 32
 Remove virtual (here and below).
+
+147:2-147:9
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_7fac2f7e
+UUID: a48dbaf4_e0ce623f
+Bytes: 4
+Done
 
 File: compiler/optimizing/register_allocator.cc
 
@@ -78,12 +136,28 @@ UUID: a48dbaf4_c0e23ed3
 Bytes: 118
 Actually, we can put a if (kX86_64 || kArm64) return true line 66, and make this loop not look at the instruction set.
 
+72:10-73:65
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_c0e23ed3
+UUID: a48dbaf4_c0d55eca
+Bytes: 37
+Fixed following Nicolas's suggestion.
+
 76:10-76:68
 Fri Dec 05 16:18:29 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f133113_73f3607e
 Bytes: 9
 Likewise.
+
+76:10-76:68
+Mon Dec 08 13:34:50 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f133113_73f3607e
+UUID: 84927610_bfd5d7ca
+Bytes: 48
+Now moved to a previous test. See comment above.
 
 File: test/Android.run-test.mk
 

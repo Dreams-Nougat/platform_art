@@ -1,0 +1,73 @@
+Revision: a0cb64b2ba1ec20f0657e0a25995a1e103a888a9
+Patch-set: 9
+File: compiler/optimizing/graph_visualizer.cc
+
+312:26-312:35
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84927610_5f2a8b6c
+Bytes: 239
+Do you think we could drop the two subclasses? I think I'd prefer having a check whether we're outputing for c1, or whether we're outputing pretty print. This would avoid the ugly std::unique_ptr we have to do when creating the visualizer.
+
+File: compiler/optimizing/graph_visualizer.h
+
+49:7-49:13
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84927610_3f12274e
+Bytes: 72
+In general, we avoid using stl in the opt compiler. Can that be a char*?
+
+67:2-67:9
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64974203_3ea309b5
+Bytes: 15
+Remove virtual.
+
+67:81-67:86
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a48dbaf4_a0205a8c
+Bytes: 12
+add OVERRIDE
+
+72:18-72:19
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84927610_df169b40
+Bytes: 24
+DISALLOW_COPY_AND_ASSIGN
+
+84:81-84:86
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84927610_ff135f4d
+Bytes: 8
+OVERRIDE
+
+84:2-84:9
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a48dbaf4_602a526d
+Bytes: 14
+Remove virtual
+
+85:0-85:2
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a48dbaf4_c01d5e5b
+Bytes: 24
+DISALLOW_COPY_AND_ASSIGN
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+213:14-213:26
+Mon Dec 08 09:27:16 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84927610_9f20138d
+Bytes: 230
+Not a big fan of this. At this level, we shouldn't care about internal details of the visualizer. I feel the code below, complexifies more than helps.
+
+If you need to know names of previous pass, you can keep it in the visualizer.
+

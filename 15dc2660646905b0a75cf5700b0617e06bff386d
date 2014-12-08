@@ -29,6 +29,33 @@ Why are 32bits moves preferables to 64bits?
 
 Should we have a bit in Location telling whether you should use 32bits?
 
+578:43-578:59
+Mon Dec 08 14:29:39 2014 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_df877ba1
+UUID: 84927610_5f1a8be2
+Bytes: 2110
+TLDR:
+- 32bit moves should be better for power consumption.
+- I'm not sure about the 'bit' solution.
+
+(Diving in, take what you need from the comments!)
+
+32bit moves should be better at least for power consumption, and maybe for other things. I don't know/remember the details, but the rule of thumb is that we prefer using a 32bit regs if 64bit is not required. So 64bit moves are not very bad, but 32bit moves would be nice.
+
+I am trying to see how having a bit to indicate whether we need a 32bit or 64bit move would work.
+If that has to be specified manually, then we can only benefit from it in manually generated moves.
+If we want the register allocator to be able to do this, doesn't Location needs to be extended with some type information?
+I touched this topic earlier when we met in London. If we were to add more information in the Location, wouldn't embedding the primitive type be more appropriate than a single 32/64 bit? After all, an other architecture could use 16bit, 32bit, and 64bit regs and could prefer 16bit moves.
+In earlier work for arm64 I embedded the type into Locations so I could directly convert a Location to a W or X arm64 register (or other); it was working fine.
+However as you noted at the time this would need some thinking about how this fits in the more general structure. A few points I am thinking of immediately:
+1) Where is the 'source of truth' for the type of an IR? The result location or the IR GetType()?
+2) Would that require introducing type information in the register allocator? If so is that a good idea?
+3) Are we thinking of using a Location with multiple types (eg. a shared stack slot for temporaries)?
+4) By embedding the type we may be able to get rid of StackSlot vs DoubleStackSlot. Maybe we can even optimise further stack slots for smaller types?
+
+On a related topic, there are other things that we would eventually like to optimise in the parallel move resolver. For example ARM64 provides 'Load pair' and 'Store pair' instructions, so ideally we'd like to be able to 'merge' parallel moves to use those. That's likely something to discuss later.
+
 610:37-610:38
 Fri Dec 05 16:18:29 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

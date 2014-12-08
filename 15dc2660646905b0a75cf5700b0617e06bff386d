@@ -56,6 +56,30 @@ However as you noted at the time this would need some thinking about how this fi
 
 On a related topic, there are other things that we would eventually like to optimise in the parallel move resolver. For example ARM64 provides 'Load pair' and 'Store pair' instructions, so ideally we'd like to be able to 'merge' parallel moves to use those. That's likely something to discuss later.
 
+578:43-578:59
+Mon Dec 08 15:42:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_5f1a8be2
+UUID: 64974203_fe3cc105
+Bytes: 94
+it would be interesting to see some numbers if any are available (i.e. how much do you save?).
+
+580:4-580:56
+Mon Dec 08 15:42:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64974203_61cb30b4
+Bytes: 205
+nit: i'd prefer to have this at the top. I find it hard to read cause || implies to me that both can be valid...
+
+Maybe you could use xor? might also help you simplify other if(...) {DCHECK()...} patterns.
+
+594:7-594:15
+Mon Dec 08 15:42:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64974203_be5f196a
+Bytes: 150
+nit: just a matter of preference but I think most of the code in art uses is_reg1/loc1 etc... style. For me loc1 reads better but I don't really care.
+
 610:37-610:38
 Fri Dec 05 16:18:29 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -85,6 +109,22 @@ Parent: 1f133113_b31cd8d6
 UUID: 84927610_dfce9b3f
 Bytes: 13
 We can. Done.
+
+889:2-889:52
+Mon Dec 08 15:42:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64974203_5e4cd5c2
+Bytes: 69
+prefer 2 DCHECKS. In case of error it will better reveal the culprit.
+
+905:4-905:47
+Mon Dec 08 15:42:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64974203_7e519159
+Bytes: 96
+does it worth using the xor "trick" and remove the need for a temp?
+
+(x = x^y, y = x^y, x = x^y)
 
 935:4-936:46
 Fri Dec 05 16:18:29 2014 +0000
@@ -204,4 +244,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ffad7dfd_d2b8646d
 Bytes: 18
 Wow! Great job. :)
+
+300:0-300:45
+Mon Dec 08 15:42:22 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ffad7dfd_d2b8646d
+UUID: 64974203_7eed1149
+Bytes: 119
+btw, just a head up that I added REM_FLOAT tests to this list in https://android-review.googlesource.com/#/c/118233/ :)
 

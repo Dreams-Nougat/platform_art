@@ -9,6 +9,14 @@ UUID: 84927610_5f2a8b6c
 Bytes: 239
 Do you think we could drop the two subclasses? I think I'd prefer having a check whether we're outputing for c1, or whether we're outputing pretty print. This would avoid the ugly std::unique_ptr we have to do when creating the visualizer.
 
+312:26-312:35
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_5f2a8b6c
+UUID: 84927610_e56992db
+Bytes: 10
+Refactored
+
 File: compiler/optimizing/graph_visualizer.h
 
 49:7-49:13
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_3f12274e
 Bytes: 72
 In general, we avoid using stl in the opt compiler. Can that be a char*?
+
+49:7-49:13
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_3f12274e
+UUID: 04ccc652_ab1a6908
+Bytes: 262
+It could but I'd have to do a strdup(method_name.cstr()) and then delete the char* later (the method name is returned by utils.cc/PrettyMethod as a std::string) because I need to keep it until the visualizer is destroyed. I think it's cleaner this way, isn't it?
 
 67:2-67:9
 Mon Dec 08 09:27:16 2014 +0000
@@ -32,12 +48,36 @@ UUID: a48dbaf4_a0205a8c
 Bytes: 12
 add OVERRIDE
 
+67:2-67:9
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64974203_3ea309b5
+UUID: 04ccc652_4b5f45c2
+Bytes: 24
+Ack, not needed any more
+
+67:81-67:86
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_a0205a8c
+UUID: a48dbaf4_66302a8c
+Bytes: 24
+Ack, not needed any more
+
 72:18-72:19
 Mon Dec 08 09:27:16 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_df169b40
 Bytes: 24
 DISALLOW_COPY_AND_ASSIGN
+
+72:18-72:19
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_df169b40
+UUID: a48dbaf4_86352e7d
+Bytes: 24
+Ack, not needed any more
 
 84:81-84:86
 Mon Dec 08 09:27:16 2014 +0000
@@ -53,12 +93,36 @@ UUID: a48dbaf4_602a526d
 Bytes: 14
 Remove virtual
 
+84:2-84:9
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_602a526d
+UUID: 84927610_4555de13
+Bytes: 24
+Ack, not needed any more
+
+84:81-84:86
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_ff135f4d
+UUID: a48dbaf4_262a221a
+Bytes: 24
+Ack, not needed any more
+
 85:0-85:2
 Mon Dec 08 09:27:16 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a48dbaf4_c01d5e5b
 Bytes: 24
 DISALLOW_COPY_AND_ASSIGN
+
+85:0-85:2
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_c01d5e5b
+UUID: 04ccc652_6b64818d
+Bytes: 24
+Ack, not needed any more
 
 File: compiler/optimizing/optimizing_compiler.cc
 
@@ -71,6 +135,14 @@ Not a big fan of this. At this level, we shouldn't care about internal details o
 
 If you need to know names of previous pass, you can keep it in the visualizer.
 
+213:14-213:26
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_9f20138d
+UUID: 04ccc652_0b693d64
+Bytes: 46
+Done. Still need two calls to DumpGraph though
+
 File: compiler/optimizing/test/ConstantFolding.java
 
 24:21-24:36
@@ -80,12 +152,28 @@ UUID: a48dbaf4_40294e72
 Bytes: 13
 Why the $001?
 
+24:21-24:36
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_40294e72
+UUID: 84927610_5fa7eb9a
+Bytes: 367
+To ensure that the methods appear in the same order in the output (we talked about this, methods get sorted by dx). I will get rid of this once I start matching groups of check lines independently. So for example, currently line 58 is matched on output left after matching line 42. But IntAddition would appear earlier in the output than IntNegation without the $00x.
+
 31:5-31:10
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_1f24039b
 Bytes: 140
 Personal opinion, but I find it more logical to move the checking code above the method. But I won't mind if you think it's better this way.
+
+31:5-31:10
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_1f24039b
+UUID: 84927610_5f8e0b15
+Bytes: 51
+I don't feel strongly about this either. Swapped...
 
 39:27-39:33
 Mon Dec 08 09:52:06 2014 +0000
@@ -94,6 +182,14 @@ UUID: 64974203_7e08b11d
 Bytes: 52
 What is that for? The Const42 above did not need it.
 
+39:27-39:33
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64974203_7e08b11d
+UUID: 64974203_9ecedd6c
+Bytes: 168
+That defines a new variable which matches the ID of the instruction which replaced the Neg. Const42 on line 38 does not need it because it is the same ID as on line 33.
+
 66:18-66:24
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -101,12 +197,28 @@ UUID: a48dbaf4_e03d02b2
 Bytes: 185
 Do you need to specify those here (Const1 and Const2). The fact that they are still in the graph are not relevant for what you're checking: you just want to know if you are returning 3.
 
+66:18-66:24
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_e03d02b2
+UUID: 84927610_1fb163d5
+Bytes: 51
+True, this is overtesting. Fixed here and elsewhere
+
 68:18-68:21
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_3f29c773
 Bytes: 30
 Why is that not called Const3?
+
+68:18-68:21
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_3f29c773
+UUID: 84927610_bfc1572c
+Bytes: 4
+Done
 
 File: tools/checker.py
 
@@ -117,6 +229,14 @@ UUID: a48dbaf4_003b46bd
 Bytes: 59
 I think the (unsaid rule) for comments is below 80 columns.
 
+18:0-18:1
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_003b46bd
+UUID: 84927610_ff2a7fe5
+Bytes: 47
+Done. So comments under 80 but rest under 100?!
+
 52:2-52:6
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -124,12 +244,28 @@ UUID: 64974203_fe13614d
 Bytes: 44
 Are those fields? Why are they capital case?
 
+52:2-52:6
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64974203_fe13614d
+UUID: a48dbaf4_009ee6f8
+Bytes: 308
+That's supposed to be an enum. I'm not a Python guru so please suggest something else, but docs online seem to agree that this is a fairly standard way of writing them up until 3.4 when the Enum class was introduced. Since I'm not using this in any complicated code, I went with the more compatible solution.
+
 55:2-55:9
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a48dbaf4_a037facd
 Bytes: 65
 Why do you pre-define fields here but not in other classes below?
+
+55:2-55:9
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a48dbaf4_a037facd
+UUID: a48dbaf4_a0aa9a0b
+Bytes: 7
+Removed
 
 126:4-126:8
 Mon Dec 08 09:52:06 2014 +0000
@@ -140,12 +276,28 @@ General nit (it applies for the methods below): thanks for the comment, but it w
 
 So this top-level comment should be divided into a good mix of top-level comment, and inline comment
 
+126:4-126:8
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_5fd12b12
+UUID: 84927610_df2d3b00
+Bytes: 4
+Done
+
 158:40-158:43
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_9f37b3ce
 Bytes: 22
 What's an environment?
+
+158:40-158:43
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_9f37b3ce
+UUID: 84927610_3f19c7e9
+Bytes: 20
+Renamed to varValues
 
 172:46-172:53
 Mon Dec 08 09:52:06 2014 +0000
@@ -154,12 +306,28 @@ UUID: 64974203_1e0ded2c
 Bytes: 51
 Expand the comment by saying where it will find it.
 
+172:46-172:53
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64974203_1e0ded2c
+UUID: 64974203_9e101dc3
+Bytes: 28
+Comment expanded and inlined
+
 184:12-184:16
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_bf34f7c9
 Bytes: 50
 Why are you making a copy and not in-place update?
+
+184:12-184:16
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_bf34f7c9
+UUID: a48dbaf4_20b76a7c
+Bytes: 168
+Because it should remain unchanged if the matching fails half-way and has to be repeated. All variable definitions should be discarded. I've added a comment about this.
 
 229:36-229:39
 Mon Dec 08 09:52:06 2014 +0000
@@ -168,12 +336,28 @@ UUID: 84927610_7fd66f0d
 Bytes: 66
 nit: avoid abbreviations, don't assume you readers must know them.
 
+229:36-229:39
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_7fd66f0d
+UUID: 64974203_be0399aa
+Bytes: 4
+Done
+
 275:2-275:5
 Mon Dec 08 09:52:06 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64974203_be1dd95b
 Bytes: 42
 Please make the following a helper method.
+
+275:2-275:5
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64974203_be1dd95b
+UUID: 84927610_5f460bf4
+Bytes: 4
+Done
 
 File: tools/checker_test.py
 
@@ -183,4 +367,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84927610_1fdba334
 Bytes: 8
 features
+
+17:42-17:50
+Tue Dec 09 14:49:28 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84927610_1fdba334
+UUID: a48dbaf4_a0be1a32
+Bytes: 4
+Done
 

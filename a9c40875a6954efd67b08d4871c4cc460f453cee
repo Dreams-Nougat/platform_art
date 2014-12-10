@@ -1,5 +1,20 @@
 Revision: a9c40875a6954efd67b08d4871c4cc460f453cee
 Patch-set: 3
+File: runtime/base/mutex.cc
+
+331:8-332:29
+Wed Dec 10 16:47:42 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c402ae41_3197b0b2
+Bytes: 641
+I don't fully understand the logic here.  It may be easier to talk in person.
+
+We should be shutting down user threads and system daemons reasonably cleanly.  I believe we're waiting for them to terminate.  So how can this still happen?
+
+My assumption was that for the zeroth approximation, there shouldn't be any user daemons if you explicitly call DestroyJavaVM.  We should probably try to handle well-behaved ones by interrupting them and waiting for them with a timeout?  If that doesn't work, it's unclear to me we can do much.  So maybe this should be a warning for Java monitors?
+
+Does pure Java app shutdown go through the same path?
+
 File: runtime/thread_list.cc
 
 151:8-151:12

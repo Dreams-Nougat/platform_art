@@ -1,5 +1,27 @@
 Revision: 5a989d4fcbf9446d5d8f5abbc02127c6ec42d722
 Patch-set: 7
+File: compiler/optimizing/code_generator_arm64.cc
+
+866:6-871:7
+Wed Dec 10 14:26:46 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44eebec7_8d84819e
+Bytes: 433
+I think it would be better to use three `if' statements here; i.e.:
+
+  if (src_cst->IsIntConstant()) {
+    temp = temps.AcquireW()
+  } else if (src_cst->IsLongConstant()) {
+    temp = temps.AcquireX();
+  } else if (src_cst->IsFloatConstant()) {
+    temp = temps.AcquireS();
+  } else {
+    DCHECK(src_cst->IsDoubleConstant());
+    temp = temps.AcquireD();
+  }
+
+You might even want to wrap this in a separate method; it's up to you. :)
+
 File: test/Android.run-test.mk
 
 301:0-303:17

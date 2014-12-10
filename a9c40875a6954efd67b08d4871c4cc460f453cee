@@ -23,6 +23,14 @@ UUID: 44179e8b_c8602fed
 Bytes: 245
 If a java thread does a condition variable waits, it counts as suspended. The wait increments the contenders until it finishes. So if any java threads are stuck in wait when the runtime shuts down we get SIGABRT which seems un-necessarily harsh.
 
+332
+Wed Dec 10 20:33:42 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44179e8b_c8602fed
+UUID: a4d5ba01_29039503
+Bytes: 188
+But user non-daemon threads are presumably dead.  System daemon threads should have been interrupted, and should no longer be in this state.  So this addresses the user daemon thread case?
+
 File: runtime/thread_list.cc
 
 151:8-151:12

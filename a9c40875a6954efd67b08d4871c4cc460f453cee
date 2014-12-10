@@ -15,6 +15,14 @@ My assumption was that for the zeroth approximation, there shouldn't be any user
 
 Does pure Java app shutdown go through the same path?
 
+332
+Wed Dec 10 17:50:41 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c402ae41_3197b0b2
+UUID: 44179e8b_c8602fed
+Bytes: 245
+If a java thread does a condition variable waits, it counts as suspended. The wait increments the contenders until it finishes. So if any java threads are stuck in wait when the runtime shuts down we get SIGABRT which seems un-necessarily harsh.
+
 File: runtime/thread_list.cc
 
 151:8-151:12
@@ -23,4 +31,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44eebec7_0d7411be
 Bytes: 47
 Please add a comment on why self could be null.
+
+151
+Wed Dec 10 17:50:41 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44eebec7_0d7411be
+UUID: 44179e8b_48a39fb3
+Bytes: 19
+No longer necessary
 

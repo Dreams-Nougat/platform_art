@@ -1,0 +1,66 @@
+Revision: f59140c7c5f66c3d8dfa88b8c70ffe954408b4bb
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+674:12-674:23
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e497b25c_428d7257
+Bytes: 70
+Can you remove this, and change the backend to crash if it's volatile?
+
+737:4-737:11
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84819619_4779aeb5
+Bytes: 6
+ditto.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+2561:49-2561:50
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e497b25c_228a6e41
+Bytes: 19
+quiet c++ warnings.
+
+2574:61-2574:69
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84819619_677eb2a0
+Bytes: 25
+What is this comment for?
+
+2632:9-2632:22
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84819619_8782c628
+Bytes: 75
+Is the store atomic? (same question for other load/store of 64bits values).
+
+File: compiler/optimizing/code_generator_x86.cc
+
+2747:7-2748:89
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44731e24_05033203
+Bytes: 61
+This does not work with volatile, as the load must be atomic.
+
+File: compiler/optimizing/nodes.h
+
+2127:12-2127:24
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44731e24_c5911a5f
+Bytes: 128
+No need to check volatile. Just like we don't check the field type, they are both is implied by the field offset being the same.
+
+2143:13-2143:25
+Thu Dec 11 09:07:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e497b25c_e25a4648
+Bytes: 31
+Please move this to field_info.
+

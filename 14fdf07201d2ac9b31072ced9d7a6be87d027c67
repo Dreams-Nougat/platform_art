@@ -9,12 +9,28 @@ UUID: 44eebec7_4da3b9b3
 Bytes: 72
 As discussed, let's try to use the c1visualizer format for file-checker.
 
+270:18-270:34
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44eebec7_4da3b9b3
+UUID: 844276da_ff73dfd5
+Bytes: 4
+Done
+
 272:34-273:59
 Wed Dec 10 12:02:10 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44eebec7_0d7a515c
 Bytes: 121
 based on the dcheck bellow, this two args creates a redundancy. i.e. is it "enable_c1visualizer = (c1_ouput != nullptr)"?
+
+272:34-273:59
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44eebec7_0d7a515c
+UUID: 844276da_9f7893b4
+Bytes: 17
+Ack, n/a any more
 
 File: compiler/optimizing/graph_visualizer.h
 
@@ -33,6 +49,22 @@ UUID: 44eebec7_6dcb15e2
 Bytes: 152
 Also, you might want to have a look at Andreas' work regarding multi-threading the graph visualizer: https://android-review.googlesource.com/#/c/117222/
 
+45:2-45:64
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44eebec7_6dcb15e2
+UUID: 844276da_1f17a36b
+Bytes: 86
+Yep, I'm aware of it. The thread-safety changes should be compatible with patchset 11.
+
+45:2-45:64
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 840c3679_6f883105
+UUID: 2451caa8_5c0d3d59
+Bytes: 211
+That's a good idea but it will become redundant with https://android-review.googlesource.com/#/c/117222/. I added the check into OptimizingCompiler::Init so the driver isn't passed all the way to the visualizer.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 221:15-221:24
@@ -42,12 +74,28 @@ UUID: 44eebec7_6dc79575
 Bytes: 75
 Do the Dump before the Check: if the check fails, you want to see the dump.
 
+221:15-221:24
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44eebec7_6dc79575
+UUID: 2451caa8_bcf001f2
+Bytes: 4
+Done
+
 294:30-296:50
 Wed Dec 10 15:07:41 2014 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44eebec7_8db12165
 Bytes: 83
 Nit: If the list of arguments does not fit on a single line, then put one per line.
+
+294:30-296:50
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44eebec7_8db12165
+UUID: 2451caa8_dc186da3
+Bytes: 4
+Done
 
 File: compiler/optimizing/pretty_printer.h
 
@@ -66,6 +114,14 @@ UUID: e4fdf273_d27e2402
 Bytes: 252
 I guess it is for backward compatibility with the initial output format.  I think some gtests still rely on it.  We could update them to the new format though, preferably in another CL, and possibly get rid of this Boolean argument.  What do you think?
 
+29:41-29:72
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4fdf273_d27e2402
+UUID: 2451caa8_dc3f0ddc
+Bytes: 131
+Yep, this is now removed and Checker uses the c1 format. The pretty printer could be removed once the existing gtests are replaced.
+
 File: tools/checker.py
 
 292:44-292:56
@@ -82,6 +138,14 @@ UUID: 840c3679_4fcc4d98
 Bytes: 40
 Do you need this? If yes, add a comment.
 
+292:22-292:30
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 840c3679_4fcc4d98
+UUID: c438ee5e_212e0eaa
+Bytes: 4
+Done
+
 297:46-297:62
 Wed Dec 10 10:05:25 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -89,12 +153,28 @@ UUID: 44eebec7_cd8e893c
 Bytes: 148
 This means the test can only work when testing for host. We might want to add flags to this tool to tell whether we're compiling for target or host.
 
+297:46-297:62
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44eebec7_cd8e893c
+UUID: 844276da_9f4f3385
+Bytes: 78
+Could be added but i wouldn't put it here unless we have an actual use for it?
+
 299:33-299:44
 Wed Dec 10 10:05:25 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4fdf273_d260e4ec
 Bytes: 17
 Do you need this?
+
+299:33-299:44
+Fri Dec 12 17:32:56 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4fdf273_d260e4ec
+UUID: 2451caa8_1c2ed5a9
+Bytes: 29
+Yep, doesn't work without it.
 
 324:6-324:11
 Wed Dec 10 10:05:25 2014 +0000

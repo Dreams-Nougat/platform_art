@@ -29,7 +29,32 @@ What Android.build.mk ?
 
 The name being pretty generic, it's prone to clashes with other .mk helpers.
 
+17:7-17:30
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5f404975_40bc1092
+UUID: 24c46ad1_a45be2fc
+Bytes: 247
+./build/Android.common.mk:17:ifndef ANDROID_COMMON_MK
+./build/Android.common_test.mk:17:ifndef ANDROID_COMMON_TEST_MK
+./build/Android.common_path.mk:17:ifndef ANDROID_COMMON_PATH_MK
+./build/Android.common_build.mk:17:ifndef ANDROID_COMMON_BUILD_MK
+
+20:0-24:73
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44c79ed5_850d02e0
+Bytes: 92
+do we need this? haven't seen its use. seems expensive to shell out for something like this.
+
 File: build/Android.executable.mk
+
+105:0-110:6
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24c46ad1_e455dac6
+Bytes: 32
+the tabs seem out of place here.
 
 140:10-140:17
 Wed Nov 26 10:22:59 2014 +0000
@@ -45,6 +70,14 @@ Parent: 1fa5f182_69d1e15c
 UUID: ff581d71_143b6cbd
 Bytes: 197
 Yes, good catch, I originally called this build-art-cmdline-executable but then noticed it would be more useful as a general-purpose executable builder function. Need to rename local vars to match.
+
+140:10-140:17
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff581d71_143b6cbd
+UUID: e47b325e_22508ed3
+Bytes: 11
+unresolved?
 
 File: build/Android.gtest.mk
 
@@ -122,6 +155,16 @@ Not sure I follow. There are many other reasons for a tool to bitrot even if it 
 
 So if you don't want the tool to bitrot, you can add a test that is part of our test infrastructure, and have make understand that for running the test, it needs to build the tool.
 
+76:2-76:9
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f633129_56db327b
+UUID: e47b325e_82707a76
+Bytes: 436
+tools/ was meant for scripts. executables were meant to have their own Android.mk files. for now I think this should be symmetric with dex2oat and oatdump. we can move them later, seems unrelated to this change.
+
+all things should build with checkbuild, so they need to be visible to make. mm/mmm should build all optional things in a tree. people ARE supposed to build all things when making certain types of changes to prevent bitrot.
+
 File: imgdiag/imgdiag_test.cc
 
 2:17-2:21
@@ -131,6 +174,14 @@ UUID: 1fa5f182_a635c819
 Bytes: 4
 2014
 
+2:17-2:21
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1fa5f182_a635c819
+UUID: 44c79ed5_c517faeb
+Bytes: 55
+not if this is substantially derived from another file.
+
 124
 Wed Nov 26 00:36:37 2014 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -139,4 +190,41 @@ Bytes: 279
 This test is failing right now on host because we don't have permissions to read /proc/kpagestats but it passes fine on device (since it adb roots first).
 
 Do we want to petition the build team to add grant our tests extra permissions? Make this test device-only? Something else?
+
+124
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff581d71_602ca689
+UUID: 44c79ed5_25fd2e41
+Bytes: 152
+you can't assume root on device. they run the gtests on userdebug builds.
+
+this does seem to be significantly different than our other gtests in nature.
+
+File: oatdump/oatdump.cc
+
+20:0-26:14
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44c79ed5_4504aab2
+Bytes: 5
+|sort
+
+File: runtime/base/unix_file/fd_file.cc
+
+197:0-197:57
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47b325e_42ccb245
+Bytes: 48
+isn't this just a special case of the above now?
+
+File: runtime/base/unix_file/fd_file.h
+
+77:0-77:77
+Sat Dec 13 01:15:44 2014 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e47b325e_62d9b606
+Bytes: 24
+add test to fd_file_test
 

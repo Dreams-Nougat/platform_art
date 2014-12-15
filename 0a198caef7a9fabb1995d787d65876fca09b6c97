@@ -304,6 +304,20 @@ Do you want me to do something like:
 
 ?
 
+197:0-197:57
+Mon Dec 15 23:39:07 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44231e8e_eb2e652b
+UUID: 2420ea81_aa9b8bdb
+Bytes: 353
+Actually I now remember another subtlety here.
+
+read advances the file offset and also reads from the last set file offset, so e.g. ReadFully will work fully the first time, and the second, third, ... time it will just always read 0 bytes.
+
+Not sure if that's desirable behavior or not.
+
+pread on the other hand will never touch the current file offset.
+
 File: runtime/base/unix_file/fd_file.h
 
 77:0-77:77

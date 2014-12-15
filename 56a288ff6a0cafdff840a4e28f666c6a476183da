@@ -1,0 +1,59 @@
+Revision: 56a288ff6a0cafdff840a4e28f666c6a476183da
+Patch-set: 5
+File: compiler/optimizing/dead_code_elimination_test.cc
+
+35:9-35:23
+Mon Dec 15 17:57:24 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a453fafb_50280ced
+Bytes: 87
+Shouldn't you check the result of the "try". If not expect to fail, maybe add a dcheck.
+
+File: compiler/optimizing/inliner.cc
+
+72:24-72:37
+Mon Dec 15 17:57:24 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a453fafb_700ef0a5
+Bytes: 82
+Eventually, the caching system from Quick that Vmarko made will be useful as well.
+
+91:53-91:59
+Mon Dec 15 17:57:24 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04c126c3_06cc7c44
+Bytes: 142
+This message is correct now but I imagine at some point we will also want more compiler generated methods as well (which won't have code item)
+
+101:17-101:28
+Mon Dec 15 17:57:24 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a453fafb_b01e98d2
+Bytes: 125
+What if the caller is inside try block? Does it work because you don't handle exceptions? (namely you don't need environment)
+
+137:6-137:65
+Mon Dec 15 17:57:24 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a453fafb_d0131cc9
+Bytes: 101
+As a future approach, it might make sense to estimate the number of blocks before building the graph.
+
+File: compiler/optimizing/nodes.cc
+
+717:6-717:63
+Mon Dec 15 17:57:24 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a453fafb_102e84fb
+Bytes: 39
+I like that the IR allows doing this :)
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+206:11-206:18
+Mon Dec 15 17:57:24 2014 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a453fafb_302b88ec
+Bytes: 184
+To me it makes sense to move inliner to be first one in this graph. Constant Folding and dead code elimination have more of an effect when looking at the whole graph with inlined code.
+

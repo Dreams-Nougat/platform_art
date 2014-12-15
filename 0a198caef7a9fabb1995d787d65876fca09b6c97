@@ -40,12 +40,30 @@ Bytes: 247
 ./build/Android.common_path.mk:17:ifndef ANDROID_COMMON_PATH_MK
 ./build/Android.common_build.mk:17:ifndef ANDROID_COMMON_BUILD_MK
 
+17:7-17:30
+Mon Dec 15 22:10:09 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c46ad1_a45be2fc
+UUID: 2420ea81_47e690e9
+Bytes: 71
+I renamed all of those to ART_COMMON_ ... in patch set 2. Rename back ?
+
 20:0-24:73
 Sat Dec 13 01:15:44 2014 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44c79ed5_850d02e0
 Bytes: 92
 do we need this? haven't seen its use. seems expensive to shell out for something like this.
+
+20:0-24:73
+Mon Dec 15 22:10:09 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44c79ed5_850d02e0
+UUID: 2420ea81_87a6c89c
+Bytes: 155
+Yes, it's used by the new build multi executable macro. It converts a string like target into TARGET.
+
+Leave as-is or replace with a pure makefile version?
 
 File: build/Android.executable.mk
 
@@ -55,6 +73,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24c46ad1_e455dac6
 Bytes: 32
 the tabs seem out of place here.
+
+105:0-110:6
+Mon Dec 15 22:10:09 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c46ad1_e455dac6
+UUID: 846356c3_6cab5f12
+Bytes: 76
+This part of the change got completely rewritten in PS2 (and no tabs). PTAL.
 
 140:10-140:17
 Wed Nov 26 10:22:59 2014 +0000
@@ -78,6 +104,14 @@ Parent: ff581d71_143b6cbd
 UUID: e47b325e_22508ed3
 Bytes: 11
 unresolved?
+
+140:10-140:17
+Mon Dec 15 22:10:09 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e47b325e_22508ed3
+UUID: 44231e8e_ab0d4ddf
+Bytes: 14
+Fixed in PS#2.
 
 File: build/Android.gtest.mk
 
@@ -226,6 +260,21 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e47b325e_42ccb245
 Bytes: 48
 isn't this just a special case of the above now?
+
+197:0-197:57
+Mon Dec 15 22:10:09 2014 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e47b325e_42ccb245
+UUID: 44231e8e_eb2e652b
+Bytes: 127
+One calls read the other calls pread.
+
+Do you want me to do something like:
+
+  if (offset == 0) call read 
+  else call pread
+
+?
 
 File: runtime/base/unix_file/fd_file.h
 

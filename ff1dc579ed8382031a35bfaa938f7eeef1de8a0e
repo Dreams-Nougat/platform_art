@@ -1,0 +1,55 @@
+Revision: ff1dc579ed8382031a35bfaa938f7eeef1de8a0e
+Patch-set: 4
+File: compiler/optimizing/code_generator_arm.cc
+
+2618:0-2620:52
+Tue Dec 16 22:36:07 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 017758c2_33b588c2
+Bytes: 52
+Why not passing the FieldInfo to avoid these checks?
+
+2630:17-2630:93
+Tue Dec 16 22:36:07 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217a9caa_94b9e4eb
+Bytes: 32
+Maybe add a is_wide local above.
+
+2631:0-2631:64
+Tue Dec 16 22:36:07 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217a9caa_f4acd8aa
+Bytes: 42
+But not for thumb?? How did you test this?
+
+2654:33-2654:51
+Tue Dec 16 22:36:07 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217a9caa_b4b660f9
+Bytes: 19
+Pass the FieldInfo?
+
+2697:8-2697:29
+Tue Dec 16 22:36:07 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 017758c2_d3b9b4bc
+Bytes: 26
+GenerateWideVolatileStore?
+
+File: compiler/optimizing/nodes.h
+
+2155:44-2155:48
+Tue Dec 16 22:36:07 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217a9caa_54a58cb9
+Bytes: 165
+Probably false for volatile fields? Within a method, can we optimize two loads of a volatile field into one, even if we can prove there is no side effect in between?
+
+2696:7-2696:28
+Tue Dec 16 22:36:07 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1d164e3_32a4b0bb
+Bytes: 126
+Why this change? We are not going to merge two HMonitorOperations into one, so it doesn't make sense to implement this method.
+

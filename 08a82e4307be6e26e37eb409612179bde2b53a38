@@ -2,12 +2,36 @@ Revision: 08a82e4307be6e26e37eb409612179bde2b53a38
 Patch-set: 16
 File: compiler/optimizing/graph_visualizer.cc
 
+169:6-169:13
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 017758c2_13dacc2e
+Bytes: 191
+The else if is a bit off: we are checking the input count, otherwise the kind? We should probably refactor this method and use a proper visitor. For now, it works for me if you just do an if.
+
+169:16-169:68
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1d164e3_b26180f1
+Bytes: 364
+I know LLVM uses this pattern, but I'm a bit hesitant in using it. It confuses even senior c++ people I know, and you always have to remember which scope the local variable is in. I find it much more readable to have a IsIntConstant/AsIntConstant.
+
+Alternatively, too many uses of As* is a good indicator you need a visitor. Or that this one needs a refactoring :)
+
 283:4-283:21
 Tue Dec 16 20:49:36 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 414f907e_8561c2f1
 Bytes: 62
 I think i prefer the is_enabled approach. Is more revealing :)
+
+283:4-283:21
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 414f907e_8561c2f1
+UUID: 017758c2_d3c3f445
+Bytes: 57
+Yes, that's the reason it was there in the first place :)
 
 File: compiler/optimizing/graph_visualizer.h
 
@@ -28,6 +52,45 @@ void DumpGraph(const char* pass_name, char* suffix = nullptr);
 
 and then you can call it with "(before)" or "(after)" in optimizing_compiler.cc as a second parameter.
 
+File: compiler/optimizing/optimizing_compiler.cc
+
+141:4-141:12
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 017758c2_73fea079
+Bytes: 133
+Please add the TODO message as a '<<' that the c1visualizer currently only works single-threaded (to help out someone new trying it).
+
+298:30-298:35
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217a9caa_94648402
+Bytes: 31
+Any reason for the re-ordering?
+
+File: compiler/optimizing/test/ConstantFolding.java
+
+25:24-25:31
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 017758c2_f3e950b9
+Bytes: 120
+I think the checker should be aware of those ids. Seems silly to repeat them here. This can be done in a next CL though.
+
+26:39-26:43
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1d164e3_12c64c7a
+Bytes: 41
+Why 3 brackets? Can we drop one (or two)?
+
+46:0-47:48
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1d164e3_72c1d860
+Bytes: 75
+Is that order the one in the graph?  Can we be more flexible at this level?
+
 File: tools/checker.py
 
 31:17-31:36
@@ -43,4 +106,32 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 217a9caa_94e7a43d
 Bytes: 30
 they *may* need? or they need?
+
+218:32-218:40
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217a9caa_74c1a860
+Bytes: 17
+starting -> start
+
+267:4-267:12
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1d164e3_32cb5081
+Bytes: 79
+This confuses more than helps. 'headAndTail'  I understand, "List pop" I don't.
+
+278:48-278:55
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e1d164e3_d2af649d
+Bytes: 30
+Missing '.'. (here and below).
+
+421:5-421:44
+Tue Dec 16 22:19:48 2014 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217a9caa_34cb3081
+Bytes: 19
+I can't parse this.
 

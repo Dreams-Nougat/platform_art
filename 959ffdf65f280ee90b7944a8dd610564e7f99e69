@@ -9,3 +9,13 @@ UUID: 64782270_9fa61f9d
 Bytes: 178
 Could we set a timeout here? We did have infinite loops in dex2oat recently, which were only terminated by the watchdog. So I think it's safer to just set some arbitrary value...
 
+122:6-125:45
+Tue Dec 16 10:23:40 2014 +0000
+Author: Stephen Kyle <1053354@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64782270_9fa61f9d
+UUID: 211e1c5a_d4e9bcb9
+Bytes: 419
+Normally I use the timeout command to set timeouts, when calling 'adb shell dalvikvm ...', so I could just do the same when creating the host dex2oat command (in Executor.verifyOnHost(String)), and then report a dex2oat timeout appropriately. 
+
+If dex2oat loops infinitely on the target, the aforementioned dalvikvm timeout will catch that, but it will be indistinguishable from a regular timeout of the VM's execution.
+

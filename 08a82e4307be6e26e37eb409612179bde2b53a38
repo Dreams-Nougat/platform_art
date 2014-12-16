@@ -9,6 +9,25 @@ UUID: 414f907e_8561c2f1
 Bytes: 62
 I think i prefer the is_enabled approach. Is more revealing :)
 
+File: compiler/optimizing/graph_visualizer.h
+
+45
+Tue Dec 16 21:38:17 2014 +0000
+Author: Jean Christophe Beyler <1016743@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1dbec04_7007900f
+Bytes: 658
+Not sure if you have the time but:
+
+If this could be an enum instead to be: before/during/after that would allow us to dump while debugging during an optimization and not have your naming system put "before"/"after" wrongly so.
+
+Another solution that would be even more practical for when we are debugging the compiler would be to be able to pass a suffix to be able to differentiate different moments in a given optimization.
+
+So instead of the enum, it would just perhaps simpler to have:
+
+void DumpGraph(const char* pass_name, char* suffix = nullptr);
+
+and then you can call it with "(before)" or "(after)" in optimizing_compiler.cc as a second parameter.
+
 File: tools/checker.py
 
 31:17-31:36

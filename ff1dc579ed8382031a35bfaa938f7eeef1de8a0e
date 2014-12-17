@@ -2,6 +2,20 @@ Revision: ff1dc579ed8382031a35bfaa938f7eeef1de8a0e
 Patch-set: 4
 File: compiler/optimizing/code_generator_arm.cc
 
+2579
+Wed Dec 17 11:13:06 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1204cdf_68b023d3
+Bytes: 8
+Atomic ?
+
+2590
+Wed Dec 17 11:13:06 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1204cdf_48b55fc1
+Bytes: 5
+ditto
+
 2618:0-2620:52
 Tue Dec 16 22:36:07 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,6 +50,16 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 017758c2_d3b9b4bc
 Bytes: 26
 GenerateWideVolatileStore?
+
+2697
+Wed Dec 17 11:13:06 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017758c2_d3b9b4bc
+UUID: e1cb2464_a2989e84
+Bytes: 344
+I suggest renaming this to AtomicStore - to me volatile implies ordering guarantees, ldrexd and strexd only guarantee atomic updates. The dmb(s) do the ordering.
+
+It gets even more confusing if you look at this and then at ARM64 load-acquire/store-release which are volatile load/ volatile store since they guarantee memory ordering constrains.
 
 File: compiler/optimizing/code_generator_x86.cc
 

@@ -18,6 +18,22 @@ I know LLVM uses this pattern, but I'm a bit hesitant in using it. It confuses e
 
 Alternatively, too many uses of As* is a good indicator you need a visitor. Or that this one needs a refactoring :)
 
+169:6-169:13
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017758c2_13dacc2e
+UUID: a1204cdf_287f4bd6
+Bytes: 28
+Done. Moved to a separate if
+
+169:16-169:68
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1d164e3_b26180f1
+UUID: e1cb2464_62fcd616
+Bytes: 16
+Done. Uses Is/As
+
 283:4-283:21
 Tue Dec 16 20:49:36 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +48,14 @@ Parent: 414f907e_8561c2f1
 UUID: 017758c2_d3c3f445
 Bytes: 57
 Yes, that's the reason it was there in the first place :)
+
+283:4-283:21
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017758c2_d3c3f445
+UUID: e1cb2464_c285a29b
+Bytes: 82
+"We are proud to announce that the is_enabled_ flag is back due to popular demand"
 
 File: compiler/optimizing/graph_visualizer.h
 
@@ -52,6 +76,15 @@ void DumpGraph(const char* pass_name, char* suffix = nullptr);
 
 and then you can call it with "(before)" or "(after)" in optimizing_compiler.cc as a second parameter.
 
+45
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a1dbec04_7007900f
+UUID: c102a041_f1bd2837
+Bytes: 357
+I want to get this CL in now but this certainly could be changed in the future to suit everyone's needs. The reason why I have a boolean here is that I was trying to avoid putting string constants into the compiler class.
+If you'd like to use this in debugging, isn't it enough to just pass it a bogus pass name? That's enough to recognize it in the output.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 141:4-141:12
@@ -61,12 +94,28 @@ UUID: 017758c2_73fea079
 Bytes: 133
 Please add the TODO message as a '<<' that the c1visualizer currently only works single-threaded (to help out someone new trying it).
 
+141:4-141:12
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017758c2_73fea079
+UUID: c102a041_f18c0896
+Bytes: 4
+Done
+
 298:30-298:35
 Tue Dec 16 22:19:48 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 217a9caa_94648402
 Bytes: 31
 Any reason for the re-ordering?
+
+298:30-298:35
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_94648402
+UUID: c102a041_51a5140f
+Bytes: 29
+Nah, just my OCD. Reverted...
 
 File: compiler/optimizing/test/ConstantFolding.java
 
@@ -77,6 +126,14 @@ UUID: 017758c2_f3e950b9
 Bytes: 120
 I think the checker should be aware of those ids. Seems silly to repeat them here. This can be done in a next CL though.
 
+25:24-25:31
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017758c2_f3e950b9
+UUID: c102a041_713bf8ee
+Bytes: 29
+Agreed, that would be useful.
+
 26:39-26:43
 Tue Dec 16 22:19:48 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,12 +141,37 @@ UUID: e1d164e3_12c64c7a
 Bytes: 41
 Why 3 brackets? Can we drop one (or two)?
 
+26:39-26:43
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1d164e3_12c64c7a
+UUID: e1cb2464_e200e62a
+Bytes: 308
+As discussed, the outer bracket is part of the C1 format. The inner two brackets mark variable reference. We could use a different marker but we'd need to find something that doesn't clash with the outputs we want to support, i.e. C1 and oatdump. For example, the UNIX's $VAR would clash with x86 immediates.
+
 46:0-47:48
 Tue Dec 16 22:19:48 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e1d164e3_72c1d860
 Bytes: 75
 Is that order the one in the graph?  Can we be more flexible at this level?
+
+46:0-47:48
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1d164e3_72c1d860
+UUID: c102a041_31a690a0
+Bytes: 562
+Yes, it is. And yes, definitely on my list. This is a feature similar to NOT assertions. The standard check lines follow a specific ordering, but it's easy to specify that some other checks can occur between them without an ordering.
+
+Example:
+  // CHECK:          line 1
+  // CHECK-NOORDER:  line 2
+  // CHECK-NOORDER:  line 3
+  // CHECK-NOT:      line 4
+  // CHECK:          line 5
+
+The algorithm would first match 1 and 5, fixing their position, and attempt to match 2 and 3 inside that scope. Similarly, it would check that no line between 1 and 5 matches 4.
 
 File: tools/checker.py
 
@@ -100,12 +182,28 @@ UUID: 217a9caa_d4dd1c75
 Bytes: 32
 do mention the command line flag
 
+31:17-31:36
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_d4dd1c75
+UUID: c102a041_91b65ccb
+Bytes: 4
+Done
+
 37:63-37:76
 Tue Dec 16 20:49:36 2014 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 217a9caa_94e7a43d
 Bytes: 30
 they *may* need? or they need?
+
+37:63-37:76
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_94e7a43d
+UUID: a1204cdf_48c9df35
+Bytes: 4
+Done
 
 218:32-218:40
 Tue Dec 16 22:19:48 2014 +0000
@@ -114,12 +212,28 @@ UUID: 217a9caa_74c1a860
 Bytes: 17
 starting -> start
 
+218:32-218:40
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_74c1a860
+UUID: a1204cdf_88cab727
+Bytes: 4
+Done
+
 267:4-267:12
 Tue Dec 16 22:19:48 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e1d164e3_32cb5081
 Bytes: 79
 This confuses more than helps. 'headAndTail'  I understand, "List pop" I don't.
+
+267:4-267:12
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1d164e3_32cb5081
+UUID: c102a041_11942c23
+Bytes: 7
+Removed
 
 278:48-278:55
 Tue Dec 16 22:19:48 2014 +0000
@@ -128,10 +242,26 @@ UUID: e1d164e3_d2af649d
 Bytes: 30
 Missing '.'. (here and below).
 
+278:48-278:55
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1d164e3_d2af649d
+UUID: c102a041_518eb410
+Bytes: 4
+Done
+
 421:5-421:44
 Tue Dec 16 22:19:48 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 217a9caa_34cb3081
 Bytes: 19
 I can't parse this.
+
+421:5-421:44
+Wed Dec 17 15:36:35 2014 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_34cb3081
+UUID: e1cb2464_02794a30
+Bytes: 68
+Better now? The word 'stream' is probably confusing in this context.
 

@@ -9,12 +9,32 @@ UUID: 01ccb852_fa2b55e7
 Bytes: 107
 Why not dereference the unique_ptr at the caller? I don't see you overwriting what the unique_ptr stores...
 
+584:2-584:74
+Wed Dec 17 17:17:37 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01ccb852_fa2b55e7
+UUID: 21145c87_8485869c
+Bytes: 548
+I'm new to using unique_ptrs. My intent was to avoid calling get() on them anywhere (except for checking against null) to avoid accidentally copying the pointer somewhere.
+
+Now that you bring it up, I think using a const OatFile* for the 'file' argument would clarify how that argument is used.
+
+Perhaps using 'const std::unique_ptr<OatFile>&' would let me not use get() and also clarify that I'm not modifying the contents of the unique pointer? If you think it doesn't matter, I'm also happy to call get() and pass the file as a 'const OatFile*'.
+
 598:7-598:30
 Wed Dec 17 02:53:36 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01ccb852_fab03561
 Bytes: 56
 A break is the standard way for this in our code base...
+
+598:7-598:30
+Wed Dec 17 17:17:37 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01ccb852_fab03561
+UUID: 812508f1_c7513ea7
+Bytes: 188
+I think the control flow is hard to understand using break. I'm not sure adding more_secondary_to_check makes it any more clear. I'll play around a little more to see if I can add clarity.
 
 File: runtime/oat_file_manager.h
 
@@ -25,12 +45,33 @@ UUID: 01ccb852_fa57d59a
 Bytes: 44
 If that's the case why not make it one enum?
 
+238:2-238:59
+Wed Dec 17 17:17:37 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01ccb852_fa57d59a
+UUID: a1d5ac01_20a56abb
+Bytes: 423
+Contrary to what's implied by this comment, whether we attempted to load a field is orthogonal from whether it loaded successfully or not. For the oat files, for example, there is no foo_load_succeeded_; instead we check the unique_ptr for the oat file to see if it was loaded.
+
+I'll fix the comment to avoid conflating the two things. The code doesn't rely on the fact that foo_load_succeeded_ implies foo_load_attempted_.
+
 250:2-257:63
 Wed Dec 17 02:53:36 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01ccb852_e5ddfa74
 Bytes: 254
 It feels like these would be better as static standalone functions in the cc file if you add the parameters they need from the object. That would reduce the API (as I can't see them explicitly called in your test). But that's a personal style question...
+
+250:2-257:63
+Wed Dec 17 17:17:37 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01ccb852_e5ddfa74
+UUID: 611ad4b5_c98f9536
+Bytes: 456
+These are private methods; they are not part of the API.
+They aren't static because they load the image info and cache it.
+
+If we had an image manager to cache the image info for us across instantiations of OatFileManager objects, these could be made static methods. That would be nicer. Except I'm not sure how often we want to re-load the image info. I think once per OatFileManager object is plenty often, but perhaps less than that is not often enough?
 
 337:44-337:45
 Wed Dec 17 02:53:36 2014 +0000
@@ -39,10 +80,37 @@ UUID: 01a59882_261a38de
 Bytes: 89
 Convention is somewhat ambiguous here, but for anything that changes, use * instead of &.
 
+337:44-337:45
+Wed Dec 17 17:17:37 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01a59882_261a38de
+UUID: 611ad4b5_09fecd77
+Bytes: 795
+The intent is to return an std::unique_ptr to the oat file if we have one. The 'oat_file' parameter is strictly an out parameter.
+
+I didn't use * because it's a weird having a pointer to a unique pointer. Do we write things like (*oat_file)->GetOatDexFile? I wouldn't run into this problem if I didn't try to use the oat_file as a unique pointer after I made an assignment to it.
+
+I think either:
+A. Make oat_file a 'std::unique_ptr<OatFile>*' and change the implementation so I don't have to dereference the pointer to the unique_ptr.
+
+B. Have LoadDexFiles return an std::unique_ptr, and make the boolean success an output parameter. This is slightly less than idea, because the boolean 'success' is the main result of the function and the oat_file is a secondary result you only get sometimes.
+
 342:61-342:77
 Wed Dec 17 02:53:36 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01a59882_092b8d1d
 Bytes: 85
 Maybe introduce another bool into OatFileManager that gets toggled, and have DCHECKs?
+
+342:61-342:77
+Wed Dec 17 17:17:37 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01a59882_092b8d1d
+UUID: 812508f1_47e8ae36
+Bytes: 501
+I wonder if there's some way to restructure the code to avoid the problem of putting the OatFileManager in a bad state after getting the oat file from it.
+
+I could mark the oat file as unloaded, so you can still use the OatFileManager after getting the oat file. But this is probably not what people want, so I think your suggestion is a better approach.
+
+Should I be using CHECKs or DCHECKs? I think I saw a comment that says to prefer CHECKs unless there is evidence they cause performance problems.
 

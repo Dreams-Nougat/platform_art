@@ -1,0 +1,20 @@
+Revision: ebd8b24c3630a4b02fb09c06f388ec23ffdfec0c
+Patch-set: 2
+File: runtime/gc/heap.cc
+
+2995:0-2997:7
+Wed Dec 17 23:47:27 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 21e9bccf_02eeae8f
+Bytes: 198
+Can you add a short comment on the intent? I assume this would cause GC-for-alloc to trigger only when the max_allowed_footprint is reached, rather than earlier, in the case of an unstarted runtime?
+
+File: runtime/mirror/class-inl.h
+
+513:9-513:19
+Wed Dec 17 23:47:27 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 812508f1_f61eaefd
+Bytes: 162
+When a class in the not ready state, it can be that the access flag hasn't been set yet. See ClassLinker::LoadClass(). So, we'd read an uninitialized access flag?
+

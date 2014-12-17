@@ -114,3 +114,14 @@ I could mark the oat file as unloaded, so you can still use the OatFileManager a
 
 Should I be using CHECKs or DCHECKs? I think I saw a comment that says to prefer CHECKs unless there is evidence they cause performance problems.
 
+File: runtime/oat_file_manager_test.cc
+
+60:0-62:28
+Wed Dec 17 20:29:15 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 81da6831_e8b9a7ea
+Bytes: 580
+We load the image at a fixed address in memory (modulo relocation), but it's possible that that particular memory is already being used. When I run the test using 'mm -j32 test-art-host', it looks like bash has already mprotected the memory where we want to place the image. When I run the test individually, the memory is available (bash isn't involved) and I don't see the error.
+
+This shouldn't be specific to relocation, but rather in general loading images on the host. Is there a strategy for dealing with this already? Why don't we run into this problem for existing tests?
+

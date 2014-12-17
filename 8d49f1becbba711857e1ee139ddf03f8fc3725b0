@@ -1,0 +1,48 @@
+Revision: 8d49f1becbba711857e1ee139ddf03f8fc3725b0
+Patch-set: 1
+File: runtime/oat_file_manager.cc
+
+584:2-584:74
+Wed Dec 17 02:53:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01ccb852_fa2b55e7
+Bytes: 107
+Why not dereference the unique_ptr at the caller? I don't see you overwriting what the unique_ptr stores...
+
+598:7-598:30
+Wed Dec 17 02:53:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01ccb852_fab03561
+Bytes: 56
+A break is the standard way for this in our code base...
+
+File: runtime/oat_file_manager.h
+
+238:2-238:59
+Wed Dec 17 02:53:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01ccb852_fa57d59a
+Bytes: 44
+If that's the case why not make it one enum?
+
+250:2-257:63
+Wed Dec 17 02:53:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01ccb852_e5ddfa74
+Bytes: 254
+It feels like these would be better as static standalone functions in the cc file if you add the parameters they need from the object. That would reduce the API (as I can't see them explicitly called in your test). But that's a personal style question...
+
+337:44-337:45
+Wed Dec 17 02:53:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01a59882_261a38de
+Bytes: 89
+Convention is somewhat ambiguous here, but for anything that changes, use * instead of &.
+
+342:61-342:77
+Wed Dec 17 02:53:36 2014 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01a59882_092b8d1d
+Bytes: 85
+Maybe introduce another bool into OatFileManager that gets toggled, and have DCHECKs?
+

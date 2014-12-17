@@ -23,12 +23,28 @@ UUID: 017758c2_33b588c2
 Bytes: 52
 Why not passing the FieldInfo to avoid these checks?
 
+2618:0-2620:52
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017758c2_33b588c2
+UUID: a1204cdf_28bc6bdf
+Bytes: 25
+but off-course... done :)
+
 2630:17-2630:93
 Tue Dec 16 22:36:07 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 217a9caa_94b9e4eb
 Bytes: 32
 Maybe add a is_wide local above.
+
+2630:17-2630:93
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_94b9e4eb
+UUID: e1cb2464_e2154664
+Bytes: 4
+Done
 
 2631:0-2631:64
 Tue Dec 16 22:36:07 2014 +0000
@@ -37,12 +53,28 @@ UUID: 217a9caa_f4acd8aa
 Bytes: 42
 But not for thumb?? How did you test this?
 
+2631:0-2631:64
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_f4acd8aa
+UUID: c102a041_91677c06
+Bytes: 82
+It is mentioned in the reference manual. The mention is for arm but not for thumb.
+
 2654:33-2654:51
 Tue Dec 16 22:36:07 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 217a9caa_b4b660f9
 Bytes: 19
 Pass the FieldInfo?
+
+2654:33-2654:51
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_b4b660f9
+UUID: e1cb2464_02130a7f
+Bytes: 4
+Done
 
 2697:8-2697:29
 Tue Dec 16 22:36:07 2014 +0000
@@ -60,6 +92,14 @@ Bytes: 344
 I suggest renaming this to AtomicStore - to me volatile implies ordering guarantees, ldrexd and strexd only guarantee atomic updates. The dmb(s) do the ordering.
 
 It gets even more confusing if you look at this and then at ARM64 load-acquire/store-release which are volatile load/ volatile store since they guarantee memory ordering constrains.
+
+2697
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1cb2464_a2989e84
+UUID: a1204cdf_686e631e
+Bytes: 56
+Fair point Serban. Atomic sounds better in this context.
 
 2750:7-2750:18
 Wed Dec 17 11:55:26 2014 +0000
@@ -110,6 +150,15 @@ Bytes: 257
 
 2) Are long fields guaranteed to be aligned on 64-bit boundary? Because I am not sure that it will be atomic otherwise in case of cache line split (even for movsd).
 
+2753:0-2757:58
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1588471_3acae1ae
+UUID: c102a041_f1640803
+Bytes: 124
+1) yep
+2) we should guarantee that they are if not. My understanding is that they are but I will look to actually verify it.
+
 File: compiler/optimizing/nodes.h
 
 2155:44-2155:48
@@ -129,10 +178,26 @@ Good catch. This should be false to express correct semantics. I believe we alre
 
 Regarding your second questions, it makes sense that it should be possible. If there is any synchronization needed, it is up to programmer to set barrier in which case there should be some "side-effect" in between.
 
+2155:44-2155:48
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217a9caa_54a58cb9
+UUID: a1204cdf_e8c37333
+Bytes: 186
+thanks for the catch. Should be false, or at least in general. If we can prove there's no side effect in between it's ok to collapse the two into one but for now let's just return false.
+
 2696:7-2696:28
 Tue Dec 16 22:36:07 2014 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e1d164e3_32a4b0bb
 Bytes: 126
 Why this change? We are not going to merge two HMonitorOperations into one, so it doesn't make sense to implement this method.
+
+2696:7-2696:28
+Wed Dec 17 16:01:04 2014 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1d164e3_32a4b0bb
+UUID: c102a041_d1b0e44f
+Bytes: 39
+My bad, i applied a bad reasoning here.
 

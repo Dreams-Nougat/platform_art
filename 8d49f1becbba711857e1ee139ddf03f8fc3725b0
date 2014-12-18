@@ -21,6 +21,13 @@ Now that you bring it up, I think using a const OatFile* for the 'file' argument
 
 Perhaps using 'const std::unique_ptr<OatFile>&' would let me not use get() and also clarify that I'm not modifying the contents of the unique pointer? If you think it doesn't matter, I'm also happy to call get() and pass the file as a 'const OatFile*'.
 
+591:2-592:49
+Thu Dec 18 23:46:39 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c1eaa0ee_b750f027
+Bytes: 95
+Is this a memory leak? Are we responsible for freeing the OatDexFile returned by GetOatDexFile?
+
 598:7-598:30
 Wed Dec 17 02:53:36 2014 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -72,6 +79,15 @@ These are private methods; they are not part of the API.
 They aren't static because they load the image info and cache it.
 
 If we had an image manager to cache the image info for us across instantiations of OatFileManager objects, these could be made static methods. That would be nicer. Except I'm not sure how often we want to re-load the image info. I think once per OatFileManager object is plenty often, but perhaps less than that is not often enough?
+
+336:7-336:59
+Thu Dec 18 23:46:39 2014 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01cbd895_9c3f69d9
+Bytes: 240
+The caller should be responsible for freeing the loaded dex files. But do they free the dex_files directly, or can they just free the oat_file returned? Or must they free both?
+
+Regardless, this should be documented clearly in the comments.
 
 337:44-337:45
 Wed Dec 17 02:53:36 2014 +0000

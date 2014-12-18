@@ -1,5 +1,16 @@
 Revision: 2912e895b574b644332055045dc7a2d128a156fb
 Patch-set: 1
+File: /COMMIT_MSG
+
+16:0-18:14
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01cbd895_f92aef69
+Bytes: 145
+What's the performance impact on other benchmarks?
+
+I'm not convinced that the Monte Carlo benchmark is terribly representative of anything real.
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 612:58-612:75
@@ -39,4 +50,90 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c19e206c_f1ca6856
 Bytes: 3
 any
+
+File: runtime/lock_word.h
+
+70:3-80:46
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e197a45c_655880cb
+Bytes: 363
+Why not just admit that the layout is the same for biased and thin locks, and have set of common constants and accessors?  Nothing else has a LockOwner or LockCount field.  And I don't see a reason for these to diverge over time.
+
+It would be nicer and eliminate some code if the LockCount had the same semantics in both cases.  I don't know how feasible that is.
+
+128:21-128:35
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01cbd895_16b1fa51
+Bytes: 15
+And not biased?
+
+136:2-136:30
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 61d9f46e_11522eab
+Bytes: 94
+Something needs a comment.  It seems that kUnlocked is no longer the only only unlocked state.
+
+File: runtime/mirror/object.cc
+
+166:12-166:37
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 61d9f46e_3129aaf0
+Bytes: 50
+Why test this again?  Just separate the two cases.
+
+167:10-171:11
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 61d9f46e_71417286
+Bytes: 236
+Combine with kUnlocked case?
+
+It seems to me the structure of this should be to test at beginning:
+
+Is it unlocked in any form?
+  If so, and it's biased, revoke bias and try again.
+  In other unlocked cases, use the lockword as hashcode
+
+File: runtime/monitor.cc
+
+354:6-367:7
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c19c6086_e4aa5461
+Bytes: 95
+Please merge the two branches, and use a conditional expression to handle the minor difference.
+
+714:1-714:47
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e197a45c_c85643d3
+Bytes: 137
+Please add a comment that this may spuriously fail to do anything, for no reason whatsoever.  "TryRevokeBiasedLock" may be a better name.
+
+745:10-745:54
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e197a45c_68ea97af
+Bytes: 128
+What does it mean if the lock is still biased, but has a different owner?  Is there a way for an object to change BiasLockOwner?
+
+1000:71-1000:77
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c1eaa0ee_31f1b073
+Bytes: 29
+We're in notify(), not wait()
+
+File: runtime/thread.cc
+
+928:11-928:43
+Thu Dec 18 23:03:22 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01cbd895_96e18aa6
+Bytes: 15
+Call this once?
 

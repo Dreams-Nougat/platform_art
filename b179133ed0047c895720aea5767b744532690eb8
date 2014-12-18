@@ -1,0 +1,40 @@
+Revision: b179133ed0047c895720aea5767b744532690eb8
+Patch-set: 2
+File: runtime/gc/heap.cc
+
+2923:83-2923:96
+Thu Dec 18 01:49:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 21e9bccf_30f3f002
+Bytes: 87
+Would 'bytes_allocated_before_gc' or 'bytes_allocated_at_gc_start' be more descriptive?
+
+3061:9-3061:41
+Thu Dec 18 01:49:54 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 812508f1_7c9f3d6f
+Bytes: 737
+This should work, but it may be cleaner to use another boolean variable to reject concurrent GC notifications while the GC daemon thread is running concurrent GC, if it works.
+
+Something like:
+
+void Heap::WaitForConcurrentGCRequest(Thread* self) {
+  ScopedThreadStateChange tsc(self, kBlocked);
+  MutexLock mu(self, *gc_request_lock_);
+  conc_gc_running_ = false;
+  while (!gc_request_pending_) {
+    gc_request_cond_->Wait(self);
+  }
+  gc_request_pending_ = false;
+  conc_gc_running_ = true;
+}
+
+void Heap::NotifyConcurrentGCRequest(Thread* self) {
+  ScopedThreadStateChange tsc(self, kBlocked);
+  MutexLock mu(self, *gc_request_lock_);
+  if (!conc_gc_running_) {
+    gc_request_pending_ = true;
+    gc_request_cond_->Signal(self);
+  }
+}
+

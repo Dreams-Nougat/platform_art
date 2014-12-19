@@ -1,0 +1,29 @@
+Revision: b4c94ae15e425442415e316d1b8bbc54abd0db3f
+Patch-set: 2
+File: compiler/optimizing/code_generator_arm64.cc
+
+1805:45-1805:52
+Fri Dec 19 21:29:43 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_5b04473d
+Bytes: 612
+Does this need to be AnyAny?  My impression is that ISHLD is not sufficient for precluding the incorrect result for IRIW?  I.e.
+
+Thread 1: x = 1;
+Thread 2: y = 1;
+Thread 3: r1 = x; dmb ishld; r2 = y;
+Thread 4: r3 = x; dmb ishld; r4 = y;
+
+does not ensure sequential consistency?
+
+I think we had concluded that ISHLD is sufficient for lock acquisition and flag testing, such as in initialization checks.  But I'm not sure it's quite enough for general volatiles.
+
+This is unfortunately not apparent from the barrier naming.  Either way a comment about the fact that ISHLD does/does not suffice for IRIW would help.
+
+2484:44-2484:52
+Fri Dec 19 21:29:43 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_84ad96a6
+Bytes: 19
+Same question here.
+

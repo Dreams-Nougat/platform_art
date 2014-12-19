@@ -10,6 +10,14 @@ Bytes: 127
 Without LOCAL_CLANG_$(arch), the loop makes no sense now. You can just write:
 LOCAL_CLANG := $(ART_TARGET_CLANG_$(TARGET_ARCH))
 
+105
+Fri Dec 19 23:46:42 2014 +0000
+Author: Chih-hung Hsieh <1052399@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c138e05e_c7a3b2b3
+UUID: 217ffc22_0f01c92c
+Bytes: 231
+This loop should still be necessary to set ART_TARGET_CLANG correctly for its use at new line 160 and other .mk files. Without this, ART_TARGET_CFLAGS  was set incorrectly with clang flags because ART_TARGET_CLANG_mips was ignored.
+
 106
 Fri Dec 19 22:21:29 2014 +0000
 Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,10 +26,27 @@ Bytes: 319
 We can remove use of arch specific LOCAL_CLANG_$(arch), only if it won't happen that 64-bit needs it off but 32-bit needs it on (or vice versa).
 Before change https://android-review.googlesource.com/#/c/99275/1, we needed this because we wanted to turn on clang for 64-bit targets but not 32-bit targets in arm64 build.
 
+106
+Fri Dec 19 23:46:42 2014 +0000
+Author: Chih-hung Hsieh <1052399@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8190a89a_b2b49ec6
+UUID: 41723059_90c5da6e
+Bytes: 106
+ART_TARGET_CLANG_<target> seems to serve the purpose of LOCAL_CLANG_<target> now. Or did I miss something?
+
 109
 Fri Dec 19 22:21:29 2014 +0000
 Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 41ff90b8_6e6bc3d3
 Bytes: 158
 No, $(set-target-local-clang-vars) is called in the module definition, not here. Run "mgrep set-target-local-clang-vars" in art  you'll see where it's called.
+
+109
+Fri Dec 19 23:46:42 2014 +0000
+Author: Chih-hung Hsieh <1052399@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41ff90b8_6e6bc3d3
+UUID: 6175743d_d4403469
+Bytes: 152
+Calling here, so that line 160 can use ART_TARGET_CLANG.
+I am assuming that other places do not mind calling set-target-local-clang-vars multiple times.
 

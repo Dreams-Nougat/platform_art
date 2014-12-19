@@ -1,0 +1,27 @@
+Revision: 786c92cc3e972f18898997a9bf37ae0cd393f438
+Patch-set: 3
+File: build/Android.common_build.mk
+
+105
+Fri Dec 19 22:21:29 2014 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c138e05e_c7a3b2b3
+Bytes: 127
+Without LOCAL_CLANG_$(arch), the loop makes no sense now. You can just write:
+LOCAL_CLANG := $(ART_TARGET_CLANG_$(TARGET_ARCH))
+
+106
+Fri Dec 19 22:21:29 2014 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8190a89a_b2b49ec6
+Bytes: 319
+We can remove use of arch specific LOCAL_CLANG_$(arch), only if it won't happen that 64-bit needs it off but 32-bit needs it on (or vice versa).
+Before change https://android-review.googlesource.com/#/c/99275/1, we needed this because we wanted to turn on clang for 64-bit targets but not 32-bit targets in arm64 build.
+
+109
+Fri Dec 19 22:21:29 2014 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 41ff90b8_6e6bc3d3
+Bytes: 158
+No, $(set-target-local-clang-vars) is called in the module definition, not here. Run "mgrep set-target-local-clang-vars" in art  you'll see where it's called.
+

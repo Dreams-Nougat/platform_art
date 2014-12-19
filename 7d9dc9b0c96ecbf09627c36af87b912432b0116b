@@ -32,6 +32,13 @@ UUID: a18bec6e_39d41375
 Bytes: 4
 Done
 
+3051:30-3051:37
+Fri Dec 19 23:10:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_0da572ba
+Bytes: 359
+I don't think it makes sense to say Relaxed here and SequentiallyConsistent in the CAS.  If this is only a preformance hint, it's probably OK to say Relaxed in both places.  You're still guaranteed that only the first CAS will succeed.  If you're relying on a successful CAS to indicate completetion of the prior GC, then you should use at least Release here.
+
 3081:0-3081:67
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -61,6 +68,13 @@ Parent: 01f918d6_2cd83701
 UUID: 6102d48e_60daaea5
 Bytes: 4
 Done
+
+3156:9-3156:43
+Fri Dec 19 23:10:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6175743d_2e0da7a6
+Bytes: 141
+Again, I think all accesses should be Relaxed, or this should be strengthened.  The question is whether this is a hint or promises something.
 
 File: runtime/gc/heap.h
 
@@ -109,6 +123,13 @@ UUID: a18bec6e_a43a1ae9
 Bytes: 4
 Done
 
+1065:2-1065:14
+Fri Dec 19 23:10:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217ffc22_ccf2effd
+Bytes: 80
+Should we be switching to C++11 atomic<bool>?  I suspect that's now OK for AOSP.
+
 File: runtime/gc/reference_processor.cc
 
 241:57-241:64
@@ -140,6 +161,13 @@ synchronized (ReferenceQueue.class) {
                     }
 
 I don't think there are any issues since we store the cleared references in a global ref. Also since the task processor maintains order, it would mean that things are always added in the right order.
+
+241:57-241:64
+Fri Dec 19 23:10:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6175743d_31366ad3
+Bytes: 102
+Any danger that we will end up finalizing objects before the corresponding WeakReferences are enquued?
 
 File: runtime/gc/task_processor.cc
 
@@ -234,6 +262,13 @@ Parent: 01f918d6_8ce72b68
 UUID: 6102d48e_9b5bdff9
 Bytes: 7
 Deleted
+
+67:12-67:56
+Fri Dec 19 23:10:24 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 217ffc22_0c9d5741
+Bytes: 74
+Explanatory comment?  It wasn't obvious to me what this is intended to do.
 
 File: runtime/gc/task_processor_test.cc
 

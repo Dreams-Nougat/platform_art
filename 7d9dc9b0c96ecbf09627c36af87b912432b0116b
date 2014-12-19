@@ -9,12 +9,28 @@ UUID: 6102d48e_15133e80
 Bytes: 100
 This isn't this CL, but does this local variable write have a meaning as we return in the next line?
 
+951
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_15133e80
+UUID: 01f918d6_f7bf8832
+Bytes: 4
+Done
+
 3051:0-3051:45
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01f918d6_4c9db3f9
 Bytes: 164
 This line may be better placed in ConcurrentGCTask::Run(), like the transition and the trim code, in case ConcurrentGC() is called in another context down the road.
+
+3051
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_4c9db3f9
+UUID: a18bec6e_39d41375
+Bytes: 4
+Done
 
 3081:0-3081:67
 Fri Dec 19 19:48:20 2014 +0000
@@ -23,12 +39,28 @@ UUID: 01f918d6_cc0c03e3
 Bytes: 69
 I wonder if this call should be synchronized with the task processor.
 
+3081
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_cc0c03e3
+UUID: 6102d48e_40be9233
+Bytes: 63
+Good point, I'll add a TODO since I think its benign currently.
+
 3121:37-3121:40
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01f918d6_2cd83701
 Bytes: 39
 Should we check !CanAddHeapTask() here?
+
+3121
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_2cd83701
+UUID: 6102d48e_60daaea5
+Bytes: 4
+Done
 
 File: runtime/gc/heap.h
 
@@ -39,6 +71,14 @@ UUID: 6102d48e_3a550993
 Bytes: 27
 Could these two be private?
 
+484
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_3a550993
+UUID: 01f918d6_977df4da
+Bytes: 4
+Done
+
 626:7-626:23
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,12 +86,28 @@ UUID: a18bec6e_f6ce98c0
 Bytes: 20
 Can this be private?
 
+626
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a18bec6e_f6ce98c0
+UUID: 6102d48e_e051fe5c
+Bytes: 4
+Done
+
 631:7-631:38
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e133247d_4590fc59
 Bytes: 20
 Can this be private?
+
+631
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e133247d_4590fc59
+UUID: a18bec6e_a43a1ae9
+Bytes: 4
+Done
 
 File: runtime/gc/reference_processor.cc
 
@@ -66,6 +122,25 @@ What's the advantage of this over the old way? Is it that the GC time gets short
 
 Not sure about this, but would there be any issue due to the change from the synchronous calls to the asynchronous calls? Would it be ok for the java_lang_ref_ReferenceQueue_add calls to have not finished running when the next GC starts?
 
+241
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a18bec6e_939e3e71
+UUID: 6102d48e_bb77bbc2
+Bytes: 781
+I think that was one of the problems, the GC could get blocked if the reference queue daemon was blocked here (e.g. by GetThreadStack). So we need to do it async or else we may get deadlocks (such as gcstress 129).
+
+synchronized (ReferenceQueue.class) {
+                        while (ReferenceQueue.unenqueued == null) {
+                            ReferenceQueue.class.wait();
+// suspend check at backwards branch.
+                        }
+                        list = ReferenceQueue.unenqueued;
+                        ReferenceQueue.unenqueued = null;
+                    }
+
+I don't think there are any issues since we store the cleared references in a global ref. Also since the task processor maintains order, it would mean that things are always added in the right order.
+
 File: runtime/gc/task_processor.cc
 
 24:86-24:90
@@ -75,12 +150,28 @@ UUID: 6102d48e_cf83d569
 Bytes: 46
 Does it make sense to initialize this to true?
 
+24
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_cf83d569
+UUID: 6102d48e_fb4653f2
+Bytes: 26
+I think its not necessary.
+
 55:10-55:22
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a18bec6e_93dcfef2
 Bytes: 117
 If we are shutting down, would it make sense to return nullptr as it could be a concurrent GC which may take a while?
+
+55
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a18bec6e_93dcfef2
+UUID: a18bec6e_44900e5a
+Bytes: 147
+This is certainly a good question, if we skip the tasks it could result in objects not being finalized however. I think we should leave it for now.
 
 54:0-58:7
 Fri Dec 19 19:48:20 2014 +0000
@@ -89,6 +180,14 @@ UUID: 6102d48e_7a070144
 Bytes: 89
 Why don't we need to check if the target time was updated before returning the task here?
 
+58
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_7a070144
+UUID: 01f918d6_12e472de
+Bytes: 4
+Done
+
 60:0-60:56
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -96,12 +195,28 @@ UUID: 01f918d6_a9e2d957
 Bytes: 110
 Does the updated target time gets set (SetTargetRuntime()) without synchronization. Should it be synchronized?
 
+60
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_a9e2d957
+UUID: 6102d48e_fb73f387
+Bytes: 4
+Done
+
 74:0-74:17
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01f918d6_4955a54a
 Bytes: 14
 UNREACHABLE()?
+
+74
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_4955a54a
+UUID: 01f918d6_f2a436c0
+Bytes: 4
+Done
 
 File: runtime/gc/task_processor.h
 
@@ -112,6 +227,14 @@ UUID: 01f918d6_8ce72b68
 Bytes: 30
 Add a comment on what this is?
 
+56
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_8ce72b68
+UUID: 6102d48e_9b5bdff9
+Bytes: 7
+Deleted
+
 File: runtime/gc/task_processor_test.cc
 
 27:0-27:8
@@ -121,12 +244,30 @@ UUID: 6102d48e_fabbf1e6
 Bytes: 16
 Do we need this?
 
+27
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_fabbf1e6
+UUID: 01f918d6_f20796bd
+Bytes: 163
+Yes
+
+external/gtest/include/gtest/internal/gtest-internal.h:454:43: error: cannot convert 'art::gc::TaskProcessorTest_Ordering_Test*' to 'testing::Test*' in return
+
 63:26-63:32
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a18bec6e_3303d2ae
 Bytes: 48
 Should this be named a Task instead of a Thread?
+
+63
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a18bec6e_3303d2ae
+UUID: 01f918d6_329d2e42
+Bytes: 4
+Done
 
 83:2-83:15
 Fri Dec 19 19:48:20 2014 +0000
@@ -135,6 +276,14 @@ UUID: 01f918d6_0ce57b33
 Bytes: 19
 Maybe Atomic<bool>?
 
+83
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01f918d6_0ce57b33
+UUID: 6102d48e_7bcee33f
+Bytes: 4
+Done
+
 86:53-86:56
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -142,10 +291,26 @@ UUID: 6102d48e_da06f511
 Bytes: 3
 the
 
+86
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_da06f511
+UUID: 01f918d6_3272ce80
+Bytes: 4
+Done
+
 106:0-106:71
 Fri Dec 19 19:48:20 2014 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a18bec6e_93c95eea
 Bytes: 109
 What's the significance of doing a self interrupt here? The task processor is already interrupted in line 95.
+
+106
+Fri Dec 19 21:59:39 2014 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a18bec6e_93c95eea
+UUID: 01f918d6_725166d8
+Bytes: 130
+Interrupt gets cleared when RunTasksUntilInterrupted is called, so if we want to self interrupt, this is the easiest way to do it.
 

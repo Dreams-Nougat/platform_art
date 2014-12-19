@@ -1,0 +1,151 @@
+Revision: 7d9dc9b0c96ecbf09627c36af87b912432b0116b
+Patch-set: 5
+File: runtime/gc/heap.cc
+
+951:0-951:45
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_15133e80
+Bytes: 100
+This isn't this CL, but does this local variable write have a meaning as we return in the next line?
+
+3051:0-3051:45
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01f918d6_4c9db3f9
+Bytes: 164
+This line may be better placed in ConcurrentGCTask::Run(), like the transition and the trim code, in case ConcurrentGC() is called in another context down the road.
+
+3081:0-3081:67
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01f918d6_cc0c03e3
+Bytes: 69
+I wonder if this call should be synchronized with the task processor.
+
+3121:37-3121:40
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01f918d6_2cd83701
+Bytes: 39
+Should we check !CanAddHeapTask() here?
+
+File: runtime/gc/heap.h
+
+481:0-484:49
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_3a550993
+Bytes: 27
+Could these two be private?
+
+626:7-626:23
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_f6ce98c0
+Bytes: 20
+Can this be private?
+
+631:7-631:38
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e133247d_4590fc59
+Bytes: 20
+Can this be private?
+
+File: runtime/gc/reference_processor.cc
+
+241:57-241:64
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_939e3e71
+Bytes: 522
+This would make the java_lang_ref_ReferenceQueue_add calls asynchronous.
+
+What's the advantage of this over the old way? Is it that the GC time gets shorter as the old synchronous java_lang_ref_ReferenceQueue_add calls are expected to take longer than the asynchronous AddTask calls?
+
+Not sure about this, but would there be any issue due to the change from the synchronous calls to the asynchronous calls? Would it be ok for the java_lang_ref_ReferenceQueue_add calls to have not finished running when the next GC starts?
+
+File: runtime/gc/task_processor.cc
+
+24:86-24:90
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_cf83d569
+Bytes: 46
+Does it make sense to initialize this to true?
+
+55:10-55:22
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_93dcfef2
+Bytes: 117
+If we are shutting down, would it make sense to return nullptr as it could be a concurrent GC which may take a while?
+
+54:0-58:7
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_7a070144
+Bytes: 89
+Why don't we need to check if the target time was updated before returning the task here?
+
+60:0-60:56
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01f918d6_a9e2d957
+Bytes: 110
+Does the updated target time gets set (SetTargetRuntime()) without synchronization. Should it be synchronized?
+
+74:0-74:17
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01f918d6_4955a54a
+Bytes: 14
+UNREACHABLE()?
+
+File: runtime/gc/task_processor.h
+
+56:11-56:35
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01f918d6_8ce72b68
+Bytes: 30
+Add a comment on what this is?
+
+File: runtime/gc/task_processor_test.cc
+
+27:0-27:8
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_fabbf1e6
+Bytes: 16
+Do we need this?
+
+63:26-63:32
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_3303d2ae
+Bytes: 48
+Should this be named a Task instead of a Thread?
+
+83:2-83:15
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 01f918d6_0ce57b33
+Bytes: 19
+Maybe Atomic<bool>?
+
+86:53-86:56
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_da06f511
+Bytes: 3
+the
+
+106:0-106:71
+Fri Dec 19 19:48:20 2014 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_93c95eea
+Bytes: 109
+What's the significance of doing a self interrupt here? The task processor is already interrupted in line 95.
+

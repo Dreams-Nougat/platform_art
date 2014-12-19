@@ -1,0 +1,18 @@
+Revision: 323548e3f8ee305218da2998469432a683c72cbf
+Patch-set: 2
+File: runtime/monitor.cc
+
+782:44-782:48
+Fri Dec 19 20:15:06 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18bec6e_f91c4b94
+Bytes: 185
+This seems like a serious performance bug, both on Intel and ARM.  The whole point is presumably to avoid synchronization.  Setting this with volatile semantics presumably adds a fence.
+
+878:42-878:46
+Fri Dec 19 20:15:06 2014 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6102d48e_b56d8a21
+Bytes: 49
+Same problem, except this penalizes only non-x86.
+

@@ -18,6 +18,14 @@ UUID: 217ffc22_0f01c92c
 Bytes: 231
 This loop should still be necessary to set ART_TARGET_CLANG correctly for its use at new line 160 and other .mk files. Without this, ART_TARGET_CFLAGS  was set incorrectly with clang flags because ART_TARGET_CLANG_mips was ignored.
 
+105
+Sun Dec 21 01:36:55 2014 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 217ffc22_0f01c92c
+UUID: e11c04fd_ddab7f15
+Bytes: 121
+In that case ART_TARGET_CLANG is always evaluated to false with this change, even for non-mips build. That's not desired.
+
 106
 Fri Dec 19 22:21:29 2014 +0000
 Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,6 +42,14 @@ UUID: 41723059_90c5da6e
 Bytes: 106
 ART_TARGET_CLANG_<target> seems to serve the purpose of LOCAL_CLANG_<target> now. Or did I miss something?
 
+106
+Sun Dec 21 01:36:55 2014 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41723059_90c5da6e
+UUID: 014e780c_efa56993
+Bytes: 72
+Let's preserve use of LOCAL_CLANG_$(arch), as we discussed in the email.
+
 109
 Fri Dec 19 22:21:29 2014 +0000
 Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,4 +65,14 @@ UUID: 6175743d_d4403469
 Bytes: 152
 Calling here, so that line 160 can use ART_TARGET_CLANG.
 I am assuming that other places do not mind calling set-target-local-clang-vars multiple times.
+
+109
+Sun Dec 21 01:36:55 2014 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6175743d_d4403469
+UUID: 2151bca8_7fa7cb16
+Bytes: 272
+Yes, line 160 is a mistake. We shouldn't add art_clang_cflags to ART_TARGET_CFLAGS.
+I think we can add "LOCAL_CLANG_CFLAGS += $(art_clang_cflags" to the function set-target-local-clang-vars, instead.
+(This and other art makefiles are over-complicated and a bit messy :-( )
 

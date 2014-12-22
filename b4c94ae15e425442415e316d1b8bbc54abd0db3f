@@ -20,10 +20,30 @@ I think we had concluded that ISHLD is sufficient for lock acquisition and flag 
 
 This is unfortunately not apparent from the barrier naming.  Either way a comment about the fact that ISHLD does/does not suffice for IRIW would help.
 
+1805
+Mon Dec 22 11:58:01 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_5b04473d
+UUID: c1b2a05b_5162b4f5
+Bytes: 437
+If we assume sequential consistency, I believe we need AnyAny after volatile loads so that stores are not reordered past them.
+
+I will change this to kAnyAny as soon as I am back in the office. If Calin is eager to accept this in he can add a TODO and I will fix it soon.
+
+Long term for ARM64 we should be using the Acquire-Release semantics that, at least in theory, ought to be faster (enabled by default for now in the ARM64 backend).
+
 2484:44-2484:52
 Fri Dec 19 21:29:43 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a18bec6e_84ad96a6
 Bytes: 19
 Same question here.
+
+2484
+Mon Dec 22 11:58:01 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a18bec6e_84ad96a6
+UUID: e1ade4fd_f29e4871
+Bytes: 65
+kAnyAny after load volatile. kLoadAny is not sufficient for IRIW.
 

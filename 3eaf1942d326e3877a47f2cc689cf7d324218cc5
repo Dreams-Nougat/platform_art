@@ -45,3 +45,15 @@ I assume that you wanted to say this, and the double below?
 
 This is one question that I forgot to address. When using LPAE, does the atomicity holds for both, ldrd/strd and vldrd/vstrd? I assumed so since this is how it is done in quick.
 
+2692
+Mon Dec 22 11:03:24 2014 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a13dac4e_c3de4821
+UUID: a1b76c4b_d07cdca6
+Bytes: 751
+From ARM ARM - "LDRD and STRD accesses to 64-bit aligned locations are 64-bit single-copy atomic as seen by translation table walks and accesses to translation tables." But no mention of VLDRD and VSTRD being atomic. 
+
+The reason for 64-bit atomic load/stores in LPAE are the page table entries that need to be updated atomicly (using the General Purpose register bank). From this point of view I see no reason  to impose this restriction on the load/stores coming from the Floating Point bank.
+
+If Quick does it, you can use it as a reference, but I am not sure it is correct in this case. I will raise this question with the architecture team, but I do not expect an answer before the new year. I will update you on this as soon as I have an answer.
+

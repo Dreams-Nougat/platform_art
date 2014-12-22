@@ -11,6 +11,14 @@ What's the performance impact on other benchmarks?
 
 I'm not convinced that the Monte Carlo benchmark is terribly representative of anything real.
 
+16:0-18:14
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01cbd895_f92aef69
+UUID: 611c941f_762fd0a4
+Bytes: 96
+We have not observed big performance impact (improvement or regression) on the other benchmarks.
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 612:58-612:75
@@ -28,12 +36,28 @@ UUID: e1996484_d24ac41f
 Bytes: 92
 Thanks for review. We will upload patchset 2 to modify those two functions for ARM and MIPS.
 
+612:58-612:75
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 81a8a891_8ffbb54b
+UUID: 611c941f_b6404868
+Bytes: 4
+Done
+
 630:59-630:65
 Thu Dec 18 13:34:33 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c19e206c_d1cd6471
 Bytes: 3
 any
+
+630:59-630:65
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c19e206c_d1cd6471
+UUID: a1020cb9_3882692c
+Bytes: 4
+Done
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
@@ -44,12 +68,28 @@ UUID: 81a8a891_aff8794f
 Bytes: 16
 any of the three
 
+919:58-919:76
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 81a8a891_aff8794f
+UUID: c10d40eb_7901872c
+Bytes: 4
+Done
+
 933:59-933:65
 Thu Dec 18 13:34:33 2014 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c19e206c_f1ca6856
 Bytes: 3
 any
+
+933:59-933:65
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c19e206c_f1ca6856
+UUID: a1020cb9_187fa598
+Bytes: 4
+Done
 
 File: runtime/lock_word.h
 
@@ -62,6 +102,14 @@ Why not just admit that the layout is the same for biased and thin locks, and ha
 
 It would be nicer and eliminate some code if the LockCount had the same semantics in both cases.  I don't know how feasible that is.
 
+70:3-80:46
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e197a45c_655880cb
+UUID: 611c941f_7616b070
+Bytes: 4
+Done
+
 128:21-128:35
 Thu Dec 18 23:03:22 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,12 +117,28 @@ UUID: 01cbd895_16b1fa51
 Bytes: 15
 And not biased?
 
+128:21-128:35
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01cbd895_16b1fa51
+UUID: 611c941f_5613b47e
+Bytes: 4
+Done
+
 136:2-136:30
 Thu Dec 18 23:03:22 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 61d9f46e_11522eab
 Bytes: 94
 Something needs a comment.  It seems that kUnlocked is no longer the only only unlocked state.
+
+136:2-136:30
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 61d9f46e_11522eab
+UUID: a1020cb9_d87c0da7
+Bytes: 4
+Done
 
 File: runtime/mirror/object.cc
 
@@ -84,6 +148,14 @@ Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 61d9f46e_3129aaf0
 Bytes: 50
 Why test this again?  Just separate the two cases.
+
+166:12-166:37
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 61d9f46e_3129aaf0
+UUID: c10d40eb_59fe43c2
+Bytes: 48
+Combined with kUnlocked case as suggested below.
 
 167:10-171:11
 Thu Dec 18 23:03:22 2014 +0000
@@ -98,6 +170,14 @@ Is it unlocked in any form?
   If so, and it's biased, revoke bias and try again.
   In other unlocked cases, use the lockword as hashcode
 
+167:10-171:11
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 61d9f46e_71417286
+UUID: c10d40eb_991c5b94
+Bytes: 4
+Done
+
 File: runtime/monitor.cc
 
 354:6-367:7
@@ -107,12 +187,28 @@ UUID: c19c6086_e4aa5461
 Bytes: 95
 Please merge the two branches, and use a conditional expression to handle the minor difference.
 
+354:6-367:7
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c19c6086_e4aa5461
+UUID: c10d40eb_f92117c6
+Bytes: 4
+Done
+
 714:1-714:47
 Thu Dec 18 23:03:22 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e197a45c_c85643d3
 Bytes: 137
 Please add a comment that this may spuriously fail to do anything, for no reason whatsoever.  "TryRevokeBiasedLock" may be a better name.
+
+714:1-714:47
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e197a45c_c85643d3
+UUID: 611c941f_f63ac0e9
+Bytes: 4
+Done
 
 745:10-745:54
 Thu Dec 18 23:03:22 2014 +0000
@@ -121,6 +217,14 @@ UUID: e197a45c_68ea97af
 Bytes: 128
 What does it mean if the lock is still biased, but has a different owner?  Is there a way for an object to change BiasLockOwner?
 
+745:10-745:54
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e197a45c_68ea97af
+UUID: 611c941f_d63fc4d7
+Bytes: 4
+Done
+
 791:44-791:48
 Fri Dec 19 20:22:31 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -128,12 +232,28 @@ UUID: 6102d48e_202cb6ad
 Bytes: 125
 This defeats much of the performance advantage, since it requires a fence.  I believe it can be false.  Same for MonitorExit.
 
+791:44-791:48
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6102d48e_202cb6ad
+UUID: 611c941f_363558f9
+Bytes: 61
+Done. Should we also use "false" for the recursive thin lock?
+
 1000:71-1000:77
 Thu Dec 18 23:03:22 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1eaa0ee_31f1b073
 Bytes: 29
 We're in notify(), not wait()
+
+1000:71-1000:77
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1eaa0ee_31f1b073
+UUID: a1020cb9_788ce15b
+Bytes: 4
+Done
 
 File: runtime/thread.cc
 
@@ -143,4 +263,12 @@ Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01cbd895_96e18aa6
 Bytes: 15
 Call this once?
+
+928:11-928:43
+Mon Dec 22 11:18:37 2014 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01cbd895_96e18aa6
+UUID: 611c941f_1632dc10
+Bytes: 4
+Done
 

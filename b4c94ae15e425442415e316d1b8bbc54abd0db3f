@@ -2,6 +2,27 @@ Revision: b4c94ae15e425442415e316d1b8bbc54abd0db3f
 Patch-set: 2
 File: compiler/optimizing/code_generator_arm64.cc
 
+1033:43-1033:45
+Mon Dec 29 15:06:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a185ac8b_a6175270
+Bytes: 109
+Nit: rename as `src' for symmetry reasons with Load (likewise in compiler/optimizing/code_generator_arm64.h)?
+
+1058:50-1058:52
+Mon Dec 29 15:06:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0144b839_8b632d37
+Bytes: 6
+Ditto?
+
+1128:49-1128:59
+Mon Dec 29 15:06:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0144b839_ebce71ee
+Bytes: 12
+HeapOperand?
+
 1805:45-1805:52
 Fri Dec 19 21:29:43 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +52,13 @@ If we assume sequential consistency, I believe we need AnyAny after volatile loa
 I will change this to kAnyAny as soon as I am back in the office. If Calin is eager to accept this in he can add a TODO and I will fix it soon.
 
 Long term for ARM64 we should be using the Acquire-Release semantics that, at least in theory, ought to be faster (enabled by default for now in the ARM64 backend).
+
+2350:0-2351:85
+Mon Dec 29 15:06:28 2014 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a185ac8b_a6c912bc
+Bytes: 293
+I also ran into this Clang bug in other code generators.  This issue was related to the empty  kRuntimeParameterFpuRegisters array (see line 239).  I believe it should work if you populate this array with { s0, s1 } (or { d0, d1 }) and adjust kRuntimeParameterFpuRegistersLength (on line 240).
 
 2484:44-2484:52
 Fri Dec 19 21:29:43 2014 +0000

@@ -25,6 +25,16 @@ UUID: a12ccc7b_91f19e43
 Bytes: 269
 Agreed with Nicolas and I admit I don't like polluting all the code generators with this. Shouldn't it be enough to get the invoke target without going through the intrinsic flags? For example, the inliner in Optimizing does the work without using DexFileMethodInliner.
 
+330:37-330:57
+Mon Jan 05 22:13:25 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a12ccc7b_91f19e43
+UUID: 0e1b056c_b91e3754
+Bytes: 258
+I'm splitting this into a recognizer and the actual visitor, so the backends won't be "polluted." The optimizing compiler will use its own enum.
+
+However, recognizing intrinsics isn't totally trivial, so I'll reuse the DexFileMethodInliner in the recognizer.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 192:17-192:28
@@ -104,6 +114,14 @@ UUID: a12ccc7b_b199420d
 Bytes: 90
 Seems this could benefit from having a "Copy" utility that can handle the different types.
 
+596:0-606:14
+Mon Jan 05 22:13:25 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a12ccc7b_b199420d
+UUID: ce3acdc4_b4c06eba
+Bytes: 113
+I'm rewriting this to rely on the register allocator to do the right thing, so in == out and this is unnecessary.
+
 1028:59-1028:62
 Mon Jan 05 10:45:52 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -135,6 +153,14 @@ Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a12ccc7b_318632a7
 Bytes: 182
 Even older in-order Atoms shouldn't have a problem here since they had 2 issue ports. Loads used port 0 but register adds could use either port and thus could be issued at same time.
+
+1096:60-1101:90
+Mon Jan 05 22:13:25 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a12ccc7b_318632a7
+UUID: ce3acdc4_f4b6f659
+Bytes: 139
+I'm rewriting this, relying on the allocator to do the right thing, so out == obj, and thus this can be moved below to coincide with quick.
 
 File: compiler/optimizing/intrinsics_visitor.h
 

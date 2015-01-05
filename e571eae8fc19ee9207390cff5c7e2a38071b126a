@@ -35,12 +35,31 @@ UUID: ce3acdc4_94d32ae3
 Bytes: 47
 should be unneeded since the -inl.h is included
 
+46:0-46:21
+Mon Jan 05 23:56:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce3acdc4_94d32ae3
+UUID: 2199bcf9_23408963
+Bytes: 89
+This is needed for the DexFileUniquePtrs typedef.
+Should I put the typedef there instead?
+
 453:4-453:21
 Mon Jan 05 22:32:05 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e1b056c_1941ab68
 Bytes: 116
 I might keep a comment like the removed one for this as well: "// Needs to be before since it accesses the runtime."
+
+453:4-453:21
+Mon Jan 05 23:56:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e1b056c_1941ab68
+UUID: 6e29e184_577266d2
+Bytes: 408
+The comment 'Needs to be before since it accesses the runtime' made no sense to me. What needs to be before what since what accesses the runtime?
+
+Perhaps I could clarify the comment: class_path_files_ and opened_dex_files_ must be deleted before the runtime because ~Runtime tears down MemMap which is needed by ~DexFile, and LogCompletionTime before ~Runtime because LogCompletionTime accesses the runtime.
 
 1115:8-1115:61
 Mon Jan 05 23:07:54 2015 +0000
@@ -72,6 +91,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce3acdc4_745d66c6
 Bytes: 39
 does this lose some const? I assume so.
+
+249:35-249:52
+Mon Jan 05 23:56:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce3acdc4_745d66c6
+UUID: ce3acdc4_3aafc575
+Bytes: 53
+Yes, because it transfers ownership of the dex files.
 
 File: runtime/dex_file.h
 

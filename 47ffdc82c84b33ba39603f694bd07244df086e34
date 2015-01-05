@@ -1,5 +1,14 @@
 Revision: 47ffdc82c84b33ba39603f694bd07244df086e34
 Patch-set: 1
+File: runtime/gc/heap.cc
+
+3033:50-3033:57
+Mon Jan 05 19:44:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e1e095a_7454281a
+Bytes: 32
+What's the point of this change?
+
 File: runtime/monitor.cc
 
 459:0-461:54
@@ -8,4 +17,17 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ef61548_c5b22e54
 Bytes: 113
 This doesn't look sound. If there were a GC checkpoint it wouldn't be run and you'd not pass through the barrier.
+
+File: runtime/thread-inl.h
+
+120:8-120:23
+Mon Jan 05 19:44:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e2481a4_bcd06908
+Bytes: 629
+I think I have the same concern as Ian's comment.
+
+If a thread could transition from runnable to suspended without checking/running the checkpoint, would it be safe?
+
+In other words, if a checkpoint is pending for this thread (that is, the kCheckpointRequest flag was set while the thread was runnable), and the thread transitions to suspended without running the checkpoint here and stays in the suspended state (eg. waiting with Object.wait()) for a long time, would it starve/block the thread requesting the checkpoint (eg GC) for a long time because the checkpoint function would not be run for that thread (for a long time)?
 

@@ -1,0 +1,80 @@
+Revision: ceda2079bb79232ae0c2656ca6ad1918683536a4
+Patch-set: 12
+File: compiler/optimizing/code_generator.cc
+
+330:37-330:57
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a185ac8b_29b4f553
+Bytes: 90
+DexFileMethodInliner is very quick oriented. Do you think we can use/write something else?
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+192:17-192:28
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c180e07b_956fd492
+Bytes: 235
+Don't templatize it, the type of the instruction is irrelevant. Just type it HInstruction.
+
+(As a side note, I'm glad I started with passing explicitly index_location and length_location instead of fetching it from the instruction :)).
+
+383:58-383:63
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c180e07b_75725081
+Bytes: 26
+Why passing the arena now?
+
+414:6-414:37
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0144b839_5183b495
+Bytes: 65
+Consider moving all intrinsic related code to intrinsic_x86_64.cc
+
+545:2-545:11
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0144b839_11892cb6
+Bytes: 39
+Please use __ when using the assembler.
+
+1028:59-1028:62
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a185ac8b_8926e11e
+Bytes: 75
+No need for this comment. I guess most instructions can be same as input :)
+
+File: compiler/optimizing/intrinsics_visitor.h
+
+26:6-26:22
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a185ac8b_69befd33
+Bytes: 243
+It looks like most intrinsics can be recognized pretty early in the compilation pipeline, right? We should consider putting an enum in the invoke and have a intrinsic recognizer phase, so that we know, e.g., the side effects of a call eagerly.
+
+37:23-37:38
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0144b839_7180b088
+Bytes: 36
+I guess this is dead code right now?
+
+52:22-52:28
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a185ac8b_c9c469d4
+Bytes: 60
+What is a d.data? Can we avoid the InlineMethod abstraction?
+
+229
+Mon Jan 05 10:45:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0144b839_b1f69836
+Bytes: 47
+Could all the methods below be macro-generated?
+

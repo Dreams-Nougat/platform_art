@@ -9,6 +9,14 @@ UUID: ce3acdc4_b4d06e08
 Bytes: 44
 maybe CHECK != nullptr before dereferencing?
 
+109:2-109:44
+Mon Jan 05 23:07:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce3acdc4_b4d06e08
+UUID: ce3acdc4_577ca455
+Bytes: 57
+This is checked in the creation in common_runtime_test...
+
 File: compiler/oat_test.cc
 
 133:0-133:49
@@ -33,6 +41,13 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e1b056c_1941ab68
 Bytes: 116
 I might keep a comment like the removed one for this as well: "// Needs to be before since it accesses the runtime."
+
+1115:8-1115:61
+Mon Jan 05 23:07:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e1b056c_b93bd708
+Bytes: 173
+Is this necessary? Couldn't we push the unique-ptr change through? I didn't see any big hurdles, and a local call to the function for class_path_files_ seems more contained.
 
 1198:0-1198:29
 Mon Jan 05 22:32:05 2015 +0000
@@ -60,4 +75,23 @@ Bytes: 388
 we have been moving away from this type of typedef'ing. I'm not sure if that is good or bad, looking for others opinions.
 
 Once upon a time I did actually have one for a vector of dex files but it was removed at one point to improve readability. I used to follow google3 like style of always having a typedef for containers like this, but slowly over time those have been removed as well.
+
+53:0-55:56
+Mon Jan 05 23:07:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e29e184_b4186899
+UUID: ce3acdc4_3786c0fb
+Bytes: 251
+What we're losing is precision. DexFileUniquePtr doesn't state in the name that the DexFile pointer is const, for example.
+
+I think Ian was the biggest proponent of writing the actual types instead of aliases. I don't have an opinion on what's better.
+
+File: runtime/runtime.cc
+
+628:34-628:62
+Mon Jan 05 23:07:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce3acdc4_f7a838ea
+Bytes: 204
+This is not your fault, but Google style recommends using pointers for anything that changes, and only const&, and some team members defend that. I wonder whether we should move to something consistent...
 

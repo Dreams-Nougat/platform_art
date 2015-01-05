@@ -9,6 +9,14 @@ UUID: a185ac8b_29b4f553
 Bytes: 90
 DexFileMethodInliner is very quick oriented. Do you think we can use/write something else?
 
+330:37-330:57
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a185ac8b_29b4f553
+UUID: ce156d30_bfd61fd3
+Bytes: 243
+I think it is good to share most of this, as vmarko invested quite some work into making this thread-safe and fast. My plan is to move common code into the driver/ directory in a follow-up, and put the Quick-only things into a sub-class or so.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 192:17-192:28
@@ -20,12 +28,28 @@ Don't templatize it, the type of the instruction is irrelevant. Just type it HIn
 
 (As a side note, I'm glad I started with passing explicitly index_location and length_location instead of fetching it from the instruction :)).
 
+192:17-192:28
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c180e07b_956fd492
+UUID: 6e2481a4_5606d414
+Bytes: 129
+Can't. The slow-paths need the Dex pc, which is *not* stored and exposed in a general instruction. This was the minimal change...
+
 383:58-383:63
 Mon Jan 05 10:45:52 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c180e07b_75725081
 Bytes: 26
 Why passing the arena now?
+
+383:58-383:63
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c180e07b_75725081
+UUID: 0e0225f8_c174666a
+Bytes: 104
+This is old code when I tried to use HandleInvoke also for intrinsics. I'll back this out once I'm done.
 
 414:6-414:37
 Mon Jan 05 10:45:52 2015 +0000
@@ -34,6 +58,14 @@ UUID: 0144b839_5183b495
 Bytes: 65
 Consider moving all intrinsic related code to intrinsic_x86_64.cc
 
+414:6-414:37
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0144b839_5183b495
+UUID: 0e0225f8_a1715a78
+Bytes: 79
+Wasn't sure what you'd want, but I'd prefer that, too. It's a lot of lines now.
+
 545:2-545:11
 Mon Jan 05 10:45:52 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,12 +73,30 @@ UUID: 0144b839_11892cb6
 Bytes: 39
 Please use __ when using the assembler.
 
+545:2-545:11
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0144b839_11892cb6
+UUID: 0e0225f8_616352b0
+Bytes: 76
+Will do in the separate file. Here I would have had to undef and redef __...
+
 1028:59-1028:62
 Mon Jan 05 10:45:52 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a185ac8b_8926e11e
 Bytes: 75
 No need for this comment. I guess most instructions can be same as input :)
+
+1028:59-1028:62
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a185ac8b_8926e11e
+UUID: 0e0225f8_215d4aec
+Bytes: 299
+It's actually an interesting question. If you know of the top of your head: if there are free registers, what will the register allocator do? For x86 it would be optimal to have in and out the same in that case, as it avoids a copy...
+
+Maybe another Location type would help (CanBeSameAsFirstInput)?
 
 File: compiler/optimizing/intrinsics_visitor.h
 
@@ -57,12 +107,28 @@ UUID: a185ac8b_69befd33
 Bytes: 243
 It looks like most intrinsics can be recognized pretty early in the compilation pipeline, right? We should consider putting an enum in the invoke and have a intrinsic recognizer phase, so that we know, e.g., the side effects of a call eagerly.
 
+26:6-26:22
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a185ac8b_69befd33
+UUID: ce156d30_7f32c793
+Bytes: 30
+Let's talk about the design...
+
 37:23-37:38
 Mon Jan 05 10:45:52 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0144b839_7180b088
 Bytes: 36
 I guess this is dead code right now?
+
+37:23-37:38
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0144b839_7180b088
+UUID: ce156d30_dff0b36e
+Bytes: 10
+Strings...
 
 52:22-52:28
 Mon Jan 05 10:45:52 2015 +0000
@@ -71,10 +137,26 @@ UUID: a185ac8b_c9c469d4
 Bytes: 60
 What is a d.data? Can we avoid the InlineMethod abstraction?
 
+52:22-52:28
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a185ac8b_c9c469d4
+UUID: ce156d30_dffb1349
+Bytes: 145
+data is a generic flag field (which is unioned with data for Quick inlining). There might be a way to refactor this nicely, gotta talk to vmarko.
+
 229
 Mon Jan 05 10:45:52 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0144b839_b1f69836
 Bytes: 47
 Could all the methods below be macro-generated?
+
+229
+Mon Jan 05 16:29:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0144b839_b1f69836
+UUID: 0e0225f8_61beb288
+Bytes: 5
+Sure.
 

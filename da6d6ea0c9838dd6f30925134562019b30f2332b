@@ -11,6 +11,18 @@ And the infinite loop was in LowestSetBit(0) which is undefined, right? Technica
 
 Anyway, can you get rid of the LowestBitSet() and use CTZ() instead? Or shall we do that in a separate CL?
 
+580:16-580:33
+Tue Jan 06 16:37:55 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a185ac8b_8f798133
+UUID: ce3acdc4_2ba535b9
+Bytes: 214
+Yes, infinite loop in here.
+
+I still prefer to sort out the 0 case, as then op has a somewhat defined meaning. lsl isn't defined with 32.
+
+Follow-up cleanup is at https://android-review.googlesource.com/#/c/121810.
+
 File: test/800-smali/smali/move_exc.smali
 
 16:0-17:7

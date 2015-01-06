@@ -17,6 +17,14 @@ UUID: ce3acdc4_577ca455
 Bytes: 57
 This is checked in the creation in common_runtime_test...
 
+109:2-109:44
+Tue Jan 06 16:27:31 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce3acdc4_577ca455
+UUID: 0e3065e8_7a18a5e6
+Bytes: 61
+I'll add the extra check here anyway. It won't hurt anything.
+
 File: compiler/oat_test.cc
 
 133:0-133:49
@@ -83,6 +91,14 @@ UUID: 6e29e184_b1519aa5
 Bytes: 38
 we prefer not to wrap before 100 chars
 
+1198:0-1198:29
+Tue Jan 06 16:27:31 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e29e184_b1519aa5
+UUID: 0e3065e8_7ac305cd
+Bytes: 53
+Not 80 chars, like the google style guide says? Okay.
+
 File: runtime/class_linker.cc
 
 249:35-249:52
@@ -99,6 +115,26 @@ Parent: ce3acdc4_745d66c6
 UUID: ce3acdc4_3aafc575
 Bytes: 53
 Yes, because it transfers ownership of the dex files.
+
+File: runtime/class_linker.h
+
+724:0-725:38
+Tue Jan 06 16:27:31 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee5eb12a_90bfbc9c
+Bytes: 252
+Should these be guarded by a lock?
+
+They are only modified during class linker initialization. After that, boot_class_path_ is read only, and opened_dex_files_ is never read. So they don't need a lock? Should I add a comment to the code to that effect?
+
+File: runtime/common_runtime_test.h
+
+110:0-113:97
+Tue Jan 06 16:27:31 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce3acdc4_cb6109f3
+Bytes: 49
+Why do these functions require the mutator_lock_?
 
 File: runtime/dex_file.h
 
@@ -121,6 +157,14 @@ What we're losing is precision. DexFileUniquePtr doesn't state in the name that 
 
 I think Ian was the biggest proponent of writing the actual types instead of aliases. I don't have an opinion on what's better.
 
+53:0-55:56
+Tue Jan 06 16:27:31 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce3acdc4_3786c0fb
+UUID: ce3acdc4_0b6831d7
+Bytes: 322
+I'll remove the typedefs. I think that will make it easier to read and recognize that we are working with std::vectors and std::unique_ptrs instead of some other kind of container or representation of pointers. The biggest downside from my point of view is that not using typedefs will lead to some long lines in the code.
+
 File: runtime/runtime.cc
 
 628:34-628:62
@@ -129,4 +173,12 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce3acdc4_f7a838ea
 Bytes: 204
 This is not your fault, but Google style recommends using pointers for anything that changes, and only const&, and some team members defend that. I wonder whether we should move to something consistent...
+
+628:34-628:62
+Tue Jan 06 16:27:31 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce3acdc4_f7a838ea
+UUID: ee5eb12a_b0c2c030
+Bytes: 81
+I'll fix this. I think there's a similar occurrence in dex2oat for me to fix too.
 

@@ -47,6 +47,16 @@ UUID: c180e07b_f5c900e9
 Bytes: 117
 I think it is better as is. The MAsm doesn't handle MemOperand. HeapOperand is just a wrapper returning a MemOperand.
 
+1128
+Tue Jan 06 17:59:41 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c180e07b_f5c900e9
+UUID: 8e5d3534_c79c5e48
+Bytes: 337
+As Alex mentioned HeapOperand is a wrapper, not provided my the VIXL MacroAssembler. 
+
+What I meant here is that currently LDAR(reg, MemOperand()) does not handle correctly the status_offset. The ISA only accepts register operands for the acquire-release family and here we use an immediate offset which should be neatly abstracted away.
+
 1805:45-1805:52
 Fri Dec 19 21:29:43 2014 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>

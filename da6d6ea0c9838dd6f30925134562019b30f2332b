@@ -1,5 +1,16 @@
 Revision: da6d6ea0c9838dd6f30925134562019b30f2332b
 Patch-set: 1
+File: compiler/dex/quick/arm/int_arm.cc
+
+580:16-580:33
+Tue Jan 06 11:20:26 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a185ac8b_8f798133
+Bytes: 264
+And the infinite loop was in LowestSetBit(0) which is undefined, right? Technically, even the IsPowerOfTwo(0) above is undefined but happens to return true.
+
+Anyway, can you get rid of the LowestBitSet() and use CTZ() instead? Or shall we do that in a separate CL?
+
 File: test/800-smali/smali/move_exc.smali
 
 16:0-17:7

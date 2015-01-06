@@ -9,6 +9,14 @@ UUID: 2e1e095a_7454281a
 Bytes: 32
 What's the point of this change?
 
+3033
+Tue Jan 06 21:34:30 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e1e095a_7454281a
+UUID: 0e3065e8_2527a2a3
+Bytes: 40
+Addressing a comment from a previous CL.
+
 File: runtime/monitor.cc
 
 459:0-461:54
@@ -17,6 +25,14 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ef61548_c5b22e54
 Bytes: 113
 This doesn't look sound. If there were a GC checkpoint it wouldn't be run and you'd not pass through the barrier.
+
+461
+Tue Jan 06 21:34:30 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ef61548_c5b22e54
+UUID: 6e52c124_2ccd57f7
+Bytes: 35
+You are right, I found another fix.
 
 File: runtime/thread-inl.h
 
@@ -30,4 +46,12 @@ I think I have the same concern as Ian's comment.
 If a thread could transition from runnable to suspended without checking/running the checkpoint, would it be safe?
 
 In other words, if a checkpoint is pending for this thread (that is, the kCheckpointRequest flag was set while the thread was runnable), and the thread transitions to suspended without running the checkpoint here and stays in the suspended state (eg. waiting with Object.wait()) for a long time, would it starve/block the thread requesting the checkpoint (eg GC) for a long time because the checkpoint function would not be run for that thread (for a long time)?
+
+120
+Tue Jan 06 21:34:30 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e2481a4_bcd06908
+UUID: 6e52c124_8cbd6b36
+Bytes: 146
+You are right that this would cause the checkpoint to not run, and probably result in a new deadlock, new CL fixes this with a different approach.
 

@@ -1,0 +1,21 @@
+Revision: 6222a91ff2ff7e8e17a0a50844ea0b824fe9a9ae
+Patch-set: 1
+File: build/Android.common_build.mk
+
+156
+Wed Jan 07 22:58:29 2015 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce348d09_ea325bda
+Bytes: 224
+I agree this is slightly better.
+Even-better is to not add art_clang_cflags to  ART_TARGET_CFLAGS, but add ART_TARGET_CLANG_CFLAGS, and in set-target-local-cflags-vars we use:
+LOCAL_CLANG_CFLAGS += $(ART_TARGET_CLANG_CFLAGS)
+
+306
+Wed Jan 07 22:58:29 2015 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e4d29af_a2223a3d
+Bytes: 184
+ART_TARGET_CLANG_CFLAGS_$(arch) is never applied, since $(ART_TARGET_CLANG_$(arch)) is blank, see line 86-90.
+I think we should use LOCAL_CLANG_CFLAGS_$(arch)  without the conditional.
+

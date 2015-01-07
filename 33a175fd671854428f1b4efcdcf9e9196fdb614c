@@ -11,6 +11,16 @@ Should this line be in arm64/instruction_set_features_arm64.h as well?
 
 It looks like you can get it from instruction_set_features.h. I don't know what style we prefer in terms of re-including <memory> everywhere a unique_ptr is used. I think it's okay to remove the <memory> include here.
 
+20:0-20:17
+Wed Jan 07 00:49:15 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ea1a95e_22fbea1e
+UUID: 0e9ea522_6496e0dc
+Bytes: 240
+I think this was a bit overzealous (and not consistent of me). For STL it doesn't matter too much.
+
+For our own include files, our long-term goal is include-what-you-use - so mostly no transitive includes. That makes dependencies clearer...
+
 File: runtime/arch/arm64/instruction_set_features_arm64.cc
 
 105:2-105:37
@@ -20,6 +30,14 @@ UUID: 2ea1a95e_2290cada
 Bytes: 76
 Do you need std::move here? Can't you just return FromCppDefines() directly?
 
+105:2-105:37
+Wed Jan 07 00:49:15 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ea1a95e_2290cada
+UUID: 4e941dff_d1af74ed
+Bytes: 33
+It's not, it's a bit overzealous.
+
 File: runtime/arch/instruction_set_features.cc
 
 234:9-234:19
@@ -28,4 +46,12 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4e941dff_d171b477
 Bytes: 27
 Do you need std::move here?
+
+234:9-234:19
+Wed Jan 07 00:49:15 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e941dff_d171b477
+UUID: 4e941dff_118ddc93
+Bytes: 12
+Overzealous.
 

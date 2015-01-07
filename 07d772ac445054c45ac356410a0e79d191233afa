@@ -9,6 +9,14 @@ UUID: ce02cd41_710bf81b
 Bytes: 13
 line too long
 
+296:103-296:105
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce02cd41_710bf81b
+UUID: 0e630529_939f9cf2
+Bytes: 93
+With preprocessor macros we often violate the 100 char constraint. I'll try to break anyways.
+
 298:99-298:101
 Wed Jan 07 15:47:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,6 +33,14 @@ UUID: ce02cd41_b1144037
 Bytes: 58
 How about adding a bool 'intrinsified' in LocationSummary?
 
+1126:5-1126:9
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce02cd41_b1144037
+UUID: eefdd173_d21c6406
+Bytes: 8
+Will do.
+
 File: compiler/optimizing/intrinsics_list.h
 
 22:8-22:30
@@ -33,6 +49,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ae52f94e_58d23d94
 Bytes: 102
 Can we have this list be the main list of intrinsics instead? (hence changing the dex method inliner).
+
+22:8-22:30
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae52f94e_58d23d94
+UUID: eefdd173_728658fc
+Bytes: 156
+I wanted to wait with such a refactoring for a follow-up. Things are slightly complicated because the list is extended with opcodes for inlining in Quick...
 
 File: compiler/optimizing/intrinsics_x86_64.cc
 
@@ -43,12 +67,31 @@ UUID: ae52f94e_b83b99ba
 Bytes: 30
 Exact copy/paste? Bad smell...
 
+44:12-44:38
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae52f94e_b83b99ba
+UUID: eefdd173_528b5402
+Bytes: 144
+Agreed, but the other options aren't great either:
+
+1) Make it a *public* helper on the CodeGenerator.
+2) Define it in the CodeGenerator header.
+
 71:0-71:22
 Wed Jan 07 15:47:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ae075951_d090dc58
 Bytes: 49
 nit: Do an early return to avoid the indentation.
+
+71:0-71:22
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae075951_d090dc58
+UUID: 0e630529_b36a9887
+Bytes: 4
+Done
 
 79:8-79:9
 Wed Jan 07 15:47:56 2015 +0000
@@ -57,12 +100,28 @@ UUID: ae52f94e_38d3091c
 Bytes: 121
 That's a style I'm not familiar with. I would put the brace on the same line as the case. And the break within the block.
 
+79:8-79:9
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae52f94e_38d3091c
+UUID: 6e6c8115_761590e3
+Bytes: 102
+This is style copied from some other file. I'll rewrite for yours (which is more Java style, I think).
+
 152:4-152:10
 Wed Jan 07 15:47:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce02cd41_11d8ac34
 Bytes: 74
 I thought the ins were already at the right place? (see comment line 140).
+
+152:4-152:10
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce02cd41_11d8ac34
+UUID: 6e6c8115_1637fc82
+Bytes: 77
+Comment wasn't updated. The non-slow-path code can now use general registers.
 
 162:4-162:11
 Wed Jan 07 15:47:56 2015 +0000
@@ -71,12 +130,28 @@ UUID: ae52f94e_58e23de2
 Bytes: 102
 Do you really need this? The result should be in the expected register, as you're intrisifying a call.
 
+162:4-162:11
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae52f94e_58e23de2
+UUID: 0e630529_335e88ec
+Bytes: 164
+See above. The intrinsified code can use any registers. I did not find anything in the register allocator forcing out to be the call-out when using kCallOnSlowPath.
+
 241:56-241:65
 Wed Jan 07 15:47:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ae075951_300168fc
 Bytes: 27
 Nit: one argument per line.
+
+241:56-241:65
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae075951_300168fc
+UUID: 0e630529_b351f8d7
+Bytes: 4
+Done
 
 246:20-246:24
 Wed Jan 07 15:47:56 2015 +0000
@@ -85,12 +160,28 @@ UUID: ae52f94e_98c33547
 Bytes: 36
 No need for ::Type (here and below).
 
+246:20-246:24
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae52f94e_98c33547
+UUID: 0e630529_535d04eb
+Bytes: 124
+Is that a strong requirement? I prefer it for clarity, and in case we ever want to move over existing enums to enum classes.
+
 294:29-294:53
 Wed Jan 07 15:47:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce02cd41_51e234e2
 Bytes: 16
 Location::Any()?
+
+294:29-294:53
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce02cd41_51e234e2
+UUID: 6e6c8115_7612b0c5
+Bytes: 72
+As discussed personally, I'll make it Any and handle the in-memory case.
 
 360:0-360:16
 Wed Jan 07 15:47:56 2015 +0000
@@ -99,12 +190,28 @@ UUID: ce02cd41_b1c60057
 Bytes: 102
 nit: I'd find it more readable to have everything in the same if (that is, merge line 352-3 and 361-2.
 
+360:0-360:16
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce02cd41_b1c60057
+UUID: 0e630529_b370d846
+Bytes: 4
+Done
+
 925:3-925:14
 Wed Jan 07 15:47:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce02cd41_11ff0c74
 Bytes: 70
 Not a lot of return false... Why do you want this bool to be returned?
+
+925:3-925:14
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce02cd41_11ff0c74
+UUID: 6e6c8115_56d21494
+Bytes: 108
+Because then the caller looks nicer "return GenXYZ" (and is either inline-able or tail-call optimizable) ...
 
 File: compiler/optimizing/intrinsics_x86_64.h
 
@@ -114,6 +221,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ae075951_50434ce1
 Bytes: 52
 The following declarations should be auto-generated.
+
+36
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae075951_50434ce1
+UUID: 0e630529_33afa827
+Bytes: 80
+So you do prefer explicit false return functions for non-implemented intrinsics?
 
 106
 Wed Jan 07 15:47:56 2015 +0000
@@ -130,4 +245,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce02cd41_f1c088bb
 Bytes: 73
 This is odd... Why would an input's location be invalid? Unused argument?
+
+1100:12-1100:39
+Wed Jan 07 16:47:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce02cd41_f1c088bb
+UUID: eefdd173_9222dc3d
+Bytes: 132
+Yes.
+
+I wasn't sure whether this is a good approach, as only intrinsics for Unsafe use this at all, so it's a bit special-purpose...
 

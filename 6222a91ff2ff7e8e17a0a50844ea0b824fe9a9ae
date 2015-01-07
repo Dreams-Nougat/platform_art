@@ -11,6 +11,14 @@ I agree this is slightly better.
 Even-better is to not add art_clang_cflags to  ART_TARGET_CFLAGS, but add ART_TARGET_CLANG_CFLAGS, and in set-target-local-cflags-vars we use:
 LOCAL_CLANG_CFLAGS += $(ART_TARGET_CLANG_CFLAGS)
 
+156
+Wed Jan 07 23:02:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce348d09_ea325bda
+UUID: 8e2535f1_4776eef4
+Bytes: 12
+Makes sense.
+
 306
 Wed Jan 07 22:58:29 2015 +0000
 Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,4 +26,14 @@ UUID: 2e4d29af_a2223a3d
 Bytes: 184
 ART_TARGET_CLANG_CFLAGS_$(arch) is never applied, since $(ART_TARGET_CLANG_$(arch)) is blank, see line 86-90.
 I think we should use LOCAL_CLANG_CFLAGS_$(arch)  without the conditional.
+
+306
+Wed Jan 07 23:02:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e4d29af_a2223a3d
+UUID: 6e1ac1b5_869f4af2
+Bytes: 262
+Yes, it's never applied right now, but was used before (and comes in handy for the Clang build now). So overall this is useful.
+
+I do agree with the LOCAL_CLANG_CFLAGS though (which I believe did *not* exist when the whole infrastructure was originally written).
 

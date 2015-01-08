@@ -70,6 +70,22 @@ Patch Set 1 had this as a separate function. I think the three lines are simple 
 
 Does anyone else have thoughts on this? I also looked into using std::transform or lambdas, but that probably obscures things more than is worth it to save a couple of lines.
 
+1987:0-1989:3
+Thu Jan 08 18:31:07 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ec80176_d91e7755
+UUID: 6ec80176_bc38c9be
+Bytes: 728
+Ok, I see the mismatch now. You essentially want a map of dex file unique pointers to raw pointers. Using transform/etc isn't really clean unless you do it in a helper function (stdlib doesn't have a map that performs "t1 -> t2" operation, only transform which is "(t1, t2) -> ()").
+
+Come to think of it, it might be possible to change the signature of SetCompileTimeClassPath to take in 
+
+  const std::vector<std::unique_ptr<const DexFile>>& 
+
+That would solve the problem without requiring a map at all since a const std::vector would only return a const std::unique_ptr& (so it would be illegal to call #release on it or to move it).
+
+That being said that seems like a huge change in runtime.cc so maybe it's not worth doing.
+
 File: runtime/mirror/dex_cache_test.cc
 
 37:37-37:41

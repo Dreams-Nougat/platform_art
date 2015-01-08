@@ -9,6 +9,14 @@ UUID: 2e144987_64da0af7
 Bytes: 26
 nit: nullptr for new code?
 
+109
+Thu Jan 08 16:29:15 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e144987_64da0af7
+UUID: 6ec80176_590b471b
+Bytes: 135
+I wanted to be consistent with the code around it, which uses NULL. I would rather update the test to use nullptr in a separate change.
+
 File: dex2oat/dex2oat.cc
 
 1495:76-1495:77
@@ -17,6 +25,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4e17bd8b_68a01baa
 Bytes: 82
 What's our stance on adding [D]CHECK(arg != nullptr) when we assume it's not null?
+
+1495:76-1495:77
+Thu Jan 08 16:29:15 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e17bd8b_68a01baa
+UUID: aeae7991_bb961354
+Bytes: 169
+Because we don't deference directly in this function, I think it's better to leave the CHECK to DexFile::Open, where the pointer is dereferenced. I'll add a CHECK there.
 
 1680
 Thu Jan 08 01:02:12 2015 +0000
@@ -27,6 +43,14 @@ Wasn't it typedefd in PS#1? Seems like it's copied and pasted a few times.
 
 Just curious if this is always the right style to do when writing new code?
 
+1680
+Thu Jan 08 16:29:15 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e17bd8b_88963754
+UUID: 6ec80176_f93253da
+Bytes: 77
+See the comments on Patch Set 1 regarding the typedefs. I prefer no typedefs.
+
 File: oatdump/oatdump.cc
 
 1987:0-1989:3
@@ -36,6 +60,16 @@ UUID: 4e17bd8b_28d3c31b
 Bytes: 83
 Does this seem seem to happen often enough it could be put into a wrapper function?
 
+1987:0-1989:3
+Thu Jan 08 16:29:15 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e17bd8b_28d3c31b
+UUID: 6ec80176_d91e7755
+Bytes: 332
+Patch Set 1 had this as a separate function. I think the three lines are simple enough though, and easier to see that we are calling get on unique pointers.
+
+Does anyone else have thoughts on this? I also looked into using std::transform or lambdas, but that probably obscures things more than is worth it to save a couple of lines.
+
 File: runtime/mirror/dex_cache_test.cc
 
 37:37-37:41
@@ -44,4 +78,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4e17bd8b_88c3d746
 Bytes: 26
 nit: nullptr for new code?
+
+37:37-37:41
+Thu Jan 08 16:29:15 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e17bd8b_88c3d746
+UUID: aeae7991_dbbca7db
+Bytes: 56
+As before, NULL is consistent with the code around here.
 

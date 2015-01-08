@@ -86,6 +86,18 @@ That would solve the problem without requiring a map at all since a const std::v
 
 That being said that seems like a huge change in runtime.cc so maybe it's not worth doing.
 
+1987:0-1989:3
+Thu Jan 08 18:52:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ec80176_bc38c9be
+UUID: 6ec80176_dc83c594
+Bytes: 445
+Actually I kind of doubt using a raw and/or unique pointer is even the right semantics for the SetCompileTimeClassPath.
+
+The raw pointer just seems to be given out all over the place (Runtime::GetCompileTimeClassPath), but nobody is cleaning it up, so presumably it has to outlive the Runtime and someone else cleans it up? Then this DexFile* gets stored somehow in a Class* and it gets used in even more places.
+
+Why isn't it just a shared_ptr?
+
 File: runtime/mirror/dex_cache_test.cc
 
 37:37-37:41

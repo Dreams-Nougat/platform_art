@@ -1,5 +1,27 @@
 Revision: bb09e926e40772ad03c24a2ee9a92dd145122196
 Patch-set: 19
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1149:4-1149:9
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_ef87e137
+Bytes: 244
+Maybe personal opinion, but surrounding something that needs to be run with an assertion-like mechanism (that somehow implies it could be disabled) is a bit hairy.
+
+I'd rather do:
+
+if (!intrisic.Dispatch()) {
+  LOG(FATAL)  << Usefule message.
+}
+
+1202:4-1202:9
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_ce930363
+Bytes: 5
+ditto
+
 File: compiler/optimizing/intrinsics.cc
 
 53:0-56:27
@@ -17,7 +39,149 @@ UUID: 6e1ac1b5_6667ae93
 Bytes: 132
 Yes, the virtual call is "de-virtualized" and actually shows up as an HInvokeStaticOrDirect. Same for the three Unsafe things above.
 
+53:0-56:27
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1ac1b5_6667ae93
+UUID: 8ea8d591_4f4e2d8d
+Bytes: 119
+I think this is confusing. I'd much prefer have just one list and do a single switch, whether you're direct or virtual.
+
+61:8-61:19
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_ee90bf58
+Bytes: 26
+Why do we have these here?
+
+68:23-68:30
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_2e064714
+Bytes: 34
+We really need to get rid of this.
+
+94:27-94:30
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_6f53f12f
+Bytes: 64
+Add a TODO that we need to use something else than InlineMethod.
+
+110:14-111:67
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_8f673508
+Bytes: 230
+I know you want to refactor things, but this looks so bad. Two enums for intrinsics, really?
+
+Why do we want another enum? Because the first enum does not properly enumerate all cases. How bad would it be to change the first enum?
+
+File: compiler/optimizing/intrinsics.h
+
+28:0-29:21
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_4e0b931b
+Bytes: 43
+-> Recognize intrinsics from HInvoke nodes.
+
+File: compiler/optimizing/intrinsics_list.h
+
+83:8-83:31
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_fa908958
+Bytes: 60
+As said previously, I find it simpler to only have one list.
+
 File: compiler/optimizing/intrinsics_x86_64.cc
+
+44:12-44:19
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_8e149b37
+Bytes: 30
+MoveOuv-> MoveToReturnRegister
+
+90:12-90:18
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_cf613df3
+Bytes: 14
+MoveArguments.
+
+91:0-91:33
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_ae115746
+Bytes: 13
+Early return?
+
+111:3-111:48
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_ce1ea355
+Bytes: 33
+I don't understand this sentence.
+
+118:2-118:9
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_ef5e0134
+Bytes: 7
+Remove?
+
+127:89-127:92
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_ee1b5f62
+Bytes: 72
+Is that guaranteed to be available? Shouldn't you use locations instead?
+
+136:13-136:33
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_0e28ab73
+Bytes: 55
+I'd add a DCHECK that out is not in the live registers.
+
+151:93-151:97
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_da1e6555
+Bytes: 79
+Add a kIntrinsified constexpr, and use it where you use 'true' in this context.
+
+154:9-154:13
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_2e2d6784
+Bytes: 179
+I still think this boolean return is a lot of noise and error prone. I'd rather have the caller check if the location summary is set and is intrisified.
+
+Separation of concerns :)
+
+206:12-206:23
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_7a2719a2
+Bytes: 41
+For consistency: CreateIntToIntLocations.
+
+266:12-266:39
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_ba38d1be
+Bytes: 21
+...PlusTempsLocation.
+
+270:0-270:94
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_4fc9cd89
+Bytes: 9
+Leftover?
 
 296:0-296:20
 Wed Jan 07 21:15:18 2015 +0000
@@ -33,4 +197,192 @@ Parent: ee587171_5a86b5f2
 UUID: 0e630529_8d3c95e6
 Bytes: 99
 Yes, I filled that out and then noticed missing assembler support and didn't want to delete it. :-)
+
+296:0-296:20
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e630529_8d3c95e6
+UUID: 8ea8d591_8fb2d504
+Bytes: 103
+You have the code in this code review :)
+
+Either delete it, or put a fat comment on what this is about.
+
+327:12-327:34
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_afaf999f
+Bytes: 19
+...PlusTempLocation
+
+384:8-384:60
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_fa3249da
+Bytes: 62
+How can that be? You have asked out to be same as first input.
+
+468:12-468:31
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_cfbcdddb
+Bytes: 18
+Consistent naming.
+
+511
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_0fa6e5c8
+Bytes: 10
+extra line
+
+519:31-519:52
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_ced0630a
+Bytes: 13
+Add a DCHECK.
+
+542:12-542:26
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_eecd1f73
+Bytes: 18
+Consistent naming.
+
+582:12-582:21
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_5addf523
+Bytes: 17
+consistent naming
+
+595:8-595:23
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_bac37146
+Bytes: 86
+should be equal -> is equal?
+
+If you don't care, why did you ask for them to be equal?
+
+611:30-611:46
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_dad0250a
+Bytes: 49
+No, the native instruction does not require this.
+
+634:0-635:69
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_6fa5b1b8
+Bytes: 82
+Add a kImplicitNullCheck = false in code_generator_x86_64.h, and DCHECK() it here.
+
+639:0-640:21
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_3aff6174
+Bytes: 32
+I don't understand this comment.
+
+665:34-665:53
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_6ef92f8b
+Bytes: 48
+what kind of worries? Please expand the comment.
+
+718:12-718:27
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_8f99f588
+Bytes: 18
+Consistent naming.
+
+728:40-728:47
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_7af9d98a
+Bytes: 10
+what kind?
+
+789:71-789:72
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_aeea37ae
+Bytes: 20
+8 -> kX86_64WordSize
+
+802:0-802:32
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_cee783e5
+Bytes: 4
+why?
+
+809:12-809:29
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_ef90c158
+Bytes: 17
+consistent naming
+
+814:30-814:46
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_eee43fe3
+Bytes: 3
+No.
+
+844:12-844:42
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_2f064914
+Bytes: 18
+Consistent naming.
+
+850:0-851:51
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_0ea50b94
+Bytes: 28
+Only for object type, right?
+
+File: compiler/optimizing/locations.h
+
+563:53-563:64
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e8d6144_2eaac764
+Bytes: 20
+instruction -> call.
+
+File: compiler/optimizing/nodes.h
+
+1678:26-1678:36
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_1aa53d94
+Bytes: 103
+index_in_dex_cache_ ? Since it looks all three invokes need it now, maybe move it to the HInvoke class?
+
+File: compiler/optimizing/register_allocator.cc
+
+1100:0-1100:42
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eeb4f1df_7ab479c3
+Bytes: 108
+Add a comment why an input could be invalid. And also DCHECK that the instruction of the use is instrisifed?
+
+File: test/082-inline-execute/src/Main.java
+
+130:0-166:3
+Thu Jan 08 10:36:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ea8d591_0f28a573
+Bytes: 30
+Add a comment why this change.
 

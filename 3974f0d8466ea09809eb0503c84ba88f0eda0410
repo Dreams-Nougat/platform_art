@@ -9,6 +9,14 @@ UUID: 4e733d24_08c347cd
 Bytes: 82
 Is the intent that we do not bother to shrink the mem map for the bitmap, correct?
 
+163
+Thu Jan 08 22:43:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e733d24_08c347cd
+UUID: 4e733d24_eb0505b2
+Bytes: 56
+Yes this would provide minimal savings, I'll add a TODO.
+
 File: runtime/gc/heap.cc
 
 2986:6-2986:72
@@ -17,6 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ee97915c_e5c3706a
 Bytes: 164
 Would it be more restricted and safer/cleaner if SetNonGrowthLimitCapacity is renamed to ClampGrowthLimit() and this logic is implemented internally in MallocSpace?
+
+2986
+Thu Jan 08 22:43:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee97915c_e5c3706a
+UUID: ce9c8d86_c12bc21e
+Bytes: 4
+Done
 
 File: runtime/gc/space/malloc_space.cc
 
@@ -34,6 +50,14 @@ UUID: 4e733d24_8599e288
 Bytes: 103
 in the interface, you note that currently only shrinking is supported. can we assert that here somehow?
 
+252
+Thu Jan 08 22:43:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e733d24_8599e288
+UUID: 4e733d24_450b6a1b
+Bytes: 4
+Done
+
 253:2-253:15
 Thu Jan 08 22:23:20 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -50,12 +74,28 @@ UUID: 4e733d24_050172fb
 Bytes: 81
 I do see these checks here, but it seems like the higher level one is useful too.
 
+672
+Thu Jan 08 22:43:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e733d24_050172fb
+UUID: 4e733d24_8b701147
+Bytes: 4
+Done
+
 674:2-674:10
 Thu Jan 08 22:23:20 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ee97915c_825b7a7f
 Bytes: 58
 Would it be useful to check that new_size is page-aligned?
+
+674
+Thu Jan 08 22:43:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee97915c_825b7a7f
+UUID: aea119bc_e07b625d
+Bytes: 4
+Done
 
 File: runtime/native/dalvik_system_VMRuntime.cc
 
@@ -65,4 +105,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ae7cb9f1_cec057bc
 Bytes: 72
 I assume this gets called from the framework when it's a small-heap app?
+
+137
+Thu Jan 08 22:43:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae7cb9f1_cec057bc
+UUID: aea119bc_40756e62
+Bytes: 33
+Yes, uploading other changes now.
 

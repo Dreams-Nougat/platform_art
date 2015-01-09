@@ -71,6 +71,14 @@ UUID: ee823118_2d2d7984
 Bytes: 142
 Are you OK with the visitor then only taking HInvoke instead of the actual instruction type? Or do you want inline checks in the switch cases?
 
+53:0-56:27
+Fri Jan 09 09:28:46 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee823118_2d2d7984
+UUID: eec0716a_daf4c5e6
+Bytes: 31
+It's fine to just have HInvoke.
+
 61:8-61:19
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -183,6 +191,14 @@ Parent: 6e8d6144_8e149b37
 UUID: ae7cb9f1_8851f7d7
 Bytes: 135
 Isn't it more like MoveFromReturnRegister? This is moving from the native-convention return to the actual out of the intrinsified call.
+
+44:12-44:19
+Fri Jan 09 09:28:46 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae7cb9f1_8851f7d7
+UUID: 2eb529f8_5c01dd2d
+Bytes: 5
+SGTM.
 
 90:12-90:18
 Thu Jan 08 10:36:18 2015 +0000
@@ -305,6 +321,14 @@ Parent: 6e8d6144_2e2d6784
 UUID: 6eaba19e_7e04913f
 Bytes: 148
 I don't know. A result return is pretty standard and common. The compiler will throw a fit if you forget it, so I don't think it's that error-prone.
+
+154:9-154:13
+Fri Jan 09 09:28:46 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6eaba19e_7e04913f
+UUID: 0eb22512_7b049f3f
+Bytes: 143
+It's the noise that it's creating. When reading the code, you need to figure out why there is this return bool. This is overhead we don't need.
 
 206:12-206:23
 Thu Jan 08 10:36:18 2015 +0000
@@ -500,6 +524,14 @@ From our personal talks I gathered that that would be better for the register al
 
 This code was just made most general, so that it doesn't need to be changed if/when we allow in and out to be different. I'll make the comment a bit longer.
 
+595:8-595:23
+Fri Jan 09 09:28:46 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e733d24_b9b527bf
+UUID: 2eb529f8_1cfb55d2
+Bytes: 149
+SameAsFirstInput is always suboptimal, as it can lead to a mov to ensure it. If the native instruction doesn't require it, you should not ask for it.
+
 611:30-611:46
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -530,6 +562,14 @@ UUID: 4e733d24_99cceb4a
 Bytes: 209
 Calin's approach for implicit NullChecks is actually different then what I thought. So even though he's implementing this, I'll plop down the constant. But I'll explicitly call it kCoalescedImplicitNullchecks.
 
+634:0-635:69
+Fri Jan 09 09:28:46 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e733d24_99cceb4a
+UUID: 0eb22512_3bfe17c2
+Bytes: 162
+Calin's approach is the first step. The null checks will be removed from the graph, and individual isntructions will have to handle the implicit check themselves.
+
 639:0-640:21
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -544,6 +584,14 @@ Parent: eeb4f1df_3aff6174
 UUID: ce9c8d86_6a0ccb5f
 Bytes: 217
 Changed into a TODO. I'm still getting used to locations and their interaction with the allocator. The point here is that for index = constant, we can save an input register and use instructions with immediate form...
+
+639:0-640:21
+Fri Jan 09 09:28:46 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce9c8d86_6a0ccb5f
+UUID: 2eb529f8_fc1ae996
+Bytes: 40
+There is a Location::RegisterOrConstant.
 
 665:34-665:53
 Thu Jan 08 10:36:18 2015 +0000
@@ -619,6 +667,14 @@ Parent: 6e8d6144_cee783e5
 UUID: 4e733d24_f9a95f1a
 Bytes: 75
 If we ever move to actual compressed pointers, we'll have to "unpack" here.
+
+802:0-802:32
+Fri Jan 09 09:28:46 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e733d24_f9a95f1a
+UUID: eec0716a_bae91111
+Bytes: 79
+So the TODO is not just for this instruction, right? It's more a general thing?
 
 809:12-809:29
 Thu Jan 08 10:36:18 2015 +0000

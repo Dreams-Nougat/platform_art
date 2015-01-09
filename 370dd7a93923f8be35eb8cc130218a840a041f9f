@@ -9,6 +9,19 @@ UUID: 2eb529f8_9c29a5b0
 Bytes: 16
 Why this change?
 
+2878:18-2878:36
+Fri Jan 09 11:34:54 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2eb529f8_9c29a5b0
+UUID: 0eb22512_db05f307
+Bytes: 417
+The code was already there to handle constants (in the instruction code generator)
+
+wrt having two options: 
+- it's just an incremental approach where I didn't feel changing the existing working code
+- in theory you can save a register in some case (as you don't need to move the constant). Not sure if that actually happen and if it has any impact.
+- I can clean this up in the next CL if you still think it's worth.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 2929:18-2929:21
@@ -17,6 +30,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2eb529f8_5c0c3d5f
 Bytes: 72
 Just require register. It's not worth the trouble having two strategies.
+
+2929:18-2929:21
+Fri Jan 09 11:34:54 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2eb529f8_5c0c3d5f
+UUID: 0eb22512_bb0a2716
+Bytes: 21
+see my other comment.
 
 2939:5-2939:56
 Thu Jan 08 19:51:56 2015 +0000
@@ -27,6 +48,14 @@ Although this is implicit (as in it will throw exception via the fault), it is n
 
 Anyway, to be fair, I get why you implemented it this way, which is because you need to satisfy the null check semantics of the null check node at the correct point. But this makes me wonder whether it is even worth it having implicit checks in the first place... I don't think you're really going to get a benefit in performance.
 
+2939:5-2939:56
+Fri Jan 09 11:34:54 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ee6a5ff_64222094
+UUID: 0eb22512_5b97a351
+Bytes: 129
+Thanks Razvan. I'm aware of this. As I discussed with Nicolas this is a start, and I'll work pushing the check in each operation.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 2604:18-2604:34
@@ -35,4 +64,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0eb22512_db1f3385
 Bytes: 20
 Same comment as x86.
+
+2604:18-2604:34
+Fri Jan 09 11:34:54 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0eb22512_db1f3385
+UUID: 2eb529f8_3ce851b6
+Bytes: 21
+see my other comment.
 

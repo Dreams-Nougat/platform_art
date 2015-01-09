@@ -15,12 +15,28 @@ if (!intrisic.Dispatch()) {
   LOG(FATAL)  << Usefule message.
 }
 
+1149:4-1149:9
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_ef87e137
+UUID: ae7cb9f1_88c65757
+Bytes: 4
+Done
+
 1202:4-1202:9
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_ce930363
 Bytes: 5
 ditto
+
+1202:4-1202:9
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_ce930363
+UUID: ae7cb9f1_c8d04f0a
+Bytes: 4
+Done
 
 File: compiler/optimizing/intrinsics.cc
 
@@ -47,12 +63,28 @@ UUID: 8ea8d591_4f4e2d8d
 Bytes: 119
 I think this is confusing. I'd much prefer have just one list and do a single switch, whether you're direct or virtual.
 
+53:0-56:27
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_4f4e2d8d
+UUID: ee823118_2d2d7984
+Bytes: 142
+Are you OK with the visitor then only taking HInvoke instead of the actual instruction type? Or do you want inline checks in the switch cases?
+
 61:8-61:19
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_ee90bf58
 Bytes: 26
 Why do we have these here?
+
+61:8-61:19
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_ee90bf58
+UUID: ce872d28_8989f9ba
+Bytes: 217
+I wanted to let the compiler hand out warnings if a case is missed. So I have to have all of them. This is the reason for the three defines here - so it's easy to complete the switch statements without a default case.
 
 68:23-68:30
 Thu Jan 08 10:36:18 2015 +0000
@@ -61,12 +93,28 @@ UUID: 6e8d6144_2e064714
 Bytes: 34
 We really need to get rid of this.
 
+68:23-68:30
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_2e064714
+UUID: ee823118_cdd05d0a
+Bytes: 172
+Agreed for the dex inliner structure. Right now this is the most self-contained change. I thought you'd prefer the abstraction of the type over pushing through the flags...
+
 94:27-94:30
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ea8d591_6f53f12f
 Bytes: 64
 Add a TODO that we need to use something else than InlineMethod.
+
+94:27-94:30
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_6f53f12f
+UUID: ae7cb9f1_2891eb30
+Bytes: 4
+Done
 
 110:14-111:67
 Thu Jan 08 10:36:18 2015 +0000
@@ -77,6 +125,14 @@ I know you want to refactor things, but this looks so bad. Two enums for intrins
 
 Why do we want another enum? Because the first enum does not properly enumerate all cases. How bad would it be to change the first enum?
 
+110:14-111:67
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_8f673508
+UUID: ce872d28_29c80de7
+Bytes: 297
+Quick is using the type of the result register to determine which direction. I actually added the second-level flag (because some other things are already written in that manner), as I thought that was cleaner than actually looking at the instruction. I could just look at the result type instead.
+
 File: compiler/optimizing/intrinsics.h
 
 28:0-29:21
@@ -85,6 +141,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_4e0b931b
 Bytes: 43
 -> Recognize intrinsics from HInvoke nodes.
+
+28:0-29:21
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_4e0b931b
+UUID: ae7cb9f1_0877c773
+Bytes: 4
+Done
 
 File: compiler/optimizing/intrinsics_list.h
 
@@ -95,6 +159,14 @@ UUID: eeb4f1df_fa908958
 Bytes: 60
 As said previously, I find it simpler to only have one list.
 
+83:8-83:31
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_fa908958
+UUID: ae7cb9f1_e8719377
+Bytes: 192
+Loses a little bit of protection. Quick was breaking in a fuzzed apk when things were given the wrong "kind." Just need a decision whether you're OK pushing HInvoke instead of the actual type.
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 44:12-44:19
@@ -104,12 +176,28 @@ UUID: 6e8d6144_8e149b37
 Bytes: 30
 MoveOuv-> MoveToReturnRegister
 
+44:12-44:19
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_8e149b37
+UUID: ae7cb9f1_8851f7d7
+Bytes: 135
+Isn't it more like MoveFromReturnRegister? This is moving from the native-convention return to the actual out of the intrinsified call.
+
 90:12-90:18
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ea8d591_cf613df3
 Bytes: 14
 MoveArguments.
+
+90:12-90:18
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_cf613df3
+UUID: ce872d28_cc185f9b
+Bytes: 4
+Done
 
 91:0-91:33
 Thu Jan 08 10:36:18 2015 +0000
@@ -118,12 +206,28 @@ UUID: 6e8d6144_ae115746
 Bytes: 13
 Early return?
 
+91:0-91:33
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_ae115746
+UUID: ee823118_ad540996
+Bytes: 4
+Done
+
 111:3-111:48
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_ce1ea355
 Bytes: 33
 I don't understand this sentence.
+
+111:3-111:48
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_ce1ea355
+UUID: ae7cb9f1_2862cb83
+Bytes: 4
+Done
 
 118:2-118:9
 Thu Jan 08 10:36:18 2015 +0000
@@ -132,6 +236,14 @@ UUID: 8ea8d591_ef5e0134
 Bytes: 7
 Remove?
 
+118:2-118:9
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_ef5e0134
+UUID: ce872d28_2c473b81
+Bytes: 4
+Done
+
 127:89-127:92
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -139,12 +251,28 @@ UUID: 6e8d6144_ee1b5f62
 Bytes: 72
 Is that guaranteed to be available? Shouldn't you use locations instead?
 
+127:89-127:92
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_ee1b5f62
+UUID: ee823118_6d95b1ca
+Bytes: 131
+We save live registers above and restore below, so it is available. I have to follow our API - the method needs to end up in RDI...
+
 136:13-136:33
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_0e28ab73
 Bytes: 55
 I'd add a DCHECK that out is not in the live registers.
+
+136:13-136:33
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_0e28ab73
+UUID: ae7cb9f1_a886bba5
+Bytes: 4
+Done
 
 151:93-151:97
 Thu Jan 08 10:36:18 2015 +0000
@@ -169,12 +297,28 @@ UUID: eeb4f1df_7a2719a2
 Bytes: 41
 For consistency: CreateIntToIntLocations.
 
+206:12-206:23
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_7a2719a2
+UUID: 4e733d24_c8c04fbc
+Bytes: 4
+Done
+
 266:12-266:39
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eeb4f1df_ba38d1be
 Bytes: 21
 ...PlusTempsLocation.
+
+266:12-266:39
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_ba38d1be
+UUID: 4e733d24_28ef2346
+Bytes: 4
+Done
 
 270:0-270:94
 Thu Jan 08 10:36:18 2015 +0000
@@ -208,12 +352,28 @@ You have the code in this code review :)
 
 Either delete it, or put a fat comment on what this is about.
 
+296:0-296:20
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_8fb2d504
+UUID: 4e733d24_289ac3d6
+Bytes: 4
+Done
+
 327:12-327:34
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ea8d591_afaf999f
 Bytes: 19
 ...PlusTempLocation
+
+327:12-327:34
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_afaf999f
+UUID: ae7cb9f1_ce3bf707
+Bytes: 4
+Done
 
 384:8-384:60
 Thu Jan 08 10:36:18 2015 +0000
@@ -222,12 +382,28 @@ UUID: eeb4f1df_fa3249da
 Bytes: 62
 How can that be? You have asked out to be same as first input.
 
+384:8-384:60
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_fa3249da
+UUID: ce9c8d86_271ddeff
+Bytes: 4
+Done
+
 468:12-468:31
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ea8d591_cfbcdddb
 Bytes: 18
 Consistent naming.
+
+468:12-468:31
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_cfbcdddb
+UUID: 4e733d24_590b531b
+Bytes: 4
+Done
 
 511
 Thu Jan 08 10:36:18 2015 +0000
@@ -236,12 +412,28 @@ UUID: 8ea8d591_0fa6e5c8
 Bytes: 10
 extra line
 
+511
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_0fa6e5c8
+UUID: aea119bc_a3e8c43a
+Bytes: 4
+Done
+
 519:31-519:52
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_ced0630a
 Bytes: 13
 Add a DCHECK.
+
+519:31-519:52
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_ced0630a
+UUID: aea119bc_c37508f1
+Bytes: 4
+Done
 
 542:12-542:26
 Thu Jan 08 10:36:18 2015 +0000
@@ -250,12 +442,28 @@ UUID: 6e8d6144_eecd1f73
 Bytes: 18
 Consistent naming.
 
+542:12-542:26
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_eecd1f73
+UUID: aea119bc_43d8d8a8
+Bytes: 4
+Done
+
 582:12-582:21
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eeb4f1df_5addf523
 Bytes: 17
 consistent naming
+
+582:12-582:21
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_5addf523
+UUID: ce9c8d86_c78f52be
+Bytes: 4
+Done
 
 595:8-595:23
 Thu Jan 08 10:36:18 2015 +0000
@@ -266,12 +474,30 @@ should be equal -> is equal?
 
 If you don't care, why did you ask for them to be equal?
 
+595:8-595:23
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_bac37146
+UUID: 4e733d24_b9b527bf
+Bytes: 424
+From our personal talks I gathered that that would be better for the register allocator. If it's the input's last use, this will be optimal, as we're re-using for output. If it's not, it's better to let the register allocator handle the mov before to save the value.
+
+This code was just made most general, so that it doesn't need to be changed if/when we allow in and out to be different. I'll make the comment a bit longer.
+
 611:30-611:46
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eeb4f1df_dad0250a
 Bytes: 49
 No, the native instruction does not require this.
+
+611:30-611:46
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_dad0250a
+UUID: aea119bc_8604ae40
+Bytes: 230
+Again from our talks it seemed to me that this would simplify the work of the register allocator. If the input is used after, the allocator will put down the saving mov, whereas it doesn't have to do anything if it's the last use.
 
 634:0-635:69
 Thu Jan 08 10:36:18 2015 +0000
@@ -280,12 +506,28 @@ UUID: 8ea8d591_6fa5b1b8
 Bytes: 82
 Add a kImplicitNullCheck = false in code_generator_x86_64.h, and DCHECK() it here.
 
+634:0-635:69
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_6fa5b1b8
+UUID: 4e733d24_99cceb4a
+Bytes: 209
+Calin's approach for implicit NullChecks is actually different then what I thought. So even though he's implementing this, I'll plop down the constant. But I'll explicitly call it kCoalescedImplicitNullchecks.
+
 639:0-640:21
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eeb4f1df_3aff6174
 Bytes: 32
 I don't understand this comment.
+
+639:0-640:21
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_3aff6174
+UUID: ce9c8d86_6a0ccb5f
+Bytes: 217
+Changed into a TODO. I'm still getting used to locations and their interaction with the allocator. The point here is that for index = constant, we can save an input register and use instructions with immediate form...
 
 665:34-665:53
 Thu Jan 08 10:36:18 2015 +0000
@@ -294,12 +536,28 @@ UUID: 6e8d6144_6ef92f8b
 Bytes: 48
 what kind of worries? Please expand the comment.
 
+665:34-665:53
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_6ef92f8b
+UUID: 4e733d24_f94ebf05
+Bytes: 4
+Done
+
 718:12-718:27
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ea8d591_8f99f588
 Bytes: 18
 Consistent naming.
+
+718:12-718:27
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_8f99f588
+UUID: 4e733d24_19af1b27
+Bytes: 4
+Done
 
 728:40-728:47
 Thu Jan 08 10:36:18 2015 +0000
@@ -308,12 +566,28 @@ UUID: eeb4f1df_7af9d98a
 Bytes: 10
 what kind?
 
+728:40-728:47
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_7af9d98a
+UUID: 4e733d24_59b9936b
+Bytes: 4
+Done
+
 789:71-789:72
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_aeea37ae
 Bytes: 20
 8 -> kX86_64WordSize
+
+789:71-789:72
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_aeea37ae
+UUID: aea119bc_e6c37a6a
+Bytes: 4
+Done
 
 802:0-802:32
 Thu Jan 08 10:36:18 2015 +0000
@@ -322,12 +596,28 @@ UUID: 6e8d6144_cee783e5
 Bytes: 4
 why?
 
+802:0-802:32
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_cee783e5
+UUID: 4e733d24_f9a95f1a
+Bytes: 75
+If we ever move to actual compressed pointers, we'll have to "unpack" here.
+
 809:12-809:29
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ea8d591_ef90c158
 Bytes: 17
 consistent naming
+
+809:12-809:29
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_ef90c158
+UUID: ce9c8d86_8a682fda
+Bytes: 4
+Done
 
 814:30-814:46
 Thu Jan 08 10:36:18 2015 +0000
@@ -336,6 +626,14 @@ UUID: 6e8d6144_eee43fe3
 Bytes: 3
 No.
 
+814:30-814:46
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_eee43fe3
+UUID: aea119bc_e6aa5a8c
+Bytes: 14
+Same as above.
+
 844:12-844:42
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -343,12 +641,28 @@ UUID: 8ea8d591_2f064914
 Bytes: 18
 Consistent naming.
 
+844:12-844:42
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_2f064914
+UUID: 4e733d24_59fb531d
+Bytes: 4
+Done
+
 850:0-851:51
 Thu Jan 08 10:36:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e8d6144_0ea50b94
 Bytes: 28
 Only for object type, right?
+
+850:0-851:51
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_0ea50b94
+UUID: ce9c8d86_4a94674b
+Bytes: 4
+Done
 
 File: compiler/optimizing/locations.h
 
@@ -359,6 +673,14 @@ UUID: 6e8d6144_2eaac764
 Bytes: 20
 instruction -> call.
 
+563:53-563:64
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e8d6144_2eaac764
+UUID: 4e733d24_99b6ab59
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.h
 
 1678:26-1678:36
@@ -367,6 +689,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eeb4f1df_1aa53d94
 Bytes: 103
 index_in_dex_cache_ ? Since it looks all three invokes need it now, maybe move it to the HInvoke class?
+
+1678:26-1678:36
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_1aa53d94
+UUID: 4e733d24_5a8181d8
+Bytes: 126
+Moved to HInvoke. Named dex_method_index, which is consistent with the rest of ART. (Also made HInvoke constructor protected.)
 
 File: compiler/optimizing/register_allocator.cc
 
@@ -377,6 +707,14 @@ UUID: eeb4f1df_7ab479c3
 Bytes: 108
 Add a comment why an input could be invalid. And also DCHECK that the instruction of the use is instrisifed?
 
+1100:0-1100:42
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb4f1df_7ab479c3
+UUID: 4e733d24_7a863df3
+Bytes: 4
+Done
+
 File: test/082-inline-execute/src/Main.java
 
 130:0-166:3
@@ -385,4 +723,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ea8d591_0f28a573
 Bytes: 30
 Add a comment why this change.
+
+130:0-166:3
+Fri Jan 09 04:36:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ea8d591_0f28a573
+UUID: 6eaba19e_7eddb171
+Bytes: 4
+Done
 

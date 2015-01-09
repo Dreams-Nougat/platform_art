@@ -1,6 +1,22 @@
 Revision: 370dd7a93923f8be35eb8cc130218a840a041f9f
 Patch-set: 2
+File: compiler/optimizing/code_generator_arm.cc
+
+2878:18-2878:36
+Fri Jan 09 09:34:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eb529f8_9c29a5b0
+Bytes: 16
+Why this change?
+
 File: compiler/optimizing/code_generator_x86.cc
+
+2929:18-2929:21
+Fri Jan 09 09:34:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eb529f8_5c0c3d5f
+Bytes: 72
+Just require register. It's not worth the trouble having two strategies.
 
 2939:5-2939:56
 Thu Jan 08 19:51:56 2015 +0000
@@ -10,4 +26,13 @@ Bytes: 684
 Although this is implicit (as in it will throw exception via the fault), it is not really how it is supposed to work by design. If the fault would happen on the object access, you wouldn't need the extra test instruction. With this approach, you have just one less instruction than before (no branch) which I don't think would really give you any wins.
 
 Anyway, to be fair, I get why you implemented it this way, which is because you need to satisfy the null check semantics of the null check node at the correct point. But this makes me wonder whether it is even worth it having implicit checks in the first place... I don't think you're really going to get a benefit in performance.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+2604:18-2604:34
+Fri Jan 09 09:34:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0eb22512_db1f3385
+Bytes: 20
+Same comment as x86.
 

@@ -9,10 +9,39 @@ UUID: eec0716a_1afb5dd2
 Bytes: 9
 Extra '.'
 
+26:12-26:14
+Fri Jan 09 19:36:29 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eec0716a_1afb5dd2
+UUID: 2efc49c4_44a6ae1c
+Bytes: 60
+Fixed in https://android-review.googlesource.com/#/c/122033/
+
 345:27-346:51
 Fri Jan 09 02:15:16 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aea119bc_e91c6ddb
 Bytes: 197
 If I understand correctly, I would swap these two checks, as this test case would still "work" as-is if the latter check ('there's no "bar"') were to overwrite the former one ('there's not "foo"').
+
+345:27-346:51
+Fri Jan 09 19:36:29 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aea119bc_e91c6ddb
+UUID: 2efc49c4_47fc7041
+Bytes: 939
+Huh, I'm not sure I understand what you mean. The order of NOT checks does not matter and they will always be verified in the scope given by surrounding non-NOT checks or bounds of the file.
+
+So for example:
+  CHECK:    AAA
+  CHECK-NOT: BBB
+  CHECK-NOT: CCC
+  CHECK:    DDD
+will first match AAA (let's say it matches output line 10), then DDD (line 20) and then it will come back and verify that neither BBB nor CCC appears on lines 11-19 inclusive. I'm not sure if that answers your question but it shows that the order of NOT checks does not matter, as long as they are in the same scope.
+
+This exercises the bug because:
+a) the result of the matching "foo" overwrote the variable state the "bar" check was invoked with
+b) it forced the matching algorithm to access the variable state (and hence crash) because there is a matching line for "bar".
+
+Maybe I should make this a separate test rather than just one of the NotAssertions tests.
 

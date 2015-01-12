@@ -9,6 +9,14 @@ UUID: 8e07f5ca_77b35059
 Bytes: 89
 Is that the standard way of doing things in Quick? Looks odd to have X86 subclass X86_64.
 
+46:8-46:67
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_77b35059
+UUID: 2e160901_1465b4fe
+Bytes: 149
+It isn't standard.  On the other hand it shares the exact same logic except for 1 routine, which I override.  That sounds like a case for derivation.
+
 File: compiler/jni/quick/x86/calling_convention_x86.cc
 
 123:48-123:49
@@ -18,12 +26,30 @@ UUID: 6e1c811f_b9a5dbbd
 Bytes: 16
 space before '?'
 
+123:48-123:49
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_b9a5dbbd
+UUID: ee0871db_3a68a1d8
+Bytes: 4
+Done
+
 127:38-127:62
 Mon Jan 12 12:16:57 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8e07f5ca_b77b28e7
 Bytes: 30
 How can a reference be a long?
+
+127:38-127:62
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_b77b28e7
+UUID: 2e160901_746228f8
+Bytes: 161
+I wasn't sure about there.  There is code in ARM that I copied.  THe ARM code has:
+// FIXME: Pointer this returns as both reference and long.
+Which one is right?
 
 128:16-128:56
 Mon Jan 12 14:28:44 2015 +0000
@@ -32,12 +58,30 @@ UUID: 8e07f5ca_1a0cb95e
 Bytes: 103
 Why do you need this? Isn't it enough to check the CurrentParamHighLongRegister().IsNoRegister() below?
 
+128:16-128:56
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_1a0cb95e
+UUID: eedf917d_42b3f20a
+Bytes: 45
+Code was written before that change :-)
+
+Done
+
 133:66-133:67
 Mon Jan 12 12:16:57 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8e07f5ca_57b0cc4a
 Bytes: 7
 spaces.
+
+133:66-133:67
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_57b0cc4a
+UUID: 2e160901_545f2c30
+Bytes: 4
+Done
 
 File: compiler/jni/quick/x86/calling_convention_x86.h
 
@@ -48,12 +92,28 @@ UUID: 0e130513_d3bd1459
 Bytes: 14
 line too long.
 
+31:96-31:116
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_d3bd1459
+UUID: eedf917d_22b06efc
+Bytes: 4
+Done
+
 43:1-43:8
 Mon Jan 12 12:16:57 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8e07f5ca_9780a460
 Bytes: 32
 Missing new line begore private.
+
+43:1-43:8
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_9780a460
+UUID: 2e160901_94c3846b
+Bytes: 31
+Done.  Was like that before :-)
 
 File: runtime/arch/stub_test.cc
 
@@ -63,6 +123,16 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e130513_73ad2026
 Bytes: 21
 Can this be macro-ed?
+
+305:27-305:31
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_73ad2026
+UUID: eedf917d_82bdfad6
+Bytes: 172
+There isn't an exposed macro with this value.  It is also really x86 specific, as is the rest of this code.
+
+I will leave as is unless there is a great clamor for a change.
 
 File: runtime/arch/x86/asm_support_x86.h
 
@@ -81,6 +151,14 @@ UUID: 8e07f5ca_ba6cadf9
 Bytes: 63
 And spaces around '*' and brackets around the whole expression.
 
+24:51-24:52
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_ba6cadf9
+UUID: 2e160901_f4c8f888
+Bytes: 4
+Done
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 124:0-124:81
@@ -89,6 +167,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e130513_939a7cfd
 Bytes: 56
 Can you call SETUP_REFS_AND_ARGS_CALLEE_SAVE_FRAME here?
+
+124:0-124:81
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_939a7cfd
+UUID: eedf917d_62ba76de
+Bytes: 145
+No, I can't.  I could rewrite it to use helper macros if you think it will help.  The problem is that the computation in the middle is different.
 
 454:0-454:61
 Fri Jan 09 20:05:11 2015 +0000
@@ -105,4 +191,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e1c811f_796223f8
 Bytes: 68
 So this check is really a hard float check? Can we make it explicit?
+
+420:0-420:62
+Mon Jan 12 14:52:58 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_796223f8
+UUID: ee0871db_babe71d5
+Bytes: 173
+It isn't necessarily a hard-float check, but that is what it turns out to be.  It is really a 'process args using shorty' flag.   Please let me know what I can use for this.
 

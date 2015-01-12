@@ -9,12 +9,28 @@ UUID: 8e07f5ca_17581481
 Bytes: 103
 I'd drop this. Does the destructor of IntrinsicLocationsBuilder need to be called before going forward?
 
+1139:2-1139:3
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_17581481
+UUID: 8eee1533_e2a4c8be
+Bytes: 40
+No, was just for clean separation. Done.
+
 1140:4-1140:35
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8e07f5ca_375b9881
 Bytes: 40
 Can this be a field in LocationsBuilder?
+
+1140:4-1140:35
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_375b9881
+UUID: 0efa25f3_9e90b92e
+Bytes: 217
+So the issue with that would be that we'd either have to heap-allocate them or include the intrinsics header in the code generator header. I'm fine with both, but usually try to remove all dependencies where possible.
 
 1153:4-1153:32
 Mon Jan 12 12:40:33 2015 +0000
@@ -23,12 +39,28 @@ UUID: 0e130513_1302ec7b
 Bytes: 24
 field in code generator?
 
+1153:4-1153:32
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_1302ec7b
+UUID: 4ef09d0f_5db0fb4a
+Bytes: 10
+See above.
+
 1203:2-1210:3
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e1c811f_f9c8f388
 Bytes: 6
 ditto.
+
+1203:2-1210:3
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_f9c8f388
+UUID: 4ef09d0f_bd7bffe6
+Bytes: 4
+Done
 
 File: compiler/optimizing/intrinsics.cc
 
@@ -39,12 +71,28 @@ UUID: 6e1c811f_59bac7dd
 Bytes: 56
 Isn't this the only place it's used? I'd drop the macro.
 
+354:12-354:23
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_59bac7dd
+UUID: 8eee1533_2297d052
+Bytes: 4
+Done
+
 368:14-368:88
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e1c811f_79bd03d4
 Bytes: 37
 Should we make this a DCHECK instead?
+
+368:14-368:88
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_79bd03d4
+UUID: 8eee1533_8294dc4c
+Bytes: 120
+Your choice. This once showed up through fuzzing and crashed Quick, and there it was decided not to abort the compile...
 
 File: compiler/optimizing/intrinsics_list.h
 
@@ -55,12 +103,28 @@ UUID: 0e130513_b317b8b5
 Bytes: 19
 direct -> instance.
 
+21:13-21:19
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_b317b8b5
+UUID: 0efa25f3_7e9a0d4b
+Bytes: 36
+No, InvokeStaticOrDirect. Rewritten.
+
 24:31-24:35
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8e07f5ca_5739ec0e
 Bytes: 60
 Could we use an existing enum instead? kStatic and kVirtual?
+
+24:31-24:35
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_5739ec0e
+UUID: 8eee1533_c200a4fa
+Bytes: 135
+Your binary wouldn't be correct. String methods are "sharpened" to StaticOrDirect. If you do prefer, I can make this a ternary thing...
 
 File: compiler/optimizing/intrinsics_x86_64.cc
 
@@ -71,12 +135,28 @@ UUID: 8e07f5ca_fad2a563
 Bytes: 14
 Line too long.
 
+47:0-47:102
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_fad2a563
+UUID: 8eee1533_a205a008
+Bytes: 4
+Done
+
 48:22-48:23
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6e1c811f_d9a417bf
 Bytes: 58
 Can you DCHECK THAT type is void? Otherwise add a comment.
+
+48:22-48:23
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_d9a417bf
+UUID: 4ef09d0f_fd7587f0
+Bytes: 122
+What happens if the result of a call is unused? Is the allocator (and rest of codegen) smart enough not to use a register?
 
 73:20-73:29
 Mon Jan 12 12:40:33 2015 +0000
@@ -85,12 +165,28 @@ UUID: 0e130513_13294cf4
 Bytes: 48
 Can you arrive here after the trg.Isvalid check?
 
+73:20-73:29
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_13294cf4
+UUID: 4ef09d0f_dd7a4be0
+Bytes: 4
+Done
+
 117:83-118:67
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8e07f5ca_3a041d3f
 Bytes: 60
 -> We need to move the parameters to the expected locations.
+
+117:83-118:67
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_3a041d3f
+UUID: 4ef09d0f_3d908fa9
+Bytes: 229
+This is not what that sentence is trying to say. This is trying to say that we expect the parameters still to be in the locations as given by the summary. If an intrinsic modifies them before a slowpath, they need to be restored.
 
 132:89-132:92
 Mon Jan 12 12:40:33 2015 +0000
@@ -106,12 +202,28 @@ UUID: 0e130513_5323c411
 Bytes: 43
 Make this another DCHECK to avoid the '&&'?
 
+142:0-142:92
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_5323c411
+UUID: 0efa25f3_3effe538
+Bytes: 4
+Done
+
 196:2-196:8
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e130513_b3c218c7
 Bytes: 38
 You can now drop all these returns :-)
+
+196:2-196:8
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_b3c218c7
+UUID: 8eee1533_821fbc50
+Bytes: 54
+Ugh, I search-and-replaced only half the things... :-)
 
 394:80-394:98
 Mon Jan 12 12:40:33 2015 +0000
@@ -120,12 +232,28 @@ UUID: 6e1c811f_5991275a
 Bytes: 67
 Then don't accept it. You shouldn't do moves in the code generator.
 
+394:80-394:98
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_5991275a
+UUID: 4ef09d0f_7d65f734
+Bytes: 253
+I don't agree. x86 is special enough that this might become necessary for optimal code. Take for example the case where the inputs are register-allocated, but the output is not. Then x86 can use in-memory operations. I'd prefer to leave in this comment.
+
 610:3-611:80
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e130513_f3cc90fc
 Bytes: 242
 No. If the input isn't used afterwards, the register allocator can re-use it (I know this isn't implemented, but it's easier to assume it is and do it later, compared to changing all the places where we thought we were doing an optimization).
+
+610:3-611:80
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_f3cc90fc
+UUID: 4ef09d0f_5d62bb2e
+Bytes: 4
+Done
 
 612:0-613:27
 Mon Jan 12 12:40:33 2015 +0000
@@ -134,10 +262,26 @@ UUID: 6e1c811f_d90ff724
 Bytes: 57
 Again, you should not ask for same as first input then :)
 
+612:0-613:27
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_d90ff724
+UUID: 0efa25f3_debd2159
+Bytes: 4
+Done
+
 817:0-817:32
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e130513_33b72858
 Bytes: 15
 Expand comment.
+
+817:0-817:32
+Mon Jan 12 16:41:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_33b72858
+UUID: 8eee1533_a2d76004
+Bytes: 4
+Done
 

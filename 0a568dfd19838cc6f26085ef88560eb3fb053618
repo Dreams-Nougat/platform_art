@@ -102,6 +102,14 @@ UUID: 8e07f5ca_3a2c1d04
 Bytes: 58
 Not to abort: do you mean it fallbacked to doing the call?
 
+368:14-368:88
+Mon Jan 12 19:38:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_3a2c1d04
+UUID: 2eab69f1_0c33f712
+Bytes: 114
+Yes. It puts normal code down (with the expectation that that might fail), which is what this would be doing, too.
+
 File: compiler/optimizing/intrinsics_list.h
 
 21:13-21:19
@@ -127,6 +135,14 @@ UUID: 8e07f5ca_7a269523
 Bytes: 159
 So I don't like this "direct" terminology. When I say 'instance' I don't mean virtual, but an instance call (the one where in Java there is no static keyword).
 
+21:13-21:19
+Mon Jan 12 19:38:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_7a269523
+UUID: 4ef09d0f_837b4229
+Bytes: 144
+The check derived from this is lightweight. It just checks against the instruction type. I guess I'll change it to check the actual invoke type.
+
 24:31-24:35
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -149,6 +165,14 @@ Parent: 8eee1533_c200a4fa
 UUID: 0e130513_96b38a8d
 Bytes: 22
 kStatic and kInstance?
+
+24:31-24:35
+Mon Jan 12 19:38:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e130513_96b38a8d
+UUID: 2eab69f1_8fe4f9b7
+Bytes: 4
+Done
 
 File: compiler/optimizing/intrinsics_x86_64.cc
 
@@ -190,6 +214,14 @@ UUID: 6e1c811f_19584f81
 Bytes: 53
 Indeed, good point. It should be easy to test it btw.
 
+48:22-48:23
+Mon Jan 12 19:38:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e1c811f_19584f81
+UUID: 0efa25f3_ef7b09ab
+Bytes: 64
+I put down the DCHECK for the time being, and the tests succeed.
+
 73:20-73:29
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -229,6 +261,14 @@ Bytes: 178
 Oh so this comment is about restoring the locations (that is line 146)? I thought it was for line 129.
 
 If that's what it is, then I find the comment more confusing than helpful.
+
+117:83-118:67
+Mon Jan 12 19:38:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e07f5ca_bac2edc6
+UUID: 0efa25f3_8f6245f5
+Bytes: 275
+No, this is for line 129. The point there is: MoveArguments assumes that the parameters are still in the locations given by invoke->GetLocations() (else how would it know where to copy from...). The code generator must not modify those before the slow-path (or restore them).
 
 132:89-132:92
 Mon Jan 12 12:40:33 2015 +0000

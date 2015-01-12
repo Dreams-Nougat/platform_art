@@ -94,6 +94,14 @@ UUID: 8eee1533_8294dc4c
 Bytes: 120
 Your choice. This once showed up through fuzzing and crashed Quick, and there it was decided not to abort the compile...
 
+368:14-368:88
+Mon Jan 12 18:32:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8eee1533_8294dc4c
+UUID: 8e07f5ca_3a2c1d04
+Bytes: 58
+Not to abort: do you mean it fallbacked to doing the call?
+
 File: compiler/optimizing/intrinsics_list.h
 
 21:13-21:19
@@ -111,6 +119,14 @@ UUID: 0efa25f3_7e9a0d4b
 Bytes: 36
 No, InvokeStaticOrDirect. Rewritten.
 
+21:13-21:19
+Mon Jan 12 18:32:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0efa25f3_7e9a0d4b
+UUID: 8e07f5ca_7a269523
+Bytes: 159
+So I don't like this "direct" terminology. When I say 'instance' I don't mean virtual, but an instance call (the one where in Java there is no static keyword).
+
 24:31-24:35
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -125,6 +141,14 @@ Parent: 8e07f5ca_5739ec0e
 UUID: 8eee1533_c200a4fa
 Bytes: 135
 Your binary wouldn't be correct. String methods are "sharpened" to StaticOrDirect. If you do prefer, I can make this a ternary thing...
+
+24:31-24:35
+Mon Jan 12 18:32:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8eee1533_c200a4fa
+UUID: 0e130513_96b38a8d
+Bytes: 22
+kStatic and kInstance?
 
 File: compiler/optimizing/intrinsics_x86_64.cc
 
@@ -158,6 +182,14 @@ UUID: 4ef09d0f_fd7587f0
 Bytes: 122
 What happens if the result of a call is unused? Is the allocator (and rest of codegen) smart enough not to use a register?
 
+48:22-48:23
+Mon Jan 12 18:32:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ef09d0f_fd7587f0
+UUID: 6e1c811f_19584f81
+Bytes: 53
+Indeed, good point. It should be easy to test it btw.
+
 73:20-73:29
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -187,6 +219,16 @@ Parent: 8e07f5ca_3a041d3f
 UUID: 4ef09d0f_3d908fa9
 Bytes: 229
 This is not what that sentence is trying to say. This is trying to say that we expect the parameters still to be in the locations as given by the summary. If an intrinsic modifies them before a slowpath, they need to be restored.
+
+117:83-118:67
+Mon Jan 12 18:32:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ef09d0f_3d908fa9
+UUID: 8e07f5ca_bac2edc6
+Bytes: 178
+Oh so this comment is about restoring the locations (that is line 146)? I thought it was for line 129.
+
+If that's what it is, then I find the comment more confusing than helpful.
 
 132:89-132:92
 Mon Jan 12 12:40:33 2015 +0000
@@ -239,6 +281,14 @@ Parent: 6e1c811f_5991275a
 UUID: 4ef09d0f_7d65f734
 Bytes: 253
 I don't agree. x86 is special enough that this might become necessary for optimal code. Take for example the case where the inputs are register-allocated, but the output is not. Then x86 can use in-memory operations. I'd prefer to leave in this comment.
+
+394:80-394:98
+Mon Jan 12 18:32:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ef09d0f_7d65f734
+UUID: 8e07f5ca_facc65fc
+Bytes: 76
+As discussed, in this case, you could say you want the out as Location::Any.
 
 610:3-611:80
 Mon Jan 12 12:40:33 2015 +0000

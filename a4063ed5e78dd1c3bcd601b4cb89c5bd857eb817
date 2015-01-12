@@ -9,3 +9,15 @@ UUID: ceeacdee_51caf42d
 Bytes: 210
 I am not sure safepoint is the correct terminology here. These instructions already have a "safepoint" because they can interact with runtime. The better working in my mind would be to say "caller-save support"
 
+7:15-7:24
+Mon Jan 12 07:05:20 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ceeacdee_51caf42d
+UUID: 6ef3a11b_1e230d45
+Bytes: 379
+safepoint is not added for instructions with LocationSummary set to kNoCall. This patch set the LocationSummary to kCallOnSlowPath.
+
+And the issue can be fixed in different ways, as you've mentioned. This depends on how do we design the runtime. Anyway, we'd better make these checks behave the same way as "throw"(kCall).
+
+This patch was pushed as *WIP* just to raise the issue.
+

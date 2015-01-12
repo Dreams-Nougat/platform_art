@@ -1,0 +1,143 @@
+Revision: 0a568dfd19838cc6f26085ef88560eb3fb053618
+Patch-set: 22
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1139:2-1139:3
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e07f5ca_17581481
+Bytes: 103
+I'd drop this. Does the destructor of IntrinsicLocationsBuilder need to be called before going forward?
+
+1140:4-1140:35
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e07f5ca_375b9881
+Bytes: 40
+Can this be a field in LocationsBuilder?
+
+1153:4-1153:32
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_1302ec7b
+Bytes: 24
+field in code generator?
+
+1203:2-1210:3
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e1c811f_f9c8f388
+Bytes: 6
+ditto.
+
+File: compiler/optimizing/intrinsics.cc
+
+354:12-354:23
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e1c811f_59bac7dd
+Bytes: 56
+Isn't this the only place it's used? I'd drop the macro.
+
+368:14-368:88
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e1c811f_79bd03d4
+Bytes: 37
+Should we make this a DCHECK instead?
+
+File: compiler/optimizing/intrinsics_list.h
+
+21:13-21:19
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_b317b8b5
+Bytes: 19
+direct -> instance.
+
+24:31-24:35
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e07f5ca_5739ec0e
+Bytes: 60
+Could we use an existing enum instead? kStatic and kVirtual?
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+47:0-47:102
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e07f5ca_fad2a563
+Bytes: 14
+Line too long.
+
+48:22-48:23
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e1c811f_d9a417bf
+Bytes: 58
+Can you DCHECK THAT type is void? Otherwise add a comment.
+
+73:20-73:29
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_13294cf4
+Bytes: 48
+Can you arrive here after the trg.Isvalid check?
+
+117:83-118:67
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e07f5ca_3a041d3f
+Bytes: 60
+-> We need to move the parameters to the expected locations.
+
+132:89-132:92
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_7326c023
+Bytes: 73
+Move that to a constant in calling convention or code_generator_x86_64.h.
+
+142:0-142:92
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_5323c411
+Bytes: 43
+Make this another DCHECK to avoid the '&&'?
+
+196:2-196:8
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_b3c218c7
+Bytes: 38
+You can now drop all these returns :-)
+
+394:80-394:98
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e1c811f_5991275a
+Bytes: 67
+Then don't accept it. You shouldn't do moves in the code generator.
+
+610:3-611:80
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_f3cc90fc
+Bytes: 242
+No. If the input isn't used afterwards, the register allocator can re-use it (I know this isn't implemented, but it's easier to assume it is and do it later, compared to changing all the places where we thought we were doing an optimization).
+
+612:0-613:27
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e1c811f_d90ff724
+Bytes: 57
+Again, you should not ask for same as first input then :)
+
+817:0-817:32
+Mon Jan 12 12:40:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e130513_33b72858
+Bytes: 15
+Expand comment.
+

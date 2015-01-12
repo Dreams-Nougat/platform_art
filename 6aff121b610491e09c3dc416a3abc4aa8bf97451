@@ -34,6 +34,14 @@ UUID: aeae7991_bb961354
 Bytes: 169
 Because we don't deference directly in this function, I think it's better to leave the CHECK to DexFile::Open, where the pointer is dereferenced. I'll add a CHECK there.
 
+1495:76-1495:77
+Mon Jan 12 17:56:10 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aeae7991_bb961354
+UUID: 8eee1533_02672c93
+Bytes: 189
+I changed my mind. I've switched to DCHECKs at the beginning of the functions to check the out parameter, with a short message to indicate what's wrong if the out parameter pointer is NULL.
+
 1680
 Thu Jan 08 01:02:12 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -97,6 +105,16 @@ Actually I kind of doubt using a raw and/or unique pointer is even the right sem
 The raw pointer just seems to be given out all over the place (Runtime::GetCompileTimeClassPath), but nobody is cleaning it up, so presumably it has to outlive the Runtime and someone else cleans it up? Then this DexFile* gets stored somehow in a Class* and it gets used in even more places.
 
 Why isn't it just a shared_ptr?
+
+1987:0-1989:3
+Mon Jan 12 17:56:10 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ec80176_dc83c594
+UUID: 8eee1533_22db50a8
+Bytes: 330
+Currently the DexFiles passed to SetCompileTimeClassPath must outlive the Runtime. The caller of SetCompileTimeClassPath is responsible for ensuring that. I'll document that in the comments for SetCompileTimeClassPath.
+
+I don't know how things should look in a world where the runtime can unload classes that are no longer needed.
 
 File: runtime/mirror/dex_cache_test.cc
 

@@ -1,0 +1,135 @@
+Revision: cb939d9b98be86e48d827559cf898ef73f60e5b7
+Patch-set: 1
+File: /COMMIT_MSG
+
+7
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cee48d53_2ada037b
+Bytes: 62
+Link to docs or some high level explanation of how this works?
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+110
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_12b02cfc
+Bytes: 96
+So what this is doing is adding mark bitmaps for the image / zygote correct? Why is this needed?
+
+322
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8eee1533_a5e48ab7
+Bytes: 8
+CHECK_EQ
+
+362
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8eee1533_05da96f5
+Bytes: 18
+Procces -> Process
+
+812
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_f2e92010
+Bytes: 8
+CHECK_EQ
+
+814
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ef09d0f_06d3c069
+Bytes: 8
+CHECK_EQ
+
+818
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_d2eea415
+Bytes: 36
+ConcurrentCopying* const collector_;
+
+File: runtime/gc/collector/concurrent_copying.h
+
+50
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_0cdad77a
+Bytes: 307
+This seems general purpose, move to its own file? Also since this is a queue, does that result in worst object locality than a stack? I was under the impression that a mark stack was advantageous since it resulted in better object locality of moved objects and better cache coherence during marking process.
+
+61
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ef09d0f_c09540cf
+Bytes: 57
+Using unique_ptr shouldn't be additional overhead I think
+
+76
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_cc40cf67
+Bytes: 166
+Even though you CHECK that IsPowerOfTwo, I don't think the compiler is smart enough to turn this % into an &. I'd recommend doing buf_[t & (size_ - 1)] manually here.
+
+88
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_2c36b302
+Bytes: 8
+And here
+
+101
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ef09d0f_e094bcd0
+Bytes: 8
+And here
+
+146
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0efa25f3_21298af4
+Bytes: 52
+Comment meant to say couldn't be constexpr pointers?
+
+File: runtime/mirror/art_method-inl.h
+
+482
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_b20038f9
+Bytes: 118
+DCHECK_EQ will print the values already if they don't match, its redundant to print them yourself by using the stream.
+
+File: runtime/read_barrier-inl.h
+
+40
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0efa25f3_6a2d27ad
+Bytes: 116
+Is there a way to abstract this so that we can have read barriers in other GCs such as concurrent semi-space, etc...
+
+File: runtime/thread.h
+
+860
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2eab69f1_8fc7d9d6
+Bytes: 41
+I think you can make this function const.
+
+File: runtime/thread_list.h
+
+102
+Mon Jan 12 20:39:18 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0efa25f3_24b078fc
+Bytes: 88
+I'm confused why we can't do the root flipping by using normal checkpoints? Any comment?
+

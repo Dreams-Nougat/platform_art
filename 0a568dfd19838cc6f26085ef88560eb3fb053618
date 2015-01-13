@@ -110,6 +110,14 @@ UUID: 2eab69f1_0c33f712
 Bytes: 114
 Yes. It puts normal code down (with the expectation that that might fail), which is what this would be doing, too.
 
+368:14-368:88
+Tue Jan 13 10:55:22 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2eab69f1_0c33f712
+UUID: 4ec7bdd5_0512b249
+Bytes: 60
+OK, so how can we end up here? The call hasn't been sharpen?
+
 File: compiler/optimizing/intrinsics_list.h
 
 21:13-21:19
@@ -222,6 +230,14 @@ UUID: 0efa25f3_ef7b09ab
 Bytes: 64
 I put down the DCHECK for the time being, and the tests succeed.
 
+48:22-48:23
+Tue Jan 13 10:55:22 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0efa25f3_ef7b09ab
+UUID: 0ec145c3_636282f8
+Bytes: 217
+Maybe because a call that we intrinsify is 99% of the time used? What happens if it's not? (I can see our intrinsics don't have side effects so could be removed from the graph, but let's assume it can still be there).
+
 73:20-73:29
 Mon Jan 12 12:40:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -269,6 +285,14 @@ Parent: 8e07f5ca_bac2edc6
 UUID: 0efa25f3_8f6245f5
 Bytes: 275
 No, this is for line 129. The point there is: MoveArguments assumes that the parameters are still in the locations given by invoke->GetLocations() (else how would it know where to copy from...). The code generator must not modify those before the slow-path (or restore them).
+
+117:83-118:67
+Tue Jan 13 10:55:22 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0efa25f3_8f6245f5
+UUID: 4ec7bdd5_c50ffa24
+Bytes: 33
+I see, thanks for the re-wording!
 
 132:89-132:92
 Mon Jan 12 12:40:33 2015 +0000

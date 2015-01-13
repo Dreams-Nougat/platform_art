@@ -1,0 +1,34 @@
+Revision: 2e550bbf2c3b8909b0ecc3c78d1865537d840bff
+Patch-set: 2
+File: compiler/optimizing/code_generator_arm64.cc
+
+971
+Tue Jan 13 14:32:35 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ec7bdd5_a5ae3e27
+Bytes: 312
+Load() should be similar and call MaybeRecordImplicitNullCheck(instruction, dex_pc) before returning.
+
+Currently we use Load() for:
+
+VisitArrayGet()
+VisitInstanceFieldGet()
+VisitStaticFieldGet()
+
+I think all of them should have a MaybeRecordImplicitNullCheck() that can be neatly hidden in Load(), LoadAcquire().
+
+1055
+Tue Jan 13 14:32:35 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ec145c3_837b3e5e
+Bytes: 139
+Why not after the switch:
+
+switch {
+
+}
+
+MaybeRecordImplicitNullCheck(instruction, dex_pc);
+
+Anyway for kPrimVoid we will die in LOG(FATAL).
+

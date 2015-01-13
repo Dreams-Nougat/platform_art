@@ -9,3 +9,12 @@ UUID: 0e6f85ad_b3d79804
 Bytes: 208
 For an X86, if this is a register pair, we only need to save 4 bytes for each of the registers in the pair.  Is there some way to detect this?  Or is this done automatically because the type wouldn't be long?
 
+605:0-613:9
+Tue Jan 13 14:45:29 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ec7bdd5_258a4eae
+Bytes: 290
+You should do all this at the very end. So maximum_number_of_live_registers_ computation is the same.
+
+Actually, we should just pass to codegen->ComputeFrameSize the number of live core registers, *and* the number of live FP registers. Then we wouldn't care here about size of a core/float.
+

@@ -9,6 +9,31 @@ UUID: 2efc49c4_aecd3897
 Bytes: 24
 Doesn't look equivalent.
 
+69
+Tue Jan 13 01:02:05 2015 +0000
+Author: Duane Sand <1010669@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2efc49c4_aecd3897
+UUID: ee7b115e_e276a6c3
+Bytes: 599
+Currently, lang does not generate the __mips_isa_rev symbol. 
+
+This test was discriminating between the target cores
+  mips32r1 and mips32r2,  versus mips32r5 and mips32r6,
+and between
+  mips64r2, versus mips64r6.
+
+There are no r3 or r5 cores now or planned for Android, and no 64r5.
+
+The original test using __mips_isa_rev was slightly more future proof.
+
+A fully equiv replacement would test
+
+#if defined(MIPS_ARCH_MIPS32R5) || defined(MIPS_ARCH_MIPS32R6) || defined(MIPS_ARCH_MIPS64R6)
+
+but in this particular mips32-only folder, we can omit the MIPS64R6 test here.
+
+So it is "equivalent enough".
+
 File: runtime/arch/mips/instruction_set_features_mips.cc
 
 52:3-52:64

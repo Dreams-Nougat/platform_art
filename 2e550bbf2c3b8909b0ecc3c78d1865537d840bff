@@ -38,6 +38,23 @@ I was hasty and didn't think the last part of the comment through. For static ac
 
 I will add some extra checks to not record the pc if we are on a static path.
 
+972
+Tue Jan 13 15:58:32 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ec7bdd5_c5941ad1
+UUID: 0ec145c3_c319b621
+Bytes: 361
+I see...
+
+Could there be a case where BoundCheckElimination removes the HBoundsCheck() associated with an array access and DeadCodeElimination removes the HArrayLength()  since it has no uses?
+
+I assume that by this point we would have already caught a NULL object.
+
+Currently this could not happen since we run the passes in the reverse order:
+
+1 - DCE
+2 - BCE
+
 1055
 Tue Jan 13 14:32:35 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,4 +77,12 @@ Parent: 0ec145c3_837b3e5e
 UUID: ce800d7c_01170ab4
 Bytes: 117
 We want to record the pc right after the instruction that throws so we can find the corresponding dex_pc in the maps.
+
+1055
+Tue Jan 13 15:58:32 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce800d7c_01170ab4
+UUID: ce800d7c_01762af3
+Bytes: 19
+Yes, you are right.
 

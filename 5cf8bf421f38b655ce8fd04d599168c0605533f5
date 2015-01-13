@@ -9,6 +9,14 @@ UUID: 0ec145c3_a353da31
 Bytes: 150
 Could you set kProtectFromSpace to false if from is set as rosalloc at start time? Or can the form type change and/or it can be configured at runtime?
 
+761:6-761:23
+Tue Jan 13 19:20:47 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ec145c3_a353da31
+UUID: ae53d9fb_30b46850
+Bytes: 642
+The semi-space collector is used in two cases. The normal case is where it's the GC chosen at startup in which case the from space is always a bump pointer space. The other special case is where the (main) GC chosen is the CMS collector but the semi-space collector code is used in special side cases such as the zygote compaction and the hspace compaction/background transition. The from-space can be a rosalloc space only in this special case. So, the type of the from-space can change in this sense but we don't currently support any other way for it to be changed or configured (eg. the from-space can't be set to rosalloc at start time).
+
 File: test/run-test
 
 284:106-284:144
@@ -17,4 +25,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce800d7c_6194564c
 Bytes: 43
 Maybe add a comment why you need this flag?
+
+284:106-284:144
+Tue Jan 13 19:20:47 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce800d7c_6194564c
+UUID: 2e99a9f9_654c5c3f
+Bytes: 4
+Done
 

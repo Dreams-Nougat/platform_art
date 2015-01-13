@@ -118,6 +118,14 @@ UUID: 4ec7bdd5_0512b249
 Bytes: 60
 OK, so how can we end up here? The call hasn't been sharpen?
 
+368:14-368:88
+Tue Jan 13 16:20:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ec7bdd5_0512b249
+UUID: 4e75fd75_3558d081
+Bytes: 153
+Hopefully we don't end up here at all. vmarko's code already has some safety mechanisms put in. I'll refer to b/16017877 for the issue as exposed before.
+
 File: compiler/optimizing/intrinsics_list.h
 
 21:13-21:19
@@ -237,6 +245,14 @@ Parent: 0efa25f3_ef7b09ab
 UUID: 0ec145c3_636282f8
 Bytes: 217
 Maybe because a call that we intrinsify is 99% of the time used? What happens if it's not? (I can see our intrinsics don't have side effects so could be removed from the graph, but let's assume it can still be there).
+
+48:22-48:23
+Tue Jan 13 16:20:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ec145c3_636282f8
+UUID: 4e75fd75_954d24c3
+Bytes: 220
+Well, the graph isn't modified yet, so things don't get removed. And it seems to be rare that somebody isn't using the result. (Note that Quick has the cut-out for unused results, though, in some intrinsified functions.)
 
 73:20-73:29
 Mon Jan 12 12:40:33 2015 +0000

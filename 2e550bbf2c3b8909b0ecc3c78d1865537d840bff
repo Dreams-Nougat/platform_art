@@ -17,6 +17,17 @@ VisitStaticFieldGet()
 
 I think all of them should have a MaybeRecordImplicitNullCheck() that can be neatly hidden in Load(), LoadAcquire().
 
+972
+Tue Jan 13 14:45:50 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ec7bdd5_c5941ad1
+Bytes: 350
+so ArrayGet shouldn't need anything. The check happens in ArrayLength which will always precede the Get/Set. Or can you think about a case where that's not true?
+
+So I preferred to record the implicit null check after we call Load().
+
+You are right though that I forgot to add the record for the static fields! Thanks! I will also add tests for that.
+
 1055
 Tue Jan 13 14:32:35 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,4 +42,12 @@ switch {
 MaybeRecordImplicitNullCheck(instruction, dex_pc);
 
 Anyway for kPrimVoid we will die in LOG(FATAL).
+
+1055
+Tue Jan 13 14:45:50 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ec145c3_837b3e5e
+UUID: ce800d7c_01170ab4
+Bytes: 117
+We want to record the pc right after the instruction that throws so we can find the corresponding dex_pc in the maps.
 

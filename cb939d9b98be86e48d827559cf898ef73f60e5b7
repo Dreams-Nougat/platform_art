@@ -9,6 +9,14 @@ UUID: cee48d53_2ada037b
 Bytes: 62
 Link to docs or some high level explanation of how this works?
 
+7
+Tue Jan 13 22:14:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cee48d53_2ada037b
+UUID: 0efa25f3_a762c5f4
+Bytes: 18
+Let's have a chat.
+
 File: runtime/gc/accounting/read_barrier_table.h
 
 69:4-72:5
@@ -33,6 +41,16 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2eab69f1_12b02cfc
 Bytes: 96
 So what this is doing is adding mark bitmaps for the image / zygote correct? Why is this needed?
+
+110
+Tue Jan 13 22:14:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2eab69f1_12b02cfc
+UUID: 0efa25f3_67c71d55
+Bytes: 859
+Yes, correct.
+
+With the Baker read barrier, we decide whether the read barrier slow path should be taken based on whether the read barrier pointer is gray or not. If we treat image/zygote objects as always marked without using a bitmap (as in the mark sweep collector case), then we'd have to make sure that all those objects are somehow colored as gray at the beginning of the marking phase or else the to-space invariant would break (a mutator may see an unmarked/from-space ref). Maybe we could concurrently color them gray before the marking phase begins (in addition, we'd have to have a check if the GC is marking or not in the read barrier slow path and we'd have to mark through them specially.) This may work. But it'd add one extra phase. I'd have to try and see, but I see it as an optimization (not a correctness issue). I'll leave a TODO for now.
 
 322
 Mon Jan 12 20:39:18 2015 +0000
@@ -77,6 +95,16 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2eab69f1_0cdad77a
 Bytes: 307
 This seems general purpose, move to its own file? Also since this is a queue, does that result in worst object locality than a stack? I was under the impression that a mark stack was advantageous since it resulted in better object locality of moved objects and better cache coherence during marking process.
+
+50
+Tue Jan 13 22:14:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2eab69f1_0cdad77a
+UUID: 4e75fd75_1e42118d
+Bytes: 449
+I don't see any problem with moving it its own file. But I think we can defer it to a later point depending on how general purpose it turns out.
+
+You are probably right about the locality characteristics about a stack vs a queue. I tried, but atomic_stack.h didn't work for some reason. It may be that in push_back() it'd have to busy-wait for a slot to be filled with a valid pointer/ref after a slot is secured and in pop_back() null out the slot.
 
 61
 Mon Jan 12 20:39:18 2015 +0000
@@ -154,6 +182,16 @@ UUID: 0efa25f3_6a2d27ad
 Bytes: 116
 Is there a way to abstract this so that we can have read barriers in other GCs such as concurrent semi-space, etc...
 
+40
+Tue Jan 13 22:14:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0efa25f3_6a2d27ad
+UUID: ae53d9fb_b952035c
+Bytes: 480
+I think it actually depends on the read barrier type as opposed to the collector type even though HasGrayReadBarrierPointer() is currently defined in the ConcurrentCopying class, which should be separated out more cleanly.
+
+If we have multiple read barrier types, we probably need to treat them more like the different allocator types that we have (some cases may be specialized via templates). Particularly, if we'd like it to be a runtime option rather than a build time option.
+
 File: runtime/runtime.h
 
 302:9-302:21
@@ -180,4 +218,12 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0efa25f3_24b078fc
 Bytes: 88
 I'm confused why we can't do the root flipping by using normal checkpoints? Any comment?
+
+102
+Tue Jan 13 22:14:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0efa25f3_24b078fc
+UUID: 4e3a5daa_500f32a3
+Bytes: 386
+With a checkpoint, there could be missed writes. Since not all threads flip at the exact same time, some threads could concurrently see two (from-space and to-space) copies of the same object. If a thread which hasn't flipped yet writes to the from-space copy of an object and another thread which has already flipped reads the to-space copy of the same object, the write would be lost.
 

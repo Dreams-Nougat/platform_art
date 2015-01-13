@@ -9,6 +9,16 @@ UUID: 4e8c1dba_2626dc54
 Bytes: 65
 Does this part need to be fixed? It seems to split up the long...
 
+82:8-84:9
+Tue Jan 13 15:59:32 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e8c1dba_2626dc54
+UUID: ce800d7c_a14d7ec2
+Bytes: 151
+Your call. This is setting the low value in the register, but the whole low/high will still be in stack.
+
+Do you prefer having garbage in the register?
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 62:24-62:64
@@ -17,4 +27,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2e99a9f9_22b32a0c
 Bytes: 61
 You could alternatively call it what it is: align long pairs.
+
+62:24-62:64
+Tue Jan 13 15:59:32 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e99a9f9_22b32a0c
+UUID: 0ec145c3_e314b2e9
+Bytes: 262
+I did that first, but the code in this file is generic and when telling which index it is, you don't know whether the register is odd or even.
+
+I also would prefer to call it something like kAlignPairRegister. If you don't think that's confusing I'll go with it.
 

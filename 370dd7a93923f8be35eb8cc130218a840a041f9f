@@ -22,6 +22,24 @@ wrt having two options:
 - in theory you can save a register in some case (as you don't need to move the constant). Not sure if that actually happen and if it has any impact.
 - I can clean this up in the next CL if you still think it's worth.
 
+File: compiler/optimizing/code_generator_arm64.cc
+
+2299
+Tue Jan 13 12:00:32 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce800d7c_81723a7a
+Bytes: 71
+No need for a temp register here since anyway we do not use this value.
+
+2301
+Tue Jan 13 12:00:32 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ec145c3_233c0ab2
+Bytes: 148
+Use wzr - see GenerateFrameEntry().
+
+Any valid ARMv8 micro-architecture would execute the load - thus trigger the exception, but discard the result.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 2929:18-2929:21

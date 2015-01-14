@@ -1,0 +1,36 @@
+Revision: 21797bcba8ae89b8b882225e6243a2d86f412e30
+Patch-set: 8
+File: compiler/optimizing/graph_visualizer.cc
+
+167:50-167:58
+Wed Jan 14 19:56:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e26419e_af61d980
+Bytes: 170
+Fine for now but we might need to come up with a uniform way of printing such attributes and teach Checker about it, otherwise adding new ones could break existing tests.
+
+File: compiler/optimizing/implicit_null_check_elimination.cc
+
+83:6-83:40
+Wed Jan 14 19:56:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e1dc54d_e34cd2c3
+Bytes: 92
+Are we assuming there are no ArrayGets on new arrays? I don't think that's strictly illegal.
+
+File: compiler/optimizing/test/ImplicitNullCheckEliminationTest.java
+
+30:20-30:33
+Wed Jan 14 19:56:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e1dc54d_23550a91
+Bytes: 272
+This is tricky because it doesn't guarantee that it's the second call to t.f which changed the attribute. You could verify the control flow but it would be easier to add a data-flow dependency, e.g. by having the first t.f return a value and passing it to the second call.
+
+55:20-55:35
+Wed Jan 14 19:56:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e1dc54d_e3bdb258
+Bytes: 13
+same as above
+

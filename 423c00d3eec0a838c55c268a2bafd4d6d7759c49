@@ -17,6 +17,14 @@ UUID: eb106340_ba307105
 Bytes: 140
 Isn't this the native stack setup? We are setting up the stack and calling the stub function, so I thought this has to match the native ABI.
 
+546
+Thu Jan 15 01:10:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb106340_ba307105
+UUID: 4bf88f38_d1e8b4b7
+Bytes: 156
+No, the quick_invoke_stub is copying from the args array coming from ArtMethod::Invoke to the Quick ABI. So this is managed, and does not have to be native.
+
 File: runtime/elf_file.cc
 
 1335:52-1335:69
@@ -33,4 +41,12 @@ Parent: 4e3a5daa_07e2cae1
 UUID: 6b2473a4_f6dba07c
 Bytes: 131
 This was fixed by a follow-up patch. I weren't sure if I should keep adding stuff to this big patch or not, so I added a new patch.
+
+1335
+Thu Jan 15 01:10:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b2473a4_f6dba07c
+UUID: 0b0217f8_24b318de
+Bytes: 48
+Yeah, I saw that (and merged in a different CL).
 

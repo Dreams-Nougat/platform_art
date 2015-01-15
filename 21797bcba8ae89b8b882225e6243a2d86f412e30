@@ -1,5 +1,41 @@
 Revision: 21797bcba8ae89b8b882225e6243a2d86f412e30
 Patch-set: 8
+File: compiler/optimizing/bounds_check_elimination_test.cc
+
+62:73-62:74
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb106340_3a234199
+Bytes: 112
+Pass an explicit (null/invalid) constant (e.g. `dummy_pc') here, instead of 0? (Likewise in other places/tests.)
+
+File: compiler/optimizing/code_generator.cc
+
+647:4-652:82
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b0217f8_64d7e007
+Bytes: 272
+Maybe turn `need_nc' into an argument of `CodeGenerator::MaybeRecordImplicitNullCheck' and have the caller (i.e. `instr') pass `instr->AsFoo()->NeedsImplicitNullCheck()' as value for this argument? Or implement this as a virtual method in the HInstruction class hierarchy?
+
+File: compiler/optimizing/code_generator_arm.cc
+
+2830:6-2830:42
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bf88f38_71d7a007
+Bytes: 213
+Unlike the code in `InstructionCodeGeneratorARM::HandleFieldSet', this condition does not test whether `field_type' is also different from `Primitive::kPrimLong. Is this intended? If so, a comment might be useful.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+1001:53-1001:57
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae2cb97b_d7e3065d
+Bytes: 77
+Deduce `type' from `instruction'  and remove it from this method's arguments?
+
 File: compiler/optimizing/graph_visualizer.cc
 
 167:50-167:58
@@ -9,6 +45,13 @@ UUID: 6e26419e_af61d980
 Bytes: 170
 Fine for now but we might need to come up with a uniform way of printing such attributes and teach Checker about it, otherwise adding new ones could break existing tests.
 
+171:4-172:82
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b051bfe_424976b0
+Bytes: 73
+Maybe factor this redundant action in a method (template) of the visitor?
+
 File: compiler/optimizing/implicit_null_check_elimination.cc
 
 83:6-83:40
@@ -17,6 +60,28 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e1dc54d_e34cd2c3
 Bytes: 92
 Are we assuming there are no ArrayGets on new arrays? I don't think that's strictly illegal.
+
+83:6-83:40
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e1dc54d_e34cd2c3
+UUID: 2b051bfe_05801823
+Bytes: 45
+If so, I suggest adding a test for this case.
+
+104:2-104:25
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b2473a4_d6654401
+Bytes: 22
+Use an ArenaBitVector?
+
+104:26-104:41
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0aeb11_187be5ac
+Bytes: 56
+Nit: Add a trailing underscore to this attribute's name.
 
 File: compiler/optimizing/test/ImplicitNullCheckEliminationTest.java
 
@@ -33,4 +98,13 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e1dc54d_e3bdb258
 Bytes: 13
 same as above
+
+File: test/439-npe/src/Main.java
+
+2:17-2:21
+Thu Jan 15 04:57:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b216f94_d5d89c82
+Bytes: 4
+2015
 

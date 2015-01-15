@@ -9,6 +9,14 @@ UUID: eb106340_3a234199
 Bytes: 112
 Pass an explicit (null/invalid) constant (e.g. `dummy_pc') here, instead of 0? (Likewise in other places/tests.)
 
+62:73-62:74
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb106340_3a234199
+UUID: cb3abfc4_f40dd65c
+Bytes: 8
+oboslete
+
 File: compiler/optimizing/code_generator.cc
 
 647:4-652:82
@@ -17,6 +25,18 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b0217f8_64d7e007
 Bytes: 272
 Maybe turn `need_nc' into an argument of `CodeGenerator::MaybeRecordImplicitNullCheck' and have the caller (i.e. `instr') pass `instr->AsFoo()->NeedsImplicitNullCheck()' as value for this argument? Or implement this as a virtual method in the HInstruction class hierarchy?
+
+647:4-652:82
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b0217f8_64d7e007
+UUID: cb3abfc4_74432676
+Bytes: 323
+I wanted to avoid doing that. MaybeRecordImplicitNullCheck is called in a lot of places. Having a check on the instruction type here:
+- eliminates the need to add extra parameters to a number of functions
+- helps writing less code in the actual code generators.
+
+I agree that's not the nicest things but is very convenient.
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -27,6 +47,14 @@ UUID: 4bf88f38_71d7a007
 Bytes: 213
 Unlike the code in `InstructionCodeGeneratorARM::HandleFieldSet', this condition does not test whether `field_type' is also different from `Primitive::kPrimLong. Is this intended? If so, a comment might be useful.
 
+2830:6-2830:42
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bf88f38_71d7a007
+UUID: 0b1bf76b_b6e52639
+Bytes: 32
+Only doubles. I added a comment.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 1001:53-1001:57
@@ -35,6 +63,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ae2cb97b_d7e3065d
 Bytes: 77
 Deduce `type' from `instruction'  and remove it from this method's arguments?
+
+1001:53-1001:57
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ae2cb97b_d7e3065d
+UUID: cb3abfc4_343d9ee0
+Bytes: 4
+Done
 
 File: compiler/optimizing/graph_visualizer.cc
 
@@ -45,12 +81,28 @@ UUID: 6e26419e_af61d980
 Bytes: 170
 Fine for now but we might need to come up with a uniform way of printing such attributes and teach Checker about it, otherwise adding new ones could break existing tests.
 
+167:50-167:58
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e26419e_af61d980
+UUID: 0b1bf76b_b33c1801
+Bytes: 49
+yea, I agree we should find a strategy for these.
+
 171:4-172:82
 Thu Jan 15 04:57:37 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b051bfe_424976b0
 Bytes: 73
 Maybe factor this redundant action in a method (template) of the visitor?
+
+171:4-172:82
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b051bfe_424976b0
+UUID: 2b1efb59_57cdaec5
+Bytes: 4
+Done
 
 File: compiler/optimizing/implicit_null_check_elimination.cc
 
@@ -68,6 +120,14 @@ Parent: 0e1dc54d_e34cd2c3
 UUID: 2b051bfe_05801823
 Bytes: 45
 If so, I suggest adding a test for this case.
+
+83:6-83:40
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b051bfe_05801823
+UUID: cb3abfc4_14429a6e
+Bytes: 9
+obsolete.
 
 104:2-104:25
 Thu Jan 15 04:57:37 2015 +0000
@@ -92,12 +152,28 @@ UUID: 0e1dc54d_23550a91
 Bytes: 272
 This is tricky because it doesn't guarantee that it's the second call to t.f which changed the attribute. You could verify the control flow but it would be easier to add a data-flow dependency, e.g. by having the first t.f return a value and passing it to the second call.
 
+30:20-30:33
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e1dc54d_23550a91
+UUID: 0b1bf76b_56f6d2ef
+Bytes: 114
+We don't re-order function calls so we should be ok. Is there a particular case where you think this might happen?
+
 55:20-55:35
 Wed Jan 14 19:56:40 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e1dc54d_e3bdb258
 Bytes: 13
 same as above
+
+55:20-55:35
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e1dc54d_e3bdb258
+UUID: 0b1bf76b_f604be42
+Bytes: 5
+ditto
 
 File: test/439-npe/src/Main.java
 
@@ -107,4 +183,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4b216f94_d5d89c82
 Bytes: 4
 2015
+
+2:17-2:21
+Thu Jan 15 17:57:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b216f94_d5d89c82
+UUID: 0b1bf76b_b6fe46bf
+Bytes: 4
+Done
 

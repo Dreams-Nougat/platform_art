@@ -10,6 +10,13 @@ Bytes: 200
 We can take care of that in a separate commit.
 Should we start creating architecture specific directories to help sort files, or should we stick with only using an architecture suffix in the filename?
 
+155
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_2d0f6d27
+Bytes: 19
+only one empty line
+
 224
 Fri Jan 16 10:10:47 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,6 +25,13 @@ Bytes: 186
 In some other places you use
   FPRegister fp_out = is64bit ? DRegisterFrom(out) : SRegisterFrom(out);
 Both are fine I think, but it would be nice to have the same everywhere if it works.
+
+247
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_0d239198
+Bytes: 78
+No need for ARM64. We do not need the extra temp register that X86 needs here.
 
 264
 Fri Jan 16 10:10:47 2015 +0000
@@ -29,12 +43,77 @@ Cneg is clearer, and pl is for unsigned comparisons, so:
 __ Cmp(in_reg, 0);
 __ Cneg(out_reg, in_reg, lt);
 
+269
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_4dd2f918
+Bytes: 25
+CreateIntToIntLocations()
+
+277
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_510054f8
+Bytes: 25
+CreateIntToIntLocations()
+
 268:0-282:1
 Fri Jan 16 11:03:23 2015 +0000
 Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4b940fff_20d20466
 Bytes: 195
 Can we just use the input type and return type of HInvoke to build the location summary? So that we can make the LocationBuilder more generalized. The only difference will be the number of temps.
+
+300
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_0f0aa516
+Bytes: 42
+No temp here. Rename to CreateFPFPtoFP() ?
+
+410
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_adccbd75
+Bytes: 29
+#define ___  GetAssembler() ?
+
+445
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_2dfa0d80
+Bytes: 10
+kNoOverlap
+
+447
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_edeba5b1
+Bytes: 45
+No temps needed here - see my comments below.
+
+456
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_f13948c1
+Bytes: 29
+reuse out, as Alex suggested.
+
+459
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_2f28c96f
+Bytes: 47
+no need for a second temp, use out reg as well.
+
+462
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_ef108143
+Bytes: 75
+is_double ?  ... : ...                  
+
+Alex has a similar comment above.
 
 466
 Fri Jan 16 10:10:47 2015 +0000
@@ -52,6 +131,32 @@ Doesn't Fcvt work here (without the Fadd 0.5)? I think we assume the system roun
 
 For double -> int, it should be fine since any int can be represented exactly by a double. For others we need to check the expectations in the corner cases.
 
+467
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_0dc87184
+UUID: 8be0c7b0_af1a795d
+Bytes: 295
+Alex: FYI, this comes from:
+
+bool Arm64Mir2Lir::GenInlinedRound(CallInfo* info, bool is_double)  in quick/arm64/fp_arm64.cc
+
+I remember there are some corner cases that Fcvt does not handle, but I might be wrong. It is worth trying it out. I should have added the corner case tests in 2eba1fa7 .
+
+471
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_ade59ddf
+Bytes: 130
+We do not need the extra 2 temps, but please note that we cannot use CreateFloatToFloat() since we use the out register as a temp.
+
+479
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_4da43999
+Bytes: 5
+ditto
+
 491
 Fri Jan 16 10:10:47 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,12 +168,61 @@ here?
 
 Other occurrences below for Load and Store.
 
+491
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be0c7b0_6fc3316d
+UUID: cbd63fdb_b133c0df
+Bytes: 76
+Maybe even simpler:
+
+__ Ldrb(WRegisterFrom(), HeapOperandFrom(location, 0));
+
+503
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_6da9f56d
+Bytes: 25
+see Alex's comment above.
+
 511
 Fri Jan 16 10:10:47 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbd63fdb_d1b1a403
 Bytes: 5
 Same?
+
+521
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_2db3eddd
+Bytes: 6
+ditto.
+
+540
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_ef3961c1
+Bytes: 26
+ditto for the Poke family.
+
+583
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_cdb7c9c6
+Bytes: 90
+As mentioned for the peek/poke I would find it easier to read if we use VIXL masm directly
+
+588
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_8dc1c130
+Bytes: 351
+I suggest using a WRegisterFrom()  - the base is a heap object isnt't it?
+
+I think it is safer to catch a misuse of a heap address in the HeapOperand() DCHECKs, rather than using it as an XRegister. 
+
+Also, if we get the heap uses right we can easily experiment with other heap addressing modes - shifted refs might be easily abstracted in the helper.
 
 594
 Fri Jan 16 10:10:47 2015 +0000
@@ -78,10 +232,53 @@ Bytes: 73
 If the offset is already a 'long' you can use:
   MemOperand(base, offset)
 
+594
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_4fd2ed18
+Bytes: 146
+And using Heap operand here.
+
+Again, since we know already what we load here the code is more readable if we 
+
+Ldr(trg, HeapOperand(base, offset))
+
+599
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_91cf9c6a
+Bytes: 342
+This is a Ldar() - Load Acquire. 
+
+In the codegen we use:
+ if (kUseAcquireRelease) {
+    Acquire-Release varinat
+ } else
+   DMB variant
+ }
+
+And for the optimizing compiler we always prefer Load-Acquire over DMB variant (at least for now). If you do not have the bandwith to add the Ldar variant please add a // TODO: Add Load-Acquire variant.
+
 675
 Fri Jan 16 10:10:47 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbd63fdb_91bb1ce0
 Bytes: 45
 Opportunities for load-acquire store-release?
+
+679
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_ed9de541
+Bytes: 4
+WReg
+
+688
+Fri Jan 16 11:30:16 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_0fdce526
+Bytes: 71
+HeapOperand()
+
+Same as my comment above  - this is also a store-release
 

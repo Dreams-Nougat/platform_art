@@ -1,0 +1,97 @@
+Revision: 754d8f8c52da7ea40245180b4fb8dee6538358e8
+Patch-set: 3
+File: runtime/gc/accounting/read_barrier_table.h
+
+71
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_8382ec66
+Bytes: 21
+Could make this const
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+586
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba5b782_8c178b69
+Bytes: 18
+* const collector_
+
+1263
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_d5e50bdf
+Bytes: 28
+Whats with the extra braces?
+
+1351
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba5b782_69b3218f
+Bytes: 8
+CHECK_NE
+
+File: runtime/gc/space/region_space.cc
+
+51
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_f8135e4d
+Bytes: 13
+CHECK_ALIGNED
+
+137
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_98001ae1
+Bytes: 106
+Live percent is rounded down. So if there is only a few objects, live_percent could be 0. Is that OK here?
+
+File: runtime/gc/space/region_space.h
+
+66
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_b889564f
+Bytes: 42
+UNIMPLEMENTED? Or is this actually called.
+
+152
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_78552e16
+Bytes: 30
+kAlignment = kObjectAlignment?
+
+180
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bab2f57_b4d2cede
+Bytes: 14
+LOCKS_EXCLUDED
+
+244
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_78be8ed8
+Bytes: 41
+Does this work if kMadviseZeroes == false
+
+261
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bab2f57_b4972e20
+Bytes: 72
+Unfree isn't very descriptive, can you add a comment for waht this does?
+
+505
+Fri Jan 16 23:25:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba5b782_0c707bf7
+Bytes: 187
+Can you use unique_ptr<Region[]> here?
+Alternatively you can probably get rid of num_regions_ and use a std::vector<Region> regions_;
+
+Also, is it possible to do GUARDED_BY(region_lock_)?
+

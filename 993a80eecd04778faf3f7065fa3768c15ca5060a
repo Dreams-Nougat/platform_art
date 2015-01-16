@@ -1,0 +1,27 @@
+Revision: 993a80eecd04778faf3f7065fa3768c15ca5060a
+Patch-set: 4
+File: runtime/lock_word.h
+
+38:7-38:8
+Fri Jan 16 22:05:28 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_83998ce2
+Bytes: 27
+2 (and all the cases below)
+
+47:10-47:21
+Fri Jan 16 22:05:28 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bc55323_c3aeb4f1
+Bytes: 412
+Generally this isn't like biasing (or the Rogers lock details) as there is a count of recursive lock attempts. This implementation cheapens the case when the owner is consistent to avoid CAS operations in the initial acquisition. Normally revocation will need to count lock acquisitions on the thread where ownership is revoked, but with this approach it needn't nor must it handle JNI specially - which is nice.
+
+File: runtime/monitor.cc
+
+813:40-813:79
+Fri Jan 16 22:05:28 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba5b782_a986f93c
+Bytes: 168
+The Rogers lock proposes adding a max profile count to the type so that objects that are only locked once or twice have shorter learning periods. Perhaps add as a TODO.
+

@@ -1,0 +1,80 @@
+Revision: ac80b5a72df7615b6313b6211748d17b0f13371e
+Patch-set: 3
+File: compiler/optimizing/intrinsics_arm64.cc
+
+39
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_cd6829da
+Bytes: 200
+We can take care of that in a separate commit.
+Should we start creating architecture specific directories to help sort files, or should we stick with only using an architecture suffix in the filename?
+
+224
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_51be14d8
+Bytes: 186
+In some other places you use
+  FPRegister fp_out = is64bit ? DRegisterFrom(out) : SRegisterFrom(out);
+Both are fine I think, but it would be nice to have the same everywhere if it works.
+
+264
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_8d6221f6
+Bytes: 106
+Cneg is clearer, and pl is for unsigned comparisons, so:
+
+__ Cmp(in_reg, 0);
+__ Cneg(out_reg, in_reg, lt);
+
+466
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_4dbe79d8
+Bytes: 52
+We can use out_reg instead of temp2_reg in the Fadd.
+
+467
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_0dc87184
+Bytes: 270
+Doesn't Fcvt work here (without the Fadd 0.5)? I think we assume the system rounding mode is 'round to nearest'.
+
+For double -> int, it should be fine since any int can be represented exactly by a double. For others we need to check the expectations in the corner cases.
+
+491
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_6fc3316d
+Bytes: 226
+I find the helper useful when the type is not statically known. Otherwise I find using the masm directly more clear. What about
+  __ Ldrb(WRegisterFrom(...), MemOperand(...));
+here?
+
+Other occurrences below for Load and Store.
+
+511
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_d1b1a403
+Bytes: 5
+Same?
+
+594
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be0c7b0_afb839e3
+Bytes: 73
+If the offset is already a 'long' you can use:
+  MemOperand(base, offset)
+
+675
+Fri Jan 16 10:10:47 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_91bb1ce0
+Bytes: 45
+Opportunities for load-acquire store-release?
+

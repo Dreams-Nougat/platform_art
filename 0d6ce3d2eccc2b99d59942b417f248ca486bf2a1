@@ -9,12 +9,28 @@ UUID: 0b49377c_831d3e01
 Bytes: 5
 const
 
+710
+Fri Jan 16 06:03:32 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b49377c_831d3e01
+UUID: cb71dfc8_fc7cc5a2
+Bytes: 64
+Thanks for your suggestion. I will fix it in the next patch set.
+
 760
 Fri Jan 16 00:21:15 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: abdbcb04_337592e8
 Bytes: 51
 I think this should be declared inside of the loop.
+
+760
+Fri Jan 16 06:03:32 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abdbcb04_337592e8
+UUID: cb71dfc8_1c3df9df
+Bytes: 43
+OK. I will change it in the next patch set.
 
 767
 Fri Jan 16 00:21:15 2015 +0000
@@ -23,10 +39,26 @@ UUID: 2bcfdb48_aceb6380
 Bytes: 81
 Missing space between if and (, this shouldn't pass cpplint. How did you test it?
 
+767
+Fri Jan 16 06:03:32 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bcfdb48_aceb6380
+UUID: cbbf1f8b_495f41e7
+Bytes: 200
+I will fix it. It seems the mistake I made in coding. Actually I tested this patch and passed ART unit tests and also our QA test internally. I am also a little bit curious how it passed cpplint tool.
+
 796
 Fri Jan 16 00:21:15 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6bc55323_11140ee8
 Bytes: 165
 I think this is only sound if paused == true since there could be races where we clear a card without having processed the related object (due to writes reordering).
+
+796
+Fri Jan 16 06:03:32 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bc55323_11140ee8
+UUID: cb71dfc8_9c302906
+Bytes: 814
+Yes. I agree with you. I described that the clear is done in pause phase in the commit message. In pause phase, dirty card scanning is parallel by dividing into several card segments for different threads. Also, no need atomic operation to avoid race condition. Therefore, the clear operation overhead is very minor. The benefit is worthwhile to do this to reduce marking time. In concurrent phase, on the one hand, there could be races; On the other hand, the dirty cards in concurrent phase is newly generated, because previous dirty cards are already cleared in pause phase of last GC cycle. The philosophy here is the fewer dirty cards, the less time of dirty cards scanning. This will in turn bring fewer dirty cards in concurrent phase because mutators are now concurrently accessing the objects on the heap.
 

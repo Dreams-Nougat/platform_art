@@ -10,12 +10,28 @@ Bytes: 200
 We can take care of that in a separate commit.
 Should we start creating architecture specific directories to help sort files, or should we stick with only using an architecture suffix in the filename?
 
+39
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_cd6829da
+UUID: 2bcfdb48_bb91535d
+Bytes: 56
+Last I talked with Nicolas this was his preferred way...
+
 155
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_2d0f6d27
 Bytes: 19
 only one empty line
+
+155
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_2d0f6d27
+UUID: 2bcfdb48_1b0ae716
+Bytes: 109
+There once was a time when I tried to separate the different intrinsics. Obviously it's not consistent. Done.
 
 224
 Fri Jan 16 10:10:47 2015 +0000
@@ -26,12 +42,28 @@ In some other places you use
   FPRegister fp_out = is64bit ? DRegisterFrom(out) : SRegisterFrom(out);
 Both are fine I think, but it would be nice to have the same everywhere if it works.
 
+224
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_51be14d8
+UUID: abdbcb04_9f1d5f5a
+Bytes: 16
+Yeah, left-over.
+
 247
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_0d239198
 Bytes: 78
 No need for ARM64. We do not need the extra temp register that X86 needs here.
+
+247
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_0d239198
+UUID: abdbcb04_bf1aa35d
+Bytes: 28
+Forgot to clean that one up.
 
 264
 Fri Jan 16 10:10:47 2015 +0000
@@ -43,12 +75,28 @@ Cneg is clearer, and pl is for unsigned comparisons, so:
 __ Cmp(in_reg, 0);
 __ Cneg(out_reg, in_reg, lt);
 
+264
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_8d6221f6
+UUID: 2bcfdb48_1b23c798
+Bytes: 172
+Sorry, still used to the Quick way, where aliases were not explicitly exposed. In that case pl *is* the right thing to do (and no, it's not for unsigned, pl = plus = >= 0).
+
 269
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_4dd2f918
 Bytes: 25
 CreateIntToIntLocations()
+
+269
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_4dd2f918
+UUID: abdbcb04_1f23af98
+Bytes: 4
+Done
 
 277
 Fri Jan 16 11:30:16 2015 +0000
@@ -57,12 +105,30 @@ UUID: cbd63fdb_510054f8
 Bytes: 25
 CreateIntToIntLocations()
 
+277
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_510054f8
+UUID: 2bcfdb48_3b280370
+Bytes: 4
+Done
+
 268:0-282:1
 Fri Jan 16 11:03:23 2015 +0000
 Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4b940fff_20d20466
 Bytes: 195
 Can we just use the input type and return type of HInvoke to build the location summary? So that we can make the LocationBuilder more generalized. The only difference will be the number of temps.
+
+268:0-282:1
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b940fff_20d20466
+UUID: 6bc55323_e2696e94
+Bytes: 258
+I am thinking about some generalized, likely templatized helpers. I don't really want this to be backend-specific, which means it's a bit more complicated than you think (x86...).
+
+But right now I don't think it would help readability to do what you suggest.
 
 300
 Fri Jan 16 11:30:16 2015 +0000
@@ -71,12 +137,35 @@ UUID: 8be0c7b0_0f0aa516
 Bytes: 42
 No temp here. Rename to CreateFPFPtoFP() ?
 
+300
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be0c7b0_0f0aa516
+UUID: abdbcb04_9f36bfd0
+Bytes: 4
+Done
+
 410
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_adccbd75
 Bytes: 29
 #define ___  GetAssembler() ?
+
+410
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_adccbd75
+UUID: 2bcfdb48_9bcfb76a
+Bytes: 83
+Definitely not, I don't want to undef. This was laziness. The right way is a local.
+
+440:12-440:44
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abdbcb04_1ff5ef90
+Bytes: 32
+This is actually the wrong name.
 
 445
 Fri Jan 16 11:30:16 2015 +0000
@@ -92,6 +181,14 @@ UUID: 4bc24f1f_edeba5b1
 Bytes: 45
 No temps needed here - see my comments below.
 
+447
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_edeba5b1
+UUID: abdbcb04_7f051b07
+Bytes: 85
+It was a certain Serban Constantinescu who git blame mentions for the Quick code. :-)
+
 456
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -99,12 +196,28 @@ UUID: cbd63fdb_f13948c1
 Bytes: 29
 reuse out, as Alex suggested.
 
+456
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_f13948c1
+UUID: 2bcfdb48_9bc1f730
+Bytes: 20
+Can't. Out is GPR...
+
 459
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8be0c7b0_2f28c96f
 Bytes: 47
 no need for a second temp, use out reg as well.
+
+459
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be0c7b0_2f28c96f
+UUID: 6bc55323_425e42e9
+Bytes: 16
+That is correct.
 
 462
 Fri Jan 16 11:30:16 2015 +0000
@@ -121,6 +234,14 @@ Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_4dbe79d8
 Bytes: 52
 We can use out_reg instead of temp2_reg in the Fadd.
+
+466
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_4dbe79d8
+UUID: 6bc55323_c249d22d
+Bytes: 15
+No. Out is GPR.
 
 467
 Fri Jan 16 10:10:47 2015 +0000
@@ -168,6 +289,14 @@ UUID: 4bc24f1f_ade59ddf
 Bytes: 130
 We do not need the extra 2 temps, but please note that we cannot use CreateFloatToFloat() since we use the out register as a temp.
 
+471
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_ade59ddf
+UUID: abdbcb04_9fe8ffb6
+Bytes: 61
+See above. It should have been FPtoInt(PlusTemp) all along...
+
 479
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -195,6 +324,16 @@ Bytes: 76
 Maybe even simpler:
 
 __ Ldrb(WRegisterFrom(), HeapOperandFrom(location, 0));
+
+491
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_b133c0df
+UUID: 6bc55323_c2d232e0
+Bytes: 397
+This was mostly to abstract which kind of Load is necessary. Personally I prefer that, but it's your backend. It's currently OK as the Memory API does not expose a peekObject. But if we ever have packed heaps (as you allude to below), this will suddenly get messy. And you already made a mistake, it should be ldrsb...
+
+HeapOperand won't work. The address is a long, so should be in an X register.
 
 503
 Fri Jan 16 11:30:16 2015 +0000
@@ -242,6 +381,14 @@ I think it is safer to catch a misuse of a heap address in the HeapOperand() DCH
 
 Also, if we get the heap uses right we can easily experiment with other heap addressing modes - shifted refs might be easily abstracted in the helper.
 
+588
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_8dc1c130
+UUID: 6bc55323_829c2afa
+Bytes: 184
+I'm not sure I agree. This should be an *unpacked* pointer. In managed code, this should always be the native pointer, no matter what. The packing/unpacking happens at load/store time.
+
 594
 Fri Jan 16 10:10:47 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -261,6 +408,14 @@ Again, since we know already what we load here the code is more readable if we
 
 Ldr(trg, HeapOperand(base, offset))
 
+594
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be0c7b0_4fd2ed18
+UUID: 2bcfdb48_fb235b42
+Bytes: 4
+Done
+
 599
 Fri Jan 16 11:30:16 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -276,6 +431,14 @@ In the codegen we use:
  }
 
 And for the optimizing compiler we always prefer Load-Acquire over DMB variant (at least for now). If you do not have the bandwith to add the Ldar variant please add a // TODO: Add Load-Acquire variant.
+
+599
+Fri Jan 16 17:25:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_91cf9c6a
+UUID: 2bcfdb48_bb1dd300
+Bytes: 69
+Was just a straightforward translation. This will come in another PS.
 
 675
 Fri Jan 16 10:10:47 2015 +0000

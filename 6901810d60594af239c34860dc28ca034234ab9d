@@ -9,6 +9,14 @@ UUID: 6bc55323_11dbaef9
 Bytes: 186
 I guess the third param does not matter for MarkCompact? We pass true because the non-atomic write is faster than the atomic write? Maybe could we have the third option of doing nothing?
 
+200
+Fri Jan 16 01:00:41 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bc55323_11dbaef9
+UUID: abdbcb04_d652f4da
+Bytes: 56
+True, I guess we don't need to clear these cards at all.
+
 File: runtime/gc/collector/semi_space.cc
 
 219:72-219:76
@@ -19,4 +27,12 @@ Bytes: 181
 Similarly, the third param does not matter for the SS collector?
 
 And the third param does not matter for the GSS collector as we don't take the "AllocSpaceClearCards" control path?
+
+219
+Fri Jan 16 01:00:41 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bcfdb48_cc8a6fac
+UUID: 2bcfdb48_efc87d34
+Bytes: 70
+Correct, also since we do ClearCardTable below it won't really matter.
 

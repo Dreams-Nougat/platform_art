@@ -28,6 +28,14 @@ fnc maybe? assuming it comes from functions.
 
 the same in the other places.
 
+2086:41-2086:44
+Fri Jan 16 18:33:48 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be0c7b0_2fa3e90f
+UUID: 4b7def9e_5e4fe9b8
+Bytes: 54
+It comes from FunCtioN.  Personal preference, I guess.
+
 2103:2-2103:41
 Fri Jan 16 18:23:33 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -35,12 +43,28 @@ UUID: 4bc24f1f_9089da4f
 Bytes: 116
 Ideally we should make it possible to request temporary stack slots. I think it's ok for not but can you add a note?
 
+2103:2-2103:41
+Fri Jan 16 18:33:48 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_9089da4f
+UUID: 8b6b67dc_7d718fcc
+Bytes: 4
+Done
+
 2105:2-2105:18
 Fri Jan 16 18:23:33 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8be0c7b0_efa40116
 Bytes: 26
 doesn't it work with `__`?
+
+2105:2-2105:18
+Fri Jan 16 18:33:48 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be0c7b0_efa40116
+UUID: 6bae3367_26d79656
+Bytes: 152
+__ doesn't support pointer to member function, unfortunately.  I tried several things.  I *think* that the problem is that ->* has to be one token (???)
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -51,10 +75,28 @@ UUID: 8be0c7b0_2f7c49da
 Bytes: 15
 who needs this?
 
+562:15-562:34
+Fri Jan 16 18:33:48 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be0c7b0_2f7c49da
+UUID: 6bae3367_c6db227d
+Bytes: 64
+When I tested by generating core-optimized.oat, I ran into this.
+
 676:9-676:23
 Fri Jan 16 18:23:33 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbd63fdb_d142048d
 Bytes: 32
 why did you need to change this?
+
+676:9-676:23
+Fri Jan 16 18:33:48 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_d142048d
+UUID: 6bae3367_a6e2a62c
+Bytes: 258
+Because I thought that it would remove a dependency, and allow the 2 instructions to issue in parallel.   Any other thoughts?
+
+I also put in checks for 0 and used Xors, but I realized that they modify the CC and could cause a problem, so I removed that code.
 

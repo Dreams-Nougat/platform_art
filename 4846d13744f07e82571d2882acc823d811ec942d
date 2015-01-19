@@ -9,3 +9,15 @@ UUID: 4b408f75_1dc713da
 Bytes: 314
 Why did you remove the call to tryInlineFloat() (as well as the ones to returnVoid() and returnVoidWithOneParameter()) from test/437-checker-inliner/src/Main.java from PS5?  Was it because these are already assessed by test/437-inline/src/Main.java?  Or maybe because there's no Checker-style annotation for those?
 
+203:2-203:40
+Mon Jan 19 15:53:59 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b408f75_1dc713da
+UUID: 4bc24f1f_b349802e
+Bytes: 651
+I initially put them there to replicate 437-inline so it could be fully replaced by this test. At the meeting Nicola said he'd prefer to leave 437 in place and have a separate test focused just on Checker, even if it means some duplicity. 
+
+The tryInlineFloat is a regression test for a specific bug which has nothing to do with Checker. Hence, I removed it from here and it will remain in 437.
+
+returnVoid and returnVoidWithParameter are both called from InlineVoid. I changed it to call the Invoke* methods over return* to test that the methods verified by Checker also run as expected rather than inlining them differently in a large main() method.
+

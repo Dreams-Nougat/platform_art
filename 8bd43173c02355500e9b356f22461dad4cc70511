@@ -29,6 +29,143 @@ What about using only one line?
     __ Add(temp_base, src.base(), OperandFromMemOperand(src));
 ?
 
+File: compiler/optimizing/intrinsics_arm64.cc
+
+87
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_3d0acfc8
+Bytes: 29
+XRegisterFrom() DCHECKs this.
+
+479
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_fd798730
+Bytes: 66
+No temp needed from the register allocator - see my comment below.
+
+488
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_f43ff6f3
+Bytes: 308
+I suggest we get this temp from VIXL (d/s31). Also we can rename this to temp (instead of temp1).
+
+eg:
+
+UseScratchRegisterScope temps(GetVIXLAssembler());
+FPRegister temp = AcquireSameSizeAs(in_reg);
+
+
+This way we will reuse VIXL's FP temp - D/S 31, instead of using asking the register allocator for a temp.
+
+491
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_133df4df
+Bytes: 188
+Both variants can be encoded in the immediate field.
+
+Anyway a misuse will be caught in a debug version of ART. libvixld asserts when it tries to use a temp register and none is available.
+
+624
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_338590e6
+Bytes: 127
+Should this be a WRegister for kPrinNot too? (I guess that this should be the case if we decide to use 32bit regs "in flight").
+
+650
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_d3b76cc6
+Bytes: 136
+This is the register that we use in LoadAcquire() - temp_base ?
+
+We get that one from a different register poll (VIXL temps - IP0, IP1).
+
+744
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_338cb018
+Bytes: 162
+kUseAcquireRelease variant ?
+
+I need to understand what is_ordered guarantees. We might need to enforce ordering through a DMB even for a acquire-release variant.
+
+787
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_17239c98
+Bytes: 33
+Add a comment ? // Unused this* ?
+
+795
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_00ffa8bd
+Bytes: 46
+No need for temps here - see my comment below.
+
+810
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_a0019431
+Bytes: 286
+Here we can use VIXLs temps IP1, IP0. This should be perfectly safe and should put less pressure on the Optimizing Compiler register allocator. 
+
+UseScratchRegisterScope temps(GetVIXLAssembler());
+Register tmp_ptr = temps.AcquireX();
+Register tmp_value = temps.AcquireSameSizeAs(value);
+
+812
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_37282070
+Bytes: 68
+no need. value is a W for kPrimNot, not like in Quick where it is X.
+
+813
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_5da35b0e
+Bytes: 5
+ditto
+
+821
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_d73c34b4
+Bytes: 121
+Operand(offset) ?
+
+One of the Operand constructors:
+ Operand(Register reg, Shift shift = LSL, unsigned shift_amount = 0);
+
+831
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_80ebb805
+Bytes: 11
+tmp_value ?
+
+835
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_57a4c498
+Bytes: 6
+value?
+
+837
+Mon Jan 19 16:44:27 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_13b89466
+Bytes: 41
+Cbnz(tmp_32, &loop_head);
+
+Gblame me :-).
+
 File: compiler/optimizing/intrinsics_arm64.h
 
 75

@@ -38,6 +38,14 @@ UUID: 4b408f75_3d0acfc8
 Bytes: 29
 XRegisterFrom() DCHECKs this.
 
+87
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b408f75_3d0acfc8
+UUID: eb586371_602946ac
+Bytes: 198
+This was more in line with the style of the other helpers, and gives better error reporting (don't have to look at a trace to figure out what is actually wrong), but I'll change it for tighter code.
+
 479
 Mon Jan 19 16:44:27 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,6 +68,14 @@ FPRegister temp = AcquireSameSizeAs(in_reg);
 
 This way we will reuse VIXL's FP temp - D/S 31, instead of using asking the register allocator for a temp.
 
+488
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_f43ff6f3
+UUID: ab52eb4e_bb0d535e
+Bytes: 81
+Your choice. I'm not up to speed about how many registers are reserved by VIXL...
+
 491
 Mon Jan 19 16:44:27 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,12 +85,28 @@ Both variants can be encoded in the immediate field.
 
 Anyway a misuse will be caught in a debug version of ART. libvixld asserts when it tries to use a temp register and none is available.
 
+491
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_133df4df
+UUID: 8b57e740_fa306506
+Bytes: 248
+Vixl has this with double and float signature. Should I not make it obvious here (Quick says the encoding is the same and relies and this, though)? (It's somewhat contradicting with the "we don't want to allow encodings for stuff that has aliases")
+
 624
 Mon Jan 19 16:44:27 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_338590e6
 Bytes: 127
 Should this be a WRegister for kPrinNot too? (I guess that this should be the case if we decide to use 32bit regs "in flight").
+
+624
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_338590e6
+UUID: eb586371_c00db25d
+Bytes: 56
+Yes, I'll change all the occurrences of object pointers.
 
 650
 Mon Jan 19 16:44:27 2015 +0000
@@ -85,6 +117,14 @@ This is the register that we use in LoadAcquire() - temp_base ?
 
 We get that one from a different register poll (VIXL temps - IP0, IP1).
 
+650
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_d3b76cc6
+UUID: 8b57e740_da2da1ae
+Bytes: 51
+Stale comment, after I added code to LoadAcquire...
+
 744
 Mon Jan 19 16:44:27 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -93,6 +133,14 @@ Bytes: 162
 kUseAcquireRelease variant ?
 
 I need to understand what is_ordered guarantees. We might need to enforce ordering through a DMB even for a acquire-release variant.
+
+744
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_338cb018
+UUID: eb586371_e0143666
+Bytes: 112
+Variant will be added. As ordered is weaker than volatile, I think it's easiest just to use the volatile code...
 
 787
 Mon Jan 19 16:44:27 2015 +0000
@@ -166,6 +214,14 @@ Cbnz(tmp_32, &loop_head);
 
 Gblame me :-).
 
+837
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_13b89466
+UUID: ab52eb4e_3b430377
+Bytes: 58
+Micro-optimizations once stuff is done. Premature ...  ;-)
+
 File: compiler/optimizing/intrinsics_arm64.h
 
 75
@@ -174,4 +230,12 @@ Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_b0ae56f0
 Bytes: 179
 In the codegen we have GetAssembler() and GetVIXLAssembler(). Should we name this one GetVIXLAssembler() for coherency, or do you prefer this one to stay in line with other archs?
+
+75
+Mon Jan 19 19:36:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_b0ae56f0
+UUID: 8b57e740_3a6c9df7
+Bytes: 37
+Coherency is not a must. Will change.
 

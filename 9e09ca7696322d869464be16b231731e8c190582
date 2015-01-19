@@ -81,3 +81,24 @@ UUID: 8b57e740_370af8c8
 Bytes: 114
 The problem was that the FP argument register bits were on, so the DCHECK failed.  Will have a another look at it.
 
+43:0-43:56
+Mon Jan 19 20:19:59 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b57e740_370af8c8
+UUID: eb586371_a07cfea1
+Bytes: 587
+I recreated the problem.
+
+This code in runtime/arch/x86/quick_method_frame_info_x86.h:
+static constexpr uint32_t kX86CalleeSaveFpArgSpills =
+    (1 << art::x86::XMM0) | (1 << art::x86::XMM1) |
+    (1 << art::x86::XMM2) | (1 << art::x86::XMM3);
+...
+constexpr uint32_t X86CalleeSaveFpSpills(Runtime::CalleeSaveType type) {
+    return type == Runtime::kRefsAndArgs ? kX86CalleeSaveFpArgSpills : 0;
+}
+
+which I copied from the x86_64 version of the file causes the DCHECK to fail, as if the type is kRefsAndArgs, some bits will be on.  This causes much of the host testing to fail.
+
+Comments?
+

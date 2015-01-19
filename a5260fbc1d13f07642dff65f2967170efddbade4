@@ -1,0 +1,94 @@
+Revision: a5260fbc1d13f07642dff65f2967170efddbade4
+Patch-set: 13
+File: compiler/optimizing/code_generator.cc
+
+644:56-644:90
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_d0a1a235
+Bytes: 63
+Don't bother this check, it's ok to leave an implicit/explicit.
+
+654:0-654:48
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_d30d2c5d
+Bytes: 228
+As discussed, this can be problematic for array accesses we don't know the offset. I think we should limit ourselves to the first page, and have a virtual HInstruction::CanDoImplicitNullCheck check that we are within that limit.
+
+670:2-670:50
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_90ab1a12
+Bytes: 13
+Early return?
+
+671:0-677:83
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_544fe2b8
+Bytes: 60
+How about adding a CanDoImplicitNullCheck() on HInstruction?
+
+681:3-684:5
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_b0a89615
+Bytes: 161
+We should avoid this duality with line 643. How about add HInstruciton::GetBefore(After)WhenDisregardMoves? And refactor HCondition::IsBeforeWhenDisregardMoves ?
+
+File: compiler/optimizing/code_generator_arm.cc
+
+2613:0-2613:71
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_731f9886
+Bytes: 16
+Why this change?
+
+2732:0-2732:83
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_132414d6
+Bytes: 63
+Add a comment that these cases have been handled in the switch.
+
+2844:0-2844:45
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_d442f28c
+Bytes: 5
+ditto
+
+3141:0-3147:9
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_1d38b36f
+Bytes: 80
+Why not moving all of this at the end of the method (like you did for FieldSet)?
+
+File: compiler/optimizing/code_generator_x86.cc
+
+2782:0-2782:43
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbd63fdb_943c6a01
+Bytes: 14
+Add a comment.
+
+2892:20-2892:29
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_9d232344
+Bytes: 14
+Add a comment.
+
+File: test/439-npe/src/Main.java
+
+2:17-2:21
+Mon Jan 19 13:51:18 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_fd206738
+Bytes: 4
+2015
+

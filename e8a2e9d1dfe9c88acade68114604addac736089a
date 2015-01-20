@@ -44,3 +44,13 @@ No. Just like many other bytecode formats, dex defines exception handlers by a (
 
 What I don't know is whether the verifier rejects such a thing on the grounds of an exception register conflict (no exception on method entry, but exception on handler entry). But exceptions are not in a regular dalvik register (that's why move-exception exists), and if the "catch-block" doesn't start with this, I believe the verifier would let that go through as a perfectly fine start of a method.
 
+152:4-154:5
+Tue Jan 20 08:40:54 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b66fb36_3aae5929
+UUID: 4bc24f1f_96179269
+Bytes: 519
+I mean when we invoke a method, we start by its instruction at 0x0. We don't expect any exception pending at this time so it can't be the first instruction of a catch handler. The only way is to have jump (with a "goto" for instance) after the catch handler. Maybe that's something we should check at verification time?
+
+Anyway, I can move the check in the Execute method (the caller). It's the normal interpreter path (not the deoptimization path) starting at DEX pc 0x0 so we know there is no exception pending there.
+

@@ -64,6 +64,14 @@ UUID: ab52eb4e_9b0a0f42
 Bytes: 187
 I am pretty sure that needed this change to get core.oat to build and the tests to pass using the optimizing compiler.  Or do you want me to not enable the optimizing compiler in this CL?
 
+3381:30-3381:50
+Tue Jan 20 09:16:21 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab52eb4e_9b0a0f42
+UUID: 4b408f75_c0a0207b
+Bytes: 120
+Yeah, I'd prefer if it was two disinct CLs: one for the ABI change, on for the compiler say yes to longs/doubles/floats.
+
 File: runtime/arch/x86/context_x86.cc
 
 43:0-43:56
@@ -101,4 +109,14 @@ constexpr uint32_t X86CalleeSaveFpSpills(Runtime::CalleeSaveType type) {
 which I copied from the x86_64 version of the file causes the DCHECK to fail, as if the type is kRefsAndArgs, some bits will be on.  This causes much of the host testing to fail.
 
 Comments?
+
+43:0-43:56
+Tue Jan 20 09:16:21 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb586371_a07cfea1
+UUID: 4b408f75_608cac19
+Bytes: 88
+So we do have callee saves, the comment should be updated.
+
+And you have to handle them.
 

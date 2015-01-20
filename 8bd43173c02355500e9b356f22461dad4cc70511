@@ -76,6 +76,24 @@ UUID: ab52eb4e_bb0d535e
 Bytes: 81
 Your choice. I'm not up to speed about how many registers are reserved by VIXL...
 
+488
+Tue Jan 20 10:58:01 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab52eb4e_bb0d535e
+UUID: 4b408f75_60e02ca2
+Bytes: 631
+See code_generator_arm64.h. Currently we block 2 GP regs and 1 FP reg.
+
+const vixl::CPURegList vixl_reserved_core_registers(vixl::ip0, vixl::ip1);
+const vixl::CPURegList vixl_reserved_fp_registers(vixl::d31);
+
+This will enable the VIXL MacroAssembler handle any sort of immediate field for most of the instructions. 
+
+In both cases mentioned here it is safe to use the VIXL blocked registers. The instructions generated inside the scope do not need any extra temp registers.
+
+In the cases where we get this wrong we should hit the VIXL_CHECK() in:
+CPURegister UseScratchRegisterScope::AcquireNextAvailable(CPURegList* available) {}
+
 491
 Mon Jan 19 16:44:27 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -92,6 +110,18 @@ Parent: 4bc24f1f_133df4df
 UUID: 8b57e740_fa306506
 Bytes: 248
 Vixl has this with double and float signature. Should I not make it obvious here (Quick says the encoding is the same and relies and this, though)? (It's somewhat contradicting with the "we don't want to allow encodings for stuff that has aliases")
+
+491
+Tue Jan 20 10:58:01 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b57e740_fa306506
+UUID: 4bc24f1f_961d525a
+Bytes: 310
+I would leave it as it is.
+
+I have mentioned the fact that they can be encoded in the immediate field since otherwise the macro assembler would place it in the literal pool. 
+
+Other instructions like Fcmp() would use the extra FP temp - D/S31 if the immediate field cannot be encoded in the instruction stream.
 
 624
 Mon Jan 19 16:44:27 2015 +0000

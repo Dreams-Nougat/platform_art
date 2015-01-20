@@ -34,3 +34,13 @@ UUID: 4b408f75_60faec80
 Bytes: 281
 I don't think a catch handler can start at 0x0. A catch handler would need a previous instruction to throw the exception. This instruction could be at 0x0 but not the catch handler. Plus the instruction throwing the instruction itself cannot be part of the catch handler I believe.
 
+152:4-154:5
+Tue Jan 20 08:33:48 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b408f75_60faec80
+UUID: 2b66fb36_3aae5929
+Bytes: 671
+No. Just like many other bytecode formats, dex defines exception handlers by a (nested) structure containing the starting pc of the handler and the range of PCs covered. So a handler can be lexically before the guarded region. (See dex file format, start at try_item.)
+
+What I don't know is whether the verifier rejects such a thing on the grounds of an exception register conflict (no exception on method entry, but exception on handler entry). But exceptions are not in a regular dalvik register (that's why move-exception exists), and if the "catch-block" doesn't start with this, I believe the verifier would let that go through as a perfectly fine start of a method.
+

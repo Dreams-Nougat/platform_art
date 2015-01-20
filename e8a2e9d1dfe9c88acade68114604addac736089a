@@ -54,3 +54,20 @@ I mean when we invoke a method, we start by its instruction at 0x0. We don't exp
 
 Anyway, I can move the check in the Execute method (the caller). It's the normal interpreter path (not the deoptimization path) starting at DEX pc 0x0 so we know there is no exception pending there.
 
+152:4-154:5
+Tue Jan 20 08:47:51 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_96179269
+UUID: 2b66fb36_5abd1556
+Bytes: 938
+I mean: catch handlers are not separated in the code by anything, they are just designated by a secondary structure. The only thing possibly distinguishing them is if they use the exception, their first instruction must be a move-exception. Just going of the file format, nothing is stopping you from running "catch handler" code like regular code. So imagine a catch handler that just prints "hello" and never touches the exception. That code is perfectly fine no matter whether there was an exception or not. So from my view, this is legal:
+
+ 0: const-string v0, "Hello World"
+ 1: invoke-static ...  // setup out, shortcut here
+ 2: new-instance v1, RuntimeException
+ 3: throw v1
+
+And assign pc 0 as the handler for the pc-range [3...3].
+
+Don't change the check just yet. I still have hope that I just don't know enough about the verifier and what we sort out. I really like where we check right now (and that it's not in the caller...).
+

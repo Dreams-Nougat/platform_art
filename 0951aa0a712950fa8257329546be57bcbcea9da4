@@ -23,12 +23,44 @@ UUID: 4bc24f1f_56a7eac5
 Bytes: 54
 Does this mean there was also a change in the runtime?
 
+2067:55-2067:61
+Tue Jan 20 15:47:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_56a7eac5
+UUID: 4bc24f1f_b6816e8f
+Bytes: 136
+Nope. This was wrong in the first place as I read a bogus table. It worked because we only used the first register to make the transfer.
+
+3311:6-3313:60
+Tue Jan 20 15:47:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_36ffbe09
+Bytes: 104
+quite a lot of repetitions with these DCHECKS. How about a macro, DCHECK_ARM_REGISTER_PAIR(destination)?
+
+3324:20-3324:34
+Tue Jan 20 15:47:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc24f1f_d603da7f
+Bytes: 247
+1) didn't we get rid of register pairs: https://android-review.googlesource.com/#/c/123651/ and assert we don't get one?
+
+Anyway, if this is still needed, add comment to make it clear that arm register pairs are either equal or they don't overlap.
+
 3348:0-3353:9
 Tue Jan 20 10:41:45 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbd63fdb_5766044b
 Bytes: 111
 This seems odd to move half a 64-bit value in a 32-bit register.  Shouldn't the destination be a register pair?
+
+3348:0-3353:9
+Tue Jan 20 15:47:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_5766044b
+UUID: 4b408f75_834f4286
+Bytes: 190
+This is rather tricky. It's because of the 64-bit constant moves are emitted (it expects the codegen to know which part goes where based on the register). I think extra docs are needed here.
 
 3366:0-3366:117
 Tue Jan 20 10:41:45 2015 +0000
@@ -50,6 +82,15 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bc24f1f_36a6dec7
 Bytes: 73
 Likewise, about moving half a 64-bit value into a single 32-bit register.
+
+File: compiler/optimizing/nodes.h
+
+2810:8-2811:35
+Tue Jan 20 15:47:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b408f75_43a7fac5
+Bytes: 50
+i'm not sure how will you make this work on x86...
 
 File: compiler/optimizing/register_allocator.h
 

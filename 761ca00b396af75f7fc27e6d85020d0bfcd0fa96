@@ -9,10 +9,30 @@ UUID: 4b408f75_408d3017
 Bytes: 16
 Why this change?
 
+654:0-659:37
+Tue Jan 20 12:45:13 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b408f75_408d3017
+UUID: ebfdc373_72dc9828
+Bytes: 370
+You are right.  This isn't essential.  I thought that moving to two MOVs would allow them to issue in parallel, avoiding the dependency from the 2 movqs.  I will remove this change.
+
+I happened to be in this code looking to change the movq of a constant 0 to an xorq, but realized afterwords that you were worried about setting the CC here, so I didn't make that change.
+
 2038:0-2038:83
 Tue Jan 20 09:09:02 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbd63fdb_77c788d9
 Bytes: 71
 Do you really need this? Can't you load from the existing stack offset?
+
+2038:0-2038:83
+Tue Jan 20 12:45:13 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd63fdb_77c788d9
+UUID: cb02bf41_f117e867
+Bytes: 244
+In this case, we have already tested for single/double stack slot above, and therefore we can't load from the stack.  We have to put the register/constant into memory first.
+
+Is there another type of location that is in memory?  I don't see it.
 

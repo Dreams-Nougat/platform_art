@@ -2,6 +2,21 @@ Revision: 71fb52fee246b7d511f520febbd73dc7a9bbca79
 Patch-set: 27
 File: compiler/optimizing/intrinsics_list.h
 
+84:26-84:34
+Wed Jan 21 14:10:58 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b0c4779_32be8ed7
+Bytes: 406
+why is this kVirtual? it's a private method and should be kDirect.
+
+I also double check what code gets generated when invoked and it's a direct call:
+
+: java.lang.Object java.lang.ref.Reference.get() (dex_method_idx=3754)
+    DEX CODE:
+      0x0000: invoke-direct {v1}, java.lang.Object java.lang.ref.Reference.getReferent() // method@3755
+      0x0003: move-result-object v0
+      0x0004: return-object v0
+
 87:0-87:80
 Thu Jan 15 22:32:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

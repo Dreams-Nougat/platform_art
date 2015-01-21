@@ -9,3 +9,19 @@ UUID: 4bc5ef5b_55494cb0
 Bytes: 81
 Is it possible to make clear be a template boolean? This would be more efficient.
 
+File: runtime/gc/collector/mark_sweep.cc
+
+768:15-769:16
+Wed Jan 21 21:13:15 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab7cabf1_685e83e9
+Bytes: 305
+I think cards currently get aged during the preclean phase. So, it seems that what this new clearing logic is saving is the scan of cards that get dirtied between the preclean phase and the pause that immediately follow. Is this right? Is there any data that shows the reduction in the card scanning load?
+
+771:29-771:79
+Wed Jan 21 21:13:15 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bc27b57_08e33733
+Bytes: 71
+Maybe would "!immune_region_.ContainsSpace(space)" be more generalized?
+

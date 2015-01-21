@@ -17,6 +17,19 @@ UUID: cb5d5f61_bca70d19
 Bytes: 268
 I disagree (as I was lobbying for the original way). This way, any compressed-heap code is inlined into general-purpose code, whereas it was cleanly separated-out before. However, a compressed heap isn't on the short-term agenda, so paying for it now is nonsensical...
 
+1067
+Wed Jan 21 12:02:10 2015 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb5d5f61_bca70d19
+UUID: 8b0c4779_4fbd6d56
+Bytes: 1121
+Independently of what the grand plan was, the "original way" allowed an Art developer to use:
+
+  LoadBaseIndexed(r_base, r_index, r_dest, scale, kReference)
+  LoadRefIndexed(r_base, r_index, r_dest, scale)
+
+The two lines above did the same thing but with different assertions on the type for r_dest. The first required r_dest to be a 32-bit register. The second required r_dest to be 64-bit. No comments were provided explaining why these behaved differently nor when/if one should be using the second rather than the first. The function names didn't help either: from the lines above it was not obvious why the first should behave differently from the second. I guess a better name for LoadRefIndexed() should have been LoadAndDecompressRefIndexed(). This would have made implicitly clear that LoadBaseIndexed() had to be used for loading the reference without decompressing it... assuming the latter was meant to be used at all. If it was, I still don't like the asymmetry of the two calls. If it wasn't, then the functionality for kReference in LoadBaseIndexed should not have been exposed in the first place, I think.
+
 File: compiler/dex/quick/mir_to_lir.h
 
 962:9-962:21

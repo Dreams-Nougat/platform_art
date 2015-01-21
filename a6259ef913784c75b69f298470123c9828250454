@@ -9,10 +9,28 @@ UUID: 0bbf77c3_2794a2aa
 Bytes: 113
 Move this allocation to main() and surround the entire body of run() in a try-catch block for OOME and Throwable?
 
+83:8-83:54
+Wed Jan 21 22:53:31 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bbf77c3_2794a2aa
+UUID: eb994384_5866f598
+Bytes: 223
+Hm. That brings us back to what the test is supposed to do. It was allocating thread-local before, even the list.
+
+And wrapping everything in an OOME means that it won't wait for other threads before releasing that storage.
+
 105:17-105:26
 Wed Jan 21 20:34:28 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2bc27b57_9df4e764
 Bytes: 23
 Exception -> Throwable?
+
+105:17-105:26
+Wed Jan 21 22:53:31 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bc27b57_9df4e764
+UUID: aba3cbb1_f3234a10
+Bytes: 119
+Why? Normal Java convention says not to catch errors at all. I'm fine with a timeout terminating the test in that case.
 

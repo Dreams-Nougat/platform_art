@@ -17,6 +17,14 @@ UUID: 8b0c4779_2fb8e998
 Bytes: 215
 When debugging the app, you should be able to see all local variables visible at the current location in the frame. If the DEX register matches a visible local variable, we should see it even if it's no longer used.
 
+224:0-227:88
+Wed Jan 21 10:31:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b0c4779_2fb8e998
+UUID: 4b408f75_a697ec51
+Bytes: 92
+Sure, but we should not abort. Is there some kind of "Optimized away variable" kind in jdwp?
+
 229:4-229:11
 Wed Jan 21 09:50:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,6 +54,14 @@ Parent: 8b0c4779_cf703d76
 UUID: 4bc24f1f_213f764a
 Bytes: 60
 Do you mean it needs a comment or an explicit variable name?
+
+251:41-251:61
+Wed Jan 21 10:31:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_213f764a
+UUID: 4bc24f1f_c181d28e
+Bytes: 26
+No, Low32Bits is a helper.
 
 253:39-253:56
 Wed Jan 21 09:50:15 2015 +0000
@@ -77,6 +93,14 @@ UUID: 8b0c4779_0fe6c5c0
 Bytes: 167
 Would it work for kStack and kConstant cases? I mean are both vregs have the same stack offset or constant values and we just need to extract the low and high 32-bits?
 
+310:19-310:47
+Wed Jan 21 10:31:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b0c4779_0fe6c5c0
+UUID: 4bc24f1f_61f01e3b
+Bytes: 34
+For optimizing yes, it would work.
+
 426:1-427:60
 Wed Jan 21 09:50:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -93,4 +117,12 @@ Bytes: 479
 From the debugger, we should be able to modify values of local variables (so DEX registers). In the case of the kConstant location, we cannot do that so we return false. This allows us to reply to the debugger with a JDWP error.
 
 We receive the request to set a variable only when the thread is suspended. So we cannot deoptimize at this point. To achieve this, we'd need to resume the thread, wait for it to deoptimize that frame then set the new value in the deoptimized frame.
+
+426:1-427:60
+Wed Jan 21 10:31:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_814aeaf5
+UUID: 4bc24f1f_21fa1619
+Bytes: 40
+I see, so we do return an error. Thanks.
 

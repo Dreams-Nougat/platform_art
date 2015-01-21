@@ -9,3 +9,11 @@ UUID: 2bc27b57_48928f37
 Bytes: 169
 This is gross, isn't there a thread safe way to do this like setting a static boolean guarded by a lock and waiting on the gate while it is false (in the worker thread).
 
+49:28-49:30
+Wed Jan 21 22:59:39 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bc27b57_48928f37
+UUID: aba3cbb1_73ff5a08
+Bytes: 233
+Your boolean won't ensure that the threads start around the same time. Early threads won't wait for a late starter. It needs another counter. I'll replace with a barrier, which is actually fine here as it's before blowing the heap...
+

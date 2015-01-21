@@ -25,6 +25,16 @@ UUID: 4b408f75_a697ec51
 Bytes: 92
 Sure, but we should not abort. Is there some kind of "Optimized away variable" kind in jdwp?
 
+224:0-227:88
+Wed Jan 21 10:37:56 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b408f75_a697ec51
+UUID: 4b408f75_26059c08
+Bytes: 482
+Sorry, I agree we should not abort but return false. So far, when a variable is not accessible, we return the ABSENT_INFORMATION error (see Dbg::GetLocalValue and Dbg::SetLocalValue). At least IntelliJ does not really like that since it does not expect to receive this error.
+
+I'll see if another error is more suitable for these cases. FYI, the full list of possible JDWP errors can be found at https://docs.oracle.com/javase/7/docs/platform/jpda/jdwp/jdwp-protocol.html#JDWP_Error
+
 229:4-229:11
 Wed Jan 21 09:50:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -62,6 +72,14 @@ Parent: 4bc24f1f_213f764a
 UUID: 4bc24f1f_c181d28e
 Bytes: 26
 No, Low32Bits is a helper.
+
+251:41-251:61
+Wed Jan 21 10:37:56 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc24f1f_c181d28e
+UUID: 4b408f75_660fa426
+Bytes: 48
+Thanks! I didn't remember we have this helper...
 
 253:39-253:56
 Wed Jan 21 09:50:15 2015 +0000

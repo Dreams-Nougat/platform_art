@@ -44,3 +44,12 @@ UUID: 2bcfdb48_efc87d34
 Bytes: 70
 Correct, also since we do ClearCardTable below it won't really matter.
 
+File: runtime/gc/heap.cc
+
+2691:21-2691:35
+Thu Jan 22 05:58:21 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b70bb17_2d549549
+Bytes: 674
+The existing implementation will release card table of the current alloc space if reset is true. This includes two cases. One case is stop-the-world GC, mark compact and semi space. The other case is partial and full concurrent mark sweep. For the first case, the whole card table will be cleared immediately. Therefor it's unnecessary to do this work in the third branch. For the second case, there may cause lots of page faults, since the card table may be allocated again in the next CMS cycle. One alternative approach is that for stop-the-world GC, the third branch won't be allowed while using memset to reset the card table of the current allos space for CMS. Thanks.
+

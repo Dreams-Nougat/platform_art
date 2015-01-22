@@ -22,3 +22,20 @@ Further assume something-called now throws an exception (it's likely easiest to 
 
 My problem was that I don't know how to force deopt, and my code was only meant to show that it passes the verifier. I guess some VMDebug function could be used?
 
+23:7-23:25
+Thu Jan 22 18:16:56 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bd16f3e_55d9ac83
+UUID: 4b8a4f30_b06616c3
+Bytes: 1282
+No I don't thing we fail the check if there is no move-exception. In EnterInterpreterFromDeopt, we'll see an exception is pending so we'll find a catch handler. Now 2 possibilities:
+- We don't find a catch handler in the current method: we don't enter interpreter and pop the frame. Then we continue with the "caller" deoptimized frame.
+- Or we find a catch handler in the current method. If it doesn't start with a move-exception, we clear the exception  (FindNextInstructionFollowingException) before entering the interpreter with the deoptimized frame at the DEX pc of the catch handler found.
+In both cases, we never enter the interpreter from a deoptimized frame with a pending exception (if the method does not start with a move-exception a DEX pc 0x0).
+
+
+I created a JDWP test for that in https://android-review.googlesource.com/123850 (look at the DeoptimizationWithExceptionHandlingDebuggee class). It causes a deopt when hitting the breakpoint of the last method in the file. Then we throw a NullPointerException while interpreting a deoptimized frame. It is then caught by the caller which also runs with a deoptimized frame.
+
+
+We should be able to trigger deoptimization by starting method tracing (it switches everything to interpreter) with VMDebug.startMethodTracing.
+

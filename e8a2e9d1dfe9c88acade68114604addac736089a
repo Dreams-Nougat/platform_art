@@ -2,6 +2,13 @@ Revision: e8a2e9d1dfe9c88acade68114604addac736089a
 Patch-set: 3
 File: runtime/interpreter/interpreter.cc
 
+507
+Thu Jan 22 00:27:22 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb97835c_48ffd3bc
+Bytes: 187
+One thing I plan to add later is if instr isn't an invoke, we don't increment the dex_pc. Because of this requirement, the exception handling is better done here instead of like patch #1.
+
 496:4-508:5
 Mon Jan 19 19:42:11 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -101,4 +108,12 @@ I confirmed that this code passes the verifier and gets compiled (haven't tested
  
  .catchall {:Label2 .. :Label3} :Label1
  .end method
+
+152:4-154:5
+Thu Jan 22 00:27:22 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bf1d3a1_ce81638f
+UUID: 0bb21712_bbad877b
+Bytes: 220
+The exception is cleared if the first instruction of the catch block isn't a MOVE_EXCEPTION, so in this case it seems to me the assert is still true. Maybe try a case that has MOVE_EXCEPTION as the first dex instruction?
 

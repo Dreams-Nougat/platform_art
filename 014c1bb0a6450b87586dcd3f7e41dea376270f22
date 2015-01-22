@@ -39,3 +39,15 @@ I created a JDWP test for that in https://android-review.googlesource.com/123850
 
 We should be able to trigger deoptimization by starting method tracing (it switches everything to interpreter) with VMDebug.startMethodTracing.
 
+23:7-23:25
+Thu Jan 22 18:31:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b8a4f30_b06616c3
+UUID: 4bd16f3e_9584e4ea
+Bytes: 543
+You are right about the clearing (though the test is still not testing what we want...)
+
+However, I took a look at the verifier and how it handles MOVE_EXCEPTION. It seems we are simply scanning the handlers that start at that PC and accept the exception types for the registered handlers. We don't check anywhere whether the exception register will actually contain something (whether we reach the block from an exception "jump"), which is odd to me, to say the least.
+
+As usual, the dex spec isn't helpful, because it doesn't cover the case.
+

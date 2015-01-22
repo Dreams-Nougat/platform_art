@@ -9,6 +9,14 @@ UUID: 4bc5ef5b_55494cb0
 Bytes: 81
 Is it possible to make clear be a template boolean? This would be more efficient.
 
+107:54-107:72
+Thu Jan 22 05:41:37 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bc5ef5b_55494cb0
+UUID: 4b732f24_28c723da
+Bytes: 58
+Thanks for your suggestion. It's really a better approach.
+
 File: runtime/gc/collector/mark_sweep.cc
 
 768:15-769:16
@@ -18,10 +26,26 @@ UUID: ab7cabf1_685e83e9
 Bytes: 305
 I think cards currently get aged during the preclean phase. So, it seems that what this new clearing logic is saving is the scan of cards that get dirtied between the preclean phase and the pause that immediately follow. Is this right? Is there any data that shows the reduction in the card scanning load?
 
+768:15-769:16
+Thu Jan 22 05:41:37 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab7cabf1_685e83e9
+UUID: 2b70bb17_ad108542
+Bytes: 558
+Yes. You are right. We developed one GC intensive benchmark internally. The net benefit is over 5% reduction of the whole marking time of three kinds of GC on average. It's expected that there is over 10% reduction of marking time for sticky GC, because partial and full GCs are already included and their marking time is longer than that of sticky GC. What really caused benefit is that the redundant dirty cards of previous GC cycle will continuously be put into mark stack in the current sticky GC. It's known that mark stack processing is time-consuming.
+
 771:29-771:79
 Wed Jan 21 21:13:15 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2bc27b57_08e33733
 Bytes: 71
 Maybe would "!immune_region_.ContainsSpace(space)" be more generalized?
+
+771:29-771:79
+Thu Jan 22 05:41:37 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bc27b57_08e33733
+UUID: 6b763314_0c5fdbe7
+Bytes: 460
+Actually I made the same above patch at the beginning:) In most case, it's right. One corner case is that the current full GC will clear the dirty cards of zygote space, which is not immuned in the next partial GC. One card of zygote space is dirty in preclean phase of the full GC while it may not be dirty again in the following partial GC. This kind of dirty cards will be missed if generalized as above. That was what Haitao and I discussed before. Thanks.
 

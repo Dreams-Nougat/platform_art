@@ -35,6 +35,22 @@ Sorry, I agree we should not abort but return false. So far, when a variable is 
 
 I'll see if another error is more suitable for these cases. FYI, the full list of possible JDWP errors can be found at https://docs.oracle.com/javase/7/docs/platform/jpda/jdwp/jdwp-protocol.html#JDWP_Error
 
+224:0-227:88
+Thu Jan 22 22:20:27 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b408f75_a697ec51
+UUID: 0bf937d6_231e0a55
+Bytes: 207
+My understanding is even for optimized away variable, as long as there is an environment that holds them like at a deoptimization site, they'll be kept alive. So kNone shouldn't happen once it's initialized.
+
+224:0-227:88
+Thu Jan 22 22:20:27 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b408f75_26059c08
+UUID: 2bfc3bc4_47afd09f
+Bytes: 127
+Looks like INVALID_SLOT should be the error returned. The variable isn't visible (and uninitialized) at the frame's code index.
+
 229:4-229:11
 Wed Jan 21 09:50:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

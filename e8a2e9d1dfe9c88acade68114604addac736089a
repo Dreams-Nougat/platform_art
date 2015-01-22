@@ -117,3 +117,13 @@ UUID: 0bb21712_bbad877b
 Bytes: 220
 The exception is cleared if the first instruction of the catch block isn't a MOVE_EXCEPTION, so in this case it seems to me the assert is still true. Maybe try a case that has MOVE_EXCEPTION as the first dex instruction?
 
+152:4-154:5
+Thu Jan 22 01:05:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bb21712_bbad877b
+UUID: ebc0636a_faef895a
+Bytes: 365
+This wasn't about the MOVE_EXCEPTION. Anything starting with a MOVE_EXCEPTION should fail the verifier, because on entry to the method there is none.
+
+This is about the whole "dex_pc == 0 => no deopt" and thus the check being in that location meaning what we thing it means *is wrong*, as we could get there by entering from deopt with an exception from the callee.
+

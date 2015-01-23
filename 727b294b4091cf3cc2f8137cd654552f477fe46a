@@ -11,3 +11,11 @@ I think yamauchi wanted you to change this to:
 clear_card == paused && !immune_region_.ContainsSpace(space).
 Apart from that, this change looks good to me.
 
+773:34-773:83
+Fri Jan 23 01:22:24 2015 +0000
+Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8bbfe7dd_b7b7e878
+UUID: 4b732f24_5987d3f7
+Bytes: 328
+Mathieu, I think we have addressed yamauchi's comment here. The Zygote space is not in the immune_region_ when we do the full GC, if we clear the card here, the dirty cards of Zygote space will not be processed in the next ProcessCards and inserted in the ModUnionTable. So in the future partial GC, we might have missing roots.
+

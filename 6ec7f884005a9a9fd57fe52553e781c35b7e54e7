@@ -9,6 +9,14 @@ UUID: abbaebeb_fb7c2bdf
 Bytes: 38
 can we get this from a global setting?
 
+38
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abbaebeb_fb7c2bdf
+UUID: 6b5e33d1_06ef7a8f
+Bytes: 89
+Once this gets rebased over Calin's changes some of the intrinsics will have to change...
+
 File: compiler/optimizing/common_arm64.h
 
 2:17-2:21
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb871f28_2c1e5bd2
 Bytes: 5
 2015?
+
+2:17-2:21
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb871f28_2c1e5bd2
+UUID: ab64ab9a_2b928561
+Bytes: 4
+Done
 
 34:0-34:20
 Fri Jan 23 08:58:42 2015 +0000
@@ -31,6 +47,16 @@ Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: abbaebeb_db816765
 Bytes: 79
 Just ALWAYS_INLINE ? Or does something goes wrong if we do not specify inline ?
+
+34:0-34:13
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abbaebeb_db816765
+UUID: 6b5e33d1_c65e42ea
+Bytes: 380
+You need to make the functions inlined. GCC/Clang otherwise decide in some cases *not* to inline, and you get duplicate definitions from the two .cc files. (The other option would be a .cc file for common, but the functions are small enough that it seems they should be inlined.)
+
+One must put inline there. Otherwise you get the warning that the function might not be inlineable.
 
 File: compiler/optimizing/intrinsics.cc
 
@@ -50,12 +76,28 @@ UUID: abbaebeb_9b7befe3
 Bytes: 40
 ALWAYS_INLINE - move to common_arm64.h ?
 
+49
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abbaebeb_9b7befe3
+UUID: 8b69a776_aaa50fbb
+Bytes: 146
+Only this file ever uses this - besides Memory.java there is nothing that requires absolute addressing. Maybe I shouldn't even define this at all.
+
 149:77-149:79
 Fri Jan 23 08:58:42 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4b8a4f30_50fa5219
 Bytes: 10
 constexpr?
+
+149:77-149:79
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b8a4f30_50fa5219
+UUID: 6b5e33d1_e6bc9e8e
+Bytes: 87
+As mentioned before, can't. VIXL doesn't define registers as constexpr, but as const...
 
 855
 Fri Jan 23 12:15:35 2015 +0000
@@ -64,12 +106,28 @@ UUID: 4b8a4f30_13a7f4c6
 Bytes: 16
 Remove PlusTemps
 
+855
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b8a4f30_13a7f4c6
+UUID: ab64ab9a_0b1ea154
+Bytes: 30
+Thanks, forgot that cleanup...
+
 868
 Fri Jan 23 12:15:35 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4b8a4f30_f3b8a8e4
 Bytes: 36
 No need, you use VIXL temps for Cas.
+
+868
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b8a4f30_f3b8a8e4
+UUID: 6b5e33d1_46cc9247
+Bytes: 4
+Done
 
 882
 Fri Jan 23 12:15:35 2015 +0000
@@ -85,6 +143,14 @@ UUID: 4b8a4f30_33acf0a6
 Bytes: 21
 See my comment above.
 
+915
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b8a4f30_33acf0a6
+UUID: 8b69a776_ea04670d
+Bytes: 4
+Done
+
 918:2-918:46
 Fri Jan 23 12:15:35 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -92,10 +158,26 @@ UUID: abbaebeb_5b8e7790
 Bytes: 5
 ditto
 
+918:2-918:46
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abbaebeb_5b8e7790
+UUID: 8b69a776_8a092b24
+Bytes: 4
+Done
+
 921
 Fri Jan 23 12:15:35 2015 +0000
 Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb871f28_0f298977
 Bytes: 5
 ditto
+
+921
+Fri Jan 23 18:11:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb871f28_0f298977
+UUID: 6b5e33d1_06d69ad5
+Bytes: 4
+Done
 

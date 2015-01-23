@@ -2,10 +2,84 @@ Revision: 9debbd8fe1933f55ec6315e654d3448645d859bc
 Patch-set: 3
 File: compiler/optimizing/nodes.cc
 
+43:34-43:45
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b8a4f30_3364f0b7
+Bytes: 35
+Suggestion: rename as vreg_env_use?
+
 445:0-453:1
 Fri Jan 23 12:37:31 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: abbaebeb_deccb5cc
 Bytes: 112
 Had to move this method to .cc because of circular declaration dependency between HEnvironment and HInstruction.
+
+456:59-456:71
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb871f28_affa3d43
+Bytes: 163
+As this argument is not `const', the C++ style guide requires  a pointer instead of a reference here ("All parameters passed by reference must be labeled const.").
+
+File: compiler/optimizing/nodes.h
+
+624:65-624:70
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb871f28_0f76e977
+Bytes: 97
+We should use the term `allocator', even though `arena' is still widely used in the code base. :)
+
+626:4-628:5
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abbaebeb_9e287daa
+Bytes: 115
+Add DCHECK_EQ(last, nullptr) before the assignments?  Or better, replace
+
+  first_ == nullptr
+
+with
+
+  IsEmpty()
+
+?
+
+656:4-656:29
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b8a4f30_53f5fc8f
+Bytes: 123
+What about
+
+  bool is_empty = (first == nullptr);
+  if (is_empty) {
+    DCHECK_EQ(last, nullptr);
+  }
+  return is_empty;
+
+?
+
+734:31-734:36
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abbaebeb_9e419d6c
+Bytes: 6
+Ditto.
+
+789:0-790:20
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abbaebeb_fe42d970
+Bytes: 99
+As they are default-constructed, you can remove these calls to ctors from this initialization list.
+
+857:4-860:5
+Fri Jan 23 14:24:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b8a4f30_d373ac7f
+Bytes: 37
+Turn this while-loop into a for-loop?
 

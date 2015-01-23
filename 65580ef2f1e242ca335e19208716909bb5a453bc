@@ -1,0 +1,15 @@
+Revision: 65580ef2f1e242ca335e19208716909bb5a453bc
+Patch-set: 3
+File: runtime/reference_table.cc
+
+125:0-126:76
+Fri Jan 23 18:28:57 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b58bbe4_a4d6a256
+Bytes: 424
+This is good to note as we can rely on that the addresses obj1 and obj2 won't change during the sorting and it's ok to base this comparator on them.
+
+The GC roots are already forwarded, but their classes may not be and the GetClass() calls in lines 135 and 136 could trigger the forwarding of the classes during the sorting. Is it ok? (maybe could we call GetClass() ahead of time in the loop in 199-203?)
+
+typo: iare -> are
+

@@ -1,6 +1,22 @@
 Revision: 7be24460ba8974ed3782b920117994200cf65484
 Patch-set: 4
+File: runtime/gc/collector/mark_compact.cc
+
+312:61-313:57
+Fri Jan 23 18:49:37 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b58bbe4_c46b9edf
+Bytes: 114
+Is this patch set up to date (rebased)? I thought RootType is gone and we are using RootInfo now like patch set 3?
+
 File: runtime/gc/heap.cc
+
+1595:0-1596:46
+Fri Jan 23 18:49:37 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b69a776_8a136b01
+Bytes: 61
+It seems patch set 4 isn't up to date (isn't rebased to ToT).
 
 2683:38-2683:39
 Fri Jan 23 08:10:11 2015 +0000
@@ -8,4 +24,26 @@ Author: Haitao Feng <1012355@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6b763314_80bd4a59
 Bytes: 52
 reset parameter only works for mark sweep collector.
+
+2683:38-2683:39
+Fri Jan 23 18:49:37 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b763314_80bd4a59
+UUID: 0b7cd72c_2b98394e
+Bytes: 643
+I'd rather avoid checking the collector type here in ProcessCards() and pass in a parameter that will cause the third branch (lines 2683-2698) to either age, clear, or do nothing. I think it'd be cleaner.
+
+I'd do something like adding another bool param "bool process_alloc_space_cards", rename 'bool reset' to 'bool reset_alloc_space_cards" and have
+
+if (process_alloc_space_cards) {
+  if (reset_alloc_space_cards) {
+    // clear
+  } else {
+    // age
+  }
+} else {
+  // do nothing (note: this else block should be omitted in real code.)
+}
+
+in the third branch where we pass in process_alloc_space_cards == false for SemiSpace and MarkCompact.
 

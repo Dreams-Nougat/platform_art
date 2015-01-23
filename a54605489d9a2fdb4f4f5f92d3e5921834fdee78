@@ -34,3 +34,17 @@ UUID: 2bc43bd1_0702b834
 Bytes: 96
 This is a pointer into the allocation stack, can you clarify what you mean "still fit the name"?
 
+1154:4-1154:18
+Fri Jan 23 23:54:50 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bc43bd1_0702b834
+UUID: 4bc7afd5_059f52f2
+Bytes: 524
+// A reference from the shadow stack to a MirrorType object within the Java heap.
+ template<class MirrorType>
+ class MANAGED StackReference : public mirror::ObjectReference<false, MirrorType> {
+
+I don't think the allocation stack counts for a shadow frame.
+
+In general we normally use StackReference when we temporarily want a reference to something in the stack of some active runtime function as far as I get this. The thread-local allocation-stack is not the same. (I know, I'm pedantic and only understand half of it...)
+

@@ -1,0 +1,49 @@
+Revision: 0cc1ee84a75f4646cca75b515cef713f3c098513
+Patch-set: 2
+File: runtime/gc/accounting/atomic_stack.h
+
+40:0-45:5
+Sat Jan 24 01:30:48 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bcab3df_c9a2750a
+Bytes: 55
+I assume these are needed for the binary_search() call?
+
+84:40-84:57
+Sat Jan 24 01:30:48 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bcab3df_69742169
+Bytes: 280
+Now it seems we are starting to assume that T is mirror::Object or its subclass. Do we use AtomicStack only with T = mirror::Object or its subclass throughout the codebase (which may be implicitly the case)? If so, is it worth making it clearer. Maybe adding a comment at the top?
+
+File: runtime/gc/collector/mark_sweep.cc
+
+958:10-958:50
+Sat Jan 24 01:30:48 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bcab3df_89a87d6c
+Bytes: 125
+The original code checked that obj is on the alloc stack. The new code checks that obj is NOT on the alloc stack. Is this ok?
+
+File: runtime/gc/collector/mark_sweep.h
+
+140:2-140:4
+Sat Jan 24 01:30:48 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc7afd5_c5e9ba3e
+Bytes: 19
+Indent by 4 spaces?
+
+File: runtime/thread-inl.h
+
+227:31-227:62
+Sat Jan 24 01:30:48 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bc7afd5_05b3d26b
+Bytes: 73
+Should this be without * as in
+
+sizeof(StackReference<mirror::Object>)
+
+?
+

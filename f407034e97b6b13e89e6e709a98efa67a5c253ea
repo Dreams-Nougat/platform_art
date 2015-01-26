@@ -1,0 +1,25 @@
+Revision: f407034e97b6b13e89e6e709a98efa67a5c253ea
+Patch-set: 3
+File: test/run-test
+
+555:12-555:58
+Mon Jan 26 18:51:47 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_2f434593
+Bytes: 277
+Doesn't change much. You should do:
+
+  if run_exit = 0 then
+    if run_checker = yes then
+      $checker args...
+      checker_exit = $?
+      if checker_exit = 0 then
+        good = yes
+      fi
+      echo checker status
+    else
+      good = yes
+    fi
+  fi
+  echo run status
+

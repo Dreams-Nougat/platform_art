@@ -9,3 +9,11 @@ UUID: 8b69a776_aa7aefa5
 Bytes: 227
 I think the savings from this would be minimal, one of the first things we do in the mark object path is checking if the object is in the immune region. I suppose this avoids a few branches, do you have any performance numbers?
 
+92:0-92:92
+Mon Jan 26 07:34:48 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b69a776_aa7aefa5
+UUID: ab858b8b_e63cfae5
+Bytes: 1339
+Yes. You are right. This patch is to reduce the elapsed time of UpdateAndMarkModUnion itself for partial GC. The image space is always immuned and its live bitmap is not updated, therefore the dirty cards of this space requires to scan only once. The dirty cards scanned before will unnecessarily be scanned again next. Unfortunately, this case is not true for zygote space, because the live bitmap of this space will be updated if full GC is triggered. Thus each partial GC have to scan all the dirty cards of zygote space in order to keep the objects of alloc spaces referenced from zygote space. The fact is that the objects of most dirty cards generated in zygote space are actually pointing to image space not alloc spaces, because image space contains Android framework and core library class objects. With this patch, the internal benchmark shows that the total elapsed time of this function is reduced from 1272 ms to 28 ms, and the max time of this function is decreased from 25 ms to 12 ms. The remaining opportunity is to avoid repetitive scanning of the same dirty cards in zygote space something like what image space does right now as long as full GC is not triggered yet. However, we know that the total time of this function is left 28 ms with over 1000 GC cycles. The benefit is not big. Thus we don't do that yet. Thanks.
+

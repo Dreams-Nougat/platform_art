@@ -1,0 +1,51 @@
+Revision: df7cdfd284cddd19ad57f83b6d54a9df4a5b5d46
+Patch-set: 10
+File: compiler/optimizing/common_arm64.h
+
+34:0-34:20
+Mon Jan 26 09:21:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_8c60877d
+Bytes: 281
+Following up on the previous comments, couldn't we just use `static` and leave the compiler to decide whether the methods should be inlined or not?
+I agree most of them will likely be inlined, but I don't think we should force inlining unless we have a good reason to (profiling?).
+
+47
+Mon Jan 26 09:21:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_19530be1
+Bytes: 181
+I was planning to move Is64BitType(), IsIntegralType(), and IsFPType() (renamed as IFloatingPointType()) to runtime/primitive.h. Would it make sense to do it as part of this commit?
+
+File: compiler/optimizing/intrinsics_arm64.cc
+
+76
+Mon Jan 26 09:21:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_3950cfd1
+Bytes: 135
+What about:
+DCHECK(type != Primitive::kPrimVoid);
+if (IsFPType(type)) {
+  __ Fmov(...);
+} else {
+  __ Mov(...);
+}
+or something similar?
+
+86
+Mon Jan 26 09:21:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_2c707346
+Bytes: 110
+This `if` is not required. VIXL can take care of this.
+Use:
+    __ Mov(trg_reg, res_reg, kDiscardForSameWReg);
+
+100
+Mon Jan 26 09:21:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_0c6db76e
+Bytes: 32
+You can simply discard the `if`.
+

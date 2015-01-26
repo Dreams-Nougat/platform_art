@@ -1,0 +1,54 @@
+Revision: 7ef5fab7cd86a18ce0d43cfdcb996f176e637734
+Patch-set: 4
+File: compiler/optimizing/nodes.h
+
+593:19-593:20
+Mon Jan 26 09:31:06 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_794a4723
+Bytes: 181
+I messed this up in the original implementation. We need to be consistent between T and T*. So in our context, T should be a HInstruction* (and not HInstruction), and HEnvironment*.
+
+657:1-659:5
+Mon Jan 26 09:31:06 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_ec65cb8b
+Bytes: 37
+DCHECK(!is_empty || last == nullptr).
+
+795:32-795:40
+Mon Jan 26 09:31:06 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abd02b89_c8feef0a
+Bytes: 56
+Could we ban this method, and offer an iterator instead?
+
+802:1-803:60
+Mon Jan 26 09:31:06 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_b9bcdf8d
+Bytes: 121
+Could we merge those two arrays with an array of internal struct:
+
+struct {
+  HInstruction* vreg;
+  HUseListNode* node;
+}
+
+878:9-878:21
+Mon Jan 26 09:31:06 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abd02b89_2804eb87
+Bytes: 86
+While you're refactoring this, could you rename this to:
+ExpansiveComputeNumberOfUses?
+
+File: compiler/optimizing/ssa_phi_elimination.cc
+
+82:7-82:40
+Mon Jan 26 09:31:06 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_ec3e6b4b
+Bytes: 54
+Add a comment why can you do this outside of the loop.
+

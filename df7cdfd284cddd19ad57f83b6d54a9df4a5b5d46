@@ -10,12 +10,28 @@ Bytes: 281
 Following up on the previous comments, couldn't we just use `static` and leave the compiler to decide whether the methods should be inlined or not?
 I agree most of them will likely be inlined, but I don't think we should force inlining unless we have a good reason to (profiling?).
 
+34:0-34:20
+Mon Jan 26 16:25:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bab5bf1_8c60877d
+UUID: ab53cbfb_90f0b4f4
+Bytes: 355
+Making them only static has the problem that not all are used in the intrinsics, so they are flagged as unused. I'd rather not mark them with ATTRIBUTE_UNUSED. Two solutions: mark them static inline, or break up the file and move the unused ones directly into the code generator. Personally I thought it was better to have them all in one place. Opinions?
+
 47
 Mon Jan 26 09:21:27 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb69dfa3_19530be1
 Bytes: 181
 I was planning to move Is64BitType(), IsIntegralType(), and IsFPType() (renamed as IFloatingPointType()) to runtime/primitive.h. Would it make sense to do it as part of this commit?
+
+47
+Mon Jan 26 16:25:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb69dfa3_19530be1
+UUID: eb49434e_d27fa446
+Bytes: 58
+Follow-up, I prefer this one to only touch the compiler...
 
 File: compiler/optimizing/intrinsics_arm64.cc
 
@@ -33,6 +49,14 @@ if (IsFPType(type)) {
 }
 or something similar?
 
+76
+Mon Jan 26 16:25:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb69dfa3_3950cfd1
+UUID: eb49434e_326710c2
+Bytes: 5
+Sure.
+
 86
 Mon Jan 26 09:21:27 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -42,10 +66,26 @@ This `if` is not required. VIXL can take care of this.
 Use:
     __ Mov(trg_reg, res_reg, kDiscardForSameWReg);
 
+86
+Mon Jan 26 16:25:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bab5bf1_2c707346
+UUID: eb49434e_f284a8eb
+Bytes: 4
+Done
+
 100
 Mon Jan 26 09:21:27 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2bab5bf1_0c6db76e
 Bytes: 32
 You can simply discard the `if`.
+
+100
+Mon Jan 26 16:25:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bab5bf1_0c6db76e
+UUID: ab53cbfb_50ff2cbc
+Bytes: 4
+Done
 

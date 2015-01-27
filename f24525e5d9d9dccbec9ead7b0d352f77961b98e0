@@ -1,0 +1,74 @@
+Revision: f24525e5d9d9dccbec9ead7b0d352f77961b98e0
+Patch-set: 12
+File: compiler/optimizing/intrinsics_arm64.cc
+
+82
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abd02b89_319bb280
+Bytes: 258
+Is it not safe to ignore
+  mov w0, w0
+?
+If it is safe, we need to add `kDiscardForSameWReg` as the last parameter of the move.
+
+Note that executing the 'mov w0, w0' instruction has the side effect of clearing the top 32 bits of x0. I think it should be safe.
+
+100
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_157db69c
+Bytes: 103
+Just a note: at some point we will want to optimise this to use LDP and STP (load pair and store pair).
+
+230
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_c2819865
+Bytes: 56
+Here and in other places: what about `kNoOutputOverlap`?
+
+241
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_f54e2a89
+Bytes: 41
+Was that a comment for x86? If so remove.
+
+280
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_d5532e2f
+Bytes: 52
+Here and in other places: why 'size' and not 'type'?
+
+315:86-315:95
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_35b27208
+Bytes: 361
+I'm fine if it stays like this, but as a note, in VIXL we generally shorten MacroAssembler to masm. Assembler refers to a parent class of the MacroAssembler. The Assembler can only generate 'real' instructions, while the MacroAssembler takes care of a lot of things for the user (eg. constants that don't fit in immediate fields, or optimising away mov x1, x1).
+
+884
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_623d2cfb
+Bytes: 153
+This function generates code for a compare exchange, isn't it?
+Can we use LDXR and STXR in the loop, and have a DMB before loop_head and after exit_loop?
+
+959
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_f522aa92
+Bytes: 105
+Here and below: HeapOperand() ?
+You could even pass thee offsets without calling the Int32Value() member.
+
+979
+Tue Jan 27 15:22:41 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_153ad6b5
+Bytes: 31
+Should there be a 'LOG(FATAL)'?
+

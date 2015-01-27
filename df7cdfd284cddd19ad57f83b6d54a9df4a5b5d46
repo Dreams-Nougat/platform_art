@@ -18,6 +18,16 @@ UUID: ab53cbfb_90f0b4f4
 Bytes: 355
 Making them only static has the problem that not all are used in the intrinsics, so they are flagged as unused. I'd rather not mark them with ATTRIBUTE_UNUSED. Two solutions: mark them static inline, or break up the file and move the unused ones directly into the code generator. Personally I thought it was better to have them all in one place. Opinions?
 
+34:0-34:20
+Tue Jan 27 14:08:12 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab53cbfb_90f0b4f4
+UUID: abd02b89_5160e6ed
+Bytes: 318
+I agree we should have them all in one place. My grudge is against the "ALWAYS_INLINE".
+Does "inline" alone work? It is fine better the compiler is free to ignore it. Maybe a comment at the top of the file to explain the use of the keyword can help for future reference.
+I'm also fine with "static inline" if required.
+
 47
 Mon Jan 26 09:21:27 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +42,14 @@ Parent: cb69dfa3_19530be1
 UUID: eb49434e_d27fa446
 Bytes: 58
 Follow-up, I prefer this one to only touch the compiler...
+
+47
+Tue Jan 27 14:08:12 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb49434e_d27fa446
+UUID: abd02b89_11666e0c
+Bytes: 3
+Ok.
 
 File: compiler/optimizing/intrinsics_arm64.cc
 

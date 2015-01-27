@@ -2,6 +2,19 @@ Revision: f24525e5d9d9dccbec9ead7b0d352f77961b98e0
 Patch-set: 12
 File: compiler/optimizing/intrinsics_arm64.cc
 
+57
+Tue Jan 27 16:57:46 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_0d7bc1ac
+Bytes: 290
+Move this to code_generator_arm64.h?
+We already define:
+48 const vixl::Register tr = vixl::x18;        // Thread Register 
+
+And we can make use of this in code_generator_arm64.cc too.
+
+Sorry for this I have missed it in my previous comments. I can include this as part of one of my patches.
+
 82
 Tue Jan 27 15:22:41 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -96,6 +109,16 @@ Parent: cb69dfa3_623d2cfb
 UUID: b7ec137b_1644ca88
 Bytes: 203
 That's counter to what happened in Quick. There we started with the purely exclusive loads, but went to acquire-release. Note that a certain S. Constantinescu was the one to suggest and implement that...
+
+884
+Tue Jan 27 16:57:46 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb69dfa3_623d2cfb
+UUID: abd02b89_51710677
+Bytes: 259
+This is what Quick does now. Since I expect the default case to be one where the exclusive store succeeds (no retry) - this variant should, at least in theory, be faster.
+
+We can however have a !kUseAcquireRelease variant that is implemented as you suggested.
 
 959
 Tue Jan 27 15:22:41 2015 +0000

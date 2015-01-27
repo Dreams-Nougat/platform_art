@@ -1,0 +1,26 @@
+Revision: accdfce2b06befe1fd13bc270dd249b753198756
+Patch-set: 1
+File: disassembler/disassembler_x86.cc
+
+193:32-193:36
+Tue Jan 27 13:40:56 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b47db3f_b22db884
+Bytes: 525
+Use REX_X for the 0x2?  Not sure where the 0x40 should come from.
+
+10 minutes ago, I saw a version of this fix in someone else's change:
+      address << "[";
+      if (base != 5 || mod != 0) {
+        DumpBaseReg(address, rex64, base);
+        if (index != 4 || (rex64 & REX_X) != 0) {
+          address << " + ";
+        }
+      }
+      if (index != 4 || (rex64 & REX_X) != 0) {
+        DumpIndexReg(address, rex64, index);
+        if (scale != 0) {
+          address << StringPrintf(" * %d", 1 << scale);
+        }
+      }
+

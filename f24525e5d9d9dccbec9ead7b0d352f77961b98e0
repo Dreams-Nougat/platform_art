@@ -21,12 +21,28 @@ UUID: 2bab5bf1_157db69c
 Bytes: 103
 Just a note: at some point we will want to optimise this to use LDP and STP (load pair and store pair).
 
+100
+Tue Jan 27 16:11:10 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bab5bf1_157db69c
+UUID: d7e7c792_97dd761f
+Bytes: 70
+That should be transparent and in the move resolver, not here, though.
+
 230
 Tue Jan 27 15:22:41 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb69dfa3_c2819865
 Bytes: 56
 Here and in other places: what about `kNoOutputOverlap`?
+
+230
+Tue Jan 27 16:11:10 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb69dfa3_c2819865
+UUID: d7e7c792_b7407a23
+Bytes: 145
+Once somebody can tell me what that would actually change, maybe. Right now I don't see any use, and can't really say whether I want to force it.
 
 241
 Tue Jan 27 15:22:41 2015 +0000
@@ -57,6 +73,14 @@ Bytes: 153
 This function generates code for a compare exchange, isn't it?
 Can we use LDXR and STXR in the loop, and have a DMB before loop_head and after exit_loop?
 
+884
+Tue Jan 27 16:11:10 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb69dfa3_623d2cfb
+UUID: b7ec137b_1644ca88
+Bytes: 203
+That's counter to what happened in Quick. There we started with the purely exclusive loads, but went to acquire-release. Note that a certain S. Constantinescu was the one to suggest and implement that...
+
 959
 Tue Jan 27 15:22:41 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -71,4 +95,12 @@ Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2bab5bf1_153ad6b5
 Bytes: 31
 Should there be a 'LOG(FATAL)'?
+
+979
+Tue Jan 27 16:11:10 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bab5bf1_153ad6b5
+UUID: 57fbd733_c48fd28c
+Bytes: 94
+No. Otherwise the compiler will abort every time you hit one. Which is pretty much guaranteed.
 

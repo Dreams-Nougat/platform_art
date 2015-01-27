@@ -1,5 +1,23 @@
 Revision: 5c946424f158b055838f15056cf829c4231df435
 Patch-set: 2
+File: compiler/optimizing/graph_visualizer.cc
+
+226:20-226:21
+Tue Jan 27 15:30:17 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2bab5bf1_55345ec7
+Bytes: 147
+Does "B" stands for "block"?  I think "block" would be more explicit.  But maybe this is contrived by the c1visualizer format for cross references?
+
+File: test/445-checker-licm/info.txt
+
+1:8-1:12
+Tue Jan 27 15:30:17 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abd02b89_f1f47a96
+Bytes: 4
+test
+
 File: test/445-checker-licm/src/Main.java
 
 24:0-24:61
@@ -9,12 +27,60 @@ UUID: cb69dfa3_edea0d02
 Bytes: 228
 Start the group here again (with the same name). Otherwise the NOT will only be checked on lines preceding the matches of the DAG (there's an ordering between the CHECK lines and you want to verify the NOT on the entire output).
 
+27:4-27:24
+Tue Jan 27 15:30:17 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb69dfa3_6dffddbc
+Bytes: 33
+What is the purpose of this line?
+
 40:0-40:61
 Tue Jan 27 15:23:29 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb69dfa3_0df021ef
 Bytes: 5
 Ditto
+
+43:4-43:24
+Tue Jan 27 15:30:17 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abd02b89_71e9aab9
+Bytes: 6
+Ditto.
+
+52
+Tue Jan 27 15:30:17 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: abd02b89_51bf469b
+Bytes: 613
+BTW, regarding nested loops, do you think the LICM pass could be able to turn the following code:
+
+  public static int innerDiv() {
+    int b = staticField;
+    int result = 0;
+    for (int i = 0; i < 10; ++i) {
+      for (int j = 0; j < 10; ++j) {
+        result += staticField / i;
+      }
+    }
+    return result;
+  }
+
+into something equivalent to this Java code:
+
+  public static int innerDiv() {
+    int b = staticField;
+    int result = 0;
+    for (int i = 0; i < 10; ++i) {
+      int tmp = staticField / i;
+      for (int j = 0; j < 10; ++j) {
+        result += tmp;
+      }
+    }
+    return result;
+  }
+
+?
 
 61:0-61:77
 Tue Jan 27 15:23:29 2015 +0000

@@ -180,6 +180,16 @@ Thus every A() and B() will have the Acquire-Release semantics (as implemented i
 
 What I am not sure is if we need to ensure both atomicity and ordering for Unsafe.cmpxchg(). For now we do so we should be safe. Hans probably knows whether we can downgrade this to only ensuring atomicity (no Acquire-Release semantics and no DMBs for ARM). I assume we can't.
 
+884
+Wed Jan 28 14:59:01 2015 +0000
+Author: Will Deacon <1065463@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 578037c4_96f1ec9f
+UUID: 578037c4_d6f1a470
+Bytes: 466
+Ok, so if the cmpxchg is to a global (volatile) field then just using the LDAXR+STLXR variant is sufficient for SC providing that your acquire/release semantics are implemented everywhere using LDA[X]R and STL[X]R rather than DMB.
+
+If the cmpxchg is to a non-volatile field, then I suspect that doesn't require inter-thread ordering guarantees (i.e. you can just use LDXR+STXR), but I'm not familiar enough with the JMM and its data-race semantics to say for sure :)
+
 959
 Tue Jan 27 15:22:41 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -1,0 +1,26 @@
+Revision: e25adaff5fdd4d114249872be4fe783c4495ebdd
+Patch-set: 7
+File: compiler/compiler.cc
+
+29:6-29:43
+Wed Jan 28 23:54:21 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d72fc7b3_688777a8
+Bytes: 131
+No.
+
+This shouldn't know about the actual QuickCompiler class. That's why it was a function call before. Check out quick_compiler.h
+
+File: compiler/dex/quick/quick_compiler.h
+
+20
+Wed Jan 28 23:54:21 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57ae7766_2f62097c
+Bytes: 341
+Hell no, not this way.
+
+There was a reason the QuickCompiler declaration was hidden from the compiler driver. You're coupling them again.
+
+Introduce another header file with CreateQuickCompiler. Or install the pass managers in the CompilationUnit, so that mir_graph can access them without knowledge of the QuickCompiler (prefer the latter).
+

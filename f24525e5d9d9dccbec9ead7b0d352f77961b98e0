@@ -138,6 +138,36 @@ For now it is fine like this. Please note that for the Optimizing compiler we pr
 
 For Nicolas, Andreas - we expect newer CPUs to have a faster implementation for this semantic.
 
+884
+Wed Jan 28 11:15:02 2015 +0000
+Author: Will Deacon <1065463@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abd02b89_d1d0568e
+UUID: f79dab26_1bfe5b74
+Bytes: 549
+You're missing a subtlety here in that DMB; LDXR; ...; STXR; DMB has stronger ordering guarantees than the corresponding LDAXR; ...; STLXR sequence.
+
+For example, if A() and B() consist of standard LDR/STR instructions then:
+
+A()
+DMB
+LDXR
+...
+STXR
+DMB
+B()
+
+Requires A() to be globally observed before B(). However:
+
+A()
+LDAXR
+...
+STLXR
+B()
+
+Permits B() to be observed before A().
+
+So the question really is: what memory ordering semantics do you require for your cmpxchg? If you define that, then we can come up with an optimal instruction sequence.
+
 959
 Tue Jan 27 15:22:41 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>

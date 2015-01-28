@@ -9,3 +9,58 @@ UUID: 2b47db3f_b21db8d6
 Bytes: 79
 Just primitive types or are you going to differentiate between reference types?
 
+File: compiler/optimizing/optimizing_compiler.cc
+
+250:0-251:21
+Wed Jan 28 11:04:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97662f11_58ddbd1b
+Bytes: 46
+This should just be in the Hoptimization list.
+
+File: compiler/optimizing/type_analysis.cc
+
+17:10-17:24
+Wed Jan 28 11:04:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 578037c4_f6886037
+Bytes: 94
+Maybe rename this to reference_type_propagation, and the other one primitive_type_propagation?
+
+21:0-22:44
+Wed Jan 28 11:04:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97662f11_d8d0ed01
+Bytes: 55
+I don't understand this. HNullCheck already returns no.
+
+23:0-23:82
+Wed Jan 28 11:04:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97662f11_78e201df
+Bytes: 117
+No, this pass is propagating types from SSA. Another optimization should take care of "SSA-ing" field/array accesses.
+
+24:0-24:67
+Wed Jan 28 11:04:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 578037c4_96856c1e
+Bytes: 175
+Since primitive_type_propagation only needs to reason on phis, I don't think it's worth the trouble. This pass can potentially propagate types to other instructions than phis.
+
+29:0-30:73
+Wed Jan 28 11:04:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97662f11_98da751e
+Bytes: 57
+Please add: See also the phi handling in VisitBasicBlock.
+
+File: test/444-checker-nce/src/Main.java
+
+17:0-17:19
+Wed Jan 28 11:04:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97662f11_b8d739f5
+Bytes: 10
+Nice test!
+

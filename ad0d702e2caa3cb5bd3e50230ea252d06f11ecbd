@@ -1,0 +1,13 @@
+Revision: ad0d702e2caa3cb5bd3e50230ea252d06f11ecbd
+Patch-set: 6
+File: compiler/optimizing/licm.cc
+
+105:6-106:42
+Thu Jan 29 17:03:24 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37ee63c7_edda651e
+Bytes: 627
+This comment doesn't reflect the code below. You will move any PEI as long as it says it CanBeMoved and doesn't depend on the loop. (There's no update to found_first_... in the case of CanThrow() in the true branch.)
+
+You also have one wrong assumption in there: That the explicit inputs are *all* inputs. That is wrong. LoadClass is marked as movable and not throwing. But the resolved class may come from another dex file, and Android allows to change the path list (I mean it's done in the additive way for non-native multidex, but you can just as well remove some). As such, I'd rather you remove CanBeMoved from LoadClass.
+

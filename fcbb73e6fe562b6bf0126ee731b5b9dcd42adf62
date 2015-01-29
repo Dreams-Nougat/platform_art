@@ -17,6 +17,25 @@ UUID: 37690307_3b0f7f2d
 Bytes: 143
 I was actually debugging through here, and IsCurrentParamALong() DOES return true for a reference parameter in x86.  I will have a look at why.
 
+96:37-96:64
+Thu Jan 29 13:42:01 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37690307_3b0f7f2d
+UUID: 37690307_1bb0c3dd
+Bytes: 388
+Here is the problem:
+  bool IsParamALong(unsigned int param) const {
+    DCHECK_LT(param, NumArgs());
+    if (IsStatic()) {
+      param++;  // 0th argument must skip return value at start of the shorty
+    } else if (param == 0) {
+      return true;  // this argument
+    }
+    return shorty_[param] == 'J';
+  }
+
+Why does it return true for 'this argument'?  I will try changing to false.
+
 133:47-133:71
 Thu Jan 29 08:50:20 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,3 +9,15 @@ UUID: 97b46fb1_ee915beb
 Bytes: 71
 What about Throw instructions? From my reading, they aren't CanThrow...
 
+122:9-126:9
+Thu Jan 29 08:46:06 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 97b46fb1_ee915beb
+UUID: 578037c4_7997632c
+Bytes: 309
+Good point, they aren't CanThrow. We probably could make them CanThrow.
+
+It works because they aren't expressions: they are control flow instructions that occur at the end of a block. Since that block is branching to the exit block, HThrow instructions cannot be part of a loop.
+
+I added the CanThrow anyways.
+

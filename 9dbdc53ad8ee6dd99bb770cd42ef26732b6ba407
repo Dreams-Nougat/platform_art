@@ -2,6 +2,20 @@ Revision: 9dbdc53ad8ee6dd99bb770cd42ef26732b6ba407
 Patch-set: 2
 File: compiler/optimizing/register_allocator.cc
 
+663
+Fri Jan 30 15:21:20 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7e5071d_7295f8d6
+Bytes: 173
+Can you add a comment on why only for non-split intervals? For split intervals, is it a requirement not to use the input register, or because there is better hint available?
+
+672
+Fri Jan 30 15:21:20 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97ef0fff_908734ef
+Bytes: 179
+Can you add a check that last sibling covers defined_by->GetLifetimePosition()? I'm a little worried if we ever aggressively split intervals, picking last sibling won't work here.
+
 688:30-688:34
 Fri Jan 30 05:04:59 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,4 +30,27 @@ Parent: b79c1385_87302a15
 UUID: 77bffbde_77027038
 Bytes: 4
 Done
+
+File: compiler/optimizing/ssa_liveness_analysis.h
+
+414
+Fri Jan 30 15:21:20 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7e5071d_f22b282a
+Bytes: 81
+Just curious, is use->GetPosition() > end only possibly true for environment use?
+
+624
+Fri Jan 30 15:21:20 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7ea53ed_b1d7e0c1
+Bytes: 109
+It's better to separate this into CanUseInputRegister() and IsInputRegisterUsed(). And we need to check both.
+
+643
+Fri Jan 30 15:21:20 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7ea53ed_51ef948a
+Bytes: 172
+For IsInputRegisterUsed(), regardless of interval->GetType() == GetType(), we need to check registers really overlap, like one being an int and the other being a long pair.
 

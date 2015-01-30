@@ -11,6 +11,14 @@ Line break.
 
 Also, base/macros.h defines NO_INLINE
 
+309:78-309:103
+Fri Jan 30 18:49:46 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d797c75c_85bf04ad
+UUID: 17cebfa3_977746ed
+Bytes: 85
+I'm just going to get rid of all this noinline crap, the pragma should be sufficient.
+
 369:77-369:104
 Fri Jan 30 03:55:07 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,6 +42,14 @@ UUID: d797c75c_88303b15
 Bytes: 29
 You really need all of these?
 
+54:2-88:3
+Fri Jan 30 18:49:46 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d797c75c_88303b15
+UUID: 37d66340_ad33fd91
+Bytes: 135
+Maybe not. Then again I'm not getting any warnings about unused functions when I compile? Do they only trigger for non-class functions?
+
 File: cmdline/unit.h
 
 1:0-35:30
@@ -42,4 +58,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d797c75c_65ef608b
 Bytes: 70
 Don't see why this deserves its own file. Can go into cmdline_types.h.
+
+1:0-35:30
+Fri Jan 30 18:49:46 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d797c75c_65ef608b
+UUID: 57d9176e_515b163d
+Bytes: 404
+I didn't mean for any new types in cmdline_types.h to be defined at all except for CmdlineType and its specializations.
+
+Otherwise anything including that file has to include a ton of other files (and a ton of standard headers for traits etc).
+
+Then next thing you know you remove a header or two somewhere and spend the next 20 mins wacking missing includes because they were implicitly included before.
 

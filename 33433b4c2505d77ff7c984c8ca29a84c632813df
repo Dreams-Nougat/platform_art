@@ -1,5 +1,28 @@
 Revision: 33433b4c2505d77ff7c984c8ca29a84c632813df
 Patch-set: 11
+File: /COMMIT_MSG
+
+7:36-7:39
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7ca0b90_53ac2405
+Bytes: 55
+zip files (we don't really care they are apk's, right?)
+
+9:12-9:22
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17cebfa3_f4255826
+Bytes: 9
+registers
+
+10:4-10:59
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7ca0b90_b3a49820
+Bytes: 57
+support opening shared libraries directly from zip files.
+
 File: runtime/native/java_lang_Runtime.cc
 
 36
@@ -9,12 +32,37 @@ UUID: 97baafec_58067d42
 Bytes: 78
 i don't know the art style, but if defined(HAVE_ANDROID_OS) seems more common.
 
+36
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 97baafec_58067d42
+UUID: f7ca0b90_b34938a7
+Bytes: 80
+the ifdef style is fine. enh always uses the long form, but that is rare in art/
+
+38:0-38:30
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17cebfa3_d7401e5b
+Bytes: 99
+no cutils/properties please. things needed to be passed as runtime arguments via AndroidRuntime.cpp
+
 40
 Fri Jan 30 09:55:44 2015 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 57d4b72d_36819828
 Bytes: 75
 add a short comment here, something like "// Defined by the dynamic linker"
+
+40
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 57d4b72d_36819828
+UUID: 37d10340_7877fdbc
+Bytes: 176
+should these just be in android/dlext.h? we seem to get lookup_fn_t from there?
+
+oh, we just used to use dlsym for this to avoid the #ifdef. i'm sort of indifferent about this.
 
 47
 Fri Jan 30 09:55:44 2015 +0000
@@ -31,6 +79,37 @@ UUID: 97baafec_f83b11fc
 Bytes: 171
 question for the art people : is this information stored anywhere else in the runtime ? It seems a bit weird to me to have these types of static variables floating around.
 
+68
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 97baafec_f83b11fc
+UUID: 17cebfa3_37e51230
+Bytes: 128
+if these come in via AndroidRuntime.cc to our art::Runtime, they can just be fields on that accessed via art::Runtime::Current()
+
+80:0-80:61
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17cebfa3_37fcf2c5
+Bytes: 12
+art::Split()
+
+111:0-111:58
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7ca0b90_96718acb
+Bytes: 12
+art::Split()
+
+124:0-124:89
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7ca0b90_36af56ab
+Bytes: 125
+short comment explaining who calls this back and why
+
+maybe a clearer intention revealing name FindSharedObjectInZipCallback?
+
 169
 Fri Jan 30 09:55:44 2015 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,4 +123,19 @@ UNUSED(javaDexPath
 endif
 
 i think that's clearer.
+
+169
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 57d4b72d_f649e077
+UUID: f7ca0b90_96962a5c
+Bytes: 2
++1
+
+181:30-181:47
+Fri Jan 30 17:55:04 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17cebfa3_778caa4a
+Bytes: 241
+Do you mean the bionic internal global so that we restore if afterwards? without that being thread local, it is all pretty gross. reading this without the context, it just made me think you were trying to limit the scope of javaLdLibraryPath
 

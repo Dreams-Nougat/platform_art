@@ -9,12 +9,28 @@ UUID: d7e5071d_7295f8d6
 Bytes: 173
 Can you add a comment on why only for non-split intervals? For split intervals, is it a requirement not to use the input register, or because there is better hint available?
 
+663
+Fri Jan 30 16:19:07 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7e5071d_7295f8d6
+UUID: 57d4b72d_3634f854
+Bytes: 118
+Because split intervals have no inputs (maybe conceptually its input is the parent interval). I rephrased the comment.
+
 672
 Fri Jan 30 15:21:20 2015 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 97ef0fff_908734ef
 Bytes: 179
 Can you add a check that last sibling covers defined_by->GetLifetimePosition()? I'm a little worried if we ever aggressively split intervals, picking last sibling won't work here.
+
+672
+Fri Jan 30 16:19:07 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 97ef0fff_908734ef
+UUID: 77f45bd1_0f7e8596
+Bytes: 111
+Check is at line 678 :-) I have to keep it there because it may have not been processed yet. I've added a TODO.
 
 688:30-688:34
 Fri Jan 30 05:04:59 2015 +0000
@@ -40,6 +56,14 @@ UUID: d7e5071d_f22b282a
 Bytes: 81
 Just curious, is use->GetPosition() > end only possibly true for environment use?
 
+414
+Fri Jan 30 16:19:07 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7e5071d_f22b282a
+UUID: 77f45bd1_ef490178
+Bytes: 62
+uses are not split: sibling intervals share the same use list.
+
 624
 Fri Jan 30 15:21:20 2015 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -47,10 +71,26 @@ UUID: b7ea53ed_b1d7e0c1
 Bytes: 109
 It's better to separate this into CanUseInputRegister() and IsInputRegisterUsed(). And we need to check both.
 
+624
+Fri Jan 30 16:19:07 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7ea53ed_b1d7e0c1
+UUID: 77f45bd1_8f483571
+Bytes: 4
+Done
+
 643
 Fri Jan 30 15:21:20 2015 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b7ea53ed_51ef948a
 Bytes: 172
 For IsInputRegisterUsed(), regardless of interval->GetType() == GetType(), we need to check registers really overlap, like one being an int and the other being a long pair.
+
+643
+Fri Jan 30 16:19:07 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7ea53ed_51ef948a
+UUID: 97baafec_5879dd16
+Bytes: 97
+Intervals don't hold pair registers, just a single register. So this type check is for FP or Int.
 

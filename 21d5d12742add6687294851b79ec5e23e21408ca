@@ -1,0 +1,20 @@
+Revision: 21d5d12742add6687294851b79ec5e23e21408ca
+Patch-set: 2
+File: compiler/optimizing/inliner.cc
+
+39:21-39:32
+Fri Jan 30 17:15:11 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97ef0fff_b0335892
+Bytes: 135
+For quick, we have gotten rid of such "magic" numbers by using pass options infrastructure. It makes sense to consider that for future.
+
+File: compiler/optimizing/inliner.h
+
+52:15-52:21
+Fri Jan 30 17:15:11 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7e5071d_525af471
+Bytes: 460
+This is not adequate to capture inlining relationship. For example, foo calls bar, foo calls baz, baz and bar call zoo. Zoo can have either baz or bar as parent even though its nesting level will always be 2. However, since with current implementation you do not allow escape to runtime, there is no real need to maintain the relationship. With further generalization, the relationship should be maintained hence why I think it makes sense to implement it now.
+

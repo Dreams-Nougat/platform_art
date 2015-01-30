@@ -1,0 +1,47 @@
+Revision: 33433b4c2505d77ff7c984c8ca29a84c632813df
+Patch-set: 11
+File: runtime/native/java_lang_Runtime.cc
+
+36
+Fri Jan 30 09:55:44 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97baafec_58067d42
+Bytes: 78
+i don't know the art style, but if defined(HAVE_ANDROID_OS) seems more common.
+
+40
+Fri Jan 30 09:55:44 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57d4b72d_36819828
+Bytes: 75
+add a short comment here, something like "// Defined by the dynamic linker"
+
+47
+Fri Jan 30 09:55:44 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57d4b72d_167e9c96
+Bytes: 46
+#endif  // __LP64__
+#endif  // HAVE_ANDROID_OS
+
+68
+Fri Jan 30 09:55:44 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97baafec_f83b11fc
+Bytes: 171
+question for the art people : is this information stored anywhere else in the runtime ? It seems a bit weird to me to have these types of static variables floating around.
+
+169
+Fri Jan 30 09:55:44 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57d4b72d_f649e077
+Bytes: 144
+you could have a unified definition and
+
+if defined(HAVE_ANDROID_OS)
+UNUSED(javaLdLibraryPath)
+UNUSED(javaDexPath
+endif
+
+i think that's clearer.
+

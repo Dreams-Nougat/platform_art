@@ -9,10 +9,26 @@ UUID: 17fddfe8_bf493379
 Bytes: 257
 I'd remove the last sentence. If you want one, then "the fewer suspend checks, the better for the SSA builder" or something like that helps to better understand why. And/or you can also mention that dx is generating branches to the first return encountered.
 
+1082:48-1082:52
+Mon Feb 02 16:18:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17fddfe8_bf493379
+UUID: 17fddfe8_1f5b073e
+Bytes: 166
+Yep, I've already changed it to something shorter. This version is also wrong - I didn't realize it doesn't produce a SuspendCheck for spin locks (target_offset == 0)
+
 1083:0-1083:68
 Mon Feb 02 16:12:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 17fddfe8_ff6c5bf2
 Bytes: 95
 This is probably computed before calling Add SuspendCheck. How about passing it to this method?
+
+1083:0-1083:68
+Mon Feb 02 16:18:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17fddfe8_ff6c5bf2
+UUID: 97e9cf2d_46094652
+Bytes: 143
+Could do, it's just a bit messy because the callers of this method tend to compute the target a lot later after calling this. But yeah, why not
 

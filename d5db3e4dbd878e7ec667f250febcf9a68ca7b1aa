@@ -2,12 +2,51 @@ Revision: d5db3e4dbd878e7ec667f250febcf9a68ca7b1aa
 Patch-set: 3
 File: compiler/dex/compiler_ir.h
 
+37:0-37:31
+Tue Feb 03 17:03:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17723f91_3441b079
+Bytes: 58
+No macros, please.
+constexpr size_t kOptionStringMaxLength
+
+113:0-114:11
+Tue Feb 03 17:03:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37758377_b840555a
+Bytes: 25
+Style: kString, kInteger.
+
+138:29-138:49
+Tue Feb 03 17:03:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5778376f_39ce0b63
+Bytes: 34
+int64_t should be passed by value.
+
 147:4-147:12
 Tue Feb 03 16:33:46 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f795abbd_0172aecd
 Bytes: 143
 Is there a reason this isn't const? Also, as this is a copy, we prefer "implicit" management through a unique_ptr (vmarko, could you confirm?).
+
+147:4-147:12
+Tue Feb 03 17:03:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f795abbd_0172aecd
+UUID: 17723f91_f4801861
+Bytes: 159
+That's not feasible for a union.
+
+(Otherwise, since strndup() allocates with malloc(), I'd recommend the UniqueCPtr<const char[]> alias from runtime/utils.h .)
+
+149:4-149:13
+Tue Feb 03 17:03:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5778376f_79d88326
+Bytes: 82
+Put this on a separate line. Don't mix the union and variable definition together.
 
 File: compiler/dex/pass_driver_me.h
 
@@ -33,6 +72,13 @@ Bytes: 56
 Is there a reason to no longer accept formatted numbers?
 
 File: compiler/dex/pass_me.h
+
+139:5-139:78
+Tue Feb 03 17:03:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37758377_d8435153
+Bytes: 120
+NOTE: This provides a DoS attack vector. Just convince the framework to pass the wrong type of option to the compiler...
 
 169:100-169:119
 Tue Feb 03 16:33:46 2015 +0000

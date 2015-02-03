@@ -9,3 +9,13 @@ UUID: b737b3c2_c959b1f8
 Bytes: 162
 is there some contract that we are returning false so we should add a message as to why? in this case just noting that we failed to load and fallback is disabled?
 
+1017:4-1017:17
+Tue Feb 03 18:51:07 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b737b3c2_c959b1f8
+UUID: 17207f81_e4713aca
+Bytes: 422
+At this point error_msgs will already contain some errors, namely those of oat file generation. I guess it's fine to add a top-level one stating that fallback is disabled in an else-branch.
+
+The false is the return code for "couldn't find or generate oat file" according to a comment in DexFile. The actual decision is then made over the content of dex_files. Probably needs a comment in class_linker.h what "false" means.
+

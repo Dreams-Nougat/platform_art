@@ -18,12 +18,28 @@ UUID: 778a9b9e_62d538bd
 Bytes: 172
 This is a bit confusing. It looks like it's updating 'instructions_.block_' but it's iterating over the list. Could we rename it to 'SetBlockOfEach' or something like that?
 
+744:2-744:47
+Tue Feb 03 12:39:49 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 778a9b9e_62d538bd
+UUID: 5778376f_16775cbd
+Bytes: 58
+Renamed to SetBlockOfInstructions. Does that work for you?
+
 789:31-789:91
 Tue Feb 03 11:13:59 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76973a4_f9c5770f
 Bytes: 134
 Is this scenario possible? If so, could 'this' end with a control flow instruction that you don't remove? Maybe add a DCHECK for that?
+
+789:31-789:91
+Tue Feb 03 12:39:49 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76973a4_f9c5770f
+UUID: 5778376f_367458b6
+Bytes: 176
+It's not possible in current use, as `this` was split and does not have successors, nor a control flow instruction. I could only dcheck that successors are empty if you prefer?
 
 793
 Tue Feb 03 11:13:59 2015 +0000
@@ -32,12 +48,30 @@ UUID: 5778376f_b6cb08a6
 Bytes: 271
 I know this is currently used only in inlining but in case somebody picks this up, it could be worth adding more DCHECKs here. E.g. if both 'successors_' and 'dominated_blocks_' are empty, the other block can be pretty much anything - have predecessors, a dominator, etc.
 
+793
+Tue Feb 03 12:39:49 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5778376f_b6cb08a6
+UUID: 77637bc4_57862c29
+Bytes: 167
+Not sure I understand which additional DCHECKS you want?
+
+The other's predecessors/dominator are discarded, do you prefer to enforce that before and/or in that method?
+
 920:4-922:5
 Mon Feb 02 23:48:22 2015 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f74dab10_04e3dcaa
 Bytes: 134
 I believe you are missing the logic to remove invoke in case there is no return value. But maybe you are handling that somewhere else.
+
+920:4-922:5
+Tue Feb 03 12:39:49 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f74dab10_04e3dcaa
+UUID: 5778376f_767ed097
+Bytes: 9
+Line 982.
 
 File: compiler/optimizing/nodes.h
 

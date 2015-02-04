@@ -9,3 +9,19 @@ UUID: 3c400875_1d039387
 Bytes: 30
 Is this logic being preserved?
 
+105:0-111:3
+Wed Feb 04 23:40:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c400875_1d039387
+UUID: 3c400875_fde22750
+Bytes: 550
+Yes,
+
+collector_type_ has the default set in XGcOption constructor
+background_collector_type has the default set in BackgroundGcOption constructor
+interpreter_only has the default set in runtime_options.def
+
+Basically primitives have their defaults set directly in runtime_options.def and everything else is in the default constructor of the type.
+
+We could do it all in runtime_options.def but then the default values become many lines instead of 1 line, and T{} no longer reflects defaults which seems counter-intuitive. Either way is fine with me.
+

@@ -19,3 +19,34 @@ At this point error_msgs will already contain some errors, namely those of oat f
 
 The false is the return code for "couldn't find or generate oat file" according to a comment in DexFile. The actual decision is then made over the content of dex_files. Probably needs a comment in class_linker.h what "false" means.
 
+1017:4-1017:17
+Wed Feb 04 00:53:45 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17207f81_e4713aca
+UUID: 5c293c84_710452bf
+Bytes: 1266
+OpenDexFilesFromOat can return three ways:
+1. return true, with 'dex_files' populated, meaning the dex files were loaded from oat files.
+2. return false, with 'dex_files' populated, meaning the dex files were loaded from unquickened dex files, to be interpreted.
+3. return false, with 'dex_files' empty, meaning it couldn't open anything for the given dex location.
+
+In the oat file cleanup work I was doing, I wanted to change this to return true if any dex files were loaded (oat or no oat), because dalvik_system_DexFile.cc doesn't care if no oat file was loaded, so long as it gets some dex files back.
+
+My vote is to return 'false' only if no dex files are returned. Then dalvik_system_DexFile.cc can be cleaned up a little and the interface is less confusing. Either way, yes, add a comment in class_linker.h to describe these cases. The comment I added in my oat file management cleanup is:
+
+// Find or create the oat file holding dex_location. Then load all
+// corresponding dex files into the given vector (there may be more than one
+// dex file loaded in the case of multidex).
+// Returns true if dex files were successfully loaded, including the case
+// where an oat file could not be generated, but the original, unquickened
+// dex files could be loaded.
+
+File: runtime/parsed_options.cc
+
+656:0-657:39
+Wed Feb 04 00:53:45 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc6318f1_699a25de
+Bytes: 57
+Can you document this option by adding usage info for it?
+

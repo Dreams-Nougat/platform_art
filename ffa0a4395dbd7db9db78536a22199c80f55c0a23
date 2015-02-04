@@ -90,6 +90,16 @@ UUID: 9c8d74f5_468726f1
 Bytes: 66
 You should always get the exception there, I would have thought...
 
+4224:6-4225:42
+Wed Feb 04 18:27:51 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c8d74f5_468726f1
+UUID: 1ca1845e_3f60e39a
+Bytes: 372
+I'm not sure to understand: are you saying we should get here with a pending exception if the transaction aborted? Even if it has been caught and cleared during class initialization?
+
+This case matches the CatchNativeCallAbortClass class from test/Transaction/Transaction.java (tested by transaction_test) where we catch Throwable, thus the thrown java.lang.InternalError.
+
 File: runtime/transaction.h
 
 46:2-46:41

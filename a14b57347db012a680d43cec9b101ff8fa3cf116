@@ -9,12 +9,30 @@ UUID: 9c3f34b5_f05ba072
 Bytes: 87
 should we assert that the expected flags are here to prevent this problem in the future
 
+20:0-21:27
+Wed Feb 04 18:31:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c3f34b5_f05ba072
+UUID: 1c7a64aa_7467680f
+Bytes: 121
+Seems OK to me to do that. As long as it is clear when the test is expected to succeed. (See the reply to Nicolas below).
+
 22:0-23:30
 Wed Feb 04 08:22:07 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fc2f508a_0e984b87
 Bytes: 56
 Why don't we just set the test as failing with prebuild?
+
+22:0-23:30
+Wed Feb 04 18:31:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc2f508a_0e984b87
+UUID: 3c7d68a0_d5bd1cb5
+Bytes: 300
+The test was intended to, I think. I guess we missed it when 116 was added that way.
+
+This is just a fallback so that when you do start it with run-test, it works. I do that a lot for the --dev of a test, and it is nice to not have to go look and see that --no-prebuild must be pushed for it to work.
 
 File: test/119-noimage-patchoat/run
 
@@ -25,6 +43,14 @@ UUID: 1c1ee459_ba11897c
 Bytes: 53
 If it worked before, is this false_bin really needed?
 
+20:0-24:2
+Wed Feb 04 18:31:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c1ee459_ba11897c
+UUID: fc9d9026_feefdd87
+Bytes: 157
+There's a slight different there between who gives the exit code and what's going wrong. I wanted to preserve the test as is, just fix the IsHost decision...
+
 File: test/etc/run-test-jar
 
 312:0-312:20
@@ -33,4 +59,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fc2f508a_ee8cdf4b
 Bytes: 68
 This is a cleanup right? Not related to the no-dex2oat test changes?
+
+312:0-312:20
+Wed Feb 04 18:31:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc2f508a_ee8cdf4b
+UUID: 3c7d68a0_55610ca1
+Bytes: 116
+As mentioned in the commit message, yes, that's cleanup. I was tired when looking at the command lines from --dev...
 

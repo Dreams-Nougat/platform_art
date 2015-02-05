@@ -1,5 +1,14 @@
 Revision: 3be6e9d904baa13d7cf51dfc6742dea12e766b2e
 Patch-set: 1
+File: cmdline/cmdline_types.h
+
+90:4-169:32
+Thu Feb 05 17:48:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bcd07810_e111c67b
+Bytes: 120
+Is there a reason to touch all this? It seems like a semantically equivalent transformation, and a reason would be nice.
+
 File: runtime/runtime.cc
 
 809:4-809:51
@@ -10,4 +19,14 @@ Bytes: 116
 This is to avoid including jdwp/jdwp.h into runtime.h file (which is included almost everywhere already).
 
 Opinions?
+
+809:4-809:51
+Thu Feb 05 17:48:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c1a1cb5_29aaa96e
+UUID: bcd07810_a107be3e
+Bytes: 310
+You could use a unique_ptr (it works as long as constructor and destructor of Runtime are in the .cc file, which they are). Else I think it's fine.
+
+Alternatively, looking at the debugger, we only allow one per process, it seems, as the interface is static. So you could also store it there as a static member?
 

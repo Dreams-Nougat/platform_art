@@ -16,6 +16,14 @@ UUID: 7c2520ee_a7bd2ab6
 Bytes: 32
 Use ScopedArenaVector<> instead.
 
+704:2-704:23
+Thu Feb 05 19:28:09 2015 +0000
+Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c2520ee_a7bd2ab6
+UUID: 3c17288d_4860bf9b
+Bytes: 4
+Done
+
 File: compiler/dex/quick/codegen_util.cc
 
 943:42-943:52
@@ -24,6 +32,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c073452_106d441d
 Bytes: 201
 We should know what bb contains this switch (for example, we can add its id to the SwitchTable) and we should use the bb->successor_blocks directly. That will obviate the need for the conversion above.
+
+943:42-943:52
+Thu Feb 05 19:28:09 2015 +0000
+Author: Chao-ying Fu <1010712@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c073452_106d441d
+UUID: dcfd2c74_98e5dd5c
+Bytes: 373
+What is implemented may be the same as what you suggest, I think.  When calling GenLargePackedSwitch for a mir, we know its bb and we iterate bb->successor_blocks to record target bbid in a table in this function: ConvertPackedSwitchTable().  The function name of ConvertPackedSwitchTable() is confusing.  We can rename it to CreatePackedSwitchTable() or so.  Thanks a lot!
 
 954:42-954:52
 Thu Feb 05 11:46:20 2015 +0000

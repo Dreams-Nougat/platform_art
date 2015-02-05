@@ -9,12 +9,30 @@ UUID: dc836cc3_a244de39
 Bytes: 49
 Name of the method does not seem correct anymore.
 
+102:0-104:73
+Thu Feb 05 22:22:43 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc836cc3_a244de39
+UUID: 3cc5685d_f8f96dd5
+Bytes: 62
+I renamed it to IsRelatedToArrayLength and added some comment.
+
 203:0-204:75
 Wed Feb 04 15:05:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dc836cc3_22e68ef2
 Bytes: 67
 Should this check be factorized as something like CanBeBaseOfValue?
+
+203:0-204:75
+Thu Feb 05 22:22:43 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc836cc3_22e68ef2
+UUID: 1cc26457_b490e0e8
+Bytes: 199
+The purpose of the check is to make sure no overflow happens.
+(array.length + non-positive-constant) won't overflow an int.
+I simplified the test with IsRelatedToArrayLength() and added some comment.
 
 219:6-219:88
 Wed Feb 04 15:05:56 2015 +0000
@@ -23,12 +41,30 @@ UUID: dc836cc3_82099ad6
 Bytes: 6
 ditto?
 
+219:6-219:88
+Thu Feb 05 22:22:43 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc836cc3_82099ad6
+UUID: 1cc26457_d49d5cff
+Bytes: 75
+I simplified the test with IsRelatedToArrayLength() and added more comment.
+
 752:7-752:71
 Wed Feb 04 15:05:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dc836cc3_e5bd10b5
 Bytes: 111
 So should we replace all array.length instructions with `len` instead? Wouldn't that simplify the optimization?
+
+752:7-752:71
+Thu Feb 05 22:22:43 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc836cc3_e5bd10b5
+UUID: dc99ac84_92203c44
+Bytes: 403
+I added this if it's NewArray with a constant in instruction simplifier. It also got rid of this if branch.
+
+For non-constant, array.length carries more info than a random value (like for overflow/underflow analysis), and we track range for value-1-1 correctly based on the array length. Right now our value bounds are anchored around array length instead of random values. So I didn't change this part.
 
 File: test/448-checker-bce/src/Main.java
 
@@ -38,4 +74,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ca1845e_fcf5a98c
 Bytes: 43
 Could you put a CHECK: BoundsCheck line 34?
+
+43:32-43:81
+Thu Feb 05 22:22:43 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ca1845e_fcf5a98c
+UUID: 7ca8c090_6f92113c
+Bytes: 28
+There is a check at line 32.
 

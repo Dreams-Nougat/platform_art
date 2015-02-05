@@ -9,6 +9,15 @@ UUID: bcd07810_e111c67b
 Bytes: 120
 Is there a reason to touch all this? It seems like a semantically equivalent transformation, and a reason would be nice.
 
+90:4-169:32
+Thu Feb 05 18:00:05 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcd07810_e111c67b
+UUID: 9c073452_365200ae
+Bytes: 225
+I changed jdwp_options to a pointer in ParseOption because we modify it and IIRC we agreed on using pointer than reference in that case, right?
+For the Parse method, you're right. It's mainly to transform into a foreach loop.
+
 File: runtime/runtime.cc
 
 809:4-809:51
@@ -29,4 +38,14 @@ Bytes: 310
 You could use a unique_ptr (it works as long as constructor and destructor of Runtime are in the .cc file, which they are). Else I think it's fine.
 
 Alternatively, looking at the debugger, we only allow one per process, it seems, as the interface is static. So you could also store it there as a static member?
+
+809:4-809:51
+Thu Feb 05 18:00:05 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcd07810_a107be3e
+UUID: 5c1a1cb5_c972f579
+Bytes: 204
+OK, I'll try the unique_ptr. 
+
+I agree about Dbg class, there's only one. That's in my todo list of a more global refactoring. That could simplify the access to JDWP options when starting the JDWP thread.
 

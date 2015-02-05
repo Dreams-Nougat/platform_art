@@ -35,3 +35,23 @@ I see.
 
 I see UseTLAB is a Unit type. How would temporarily I change it to hard-code/override use_tlab_ = true now like I was able to here before?
 
+105:0-111:3
+Thu Feb 05 00:07:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c400875_c0302017
+UUID: 3c400875_002cc892
+Bytes: 602
+Apologies, I thought the // use_tlab = true was some dead code someone forgot to remove.
+
+In runtime.cc where it initializes 'new gc::Heap' there's
+
+    runtime_options.Exists(Opt::UseTLAB),
+
+which checks if the user passed in the 'USETLAB' flag via the options.
+
+Change that to prepend 'kUseReadBarrier || ' if you want to hardcode it for development.
+
+   kUseReadBarrier || runtime_options.Exists(Opt::UseTLAB)
+
+We can also just change the UseTLAB type to be a bool and then set the default to 'kUseReadBarrier', but then we need to change that line to 'GetOrDefault(Opt::UseTLAB)' instead of Exists.
+

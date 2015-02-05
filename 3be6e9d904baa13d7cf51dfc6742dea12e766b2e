@@ -18,6 +18,25 @@ Bytes: 225
 I changed jdwp_options to a pointer in ParseOption because we modify it and IIRC we agreed on using pointer than reference in that case, right?
 For the Parse method, you're right. It's mainly to transform into a foreach loop.
 
+90:4-169:32
+Thu Feb 05 18:48:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c073452_365200ae
+UUID: 1ce984cf_5c8dfd16
+Bytes: 518
+BTW, stylistically the "most consistent" thing would be to have this function return Result just like all the other type-parsers. Also in that case you wouldn't need to change it to use a pointer
+
+  error_stream << error_message +
+  return false
+     becomes:
+  return Result::Failure(error_message)
+  
+  return true 
+     becomes:
+  return Result::Success(jdwp_options)
+
+The reason it was using a reference is because I refactored it from the jdwp header file with minimal changes (error_stream instead of LOG(error))
+
 File: runtime/runtime.cc
 
 231

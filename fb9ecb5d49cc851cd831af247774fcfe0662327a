@@ -1,0 +1,30 @@
+Revision: fb9ecb5d49cc851cd831af247774fcfe0662327a
+Patch-set: 1
+File: cmdline/cmdline_types.h
+
+99
+Fri Feb 06 18:39:28 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc08ccdb_7a35f951
+Bytes: 172
+minor nit [optional for consistency], I use 'Result <varname> = ...' everywhere else, you'll notice CmdlineParseResult has a move constructor so it's very cheap to do that.
+
+101
+Fri Feb 06 18:39:28 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc08ccdb_1a383d4a
+Bytes: 371
+minor nit:
+
+It's a bit redundant to have it both as an out-parameter and the return value, it's possible to get away with having only 2 parameters to ParseJdwpOption by making it a local:
+
+  JdwpOptions jdwp_options;
+
+(removing it from line 90)
+
+and can just do
+
+  const JdwpOptions& jdwp_options = parse_attempt.GetValue();
+
+and change line 115 to 'return parse_attempt'
+

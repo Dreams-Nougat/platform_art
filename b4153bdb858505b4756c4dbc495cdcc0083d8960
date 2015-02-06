@@ -27,6 +27,23 @@ Haven't we removed the null check on HNewArray already?
 
 File: test/448-checker-bce/src/Main.java
 
+50:0-52:23
+Fri Feb 06 16:14:24 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c5e9cd0_26e15624
+Bytes: 679
+As Nicolas mentions below, to verify that something occurs a certain number of times, you need to do than number of CHECKs followed by a single CHECK-NOT. Otherwise you're testing that there are "at least N occurrences" rather than "exactly N".
+
+To test for exactly three BoundsChecks:
+  // CHECK: BoundsCheck
+  // CHECK: BoundsCheck
+  // CHECK: BoundsCheck
+  // CHECK-NOT: BoundsCheck
+
+Checker will find matches for CHECKs in the given order and then come back and test that CHECK-NOTs don't occur in the given scopes. So CHECK CHECK-NOT CHECK will verify that something doesn't appear between lines that match the surrounding CHECKs.
+
+IM me if I can help clear things out more.
+
 55:0-57:23
 Fri Feb 06 15:58:55 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

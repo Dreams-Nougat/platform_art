@@ -11,3 +11,11 @@ Sorry, I was trying to mimic the logic that ensures that collector type is never
 
 Other than this being redundant, what was the issue here?
 
+468
+Sat Feb 07 01:28:16 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c47c43f_ccd54f74
+UUID: 71f62b4b_bf873726
+Bytes: 326
+Igor and I had a chat on this. But currently it seems that the Set() call somehow changed the collector type from CMS to None, which was being passed into the Heap constructor, which was causing the crash. If you revert this change and pass in "-Xgc:CMS" (or any valid collector type) on the command line, you'd see the crash.
+

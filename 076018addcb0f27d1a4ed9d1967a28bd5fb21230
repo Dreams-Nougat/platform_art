@@ -19,3 +19,11 @@ UUID: 71f62b4b_bf873726
 Bytes: 326
 Igor and I had a chat on this. But currently it seems that the Set() call somehow changed the collector type from CMS to None, which was being passed into the Heap constructor, which was causing the crash. If you revert this change and pass in "-Xgc:CMS" (or any valid collector type) on the command line, you'd see the crash.
 
+468
+Sat Feb 07 02:02:35 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71f62b4b_bf873726
+UUID: bc6958a4_dcb981fb
+Bytes: 143
+Thanks for finding this. I fixed it in https://android-review.googlesource.com/#/c/129931/1 (works with or without these lines of code deleted)
+

@@ -2,6 +2,20 @@ Revision: ffe276857b461f583635531f105cf387ded5d9f3
 Patch-set: 1
 File: runtime/check_jni.cc
 
+1098:17-1098:30
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b12b43c2_a9ffbdba
+Bytes: 55
+Might be worth documenting what we consider valid here.
+
+1121
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b12b43c2_29ec6d1c
+Bytes: 27
+Nit: Could fit on one line?
+
 1124
 Mon Feb 09 16:38:41 2015 +0000
 Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,6 +65,15 @@ UUID: 9120ffdf_28510ba6
 Bytes: 4
 Done
 
+File: runtime/mirror/string-inl.h
+
+36:24-36:39
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3117538d_a5d87e77
+Bytes: 91
+It's clear what is "unchecked" about this. Maybe it's obvious to others. Perhaps a comment.
+
 File: runtime/mirror/string.cc
 
 174
@@ -83,7 +106,33 @@ UUID: 9120ffdf_8893d7f0
 Bytes: 130
 Actually, I'll do this separately. There's a minor annoyance here : one of them checks for null termination and the other doesn't.
 
+200:7-200:14
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9120ffdf_084d2784
+Bytes: 58
+Should this be uint32_t as well, or is there some expense?
+
+200:34-200:36
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11fb2f87_6ce95bc2
+Bytes: 353
+I may be odd so feel free to ignore: I always get slightly twitchy when I see a for loop with a counter that can be incremented independently of the main clause. It makes me want to turn it into a while() so the reader has to go hunting for the increments.
+
+Here it would mean changes:
+line 203 to be i++,
+line 209 to be (i == length)
+line 213 to be i++
+
 File: runtime/mirror/string.h
+
+87:5-87:9
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9120ffdf_4870bfc2
+Bytes: 37
+Bug number, or is this for reviewers?
 
 89
 Mon Feb 09 16:38:41 2015 +0000
@@ -114,6 +163,13 @@ UUID: f1493ba5_fbe98f87
 Bytes: 40
 GetCharArray and pull chars out of that?
 
+133:5-133:9
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11fb2f87_8c1da760
+Bytes: 21
+Bug number or remove.
+
 File: runtime/utf-inl.h
 
 24
@@ -135,6 +191,13 @@ I chose Leading and Trailing because it's a more intuitive name wrt. to string i
 
 re: s/pseduo/maybe - done.
 
+24:16-24:36
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9120ffdf_68bdc3e4
+Bytes: 37
+I would have found docs helpful here.
+
 32
 Mon Feb 09 16:38:41 2015 +0000
 Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -150,7 +213,45 @@ UUID: 3117538d_e541d62a
 Bytes: 116
 any suggestions ? I toyed around with a few names before i put this up, but they were all generally worse than this.
 
+65:42-65:48
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11fb2f87_acefc38c
+Bytes: 207
+This is neat. It's not the classic way it's explained in the docs I've read, but I did check it and 
+
+(x >> 10) + (0xD800 - (0x10000 >> 10))
+
+seems a reasonable way of doing: 
+
+((x - 0x10000) >> 10) + 0xD800
+
+85:7-85:11
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11fb2f87_8cec8799
+Bytes: 17
+To do for review?
+
+File: runtime/utf.cc
+
+26:7-26:29
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11fb2f87_ac64e388
+Bytes: 157
+So, this is the count in UTF16 code-units, where as previously it was the count in characters / code-points. Might be worth a rename or doc change somewhere.
+
 File: runtime/utf.h
+
+89:3-89:12
+Mon Feb 09 17:22:42 2015 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9120ffdf_08a88726
+Bytes: 217
+I suppose it doesn't matter too much what the return value is given it is supposed to be used with the methods below. 
+
+However, I wasn't sure that "UTF character" was a correct phrase here. Perhaps "UTF16 code unit"?
 
 101
 Mon Feb 09 16:38:41 2015 +0000

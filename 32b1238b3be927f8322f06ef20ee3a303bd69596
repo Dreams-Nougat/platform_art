@@ -9,12 +9,28 @@ UUID: 51292784_ee74dfb7
 Bytes: 33
 int32_t (to be on the safe side).
 
+61:8-61:11
+Mon Feb 09 19:48:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51292784_ee74dfb7
+UUID: 51df6723_7e1c7164
+Bytes: 29
+Done. Plus some other places.
+
 133:4-135:5
 Sat Feb 07 15:04:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51292784_ce7123c6
 Bytes: 62
 Factorize this into something like FromArrayLengthToNewArray ?
+
+133:4-135:5
+Mon Feb 09 19:48:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51292784_ce7123c6
+UUID: 31dcb32f_bda35fc6
+Bytes: 5
+Done.
 
 221:10-221:84
 Sat Feb 07 15:04:09 2015 +0000
@@ -23,12 +39,40 @@ UUID: 51292784_6e48ef74
 Bytes: 64
 ... and we have checked that c falls into the right range above.
 
+221:10-221:84
+Mon Feb 09 19:48:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51292784_6e48ef74
+UUID: 51df6723_deb0250a
+Bytes: 147
+Rephrased it to:
+// Regardless of the value new_constant, (array.length+new_constant) will
+// never underflow since array.length is no less than 0.
+
 369:45-369:56
 Sat Feb 07 15:04:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 312673b6_cd7129c6
 Bytes: 119
 Should this be called GetOffset() ? It's confusing otherwise to have a GetConstant and IsConstant following each other.
+
+369:45-369:56
+Mon Feb 09 19:48:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 312673b6_cd7129c6
+UUID: 51df6723_3e12e951
+Bytes: 493
+I simplified this part of code to:
+      // max possible integer value of range's upper value.
+      int32_t upper = INT_MAX;
+      // Try to lower upper.
+      ValueBound upper_bound = range->GetUpper();
+      if (upper_bound.IsConstant()) {
+        upper = upper_bound.GetConstant();
+      } else if (upper_bound.IsRelatedToArrayLength() && upper_bound.GetConstant() <= 0) {
+        // Normal case. e.g. <= array.length - 1.
+        upper = max_array_len + upper_bound.GetConstant();
+      }
 
 578:0-603:7
 Sat Feb 07 15:04:09 2015 +0000
@@ -37,10 +81,26 @@ UUID: 312673b6_ad7edd93
 Bytes: 172
 Could we somehow have this automatically with the logic line 566? It seems that if you were to create a ValueRange for the constant you would get all of this code for free?
 
+578:0-603:7
+Mon Feb 09 19:48:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 312673b6_ad7edd93
+UUID: 31dcb32f_fd2887ab
+Bytes: 166
+If when we record the range for constant 4, we also record it for constant 0,1,2,3. That would work. But that's not practical. So we record array.length >= 5 instead.
+
 606:63-606:81
 Sat Feb 07 15:04:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51292784_4e4d3383
 Bytes: 53
 -> a valid array[i] cannot prove a valid array[i - 1]
+
+606:63-606:81
+Mon Feb 09 19:48:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51292784_4e4d3383
+UUID: 31dcb32f_fd7b27a2
+Bytes: 5
+Done.
 

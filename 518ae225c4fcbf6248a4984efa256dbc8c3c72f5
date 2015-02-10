@@ -2,6 +2,20 @@ Revision: 518ae225c4fcbf6248a4984efa256dbc8c3c72f5
 Patch-set: 1
 File: compiler/optimizing/instruction_simplifier.cc
 
+26:0-29:67
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1105b97_c3113678
+Bytes: 147
+I'm wondering whether these methods should be part of the ConstantFolding optimization -- maybe not, as they depend on a sole input being constant.
+
+36:0-45:44
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11140f87_842e26b7
+Bytes: 9
+Likewise.
+
 58:4-59:60
 Mon Feb 09 19:09:08 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -11,12 +25,38 @@ ReplaceAndRemoveInstructionWith
 
 the same in the other places
 
+79:4-80:82
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b1218333_d96153a5
+Bytes: 81
+This is a recurring pattern in this file; I suggest introducing a helper routine.
+
 159:13-159:62
 Mon Feb 09 19:09:08 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1493ba5_5e7071c2
 Bytes: 65
 are we sure if the inputs are constant they are the same pointer?
+
+159:13-159:62
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1105b97_0366ae13
+Bytes: 232
+I guess that this optimization relies on GVN being performed prior (which is the case as InstructionSimplifier is run before *and* after GVNOptimization in compiler/optimizing/optimizing_compiler.cc); maybe add a comment about this?
+
+166:2-166:48
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 918b9f6f_90e5d42f
+Bytes: 191
+What about implementing transformations similar to the ones in `InstructionSimplifierVisitor::VisitMul(HMul* instruction)', e.g.:
+
+* a / -1 → -a
+* a / 2^b  → -a >> b (arithmetic shift)
+
+?
 
 196:4-196:10
 Mon Feb 09 19:09:08 2015 +0000
@@ -32,7 +72,21 @@ UUID: f1493ba5_9efcb9c7
 Bytes: 37
 use early return instead of a long if
 
+288:23-288:78
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 918b9f6f_30f748e1
+Bytes: 131
+I find this sentence a bit confusing.  I would replace it with "the former expression yields `0.0`, while the later yields `-0.0`".
+
 File: compiler/optimizing/nodes.h
+
+1361
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1105b97_23c5aa94
+Bytes: 49
+Maybe mention that "otherwise, returns nullptr."?
 
 1351:2-1362:46
 Mon Feb 09 19:09:08 2015 +0000
@@ -42,6 +96,13 @@ Bytes: 143
 These are not used. Have I missed something?
 
 Also, I found them a bit confusing (not immediately clear what they do and what's their purpose).
+
+1363:40-1363:71
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3117538d_e52a767a
+Bytes: 27
+Is this cast really needed?
 
 1650:7-1650:17
 Mon Feb 09 19:09:08 2015 +0000
@@ -56,4 +117,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 71daab34_dfb01b0a
 Bytes: 14
 AreAllBitsOne?
+
+1653:7-1653:16
+Tue Feb 10 11:10:06 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71daab34_dfb01b0a
+UUID: 918b9f6f_3053c821
+Bytes: 36
+Or maybe is IsZeroBitwiseComplement?
 

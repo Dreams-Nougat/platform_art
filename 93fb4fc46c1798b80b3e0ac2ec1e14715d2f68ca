@@ -1,0 +1,230 @@
+Revision: 93fb4fc46c1798b80b3e0ac2ec1e14715d2f68ca
+Patch-set: 13
+File: compiler/compiled_method.cc
+
+149:21-149:52
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96db9505_d0099c54
+Bytes: 233
+mapping_table.empty()
+
+An empty ArrayRef<>, just like an empty std::vector<>, can have null or non-null data() and it doesn't affect its semantics. Most ArrayRef<>s are constructed from std::vector<>s and acquire their data() anyway.
+
+File: compiler/dex/mir_analysis.cc
+
+803:0-840:10
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 164de5ae_7c8459ef
+Bytes: 56
+dex_instruction_list.h says "unused-f3" ... "unused-ff".
+
+1209:39-1209:54
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6834dc3_e5abd0ee
+Bytes: 174
+This is an abuse of MethodReference. We should have a FieldReference class as well if we want to do it like this. However, I'd keep this as uint16_t* or uint32_t*, see below.
+
+1238:32-1238:79
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36402975_7d8457ef
+Bytes: 336
+This should be in Mir{I,S}FieldLoweringInfo::Resolve(). This method should just record an extra flag "is_quick" and pass it to the Mir{I,S}FieldLoweringInfo constructors.
+
+(You can allocate another bool array for these flags or encode them locally with the index/offset for faster search in a unified "uint32_t* field_idxs_or_offsets".)
+
+1383:34-1383:82
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d658ad71_3ac4a198
+Bytes: 250
+This should be in MirMethodLoweringInfo::Resolve(). Just store mir->dalvikInsn.vB in the target method idx and record an additional "is_quick" flag here.
+
+(MapEntry::invoke_type is unnecessarily 16-bit, change it to 8-bit to make space for the flag.)
+
+File: compiler/dex/mir_dataflow.cc
+
+761:0-799:0
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b65df961_19b72b08
+Bytes: 56
+dex_instruction_list.h says "unused-f3" ... "unused-ff".
+
+File: compiler/dex/mir_field_info.cc
+
+71:52-71:61
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6834dc3_659820e2
+Bytes: 36
+Remove: don't compare bool to false.
+
+File: compiler/dex/mir_graph.cc
+
+1740:0-1746:3
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c59d22_eefddfc1
+Bytes: 67
+Rewrite using IsInstructionInvoke() and IsInstructionQuickInvoke().
+
+File: compiler/dex/mir_graph.h
+
+694:0-697:5
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 766b81dd_f7a14088
+Bytes: 265
+This is error-prone. meta is a union, so this check may spuriously fail.
+
+Please revert all changes to GetMethodLoweringInfo() and implement appropriate checks in callers. It is their responsibility to ensure that they call GetMethodLoweringInfo() only for invokes.
+
+File: compiler/dex/mir_method_info.cc
+
+106:12-106:20
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c59d22_aef7d7df
+Bytes: 56
+Always false in this branch of the highest enclosing if.
+
+File: compiler/dex/mir_method_info.h
+
+218:2-218:16
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 766b81dd_d7bbdcbc
+Bytes: 109
+Did we run out of bits in flags_? This bool will increase the sizeof(MirMethodLoweringInfo) by sizeof(void*).
+
+File: compiler/dex/quick/mir_to_lir.cc
+
+410:6-410:22
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6834dc3_e55d1067
+Bytes: 80
+FALLTHROUGH_INTENDED or nothing (not even a blank line) here and 17 times below.
+
+File: compiler/driver/compiler_driver-inl.h
+
+233:43-233:59
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56c59d22_8e2c5bbf
+Bytes: 37
+So we're losing some sharpening here?
+
+File: runtime/dex_instruction_utils.h
+
+190:0-190:6
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 766b81dd_d748bc51
+Bytes: 125
+Unnecessary and potentially harmful to code size if the compiler emits out-of-line copies - the linker will keep all of them.
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+612:0-613:56
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16cfa548_ccd7cf46
+Bytes: 75
+I assume this small change is just for debugging. Revert before submitting.
+
+File: runtime/jit/jit.cc
+
+69:29-69:32
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5643dd80_1e1b8d9e
+Bytes: 3
+not
+
+122
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9639d503_00432634
+Bytes: 29
+dlclose(jit_library_handle_)?
+
+File: runtime/jit/jit_code_cache.cc
+
+34:49-34:56
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96b475b1_88d1b7d2
+Bytes: 4
+typo
+
+58:37-58:62
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96b475b1_c8f00f6d
+Bytes: 54
+Could we instead make the code grow down from the end?
+
+95:16-95:21
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 763e21ec_bf7377ce
+Bytes: 3
+end
+
+102:16-102:21
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 763e21ec_9f7033c3
+Bytes: 3
+end
+
+File: runtime/jit/jit_instrumentation.cc
+
+61:21-61:28
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9639d503_00b04607
+Bytes: 45
+Unnecessary, nullptr is the default argument.
+
+File: runtime/mirror/art_method.cc
+
+349:8-349:28
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56ae7d66_e61c1e63
+Bytes: 77
+This variable is used only here, so it should not be calculated so far above.
+
+File: runtime/quick/inline_method_analyser.cc
+
+115:0-117:43
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96b475b1_e8f71391
+Bytes: 4
+WIP?
+
+File: runtime/runtime.cc
+
+232:33-232:39
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6341908_4149b276
+Bytes: 15
+Remove "after".
+
+File: runtime/verifier/method_verifier.cc
+
+116:70-116:79
+Wed Feb 11 17:34:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6341908_01b04a07
+Bytes: 22
+error ATTRIBUTE_UNUSED
+

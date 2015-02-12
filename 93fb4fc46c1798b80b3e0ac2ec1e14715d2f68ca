@@ -1,5 +1,14 @@
 Revision: 93fb4fc46c1798b80b3e0ac2ec1e14715d2f68ca
 Patch-set: 13
+File: cmdline/cmdline_parser_test.cc
+
+420:38-420:42
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6998d84_92bbdcbd
+Bytes: 108
+Why not just directly use one bool flag "UseJIT" (is there a reason to do two flags like -Xjit and -Xnojit)?
+
 File: compiler/compiled_method.cc
 
 149:21-149:52
@@ -101,6 +110,13 @@ UUID: 766b81dd_d7bbdcbc
 Bytes: 109
 Did we run out of bits in flags_? This bool will increase the sizeof(MirMethodLoweringInfo) by sizeof(void*).
 
+218:7-218:16
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_c49f3e70
+Bytes: 44
+What does is_quick mean? Quick the compiler?
+
 File: compiler/dex/quick/mir_to_lir.cc
 
 410:6-410:22
@@ -110,6 +126,15 @@ UUID: d6834dc3_e55d1067
 Bytes: 80
 FALLTHROUGH_INTENDED or nothing (not even a blank line) here and 17 times below.
 
+File: compiler/dex/verified_method.cc
+
+75:0-75:40
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6f851d4_43fea6be
+Bytes: 41
+Put DCHECK(Runtime::Current()->UseJit())?
+
 File: compiler/driver/compiler_driver-inl.h
 
 233:43-233:59
@@ -118,6 +143,68 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56c59d22_8e2c5bbf
 Bytes: 37
 So we're losing some sharpening here?
+
+File: compiler/driver/compiler_driver.cc
+
+572:0-591:25
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76a621d5_9f1ab366
+Bytes: 129
+If we put lines 572-585 in a nested block, can we avoid the TransitionFromRunnableToSuspended call across the CompileMethod call?
+
+1092:13-1097:16
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d60eedb4_6a497753
+Bytes: 45
+I guess this applies to app classes, correct?
+
+1344:0-1347:66
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36d66940_2d894d3a
+Bytes: 189
+If the condition in line 1344 holds, is it ok to return? Is there a chance that we should negate the condition and put line 1347 into the if-then block and fall through to line 1365 and on?
+
+File: compiler/jit/jit_compiler.h
+
+2:13-2:17
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_04f2f6a0
+Bytes: 5
+2015?
+
+File: runtime/class_linker.cc
+
+252
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56abdd9d_3ea0493a
+Bytes: 43
+Is it intentional to add a blank line here?
+
+1037:44-1037:94
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96a1d5bc_83014037
+Bytes: 54
+Indentation seems off (though it's the original code)?
+
+1108:0-1109:57
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56abdd9d_bed7b978
+Bytes: 10
+Here, too.
+
+1631:10-1631:40
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6b1310e_3b2df7b9
+Bytes: 177
+Is this fixing a bug (i.e., we should not set code pointer size for a runtime method) or removing redundancy (i.e., we don't need to set code pointer size for a runtime method)?
 
 File: runtime/dex_instruction_utils.h
 
@@ -137,6 +224,47 @@ UUID: 16cfa548_ccd7cf46
 Bytes: 75
 I assume this small change is just for debugging. Revert before submitting.
 
+File: runtime/instrumentation.cc
+
+131:9-131:46
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96a1d5bc_a089dabe
+Bytes: 169
+Does this suggest that we can have forced interpret and have jit at the same time? Can we make these mutually exclusive (it seems odd to have JIT when interpreter only)?
+
+139:65-139:79
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56abdd9d_3e784957
+Bytes: 9
+same here
+
+File: runtime/instrumentation.h
+
+98:24-98:46
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96a1d5bc_60ee3291
+Bytes: 31
+This is a copy-and-paste error.
+
+296:27-296:47
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b69c1985_e1e126a5
+Bytes: 5
+Same.
+
+File: runtime/interpreter/interpreter_common.cc
+
+690:8-690:37
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56abdd9d_bebd7995
+Bytes: 9
+same here
+
 File: runtime/jit/jit.cc
 
 69:29-69:32
@@ -155,6 +283,13 @@ dlclose(jit_library_handle_)?
 
 File: runtime/jit/jit_code_cache.cc
 
+26:42-26:50
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56475dec_9e009de4
+Bytes: 45
+Assert that capacity < 4G for a 64-bit build?
+
 34:49-34:56
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -162,12 +297,26 @@ UUID: 96b475b1_88d1b7d2
 Bytes: 4
 typo
 
+51:12-51:22
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7642a1dd_3f762725
+Bytes: 44
+Assign a mutex level in the enum in mutex.h?
+
 58:37-58:62
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96b475b1_c8f00f6d
 Bytes: 54
 Could we instead make the code grow down from the end?
+
+80:0-80:98
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7642a1dd_7f610f77
+Bytes: 28
+Should this line be removed?
 
 95:16-95:21
 Wed Feb 11 17:34:38 2015 +0000
@@ -183,6 +332,15 @@ UUID: 763e21ec_9f7033c3
 Bytes: 3
 end
 
+File: runtime/jit/jit_code_cache.h
+
+51:26-51:27
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7642a1dd_7f6b4f88
+Bytes: 6
+const?
+
 File: runtime/jit/jit_instrumentation.cc
 
 61:21-61:28
@@ -192,6 +350,15 @@ UUID: 9639d503_00b04607
 Bytes: 45
 Unnecessary, nullptr is the default argument.
 
+File: runtime/mirror/art_field.cc
+
+47:43-47:56
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f66cd149_e329b2ad
+Bytes: 42
+Why skip the DCHECK_ALIGNED if we use JIT?
+
 File: runtime/mirror/art_method.cc
 
 349:8-349:28
@@ -200,6 +367,38 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56ae7d66_e61c1e63
 Bytes: 77
 This variable is used only here, so it should not be calculated so far above.
+
+423:27-423:45
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16708517_a42fc2b2
+Bytes: 50
+Why need this? We don't run JIT when -Xint, right?
+
+File: runtime/mirror/art_method.h
+
+303:42-303:46
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76a8e190_6f6211a8
+Bytes: 42
+Add comment on what 'code' is pointing to?
+
+308:14-308:33
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56767d13_46ce12b8
+Bytes: 82
+Can this be private? Since we don't check code is a valid pointer, it seems risky.
+
+File: runtime/oat_file.cc
+
+583:4-583:97
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6b979da_991f9b56
+Bytes: 28
+Update this comment for JIT?
 
 File: runtime/quick/inline_method_analyser.cc
 
@@ -219,6 +418,56 @@ UUID: b6341908_4149b276
 Bytes: 15
 Remove "after".
 
+838:0-840:3
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6998d84_72dd9896
+Bytes: 90
+Does this mean that create jit options if we are not AOT or JIT? Not sure what this means.
+
+841:0-843:3
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6998d84_12f7ec18
+Bytes: 54
+On what conditions exactly do we enable jit currently?
+
+File: runtime/runtime.h
+
+107:0-109:3
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96a1d5bc_e0e242e0
+Bytes: 117
+Does this mean now that we are more or less dex2oat, which is what IsCompiler() used to mean? Add comment to clarify?
+
+111:7-111:17
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6998d84_32015080
+Bytes: 101
+I think this used to mean more or less we are dex2oat.
+
+What does this exactly mean now? Add comment?
+
+File: runtime/signal_catcher.cc
+
+183:37-183:62
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f66cd149_e37a929e
+Bytes: 40
+Why create_peer = true for the JIT case?
+
+File: runtime/utils.cc
+
+1242:10-1244:21
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6998d84_955ca633
+Bytes: 288
+Can we add a non-static version of ArtMethod::PcIsWithinQuickCode (and turn the static version private)? It seem that if we do, we would not need to modify this code and it'd be safer as we don't check the validity of the 'code' param in the current static ArtMethod::PcIsWithinQuickCode.
+
 File: runtime/verifier/method_verifier.cc
 
 116:70-116:79
@@ -227,4 +476,13 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6341908_01b04a07
 Bytes: 22
 error ATTRIBUTE_UNUSED
+
+File: test/etc/run-test-jar
+
+264:14-264:25
+Thu Feb 12 03:05:25 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b69c1985_212a6ea2
+Bytes: 79
+Why -Xint and Xjit at the same time? It seem they should be mutually exclusive.
 

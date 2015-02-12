@@ -11,6 +11,13 @@ Why not just directly use one bool flag "UseJIT" (is there a reason to do two fl
 
 File: compiler/compiled_method.cc
 
+34:6-34:25
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3644a9e8_9d42e352
+Bytes: 17
+How is that safe?
+
 149:21-149:52
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,6 +26,15 @@ Bytes: 233
 mapping_table.empty()
 
 An empty ArrayRef<>, just like an empty std::vector<>, can have null or non-null data() and it doesn't affect its semantics. Most ArrayRef<>s are constructed from std::vector<>s and acquire their data() anyway.
+
+File: compiler/compiled_method.h
+
+80:13-80:29
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_a4d7a278
+Bytes: 101
+Do you really want this ownership lowered down to the method? Seems more like a code cache problem...
 
 File: compiler/dex/mir_analysis.cc
 
@@ -117,6 +133,13 @@ UUID: 16fc05c4_c49f3e70
 Bytes: 44
 What does is_quick mean? Quick the compiler?
 
+218:7-218:16
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3644a9e8_3dadcfb0
+Bytes: 24
+is_quick -> is_quickened
+
 File: compiler/dex/quick/mir_to_lir.cc
 
 410:6-410:22
@@ -167,6 +190,31 @@ UUID: 36d66940_2d894d3a
 Bytes: 189
 If the condition in line 1344 holds, is it ok to return? Is there a chance that we should negate the condition and put line 1347 into the if-then block and fall through to line 1365 and on?
 
+File: compiler/driver/compiler_driver.h
+
+396:6-396:23
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 165165a8_9c1f4588
+Bytes: 26
+Name does not match field.
+
+File: compiler/jit/jit_compiler.cc
+
+76:1-88:67
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_44a90ef6
+Bytes: 68
+Can't you do that in the initializers and avoid the std::unique_ptr?
+
+117:70-117:75
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_c485fe74
+Bytes: 30
+Use that in the error message?
+
 File: compiler/jit/jit_compiler.h
 
 2:13-2:17
@@ -206,6 +254,20 @@ UUID: f6b1310e_3b2df7b9
 Bytes: 177
 Is this fixing a bug (i.e., we should not set code pointer size for a runtime method) or removing redundancy (i.e., we don't need to set code pointer size for a runtime method)?
 
+2519:2-2525:3
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 165165a8_1c57b50e
+Bytes: 83
+I don't understand this. How can the JIT have it its in cache at class-linker time?
+
+2540:25-2540:49
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 165165a8_dcb14d14
+Bytes: 33
+How is that different than above?
+
 File: runtime/dex_instruction_utils.h
 
 190:0-190:6
@@ -225,6 +287,13 @@ Bytes: 75
 I assume this small change is just for debugging. Revert before submitting.
 
 File: runtime/instrumentation.cc
+
+126:0-128:52
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_6701ac34
+Bytes: 73
+I don't understand this comment, and the TODO unfortunately doesn't help.
 
 131:9-131:46
 Thu Feb 12 03:05:25 2015 +0000
@@ -249,6 +318,13 @@ UUID: 96a1d5bc_60ee3291
 Bytes: 31
 This is a copy-and-paste error.
 
+98:0-98:46
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3644a9e8_7db917c4
+Bytes: 13
+Not really :)
+
 296:27-296:47
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -264,6 +340,13 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56abdd9d_bebd7995
 Bytes: 9
 same here
+
+690:0-690:40
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_4707d040
+Bytes: 51
+Hasn't the IsForcedInterpretOnly defeat this check?
 
 File: runtime/jit/jit.cc
 
@@ -296,6 +379,13 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96b475b1_88d1b7d2
 Bytes: 4
 typo
+
+36:0-38:25
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 165165a8_dc062d01
+Bytes: 22
+When does that happen?
 
 51:12-51:22
 Thu Feb 12 03:05:25 2015 +0000
@@ -334,6 +424,13 @@ end
 
 File: runtime/jit/jit_code_cache.h
 
+20:10-20:23
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 165165a8_7ccfd95f
+Bytes: 13
+Seems unused?
+
 51:26-51:27
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -350,6 +447,22 @@ UUID: 9639d503_00b04607
 Bytes: 45
 Unnecessary, nullptr is the default argument.
 
+103:2-103:38
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fc05c4_67d2cc09
+Bytes: 37
+Why are we sampling if it's compiled?
+
+File: runtime/jit/jit_instrumentation.h
+
+54:7-54:17
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 165165a8_1cf57588
+Bytes: 40
+Doesn't seem to fit in this abstraction.
+
 File: runtime/mirror/art_field.cc
 
 47:43-47:56
@@ -358,6 +471,15 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f66cd149_e329b2ad
 Bytes: 42
 Why skip the DCHECK_ALIGNED if we use JIT?
+
+File: runtime/mirror/art_method-inl.h
+
+153:0-153:6
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f64db110_5b330320
+Bytes: 87
+Why is that on the ArtMethod? Why don't we have an abstraction on OatQuickMethodHeader?
 
 File: runtime/mirror/art_method.cc
 
@@ -450,6 +572,14 @@ I think this used to mean more or less we are dex2oat.
 
 What does this exactly mean now? Add comment?
 
+111:7-111:17
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6998d84_32015080
+UUID: 16e32520_cc540f98
+Bytes: 103
+Yeah, as discussed, I don't think you need to change this. Or you could rename IsCompiler to IsDex2Oat.
+
 File: runtime/signal_catcher.cc
 
 183:37-183:62
@@ -459,6 +589,15 @@ UUID: f66cd149_e37a929e
 Bytes: 40
 Why create_peer = true for the JIT case?
 
+File: runtime/thread.cc
+
+993:0-995:3
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 162a4514_d4c35c90
+Bytes: 12
+Not related?
+
 File: runtime/utils.cc
 
 1242:10-1244:21
@@ -467,6 +606,13 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6998d84_955ca633
 Bytes: 288
 Can we add a non-static version of ArtMethod::PcIsWithinQuickCode (and turn the static version private)? It seem that if we do, we would not need to modify this code and it'd be safer as we don't check the validity of the 'code' param in the current static ArtMethod::PcIsWithinQuickCode.
+
+1242:10-1244:21
+Thu Feb 12 03:47:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b638995d_61bc16b6
+Bytes: 92
+This is basically checking if it's jitted, right? How about an abstraction on the ArtMethod?
 
 File: runtime/verifier/method_verifier.cc
 

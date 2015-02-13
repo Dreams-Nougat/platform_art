@@ -9,12 +9,32 @@ UUID: 0ba13c5e_5c57fda0
 Bytes: 53
 Why not? Because we don't expect checkcast of Object?
 
+59:2-59:29
+Fri Feb 13 16:33:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ba13c5e_5c57fda0
+UUID: 0b7a1caa_b44e602b
+Bytes: 414
+I still need to document this.
+
+So Top is not really java.lang.Object (it's handle will be a nullptr). That's because I don't have access to the mirror::Class of java.lang.Object... so when I merge incompatible types I cannot assign to the object the proper java.lang.Object class. 
+
+What I can test is that obj_rti.IsTop() and class_rti.GetTypeHandle()->IsObjectClass(). If that's the case we can remove the cast.
+
 60:6-61:82
 Fri Feb 13 16:05:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0ba13c5e_7c5c39c4
 Bytes: 45
 I would move this logic to ReferenceTypeInfo.
+
+60:6-61:82
+Fri Feb 13 16:33:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ba13c5e_7c5c39c4
+UUID: 2b7d20a0_158714f6
+Bytes: 147
+I was trying to keep the nodes.h free of annotalysis constraints. This is why I pushed bits outside of it. I think it was just a matter of taste...
 
 63:2-63:8
 Fri Feb 13 16:05:54 2015 +0000
@@ -46,6 +66,16 @@ UUID: 0b4cdc89_67380cfd
 Bytes: 86
 Please document these. is_precise is we know the exact type? Would 'exact' be clearer?
 
+895:1-897:15
+Fri Feb 13 16:33:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b4cdc89_67380cfd
+UUID: 2b7d20a0_358c9017
+Bytes: 102
+Yea, it's 'exact'. Not useful right not but we can do additional sharpening based on it.
+
+I'll rename.
+
 1104:2-1104:41
 Fri Feb 13 16:05:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -64,6 +94,14 @@ I think that of you put the IsAssignableFrom on ReferenceTypeInfo, you dont need
 
 Also, for reference, please don't create free-floating mirrors without handles.
 
+99:0-100:65
+Fri Feb 13 16:33:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b4cdc89_c728e0a7
+UUID: 2b7d20a0_d5a99c6b
+Bytes: 140
+It makes things much easier to operate on mirror object directly but I understand your concern. I will try to use the handles in all places.
+
 104:17-104:21
 Fri Feb 13 16:05:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -78,6 +116,14 @@ UUID: 0ba13c5e_5ca5bd48
 Bytes: 36
 Suggestion: !old_rti.Equals(new_rti)
 
+117:0-121:82
+Fri Feb 13 16:33:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ba13c5e_5ca5bd48
+UUID: 56267d9d_e67f7ec9
+Bytes: 176
+was like that in the beginning but then I change my mind when I realized that's an unconventional equal semantics on objects :) I'll try to find a better name and move it there
+
 140:2-140:51
 Fri Feb 13 16:05:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -85,10 +131,28 @@ UUID: 0b4cdc89_8722e8c1
 Bytes: 138
 This isn't correct. The type of this guy is java.lang.Class. You need another field in the node to cover what class it actually refers to.
 
+140:2-140:51
+Fri Feb 13 16:33:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b4cdc89_8722e8c1
+UUID: 56267d9d_c67a82dc
+Bytes: 287
+I was in doubt about this. I think we can treat this as a special node. Having another field complicates stuff unnecessarily because we don't generate LoadClass nodes when passing around/manipulating java.lang.Class objects.
+
+I also don't see an use for typing this with java.lang.Class.
+
 145:4-146:54
 Fri Feb 13 16:05:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb48687a_234e8ab2
 Bytes: 133
 This isn't the only interesting one for types. NewArray/Call/Field accesses/array accesses, .... also tell you which types they have.
+
+145:4-146:54
+Fri Feb 13 16:33:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb48687a_234e8ab2
+UUID: 56267d9d_a6858675
+Bytes: 84
+I know, was planning to add them later... This servers as a skeleton for follow ups.
 

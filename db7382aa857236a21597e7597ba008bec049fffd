@@ -1,0 +1,94 @@
+Revision: db7382aa857236a21597e7597ba008bec049fffd
+Patch-set: 1
+File: compiler/optimizing/instruction_simplifier.cc
+
+59:2-59:29
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba13c5e_5c57fda0
+Bytes: 53
+Why not? Because we don't expect checkcast of Object?
+
+60:6-61:82
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba13c5e_7c5c39c4
+Bytes: 45
+I would move this logic to ReferenceTypeInfo.
+
+63:2-63:8
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_a70e045c
+Bytes: 14
+indent is off.
+
+File: compiler/optimizing/nodes.h
+
+881:7-881:10
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_870b084c
+Bytes: 6
+SetTop
+
+887:2-887:42
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b9440fe_5d64dbad
+Bytes: 1
+?
+
+895:1-897:15
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_67380cfd
+Bytes: 86
+Please document these. is_precise is we know the exact type? Would 'exact' be clearer?
+
+1104:2-1104:41
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b9440fe_1d5e53e4
+Bytes: 66
+We need something like invalid reference type for primitive types.
+
+File: compiler/optimizing/reference_type_propagation.cc
+
+99:0-100:65
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_c728e0a7
+Bytes: 168
+I think that of you put the IsAssignableFrom on ReferenceTypeInfo, you dont need these.
+
+Also, for reference, please don't create free-floating mirrors without handles.
+
+104:17-104:21
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba13c5e_dc51cda0
+Bytes: 5
+to do
+
+117:0-121:82
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ba13c5e_5ca5bd48
+Bytes: 36
+Suggestion: !old_rti.Equals(new_rti)
+
+140:2-140:51
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_8722e8c1
+Bytes: 138
+This isn't correct. The type of this guy is java.lang.Class. You need another field in the node to cover what class it actually refers to.
+
+145:4-146:54
+Fri Feb 13 16:05:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb48687a_234e8ab2
+Bytes: 133
+This isn't the only interesting one for types. NewArray/Call/Field accesses/array accesses, .... also tell you which types they have.
+

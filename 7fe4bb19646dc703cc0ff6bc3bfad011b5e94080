@@ -1,5 +1,14 @@
 Revision: 7fe4bb19646dc703cc0ff6bc3bfad011b5e94080
 Patch-set: 7
+File: runtime/class_linker.cc
+
+1011:4-1011:26
+Fri Feb 13 16:58:09 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_a789643e
+Bytes: 83
+Move this inside the following if branch, because that's the only place it is used.
+
 File: runtime/parsed_options.cc
 
 240
@@ -15,4 +24,23 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb5e442b_8a90abb1
 Bytes: 115
 Did you want to make it like the other ones and have the -Xdex-file-fallback and the -Xnodex-file-fallback options?
+
+File: runtime/runtime.cc
+
+388:23-388:27
+Fri Feb 13 16:58:09 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_473750dc
+Bytes: 103
+this = 'deleting the instance'.
+
+I think it's worth explicitly stating that we are leaking memory here.
+
+771:1-771:77
+Fri Feb 13 16:58:09 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b4cdc89_a728447d
+Bytes: 162
+Why is this different from the verify_ assign statement?
+Should it use runtime_options.GetOrDefault? Or should the verify_ assignment use !runtime_options.Exists?
 

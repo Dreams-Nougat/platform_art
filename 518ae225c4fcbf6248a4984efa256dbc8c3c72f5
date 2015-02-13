@@ -9,6 +9,15 @@ UUID: f1105b97_c3113678
 Bytes: 147
 I'm wondering whether these methods should be part of the ConstantFolding optimization -- maybe not, as they depend on a sole input being constant.
 
+26:0-29:67
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1105b97_c3113678
+UUID: 7658e11a_0f74a5b5
+Bytes: 168
+I hadn't thought about that.
+I moved the logic that replaces the instruction by a constant to the constant folding pass, so it correctly folds `(a & 0) | 0xabc` to `0`.
+
 36:0-45:44
 Tue Feb 10 11:10:06 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +34,29 @@ ReplaceAndRemoveInstructionWith
 
 the same in the other places
 
+58:4-59:60
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71daab34_1f90c330
+UUID: 7658e11a_6f545108
+Bytes: 275
+That does not work because ReplaceAndRemoveInstructionWith assumes that the new instruction is not in the graph.
+I'd be happy to change the semantics to only conditionally insert the instruction in the graph if it is not there already. Should I do that as part of this patch?
+
 79:4-80:82
 Tue Feb 10 11:10:06 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b1218333_d96153a5
 Bytes: 81
 This is a recurring pattern in this file; I suggest introducing a helper routine.
+
+79:4-80:82
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b1218333_d96153a5
+UUID: 2bf8c037_fd6147ea
+Bytes: 4
+Done
 
 159:13-159:62
 Mon Feb 09 19:09:08 2015 +0000
@@ -46,6 +72,15 @@ UUID: f1105b97_0366ae13
 Bytes: 232
 I guess that this optimization relies on GVN being performed prior (which is the case as InstructionSimplifier is run before *and* after GVNOptimization in compiler/optimizing/optimizing_compiler.cc); maybe add a comment about this?
 
+159:13-159:62
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1105b97_0366ae13
+UUID: 7658e11a_8f489575
+Bytes: 161
+Yes that was what I was assuming. Added a comment.
+Note that if for some reason it is not the case, we are still correct but missing an optimisation opportunity.
+
 166:2-166:48
 Tue Feb 10 11:10:06 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,12 +93,29 @@ What about implementing transformations similar to the ones in `InstructionSimpl
 
 ?
 
+166:2-166:48
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 918b9f6f_90e5d42f
+UUID: 8bf1ac52_606c72ee
+Bytes: 276
+Added "a / -1"
+Division by a power of 2 is not a simple shift when the input is negative (eg. -1 / 2 should yield 0). I left the division because I wanted to have a separate patch to optimise the generated code for divisions by any constant (multiplying by reciprocal values).
+
 196:4-196:10
 Mon Feb 09 19:09:08 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1e5bbf3_db41132b
 Bytes: 55
 nit: try to be consistent: either use else-if or return
+
+196:4-196:10
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1e5bbf3_db41132b
+UUID: 363ae9a9_6d653531
+Bytes: 4
+Done
 
 262:2-262:40
 Mon Feb 09 19:09:08 2015 +0000
@@ -72,12 +124,28 @@ UUID: f1493ba5_9efcb9c7
 Bytes: 37
 use early return instead of a long if
 
+262:2-262:40
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1493ba5_9efcb9c7
+UUID: 3623c98f_456e8a67
+Bytes: 4
+Done
+
 288:23-288:78
 Tue Feb 10 11:10:06 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 918b9f6f_30f748e1
 Bytes: 131
 I find this sentence a bit confusing.  I would replace it with "the former expression yields `0.0`, while the later yields `-0.0`".
+
+288:23-288:78
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 918b9f6f_30f748e1
+UUID: abecb07a_8122da18
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -88,6 +156,14 @@ UUID: f1105b97_23c5aa94
 Bytes: 49
 Maybe mention that "otherwise, returns nullptr."?
 
+1361
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1105b97_23c5aa94
+UUID: 2bf8c037_bde05f1c
+Bytes: 4
+Done
+
 1351:2-1362:46
 Mon Feb 09 19:09:08 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -97,6 +173,14 @@ These are not used. Have I missed something?
 
 Also, I found them a bit confusing (not immediately clear what they do and what's their purpose).
 
+1351:2-1362:46
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71daab34_bff7d758
+UUID: 2bf8c037_1de99303
+Bytes: 43
+They are used in instruction_simplifier.cc.
+
 1363:40-1363:71
 Tue Feb 10 11:10:06 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -104,12 +188,33 @@ UUID: 3117538d_e52a767a
 Bytes: 27
 Is this cast really needed?
 
+1363:40-1363:71
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3117538d_e52a767a
+UUID: 8bf1ac52_00fec6bd
+Bytes: 248
+I was also surprised it was required! The compiler gives me an error otherwise:
+
+error: cannot convert 'art::HConstant*' to 'art::HInstruction*' in initialization
+     HInstruction* most_constant_right = GetConstantRight();
+
+I haven't investigated.
+
 1650:7-1650:17
 Mon Feb 09 19:09:08 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 71daab34_7f60ef74
 Bytes: 84
 Since these are used ony in InstructionSimplifier why not making them statics there?
+
+1650:7-1650:17
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71daab34_7f60ef74
+UUID: 7658e11a_cf69bde3
+Bytes: 260
+After moving some logic into the constant folding pass the helpers are now used in both places. I don't see a good other place to put them, so leaving IsMinusOne(), IsZero(), and IsOne() here. The other IsAllOnes() has been renamed and moved to the simplifier.
 
 1653:7-1653:16
 Mon Feb 09 19:09:08 2015 +0000
@@ -125,4 +230,12 @@ Parent: 71daab34_dfb01b0a
 UUID: 918b9f6f_3053c821
 Bytes: 36
 Or maybe is IsZeroBitwiseComplement?
+
+1653:7-1653:16
+Fri Feb 13 00:53:27 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71daab34_dfb01b0a
+UUID: 2bf8c037_9d0b634c
+Bytes: 27
+Renamed to "AreAllBitsSet".
 

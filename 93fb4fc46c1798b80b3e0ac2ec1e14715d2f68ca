@@ -9,6 +9,14 @@ UUID: d6998d84_92bbdcbd
 Bytes: 108
 Why not just directly use one bool flag "UseJIT" (is there a reason to do two flags like -Xjit and -Xnojit)?
 
+420:38-420:42
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6998d84_92bbdcbd
+UUID: 96d0f589_e8b133e2
+Bytes: 64
+-Xnojit is so that I can disable it if it is enabled by default.
+
 File: compiler/compiled_method.cc
 
 34:6-34:25
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3644a9e8_9d42e352
 Bytes: 17
 How is that safe?
+
+34:6-34:25
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3644a9e8_9d42e352
+UUID: 36c749d7_e5cdd6ba
+Bytes: 116
+Currently the array is always allocated with new if own_arrays_ is true. Also delete nullptr is defined to be a NOP.
 
 149:21-149:52
 Wed Feb 11 17:34:38 2015 +0000
@@ -27,6 +43,14 @@ mapping_table.empty()
 
 An empty ArrayRef<>, just like an empty std::vector<>, can have null or non-null data() and it doesn't affect its semantics. Most ArrayRef<>s are constructed from std::vector<>s and acquire their data() anyway.
 
+149:21-149:52
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96db9505_d0099c54
+UUID: 16c405d1_e4cddaba
+Bytes: 4
+Done
+
 File: compiler/compiled_method.h
 
 80:13-80:29
@@ -35,6 +59,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16fc05c4_a4d7a278
 Bytes: 101
 Do you really want this ownership lowered down to the method? Seems more like a code cache problem...
+
+80:13-80:29
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_a4d7a278
+UUID: 76bc6132_aff61919
+Bytes: 227
+The problem is that I need to release the arrays for the compiled methods after they are added to the code cache. I supposed we could remove the arrays from the dedupe maps to do this, but it wouldn't be very safe or efficient.
 
 File: compiler/dex/mir_analysis.cc
 
@@ -45,12 +77,28 @@ UUID: 164de5ae_7c8459ef
 Bytes: 56
 dex_instruction_list.h says "unused-f3" ... "unused-ff".
 
+803:0-840:10
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 164de5ae_7c8459ef
+UUID: 36c749d7_652d66b9
+Bytes: 71
+Pretty sure this is leftover stuff from Dalvik, I'll clean it up a bit.
+
 1209:39-1209:54
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6834dc3_e5abd0ee
 Bytes: 174
 This is an abuse of MethodReference. We should have a FieldReference class as well if we want to do it like this. However, I'd keep this as uint16_t* or uint32_t*, see below.
+
+1209:39-1209:54
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6834dc3_e5abd0ee
+UUID: 0b4dbcae_bfa9b36c
+Bytes: 4
+Done
 
 1238:32-1238:79
 Wed Feb 11 17:34:38 2015 +0000
@@ -61,6 +109,14 @@ This should be in Mir{I,S}FieldLoweringInfo::Resolve(). This method should just 
 
 (You can allocate another bool array for these flags or encode them locally with the index/offset for faster search in a unified "uint32_t* field_idxs_or_offsets".)
 
+1238:32-1238:79
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36402975_7d8457ef
+UUID: 8b528c4f_3b0023e5
+Bytes: 4
+Done
+
 1383:34-1383:82
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,6 +125,14 @@ Bytes: 250
 This should be in MirMethodLoweringInfo::Resolve(). Just store mir->dalvikInsn.vB in the target method idx and record an additional "is_quick" flag here.
 
 (MapEntry::invoke_type is unnecessarily 16-bit, change it to 8-bit to make space for the flag.)
+
+1383:34-1383:82
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d658ad71_3ac4a198
+UUID: 6bb9d8a9_87a3e687
+Bytes: 131
+I don't think that will deduplicate correctly in all cases, I'll just directly insert into method_lowering_infos_ and skip the map.
 
 File: compiler/dex/mir_dataflow.cc
 
@@ -79,6 +143,14 @@ UUID: b65df961_19b72b08
 Bytes: 56
 dex_instruction_list.h says "unused-f3" ... "unused-ff".
 
+761:0-799:0
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b65df961_19b72b08
+UUID: 568d9d43_4e8b9306
+Bytes: 4
+Done
+
 File: compiler/dex/mir_field_info.cc
 
 71:52-71:61
@@ -88,6 +160,14 @@ UUID: d6834dc3_659820e2
 Bytes: 36
 Remove: don't compare bool to false.
 
+71:52-71:61
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6834dc3_659820e2
+UUID: 6bf6384b_7f388ffc
+Bytes: 4
+Done
+
 File: compiler/dex/mir_graph.cc
 
 1740:0-1746:3
@@ -96,6 +176,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56c59d22_eefddfc1
 Bytes: 67
 Rewrite using IsInstructionInvoke() and IsInstructionQuickInvoke().
+
+1740:0-1746:3
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56c59d22_eefddfc1
+UUID: abbf508b_095e29e4
+Bytes: 4
+Done
 
 File: compiler/dex/mir_graph.h
 
@@ -108,6 +196,14 @@ This is error-prone. meta is a union, so this check may spuriously fail.
 
 Please revert all changes to GetMethodLoweringInfo() and implement appropriate checks in callers. It is their responsibility to ensure that they call GetMethodLoweringInfo() only for invokes.
 
+694:0-697:5
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 766b81dd_f7a14088
+UUID: 8bb44cb1_aedda36b
+Bytes: 4
+Done
+
 File: compiler/dex/mir_method_info.cc
 
 106:12-106:20
@@ -116,6 +212,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56c59d22_aef7d7df
 Bytes: 56
 Always false in this branch of the highest enclosing if.
+
+106:12-106:20
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56c59d22_aef7d7df
+UUID: 0bcf7c48_0c4e37b2
+Bytes: 4
+Done
 
 File: compiler/dex/mir_method_info.h
 
@@ -140,6 +244,30 @@ UUID: 3644a9e8_3dadcfb0
 Bytes: 24
 is_quick -> is_quickened
 
+218:7-218:16
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_c49f3e70
+UUID: abbf508b_a9ea7da2
+Bytes: 14
+Added comment.
+
+218:7-218:16
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3644a9e8_3dadcfb0
+UUID: abbf508b_c9f331a3
+Bytes: 4
+Done
+
+218:2-218:16
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 766b81dd_d7bbdcbc
+UUID: ebcb083b_8b79ad14
+Bytes: 4
+Done
+
 File: compiler/dex/quick/mir_to_lir.cc
 
 410:6-410:22
@@ -148,6 +276,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6834dc3_e55d1067
 Bytes: 80
 FALLTHROUGH_INTENDED or nothing (not even a blank line) here and 17 times below.
+
+410:6-410:22
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6834dc3_e55d1067
+UUID: 0bcf7c48_8cd6a7fd
+Bytes: 4
+Done
 
 File: compiler/dex/verified_method.cc
 
@@ -158,6 +294,14 @@ UUID: f6f851d4_43fea6be
 Bytes: 41
 Put DCHECK(Runtime::Current()->UseJit())?
 
+75:0-75:40
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6f851d4_43fea6be
+UUID: 2bc2801e_6d8255e7
+Bytes: 4
+Done
+
 File: compiler/driver/compiler_driver-inl.h
 
 233:43-233:59
@@ -166,6 +310,15 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56c59d22_8e2c5bbf
 Bytes: 37
 So we're losing some sharpening here?
+
+233:43-233:59
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56c59d22_8e2c5bbf
+UUID: 0bcf7c48_0c32b71a
+Bytes: 119
+There is not less sharpening than before, note the check below.
+CHECK_EQ(target_method->dex_file, mUnit->GetDexFile());
 
 File: compiler/driver/compiler_driver.cc
 
@@ -176,6 +329,14 @@ UUID: 76a621d5_9f1ab366
 Bytes: 129
 If we put lines 572-585 in a nested block, can we avoid the TransitionFromRunnableToSuspended call across the CompileMethod call?
 
+572:0-591:25
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76a621d5_9f1ab366
+UUID: 8bdb6c05_309b488c
+Bytes: 119
+We already have the mutator lock when we enter the function, I can just delete the ScopedObjectAccessUnchecked instead.
+
 1092:13-1097:16
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -183,12 +344,28 @@ UUID: d60eedb4_6a497753
 Bytes: 45
 I guess this applies to app classes, correct?
 
+1092:13-1097:16
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d60eedb4_6a497753
+UUID: abd670d9_31bef0af
+Bytes: 83
+It should, though these are usually movable, so there is probably minimal benefits.
+
 1344:0-1347:66
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 36d66940_2d894d3a
 Bytes: 189
 If the condition in line 1344 holds, is it ok to return? Is there a chance that we should negate the condition and put line 1347 into the if-then block and fall through to line 1365 and on?
+
+1344:0-1347:66
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36d66940_2d894d3a
+UUID: 2bc2801e_8d89c13e
+Bytes: 4
+Done
 
 File: compiler/driver/compiler_driver.h
 
@@ -199,6 +376,14 @@ UUID: 165165a8_9c1f4588
 Bytes: 26
 Name does not match field.
 
+396:6-396:23
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 165165a8_9c1f4588
+UUID: 2bc2801e_2dff6d6c
+Bytes: 4
+Done
+
 File: compiler/jit/jit_compiler.cc
 
 76:1-88:67
@@ -208,12 +393,28 @@ UUID: 16fc05c4_44a90ef6
 Bytes: 68
 Can't you do that in the initializers and avoid the std::unique_ptr?
 
+76:1-88:67
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_44a90ef6
+UUID: ab3af0c2_f11ba817
+Bytes: 4
+Done
+
 117:70-117:75
 Thu Feb 12 03:47:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16fc05c4_c485fe74
 Bytes: 30
 Use that in the error message?
+
+117:70-117:75
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_c485fe74
+UUID: 2b2600b6_8d67a133
+Bytes: 4
+Done
 
 File: compiler/jit/jit_compiler.h
 
@@ -224,6 +425,14 @@ UUID: 16fc05c4_04f2f6a0
 Bytes: 5
 2015?
 
+2:13-2:17
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_04f2f6a0
+UUID: 0b4cdc89_07d838ac
+Bytes: 51
+Was written in 2014 but uploaded in 2015? But done.
+
 File: runtime/class_linker.cc
 
 252
@@ -233,12 +442,28 @@ UUID: 56abdd9d_3ea0493a
 Bytes: 43
 Is it intentional to add a blank line here?
 
+252
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56abdd9d_3ea0493a
+UUID: 6b447857_0f1a856e
+Bytes: 4
+Done
+
 1037:44-1037:94
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96a1d5bc_83014037
 Bytes: 54
 Indentation seems off (though it's the original code)?
+
+1037:44-1037:94
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96a1d5bc_83014037
+UUID: ab3af0c2_d1a66499
+Bytes: 4
+Done
 
 1108:0-1109:57
 Thu Feb 12 03:05:25 2015 +0000
@@ -247,12 +472,28 @@ UUID: 56abdd9d_bed7b978
 Bytes: 10
 Here, too.
 
+1108:0-1109:57
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56abdd9d_bed7b978
+UUID: 2b2600b6_add6ddfc
+Bytes: 4
+Done
+
 1631:10-1631:40
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f6b1310e_3b2df7b9
 Bytes: 177
 Is this fixing a bug (i.e., we should not set code pointer size for a runtime method) or removing redundancy (i.e., we don't need to set code pointer size for a runtime method)?
+
+1631:10-1631:40
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6b1310e_3b2df7b9
+UUID: ab3af0c2_315ed0e4
+Bytes: 103
+It was for the jit + interpreter support, but I think its worth keeping. Doens't makes sense otherwise.
 
 2519:2-2525:3
 Thu Feb 12 03:47:48 2015 +0000
@@ -261,12 +502,29 @@ UUID: 165165a8_1c57b50e
 Bytes: 83
 I don't understand this. How can the JIT have it its in cache at class-linker time?
 
+2519:2-2525:3
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 165165a8_1c57b50e
+UUID: 2b2600b6_ed706571
+Bytes: 36
+This is called from Instrumentation.
+
 2540:25-2540:49
 Thu Feb 12 03:47:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 165165a8_dcb14d14
 Bytes: 33
 How is that different than above?
+
+2540:25-2540:49
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 165165a8_dcb14d14
+UUID: 2b2600b6_2d5e6de4
+Bytes: 68
+??
+// Special case to get oat code without overwriting a trampoline.
 
 File: runtime/dex_instruction_utils.h
 
@@ -277,6 +535,14 @@ UUID: 766b81dd_d748bc51
 Bytes: 125
 Unnecessary and potentially harmful to code size if the compiler emits out-of-line copies - the linker will keep all of them.
 
+190:0-190:6
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 766b81dd_d748bc51
+UUID: 56783d6f_b6430868
+Bytes: 83
+Its requried for linkage, should I add a dex_instruction_utils.cc to get rid of it?
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 612:0-613:56
@@ -285,6 +551,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16cfa548_ccd7cf46
 Bytes: 75
 I assume this small change is just for debugging. Revert before submitting.
+
+612:0-613:56
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16cfa548_ccd7cf46
+UUID: 16724591_1433d420
+Bytes: 4
+Done
 
 File: runtime/instrumentation.cc
 
@@ -295,6 +569,14 @@ UUID: 16fc05c4_6701ac34
 Bytes: 73
 I don't understand this comment, and the TODO unfortunately doesn't help.
 
+126:0-128:52
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_6701ac34
+UUID: eb1a2866_d3a67499
+Bytes: 4
+Done
+
 131:9-131:46
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -302,12 +584,28 @@ UUID: 96a1d5bc_a089dabe
 Bytes: 169
 Does this suggest that we can have forced interpret and have jit at the same time? Can we make these mutually exclusive (it seems odd to have JIT when interpreter only)?
 
+131:9-131:46
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96a1d5bc_a089dabe
+UUID: eb1a2866_13950c25
+Bytes: 52
+I'm dropping the support for jit + interpreter only.
+
 139:65-139:79
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56abdd9d_3e784957
 Bytes: 9
 same here
+
+139:65-139:79
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56abdd9d_3e784957
+UUID: eb1a2866_f3a9706b
+Bytes: 4
+Done
 
 File: runtime/instrumentation.h
 
@@ -325,12 +623,36 @@ UUID: 3644a9e8_7db917c4
 Bytes: 13
 Not really :)
 
+98:24-98:46
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96a1d5bc_60ee3291
+UUID: 6b447857_af25b9cd
+Bytes: 4
+Done
+
+98:0-98:46
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3644a9e8_7db917c4
+UUID: 2b2600b6_2de42d2b
+Bytes: 4
+Done
+
 296:27-296:47
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b69c1985_e1e126a5
 Bytes: 5
 Same.
+
+296:27-296:47
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b69c1985_e1e126a5
+UUID: 6b447857_8f81d52c
+Bytes: 4
+Done
 
 File: runtime/interpreter/interpreter_common.cc
 
@@ -348,6 +670,22 @@ UUID: 16fc05c4_4707d040
 Bytes: 51
 Hasn't the IsForcedInterpretOnly defeat this check?
 
+690:8-690:37
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56abdd9d_bebd7995
+UUID: 6bf6384b_7f576fa1
+Bytes: 4
+Done
+
+690:0-690:40
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_4707d040
+UUID: 6bf6384b_9f1233f8
+Bytes: 4
+Done
+
 File: runtime/jit/jit.cc
 
 69:29-69:32
@@ -357,12 +695,28 @@ UUID: 5643dd80_1e1b8d9e
 Bytes: 3
 not
 
+69:29-69:32
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5643dd80_1e1b8d9e
+UUID: eb1a2866_b328987d
+Bytes: 4
+Done
+
 122
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9639d503_00432634
 Bytes: 29
 dlclose(jit_library_handle_)?
+
+122
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9639d503_00432634
+UUID: 2b21a095_f51ef860
+Bytes: 4
+Done
 
 File: runtime/jit/jit_code_cache.cc
 
@@ -373,12 +727,28 @@ UUID: 56475dec_9e009de4
 Bytes: 45
 Assert that capacity < 4G for a 64-bit build?
 
+26:42-26:50
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56475dec_9e009de4
+UUID: b64ed954_517e5495
+Bytes: 58
+4 GB is probably far too big, I'll add a 1GB sanity check.
+
 34:49-34:56
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96b475b1_88d1b7d2
 Bytes: 4
 typo
+
+34:49-34:56
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96b475b1_88d1b7d2
+UUID: 965395fc_3030e811
+Bytes: 4
+Done
 
 36:0-38:25
 Thu Feb 12 03:47:48 2015 +0000
@@ -387,12 +757,28 @@ UUID: 165165a8_dc062d01
 Bytes: 22
 When does that happen?
 
+36:0-38:25
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 165165a8_dc062d01
+UUID: b64ed954_f1474860
+Bytes: 233
+I thought it might happen with SELinux, but it doesn't. Should I just delete all the code? It may be worth leaving if we want since, when enabled, it the period of time which pages are read write execute at a slight performance cost.
+
 51:12-51:22
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7642a1dd_3f762725
 Bytes: 44
 Assign a mutex level in the enum in mutex.h?
+
+51:12-51:22
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7642a1dd_3f762725
+UUID: 6bf6384b_5f06ebca
+Bytes: 4
+Done
 
 58:37-58:62
 Wed Feb 11 17:34:38 2015 +0000
@@ -401,12 +787,28 @@ UUID: 96b475b1_c8f00f6d
 Bytes: 54
 Could we instead make the code grow down from the end?
 
+58:37-58:62
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96b475b1_c8f00f6d
+UUID: 6bf6384b_7f676f0b
+Bytes: 20
+Work for another CL.
+
 80:0-80:98
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7642a1dd_7f610f77
 Bytes: 28
 Should this line be removed?
+
+80:0-80:98
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7642a1dd_7f610f77
+UUID: f61cd153_03f1ee6e
+Bytes: 29
+I'll leave it but add a TODO.
 
 95:16-95:21
 Wed Feb 11 17:34:38 2015 +0000
@@ -415,12 +817,28 @@ UUID: 763e21ec_bf7377ce
 Bytes: 3
 end
 
+95:16-95:21
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 763e21ec_bf7377ce
+UUID: 6bf6384b_ffa81fa0
+Bytes: 4
+Done
+
 102:16-102:21
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 763e21ec_9f7033c3
 Bytes: 3
 end
+
+102:16-102:21
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 763e21ec_9f7033c3
+UUID: 6bf6384b_dfa55bc6
+Bytes: 4
+Done
 
 File: runtime/jit/jit_code_cache.h
 
@@ -431,12 +849,28 @@ UUID: 165165a8_7ccfd95f
 Bytes: 13
 Seems unused?
 
+20:10-20:23
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 165165a8_7ccfd95f
+UUID: 0b05bcfd_1c2075c5
+Bytes: 4
+Done
+
 51:26-51:27
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7642a1dd_7f6b4f88
 Bytes: 6
 const?
+
+51:26-51:27
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7642a1dd_7f6b4f88
+UUID: 6bf6384b_bffe1732
+Bytes: 4
+Done
 
 File: runtime/jit/jit_instrumentation.cc
 
@@ -447,12 +881,28 @@ UUID: 9639d503_00b04607
 Bytes: 45
 Unnecessary, nullptr is the default argument.
 
+61:21-61:28
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9639d503_00b04607
+UUID: 16724591_34d5303e
+Bytes: 4
+Done
+
 103:2-103:38
 Thu Feb 12 03:47:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16fc05c4_67d2cc09
 Bytes: 37
 Why are we sampling if it's compiled?
+
+103:2-103:38
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fc05c4_67d2cc09
+UUID: 36758977_35fe10be
+Bytes: 105
+Since we don't have on-stack replacement, some methods can remain in the interpreter longer than we want.
 
 File: runtime/jit/jit_instrumentation.h
 
@@ -463,6 +913,14 @@ UUID: 165165a8_1cf57588
 Bytes: 40
 Doesn't seem to fit in this abstraction.
 
+54:7-54:17
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 165165a8_1cf57588
+UUID: b64ed954_d13884fe
+Bytes: 8
+Deleted.
+
 File: runtime/mirror/art_field.cc
 
 47:43-47:56
@@ -471,6 +929,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f66cd149_e329b2ad
 Bytes: 42
 Why skip the DCHECK_ALIGNED if we use JIT?
+
+47:43-47:56
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66cd149_e329b2ad
+UUID: 36758977_55e2ac2c
+Bytes: 22
+AotCompiler is not JIT
 
 File: runtime/mirror/art_method-inl.h
 
@@ -481,6 +947,14 @@ UUID: f64db110_5b330320
 Bytes: 87
 Why is that on the ArtMethod? Why don't we have an abstraction on OatQuickMethodHeader?
 
+153:0-153:6
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f64db110_5b330320
+UUID: 76d54178_27c89a27
+Bytes: 23
+Clean-up in another CL.
+
 File: runtime/mirror/art_method.cc
 
 349:8-349:28
@@ -490,12 +964,28 @@ UUID: 56ae7d66_e61c1e63
 Bytes: 77
 This variable is used only here, so it should not be calculated so far above.
 
+349:8-349:28
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56ae7d66_e61c1e63
+UUID: 76d54178_07f8f67f
+Bytes: 4
+Done
+
 423:27-423:45
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16708517_a42fc2b2
 Bytes: 50
 Why need this? We don't run JIT when -Xint, right?
+
+423:27-423:45
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16708517_a42fc2b2
+UUID: f693f167_4ef1d31f
+Bytes: 76
+Currently it is supported for testing purposes, should I remove that option?
 
 File: runtime/mirror/art_method.h
 
@@ -506,12 +996,28 @@ UUID: 76a8e190_6f6211a8
 Bytes: 42
 Add comment on what 'code' is pointing to?
 
+303:42-303:46
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76a8e190_6f6211a8
+UUID: 568d9d43_ce6dc36b
+Bytes: 4
+Done
+
 308:14-308:33
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56767d13_46ce12b8
 Bytes: 82
 Can this be private? Since we don't check code is a valid pointer, it seems risky.
+
+308:14-308:33
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56767d13_46ce12b8
+UUID: 568d9d43_ae607774
+Bytes: 4
+Done
 
 File: runtime/oat_file.cc
 
@@ -522,6 +1028,14 @@ UUID: b6b979da_991f9b56
 Bytes: 28
 Update this comment for JIT?
 
+583:4-583:97
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6b979da_991f9b56
+UUID: 568d9d43_6e15afe7
+Bytes: 4
+Done
+
 File: runtime/quick/inline_method_analyser.cc
 
 115:0-117:43
@@ -530,6 +1044,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96b475b1_e8f71391
 Bytes: 4
 WIP?
+
+115:0-117:43
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96b475b1_e8f71391
+UUID: 76d54178_c7ec1ed3
+Bytes: 15
+I'll add a TODO
 
 File: runtime/runtime.cc
 
@@ -540,6 +1062,14 @@ UUID: b6341908_4149b276
 Bytes: 15
 Remove "after".
 
+232:33-232:39
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6341908_4149b276
+UUID: 76d54178_278ffa41
+Bytes: 4
+Done
+
 838:0-840:3
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -547,12 +1077,28 @@ UUID: d6998d84_72dd9896
 Bytes: 90
 Does this mean that create jit options if we are not AOT or JIT? Not sure what this means.
 
+838:0-840:3
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6998d84_72dd9896
+UUID: 76d54178_672a927c
+Bytes: 14
+Added comment.
+
 841:0-843:3
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6998d84_12f7ec18
 Bytes: 54
 On what conditions exactly do we enable jit currently?
+
+841:0-843:3
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6998d84_12f7ec18
+UUID: 76d54178_47866e2b
+Bytes: 14
+Added comment.
 
 File: runtime/runtime.h
 
@@ -562,6 +1108,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96a1d5bc_e0e242e0
 Bytes: 117
 Does this mean now that we are more or less dex2oat, which is what IsCompiler() used to mean? Add comment to clarify?
+
+107:0-109:3
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96a1d5bc_e0e242e0
+UUID: 568d9d43_eeceff30
+Bytes: 4
+Done
 
 111:7-111:17
 Thu Feb 12 03:05:25 2015 +0000
@@ -580,6 +1134,22 @@ UUID: 16e32520_cc540f98
 Bytes: 103
 Yeah, as discussed, I don't think you need to change this. Or you could rename IsCompiler to IsDex2Oat.
 
+111:7-111:17
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16e32520_cc540f98
+UUID: f693f167_8e0f3ba8
+Bytes: 126
+Renaming IsCompiler to IsDex2Oat is incorrect unless I change the logic, I assume you meant rename IsAotCompiler to IsDex2Oat?
+
+111:7-111:17
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6998d84_32015080
+UUID: f693f167_2e2ac7f7
+Bytes: 4
+Done
+
 File: runtime/signal_catcher.cc
 
 183:37-183:62
@@ -589,6 +1159,14 @@ UUID: f66cd149_e37a929e
 Bytes: 40
 Why create_peer = true for the JIT case?
 
+183:37-183:62
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66cd149_e37a929e
+UUID: f693f167_6e8a0fb3
+Bytes: 77
+JIT in a real running runtime, so we need to have the usual runtime behavior.
+
 File: runtime/thread.cc
 
 993:0-995:3
@@ -597,6 +1175,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 162a4514_d4c35c90
 Bytes: 12
 Not related?
+
+993:0-995:3
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 162a4514_d4c35c90
+UUID: 76d54178_47adceaf
+Bytes: 4
+Done
 
 File: runtime/utils.cc
 
@@ -614,6 +1200,22 @@ UUID: b638995d_61bc16b6
 Bytes: 92
 This is basically checking if it's jitted, right? How about an abstraction on the ArtMethod?
 
+1242:10-1244:21
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b638995d_61bc16b6
+UUID: b64ed954_f1d2e857
+Bytes: 79
+No it's checking that the pc is within the quick code, same behavior as before.
+
+1242:10-1244:21
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6998d84_955ca633
+UUID: 36758977_1533d420
+Bytes: 4
+Done
+
 File: runtime/verifier/method_verifier.cc
 
 116:70-116:79
@@ -623,6 +1225,14 @@ UUID: b6341908_01b04a07
 Bytes: 22
 error ATTRIBUTE_UNUSED
 
+116:70-116:79
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6341908_01b04a07
+UUID: 76d54178_c7c09e54
+Bytes: 4
+Done
+
 File: test/etc/run-test-jar
 
 264:14-264:25
@@ -631,4 +1241,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b69c1985_212a6ea2
 Bytes: 79
 Why -Xint and Xjit at the same time? It seem they should be mutually exclusive.
+
+264:14-264:25
+Sat Feb 14 01:54:50 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b69c1985_212a6ea2
+UUID: 568d9d43_6e904f30
+Bytes: 4
+Done
 

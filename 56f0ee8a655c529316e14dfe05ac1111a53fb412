@@ -1,0 +1,80 @@
+Revision: 56f0ee8a655c529316e14dfe05ac1111a53fb412
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+2063:2-2063:6
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bdfb423_fed3210b
+Bytes: 21
+auto -> HIntConstant*
+
+File: compiler/optimizing/builder.h
+
+51:24-53:63
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bdab834_3f9bc75d
+Bytes: 73
+How bad would it be to use our ValueSet, and they key being HIntConstant?
+
+File: compiler/optimizing/gvn.cc
+
+168:24-168:45
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0be93ccf_dce02d1e
+Bytes: 24
+-> const ValueSet& other
+
+204:20-204:44
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bdab834_7fbe2fb0
+Bytes: 24
+const ValueSet& to_clone
+
+223:0-223:36
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bdfb423_3e0589f5
+Bytes: 29
+Make this static? In utils.h?
+
+223:9-223:24
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bdfb423_5efa557c
+Bytes: 46
+Is that the same as utils' RoundUpToPwerOfTwo?
+
+224:8-224:34
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bdab834_9fc21329
+Bytes: 30
+-> (x != 0) && IsPowerOfTwo(x)
+
+238:4-238:36
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bdab834_dfcc9b5f
+Bytes: 88
+Might want to tune that further. If the set is very big, doubling it just too excessive.
+
+289:0-290:38
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0be93ccf_5ce41d2c
+Bytes: 90
+Did you measure how many collisions we're having? How would it compare to open addressing?
+
+File: compiler/utils/growable_array.h
+
+56:0-57:76
+Mon Feb 16 11:13:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bdab834_ffc95f4c
+Bytes: 8
+one line
+

@@ -34,6 +34,14 @@ UUID: 36c749d7_e5cdd6ba
 Bytes: 116
 Currently the array is always allocated with new if own_arrays_ is true. Also delete nullptr is defined to be a NOP.
 
+34:6-34:25
+Mon Feb 16 12:29:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36c749d7_e5cdd6ba
+UUID: ebe5c8f3_5be4232c
+Bytes: 68
+Thanks. So why do we end up calling SetCode twice on a CompiledCode?
+
 149:21-149:52
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,6 +75,14 @@ Parent: 16fc05c4_a4d7a278
 UUID: 76bc6132_aff61919
 Bytes: 227
 The problem is that I need to release the arrays for the compiled methods after they are added to the code cache. I supposed we could remove the arrays from the dedupe maps to do this, but it wouldn't be very safe or efficient.
+
+80:13-80:29
+Mon Feb 16 12:29:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76bc6132_aff61919
+UUID: ebe5c8f3_1bea9bfb
+Bytes: 89
+OK, so we are creating these arrays, and then copying them to the code cache, is that it?
 
 File: compiler/dex/mir_analysis.cc
 
@@ -518,6 +534,14 @@ UUID: 2b2600b6_ed706571
 Bytes: 36
 This is called from Instrumentation.
 
+2519:2-2525:3
+Mon Feb 16 12:29:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b2600b6_ed706571
+UUID: ebe5c8f3_9bfdcbc3
+Bytes: 90
+This looks wrong, the instrumentation should get the oat code from the ArtMethod directly.
+
 2540:25-2540:49
 Thu Feb 12 03:47:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -533,6 +557,14 @@ UUID: 2b2600b6_2d5e6de4
 Bytes: 68
 ??
 // Special case to get oat code without overwriting a trampoline.
+
+2540:25-2540:49
+Mon Feb 16 12:29:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b2600b6_2d5e6de4
+UUID: 0be93ccf_1cb535fc
+Bytes: 202
+Then I don't understand this comment. I know it's not your code, but where is the overwriting here? All I can see is different is that one method may return null, and the other won't by returning stubs.
 
 File: runtime/dex_instruction_utils.h
 
@@ -773,6 +805,14 @@ UUID: b64ed954_f1474860
 Bytes: 233
 I thought it might happen with SELinux, but it doesn't. Should I just delete all the code? It may be worth leaving if we want since, when enabled, it the period of time which pages are read write execute at a slight performance cost.
 
+36:0-38:25
+Mon Feb 16 12:29:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b64ed954_f1474860
+UUID: ebe5c8f3_bbfa87c6
+Bytes: 80
+I'd go with deleting the code. If we ever need it, then something is very wrong.
+
 51:12-51:22
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -911,6 +951,14 @@ Parent: 16fc05c4_67d2cc09
 UUID: 36758977_35fe10be
 Bytes: 105
 Since we don't have on-stack replacement, some methods can remain in the interpreter longer than we want.
+
+103:2-103:38
+Mon Feb 16 12:29:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36758977_35fe10be
+UUID: 0be93ccf_5cbfbddb
+Bytes: 65
+I see. Maybe add this as a comment, as it's not obvious at first.
 
 File: runtime/jit/jit_instrumentation.h
 
@@ -1157,6 +1205,14 @@ Parent: d6998d84_32015080
 UUID: f693f167_2e2ac7f7
 Bytes: 4
 Done
+
+111:7-111:17
+Mon Feb 16 12:29:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f693f167_8e0f3ba8
+UUID: 0be93ccf_bca521c7
+Bytes: 163
+Didn't realize IsCompiler was about having compiler_callbacks_..... Nevermind then. Maybe IsDex2Oat avoids the oat/aot confusion, but either way, both work for me.
 
 File: runtime/signal_catcher.cc
 

@@ -1,0 +1,29 @@
+Revision: ccb93a7604917a05dd527eea83064414bfb13b0c
+Patch-set: 14
+File: compiler/dex/mir_analysis.cc
+
+1319:0-1321:75
+Mon Feb 16 12:19:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0be93ccf_fc588943
+Bytes: 280
+I'd rather see the original code restored with the minimal changes as suggested in PS13. However, if you insist on a complete rewrite, erradicating any resemblance between DoCacheFieldLoweringInfo() and DoCacheMethodLoweringInfo(), you'll have to rewrite all the comments as well.
+
+File: compiler/dex/mir_field_info.h
+
+142:0-145:54
+Mon Feb 16 12:19:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bdfb423_9e45bd3c
+Bytes: 151
+The MIR offset is neither field_idx_ nor field_offset_ but I'd rather see it stored in field_idx_ and keep field_offset_ only for resolved field infos.
+
+File: compiler/dex/mir_method_info.cc
+
+113:0-116:5
+Mon Feb 16 12:19:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bdab834_3f690786
+Bytes: 138
+AFAICT, this would work for quickened invokes as well. There's no need to record the vtable_idx_ in MIRGraph::DoCacheMethodLoweringInfo().
+

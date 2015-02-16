@@ -1,0 +1,52 @@
+Revision: 5896597ab4f677f5661f9a08a2f9fddb57b12c21
+Patch-set: 2
+File: compiler/optimizing/instruction_simplifier.h
+
+32:0-32:64
+Mon Feb 16 19:11:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0be93ccf_9f04d73f
+Bytes: 61
+Probably makes sense to move this to the HOptimization class.
+
+File: compiler/optimizing/nodes.h
+
+894:7-894:23
+Mon Feb 16 19:11:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ba36cb2_303788dd
+Bytes: 116
+This term has confused a lot more people before me. I suggest changing it to IsSubtypeOf(...) or IsSupertypeOf(...).
+
+896:12-896:18
+Mon Feb 16 19:11:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ba36cb2_103284ec
+Bytes: 40
+Should that make things true whatsoever?
+
+895:0-897:95
+Mon Feb 16 19:11:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab9e706a_91c2fc28
+Bytes: 131
+To make this more readable, I suggest early returns:
+
+if (IsTop()) return true;
+if (!IsKnown() || !rti.IsKnown()) return false;
+...
+
+900:7-900:19
+Mon Feb 16 19:11:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ba36cb2_703110e4
+Bytes: 16
+Needs a comment.
+
+901:0-905:41
+Mon Feb 16 19:11:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ba36cb2_9045943c
+Bytes: 78
+Same comment as IsAssignableFrom. These composed || and && make it unreadable.
+

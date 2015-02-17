@@ -9,6 +9,14 @@ UUID: 8ba36cb2_f086e02a
 Bytes: 63
 Why adding this? Can't we get fetch it from the method instead?
 
+165:0-165:64
+Tue Feb 17 16:11:00 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ba36cb2_f086e02a
+UUID: 0b705c17_c4e03e1e
+Bytes: 344
+We can probably get the number N of dex registers used in a (whole) method from the method itself, but the highlighted setting is a per-stack map value, meaning it can be different for each stack map (I only encountered cases where this number of dex registers was either N or 0 though).  Is there a way to get this information from the method?
+
 File: oatdump/oatdump.cc
 
 874:8-874:40
@@ -17,4 +25,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b8a802f_8d8f4143
 Bytes: 86
 Native methods have no GC map. I think you also need to know the method is not native.
+
+874:8-874:40
+Tue Feb 17 16:11:00 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b8a802f_8d8f4143
+UUID: 0b705c17_249112eb
+Bytes: 208
+This shouldn't be an issue, as native methods should have a vmap offset equal to zero in the `oat_method' object, meaning `raw_code_info' would be null; thus vmap data would not be inspected for such methods.
 

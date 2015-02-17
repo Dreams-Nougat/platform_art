@@ -9,6 +9,14 @@ UUID: 0be93ccf_fc588943
 Bytes: 280
 I'd rather see the original code restored with the minimal changes as suggested in PS13. However, if you insist on a complete rewrite, erradicating any resemblance between DoCacheFieldLoweringInfo() and DoCacheMethodLoweringInfo(), you'll have to rewrite all the comments as well.
 
+1319:0-1321:75
+Tue Feb 17 23:47:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0be93ccf_fc588943
+UUID: 6bbf18df_979aa485
+Bytes: 191
+You are right, I should have though of using the mir->offset as the key. The original code was arguably groser, but I can see the motivation for the memory savings. I reverted the logic here.
+
 File: compiler/dex/mir_field_info.h
 
 142:0-145:54
@@ -18,6 +26,14 @@ UUID: 4bdfb423_9e45bd3c
 Bytes: 151
 The MIR offset is neither field_idx_ nor field_offset_ but I'd rather see it stored in field_idx_ and keep field_offset_ only for resolved field infos.
 
+142:0-145:54
+Tue Feb 17 23:47:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bdfb423_9e45bd3c
+UUID: cb81e44d_1226ccd8
+Bytes: 4
+Done
+
 File: compiler/dex/mir_method_info.cc
 
 113:0-116:5
@@ -26,4 +42,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6bdab834_3f690786
 Bytes: 138
 AFAICT, this would work for quickened invokes as well. There's no need to record the vtable_idx_ in MIRGraph::DoCacheMethodLoweringInfo().
+
+113:0-116:5
+Tue Feb 17 23:47:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bdab834_3f690786
+UUID: 0bb5bcf7_dcde0de4
+Bytes: 76
+Sometimes we de-quicken to interface methods, it does not work in this case.
 

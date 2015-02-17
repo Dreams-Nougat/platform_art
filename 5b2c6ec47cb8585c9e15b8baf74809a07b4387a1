@@ -1,0 +1,15 @@
+Revision: 5b2c6ec47cb8585c9e15b8baf74809a07b4387a1
+Base-for-patch-set: 3
+File: runtime/class_linker.cc
+
+913:0-916:7
+Tue Feb 17 20:42:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8bba8cec_dbb727b2
+Bytes: 440
+Am I preserving this behavior?
+
+It appears this means we must have a checksum (the original dex can't be stripped) to consider an (not already opened) oat file up to date, but I thought no checksum meant we assume up to date (Which is what FindOpenedOatDexFile does).
+
+See also class_linker.cc#912, class_linker.cc#1220, and dalvik_system_DexFile.cc#329, where they all consider an oat file up to date if there is no dex checksum available.
+

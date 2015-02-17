@@ -42,6 +42,14 @@ UUID: ebe5c8f3_5be4232c
 Bytes: 68
 Thanks. So why do we end up calling SetCode twice on a CompiledCode?
 
+34:6-34:25
+Tue Feb 17 23:47:21 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebe5c8f3_5be4232c
+UUID: 0bb5bcf7_3c1611ef
+Bytes: 98
+I don't think we do, I'll change it to a CHECK. I just have a habit of not writing memory leaks :)
+
 149:21-149:52
 Wed Feb 11 17:34:38 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -83,6 +91,14 @@ Parent: 76bc6132_aff61919
 UUID: ebe5c8f3_1bea9bfb
 Bytes: 89
 OK, so we are creating these arrays, and then copying them to the code cache, is that it?
+
+80:13-80:29
+Tue Feb 17 23:47:21 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebe5c8f3_1bea9bfb
+UUID: 6bb398fa_fd907fb2
+Bytes: 115
+Yes, these arrays are only live for the short period of time after the compile but before adding to the code cache.
 
 File: compiler/dex/mir_analysis.cc
 
@@ -157,6 +173,14 @@ Parent: 6bb9d8a9_87a3e687
 UUID: 0be93ccf_5c489d74
 Bytes: 154
 If you use the mir->offset as target_method_idx and add a bool is_quickened to MapEntry as suggested, then the quickened invokes will be correctly unique.
+
+1383:34-1383:82
+Tue Feb 17 23:47:21 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0be93ccf_5c489d74
+UUID: 0be3fc1f_ace30324
+Bytes: 4
+Done
 
 File: compiler/dex/mir_dataflow.cc
 
@@ -542,6 +566,14 @@ UUID: ebe5c8f3_9bfdcbc3
 Bytes: 90
 This looks wrong, the instrumentation should get the oat code from the ArtMethod directly.
 
+2519:2-2525:3
+Tue Feb 17 23:47:21 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebe5c8f3_9bfdcbc3
+UUID: abc5907a_99fe5b6d
+Bytes: 59
+Are you saying check for OatCode before JIT? Or visa versa?
+
 2540:25-2540:49
 Thu Feb 12 03:47:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -565,6 +597,14 @@ Parent: 2b2600b6_2d5e6de4
 UUID: 0be93ccf_1cb535fc
 Bytes: 202
 Then I don't understand this comment. I know it's not your code, but where is the overwriting here? All I can see is different is that one method may return null, and the other won't by returning stubs.
+
+2540:25-2540:49
+Tue Feb 17 23:47:21 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0be93ccf_1cb535fc
+UUID: abc5907a_f9ff976b
+Bytes: 133
+I think the main difference here is that we return nullptr instead of returning GetQuickGenericJniStub / GetQuickToInterpreterBridge.
 
 File: runtime/dex_instruction_utils.h
 
@@ -813,6 +853,14 @@ UUID: ebe5c8f3_bbfa87c6
 Bytes: 80
 I'd go with deleting the code. If we ever need it, then something is very wrong.
 
+36:0-38:25
+Tue Feb 17 23:47:21 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebe5c8f3_bbfa87c6
+UUID: abc5907a_79eee78c
+Bytes: 4
+Done
+
 51:12-51:22
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -959,6 +1007,14 @@ Parent: 36758977_35fe10be
 UUID: 0be93ccf_5cbfbddb
 Bytes: 65
 I see. Maybe add this as a comment, as it's not obvious at first.
+
+103:2-103:38
+Tue Feb 17 23:47:21 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0be93ccf_5cbfbddb
+UUID: 0bb5bcf7_1c4915f4
+Bytes: 16
+Already in PS 14
 
 File: runtime/jit/jit_instrumentation.h
 

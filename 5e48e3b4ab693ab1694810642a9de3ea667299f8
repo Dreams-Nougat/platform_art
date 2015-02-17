@@ -1,0 +1,22 @@
+Revision: 5e48e3b4ab693ab1694810642a9de3ea667299f8
+Patch-set: 1
+File: /COMMIT_MSG
+
+10
+Tue Feb 17 19:59:32 2015 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bbf18df_9a4c0989
+Bytes: 463
+Clarify commit message - something along the lines of:
+
+"Because of Dalvik byte code's lack of immediate typing, the same vreg may be used in core, ref and fp operations.  To properly support GC, we must ensure that if a constant zero is loaded into a fp view of a vreg, it must also be loaded into the core/ref view.  The code that was responsible for ensuring this failed to handle the case of a vreg having a non-promoted fp view and a promoted core/ref view."
+
+File: compiler/dex/quick/gen_loadstore.cc
+
+70
+Tue Feb 17 19:59:32 2015 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ebca2890_f3c2108e
+Bytes: 87
+Useless if statement here.  is_fp_promoted is guaranteed to be true in the else clause.
+

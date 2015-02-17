@@ -76,3 +76,15 @@ You would also need to change line 119 to allocate automatic storage for it ther
       return Result::Success(jdwp_options);
   }
 
+101
+Tue Feb 17 18:34:00 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bb398fa_bd5d276e
+UUID: ebb1480e_bbe227d7
+Bytes: 480
+Sorry but I don't understand how it can work if you declare the JdwpOptions object locally in ParseJdwpOption. This means you do not preserve its state with the options already parsed before (we loop on each option of the form x=y).
+
+Imagine you have something a string like "option1=value1,option2=value2". You will call ParseJdwpOption for each option ("option1=value1" and "option2=value2"). So you need to preserve the state of JdwpOptions between calls.
+
+Do I miss something?
+

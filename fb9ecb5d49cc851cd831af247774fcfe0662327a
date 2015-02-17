@@ -46,3 +46,33 @@ I don't quite follow you here: where jdwp_options should be declared then?
 We pass it to ParseJdwpOption to build it with each option (x=y). 
 We could make jdwp_options a field here so we can access it from ParseJdwpOption. Is it what you had in mind?
 
+101
+Tue Feb 17 18:11:30 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bdfb423_be18b91c
+UUID: 6bb398fa_bd5d276e
+Bytes: 747
+So what I mean is, you can move the declaration from line 90 to line 105
+
+  Result parse_attempt = ParseJdwpOption(
+        jdwp_option.substr(0, equals_pos),
+        jdwp_option.substr(equals_pos + 1));
+
+  if (parse_attempt.IsError()) {
+    return parse_attempt;
+  }
+  
+  const JDWP::JdwpOptions& jdwp_options = parse_attempt.GetValue();
+ 
+  ...
+
+See how by doing that you no longer need to pass in an extra parameter to 'ParseJdwpOption' (since it's already nested inside of the result)
+
+You would also need to change line 119 to allocate automatic storage for it there
+
+  Result ParseJdwpOption(const std::string& name, const std::string& value) {
+      JDWP::JdwpOptions jdwp_options;
+      ....
+      return Result::Success(jdwp_options);
+  }
+

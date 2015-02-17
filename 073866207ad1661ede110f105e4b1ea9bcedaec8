@@ -9,6 +9,24 @@ UUID: 6bb9d8a9_c7c6be1e
 Bytes: 98
 "for a DexFile or OatFile location"? and then discuss the new subtle leading / stripping behavior?
 
+492:42-492:66
+Tue Feb 17 18:42:00 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bb9d8a9_c7c6be1e
+UUID: 0bb5bcf7_df6b9fd5
+Bytes: 1003
+I don't understand this comment.
+
+My understanding of what the function does is this: given a dex location and the path of a dalvik cache directory, return the path to what the oat file should be named. This is done by turning the dex location into a file name (replacing '/' with '@' to get a valid filename), and adding '@classes.dex'. Does it do something different for the boot image?
+
+After thinking some more, there is an ambiguity about what should happen if the dex location isn't absolute. Two sensible options are:
+ 1. Turn a relative dex location into an absolute dex location and form the oat file name from that.
+ 2. Treat a relative dex location as a separate dex location from the dex location corresponding to the absolute path of the relative dex location.
+
+I had only thought of (2), not (1) when I posted this change. It seems a shame to add the work and complexity of (1) given that nobody uses relative dex locations. I'll have to think more about what I want to do here.
+
+Thoughts?
+
 File: runtime/utils_test.cc
 
 355:0-355:43

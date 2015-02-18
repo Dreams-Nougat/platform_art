@@ -27,6 +27,14 @@ I meant to ask: Why use two flags (-Xjit, X-nojit) when one bool flag is enough 
 
 But if you mean -Xjit to be like -Xint, it's probably fine.
 
+420:38-420:42
+Wed Feb 18 22:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b8ab89e_a263c0a5
+UUID: 0b993cf9_bff4b30f
+Bytes: 99
+Original goal was for it to be similar to -Xint, but I am open to changing this stuff in other CLs.
+
 File: compiler/compiled_method.cc
 
 34:6-34:25
@@ -734,6 +742,14 @@ UUID: 0b993cf9_9cb2a5c3
 Bytes: 74
 I assume that by "jit + interpreter only" you mean the "-Xint -Xjit" case.
 
+131:9-131:46
+Wed Feb 18 22:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b993cf9_9cb2a5c3
+UUID: 0b993cf9_1fe4c758
+Bytes: 46
+Yes, that used to work but may no longer work.
+
 139:65-139:79
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1176,6 +1192,14 @@ I think it's desirable to avoid code that might give a wrong impression that the
 Also, this check is important so we won't accidentally break -Xint (literally means "interpreter only", no AOT or JIT compiled code executed.) There was a time when the interpreter-only heap poisoning got broken that this check would have detected. Optionally, if there's an invariant that specifically holds for the JIT case, we might check that here in a separate if statement parallel to this.
 
 So, it seems like we should probably stop supporting the option of JIT and -Xint though I don't know exactly what you mean by testing purposes.
+
+423:27-423:45
+Wed Feb 18 22:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b6398c4_97b44401
+UUID: cb49e44e_b2c7809c
+Bytes: 144
+I already removed it, currently -Xint doesn't override -Xjit, but we may want to implement this if jit is ever enabled by default. Added DCHECK.
 
 File: runtime/mirror/art_method.h
 

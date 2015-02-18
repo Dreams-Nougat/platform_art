@@ -40,6 +40,14 @@ UUID: cb81e44d_582c75ba
 Bytes: 81
 The callers already ensure bits > 0, but I can put in another static_assert here.
 
+121
+Wed Feb 18 00:30:38 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb81e44d_582c75ba
+UUID: cb81e44d_187b4d55
+Bytes: 151
+Don't think you can static_assert on bits (unfortunately), but if you do want to add more static_asserts you could add one to check that T is integral.
+
 131:6-131:73
 Tue Feb 17 23:54:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -111,6 +119,21 @@ Parent: 6b90f899_cf4dfd87
 UUID: 6b90f899_8f8ff514
 Bytes: 28
 Shouldn't it be is_integral?
+
+137
+Wed Feb 18 00:30:38 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b90f899_8f8ff514
+UUID: 6b90f899_0fff8530
+Bytes: 86
+That should work even better since it probably doesn't need to handle floating values.
+
+140
+Wed Feb 18 00:30:38 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb26a84e_16a47a8e
+Bytes: 170
+The result of "GetIntLimit<...>(kBits+1)" is undefined when kBits == 32 because it will try to do "1 << 32" ; but the right operand must be < sizeof(left operand) && >= 0
 
 145:9-145:18
 Tue Feb 17 23:54:30 2015 +0000

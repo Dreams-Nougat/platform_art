@@ -17,6 +17,21 @@ UUID: eb26a84e_136b2c03
 Bytes: 83
 The is_unsigned and make_unsigned. Those are template things that manipulate types.
 
+25:10-25:21
+Wed Feb 18 00:03:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ba1acbc_e0cda2ee
+UUID: cb81e44d_f54212d5
+Bytes: 18
+std::make_unsigned
+
+121
+Wed Feb 18 00:03:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb26a84e_f3a31014
+Bytes: 94
+This seems like it will underflow back to 0xFFFFF... for bits==0, you probably don't want that
+
 131:6-131:73
 Tue Feb 17 23:54:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +46,21 @@ Parent: cb0e44b5_4a023333
 UUID: eb26a84e_934dfcb6
 Bytes: 13
 Former check?
+
+131:6-131:73
+Wed Feb 18 00:03:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb0e44b5_4a023333
+UUID: eb26a84e_d6e92208
+Bytes: 108
+You can just use std::numeric_limits<T>::min() and max() instead of GetIntLimit, they are constexpr in C++11
+
+137
+Wed Feb 18 00:03:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b90f899_cf4dfd87
+Bytes: 108
+you may want an is_arithmetic check here to be symmetric with IsInt (which is implicit as part of is_signed)
 
 145:9-145:18
 Tue Feb 17 23:54:30 2015 +0000

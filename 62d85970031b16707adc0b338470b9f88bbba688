@@ -9,12 +9,28 @@ UUID: 7c69a073_c7ee3e12
 Bytes: 60
 How can we get null in? Shouldn't we treat that as an error?
 
+477:0-477:28
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c69a073_c7ee3e12
+UUID: 6bbc7832_0ff1259b
+Bytes: 358
+My thoughts precisely. The previous implementation would just iterate over the use list and do nothing, so this preserves the original semantics. But I think the only time this might happen is when SsaPhiElimination replaces a dead input with the phi itself. Look at PS5 - I've changed it to replace it with nullptr instead and test for that in RemoveAsUser.
+
 483:6-483:14
 Fri Feb 06 16:11:41 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c5e9cd0_46da5272
 Bytes: 5
 ditto
+
+483:6-483:14
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c5e9cd0_46da5272
+UUID: 4ba1740b_8e9a3b57
+Bytes: 114
+ditto. Never observed, not found anywhere => removed. DCHECK inside HUseListNode::Remove will fail if this occurs.
 
 File: compiler/optimizing/nodes.h
 
@@ -25,12 +41,28 @@ UUID: 9c8bb46f_b086d8f2
 Bytes: 22
 : public ValueObject ?
 
+758:18-758:19
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c8bb46f_b086d8f2
+UUID: 6b69d873_c7b2bec4
+Bytes: 4
+Done
+
 775:15-775:16
 Fri Feb 06 16:11:41 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c90c099_4fbeedb1
 Bytes: 6
 const?
+
+775:15-775:16
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c90c099_4fbeedb1
+UUID: 6b69d873_87bcc697
+Bytes: 57
+Can't do that if I want to assign it (like on line 1211).
 
 778:18-778:19
 Fri Feb 06 16:11:41 2015 +0000
@@ -39,12 +71,28 @@ UUID: dc81ac4d_92d87cf3
 Bytes: 6
 const?
 
+778:18-778:19
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc81ac4d_92d87cf3
+UUID: 6b69d873_a7c1ca08
+Bytes: 5
+ditto
+
 1210:45-1210:77
 Fri Feb 06 16:11:41 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c90c099_cf92dd3d
 Bytes: 8
 const& ?
+
+1210:45-1210:77
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c90c099_cf92dd3d
+UUID: ab0d90eb_19ca0b53
+Bytes: 20
+Done (and elsewhere)
 
 1795:2-1795:9
 Fri Feb 06 16:11:41 2015 +0000
@@ -53,10 +101,26 @@ UUID: 7c90c099_ef97a12a
 Bytes: 40
 Remove virtual, add OVERRIDE at the end.
 
+1795:2-1795:9
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c90c099_ef97a12a
+UUID: ab0d90eb_39cd4f6b
+Bytes: 4
+Done
+
 1796:2-1796:9
 Fri Feb 06 16:11:41 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9c8bb46f_3073c880
 Bytes: 5
 ditto
+
+1796:2-1796:9
+Wed Feb 18 18:35:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c8bb46f_3073c880
+UUID: 6b69d873_274f1a2a
+Bytes: 4
+Done
 

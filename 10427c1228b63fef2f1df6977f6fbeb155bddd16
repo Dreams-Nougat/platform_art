@@ -26,6 +26,26 @@ UUID: abdbd0ab_09192920
 Bytes: 59
 Yes. Not sure why, but maybe Clang and GCC disagree here...
 
+File: patchoat/patchoat.cc
+
+732
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bc4dcd0_67cd6c58
+Bytes: 226
+Why does this need a cast? when sh_size is 64 bits and uintptr_t is 32bits?
+
+In which case this is unsafe because of truncation, for maximal robustness it could do everything in the larger bit space and then check for overflow
+
+File: runtime/barrier.cc
+
+75
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bd55878_4df5edd3
+Bytes: 52
+where is the guarantee/check there is no truncation?
+
 File: runtime/base/bit_vector.cc
 
 310:0-312:3
@@ -42,4 +62,71 @@ Parent: cbd64482_0a5f5b2d
 UUID: cbd64482_4ace7335
 Bytes: 23
 i can be made uint32_t.
+
+310:0-312:3
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbd64482_4ace7335
+UUID: 6bd55878_4d232dc8
+Bytes: 129
+Either that or BitVector itself is wrong and should be using size_t for sizes everywhere. Usually containers use size_t for that.
+
+File: runtime/base/hash_set.h
+
+366
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b8ab89e_bf3677dd
+Bytes: 102
+probably safe, although it could be negative or too large, is there a constraint on max_load_factor_ ?
+
+File: runtime/base/scoped_flock.cc
+
+90:4-90:7
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bc4dcd0_a70004af
+Bytes: 30
+nit: use auto here, it's safer
+
+File: runtime/base/stringpiece.cc
+
+81:7-81:10
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bc4dcd0_07f2b867
+Bytes: 53
+Seems like this could use size_type to avoid the cast
+
+File: runtime/base/unix_file/fd_file.cc
+
+0
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6bd55878_6d8a7133
+Bytes: 25
+auto will avoid the casts
+
+File: runtime/check_jni.cc
+
+373
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bc4dcd0_07191820
+Bytes: 25
+Should indent_ be size_t?
+
+1202
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bc4dcd0_471310fe
+Bytes: 19
+Possible truncation
+
+1354
+Wed Feb 18 19:19:39 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bc4dcd0_a75644a2
+Bytes: 19
+Possible truncation
 

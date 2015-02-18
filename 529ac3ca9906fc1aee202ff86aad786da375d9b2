@@ -32,6 +32,14 @@ UUID: eb26a84e_f3a31014
 Bytes: 94
 This seems like it will underflow back to 0xFFFFF... for bits==0, you probably don't want that
 
+121
+Wed Feb 18 00:14:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb26a84e_f3a31014
+UUID: cb81e44d_582c75ba
+Bytes: 81
+The callers already ensure bits > 0, but I can put in another static_assert here.
+
 131:6-131:73
 Tue Feb 17 23:54:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,12 +71,36 @@ UUID: cb0e44b5_0a0c3b62
 Bytes: 33
 kBits == kBitsPerByte * sizeof(T)
 
+131:6-131:73
+Wed Feb 18 00:14:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb0e44b5_0a0c3b62
+UUID: eb26a84e_b64ca688
+Bytes: 273
+No, that is a corner case that we don't hit and that was excluded before. Normally you call something like T=int32_t and kBits=8,16,24. I just thought it's fine to allow kBits = 8 * sizeof(T) and trivially return true, as the constexpr is inlined and either branch is dead.
+
+131:6-131:73
+Wed Feb 18 00:14:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb26a84e_d6e92208
+UUID: eb26a84e_d64da287
+Bytes: 110
+Except that GetIntLimit gives the limit with kBits bits, not the numeric_limits for the actual enclosing type.
+
 137
 Wed Feb 18 00:03:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6b90f899_cf4dfd87
 Bytes: 108
 you may want an is_arithmetic check here to be symmetric with IsInt (which is implicit as part of is_signed)
+
+137
+Wed Feb 18 00:14:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b90f899_cf4dfd87
+UUID: 6b90f899_8f8ff514
+Bytes: 28
+Shouldn't it be is_integral?
 
 145:9-145:18
 Tue Feb 17 23:54:30 2015 +0000
@@ -102,4 +134,20 @@ Parent: cb81e44d_551c3e10
 UUID: eb26a84e_96316a18
 Bytes: 148
 IIUC there's undefined behavior when value=0b100000...0 (std::numeric_limits<T>::min()) and it's signed because it will overflow after being negated
+
+145:9-145:18
+Wed Feb 18 00:14:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb0e44b5_ea37a70a
+UUID: cb81e44d_38597146
+Bytes: 40
+Yeah, moving the ternary in makes sense.
+
+145:9-145:18
+Wed Feb 18 00:14:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb26a84e_96316a18
+UUID: 6b90f899_ef9a4158
+Bytes: 92
+It seems there are no users of this anymore, so I might remove to avoid the MIN_VALUE issue.
 

@@ -1,0 +1,13 @@
+Revision: 37e7a6fc31a458a263dac8d556a8b346d34e320e
+Patch-set: 4
+File: runtime/gc/heap.cc
+
+3158:6-3158:85
+Wed Feb 18 20:58:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb95c8bd_3ef26568
+Bytes: 353
+CanAddHeapTask() returns true only when the runtime has started. We should move the CollectGarbageInternal call (the unstarted runtime case) to the case where CanAddHeapTask() returns false?
+
+Also, we should not change concurrent_gc_pending_ to true for the unstarted runtime case because we aren't clearing it from the CollectGarbageInternal code path?
+

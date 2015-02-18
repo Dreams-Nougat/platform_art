@@ -16,12 +16,44 @@ UUID: ebb1480e_5b432336
 Bytes: 4
 Why?
 
+872:42-872:57
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebb1480e_5b432336
+UUID: ebb1480e_db05f3bd
+Bytes: 148
+At this point it doesn't matter what value is here since the value is unknown.
+
+For clarity I made this explicit eveywhere and set it to false here.
+
+872:67-872:72
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ba1acbc_e09a4258
+UUID: 8ba1acbc_c004de91
+Bytes: 586
+Could be, it will change things slightly but it doesn't matter too much.
+
+The reason I chose to have is_top and is_known is to speed up the fix point iteration. Since we move towards is_top we could potentially stop earlier when we hit it. If is_top is the default then we always have to go through all the inputs.
+
+Also, it made slightly easier in InstructionSimplifier, since I didn't need to check if the type propagation has run.
+
+Re-evaluating this it's not really clear if there's any relevant speed-up... so I go for simplicity by removing is_known and having is_top the default.
+
 874:50-874:64
 Tue Feb 17 18:35:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ebb1480e_7b46df47
 Bytes: 4
 Why?
+
+874:50-874:64
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebb1480e_7b46df47
+UUID: ebb1480e_3bff3731
+Bytes: 83
+"historic" reasons as only NewInstance and LoadClass call this. I made it explicit.
 
 903:0-906:5
 Tue Feb 17 18:35:28 2015 +0000
@@ -30,6 +62,14 @@ UUID: 8b7c4cf2_ab1b156f
 Bytes: 14
 Move line 898?
 
+903:0-906:5
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b7c4cf2_ab1b156f
+UUID: cb0e44b5_8a1f0b8e
+Bytes: 98
+no longer applies, but previously the value could have been unknown and the embedded pointer null.
+
 952:39-952:64
 Tue Feb 17 18:35:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -37,12 +77,28 @@ UUID: 8b7c4cf2_cb28497f
 Bytes: 100
 How can it be a superclass? I would change the comment to "it cannot be a subclass of `type_handle`.
 
+952:39-952:64
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b7c4cf2_cb28497f
+UUID: ebb1480e_fb278f58
+Bytes: 18
+fixed the comment.
+
 956:32-956:41
 Tue Feb 17 18:35:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8b7c4cf2_eb250da4
 Bytes: 10
 When true,
+
+956:32-956:41
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b7c4cf2_eb250da4
+UUID: cb0e44b5_6a05f738
+Bytes: 4
+Done
 
 File: compiler/optimizing/reference_type_propagation.cc
 
@@ -53,12 +109,28 @@ UUID: 8b7c4cf2_6b311de4
 Bytes: 119
 Are we guaranteed by the algorithm that the inputs's types will be known? What happens here if only one input is known?
 
+77:7-77:47
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b7c4cf2_6b311de4
+UUID: 8ba1acbc_6033d26c
+Bytes: 132
+yea, there was a bug here.IsKnown should have behave like IsTop and set the result to unknown if any of the input is unknown. Fixed.
+
 102:15-102:60
 Tue Feb 17 18:35:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ba1acbc_40a44e8f
 Bytes: 42
 Call the ReferenceTypeInfo method instead?
+
+102:15-102:60
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ba1acbc_40a44e8f
+UUID: abb2f059_11fb0cce
+Bytes: 75
+that one will do some redundant checks but done as it makes things cleaner.
 
 105:15-105:58
 Tue Feb 17 18:35:28 2015 +0000
@@ -67,6 +139,14 @@ UUID: 8b7c4cf2_8b45713c
 Bytes: 6
 Ditto.
 
+105:15-105:58
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b7c4cf2_8b45713c
+UUID: abb2f059_71f898cf
+Bytes: 4
+Done
+
 107:11-107:12
 Tue Feb 17 18:35:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -74,12 +154,28 @@ UUID: 8b7c4cf2_ab42352f
 Bytes: 31
 Add a TODO: Find common parent?
 
+107:11-107:12
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b7c4cf2_ab42352f
+UUID: 4b5ed4d0_a6c1c608
+Bytes: 4
+Done
+
 113:10-113:45
 Tue Feb 17 18:35:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ba1acbc_80aa565e
 Bytes: 151
 IsEquivalent doesn't really fit here. What you really want is to know whether any of the field has changed. Equals does seem like a good name to me....
+
+113:10-113:45
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ba1acbc_80aa565e
+UUID: abb2f059_b1e96009
+Bytes: 145
+IsEqual makes me think of structural equality which is not the case here. I can see however that it's the pattern in other cases as well so done.
 
 File: test/450-checker-types/src/Main.java
 
@@ -89,4 +185,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8b7c4cf2_2bde451d
 Bytes: 93
 Maybe also add a test that the checkcast is still there when doing a checkcast of SubclassA ?
+
+78:0-81:3
+Wed Feb 18 14:17:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b7c4cf2_2bde451d
+UUID: 4b5ed4d0_a6d8e6f6
+Bytes: 4
+Done
 

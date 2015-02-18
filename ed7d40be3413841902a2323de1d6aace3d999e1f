@@ -45,6 +45,22 @@ Yes, it allows, but:
 
 The confusion bit I agree with.
 
+875:20-875:54
+Wed Feb 18 17:33:38 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bbc7832_0f7da5ff
+UUID: 4ba1740b_4ea05333
+Bytes: 566
+The guide also says:
+
+"However, there are some instances where using const T* is preferable to const T& for input parameters. For example:
+
+* You want to pass in a null pointer. [...]"
+
+I'd favor type safety here, as removing `const' before the `CodeItem*' argument would require a `const_cast' before calling DumpVmapData.
+
+BTW, all of oatdump/oatdump.cc is using this argument passing style for `code_item'.  If you think this style is better, I can remove those `const' keywords on other occurrences for the sake consistency, but I'd rather do that in another CL.
+
 882:8-882:13
 Wed Feb 18 16:26:34 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

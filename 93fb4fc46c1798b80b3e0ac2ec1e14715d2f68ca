@@ -17,6 +17,16 @@ UUID: 96d0f589_e8b133e2
 Bytes: 64
 -Xnojit is so that I can disable it if it is enabled by default.
 
+420:38-420:42
+Wed Feb 18 20:39:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96d0f589_e8b133e2
+UUID: 6b8ab89e_a263c0a5
+Bytes: 250
+I meant to ask: Why use two flags (-Xjit, X-nojit) when one bool flag is enough (-XX:UseJIT=true and -XX:UseJIT=false)? We can use -XX:UseJIT=false to disable it if it's enabled by default.
+
+But if you mean -Xjit to be like -Xint, it's probably fine.
+
 File: compiler/compiled_method.cc
 
 34:6-34:25
@@ -716,6 +726,14 @@ UUID: eb1a2866_13950c25
 Bytes: 52
 I'm dropping the support for jit + interpreter only.
 
+131:9-131:46
+Wed Feb 18 20:39:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb1a2866_13950c25
+UUID: 0b993cf9_9cb2a5c3
+Bytes: 74
+I assume that by "jit + interpreter only" you mean the "-Xint -Xjit" case.
+
 139:65-139:79
 Thu Feb 12 03:05:25 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1142,6 +1160,22 @@ Parent: 16708517_a42fc2b2
 UUID: f693f167_4ef1d31f
 Bytes: 76
 Currently it is supported for testing purposes, should I remove that option?
+
+423:27-423:45
+Wed Feb 18 20:39:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f693f167_4ef1d31f
+UUID: 6b6398c4_97b44401
+Bytes: 937
+We don't use JIT when -Xint is passed in, correct?
+
+Assuming that...
+
+I think it's desirable to avoid code that might give a wrong impression that the JIT may be used even when -Xint. In this sense, the condition "!runtime->UseJit()" seems redundant or confusing. We should probably assert, here or somewhere else, that IsForcedInterpretOnly() and UseJit() shouldn't both true at the same time.
+
+Also, this check is important so we won't accidentally break -Xint (literally means "interpreter only", no AOT or JIT compiled code executed.) There was a time when the interpreter-only heap poisoning got broken that this check would have detected. Optionally, if there's an invariant that specifically holds for the JIT case, we might check that here in a separate if statement parallel to this.
+
+So, it seems like we should probably stop supporting the option of JIT and -Xint though I don't know exactly what you mean by testing purposes.
 
 File: runtime/mirror/art_method.h
 

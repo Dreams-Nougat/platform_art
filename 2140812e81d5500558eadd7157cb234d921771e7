@@ -9,6 +9,24 @@ UUID: 28f8c637_1d8bd300
 Bytes: 74
 Top here is confusing. Why is this not the reference type of HInstruction?
 
+2988:30-2988:33
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28f8c637_1d8bd300
+UUID: 48fb3a34_3e8689fa
+Bytes: 329
+I can rename it GetBoundType or GetMaxType maybe.
+
+It's not the same because we can still narrow type but never go beyond top_type_. Because we merge towards Top we need to keep track how high we can go for the BoundType().
+
+As discussed, this is to cover cases like
+
+for() {
+  if (a instance of Super) {
+    (Subclass)a...
+  }
+}
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 41:0-42:20
@@ -18,12 +36,28 @@ UUID: 48fb3a34_bed5f9f4
 Bytes: 188
 Since VisitBasicBlock is the only user of those two methods, I don't see the need of factoring them. They're small enough and concise enough that I find it more readable to have them here.
 
+41:0-42:20
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48fb3a34_bed5f9f4
+UUID: 8858d242_88dc376e
+Bytes: 189
+The split up is also in anticipation that  InitializeExactType will become bigger. IMO it reads better as all these are distinctive steps but if have a strong opinion i don't mid reverting.
+
 43:0-43:34
 Thu Feb 19 11:16:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 083302f6_cc8daf4a
 Bytes: 15
 How about null?
+
+43:0-43:34
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 083302f6_cc8daf4a
+UUID: 8858d242_28cc2bbf
+Bytes: 132
+It doesn't really matter because that branch will never be taken if the input is null. I will add a check to avoid doing extra work.
 
 94:2-95:39
 Thu Feb 19 11:16:28 2015 +0000
@@ -37,12 +71,30 @@ if (a) {
 } else {
 }
 
+94:2-95:39
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48fb3a34_fef4a18e
+UUID: 48fb3a34_fef3816b
+Bytes: 185
+I phrased the comment wrong... sorry. I will update
+
+HInstanceOf returns 1 when True but HIf will compare with 0, so the branch where HInstanceOf is True is actually the FalseSuccessor.
+
 88:2-103:3
 Thu Feb 19 11:16:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 28f8c637_7d6537aa
 Bytes: 64
 Wouldn't it be simpler to do this on the block that has the HIf?
+
+88:2-103:3
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28f8c637_7d6537aa
+UUID: 48fb3a34_def0c561
+Bytes: 33
+yea :), it will save a few lines.
 
 164:42-164:68
 Thu Feb 19 11:16:28 2015 +0000
@@ -51,6 +103,14 @@ UUID: 28f8c637_3dbc4f95
 Bytes: 86
 ReferenceTypeInfo* new_rti. Or should you just return a new ReferenceTypeInfo instead?
 
+164:42-164:68
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28f8c637_3dbc4f95
+UUID: 8858d242_081f278f
+Bytes: 101
+done with pointer. I don't see it necessary to add the extra lines to return a new ReferenceTypeInfo.
+
 195:2-202:27
 Thu Feb 19 11:16:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,10 +118,26 @@ UUID: 083302f6_2c2d5388
 Bytes: 231
 As discussed, I think it would be clearer (and the more we'll handle instructions with this, the more it will be) to split UpdateReferenceTypeInfo into Visit functions. The Equality check in 221 can stay in UpdateReferenceTypeInfo.
 
+195:2-202:27
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 083302f6_2c2d5388
+UUID: 8858d242_0875e7b1
+Bytes: 4
+Done
+
 224:0-236:6
 Thu Feb 19 11:16:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 28f8c637_dd556bbd
 Bytes: 127
 This kind of belongs where I put a comment on null checks. Also, no need for the code snippets, just say "handle a !=/== null".
+
+224:0-236:6
+Thu Feb 19 13:59:28 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28f8c637_dd556bbd
+UUID: 8858d242_483e3fe9
+Bytes: 4
+Done
 

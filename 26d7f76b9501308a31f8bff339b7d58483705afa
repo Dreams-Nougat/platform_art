@@ -1,0 +1,58 @@
+Revision: 26d7f76b9501308a31f8bff339b7d58483705afa
+Patch-set: 2
+File: compiler/optimizing/constant_folding.cc
+
+37
+Thu Feb 19 14:17:11 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8858d242_e87973ac
+Bytes: 63
+The Xor case ("XOR dst, dst, src" → "CONSTANT 0") is missing.
+
+105:7-105:66
+Thu Feb 19 14:17:11 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 083302f6_6cdb5bf5
+Bytes: 121
+As this is a recurring pattern, maybe introduce a Primitive::IsIntegerType helper?  (Likewise in other files of this CL.)
+
+126:16-127:84
+Thu Feb 19 14:17:11 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8858d242_684fc37f
+Bytes: 45
+Maybe reuse the helper you introduced in PS2?
+
+File: compiler/optimizing/instruction_simplifier.cc
+
+215:29-215:40
+Thu Feb 19 14:17:11 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 083302f6_8c768769
+Bytes: 63
+Shouldn't this be
+
+  new (allocator) HNeg(type, input_other)
+
+?
+
+316:0-319:13
+Thu Feb 19 14:17:11 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8858d242_6866a311
+Bytes: 63
+Shouldn't
+
+  REM dst, src, 0
+
+trigger a division-by-zero error?
+
+File: compiler/optimizing/nodes.cc
+
+994:2-1006:3
+Thu Feb 19 14:17:11 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 083302f6_aca1433a
+Bytes: 84
+Shouldn't this switch be turned into virtual methods? Likewise for IsZero and IsOne.
+

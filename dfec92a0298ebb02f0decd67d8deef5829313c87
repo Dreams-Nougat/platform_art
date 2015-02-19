@@ -1,0 +1,30 @@
+Revision: dfec92a0298ebb02f0decd67d8deef5829313c87
+Patch-set: 20
+File: compiler/dex/mir_method_info.cc
+
+72:6-72:45
+Thu Feb 19 20:39:26 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4897ba02_1e496d77
+Bytes: 191
+it->method_idx_ is supposed to be an index in mUnit->GetCompilationUnit()->dex_file but the dequicken_ref->dex_file may be different. So this is bogus and I'd rather keep the MIR offset here.
+
+96:0-98:56
+Thu Feb 19 20:39:26 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 888d32f5_a08a9a2e
+Bytes: 197
+You should not use the ClassLinker directly, you should go through the CompilerDriver. If that means creating a fake DexCompilationUnit, so be it. (See MIRGraph::ComputeInlineIFieldLoweringInfo().)
+
+109:10-109:35
+Thu Feb 19 20:39:26 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c883aac3_a2ee1eb7
+Bytes: 382
+Sorry, I think I confused the invoke_type with the bits used by GetIvokeType(). This should be
+
+  it->flags_ = (it->flags_ & ~(kInvokeTypeMask << kBitInvokeTypeBegin)) |
+               (static_cast<uint16_t>(kInterface) << kBitInvokeTypeBegin);
+
+The IsFastInvoke() below was not written with this situation in mind and it's just a coincidence that it's giving us acceptable results.
+

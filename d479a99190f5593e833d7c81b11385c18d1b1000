@@ -9,12 +9,32 @@ UUID: eb12280d_f3cc90c2
 Bytes: 54
 sizeof(num_failed_boots) is generally considered safer
 
+141:44-141:60
+Thu Feb 19 13:34:04 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb12280d_f3cc90c2
+UUID: 083302f6_ecee2b8a
+Bytes: 4
+Done
+
 143:6-143:20
 Wed Feb 18 08:51:54 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8b028cb9_b83159ea
 Bytes: 64
 why not assume file format change and ReadPruneDalvikCache here?
+
+143:6-143:20
+Thu Feb 19 13:34:04 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b028cb9_b83159ea
+UUID: 8858d242_c85fcf2a
+Bytes: 368
+i'm ok doing this but please see my comment below :
+
+i didn't initially do that because that seems outside the remit of this code.
+
+the boot markers job is to protect against partially written compiler output and some other badness against the invariant that the compiler input is the same. if formats or something else change, i'd expect that to be handled elsewhere.
 
 162:43-162:61
 Wed Feb 18 08:51:54 2015 +0000
@@ -30,6 +50,14 @@ UUID: 8b644c9b_ee68fb83
 Bytes: 23
 file->Erase() here too?
 
+169:0-169:52
+Thu Feb 19 13:34:04 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b644c9b_ee68fb83
+UUID: 083302f6_6c00fbae
+Bytes: 44
+FlushCloseOrErase takes care of that for us.
+
 File: runtime/runtime.h
 
 698:2-698:9
@@ -39,6 +67,14 @@ UUID: 8b644c9b_8e5dbfe8
 Bytes: 9
 uint32_t?
 
+698:2-698:9
+Thu Feb 19 13:34:04 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b644c9b_8e5dbfe8
+UUID: 48fb3a34_de66858a
+Bytes: 19
+ooops... good catch
+
 File: runtime/runtime_options.def
 
 117:74-117:75
@@ -47,4 +83,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb12280d_33d7284e
 Bytes: 10
 bump to 5?
+
+117:74-117:75
+Thu Feb 19 13:34:04 2015 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb12280d_33d7284e
+UUID: 083302f6_4c053fbd
+Bytes: 106
+i'll do that in a separate change. i usually try to preserve existing behaviour in these sorts of changes.
 

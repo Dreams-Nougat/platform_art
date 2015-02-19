@@ -1,0 +1,34 @@
+Revision: 461c48ae73172b403a3c30ab011fcbc3d4b38fb2
+Patch-set: 17
+File: compiler/dex/mir_method_info.cc
+
+97:0-99:56
+Thu Feb 19 11:51:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48fb3a34_de6c459b
+Bytes: 334
+If this yields an interface method, we should change the invoke_type to kInterface. We should still try to resolve the actual virtual method that the quickened opcode calls to determine target method (sharp_type = kVirtual on success). And the devirtualization in IsFastInvoke(..., devirt_target, ...) below doesn't make sense at all.
+
+101:0-104:32
+Thu Feb 19 11:51:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48fb3a34_def1e59c
+Bytes: 135
+These flags are for CompilerDriver's internal use. You need to ask CompilerDriver to provide the correct flags for dequickened invokes.
+
+File: compiler/dex/quick/quick_compiler.cc
+
+546:7-546:18
+Thu Feb 19 11:51:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28f8c637_fdc5c713
+Bytes: 46
+You mean "Disable some optimizations for JIT".
+
+548:4-548:49
+Thu Feb 19 11:51:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48fb3a34_beee19b7
+Bytes: 55
+Also kGlobalValueNumbering and kGvnDeadCodeElimination.
+

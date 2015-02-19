@@ -35,6 +35,14 @@ UUID: 083302f6_ec52aba4
 Bytes: 18
 GetBoundType SGTM.
 
+2988:30-2988:33
+Thu Feb 19 18:48:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 083302f6_ec52aba4
+UUID: 8858d242_68c8e3dd
+Bytes: 4
+Done
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 41:0-42:20
@@ -60,6 +68,14 @@ UUID: 8858d242_882437a9
 Bytes: 141
 Code should be small: VisitBasicBlock should loop over the phis, call Visit on them, then loop over the instructions, and call visit on them.
 
+41:0-42:20
+Thu Feb 19 18:48:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8858d242_882437a9
+UUID: 084ce289_e4cbda54
+Bytes: 4
+Done
+
 43:0-43:34
 Thu Feb 19 11:16:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -82,6 +98,16 @@ Parent: 8858d242_28cc2bbf
 UUID: 083302f6_2cae732d
 Bytes: 72
 Not sure I understand. I mean what about bounding type for a ==/!= null?
+
+43:0-43:34
+Thu Feb 19 18:48:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 083302f6_2cae732d
+UUID: 48fb3a34_610fd02e
+Bytes: 114
+ah, I thought you were referring to `null instanceof ClassA`
+
+I will add sensitivity to nullchecks in a follow up.
 
 94:2-95:39
 Thu Feb 19 11:16:28 2015 +0000
@@ -114,6 +140,18 @@ Bytes: 204
 Again, this looks bogus. At the DEX level, we'll get if-eq or if-eqz (most probably if-eqz). The branches will then match where Dex is jumping to.
 
 Looks like you're confused about the comparison to zero?
+
+94:2-95:39
+Thu Feb 19 18:48:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48fb3a34_be1739c3
+UUID: 48fb3a34_418614fb
+Bytes: 219
+I think we are talking about the same thing.
+
+dex will generate an if-eqz and thus reversing what branch you should take.
+
+To make things clearer I just choose the proper successor based on the value if compare against.
 
 88:2-103:3
 Thu Feb 19 11:16:28 2015 +0000
@@ -152,6 +190,16 @@ Parent: 8858d242_081f278f
 UUID: 083302f6_0cb3b797
 Bytes: 46
 Some might say immutability is a lot nicer....
+
+164:42-164:68
+Thu Feb 19 18:48:56 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 083302f6_0cb3b797
+UUID: 084ce289_044ef67f
+Bytes: 106
+can't argue with that :) but ReferenceTypeInfo was not immutable...
+
+I made it so and change this as well.
 
 195:2-202:27
 Thu Feb 19 11:16:28 2015 +0000

@@ -1,0 +1,67 @@
+Revision: 2140812e81d5500558eadd7157cb234d921771e7
+Patch-set: 12
+File: compiler/optimizing/nodes.h
+
+2988:30-2988:33
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28f8c637_1d8bd300
+Bytes: 74
+Top here is confusing. Why is this not the reference type of HInstruction?
+
+File: compiler/optimizing/reference_type_propagation.cc
+
+41:0-42:20
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48fb3a34_bed5f9f4
+Bytes: 188
+Since VisitBasicBlock is the only user of those two methods, I don't see the need of factoring them. They're small enough and concise enough that I find it more readable to have them here.
+
+43:0-43:34
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 083302f6_cc8daf4a
+Bytes: 15
+How about null?
+
+94:2-95:39
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48fb3a34_fef4a18e
+Bytes: 150
+Please fix this first :-) Something's very wrong if what you're saying is true. It means we miscompile:
+
+bool a = b instanceof Foo
+if (a) {
+} else {
+}
+
+88:2-103:3
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28f8c637_7d6537aa
+Bytes: 64
+Wouldn't it be simpler to do this on the block that has the HIf?
+
+164:42-164:68
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28f8c637_3dbc4f95
+Bytes: 86
+ReferenceTypeInfo* new_rti. Or should you just return a new ReferenceTypeInfo instead?
+
+195:2-202:27
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 083302f6_2c2d5388
+Bytes: 231
+As discussed, I think it would be clearer (and the more we'll handle instructions with this, the more it will be) to split UpdateReferenceTypeInfo into Visit functions. The Equality check in 221 can stay in UpdateReferenceTypeInfo.
+
+224:0-236:6
+Thu Feb 19 11:16:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28f8c637_dd556bbd
+Bytes: 127
+This kind of belongs where I put a comment on null checks. Also, no need for the code snippets, just say "handle a !=/== null".
+

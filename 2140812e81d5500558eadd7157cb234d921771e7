@@ -27,6 +27,14 @@ for() {
   }
 }
 
+2988:30-2988:33
+Thu Feb 19 14:06:57 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48fb3a34_3e8689fa
+UUID: 083302f6_ec52aba4
+Bytes: 18
+GetBoundType SGTM.
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 41:0-42:20
@@ -44,6 +52,14 @@ UUID: 8858d242_88dc376e
 Bytes: 189
 The split up is also in anticipation that  InitializeExactType will become bigger. IMO it reads better as all these are distinctive steps but if have a strong opinion i don't mid reverting.
 
+41:0-42:20
+Thu Feb 19 14:06:57 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8858d242_88dc376e
+UUID: 8858d242_882437a9
+Bytes: 141
+Code should be small: VisitBasicBlock should loop over the phis, call Visit on them, then loop over the instructions, and call visit on them.
+
 43:0-43:34
 Thu Feb 19 11:16:28 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,6 +74,14 @@ Parent: 083302f6_cc8daf4a
 UUID: 8858d242_28cc2bbf
 Bytes: 132
 It doesn't really matter because that branch will never be taken if the input is null. I will add a check to avoid doing extra work.
+
+43:0-43:34
+Thu Feb 19 14:06:57 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8858d242_28cc2bbf
+UUID: 083302f6_2cae732d
+Bytes: 72
+Not sure I understand. I mean what about bounding type for a ==/!= null?
 
 94:2-95:39
 Thu Feb 19 11:16:28 2015 +0000
@@ -80,6 +104,16 @@ Bytes: 185
 I phrased the comment wrong... sorry. I will update
 
 HInstanceOf returns 1 when True but HIf will compare with 0, so the branch where HInstanceOf is True is actually the FalseSuccessor.
+
+94:2-95:39
+Thu Feb 19 14:06:57 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48fb3a34_fef3816b
+UUID: 48fb3a34_be1739c3
+Bytes: 204
+Again, this looks bogus. At the DEX level, we'll get if-eq or if-eqz (most probably if-eqz). The branches will then match where Dex is jumping to.
+
+Looks like you're confused about the comparison to zero?
 
 88:2-103:3
 Thu Feb 19 11:16:28 2015 +0000
@@ -110,6 +144,14 @@ Parent: 28f8c637_3dbc4f95
 UUID: 8858d242_081f278f
 Bytes: 101
 done with pointer. I don't see it necessary to add the extra lines to return a new ReferenceTypeInfo.
+
+164:42-164:68
+Thu Feb 19 14:06:57 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8858d242_081f278f
+UUID: 083302f6_0cb3b797
+Bytes: 46
+Some might say immutability is a lot nicer....
 
 195:2-202:27
 Thu Feb 19 11:16:28 2015 +0000

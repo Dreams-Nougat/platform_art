@@ -9,6 +9,14 @@ UUID: e8106e97_83a45ecb
 Bytes: 20
 /* is_exact */ false
 
+969:58-969:63
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e8106e97_83a45ecb
+UUID: 28736625_054fb27f
+Bytes: 4
+Done
+
 2742:55-2742:60
 Fri Feb 20 11:21:02 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 68dabe34_1f9d2380
 Bytes: 5
 ditto
 
+2742:55-2742:60
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68dabe34_1f9d2380
+UUID: c8972a5d_e2efe607
+Bytes: 4
+Done
+
 3021:26-3021:37
 Fri Feb 20 11:21:02 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 68dabe34_3fa2e7ba
 Bytes: 27
 Add a comment what this is.
+
+3021:26-3021:37
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68dabe34_3fa2e7ba
+UUID: 28736625_654ea681
+Bytes: 4
+Done
 
 File: compiler/optimizing/reference_type_propagation.cc
 
@@ -32,12 +56,30 @@ UUID: 68dabe34_5f97ab5f
 Bytes: 31
 How about instr->Accept(this) ?
 
+49:0-53:5
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68dabe34_5f97ab5f
+UUID: 28736625_c583da33
+Bytes: 141
+It will need a bit of over-engineering... I'll need to create a separate visitor and share the state with it.
+
+I'd keep it like this for now.
+
 56:0-59:3
 Fri Feb 20 11:21:02 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 68dabe34_bf8d174b
 Bytes: 97
 Should be done first. It's not strictly necessary, but it feels more logical to visit phis first.
+
+56:0-59:3
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68dabe34_bf8d174b
+UUID: 08706217_84fe46bb
+Bytes: 209
+It will make life harder for convergence as all the phis will need to be added to the work list. And actually, for me it's more logical to first set things that you are sure of and then handle the 'unknown' :)
 
 75:0-75:28
 Fri Feb 20 11:21:02 2015 +0000
@@ -48,12 +90,30 @@ Can we end up having instanceof in the HIf? HInstanceOf is a bool and we might j
 
 Also what about HNotEqual?
 
+75:0-75:28
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68dabe34_1f0a831e
+UUID: e8106e97_e379d25a
+Bytes: 154
+We probably can. I was planning to experiment with different code patterns and see what dex is generated. 
+
+I'll add a todo and address it in a follow up.
+
 94:0-95:48
 Fri Feb 20 11:21:02 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 68dabe34_df273bac
 Bytes: 59
 Why are you creating the HBoundType then? It seems useless.
+
+94:0-95:48
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68dabe34_df273bac
+UUID: 08706217_44cc4ec0
+Bytes: 108
+It's not because this can still be part of the fix point iteration in which case it will need to be bounded.
 
 123:66-123:70
 Fri Feb 20 11:21:02 2015 +0000
@@ -62,12 +122,28 @@ UUID: 68dabe34_3f0f472f
 Bytes: 31
 /* is_exact */, here and below.
 
+123:66-123:70
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 68dabe34_3f0f472f
+UUID: e8106e97_638682fb
+Bytes: 4
+Done
+
 177:11-177:12
 Fri Feb 20 11:21:02 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e8106e97_4319c677
 Bytes: 32
 TODO: Find a common super class.
+
+177:11-177:12
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e8106e97_4319c677
+UUID: 28736625_65ea26f9
+Bytes: 4
+Done
 
 205:0-205:52
 Fri Feb 20 11:21:02 2015 +0000
@@ -76,10 +152,39 @@ UUID: 88d53202_602db287
 Bytes: 51
 If we do, should we just get rid of the HBoundType?
 
+205:0-205:52
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88d53202_602db287
+UUID: e8106e97_03818ee1
+Bytes: 285
+nope, that's the purpose of HBoundType: to make sure we stay within the limit even if the 'outside' changes.
+
+An artificial case is:
+
+    for (int i = 0; i < n; i++) {
+      if (o instanceof Super) {
+        ((Super)o).f();
+      }
+      if () {
+        o = new Object();
+      }
+    }
+
 215:0-219:3
 Fri Feb 20 11:21:02 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e8106e97_2333eaf2
 Bytes: 159
 Seems like duplicating line 222 and 223. Could you start new_rti with some kind of bottom type? Looks like it would also serve the invalid case for primitives.
+
+215:0-219:3
+Fri Feb 20 13:39:45 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e8106e97_2333eaf2
+UUID: 08706217_04eb36ff
+Bytes: 220
+it is a duplication of line 222/223. It will possibly save some iterations. Though I don't expect it to very important :)
+
+previously is_known served as a kind of bottom but since it was not strictly needed i removed it.
 

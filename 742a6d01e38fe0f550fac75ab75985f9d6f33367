@@ -2,6 +2,17 @@ Revision: 742a6d01e38fe0f550fac75ab75985f9d6f33367
 Patch-set: 2
 File: compiler/optimizing/code_generator.cc
 
+144:8-144:47
+Fri Feb 20 11:10:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48fb3a34_2100a8e2
+Bytes: 100
+I'm not sure to understand; why this condition is not
+
+  maximum_number_of_live_fp_registers >= 1
+
+?
+
 149:0-149:82
 Wed Feb 18 17:29:12 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -10,6 +21,13 @@ Bytes: 39
 Is VLDM really worth the bigger frames?
 
 File: compiler/optimizing/code_generator_arm.cc
+
+346:2-346:8
+Fri Feb 20 11:10:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 88d53202_e02622d9
+Bytes: 55
+Shouldn't this be a specific-sized type, like uint32_t?
 
 363:8-363:35
 Wed Feb 18 17:29:12 2015 +0000
@@ -39,6 +57,18 @@ UUID: eba78821_eb149143
 Bytes: 28
 DCHECK_EQ(max - min, count)?
 
+407
+Fri Feb 20 11:10:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eba78821_eb149143
+UUID: e8106e97_e3b1d20b
+Bytes: 47
+Or rather:
+
+  DCHECK(max - min + 1, count);
+
+:)
+
 409:77-409:88
 Wed Feb 18 17:29:12 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,4 +82,20 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eba78821_4bca0542
 Bytes: 115
 So you assume that IP was set with the writeback on 372? IIUC, that's only invoked at least two core regs are live.
+
+409:21-409:23
+Fri Feb 20 11:10:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eba78821_4bca0542
+UUID: 88d53202_c08d9e4a
+Bytes: 11
+Fair point.
+
+409:77-409:88
+Fri Feb 20 11:10:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eba78821_0b1c7d66
+UUID: 88d53202_60977260
+Bytes: 33
+Note that max == min + count - 1.
 

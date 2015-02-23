@@ -9,6 +9,14 @@ UUID: 48fb3a34_9e87dd28
 Bytes: 88
 So you're doing that just because of the phi elimination? I'd rather we don't do this...
 
+36:4-37:27
+Mon Feb 23 12:10:09 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48fb3a34_9e87dd28
+UUID: 0816a200_94cc24f2
+Bytes: 151
+HGraph::RemoveDeadBlocks and SsaDeadPhiElimination::EliminateDeadPhis have been modified to use unsafe instruction removal and thus this is not needed.
+
 File: compiler/optimizing/nodes.h
 
 1818:2-1818:28
@@ -17,4 +25,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 28f8c637_bdd5fff4
 Bytes: 141
 Is it safe to return a copy? Shouldn't you return a pointer? What if the caller wants to change it? (the fields of HUserRecord are not const)
+
+1818:2-1818:28
+Mon Feb 23 12:10:09 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28f8c637_bdd5fff4
+UUID: 08706217_e4dc5a6f
+Bytes: 220
+It is safe because HUserRecord is just an instruction + use node pair and changing the copy doesn't do anything. I've hidden the internal implementation so that the data structure is not exposed any more. Is that enough?
 

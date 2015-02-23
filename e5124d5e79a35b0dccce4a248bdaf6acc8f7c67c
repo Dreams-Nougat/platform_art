@@ -9,3 +9,19 @@ UUID: a5ece17a_4134d203
 Bytes: 262
 This really bugs me the wrong way. I know you're improving it. But we pride ourselves on testing with valgrind, yet we only do the right thing when running under valgrind.... Or do we have a strong statement that we don't care about what's happening at shutdown?
 
+1072:2-1072:57
+Mon Feb 23 23:09:51 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5ece17a_4134d203
+UUID: a5ece17a_c1822232
+Bytes: 784
+I said the same thing to agampe off line being virtual Nicolas, but was going to write to explain this. 
+
+The problem is that various tools like dex2oat manually init logging, and therefore locks, before a runtime is created.
+
+I was going to say that we should probably null out logging_lock_ on delete since we are using that as a test for freeing, but that still can leave the runtime calling Locks::Free when dex2oat could still be using logging...
+
+so the refcount approach tried to cope with this, and was partially why agampe had done this.
+
+long ago enh and I objected to the logging lock being part of the lock hierarchy at all, I kind of feel this is an excuse to revisit that decision. the ALOG* code does its own logging, our wrapper is just keeping long messages atomic...
+

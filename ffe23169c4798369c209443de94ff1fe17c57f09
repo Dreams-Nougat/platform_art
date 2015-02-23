@@ -51,12 +51,28 @@ UUID: 0816a200_d427bc56
 Bytes: 247
 it->field_idx_ is supposed to be an index in mUnit->GetCompilationUnit()->dex_file but the field_idx_ptr->dex_file may be different. So this is bogus and if we somehow end up generating the call to helper in GenIGet()/GenIPut(), it will be broken.
 
+70:6-70:35
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0816a200_d427bc56
+UUID: 885372fc_1004c43d
+Bytes: 158
+I guess it is better to just not change this. There is already checks that the declaring_dex_file_ matches, so we will get a SIGABRT if this is ever the case.
+
 73:39-73:55
 Mon Feb 23 11:09:43 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c8df2a7e_420e52af
 Bytes: 62
 Don't use the ClassLinker directly, go through CompilerDriver.
+
+73:39-73:55
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8df2a7e_420e52af
+UUID: a84e7654_11cccc6c
+Bytes: 4
+Done
 
 File: compiler/dex/mir_method_info.cc
 
@@ -75,12 +91,28 @@ UUID: e826ae4e_b38b58b7
 Bytes: 2
 +1
 
+105:57-105:60
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e826ae4e_b38b58b7
+UUID: 882c527c_880fb75d
+Bytes: 4
+Done
+
 122:9-122:19
 Fri Feb 20 23:45:35 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e826ae4e_5381a495
 Bytes: 20
 typo -> trambopoline
+
+122:9-122:19
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e826ae4e_5381a495
+UUID: 882c527c_a8147b74
+Bytes: 4
+Done
 
 File: compiler/driver/compiler_driver.cc
 
@@ -91,6 +123,14 @@ UUID: e826ae4e_13c6cccd
 Bytes: 28
 how does installd know this?
 
+497:0-499:3
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e826ae4e_13c6cccd
+UUID: a880367a_04eab8f7
+Bytes: 159
+Clarify? This condition is for the case where the JIT compilations fails. Since we mapped the oat file read only we don't want to dex2dex or else we wil fault.
+
 File: compiler/jit/jit_compiler.cc
 
 149:2-149:39
@@ -100,12 +140,28 @@ UUID: a8867663_d18cc4d3
 Bytes: 35
 method context for CHECK's in here?
 
+149:2-149:39
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8867663_d18cc4d3
+UUID: 0847823f_8fea59f9
+Bytes: 117
+Compiled method doesn't really have any context unfortunately, don't really think adding an arg for this is worth it.
+
 232:0-232:29
 Fri Feb 20 23:45:35 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e826ae4e_d3861483
 Bytes: 6
 yes...
+
+232:0-232:29
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e826ae4e_d3861483
+UUID: 882c527c_a86abbcf
+Bytes: 50
+Added TODO, seems to work fine without it for now.
 
 File: compiler/jit/jit_compiler.h
 
@@ -116,6 +172,14 @@ UUID: c881ea4d_b2d900fb
 Bytes: 37
 should this be be shared with gtests?
 
+68:2-69:50
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c881ea4d_b2d900fb
+UUID: 882c527c_a83d5bec
+Bytes: 43
+Maybe when I get around to adding gtests :)
+
 File: runtime/dex_file.h
 
 1034:0-1034:3
@@ -124,6 +188,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e826ae4e_3340a877
 Bytes: 53
 nit: the style below seems to be to put this one line
+
+1034:0-1034:3
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e826ae4e_3340a877
+UUID: c832cad2_4df94dd1
+Bytes: 4
+Done
 
 File: runtime/jit/jit.cc
 
@@ -134,6 +206,14 @@ UUID: c881ea4d_720b989e
 Bytes: 18
 any unload needed?
 
+73:34-73:42
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c881ea4d_720b989e
+UUID: 882c527c_488bff34
+Bytes: 4
+Done
+
 File: runtime/jit/jit.h
 
 94:0-94:19
@@ -142,6 +222,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c881ea4d_d28cc4d3
 Bytes: 28
 can't it just use accessors?
+
+94:0-94:19
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c881ea4d_d28cc4d3
+UUID: 882c527c_0863c7f4
+Bytes: 4
+Done
 
 File: runtime/oat_file.h
 
@@ -152,12 +240,28 @@ UUID: c881ea4d_1231ec62
 Bytes: 76
 so lazy... are there really that many call sites that you need default args?
 
+130:3-130:76
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c881ea4d_1231ec62
+UUID: c832cad2_ada1e9b7
+Bytes: 4
+Done
+
 150:0-151:26
 Fri Feb 20 23:45:35 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e826ae4e_16847a3b
 Bytes: 21
 and these change now?
+
+150:0-151:26
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e826ae4e_16847a3b
+UUID: c832cad2_cd2c5d8e
+Bytes: 59
+I need operator =, which doesn't work if they are constant.
 
 File: runtime/quick/inline_method_analyser.cc
 
@@ -168,12 +272,28 @@ UUID: a8867663_91807c66
 Bytes: 32
 say why? "Add handling for JIT."
 
+115:0-115:26
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8867663_91807c66
+UUID: 882c527c_68d3630f
+Bytes: 4
+Done
+
 127:0-127:26
 Fri Feb 20 23:45:35 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e826ae4e_b69b4689
 Bytes: 5
 same?
+
+127:0-127:26
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e826ae4e_b69b4689
+UUID: c832cad2_8dd7c500
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -184,10 +304,26 @@ UUID: a8867663_3192f0bb
 Bytes: 47
 comment explaining selinux restrictions? maybe?
 
+482:0-482:45
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8867663_3192f0bb
+UUID: 2823668f_85c1628d
+Bytes: 4
+Done
+
 1670:0-1670:43
 Fri Feb 20 23:45:35 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c881ea4d_92a71c21
 Bytes: 83
 perhaps create should have error_msg out arg with reason instead of logging itself.
+
+1670:0-1670:43
+Mon Feb 23 21:27:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c881ea4d_92a71c21
+UUID: c832cad2_4dd6ad00
+Bytes: 4
+Done
 

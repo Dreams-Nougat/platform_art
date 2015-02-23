@@ -42,6 +42,22 @@ UUID: e826ae4e_76504e9c
 Bytes: 111
 But looking over the counterparts like IGET, this seems correct. I was thinking of mir_dataflow when we talked.
 
+File: compiler/dex/mir_field_info.cc
+
+70:6-70:35
+Mon Feb 23 11:09:43 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0816a200_d427bc56
+Bytes: 247
+it->field_idx_ is supposed to be an index in mUnit->GetCompilationUnit()->dex_file but the field_idx_ptr->dex_file may be different. So this is bogus and if we somehow end up generating the call to helper in GenIGet()/GenIPut(), it will be broken.
+
+73:39-73:55
+Mon Feb 23 11:09:43 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c8df2a7e_420e52af
+Bytes: 62
+Don't use the ClassLinker directly, go through CompilerDriver.
+
 File: compiler/dex/mir_method_info.cc
 
 105:57-105:60

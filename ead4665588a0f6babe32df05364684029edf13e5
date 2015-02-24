@@ -1,5 +1,14 @@
 Revision: ead4665588a0f6babe32df05364684029edf13e5
 Patch-set: 4
+File: runtime/base/logging.h
+
+47:26-47:70
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56c75f3_ba565112
+Bytes: 98
+nit: or you could just use "bool oat;" and "-verbose:oat" to avoid the need for the clarification.
+
 File: runtime/class_linker.h
 
 317:14-317:20
@@ -8,4 +17,165 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e81a2e66_f35f3063
 Bytes: 1
 s
+
+610:35-610:59
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65574942_771d9094
+Bytes: 98
+I'm not sure what the current fashion is. I thought it was const references or non-const pointers.
+
+File: runtime/oat_file_manager.cc
+
+19:0-19:14
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_420bd29d
+Bytes: 68
+The style says the C++ includes go in a section after the C includes
+
+44:0-44:41
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2540f174_5d187b73
+Bytes: 109
+seems like workarounds like this should have a comment? Do we have an idea why or is the reason lost to time?
+
+49:0-49:28
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_6218d6f2
+Bytes: 186
+do we use ALOG directly? isn't that the only reason for defining a TAG?
+
+I see, this is different than ALOG TAG's which are "strings". I think this is just more reason to rename to "oat"
+
+128:0-129:19
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_a2f01e1e
+Bytes: 85
+there is an AOSP change regarding this right now that needs to be reviewed from Intel
+
+333:0-334:38
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 653e69ec_ffa17f82
+Bytes: 330
+oat data begin check was first before there was patching. it was needed to cover changes to the boot.oat layout requiring a recompile, even if checksum didn't change.
+
+patch delta was added later. one could imagine the boot being relocated but having the same data begin and checksum, right? so that is needed as a separate check?
+
+File: runtime/oat_file_manager.h
+
+33:0-33:33
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_220eceae
+Bytes: 435
+I hate to say this, but I was thinking of OatFileManager as more of the singleton and the owner of the ClassLinker::oat_files_ etc, perhaps the static members of here could be there.
+
+I realized there would have to be some helper class like the OatFileManager here, we have traditionally called these something like OatFileReference or OatFileHelper. I'll ignore that for the purposes of the review, we can chat about names separately.
+
+53:5-53:16
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 257d51a0_75d0c884
+Bytes: 124
+for these, it is often clear to just use the constant name such as kUpToDate so that searches will find the comment as well.
+
+69:0-70:56
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5bab59b_4a4c138d
+Bytes: 225
+that should be a misconfiguration, the BOOTCLASSPATH is expected to be the same for all ISAs. In theory something could try to validate this. If that is your goal, we should probably be more explicit about what is to be done.
+
+127:48-128:18
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 653e69ec_3fb76704
+Bytes: 161
+seems like it should go up with the more general description. any reason it shouldn't be an error since if the lock's are nested, the unlocks might be a problem.
+
+131
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_22532eab
+Bytes: 124
+For example when both a foreground Activity and a background Service both use DexClassloaders pointing to the same dex file.
+
+153:0-154:28
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_4250329c
+Bytes: 120
+is it possible for the odex to be out of date? because we validate that the system odex agrees with the system dex file?
+
+165:0-166:51
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_a2a3be46
+Bytes: 108
+on a casual read, these seem to be opposites, I assume the difference is patching case. can this be clearer?
+
+214:0-215:14
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_c2a8c223
+Bytes: 65
+is this just to allow reuse by GenerateOatFile and GenerateImage?
+
+264
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_e2adc630
+Bytes: 35
+return const pointer? other places?
+
+303:58-303:60
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_22988e13
+Bytes: 3
+the
+
+308:0-309:22
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c87baa5e_429592da
+Bytes: 63
+do we have an accessor that CHECKS this?
+
+similar for the rest?
+
+420:5-420:77
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 653e69ec_5f2fcb82
+Bytes: 27
+do we have CHECKS for this?
+
+File: runtime/oat_file_manager_test.cc
+
+586:0-588:57
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2540f174_ddd5abf0
+Bytes: 180
+probably we can just treat them as absolute with the leading char removed. this might fix art/tools/art and shouldn't be a security issue if we insist they are absolute in installd
+
+610:0-612:50
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65574942_171894a4
+Bytes: 270
+I believe dalvik sniffed out thing using extension where art looks at file magic more. that said for /system odex files, it harder to support short because things would collide. so perhaps we just don't support /system odex file short names, but allow it for other uses.
+
+632:0-637:73
+Tue Feb 24 06:43:22 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2540f174_3d02cff0
+Bytes: 37
+this seems simpler to just make work.
 

@@ -1,0 +1,25 @@
+Revision: 07aee1ff820f8d70b1b99b5d3fbc14a17dcb75e1
+Patch-set: 1
+File: compiler/dex/quick/mips/utility_mips.cc
+
+46:0-51:64
+Tue Feb 24 16:02:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65574942_f7a1a082
+Bytes: 142
+JNI entrypoints are *not* used by Quick. Remove them. It is also wrong to do this "direct trampoline" with them, as they may throw exceptions.
+
+31:4-55:37
+Tue Feb 24 16:02:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 653e69ec_429ed47c
+Bytes: 36
+Please make this a switch statement.
+
+741:2-747:3
+Tue Feb 24 16:02:58 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 653e69ec_a28ec046
+Bytes: 308
+There needs to be a big comment here and at the definition. Something along the line that this would in general not be safe to do at all, as it violates the frame size of the Quick method. You can only do this as you're going directly to some native implementation that does *not* do anything in the runtime.
+

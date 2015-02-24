@@ -59,6 +59,16 @@ UUID: 885372fc_1004c43d
 Bytes: 158
 I guess it is better to just not change this. There is already checks that the declaring_dex_file_ matches, so we will get a SIGABRT if this is ever the case.
 
+70:6-70:35
+Tue Feb 24 17:41:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 885372fc_1004c43d
+UUID: 85aefd91_18c1c58b
+Bytes: 493
+We've got a precedent for invalid field_idx, namely inlined getters and setters. They are guarded by (cu->enable_debug & (1 << kDebugSlowFieldPath)) in dex_file_method_inliner.cc .
+
+Either you make sure the JIT never sets that flag or you need to reconstruct a valid index in the correct dex file, even if it means traversing the class hierarchy of the reference as seen by the MethodVerifier. Since the quickened insn was created from a non-quickened insn, there must always be a valid index.
+
 73:39-73:55
 Mon Feb 23 11:09:43 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -102,3 +102,11 @@ The native DexFile objects will *normally* be registered in the class linker. Th
 
 I am fine using a Java array to store the pointers. I think it's overkill, but it is a solution...
 
+63:0-63:83
+Tue Feb 24 17:29:11 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05e92dcf_dcd82d2b
+UUID: a5b941da_f9f257ea
+Bytes: 224
+Lets stop wasting time on this problem, just copy the MemMap::maps_ solution which is a global pointer which is created / setup if valgrind is enabled. This avoids the exit races where threads can access deleted global data.
+

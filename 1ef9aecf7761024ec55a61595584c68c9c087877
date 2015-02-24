@@ -92,3 +92,13 @@ UUID: e5f7b997_4b7445b3
 Bytes: 80
 Sure, but that's at the Java level, which has (or can have) proper deallocation.
 
+63:0-63:83
+Tue Feb 24 17:27:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5f7b997_4b7445b3
+UUID: 05e92dcf_dcd82d2b
+Bytes: 511
+The native DexFile objects will *normally* be registered in the class linker. They are not the leak issue. The problem is that you need to keep a list together for multidex situations (so you can remove all DexFile* when a Java DexFile is closed). It did not seem right to also put that into the class-linker, so I attached it to the "root cause," the Java DexFile (which already held a native DexFile* before).
+
+I am fine using a Java array to store the pointers. I think it's overkill, but it is a solution...
+

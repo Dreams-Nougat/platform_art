@@ -9,3 +9,11 @@ UUID: c5b475e0_dab4a5fa
 Bytes: 149
 Can you use a ScopedThreadStateChange instead? Using SetState directly is not very safe and should be avoided. In this case it would work, but still.
 
+637:8-637:16
+Tue Feb 24 18:02:07 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b475e0_dab4a5fa
+UUID: 85aefd91_78e72132
+Bytes: 369
+I could use two ScopedThreadStateChange: one for the event reporting (kWaitingForDebuggerSend) and one for the suspension (kSuspended). The only difference is the extra transition to kRunnable in between. That'd mean the thread could suspend in that transition if another thread fires an event suspending all threads. I don't think that's an issue for debugging though.
+

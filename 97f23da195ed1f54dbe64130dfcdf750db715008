@@ -9,6 +9,14 @@ UUID: 6869de73_c765de03
 Bytes: 34
 I think you can remove this check.
 
+47:0-49:5
+Wed Feb 25 16:39:17 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6869de73_c765de03
+UUID: 08722291_f4c01806
+Bytes: 72
+Is it due to we'll eliminate +0 pattern? I want to keep it just in case.
+
 484:5-489:7
 Mon Feb 23 14:30:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,12 +28,35 @@ if (a < 42) {
   ...
 }
 
+484:5-489:7
+Wed Feb 25 16:39:17 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6869de73_e76a62d1
+UUID: a86916a4_3ca51dc6
+Bytes: 186
+This method is called for such tests to do narrowing. However we require another condition for MonotonicValueRange before we can narrow, the necessity is shown in a new testcase I added.
+
 734:6-734:26
 Mon Feb 23 14:30:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c8df2a7e_22018e2e
 Bytes: 57
 Can you add an example of what this is actually fetching?
+
+734:6-734:26
+Wed Feb 25 16:39:17 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8df2a7e_22018e2e
+UUID: a86916a4_9cd70901
+Bytes: 362
+I added more comment.
+    // Try to handle (array.length - i) or (array.length + c - i) format.
+    HInstruction* left_of_left;  // left input of left.
+    int32_t right_const = 0;
+    if (ValueBound::IsAddOrSubAConstant(left, &left_of_left, &right_const)) {
+      left = left_of_left;
+    }
+    // The value of left input of the sub equals (left + right_const).
 
 789:0-789:26
 Mon Feb 23 14:30:26 2015 +0000
@@ -34,6 +65,22 @@ UUID: c8df2a7e_820e9a5a
 Bytes: 50
 Ditto. This is for (array.length - 1 ) / 2, right?
 
+789:0-789:26
+Wed Feb 25 16:39:17 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8df2a7e_820e9a5a
+UUID: a880367a_078b9a00
+Bytes: 381
+Yes. Added more comments.
+    // Try to handle array.length/2 or (array.length-1)/2 format.
+    HInstruction* left = instruction->GetLeft();
+    HInstruction* left_of_left;  // left input of left.
+    int32_t c = 0;
+    if (ValueBound::IsAddOrSubAConstant(left, &left_of_left, &c)) {
+      left = left_of_left;
+    }
+    // The value of left input of instruction equals (left + c).
+
 793:3-793:42
 Mon Feb 23 14:30:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,12 +88,31 @@ UUID: 08c4e2d0_a4964233
 Bytes: 50
 Should this check be related to an overflow check?
 
+793:3-793:42
+Wed Feb 25 16:39:17 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08c4e2d0_a4964233
+UUID: a84e7654_f1d02858
+Bytes: 206
+(array_length + 1_or_smaller) / 2_or_bigger) fits value range [INT_MIN, array_length], even if array_length+1 overflows. This is commented at line 798. I moved that comment before 793 to make it more clear.
+
 795:8-795:59
 Mon Feb 23 14:30:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6869de73_4a6333f4
 Bytes: 39
 Please add an example for this comment.
+
+795:8-795:59
+Wed Feb 25 16:39:17 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6869de73_4a6333f4
+UUID: a8dbd6ab_a9da9dee
+Bytes: 200
+Changed the comment to:
+        // Make sure for unsigned shift, left side is not negative.
+        // e.g. if array_length is 2, ((array_length - 3) >>> 2) is way bigger
+        // than array_length.
 
 File: test/449-checker-bce/src/Main.java
 
@@ -56,4 +122,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e8c06ec1_c36376a3
 Bytes: 100
 Why? If the condition as '||' I would agree, but here it's '&&' which ensures i it below the length.
+
+269:1-270:44
+Wed Feb 25 16:39:17 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e8c06ec1_c36376a3
+UUID: a880367a_446da093
+Bytes: 315
+Let's say random.nextInt() keeps returning 1 so this if test fails and i goes to INT_MIN due to overflow. Then random.nextInt() returns 0, array[i] will be attempted which will cause AIOOB exception.
+
+This is an infinite loop so it's a little contrived. But it shows the point for the necessity of the bounds check.
 

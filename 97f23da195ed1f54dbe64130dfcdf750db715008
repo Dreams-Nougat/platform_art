@@ -17,6 +17,14 @@ UUID: 08722291_f4c01806
 Bytes: 72
 Is it due to we'll eliminate +0 pattern? I want to keep it just in case.
 
+47:0-49:5
+Wed Feb 25 17:38:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08722291_f4c01806
+UUID: c57b955e_85896440
+Bytes: 104
+no, it's me not reading the code carefully, and thinking you returned the same thing lines 58 and 48 :-)
+
 484:5-489:7
 Mon Feb 23 14:30:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -96,6 +104,14 @@ UUID: a84e7654_f1d02858
 Bytes: 206
 (array_length + 1_or_smaller) / 2_or_bigger) fits value range [INT_MIN, array_length], even if array_length+1 overflows. This is commented at line 798. I moved that comment before 793 to make it more clear.
 
+793:3-793:42
+Wed Feb 25 17:38:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a84e7654_f1d02858
+UUID: c57b955e_a508282a
+Bytes: 111
+I meant, should this be a call to WouldSomethingOverflowOrUnderflow (just like we have WouldAddOrSubOverflow) ?
+
 795:8-795:59
 Mon Feb 23 14:30:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -132,4 +148,12 @@ Bytes: 315
 Let's say random.nextInt() keeps returning 1 so this if test fails and i goes to INT_MIN due to overflow. Then random.nextInt() returns 0, array[i] will be attempted which will cause AIOOB exception.
 
 This is an infinite loop so it's a little contrived. But it shows the point for the necessity of the bounds check.
+
+269:1-270:44
+Wed Feb 25 17:38:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a880367a_446da093
+UUID: 6558291b_2f04093e
+Bytes: 52
+Ah, did not realize it was an infinite loop. Thanks!
 

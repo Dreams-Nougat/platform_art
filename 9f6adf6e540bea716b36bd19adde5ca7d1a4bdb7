@@ -30,3 +30,26 @@ If we did not succeed to boot, .booting will still be there and we will flush th
 Kept as is, the dalvik-cache is always wiped on first boot even though the images are valid.
 I will investigate other solutions available to avoid this.
 
+91:0-99:1
+Wed Feb 25 16:27:52 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 083302f6_0c0f37dd
+UUID: c549d54e_b2a220ba
+Bytes: 1221
+It is bad practice to rely on a reboot to clean (especially now that there's a counter for .booting). That has always been a quick-n-dirty thing to hopefully get back to a booting system.
+
+This changes current behavior more than necessary. As mentioned before, there are various places where PruneDalvikCache should clean the cache, no matter what. Example is in GenerateImage. When you are generating a new image, the preloaded files are almost guaranteed out of date.
+
+(In the absence of a proof of determinism for dex2oat, my understanding was that you pre-opt the boot image into /system or /data and do not try to compile it on device.)
+
+With that understanding, the only invocation that should change behavior is the one in RelocateImage, as far as I can see. All others are in a situation where we either know that:
+
+ a) the boot image will likely *not* be what it was at preopt time
+ b) we ran into an error while trying to use it (e.g., patch it)
+
+In those cases we *should* clean up.
+
+This is relatively easy to incorporate by either just changing the code in RelocateImage, or adding another function. This one should at least have a name change anyways to include the new behavior somehow.
+
+bdc, any opinions?
+

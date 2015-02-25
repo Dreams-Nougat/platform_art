@@ -18,3 +18,15 @@ No.
 
 This won't clean up the cache when we really should. When you generate an image, you should clean up. When we're running out of space, you should. When we had an error situation, clean up. Don't leave old files around with the hope it gets better next time.
 
+91:0-99:1
+Wed Feb 25 08:29:51 2015 +0000
+Author: Julien Delayen <1064833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b6398c4_bd04c7f9
+UUID: 083302f6_0c0f37dd
+Bytes: 437
+The .preloaded is removed as soon as the first boot is completed
+(https://android-review.googlesource.com/#/c/133132)
+If we did not succeed to boot, .booting will still be there and we will flush the dalvik-cache. This will be performed by the RealPruneDalvikCache in MarkZygoteStart.
+Kept as is, the dalvik-cache is always wiped on first boot even though the images are valid.
+I will investigate other solutions available to avoid this.
+

@@ -76,6 +76,16 @@ oat data begin check was first before there was patching. it was needed to cover
 
 patch delta was added later. one could imagine the boot being relocated but having the same data begin and checksum, right? so that is needed as a separate check?
 
+333:0-334:38
+Thu Feb 26 00:04:37 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 653e69ec_ffa17f82
+UUID: 02a8435a_2421d2cd
+Bytes: 431
+If this is the case, it sounds like the check against oat_data_begin should be part of the checksum test, not the relocation test (in other words, it should be moved to 'GivenOatFileIsOutOfDate'.
+
+I wonder if this means there's a bug in the old code. What if you have a PIC oat file where boot.oat layout has changed but the checksum hasn't? Is there a way to write a test of boot.oat layout changing without the checksum changing?
+
 File: runtime/oat_file_manager.h
 
 33:0-33:33

@@ -1,0 +1,176 @@
+Revision: c2bdd343abfb7648621398907498510251fb9634
+Patch-set: 2
+File: runtime/gc/accounting/bitmap-inl.h
+
+32
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2240e774_dd3bebbd
+Bytes: 162
+Since it looks like a fair amount of copy-and-paste of code from space_bitmap-inl.h, it seems desirable to de-duplicate the code. Do you want to do it in this CL?
+
+File: runtime/gc/accounting/bitmap.cc
+
+39:55-39:67
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2496fa5_fb286fa7
+Bytes: 236
+Should this be better rounded by kBitsPerBitmapWord? Maybe,
+
+RoundUp((RoundUp(num_bits, kBitsPerBitmapWord) / kBitsPerBitmapWord) * sizeof(uintptr_t), kPageSize)
+
+though it may not matter as kPageSize is a multiple of sizeof(uintptr_t)?
+
+File: runtime/gc/accounting/bitmap.h
+
+38:6-38:12
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2240e774_7d99f78e
+Bytes: 22
+Add a test for Bitmap?
+
+72:47-72:53
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2240e774_fd2867a7
+Bytes: 14
+marked -> set?
+
+105:0-107:1
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42431b81_fe2ea101
+Bytes: 72
+Should this comment be updated? heap_end_ does not appear in this class.
+
+128:3-128:8
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42431b81_7e257152
+Bytes: 32
+Does this mean "One bit per.." ?
+
+149:4-149:10
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42431b81_5e3cf55a
+Bytes: 91
+How about putting DCHECK_EQ(BitIndexFromAddr(AddrFromBitIndex(bit_index)), bit_index) here?
+
+152:5-152:52
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2240e774_1dc55398
+Bytes: 26
+This should be in reverse?
+
+170:21-170:25
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42431b81_1e070dca
+Bytes: 44
+I see that addr does not have to be aligned.
+
+174:47-174:53
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42431b81_3ef80919
+Bytes: 14
+marked -> set?
+
+File: runtime/gc/accounting/mod_union_table.cc
+
+61:6-61:36
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02a8435a_84f686e0
+Bytes: 288
+This is a side question: ModUnionClearCardSetVisitor ModUnionClearCardBitmapVisitor and ModUnionClearCardVisitor do not "clear card" (as in, overwrite kCardDirty with kCardClean). They instead set the corresponding entry in the mod union table for each dirty card. Are there better names?
+
+352:6-352:22
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82b433b1_68300392
+Bytes: 28
+When could space be nullptr?
+
+357:8-357:83
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62b9ffa9_a7570a10
+Bytes: 452
+I remember that the image space's limit isn't necessarily aligned by the card size. Is this handling that case?
+
+Is it worth asserting that if it's not aligned, it should be the image space? While the image space has the oat file (has no objects in it) right after it and is fine, I'd worry a hypothetical case where a space's limit isn't aligned and the card at the end may be "shared" between the this space's end and the beginning of the next space.
+
+376:4-376:65
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42aebb66_66eeee11
+Bytes: 334
+I thought there's a bit per card and there shouldn't be more than one bit to be visited by VisitMarkedRange here unlike what the name would normally suggest. Maybe it's equivalent, but maybe would it be clearer if we rewrite this to just check the bit rather than calling VisitMarkedRange() and call scan_visitor directly if it's set?
+
+420:55-420:68
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22ab8758_453dea58
+Bytes: 40
+Is it ok not to cover up to the Limit()?
+
+431:55-431:68
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2a40f89_a33b7abe
+Bytes: 5
+Same.
+
+File: runtime/gc/accounting/mod_union_table.h
+
+174:18-174:23
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2baab9b_aac6ef3c
+Bytes: 16
+array -> bitmap?
+
+File: runtime/gc/accounting/mod_union_table_test.cc
+
+60:9-60:54
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02a8435a_e4a5fa90
+Bytes: 248
+Why?
+
+The java_lang_object_array_ field does not look set up per space or per mod union table type. We may not be using the class that's in the same as the object array we're going to allocate in AllocObjectArray() unlike what the comment suggests?
+
+139:17-139:45
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c22f0bb4_e23ba6bd
+Bytes: 160
+Why subclass ModUnionTableReferenceCache and added the target space field to it for the kTableTypeReferenceCache case, but not for the kTableTypeCardCache case?
+
+198:23-198:69
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a234d707_e1c6063e
+Bytes: 161
+I thought so far ContainsCard() expects a card size aligned address only. Can you add a comment to ContainsCard() to clarify. Maybe rename it to ContainsCardFor?
+
+215:43-215:55
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a234d707_2183ceed
+Bytes: 39
+Do we need to align up the end address?
+
+225:0-241:41
+Thu Feb 26 01:32:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82399303_40a6ce5a
+Bytes: 152
+Would it make sense to split this MainTest for each mod union type and factor out the main test logic into a function? Would it avoid this cleanup work?
+

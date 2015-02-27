@@ -9,12 +9,32 @@ UUID: 02fda3e8_1cbdd5ac
 Bytes: 161
 I'm not sure its worth masking the read barrier bits here, you could do this work in the not_unlocked case since its very rare to get non-zero read barrier bits.
 
+472:7-472:11
+Fri Feb 27 21:29:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02fda3e8_1cbdd5ac
+UUID: a23777c2_095bc9ef
+Bytes: 526
+The mov/and instructions (472-473) are there to zero the rb bits to use the cbnz instruction (474) to check if the monitor is unlocked (that is, the lock word is all zero except for the rb bits.)
+
+If we don't mask the rb bits there, we can't use cbnz to do so. How do you suggest implementing this conditional branch logic without masking the rb bits?
+
+Note the rb bits can have any value and can be updated concurrently/atomically throughout these assembly routines (and that's why we need to atomically update the lockword.)
+
 491:0-491:112
 Fri Feb 27 00:43:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c5ad55fe_35d55a42
 Bytes: 93
 Change the comment to say that its not the upper two bits but two read barrier bits? (28-30).
+
+491:0-491:112
+Fri Feb 27 21:29:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5ad55fe_35d55a42
+UUID: a23777c2_091f4903
+Bytes: 246
+Do you see the comment changed from "top two bits" to "the upper two bits" and the latter can mean the two bits just upper than the count bits (that is, bits 28-29)? So, it seems ok to me. But I'll update it to include "bits 28-29" to be clearer.
 
 File: runtime/lock_word.h
 
@@ -25,12 +45,28 @@ UUID: a2e4d751_81de9a62
 Bytes: 14
 () unnecessary
 
+81:26-81:27
+Fri Feb 27 21:29:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a2e4d751_81de9a62
+UUID: a23777c2_69a1a539
+Bytes: 4
+Done
+
 105:37-105:51
 Fri Feb 27 00:43:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 225b87e2_a5169e46
 Bytes: 14
 () unnecessary
+
+105:37-105:51
+Fri Feb 27 21:29:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 225b87e2_a5169e46
+UUID: 822c337c_085bc7ef
+Bytes: 4
+Done
 
 170:29-170:31
 Fri Feb 27 00:43:28 2015 +0000
@@ -39,6 +75,14 @@ UUID: 02fda3e8_dc2fed7f
 Bytes: 21
 2 spaces before const
 
+170:29-170:31
+Fri Feb 27 21:29:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02fda3e8_dc2fed7f
+UUID: a23777c2_898ed9ca
+Bytes: 4
+Done
+
 203:7-203:15
 Fri Feb 27 00:43:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,10 +90,28 @@ UUID: 22f0e70e_5dee3bba
 Bytes: 126
 What is the point of having a public operator == instead of a private one? The private one could catch errors at compile time?
 
+203:7-203:15
+Fri Feb 27 21:29:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22f0e70e_5dee3bba
+UUID: 2223878f_0593b270
+Bytes: 131
+Done. Confirmed a private works fine. Will use "= delete" instead, which is more concise.
+
+I added a related comment on GetValue().
+
 204:0-204:16
 Fri Feb 27 00:43:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c5ad55fe_b2a68056
 Bytes: 50
 I think the preferred way is ATTRIBUTE_UNUSED now.
+
+204:0-204:16
+Fri Feb 27 21:29:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5ad55fe_b2a68056
+UUID: 6231ffd0_2a031f3a
+Bytes: 19
+Done (or obsolete.)
 

@@ -11,3 +11,18 @@ Should we guarantee this instead? So If an input gets updated for a commutative 
 
 I think this should then be done in ReplaceInput or equivalent. We could then also ensure a constant is on the right side.
 
+302:0-306:7
+Fri Feb 27 18:27:05 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2cb2f3b_2b63d97f
+UUID: 6263bfc4_177834a5
+Bytes: 759
+I tried put the ordering in ReplaceWith and ReplaceInput. It's kind of tricky, especially ReplaceWith which is iterating all uses, and changing a use can cause reordering which can change the ues list of the instruction for ReplaceWith in the middle of iterating. Also it causes a lot of unnecessary reordering in many passes.
+
+So I prefer doing reordering in this single pass. Plus I added this comment:
+        // This replacement doesn't make more OrderInputs() necessary since
+        // current is either used by an instruction that it dominates,
+        // which hasn't been visited yet due to the order we visit instructions.
+        // Or current is used by a phi, and we don't do OrderInputs() on a phi anyway.
+        current->ReplaceWith(existing);
+

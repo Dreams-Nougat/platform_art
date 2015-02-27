@@ -1,0 +1,13 @@
+Revision: 7c82ba14837d4ad0d5c8748948e8b74c46b6cc7a
+Patch-set: 4
+File: runtime/thread.h
+
+369:5-369:50
+Fri Feb 27 07:36:02 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 025843e4_846da6eb
+Bytes: 423
+This is an issue, at least for interpreter. We handle the exception in the "caller" (the method that called the native method). There the thread's current method is "caller". If the top method of the exception's stack is the "native" method, the test will always return false and we'll never report the exception.
+
+I think it works if we consider the exception's top non-native method (aka the caller of the native method).
+

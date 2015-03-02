@@ -1,0 +1,29 @@
+Revision: 2467240c95b01fffc971f7ffe3a98fbaeddaf142
+Patch-set: 3
+File: compiler/optimizing/code_generator_x86_64.cc
+
+897
+Mon Mar 02 10:08:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12d5f6ce_d131a4f0
+Bytes: 186
+Why only on x64? This looks odd if triggered by this change. I don't see why GVN would replace an constant int with a null.
+
+Could you move this to its own change with a small unit test?
+
+File: compiler/optimizing/nodes.h
+
+1514:0-1514:76
+Mon Mar 02 10:08:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 727ab2ab_b4bf40a2
+Bytes: 188
+Since this could also apply to non commutative inputs, maybe move the constant logic to a helper in HBinaryOperation that will be used by something like prepare_for_register_allocation.cc.
+
+1574:2-1574:9
+Mon Mar 02 10:08:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32d2fae7_f2fdc8b4
+Bytes: 42
+You can drop the virtual (here and below).
+

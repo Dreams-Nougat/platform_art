@@ -9,3 +9,17 @@ UUID: 72cf1248_4ce67f34
 Bytes: 43
 No STL please, use a GrowableArray instead.
 
+203:7-203:13
+Mon Mar 02 13:59:19 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 72cf1248_4ce67f34
+UUID: 72cf1248_6c125b8d
+Bytes: 431
+Will do. I used stl since I can apply std::sort() and std::is_sorted().
+
+We need a sorted list, since we scan linearly for call positions (see my comments in RegisterAllocator::GetCallerCalleePreference(()).
+
+A better way would be to record the call positions on the linearised graph, in SsaLivenessAnalysis::NumberInstructions(). This way we do not need to sort the call positions array before using it.
+
+Would that be acceptable?
+

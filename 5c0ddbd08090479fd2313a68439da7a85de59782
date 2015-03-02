@@ -1,0 +1,59 @@
+Revision: 5c0ddbd08090479fd2313a68439da7a85de59782
+Patch-set: 4
+File: runtime/class_linker.cc
+
+272:0-273:26
+Mon Mar 02 23:57:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 520f6e78_03da2e9c
+Bytes: 157
+Is this comment out of date? What failed patching is it referring to? Are we actually falling back to non-executable here? When do we try to load executable?
+
+866:0-870:90
+Mon Mar 02 23:57:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32ccba7c_e288e6b6
+Bytes: 80
+Document that the loaded dex files are owned by the class linker (or oat file?).
+
+1091:0-1097:9
+Mon Mar 02 23:57:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32ccba7c_02394a55
+Bytes: 503
+Is there any way to use unique_ptr to keep track of who owns these dex files? Perhaps the class linker should have a vector of unique_ptr for all these dex files that are opened directly and not from an oat file?
+
+Or maybe what's bothering me here is the subtle behavior that dex files opened from an oat file are owned by the oat file, and dex files not opened from an oat file (with  dex_file->GetOatFile() null) are owned by the caller, and released by calling ReleaseOatFiles. Can you document this?
+
+1329:4-1329:10
+Mon Mar 02 23:57:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2d8be3c_1f90c34a
+Bytes: 42
+How about use 'CHECK' instead of 'DCHECK'?
+
+1336:4-1336:10
+Mon Mar 02 23:57:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72147288_64cfaa5a
+Bytes: 33
+CHECK instead of DCHECK here too?
+
+File: runtime/class_linker.h
+
+325:0-326:41
+Mon Mar 02 23:57:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 32ccba7c_82d47aee
+Bytes: 83
+Document here that the dex_files returned must be freed by calling ReleaseDexFiles.
+
+File: runtime/oat_file.cc
+
+330:1-333:40
+Mon Mar 02 23:57:59 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d2d8be3c_3f49071e
+Bytes: 157
+Do we load the dex files eagerly even if all we care about is reading the OatFileHeader, as is the case when we load an oat file to check for IsDexOptNeeded?
+

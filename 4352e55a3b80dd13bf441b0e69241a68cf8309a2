@@ -1,0 +1,104 @@
+Revision: 4352e55a3b80dd13bf441b0e69241a68cf8309a2
+Patch-set: 3
+File: compiler/elf_builder.h
+
+541:0-542:31
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1287b6d2_e10986e3
+Bytes: 153
+bigger picture, maybe this should be a list of section information, otherwise we have to add this for each new section. I wouldn't change it for this CL.
+
+584:0-584:50
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f28dc2f3_40438efb
+Bytes: 117
+This doesn't seem to a segment type defined in the spec: 
+
+http://www.sco.com/developers/gabi/latest/ch5.pheader.html
+
+592:0-592:45
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924d6688_283e6374
+Bytes: 123
+oatlastword is supposed to be the end of the oat content. seems like that should move here, or we don't need oatbsslastword
+
+711:0-712:53
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f28dc2f3_a0313a9f
+Bytes: 406
+This should just be part of the above PT_LOAD RW segment.
+
+the .bss should just be at the end. Here is an example from http://mylinuxbook.com/readelf-command/
+
+note that the mem size is slight larger than the file size here:
+
+ LOAD           0x000f14 0x08049f14 0x08049f14 0x00104 0x0010c RW  0x1000
+
+and the .bss is at the end of the segment:
+
+  03     .ctors .dtors .jcr .dynamic .got .got.plt .data .bss
+
+1023:76-1023:83
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f28dc2f3_c02ebe3c
+Bytes: 144
+this is where we should bump by the desired .bss size. indeed, this whole segment needs to include dynamic_builder_ and bss_builder_ information
+
+1033:0-1039:0
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1287b6d2_81fbda4b
+Bytes: 6
+remove
+
+1217:0-1218:80
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1287b6d2_41f5d253
+Bytes: 26
+move up before oatlastword
+
+1219:0-1220:65
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1287b6d2_21f0ce64
+Bytes: 7
+remove?
+
+1265:0-1265:24
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924d6688_48707f5e
+Bytes: 6
+remove
+
+File: runtime/mem_map.h
+
+64:44-64:54
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 924d6688_a88813b5
+Bytes: 23
+document reuse argument
+
+File: runtime/oat_file.cc
+
+191:0-192:33
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1287b6d2_0107cace
+Bytes: 99
+do we need this? If you need BssSize, you can compute between oatbss and the moved down oatlastword
+
+245:0-246:33
+Mon Mar 02 06:11:07 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f28dc2f3_8070b65f
+Bytes: 11
+and here...
+

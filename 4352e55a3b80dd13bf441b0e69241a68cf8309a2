@@ -18,12 +18,29 @@ This doesn't seem to a segment type defined in the spec:
 
 http://www.sco.com/developers/gabi/latest/ch5.pheader.html
 
+584:0-584:50
+Mon Mar 02 11:41:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f28dc2f3_40438efb
+UUID: b2c50a26_4ee67334
+Bytes: 112
+I can rename it to LOAD_RW_2.
+I didn't find any restriction on the number of program headers with the same type.
+
 592:0-592:45
 Mon Mar 02 06:11:07 2015 +0000
 Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 924d6688_283e6374
 Bytes: 123
 oatlastword is supposed to be the end of the oat content. seems like that should move here, or we don't need oatbsslastword
+
+592:0-592:45
+Mon Mar 02 11:41:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 924d6688_283e6374
+UUID: b2c50a26_2e33e72a
+Bytes: 121
+I want to keep oatlastword as the end of the content mapped from file and oatbsslastword as the end of the mapped memory.
 
 711:0-712:53
 Mon Mar 02 06:11:07 2015 +0000
@@ -41,6 +58,16 @@ note that the mem size is slight larger than the file size here:
 and the .bss is at the end of the segment:
 
   03     .ctors .dtors .jcr .dynamic .got .got.plt .data .bss
+
+711:0-712:53
+Mon Mar 02 11:41:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f28dc2f3_a0313a9f
+UUID: d2defef5_2fe52923
+Bytes: 443
+This is exactly what I do NOT want. This breaks the oat file stuff in the elf file into two pieces (.rodata+.text and .bss) and puts the .dynamic in between. Any link-time patching in OatWriter pointing to .bss would need to know the size of the .dynamic segment.
+
+This would also make it impossible to symbolize the oat file without moving the .bss, so we would need to write all .bss references to the elf file and re-patch when symbolizing.
 
 1023:76-1023:83
 Mon Mar 02 06:11:07 2015 +0000

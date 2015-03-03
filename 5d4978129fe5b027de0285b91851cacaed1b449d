@@ -17,6 +17,14 @@ UUID: 3282fa51_b2cd80b1
 Bytes: 312
 I had thought it was ok to fail to deflate as it'd be tried again in the next trim. But it's possible to retry. I changed it back to SetLockWord as we are at a pause here (technically not a pause in the image writer case, but mutators are not running) and won't really have concurrent read barrier state changes.
 
+620
+Tue Mar 03 22:29:49 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3282fa51_b2cd80b1
+UUID: 321d9af7_0098aa4a
+Bytes: 250
+Thanks, I don't mind the CAS it was more that it wasn't documented in the same way the other "return false" cases were above. If you are assuming no concurrent operations then perhaps a debug assert is appropriate or a comment to something like that.
+
 632:0-632:23
 Tue Mar 03 16:26:06 2015 +0000
 Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>

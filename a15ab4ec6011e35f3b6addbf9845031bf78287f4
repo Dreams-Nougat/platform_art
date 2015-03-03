@@ -9,3 +9,19 @@ UUID: d2bd1ee7_d7c93c57
 Bytes: 93
 You don't need this. Is the check line 1438 guaranteeing safepoint_index does not go below 0?
 
+1429:11-1429:44
+Tue Mar 03 17:37:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2bd1ee7_d7c93c57
+UUID: 52b04e09_fb70af11
+Bytes: 480
+I don't see how it would guarantee that. That would imply that there's always a safepoint at a position where all intervals are dead. Conversely, if an interval covers the zero-index safepoint, it will loop again with index ULONG_MAX.
+
+This condition loops until safepoint_index underflows. It breaks at the right time but I do admit it's not easily readable - i could replace it with:
+
+  while (true) {
+    ...
+    if (safepoint_index == 0) break;
+    else --safepoint_index;
+  }
+

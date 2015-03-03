@@ -28,6 +28,14 @@ One arm side may need the same change also.
 
 It looks like i27 should be a constant null instead of constant 0. Also constant folding should make null == null be constant true, and can further trim dead code.
 
+897
+Tue Mar 03 10:25:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52920e67_0ec50b3a
+UUID: 92a646d4_7d2817b3
+Bytes: 67
+I see. Yeah, then safer to call GetInt32Value here and other archs.
+
 File: compiler/optimizing/nodes.h
 
 1514:0-1514:76
@@ -44,6 +52,14 @@ Parent: 727ab2ab_b4bf40a2
 UUID: 52920e67_6ed4cfed
 Bytes: 78
 Still has to be commutative to be able to reorder I think. I added the helper.
+
+1514:0-1514:76
+Tue Mar 03 10:25:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52920e67_6ed4cfed
+UUID: d2a43ecd_1f7b43a8
+Bytes: 120
+Yeah, you're right. We'd need to change the instruction completely (HSub -> HAdd) for it. So you can scratch my comment.
 
 1574:2-1574:9
 Mon Mar 02 10:08:19 2015 +0000

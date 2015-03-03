@@ -25,3 +25,13 @@ UUID: b2c50a26_d1e206a2
 Bytes: 128
 And what was the decision around the try/catch-all done in a clinit? I know -1 sucks, but that's probably the less error-prone..
 
+847:56-847:91
+Tue Mar 03 16:44:11 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b2c50a26_d1e206a2
+UUID: 32e67a29_72017831
+Bytes: 349
+shertz changed the Transaction code to record that we aborted. So it doesn't matter if somebody catches the InternalError, we'll abort the transaction anyways.
+
+According to b/19202032 we need to run catch-all handlers (as for performance reasons we don't handle the lock word in transactions), and that supposedly doesn't work with fake exceptions.
+

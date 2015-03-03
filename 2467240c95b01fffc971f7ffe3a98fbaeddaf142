@@ -11,6 +11,23 @@ Why only on x64? This looks odd if triggered by this change. I don't see why GVN
 
 Could you move this to its own change with a small unit test?
 
+897
+Tue Mar 03 08:54:00 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12d5f6ce_d131a4f0
+UUID: 52920e67_0ec50b3a
+Bytes: 539
+When we have a "obj == null" test, we now do:
+      0 1 z28 Equal [ l24 i27 ]<|@
+      0 0 v29 If [ z28 ]<|@
+l24 is later replace with constant null l153 after inlining.
+and this change swaps the order of l153 and i27, thus causing this crash.
+
+So the change on this line takes into consideration a null constant is on the right. 
+One arm side may need the same change also.
+
+It looks like i27 should be a constant null instead of constant 0. Also constant folding should make null == null be constant true, and can further trim dead code.
+
 File: compiler/optimizing/nodes.h
 
 1514:0-1514:76
@@ -20,10 +37,26 @@ UUID: 727ab2ab_b4bf40a2
 Bytes: 188
 Since this could also apply to non commutative inputs, maybe move the constant logic to a helper in HBinaryOperation that will be used by something like prepare_for_register_allocation.cc.
 
+1514:0-1514:76
+Tue Mar 03 08:54:00 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 727ab2ab_b4bf40a2
+UUID: 52920e67_6ed4cfed
+Bytes: 78
+Still has to be commutative to be able to reorder I think. I added the helper.
+
 1574:2-1574:9
 Mon Mar 02 10:08:19 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 32d2fae7_f2fdc8b4
 Bytes: 42
 You can drop the virtual (here and below).
+
+1574:2-1574:9
+Tue Mar 03 08:54:00 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 32d2fae7_f2fdc8b4
+UUID: 52920e67_8eb81bbe
+Bytes: 5
+Done.
 

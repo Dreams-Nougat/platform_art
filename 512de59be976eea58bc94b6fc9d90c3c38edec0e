@@ -1,0 +1,118 @@
+Revision: 512de59be976eea58bc94b6fc9d90c3c38edec0e
+Patch-set: 4
+File: compiler/optimizing/stack_map_stream.h
+
+127:2-127:34
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52a68e28_ce1563c2
+Bytes: 156
+- missing indentation
+- i think i'd go with Get... instead of Compute in this case and below but that's just my preference (shorter). feel free to ignore :)
+
+155:8-155:47
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52a68e28_0e180bf7
+Bytes: 13
+UNREACHABLE()
+
+175:8-175:21
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52a68e28_8e323b76
+Bytes: 14
+UNREACHABLE();
+
+180:16-180:52
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52a68e28_ee277f32
+Bytes: 134
+instead of this, you can add DexRegisterCompressedMap::EntrySize(LocationKind kind) which will simplify some other code paths as well.
+
+File: runtime/stack_map.h
+
+83:2-83:26
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52a68e28_2e7fc72e
+Bytes: 226
+I don't see any benefit keeping this around. Is there any scenario in which you see us going back or actively changing between them?
+
+Getting rid of it and keeping just one encoding also simplifies a lot some other code paths.
+
+176:60-177:43
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12da56a9_09b48935
+Bytes: 69
+is the order specify anywhere? (value -> high bits, kind -> low bits)
+
+186:12-186:16
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12da56a9_2cd35b56
+Bytes: 74
+suggestion: (Large/Big)Offset instead of Long documenting what large means
+
+187:13-187:17
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c86d9_5022b228
+Bytes: 47
+suggestion: (Large/Big)Value, with similar docs
+
+261:5-261:9
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c86d9_f0275e32
+Bytes: 88
+please fix this TODO before submitting. I added my suggestions in the relevant places :)
+
+272:63-272:64
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12da56a9_c956f15c
+Bytes: 11
+maybe ')' ?
+
+291:9-291:18
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c86d9_90325a76
+Bytes: 32
+how about FindRegisterInfoOffset
+
+339:35-339:58
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52a68e28_2ead071b
+Bytes: 139
+I don't see any use for GetValue() and GetLocationKind(). Did I miss anything? 
+
+Either way one function is enough. I'd keep only this one.
+
+355:23-355:26
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12da56a9_094929ba
+Bytes: 15
+too many spaces
+
+578:8-578:76
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12da56a9_cccd5fb1
+Bytes: 39
+use a local to make this look better :)
+
+631:4-633:77
+Wed Mar 04 20:31:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 52a68e28_8ed99baa
+Bytes: 219
+suggestion: to make this clearer you could transform this into the ctor of DexRegisterCompressedMap. i.e. instead of accepting a subregion, have a private ctor:
+
+DexRegisterCompressedMap(region, offset, nr_of_registers)
+

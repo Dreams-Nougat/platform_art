@@ -1,0 +1,22 @@
+Revision: 17558ae8c97ec8bcb660426a7a4f6ada00070969
+Patch-set: 2
+File: runtime/interpreter/interpreter_common.cc
+
+924:6-924:18
+Wed Mar 04 18:55:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7299d2f8_bc21215b
+Bytes: 248
+Minor point, but I think it'd be cleaner and less error-prone to wrap 'c' in a handle here rather than after a null check (in the if-then block)? 'c' isn't used in the other paths, but if it were, it could be an error. The else case should be rare.
+
+1051:10-1051:45
+Wed Mar 04 18:55:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 321d9af7_a4354b8c
+Bytes: 338
+Similarly, I think it'd be cleaner to directly wrap real_to_string_class in a handle (declare h_real_to_string_class) here rather than going through an extra step real_to_string_class -> h_real_to_string_class. As in,
+
+Handle<Class> h_real_to_string_class(hs.NewHandle(
+    shadow_frame->GetLink()->GetMethod()->GetDeclaringClass()));
+...
+

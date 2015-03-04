@@ -1,5 +1,37 @@
 Revision: e15ea086439b41a805d164d2beb07b4ba96aaa97
 Patch-set: 9
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+494:58-494:96
+Wed Mar 04 22:55:41 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d256feec_0f3ca597
+Bytes: 80
+it may be worth documenting that the dmb is missing (as this the recursive case)
+
+549:60-549:97
+Wed Mar 04 22:55:41 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d256feec_efdda1e2
+Bytes: 46
+again the dmb is missed due to being recursive
+
+File: runtime/monitor.cc
+
+730:46-730:50
+Wed Mar 04 22:55:41 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b226ea9a_661f0e87
+Bytes: 76
+this can be false, the JMM allows recursive monitor acquisitions to be nops.
+
+811:39-811:43
+Wed Mar 04 22:55:41 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b23d0aa1_510bb651
+Bytes: 215
+this need only be true if this isn't the recursive case. Turning this from a false/true argument to a memory ordering enum value would be more intention revealing. In which case this is a release not volatile store.
+
 File: runtime/monitor.h
 
 25:0-27:6

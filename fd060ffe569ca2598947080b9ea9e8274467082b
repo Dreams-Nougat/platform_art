@@ -275,6 +275,14 @@ This is the choice for backend's AllocateScratchRegister().
 
 On arm32, we can prefer D registers as the scratch locations to hold the value of register pairs and also support to move between D and register pairs. If we implement it in this way, it will also be 4 moves on arm32. (2,3 -> D31) (0,1 -> 2,3) (D31 -> 0,1)
 
+408:21-408:61
+Wed Mar 04 10:42:14 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12b17657_d1cd04b1
+UUID: 126ed67a_297b6da8
+Bytes: 266
+Just discussed with Alex, it might not be a good choice to move between core registers and float point registers, though we can save one instruction. Because move between core register and float point register is much slower than move between the same register kind.
+
 426:0-426:96
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -307,6 +315,14 @@ Yes, but both of them are correct.
 
 There are multiple moves in the cycle. Introducing a scratch location for one of the move can resolve the problem. But different choices will result to different solutions.
 
+465:20-465:72
+Wed Mar 04 10:42:14 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12b17657_71dd385e
+UUID: 929c86d9_2d6fcdfc
+Bytes: 107
+If we do not use D registers, it will be 6 moves for the swap version. It is the same with no-swap version.
+
 488:20-488:78
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -323,6 +339,18 @@ Bytes: 407
 Yes, but this will require some additional logic in the resolver to do the best choice.
 
 This case is quite special which has two intersected cycles. Introduce one scratch will result one additional move. So this becomes 5 moves. But if we introduce a scratch location for the common edge, we will only need one additional scratch location. This will be resolved as : (0,1 -> D) (2 -> 0) (3 -> 1) (D -> 2,3)
+
+488:20-488:78
+Wed Mar 04 10:42:14 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 126ed67a_e911d587
+UUID: 12b17657_f1176840
+Bytes: 316
+If we are not using D registers, swap version generates 6 moves and no-swap version generates 7 moves.
+
+But I prefer to not change the resolver at the moment, because this kind of choice only happens with register pairs which do not exist on arm64.
+
+I will fine tune this if we want to use no-swap version for arm32.
 
 508:0-508:26
 Tue Mar 03 11:56:51 2015 +0000

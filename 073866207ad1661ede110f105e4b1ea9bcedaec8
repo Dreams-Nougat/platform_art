@@ -50,6 +50,17 @@ Bytes: 215
 How did relative dex locations work in dalvik?
 Was "/foo/bar/sludge.jar" considered the same as "../bar/sludge.jar" when the current working directory was "/foo/cat/"? Or were they considered distinct dex locations?
 
+492:42-492:66
+Wed Mar 04 00:29:30 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0babfcf0_4c3dffb4
+UUID: 92fd66c2_4507cacd
+Bytes: 396
+I looked at the old dalvik code.
+If the dex location did not start with '/', it called getcwd to try and make an absolute location for it. It looks like the intention was to first convert the dex location to an absolute path, then use that. There is a comment noting it doesn't handle things like internal '/../' in the dex location "but it probably should".
+
+I'll try to replicate this behavior.
+
 File: runtime/utils_test.cc
 
 355:0-355:43

@@ -9,6 +9,16 @@ UUID: 92c00617_0ddf118d
 Bytes: 58
 Why is that not Contains(other) || other.Contains(*this) ?
 
+276:41-276:42
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92c00617_0ddf118d
+UUID: d2bd1ee7_5749acb8
+Bytes: 203
+OverlapWith() can work with (R0,R1), (R1,R2) and DoubleStackSlot(sp), DoubleStackSlot(sp+4).
+
+But "Contains(other) || other.Contains(*this)" should also work well with current locations that we generate.
+
 File: compiler/optimizing/parallel_move_resolver.cc
 
 286:36-286:58
@@ -18,12 +28,28 @@ UUID: 92a646d4_3db16fc6
 Bytes: 3
 0u?
 
+286:36-286:58
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92a646d4_3db16fc6
+UUID: d2bd1ee7_17433499
+Bytes: 7
+Thanks.
+
 335:36-335:58
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d2a43ecd_bf26976e
 Bytes: 3
 0u?
+
+335:36-335:58
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2a43ecd_bf26976e
+UUID: f2ba22ed_b8511968
+Bytes: 7
+Thanks.
 
 390:5-390:61
 Tue Mar 03 11:56:51 2015 +0000
@@ -32,12 +58,30 @@ UUID: 92c00617_edc5e5b5
 Bytes: 19
 Move inside the if.
 
+390:5-390:61
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92c00617_edc5e5b5
+UUID: 126ed67a_8916197d
+Bytes: 7
+Will do
+
 390:62-391:25
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 92c00617_cdc829d1
 Bytes: 66
 I don't understand this comment, isn't the move already performed?
+
+390:62-391:25
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92c00617_cdc829d1
+UUID: 126ed67a_e9ea35f6
+Bytes: 208
+Yes, I will add an example in the comment.
+
+(0->1) (1->0) (1->2) , cycle (0->1) (1->0) will be resolved as (1->scratch) (0->1) (scratch->0). (1->2) will be also performed, if we use 2 as the scratch location.
 
 447:61-447:75
 Tue Mar 03 11:56:51 2015 +0000
@@ -46,12 +90,28 @@ UUID: d2a43ecd_7f0a4fd9
 Bytes: 34
 But to perform -> But performing ?
 
+447:61-447:75
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2a43ecd_7f0a4fd9
+UUID: 52f84efa_7b505f2e
+Bytes: 7
+Thanks.
+
 473:50-473:59
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d2a43ecd_3f04c7c6
 Bytes: 49
 there should no -> we ensure there is no move ...
+
+473:50-473:59
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2a43ecd_3f04c7c6
+UUID: 52f84efa_5b4da392
+Bytes: 7
+Thanks.
 
 485:26-485:32
 Tue Mar 03 11:56:51 2015 +0000
@@ -60,12 +120,34 @@ UUID: 92a646d4_dd972b1a
 Bytes: 24
 Why is that not Overlap?
 
+485:26-485:32
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92a646d4_dd972b1a
+UUID: d2bd1ee7_7ad37555
+Bytes: 831
+This should be Equals().
+
+For example, after (0,1 -> 2,3) has been performed, we can update (0,1 -> 4,5) with (2,3 -> 4,5). But we cannot update (0 -> 6) with (2,3 -> 6).
+
+And yes, we can update (0 -> 6) with (2 -> 6). But I don't want to rely on how the locations and registers are defined. Because that is backend dependent. On arm32 we have register and register pair overlap, while on arm64 we have W/X overlap(not defined in location currently).
+
+As mentioned in the comment, this helps to improve the generated code quality but not a must. So it is fine to not update (0 -> 6) with (2 -> 6). And I don't think two overlapped locations(0,1 and 0) can be both used as move sources in current optimizing compiler(they can be source and destination in different moves). So I'd rather keep the code simple and backend independent.
+
 492:0-499:3
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d2a43ecd_1f0103b7
 Bytes: 112
 Is it really worth it trying to reuse old moves? Looks simpler to just append. At least this deserves a comment.
+
+492:0-499:3
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2a43ecd_1f0103b7
+UUID: d2bd1ee7_5ad0b146
+Bytes: 40
+You are right. It is not worth doing so.
 
 535:35-535:55
 Tue Mar 03 11:56:51 2015 +0000
@@ -74,12 +156,28 @@ UUID: d2a43ecd_7f112f03
 Bytes: 109
 You should add a comment that this is only for debugging/dcheck purposes, and why it's important to check it.
 
+535:35-535:55
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2a43ecd_7f112f03
+UUID: 12b17657_b1be80fb
+Bytes: 8
+Will do.
+
 537:2-539:3
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 92a646d4_1daeb364
 Bytes: 21
 Again why this logic?
+
+537:2-539:3
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92a646d4_1daeb364
+UUID: 12b17657_91c37c85
+Bytes: 26
+Yes, it can be simplified.
 
 File: compiler/optimizing/parallel_move_resolver.h
 
@@ -90,12 +188,28 @@ UUID: d2a43ecd_df215b5a
 Bytes: 48
 What does it mean to be unblocked by a location?
 
+174:29-174:45
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2a43ecd_df215b5a
+UUID: f2ba22ed_f857915a
+Bytes: 85
+Should be : Get move which might be unblocked after we had performed move (loc->XXX).
+
 181:9-181:15
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 92c00617_50d5b26a
 Bytes: 19
 GetNum -> GetNumber
+
+181:9-181:15
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92c00617_50d5b26a
+UUID: f2ba22ed_d85ccd81
+Bytes: 8
+Will do.
 
 File: compiler/optimizing/parallel_move_test.cc
 
@@ -106,12 +220,28 @@ UUID: 92a646d4_bd733fa2
 Bytes: 30
 You can avoid this check here.
 
+258:0-258:30
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92a646d4_bd733fa2
+UUID: 12b17657_f1c808a3
+Bytes: 8
+Will do.
+
 281:0-281:32
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 92a646d4_9d78837f
 Bytes: 30
 You can avoid this check here.
+
+281:0-281:32
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92a646d4_9d78837f
+UUID: d2bd1ee7_7afa55c7
+Bytes: 8
+Will do.
 
 300:4-300:32
 Tue Mar 03 11:56:51 2015 +0000
@@ -120,6 +250,14 @@ UUID: 92a646d4_dd7e0b6c
 Bytes: 30
 You can avoid this check here.
 
+300:4-300:32
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92a646d4_dd7e0b6c
+UUID: d2bd1ee7_5af791db
+Bytes: 8
+Will do.
+
 408:21-408:61
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -127,10 +265,28 @@ UUID: 72147288_8790e8c7
 Bytes: 93
 We're currenlty doing 4 moves on arm for this. This will create a few more. Can we do better?
 
+408:21-408:61
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 72147288_8790e8c7
+UUID: 12b17657_d1cd04b1
+Bytes: 318
+This is the choice for backend's AllocateScratchRegister(). 
+
+On arm32, we can prefer D registers as the scratch locations to hold the value of register pairs and also support to move between D and register pairs. If we implement it in this way, it will also be 4 moves on arm32. (2,3 -> D31) (0,1 -> 2,3) (D31 -> 0,1)
+
 426:0-426:96
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d20a7e5c_55169cce
+Bytes: 5
+ditto
+
+426:0-426:96
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d20a7e5c_55169cce
+UUID: 12b17657_31d3b056
 Bytes: 5
 ditto
 
@@ -141,6 +297,16 @@ UUID: 92c00617_d0c8c2d0
 Bytes: 53
 Seems unfortunate lines 465 and 488 are not the same.
 
+465:20-465:72
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92c00617_d0c8c2d0
+UUID: 12b17657_71dd385e
+Bytes: 208
+Yes, but both of them are correct.
+
+There are multiple moves in the cycle. Introducing a scratch location for one of the move can resolve the problem. But different choices will result to different solutions.
+
 488:20-488:78
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -148,10 +314,30 @@ UUID: d2a43ecd_3f1ba725
 Bytes: 93
 We're currenlty doing 4 moves on arm for this. This will create a few more. Can we do better?
 
+488:20-488:78
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2a43ecd_3f1ba725
+UUID: 126ed67a_e911d587
+Bytes: 407
+Yes, but this will require some additional logic in the resolver to do the best choice.
+
+This case is quite special which has two intersected cycles. Introduce one scratch will result one additional move. So this becomes 5 moves. But if we introduce a scratch location for the common edge, we will only need one additional scratch location. This will be resolved as : (0,1 -> D) (2 -> 0) (3 -> 1) (D -> 2,3)
+
 508:0-508:26
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 92a646d4_fd79c785
 Bytes: 92
 Explain why. Why do we want to test this then? Should we make NoSwap not support it as well?
+
+508:0-508:26
+Wed Mar 04 07:57:27 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 92a646d4_fd79c785
+UUID: 12b17657_b1e5e027
+Bytes: 167
+The swap version do not support overlap like 0,1 and 1,2.
+
+BTW, can the compiler make better use of registers if there is no such constrains in parallel move resolver?
 

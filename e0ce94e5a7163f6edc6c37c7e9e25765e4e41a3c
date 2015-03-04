@@ -11,3 +11,11 @@ Is there a chance that ~ThreadList() gets called and proceeds without waiting wh
 
 Would it make sense to turn unregistring_count_ to registered_count_ (the number of currently registered threads, incremented when a thread is registered)?
 
+1098:0-1098:3
+Wed Mar 04 00:06:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 321d9af7_6e0ab7d9
+UUID: 321d9af7_ae744f52
+Bytes: 183
+I think you are right, there is another race for non-daemon threads that was pre-existing. I think if I move the shutdown logic into WaitForOtherNonDaemonThreadsToExit it should work.
+

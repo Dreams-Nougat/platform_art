@@ -18,6 +18,16 @@ UUID: 929c86d9_4dbe9917
 Bytes: 127
 What happens, when you have FP->DS, DS->DS, DS->FP ? Looks to me that you're going to split the second move, but this is wrong.
 
+999:0-999:95
+Wed Mar 04 16:07:28 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_4dbe9917
+UUID: d2d35e94_07d0f645
+Bytes: 247
+Yes, that seems wrong to me. Unfortunately, we want to split it if you replace FP with RP. BTW, is FP 'float pair', or 'XMM reg'?
+
+Do you suggest moving the splitting to the ParallelMoveResolver, where we can scan to see if we have register pairs?
+
 File: compiler/optimizing/register_allocator.cc
 
 106:0-108:50
@@ -26,4 +36,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 929c86d9_2db7cd3d
 Bytes: 57
 How can you state things pass with those checks disabled?
+
+106:0-108:50
+Wed Mar 04 16:07:28 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_2db7cd3d
+UUID: d2d35e94_47daee67
+Bytes: 109
+Forgot to restore this...  will do so, and try again.  They were disabled earlier in the development process.
 

@@ -19,6 +19,14 @@ OverlapWith() can work with (R0,R1), (R1,R2) and DoubleStackSlot(sp), DoubleStac
 
 But "Contains(other) || other.Contains(*this)" should also work well with current locations that we generate.
 
+276:41-276:42
+Wed Mar 04 11:09:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d2bd1ee7_5749acb8
+UUID: 12b17657_71c37831
+Bytes: 173
+We should not generate DoubleStackSlot(sp), DoubleStackSlot(sp+4). Same for registers (at least today, x86 might change this). So I would not bother considering these cases.
+
 File: compiler/optimizing/parallel_move_resolver.cc
 
 286:36-286:58
@@ -112,6 +120,20 @@ Parent: d2a43ecd_3f04c7c6
 UUID: 52f84efa_5b4da392
 Bytes: 7
 Thanks.
+
+480:51-480:55
+Wed Mar 04 11:09:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 12b17657_b1eb20ab
+Bytes: 13
+less -> fewer
+
+480:17-480:34
+Wed Mar 04 11:09:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c86d9_8dad21a0
+Bytes: 41
+something must do -> something we must do
 
 485:26-485:32
 Tue Mar 03 11:56:51 2015 +0000
@@ -283,6 +305,14 @@ UUID: 126ed67a_297b6da8
 Bytes: 266
 Just discussed with Alex, it might not be a good choice to move between core registers and float point registers, though we can save one instruction. Because move between core register and float point register is much slower than move between the same register kind.
 
+408:21-408:61
+Wed Mar 04 11:09:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 126ed67a_297b6da8
+UUID: 12b17657_91f09c98
+Bytes: 3
+OK.
+
 426:0-426:96
 Tue Mar 03 11:56:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -368,4 +398,12 @@ Bytes: 167
 The swap version do not support overlap like 0,1 and 1,2.
 
 BTW, can the compiler make better use of registers if there is no such constrains in parallel move resolver?
+
+508:0-508:26
+Wed Mar 04 11:09:54 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12b17657_b1e5e027
+UUID: 929c86d9_0d9ad170
+Bytes: 36
+Define "better use" in this context?
 

@@ -10,12 +10,28 @@ Bytes: 156
 - missing indentation
 - i think i'd go with Get... instead of Compute in this case and below but that's just my preference (shorter). feel free to ignore :)
 
+127:2-127:34
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52a68e28_ce1563c2
+UUID: 929c86d9_d6697af9
+Bytes: 62
+I fixed the indentation, but kept the name of the function. :)
+
 155:8-155:47
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 52a68e28_0e180bf7
 Bytes: 13
 UNREACHABLE()
+
+155:8-155:47
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52a68e28_0e180bf7
+UUID: 773384f5_8c8b2797
+Bytes: 4
+Done
 
 173:6-173:13
 Thu Mar 05 09:31:58 2015 +0000
@@ -24,6 +40,14 @@ UUID: d22fde6e_079d7668
 Bytes: 8
 No need?
 
+173:6-173:13
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d22fde6e_079d7668
+UUID: 375f4c29_6a91f74f
+Bytes: 155
+The host build doesn't need it, but the target build does.  I suppose we use different compilers or different compiler versions for host and target builds.
+
 175:8-175:21
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,12 +55,28 @@ UUID: 52a68e28_8e323b76
 Bytes: 14
 UNREACHABLE();
 
+175:8-175:21
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52a68e28_8e323b76
+UUID: 929c86d9_36e0bec1
+Bytes: 4
+Done
+
 180:16-180:52
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 52a68e28_ee277f32
 Bytes: 134
 instead of this, you can add DexRegisterCompressedMap::EntrySize(LocationKind kind) which will simplify some other code paths as well.
+
+180:16-180:52
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52a68e28_ee277f32
+UUID: 929c86d9_1635c28a
+Bytes: 4
+Done
 
 File: runtime/stack_map.h
 
@@ -57,12 +97,28 @@ UUID: d22fde6e_47504e2e
 Bytes: 8
 I agree.
 
+83:2-83:26
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d22fde6e_47504e2e
+UUID: 929c86d9_367f1e2f
+Bytes: 131
+It's actually useful to produce code size benchmarks on the various encoding strategies.  I will eventually remove this, of course.
+
 176:60-177:43
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12da56a9_09b48935
 Bytes: 69
 is the order specify anywhere? (value -> high bits, kind -> low bits)
+
+176:60-177:43
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12da56a9_09b48935
+UUID: 929c86d9_56862aa8
+Bytes: 372
+Good point.  It is currently compiler-dependent, as I'm using bit fields in CompressedShortLocation to encode and pack these values as an 8-bit integer.  (I suppose the `kind' field uses the 3 least-significant bits while the `value' field is encoded on the 5 most-significant bits).  I'll change this to use bit manipulations, which are portable and compiler-independent.
 
 186:12-186:16
 Wed Mar 04 20:31:26 2015 +0000
@@ -71,12 +127,28 @@ UUID: 12da56a9_2cd35b56
 Bytes: 74
 suggestion: (Large/Big)Offset instead of Long documenting what large means
 
+186:12-186:16
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12da56a9_2cd35b56
+UUID: 375f4c29_4a4e3347
+Bytes: 4
+Done
+
 187:13-187:17
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 929c86d9_5022b228
 Bytes: 47
 suggestion: (Large/Big)Value, with similar docs
+
+187:13-187:17
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_5022b228
+UUID: 929c86d9_361b9ef7
+Bytes: 4
+Done
 
 212:0-215:5
 Thu Mar 05 09:31:58 2015 +0000
@@ -85,12 +157,28 @@ UUID: 929c86d9_b30cc06f
 Bytes: 103
 You don't need a default, as you covered all the cases. UNREACHABLE + return nullptr might read better.
 
+212:0-215:5
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_b30cc06f
+UUID: 929c86d9_16c662c1
+Bytes: 24
+Needed on target builds.
+
 228:4-228:34
 Thu Mar 05 09:31:58 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 929c86d9_53f11ce4
 Bytes: 37
 Is that the same as the PACKED macro?
+
+228:4-228:34
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_53f11ce4
+UUID: 375f4c29_8a2f8b37
+Bytes: 42
+Yes, I changed this to use PACKED instead.
 
 255:6-255:13
 Thu Mar 05 09:31:58 2015 +0000
@@ -99,12 +187,28 @@ UUID: 929c86d9_9311c489
 Bytes: 8
 No need.
 
+255:6-255:13
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_9311c489
+UUID: 375f4c29_0af6fb62
+Bytes: 9
+Likewise.
+
 261:5-261:9
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 929c86d9_f0275e32
 Bytes: 88
 please fix this TODO before submitting. I added my suggestions in the relevant places :)
+
+261:5-261:9
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_f0275e32
+UUID: 375f4c29_ea0f27dd
+Bytes: 4
+Done
 
 272:63-272:64
 Wed Mar 04 20:31:26 2015 +0000
@@ -113,6 +217,14 @@ UUID: 12da56a9_c956f15c
 Bytes: 11
 maybe ')' ?
 
+272:63-272:64
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12da56a9_c956f15c
+UUID: 773384f5_8f10b94e
+Bytes: 4
+Done
+
 279:0-280:81
 Thu Mar 05 09:31:58 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -120,12 +232,28 @@ UUID: 52a68e28_511f5486
 Bytes: 17
 Fits in one line?
 
+279:0-280:81
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52a68e28_511f5486
+UUID: 773384f5_ef329df4
+Bytes: 4
+Done
+
 291:9-291:18
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 929c86d9_90325a76
 Bytes: 32
 how about FindRegisterInfoOffset
+
+291:9-291:18
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_90325a76
+UUID: 929c86d9_36f0be13
+Bytes: 31
+I opted for FindLocationOffset.
 
 339:35-339:58
 Wed Mar 04 20:31:26 2015 +0000
@@ -143,6 +271,22 @@ UUID: d22fde6e_674d5293
 Bytes: 85
 Please provide an abstraction instead the std::pair. For example DexRegisterLocation.
 
+339:2-339:34
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d22fde6e_674d5293
+UUID: 375f4c29_ea7de734
+Bytes: 4
+Done
+
+339:35-339:58
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52a68e28_2ead071b
+UUID: 929c86d9_56e74a57
+Bytes: 59
+Yeah, this was for debugging purpose only.  I removed them.
+
 355:23-355:26
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -150,12 +294,28 @@ UUID: 12da56a9_094929ba
 Bytes: 15
 too many spaces
 
+355:23-355:26
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12da56a9_094929ba
+UUID: 375f4c29_ca7a233b
+Bytes: 4
+Done
+
 578:8-578:76
 Wed Mar 04 20:31:26 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 12da56a9_cccd5fb1
 Bytes: 39
 use a local to make this look better :)
+
+578:8-578:76
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 12da56a9_cccd5fb1
+UUID: 929c86d9_b6a2eefc
+Bytes: 4
+Done
 
 631:4-633:77
 Wed Mar 04 20:31:26 2015 +0000
@@ -165,4 +325,12 @@ Bytes: 219
 suggestion: to make this clearer you could transform this into the ctor of DexRegisterCompressedMap. i.e. instead of accepting a subregion, have a private ctor:
 
 DexRegisterCompressedMap(region, offset, nr_of_registers)
+
+631:4-633:77
+Thu Mar 05 19:28:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 52a68e28_8ed99baa
+UUID: 375f4c29_2a4d3f18
+Bytes: 27
+OK, will try in another CL.
 

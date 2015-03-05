@@ -9,6 +9,16 @@ UUID: 773384f5_6cf7db62
 Bytes: 47
 Can't the stack map stream figure that one out?
 
+611:0-617:3
+Thu Mar 05 15:01:25 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 773384f5_6cf7db62
+UUID: 773384f5_0ca0571a
+Bytes: 282
+It can but it makes things slightly messier and inefficient in the stack map stream. I'll need to reiterate the dex register list every time i need the live mask which is both during size computation and region filling.
+
+If you have a strong preference for that I can worked it out.
+
 File: compiler/optimizing/stack_map_stream.h
 
 186:27-186:28
@@ -17,6 +27,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 929c86d9_7346d8a9
 Bytes: 130
 Please provide a meaninful name for this variable. It's not just a simple for loop anymore, so maybe another name for 'j' as well?
+
+186:27-186:28
+Thu Mar 05 15:01:25 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 929c86d9_7346d8a9
+UUID: 773384f5_4c6f7f7e
+Bytes: 4
+Done
 
 File: oatdump/oatdump.cc
 
@@ -27,6 +45,14 @@ UUID: 773384f5_2cf1d36a
 Bytes: 44
 Why this change? You still want them dumped.
 
+1067:0-1067:69
+Thu Mar 05 15:01:25 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 773384f5_2cf1d36a
+UUID: d22fde6e_47468ea9
+Bytes: 158
+For brevity. There are a lot of nones and they are not interesting. I can document (somewhere...) that if the dex register is not there is's location is none.
+
 File: runtime/stack_map.h
 
 88:57-88:60
@@ -36,10 +62,26 @@ UUID: d22fde6e_8757a65b
 Bytes: 44
 reg -> registers (here and all other places)
 
+88:57-88:60
+Thu Mar 05 15:01:25 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d22fde6e_8757a65b
+UUID: d22fde6e_2ad07f46
+Bytes: 4
+Done
+
 99:24-99:28
 Thu Mar 05 14:21:47 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d22fde6e_c7519e67
 Bytes: 114
 Please add a comment. This is loading a map for... ? Why is this not an instance method on StackMap or CodeRegion?
+
+99:24-99:28
+Thu Mar 05 15:01:25 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d22fde6e_c7519e67
+UUID: d22fde6e_8abecbfb
+Bytes: 235
+I will document. This assumes that the MemoryRegion is populated with eveything it needs to recreate the Map. Having it here avoids exposing unnecessary details. It's the DexRegisterMap concern on how/where it stores individual fields.
 

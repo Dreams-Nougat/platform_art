@@ -99,3 +99,14 @@ UUID: 7220f282_a45f424b
 Bytes: 185
 During gc time, it's possible both the spill slot and the register need to be relocated. So we need to do SetRegisterBit() as long as it's a reference. What's the issue you were seeing?
 
+1475
+Thu Mar 05 02:32:21 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7220f282_a45f424b
+UUID: f70a1413_b822b9cf
+Bytes: 402
+The issue was that a reference was in ECX at the bottom of a loop.  In this case, the parent also had a spill slot, so it wasn't marking ECX as an object, and RegisterContainsObject wasn't set.  Although TestSuspend saved and restored ECX, since it wasn't marked as an object reg, it wasn't updated by the GC.
+
+Should this be just:
+if (current->GetType() == Primitive::kPrimNot) { ...SetRegisterBit} ??
+

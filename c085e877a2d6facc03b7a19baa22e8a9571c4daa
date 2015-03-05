@@ -1,0 +1,68 @@
+Revision: c085e877a2d6facc03b7a19baa22e8a9571c4daa
+Patch-set: 2
+File: runtime/debugger.cc
+
+2792:2-2792:10
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c86d9_13ddd407
+Bytes: 47
+Not needed and removing it fixes the long line.
+
+2862:2-2862:36
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 773384f5_6ca8fb8d
+Bytes: 79
+I'd put this after the exception_ field so it's close to the handle it manages.
+
+File: runtime/entrypoints/quick/quick_throw_entrypoints.cc
+
+45:28-45:43
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d22fde6e_6701d2b6
+Bytes: 157
+I don't think giving an empty location is the right thing. We should be able to compute it. We could recycle Thread::GetCurrentThrowLocation to achieve that.
+
+File: runtime/jni_internal.cc
+
+203:35-203:50
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d22fde6e_a7210a5b
+Bytes: 34
+Same concern about empty location.
+
+File: runtime/mirror/class.cc
+
+80:21-80:22
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 773384f5_6c911b50
+Bytes: 1
+1
+
+File: runtime/thread.cc
+
+1036:19-1036:20
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d22fde6e_270efae2
+Bytes: 1
+1
+
+1741:9-1741:23
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d22fde6e_a7482a1b
+Bytes: 155
+I see why you still need pass the location ot this method now. However, we should be able to compute that location from the exception object, shouldn't we?
+
+1842:22-1842:37
+Thu Mar 05 11:32:19 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 929c86d9_936544cf
+Bytes: 41
+Same concern about passing empty location
+

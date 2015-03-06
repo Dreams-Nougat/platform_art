@@ -9,6 +9,16 @@ UUID: f72054e0_a8385b84
 Bytes: 78
 Unfortunately, I don't think new returns null if OOM, it throws std::bad_alloc
 
+3426:6-3426:25
+Fri Mar 06 18:28:51 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f72054e0_a8385b84
+UUID: 97155885_255ace5c
+Bytes: 212
+Right. So the CHECK does not work either I guess. 
+
+What's about using "new (std::nothrow)"? From the spec, it returns nullptr instead of std::bad_alloc. There are other places where we CHECK allocation succeeds.
+
 File: runtime/thread.h
 
 1045:13-1045:35
@@ -17,4 +27,12 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f72054e0_c85dcfc6
 Bytes: 81
 Doesn't adding this field mean you need to update the constants in asm_support.h?
+
+1045:13-1045:35
+Fri Mar 06 18:28:51 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f72054e0_c85dcfc6
+UUID: 57f6809e_2bb8d95e
+Bytes: 183
+That was required when I started this CL. But it was no longer needed after https://android-review.googlesource.com/136081 which removed the is_exception_reported_to_instrumentation_.
 

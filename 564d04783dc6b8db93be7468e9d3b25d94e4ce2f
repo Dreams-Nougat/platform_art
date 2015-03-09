@@ -1,0 +1,46 @@
+Revision: 564d04783dc6b8db93be7468e9d3b25d94e4ce2f
+Patch-set: 6
+File: runtime/check_jni.cc
+
+1069:51-1069:52
+Mon Mar 09 08:43:49 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7f17ca4_5144f603
+Bytes: 104
+I don't think these chars are needed because mirror::Throwable::Dump() adds '\n' to add the stack trace.
+
+File: runtime/runtime.cc
+
+310:36-310:59
+Mon Mar 09 08:43:49 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 574cc013_5bd22353
+Bytes: 142
+This is redundant with mirror::Throwable::Dump. Actually, I'd change the whole message to:
+
+  os << "Pending exception " << exception->Dump();
+
+File: runtime/thread.cc
+
+1739:2-1742:3
+Mon Mar 09 08:43:49 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97155885_25ce4e2f
+Bytes: 701
+I think it's dangerous to have this 'mirror::ClassLoader* cl' and the matching Handle<mirror::ClassLoader> a few lines below. Maybe a GC could happen in between. I believe there is the same issue for ThrowLocation.GetMethod().
+
+I propose to move up the Handle<mirror::ClassLoader> initialization there, something like:
+
+
+  Handle<mirror::ClassLoader> class_loader(hs.NewHandle(GetClassLoaderFromThrowLocation(throw_location));
+
+with 
+
+  static mirror::ClassLoader* GetClassLoaderFromThrowLocation(const ThrowLocation& throw_location) {
+    if (throw_location.GetMethod() != nullptr) {
+      return throw_location.GetMethod()->GetDeclaringClass()->GetClassLoader();
+  } else {
+    return nullptr;
+  }
+}
+

@@ -9,6 +9,14 @@ UUID: b78fbcac_be011970
 Bytes: 18
 Is this necessary?
 
+54:0-54:33
+Mon Mar 09 20:44:51 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b78fbcac_be011970
+UUID: 57f840fa_deb6c1f1
+Bytes: 36
+It is not necessary. I'll remove it.
+
 File: runtime/oat_file_assistant.h
 
 138:0-140:33
@@ -17,4 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b78fbcac_7e30719a
 Bytes: 98
 do we at least DCHECK this in all the other method calls? I guess we'll get a clear SIGSEGV but...
+
+138:0-140:33
+Mon Mar 09 20:44:51 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b78fbcac_7e30719a
+UUID: 57f840fa_feb1fdfb
+Bytes: 283
+There is a CHECK for this every place we try to access the released file (see the 'oat_file_released_' member variable). We will not get a SIGSEGV.
+
+It is possible the user could call some other functions that still work properly after this is called without getting a CHECK failure.
 

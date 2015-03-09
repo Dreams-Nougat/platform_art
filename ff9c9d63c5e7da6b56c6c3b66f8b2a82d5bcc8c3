@@ -9,12 +9,28 @@ UUID: f7e9342c_400ace1f
 Bytes: 41
 Should this be classlinker_classes_lock_?
 
+591:56-591:72
+Mon Mar 09 20:41:37 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7e9342c_400ace1f
+UUID: 5794c0c0_9b42ab6a
+Bytes: 4
+Done
+
 597:59-597:84
 Mon Mar 09 18:25:45 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 37e02c3c_c2a0a221
 Bytes: 40
 Should this be garbage_collectors_lock_?
+
+597:59-597:84
+Mon Mar 09 20:41:37 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37e02c3c_c2a0a221
+UUID: 5794c0c0_bb476779
+Bytes: 4
+Done
 
 File: runtime/gc/heap.cc
 
@@ -25,6 +41,14 @@ UUID: d70510c4_d71dfc61
 Bytes: 104
 Better to use 'collector' which is already set to the actual collector used rather than finding it here?
 
+1821:21-1821:66
+Mon Mar 09 20:41:37 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d70510c4_d71dfc61
+UUID: 5794c0c0_fb41ef64
+Bytes: 4
+Done
+
 2168:10-2169:68
 Mon Mar 09 18:25:45 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +56,28 @@ UUID: 57f840fa_1b54bb22
 Bytes: 105
 Would it be worth templatizing FindOrCreateCollector with the collector type to cast the return value to?
 
+2168:10-2169:68
+Mon Mar 09 20:41:37 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 57f840fa_1b54bb22
+UUID: 5794c0c0_bb7f6766
+Bytes: 64
+Maybe, seems like it might be more effort than its worth though.
+
 2999:36-2999:62
 Mon Mar 09 18:25:45 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 971718fb_b534c015
 Bytes: 217
 This is called from the read barrier code where the use of the lock and looping over the collector vector is probably too expensive. Can the concurrent copying collector be cached in a plain field to avoid this issue?
+
+2999:36-2999:62
+Mon Mar 09 20:41:37 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 971718fb_b534c015
+UUID: 5794c0c0_3b8c3700
+Bytes: 4
+Done
 
 3014:0-3014:55
 Mon Mar 09 18:25:45 2015 +0000
@@ -53,4 +93,14 @@ I'd be worried that if we legitimately (not a bug) lazily create/initialize coll
 It seems to me it'd be simpler to create the collectors needed upfront (and abort if we find that we had failed to create what we needed.)
 
 What's an example of a legitimate lazy creation of a collector that gives us memory savings over an upfront/eager approach?
+
+3014:0-3014:55
+Mon Mar 09 20:41:37 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 77fd44e8_dc8fed25
+UUID: 5794c0c0_fbf56f56
+Bytes: 487
+There is advantages / disadvantages to both approaches. Do you have examples of point 1)? Most things the constructors should be safe at runtime. Regarding point two, it is just something that GCs need to be aware of in their constructor. I think the only collector which has non-trivial allocations in the constructor is the CC collector.
+
+The main case where we allocate GCs but never use them is apps which stay in a jank perceptible state, since they will never compact in this case.
 

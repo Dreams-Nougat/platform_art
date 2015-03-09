@@ -1,0 +1,56 @@
+Revision: ff9c9d63c5e7da6b56c6c3b66f8b2a82d5bcc8c3
+Patch-set: 2
+File: runtime/base/mutex.h
+
+591:56-591:72
+Mon Mar 09 18:25:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7e9342c_400ace1f
+Bytes: 41
+Should this be classlinker_classes_lock_?
+
+597:59-597:84
+Mon Mar 09 18:25:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37e02c3c_c2a0a221
+Bytes: 40
+Should this be garbage_collectors_lock_?
+
+File: runtime/gc/heap.cc
+
+1821:21-1821:66
+Mon Mar 09 18:25:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d70510c4_d71dfc61
+Bytes: 104
+Better to use 'collector' which is already set to the actual collector used rather than finding it here?
+
+2168:10-2169:68
+Mon Mar 09 18:25:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57f840fa_1b54bb22
+Bytes: 105
+Would it be worth templatizing FindOrCreateCollector with the collector type to cast the return value to?
+
+2999:36-2999:62
+Mon Mar 09 18:25:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 971718fb_b534c015
+Bytes: 217
+This is called from the read barrier code where the use of the lock and looping over the collector vector is probably too expensive. Can the concurrent copying collector be cached in a plain field to avoid this issue?
+
+3014:0-3014:55
+Mon Mar 09 18:25:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 77fd44e8_dc8fed25
+Bytes: 677
+I'd be worried that if we legitimately (not a bug) lazily create/initialize collectors in the middle of an execution,
+
+1) there may be things in the collector constructors that are expected to be initialized at startup rather than in the middle of an execution.
+
+2) memory allocations (mmap/malloc) related to collector initializations for things like mark stack, etc. may be more likely to fail than at startup.
+
+It seems to me it'd be simpler to create the collectors needed upfront (and abort if we find that we had failed to create what we needed.)
+
+What's an example of a legitimate lazy creation of a collector that gives us memory savings over an upfront/eager approach?
+

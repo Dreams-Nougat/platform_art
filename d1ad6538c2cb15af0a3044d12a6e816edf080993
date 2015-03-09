@@ -27,6 +27,16 @@ UUID: 17b888d3_1ce7f930
 Bytes: 83
 throwing std::bad_alloc is new behavior so some of the old CHECK's are out of date.
 
+3426:6-3426:25
+Mon Mar 09 08:53:02 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17b888d3_1ce7f930
+UUID: 97155885_c5013ab9
+Bytes: 246
+Agreed. In my next PS, I use "new (std::nothrow)" to ensure a null pointer is returned if the allocation fails. 
+
+We should do a large pass on all allocations made in ART using "new" that may throw a std::bad_alloc instead of returning a nullptr.
+
 File: runtime/thread.h
 
 1045:13-1045:35

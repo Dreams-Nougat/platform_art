@@ -39,6 +39,14 @@ This change is just about removing the code leading to creating a ThrowLocation 
 
 I filed a bug for this. I'm sure if the test shows we're not behaving properly, we can workaround it without requiring a ThrowLocation for all the other places.
 
+293:6-293:59
+Tue Mar 10 16:18:49 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5ce4e5f6_9b294bbb
+UUID: dcb1b5f2_d7dabc64
+Bytes: 795
+Agreed, it appears there is a lack of testing in the debugging and instrumentation with interaction with JDWP - is ART_TEST_TRACING being run (this covers the proxy tests) ? As I recall, the JDWP APIs allow you to do method and this object filtering. How can you retrieve a this object when the activation holding it has been removed? Stashing in the debugger is problematic due to differentiating re-throws from going up the call stack. That was the motivation for having the API, but the instrumentation link appears not to be present at least in this change. In this case we're severely faking the throw location in terms of the receiver object and the throwing method. As you say, if all the tests pass then everything must be good and I'm sure Seb is on top of the filtering implementation.
+
 File: runtime/runtime.cc
 
 1019:26-1019:42

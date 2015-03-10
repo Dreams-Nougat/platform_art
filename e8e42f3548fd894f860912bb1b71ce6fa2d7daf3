@@ -57,6 +57,14 @@ I added extra JDWP tests for the throw location (including throwing from native)
 
 I believe the proxy invoke change can be tested with a run-test by checking the 1st element in the stack trace of the exception references the proxy method, not the caller.
 
+293:6-293:59
+Tue Mar 10 17:20:42 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcc88176_56c79492
+UUID: fca3d9b0_b05378f0
+Bytes: 1172
+Thanks Seb. I guess we'd not done things this way previously as the intent was to make the instrumentation the source of information for the debugger, profilers, etc. and to avoid reach-back into the runtime for things like the this object - which are difficult to maintain and need to be GC roots. Thinking about the tracing tests, they only test that tracing doesn't crash, the JDWP tests are the only ones that cover expectations of behavior and of those they are generally short, not covering interesting cases in the VM like proxying, and only enabled in the case that a test is expected to pass. Perhaps the run tests can be harnessed to say single step with JDWP and some how compared with a golden behavior. The issue there is how to avoid making something that's brittle. And with all this said, there is nothing in the implementation as is that leads me to believe the throw location needs to be reported as coded here, my point was more that the move away from throw locations implies functional changes (which Nicolas rightly points out were done in previous CLs) but the value intended to be reported here is significantly different than the current location.
+
 File: runtime/runtime.cc
 
 1019:26-1019:42

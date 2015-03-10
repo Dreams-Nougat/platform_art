@@ -26,6 +26,19 @@ Bytes: 675
 That's irrelevant, this throw location is not the same as the current method. Having the code now use the current method elsewhere on the call stack is a functional change, no? I can believe that there are bugs in this code, but it looks now that unboxed exception throwing will not report that the unboxing failure happened in the called proxy method but in the caller as determined by the current method.
 Fwiw, the throw location existed to match JDWP APIs that may not yet have been implemented. It seems this change may need reversing were those to be implemented. I'm sure Seb has a fuller picture. The trick with the throw location was making sure it was robust for GC.
 
+293:6-293:59
+Tue Mar 10 16:05:41 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ce9a9ce_bc2601e6
+UUID: 5ce4e5f6_9b294bbb
+Bytes: 352
+Ian, the functional change is here: 
+https://android-review.googlesource.com/#/c/139210/.
+
+This change is just about removing the code leading to creating a ThrowLocation that is now unused.
+
+I filed a bug for this. I'm sure if the test shows we're not behaving properly, we can workaround it without requiring a ThrowLocation for all the other places.
+
 File: runtime/runtime.cc
 
 1019:26-1019:42

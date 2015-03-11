@@ -1,0 +1,87 @@
+Revision: 21b0db4c5e48ff2d16b07b79a4a7c1a336d1357c
+Patch-set: 14
+File: oatdump/oatdump.cc
+
+1093:13-1093:37
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c94e5c0_9bf46ba3
+Bytes: 26
+Maybe list what's missing?
+
+File: runtime/check_reference_map_visitor.h
+
+76:55-76:78
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 610022f0_7be53f28
+Bytes: 184
+Because the value can be compressed (for example stack offset, but also you're mentioning VIP constants), I think we should not offer such an interface of fetching both kind and value.
+
+83:35-83:54
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 610022f0_bbd98771
+Bytes: 76
+To avoid this, we should always use a dex_register_map.GetStackOffsetInBytes
+
+File: runtime/stack.cc
+
+397:5-397:55
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb06509_9e1ab967
+Bytes: 77
+Shouldn't we make this implementation dependent, and therefore not expose it?
+
+409:36-409:55
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c94e5c0_3b06f71b
+Bytes: 5
+ditto
+
+File: runtime/stack_map.h
+
+217:37-217:51
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb06509_3e2a857c
+Bytes: 19
+dex_register_index?
+
+288:14-288:28
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 610022f0_dbf573d3
+Bytes: 28
+CanBeEncodedInShortLocation?
+
+335:19-335:27
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c94e5c0_bb2047a0
+Bytes: 7
+size_t?
+
+336:19-336:26
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 610022f0_bbf2a7e7
+Bytes: 7
+size_t?
+
+340:23-340:39
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb06509_1e27c9b2
+Bytes: 18
+MakeShortLocation?
+
+358:28-358:39
+Wed Mar 11 10:05:17 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb06509_decba14f
+Bytes: 33
+ExtraKindFromShortLocationOffset?
+

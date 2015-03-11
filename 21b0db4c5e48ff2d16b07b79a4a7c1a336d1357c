@@ -9,6 +9,14 @@ UUID: 5c94e5c0_9bf46ba3
 Bytes: 26
 Maybe list what's missing?
 
+1093:13-1093:37
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c94e5c0_9bf46ba3
+UUID: 21146a32_f92a77ab
+Bytes: 4
+Done
+
 File: runtime/check_reference_map_visitor.h
 
 76:55-76:78
@@ -18,12 +26,30 @@ UUID: 610022f0_7be53f28
 Bytes: 184
 Because the value can be compressed (for example stack offset, but also you're mentioning VIP constants), I think we should not offer such an interface of fetching both kind and value.
 
+76:55-76:78
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 610022f0_7be53f28
+UUID: 21146a32_7958a761
+Bytes: 187
+I'm not sure to follow.  Could you be more specific?  FYI, DexRegisterLocation is a "high-level" data structure: it doesn't show implementation details such as stack offsets divided by 4.
+
 83:35-83:54
 Wed Mar 11 10:05:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 610022f0_bbd98771
 Bytes: 76
 To avoid this, we should always use a dex_register_map.GetStackOffsetInBytes
+
+83:35-83:54
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 610022f0_bbd98771
+UUID: c1246ea6_56c1347e
+Bytes: 263
+Changed to `location.value / kFrameSlotSize' in PS15.
+
+`stack_mask.LoadBit' expects a stack slot value, while `dex_register_map.GetStackOffsetInBytes' provides a stack offset value (in bytes). Are you suggesting adding a DexRegisterMap::GetStackSlotOffset method?
 
 File: runtime/stack.cc
 
@@ -33,6 +59,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5cb06509_9e1ab967
 Bytes: 77
 Shouldn't we make this implementation dependent, and therefore not expose it?
+
+397:5-397:55
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb06509_9e1ab967
+UUID: 2162aaee_69bc6502
+Bytes: 211
+I think it's useful to have this information, e.g. in oatdump to display finer statistics.  But we can probably improve this and make the implementation details less visible.  I suggest doing this in another CL.
 
 409:36-409:55
 Wed Mar 11 10:05:17 2015 +0000
@@ -50,12 +84,28 @@ UUID: 5c94e5c0_7bacff6d
 Bytes: 170
 Just thought about this: isn't this potentially unaligned? ARM can complain about it. I'd be surprised if target tests pass with this. Maybe we need to read byte by byte?
 
+212:6-212:80
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c94e5c0_7bacff6d
+UUID: 415f9e27_cacc63b5
+Bytes: 82
+I'll test this on an ARM device and change it to a per-byte I/O if it is an issue.
+
 217:37-217:51
 Wed Mar 11 10:05:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5cb06509_3e2a857c
 Bytes: 19
 dex_register_index?
+
+217:37-217:51
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb06509_3e2a857c
+UUID: 415f9e27_aad92f71
+Bytes: 4
+Done
 
 255:22-255:43
 Wed Mar 11 10:25:36 2015 +0000
@@ -71,12 +121,28 @@ UUID: 610022f0_dbf573d3
 Bytes: 28
 CanBeEncodedInShortLocation?
 
+288:14-288:28
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 610022f0_dbf573d3
+UUID: 415f9e27_2adf7f52
+Bytes: 71
+Yes, that's admittedly better.  Renamed as CanBeEncodedAsShortLocation.
+
 335:19-335:27
 Wed Mar 11 10:05:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c94e5c0_bb2047a0
 Bytes: 7
 size_t?
+
+335:19-335:27
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c94e5c0_bb2047a0
+UUID: 2162aaee_49eac1f8
+Bytes: 128
+I opted for uint8_t as it is the underlying type of the art::DexRegisterLocation::kind enum value, which is masked by kKindMask.
 
 336:19-336:26
 Wed Mar 11 10:05:17 2015 +0000
@@ -85,6 +151,14 @@ UUID: 610022f0_bbf2a7e7
 Bytes: 7
 size_t?
 
+336:19-336:26
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 610022f0_bbf2a7e7
+UUID: 612e6292_0be4bd28
+Bytes: 99
+I kept int32_t as it is the type of art::DexRegisterLocation::value, which is masked by kValueMask.
+
 340:23-340:39
 Wed Mar 11 10:05:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -92,12 +166,28 @@ UUID: 5cb06509_1e27c9b2
 Bytes: 18
 MakeShortLocation?
 
+340:23-340:39
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb06509_1e27c9b2
+UUID: 415f9e27_8aef8b01
+Bytes: 4
+Done
+
 358:28-358:39
 Wed Mar 11 10:05:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5cb06509_decba14f
 Bytes: 33
 ExtraKindFromShortLocationOffset?
+
+358:28-358:39
+Wed Mar 11 16:14:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb06509_decba14f
+UUID: 415f9e27_6a0e976a
+Bytes: 84
+Renamed as ExtractKindAtOffset, as the kind may also be the one of a large location.
 
 File: tools/generate-operator-out.py
 

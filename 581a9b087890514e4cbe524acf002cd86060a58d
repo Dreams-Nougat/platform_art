@@ -9,12 +9,28 @@ UUID: 5c94e5c0_3b0517c7
 Bytes: 170
 AbortTransaction is reserved for compilation time only so you need to test whether you are running inside a transaction. If it's not the case, you may want to LOG(FATAL).
 
+55:6-55:22
+Wed Mar 11 14:53:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c94e5c0_3b0517c7
+UUID: 813356f4_ac24a3df
+Bytes: 16
+Refactor only...
+
 143:48-143:72
 Wed Mar 11 14:08:17 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5cb06509_3e6165be
 Bytes: 171
 We must abort the active transaction if the class is finalizable. We do that in the interpreter for NEW_INSTANCE (runtime/interpreter/interpreter_switch_impl.cc, line 447)
+
+143:48-143:72
+Wed Mar 11 14:53:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb06509_3e6165be
+UUID: 813356f4_6c37db18
+Bytes: 86
+That is correct and a follow-up. Note that this was requested to only be a refactor...
 
 157:4-160:79
 Wed Mar 11 14:08:17 2015 +0000
@@ -31,12 +47,28 @@ BTW, you could also write the following:
                                          PrettyClass(h_klass.Get()).c_str(),
                                          PrettyTypeOf(self->GetException()).c_str()
 
+157:4-160:79
+Wed Mar 11 14:53:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 610022f0_7b93ff57
+UUID: a124daad_6d0eb56a
+Bytes: 115
+Please see the transaction.cc change. I changed it there to ThrowNewWrappedException exactly to retain the cause...
+
 188:2-190:69
 Wed Mar 11 14:08:17 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1246ea6_56fa5446
 Bytes: 59
 Should we abort the transaction if a transaction is active?
+
+188:2-190:69
+Wed Mar 11 14:53:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1246ea6_56fa5446
+UUID: 813356f4_4c3c1ff9
+Bytes: 40
+Probably. Again, it's a refactor only...
 
 275:2-275:113
 Wed Mar 11 14:08:17 2015 +0000
@@ -45,6 +77,14 @@ UUID: a11f7a53_f555d8d7
 Bytes: 9
 long line
 
+275:2-275:113
+Wed Mar 11 14:53:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a11f7a53_f555d8d7
+UUID: a124daad_2d18ada6
+Bytes: 157
+We had long lines for names before, and personally I dislike split string literals, especially when there are no spaces. I'll see what doesn't look horrible.
+
 386:12-386:45
 Wed Mar 11 14:08:17 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,10 +92,26 @@ UUID: e10df22c_b75f68f4
 Bytes: 33
 UnstartedJNIVMStackGetStackClass2
 
+386:12-386:45
+Wed Mar 11 14:53:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e10df22c_b75f68f4
+UUID: c129ce86_ae0b7751
+Bytes: 4
+Done
+
 471:4-471:20
 Wed Mar 11 14:08:17 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a11f7a53_35459023
 Bytes: 71
 You need to test if there is an active transaction. If not, LOG(FATAL)?
+
+471:4-471:20
+Wed Mar 11 14:53:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a11f7a53_35459023
+UUID: a124daad_0d1df196
+Bytes: 50
+This is the original code. Again: refactor only...
 

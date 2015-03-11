@@ -1,0 +1,61 @@
+Revision: 581a9b087890514e4cbe524acf002cd86060a58d
+Patch-set: 2
+File: runtime/interpreter/unstarted_runtime.cc
+
+55:6-55:22
+Wed Mar 11 14:08:17 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c94e5c0_3b0517c7
+Bytes: 170
+AbortTransaction is reserved for compilation time only so you need to test whether you are running inside a transaction. If it's not the case, you may want to LOG(FATAL).
+
+143:48-143:72
+Wed Mar 11 14:08:17 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb06509_3e6165be
+Bytes: 171
+We must abort the active transaction if the class is finalizable. We do that in the interpreter for NEW_INSTANCE (runtime/interpreter/interpreter_switch_impl.cc, line 447)
+
+157:4-160:79
+Wed Mar 11 14:08:17 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 610022f0_7b93ff57
+Bytes: 499
+You need to clear the pending exception before throwing the InternalError, otherwise you'll fail a check in Thread::ThrowNewException.
+
+We could set the pending exception as the cause of the InternalError for more context.
+
+BTW, you could also write the following:
+
+  AbortTransaction(self, "Failed in Class.newInstance for '%s' with %s",
+                                         PrettyClass(h_klass.Get()).c_str(),
+                                         PrettyTypeOf(self->GetException()).c_str()
+
+188:2-190:69
+Wed Mar 11 14:08:17 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c1246ea6_56fa5446
+Bytes: 59
+Should we abort the transaction if a transaction is active?
+
+275:2-275:113
+Wed Mar 11 14:08:17 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a11f7a53_f555d8d7
+Bytes: 9
+long line
+
+386:12-386:45
+Wed Mar 11 14:08:17 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e10df22c_b75f68f4
+Bytes: 33
+UnstartedJNIVMStackGetStackClass2
+
+471:4-471:20
+Wed Mar 11 14:08:17 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a11f7a53_35459023
+Bytes: 71
+You need to test if there is an active transaction. If not, LOG(FATAL)?
+

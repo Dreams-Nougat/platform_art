@@ -100,6 +100,34 @@ UUID: 415f9e27_cacc63b5
 Bytes: 82
 I'll test this on an ARM device and change it to a per-byte I/O if it is an issue.
 
+212:6-212:80
+Wed Mar 11 17:42:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 415f9e27_cacc63b5
+UUID: 81a19660_bc2161cf
+Bytes: 1431
+FYI I compared the result of `oatdumpd` for the same oat file on the host and the target (Nexus 9) and they were identical.  Here's the recipe I used:
+
+  m -j30 out/host/linux-x86/bin/oatdumpd
+  m -j30 out/target/product/armv8/data/art-test/arm64/core-optimizing.art
+  out/host/linux-x86/bin/oatdumpd --oat-file=out/target/product/armv8/data/art-test/arm64/core-optimizing.oat >oatdumpd-host.out
+  
+  m -j30 out/target/product/armv8/system/bin/oatdumpd
+  adb push out/target/product/armv8/data/art-test/arm64/core-optimizing.art /data/art-test/arm64
+  adb push out/target/product/armv8/system/bin/oatdumpd /data/art-test/arm64
+  adb push out/target/product/armv8/system/lib64/libartd.so /data/art-test/arm64
+  adb push out/target/product/armv8/system/lib64/libartd-compiler.so /data/art-test/arm64
+  adb push out/target/product/armv8/system/lib64/libartd-disassembler.so /data/art-test/arm64
+  adb push out/target/product/armv8/system/lib64/libvixld.so /data/art-test/arm64
+  adb shell 'LD_LIBRARY_PATH=/data/art-test/arm64 /data/art-test/arm64/oatdumpd --oat-file=/data/art-test/arm64/core-optimizing.oat' >oatdumpd-target-dos.out
+  
+  recode dos.. <oatdumpd-target-dos.out >oatdumpd-target.out
+  cmp oatdumpd-host.out oatdumpd-target.out
+
+(I don't know why the target's `oatdumpd' emitted DOS CR-LF end-of-line markers though.)
+
+The unaligned accessed didn't seem to cause trouble on ARM64.  Should I try on (32-bit) ARM as well?
+
 217:37-217:51
 Wed Mar 11 10:05:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

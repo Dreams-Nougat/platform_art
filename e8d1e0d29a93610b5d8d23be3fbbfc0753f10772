@@ -9,12 +9,28 @@ UUID: 01bbe6f2_b872399c
 Bytes: 8
 Why not?
 
+267:47-267:90
+Thu Mar 12 15:23:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01bbe6f2_b872399c
+UUID: e105f2c3_d73fbcd9
+Bytes: 136
+Seb implemented transactional support only for single-element access. There's no bulk operation keeping/restoring a whole array segment.
+
 307:4-307:26
 Thu Mar 12 10:54:16 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 01bbe6f2_f8cb111f
 Bytes: 96
 Shouldn't we throw a NullPointerException here? What if the caller may handle it with try/catch.
+
+307:4-307:26
+Thu Mar 12 15:23:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 01bbe6f2_f8cb111f
+UUID: 8116f6fe_d41cdc9c
+Bytes: 242
+I tried to keep most things traditional: re-run everything at runtime. This kinda assumes that the exception cases are not supposed to happen in unstarted runtimes. It's an improvement over before, as it avoids the segfault / (D)CHECK aborts.
 
 323:4-323:57
 Thu Mar 12 10:00:37 2015 +0000
@@ -23,10 +39,26 @@ UUID: 017da6ec_08efc7b9
 Bytes: 61
 Really? Isn't it OK if there is a try/catch on the user side?
 
+323:4-323:57
+Thu Mar 12 15:23:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017da6ec_08efc7b9
+UUID: c11c6e21_7676b0d6
+Bytes: 14
+Same as above.
+
 336:0-347:98
 Thu Mar 12 10:00:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 017da6ec_28f48b89
 Bytes: 5
 ditto
+
+336:0-347:98
+Thu Mar 12 15:23:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 017da6ec_28f48b89
+UUID: 8116f6fe_740ce869
+Bytes: 288
+The top type mismatch is OK. The lower mismatch requires a more complicated copy loop: you have to check each assignment. As this is already copy-pasted over this file and compared to array.h, I did not see a reason to complicate this. If we see it somewhere, I can still decide to do it.
 

@@ -9,12 +9,30 @@ UUID: 660038f0_7be2df1b
 Bytes: 102
 Maybe add a comment saying that we do not register any Dex register location information in this case?
 
+116:8-116:17
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_7be2df1b
+UUID: 660038f0_db5573dc
+Bytes: 4
+Done
+
 124:12-125:50
 Fri Mar 13 17:39:46 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 660038f0_fb238fd0
 Bytes: 119
 This is a recurring pattern; what about introducing a method for this case, say SetBitAndNextBit (or maybe SetBitPair)?
+
+124:12-125:50
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_fb238fd0
+UUID: a6f6b049_fd582716
+Bytes: 200
+I feel it's a bit overkill. It's very specific to the way dex does things, so not really part of BitMask.
+
+I think ideally we should move the setting of the bit in AddDexRegisterEntry. I added a TODO.
 
 148:12-148:47
 Fri Mar 13 17:39:46 2015 +0000
@@ -23,12 +41,28 @@ UUID: c6fba432_be53b93d
 Bytes: 74
 Move this assertion at the beginning of the block (i.e., before line 147)?
 
+148:12-148:47
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c6fba432_be53b93d
+UUID: c6fba432_de5565dc
+Bytes: 4
+Done
+
 220:10-220:16
 Fri Mar 13 17:39:46 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a6f6b049_dd9d6b6d
 Bytes: 38
 Likewise, add a comment for this case?
+
+220:10-220:16
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6f6b049_dd9d6b6d
+UUID: 660038f0_bb62a7ba
+Bytes: 4
+Done
 
 339:0-340:77
 Fri Mar 13 17:39:46 2015 +0000
@@ -41,6 +75,14 @@ It's a matter of personal preference, but I prefer this style:
                                   entry.num_dex_registers,
                                   *entry.live_dex_registers_mask);
 
+339:0-340:77
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6f6b049_9da7e3b3
+UUID: 660038f0_9b5febfa
+Bytes: 58
+I like both. I know Andreas prefers the one I wrote. Done.
+
 File: compiler/optimizing/stack_map_test.cc
 
 210
@@ -52,6 +94,14 @@ Add
 
   ASSERT_FALSE(stack_map.HasInlineInfo());
 
+210
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c6fba432_7e1ad172
+UUID: a6f6b049_dd556bdc
+Bytes: 4
+Done
+
 File: oatdump/oatdump.cc
 
 1086
@@ -61,12 +111,28 @@ UUID: 660038f0_fb06ef1d
 Bytes: 125
 I think we should also dump the live bit mask, at least for (stack maps + oatdump) debugging purpose (maybe just add a TODO).
 
+1086
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_fb06ef1d
+UUID: 660038f0_7b4c1f53
+Bytes: 4
+Done
+
 1088:10-1088:52
 Fri Mar 13 17:39:46 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a6f6b049_fd2dc78f
 Bytes: 99
 Shouldn't we let the user decide to display kNone locations (or not) through a command line option?
+
+1088:10-1088:52
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6f6b049_fd2dc78f
+UUID: a6f6b049_9d5fe3fa
+Bytes: 37
+I think this is a bit too fine grain.
 
 File: runtime/stack_map.h
 
@@ -77,12 +143,28 @@ UUID: 660038f0_bb2747ac
 Bytes: 25
 Nit: "1- or 5-byte wide"?
 
+222:35-222:50
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_bb2747ac
+UUID: a6f6b049_5d515be9
+Bytes: 4
+Done
+
 231:32-231:38
 Fri Mar 13 17:39:46 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a6f6b049_5d995b7a
 Bytes: 112
 Shouldn't we use uint16_t as in other methods of this class (IIRC, the maximum number of Dex register is 65536)?
+
+231:32-231:38
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6f6b049_5d995b7a
+UUID: 660038f0_1b4bdb39
+Bytes: 4
+Done
 
 236:22-236:28
 Fri Mar 13 17:39:46 2015 +0000
@@ -91,12 +173,28 @@ UUID: 660038f0_3b40d762
 Bytes: 6
 Ditto.
 
+236:22-236:28
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_3b40d762
+UUID: a6f6b049_3d468f31
+Bytes: 4
+Done
+
 279:20-279:30
 Fri Mar 13 17:39:46 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a6f6b049_1dd073fb
 Bytes: 196
 For the sake of uniformity, what about introducing another static offset constant (kLiveBitMaskOffset) in art::DexRegisterMaps and have art::DexRegisterMaps::kFixedSize be defined according to it?
+
+279:20-279:30
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6f6b049_1dd073fb
+UUID: a6f6b049_fd3f0788
+Bytes: 4
+Done
 
 288:20-288:30
 Fri Mar 13 17:39:46 2015 +0000
@@ -109,6 +207,14 @@ Ditto (use kLiveBitMaskOffset).  Or better, have a method (GetDexRegisterMapLoca
 
 ?
 
+288:20-288:30
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_fbb4afc5
+UUID: 660038f0_7bcbff23
+Bytes: 4
+Done
+
 473
 Fri Mar 13 17:39:46 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -120,10 +226,26 @@ Maybe add
 
 as a kNone entry should be recorded as an actual ("physical") DexRegisterLocation in the Dex register map?
 
+473
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_5bede3b8
+UUID: c6fba432_1edaadee
+Bytes: 21
+Excellent point. Done
+
 724:4-725:71
 Fri Mar 13 17:39:46 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 660038f0_9bd24bf8
 Bytes: 94
 Ditto (regarding the introduction of kLiveBitMaskOffset and GetDexRegisterMapLocationsOffset).
+
+724:4-725:71
+Fri Mar 13 18:29:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 660038f0_9bd24bf8
+UUID: c6fba432_dedb25ef
+Bytes: 4
+Done
 

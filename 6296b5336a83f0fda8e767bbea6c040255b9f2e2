@@ -9,6 +9,14 @@ UUID: e1ec123e_027c4ce6
 Bytes: 52
 Please explain why you need to change that behavior.
 
+11:2-11:63
+Fri Mar 13 09:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1ec123e_027c4ce6
+UUID: e1ec123e_e2804844
+Bytes: 4
+Done
+
 File: runtime/monitor.cc
 
 1048:4-1048:18
@@ -17,6 +25,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6142e231_cbb37500
 Bytes: 46
 You should keep the message about the context.
+
+1048:4-1048:18
+Fri Mar 13 09:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6142e231_cbb37500
+UUID: e12fb26e_e7e30221
+Bytes: 4
+Done
 
 File: runtime/quick_exception_handler.cc
 
@@ -29,6 +45,14 @@ Why changing the behavior here (and below)? We used to abort with a CHECK if we 
 
 And shouldn't we LOG(WARNING) we couldn't access this vreg? It's useful for debugging at least, maybe by changing a kEnableXXX to true to enable it.
 
+224:12-224:48
+Fri Mar 13 09:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1ec123e_e287a860
+UUID: 6142e231_ab970941
+Bytes: 158
+We should not abort, it is OK to not have a value there since the register may not be initialized or dead. I added a comment next to the dead value constants.
+
 File: runtime/stack.cc
 
 147:6-147:13
@@ -37,4 +61,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6142e231_6ba521b1
 Bytes: 30
 Missing CHECK it returned true
+
+147:6-147:13
+Fri Mar 13 09:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6142e231_6ba521b1
+UUID: e1ec123e_4266545a
+Bytes: 208
+Done. But note that this is because both compilers guarantee 'this' remains live throughout the object. As soon as we become more aggressive, we will need to change this method to also return a success state.
 

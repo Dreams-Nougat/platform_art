@@ -18,3 +18,12 @@ UUID: c178ee71_9d28e482
 Bytes: 429
 The invariant and optimization included in this patch are based on the length of an array. Given a set of array accesses with (literal) indices {c1, ..., cn}, we can optimize away all bounds checks iff all 0 <= min(ci) and max(ci) < array-length. The first can be proven statically. The second can be established with a deoptimization-based invariant. This replaces n bounds checks with one invariant check (plus slow-path code).
 
+File: compiler/optimizing/bounds_check_elimination.cc
+
+969
+Fri Mar 13 17:00:44 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86052c00_9cc1259d
+Bytes: 146
+Maybe we can do better than this since the constant may already be available. Run another mini-gvn on constants for entry block at the end of BCE?
+

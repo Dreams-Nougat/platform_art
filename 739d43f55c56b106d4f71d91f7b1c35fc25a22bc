@@ -1,0 +1,20 @@
+Revision: 739d43f55c56b106d4f71d91f7b1c35fc25a22bc
+Patch-set: 1
+File: /COMMIT_MSG
+
+11:13-15:12
+Fri Mar 13 06:38:51 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2168ea9d_8c250add
+Bytes: 279
+Ugh, very rough. How about:
+
+This can be used to establish invariants in the managed code: if the invariant does not hold at runtime, we will deoptimize and continue execution in the interpreter. This allows to optimize the managed code as if the invariant was proven statically.
+
+17:0-20:76
+Fri Mar 13 06:38:51 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c178ee71_9d28e482
+Bytes: 429
+The invariant and optimization included in this patch are based on the length of an array. Given a set of array accesses with (literal) indices {c1, ..., cn}, we can optimize away all bounds checks iff all 0 <= min(ci) and max(ci) < array-length. The first can be proven statically. The second can be established with a deoptimization-based invariant. This replaces n bounds checks with one invariant check (plus slow-path code).
+

@@ -9,3 +9,39 @@ UUID: 012da676_51ed6638
 Bytes: 103
 Please extend with "or by MarkZygoteStart when pruning the whole cache on reboot after a boot failure."
 
+File: runtime/oat_file_assistant.cc
+
+174:0-175:1
+Mon Mar 16 19:39:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c61ac4b3_cc504333
+Bytes: 140
+We need something like 'SelfRelocateOatFile' here. Calling RelocateOatFile will try to relocate the oat file from the odex, not from itself.
+
+File: runtime/oat_file_assistant.h
+
+51:1-61:25
+Mon Mar 16 19:39:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c61ac4b3_ecd89f74
+Bytes: 587
+It's not clear from the description in the comments what the difference is between these two cases.
+
+Part of the problem is that Status is used for two different things: individual oat files, in which case, kNeedsRelocation is probably the relevant status to use, and overall dex location status, in which case we want to distinguish between relocating from .odex to .oat and relocation from .oat to .oat. I'm not sure how to reconcile those differences in a good way. Perhaps it would be better to have two different enum types for status: perhaps called 'OatStatus' and 'DexOptStatus'?
+
+File: runtime/oat_file_assistant_test.cc
+
+489:0-492:30
+Mon Mar 16 19:39:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86144c89_a4a1a2eb
+Bytes: 119
+We need to add another test case to test the self-relocation case: DEX file, no ODEX file, OAT file needing relocation.
+
+510:2-510:84
+Mon Mar 16 19:39:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c61ac4b3_2c947743
+Bytes: 143
+Why do we expect kNeedsSelfRelocation here instead of kNeedsRelocation? Should we prefer relocating from self to relocating from the odex file?
+

@@ -9,12 +9,29 @@ UUID: 86144c89_9f882476
 Bytes: 67
 I don't understand comparing to the lower bound. Could you explain?
 
+963:4-968:89
+Tue Mar 17 20:36:44 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86144c89_9f882476
+UUID: 66bd98c9_e781cafc
+Bytes: 289
+We keep updating a value range for array_length instruction throughout the block once a constant is used as the index. For example, array[3] will update array.length's value range to be [4, INT_MAX]. The lower bound is 4. And here we add the check to be:
+  if (array.length < 4) deoptimize
+
 982:4-994:5
 Tue Mar 17 15:20:42 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 86144c89_1f9c34b6
 Bytes: 65
 Do you have to be more careful? What if an a[-1] is in the block?
+
+982:4-994:5
+Tue Mar 17 20:36:44 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86144c89_1f9c34b6
+UUID: 06a4dcb8_b384620e
+Bytes: 104
+Good point! I need to add a check for the constant to make sure it's >= 0 to eliminate the bounds check.
 
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
@@ -26,6 +43,14 @@ Bytes: 190
 ?
 
 Maybe consider a macro for the common body? Maybe write a comment why you can't combine the two. (We align function by 16B, so using the "body" twice would add a lot of nops after pushl.)
+
+1563:13-1563:33
+Tue Mar 17 20:36:44 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66bd98c9_79cabf9d
+UUID: 469a5479_3f572c2d
+Bytes: 118
+I took this out and added an exported symbol in art_quick_deoptimize for art_quick_deoptimize_from_compiled_slow_path.
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 

@@ -206,6 +206,16 @@ UUID: 06a21cbf_e3692ca7
 Bytes: 112
 What I don't get is how can this worked without the environment? By not having the environment, you can't deopt.
 
+1492
+Wed Mar 18 23:49:50 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_e3692ca7
+UUID: 2612c0d8_ec8d8387
+Bytes: 145
+I do:
+deoptimize->SetEnvironment(bounds_check->GetEnvironment());
+during bce, so it does get an environment, not during ssa_builder phase though.
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 1546:0-1547:53
@@ -264,4 +274,14 @@ Parent: 06bbfcf2_3e7df1ae
 UUID: 269ba08e_c412b08e
 Bytes: 104
 Are you saying the current deoptimization support for the debugger cannot deoptimize the current method?
+
+404:6-404:63
+Wed Mar 18 23:49:50 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 269ba08e_c412b08e
+UUID: 66de785c_4edc93e7
+Bytes: 125
+It seems to me to be the case. There is a bug:
+https://b.corp.google.com/issues/17586779
+shertz probably knows more about it.
 

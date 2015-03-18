@@ -9,12 +9,32 @@ UUID: 06a21cbf_c0c4de91
 Bytes: 10
 OVERRIDE ?
 
+451:43-451:44
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_c0c4de91
+UUID: 06bbfcf2_7bab7b54
+Bytes: 5
+Done.
+
 714:39-714:51
 Wed Mar 18 15:18:01 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 666bd831_c306764c
 Bytes: 127
 Please add a comment why you can and are using the array length, as initially it seems more intuitive to use the object itself.
+
+714:39-714:51
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 666bd831_c306764c
+UUID: 06bbfcf2_dbc167d2
+Bytes: 301
+I added this comment:
+        // Remember the first bounds check against array_length of a constant index.
+        // That bounds check instruction has an associated HEnvironment where we
+        // may add an HDeoptimize to eliminate bounds checks of constant indices
+        // against array_length.
 
 965:0-966:46
 Wed Mar 18 15:18:01 2015 +0000
@@ -30,6 +50,24 @@ UUID: 06a21cbf_80cff6aa
 Bytes: 16
 two spaces more.
 
+966:6-966:18
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_80cff6aa
+UUID: c6d48430_5c0315c6
+Bytes: 5
+Done.
+
+965:0-966:46
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 666bd831_03308e1a
+UUID: 06bbfcf2_5b9557b9
+Bytes: 220
+We definitely have (lower_const-1). array[5] will establish array.length's lower_bound to be 6.
+
+What's the best way to get a (maybe existing) constant from entry block? I also hate to add a constant to entry block here.
+
 980:0-981:18
 Wed Mar 18 15:18:01 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -37,12 +75,28 @@ UUID: 666bd831_e3fc523c
 Bytes: 89
 Why don't you just let the algorithm run with the knowledge that array.length < constant?
 
+980:0-981:18
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 666bd831_e3fc523c
+UUID: c6d48430_9cf08d62
+Bytes: 193
+I can rerun the algorithm on the block (I actually did this way first). I thought it's cheaper to just revisit the bounds-check users in the block instead of doing the value range stuffs again.
+
 1018:20-1018:22
 Wed Mar 18 15:18:01 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 666bd831_03196e34
 Bytes: 32
 Please add a kConstant for this.
+
+1018:20-1018:22
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 666bd831_03196e34
+UUID: 06bbfcf2_3bcf43db
+Bytes: 5
+Done.
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -53,6 +107,14 @@ UUID: 06a21cbf_c0ebbe74
 Bytes: 8
 No need.
 
+313:2-313:9
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_c0ebbe74
+UUID: c6d48430_dcfcc5f1
+Bytes: 5
+Done.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 382:2-382:9
@@ -61,6 +123,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 06a21cbf_6003d2c6
 Bytes: 8
 No need.
+
+382:2-382:9
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_6003d2c6
+UUID: c6d48430_5ce9d528
+Bytes: 5
+Done.
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -71,6 +141,14 @@ UUID: 06a21cbf_20fdca35
 Bytes: 8
 No need.
 
+332:2-332:9
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_20fdca35
+UUID: c6d48430_fca6610d
+Bytes: 5
+Done.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 339:2-339:9
@@ -79,6 +157,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 06a21cbf_0019a634
 Bytes: 8
 No need.
+
+339:2-339:9
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_0019a634
+UUID: c6d48430_9cb52d33
+Bytes: 5
+Done.
 
 File: compiler/optimizing/nodes.h
 
@@ -89,12 +175,28 @@ UUID: 269ba08e_61dcf6e7
 Bytes: 7
 Remove.
 
+1487:2-1487:10
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 269ba08e_61dcf6e7
+UUID: c6d48430_9c8c0d89
+Bytes: 5
+Done.
+
 1492
 Wed Mar 18 15:18:01 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 06a21cbf_c0229e58
 Bytes: 42
 Why don't you require an environment here?
+
+1492
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_c0229e58
+UUID: e6bd08e7_6b0a89d4
+Bytes: 93
+Added one. Although the env is not built SsaBuilder and the is retrieved from somewhere else.
 
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
@@ -105,6 +207,14 @@ UUID: 269ba08e_21e6eeaf
 Bytes: 30
 Please add a comment for this.
 
+1546:0-1547:53
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 269ba08e_21e6eeaf
+UUID: e6bd08e7_4bbb4554
+Bytes: 5
+Done.
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 1567:0-1567:59
@@ -114,6 +224,14 @@ UUID: 269ba08e_01f2ca6c
 Bytes: 5
 ditto
 
+1567:0-1567:59
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 269ba08e_01f2ca6c
+UUID: e6bd08e7_2bb81155
+Bytes: 5
+Done.
+
 File: runtime/interpreter/interpreter.cc
 
 404:6-404:63
@@ -122,4 +240,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 269ba08e_e1f6c65e
 Bytes: 25
 Why do you need this now?
+
+404:6-404:63
+Wed Mar 18 21:47:53 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 269ba08e_e1f6c65e
+UUID: 06bbfcf2_3e7df1ae
+Bytes: 260
+When we deoptimize callers, we need to adjust dex pc to next instruction, which we always do for debuggers. When we deoptimize the current method like what we now do for bce, we don't want that adjustment. Still we need the adjustment for deoptimizing callers.
 

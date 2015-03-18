@@ -9,3 +9,11 @@ UUID: 06bbfcf2_3ecf31db
 Bytes: 204
 I am wondering: Is it possible that this can go wrong?  The code uses the current method's dex cache for this lookup, so the outer method. What if the class is not declared in the outer method's dex file?
 
+747:2-747:91
+Wed Mar 18 21:43:40 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06bbfcf2_3ecf31db
+UUID: 06a21cbf_83926023
+Bytes: 256
+The NeedsDexCache in HInstruction is here to prevent generating code for this situation. Indeed the storage_index is relative to the current dex file, which will not work if we use the most outer method (assuming the most outer is in a different dex file).
+

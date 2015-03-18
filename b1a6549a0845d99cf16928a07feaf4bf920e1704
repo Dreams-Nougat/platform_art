@@ -37,3 +37,25 @@ Or maybe something like this, which lists the typical file extensions:
 
 The #1 problem as-is is not being sure what file extension goes with which command flag, so we end up digging through source code or look at some examples in runtest
 
+118
+Wed Mar 18 15:50:41 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e67fc8e4_c753de3c
+UUID: 067dbcec_1d19bf34
+Bytes: 637
+Looking closer, now I'm a little confused.
+
+For the output, we can specify:
+  --oat-file, or --oat-fd with --oat-location
+
+For the input, it makes sense to have similar:
+  --dex-file, or --dex-fd with --dex-location
+Except there can be multiple inputs.
+
+What we have instead is:
+    --dex-file with --dex-location (can be multiple)
+or  --zip-fd with --zip-location (can only occur once, and the file must be in zip format, it can't be raw dex).
+
+Anyway, I think this is out of the scope of this change.
+I improved the documentation for --dex-file to clarify it works with .jar and .apk, and I updated the --dex-location example to match.
+

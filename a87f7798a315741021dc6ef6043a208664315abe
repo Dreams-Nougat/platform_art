@@ -17,3 +17,13 @@ UUID: 06a21cbf_83926023
 Bytes: 256
 The NeedsDexCache in HInstruction is here to prevent generating code for this situation. Indeed the storage_index is relative to the current dex file, which will not work if we use the most outer method (assuming the most outer is in a different dex file).
 
+747:2-747:91
+Wed Mar 18 22:41:45 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_83926023
+UUID: a6d4f037_300086b7
+Bytes: 547
+I see. So you're doing the work, but then let the inliner throw it away. I'm not sure I like that design, as it doesn't make it explicit here that most likely all the outer_dex_cache is overhead. (My running assumption is that there's a lot of cross-class static accesses.)
+
+I guess the runtime entrypoints haven't been extended to support it, but maybe it's worth the effort to check whether there is a type index in the current dex file that matches? Another approach would be to try to load the ArtMethod for the inlined method, when necessary.
+

@@ -55,3 +55,11 @@ UUID: 06af7c90_becb619d
 Bytes: 331
 The DCHECK was meant to check that null is not represented as an IntConstant at this point and yes, it does look confusing. If we have the ActAsNullConstant, I could just use that in the condition below and get rid of the DCHECK. It's not the codegen's job to verify these properties anyway (could we add it to the graph verifier?)
 
+249:4-250:67
+Wed Mar 18 09:11:50 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06af7c90_becb619d
+UUID: 06af7c90_5edc0563
+Bytes: 157
+Yeah a big chink of it is already in the graph verifier. We should *not* need a ActAsNullConstant, and instead fix the places where we're not properly typed.
+

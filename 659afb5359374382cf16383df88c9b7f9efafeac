@@ -1,0 +1,15 @@
+Revision: 659afb5359374382cf16383df88c9b7f9efafeac
+Patch-set: 1
+File: runtime/runtime.cc
+
+17
+Thu Mar 19 17:38:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a64230dc_1de6d358
+Bytes: 384
+Not sure if setting this tag globally might be frowned upon. 
+
+A lot of functions in Runtime don't get used at boot time only, if someone adds ATRACE logging there and doesn't remember to change the ATRACE_TAG, they will get very confusing systrace info.
+
+An alternative might be calling the C functions directly without the macros (similar to how the Java calls take a tag directly).
+

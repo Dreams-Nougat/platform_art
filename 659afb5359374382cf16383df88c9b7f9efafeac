@@ -13,3 +13,17 @@ A lot of functions in Runtime don't get used at boot time only, if someone adds 
 
 An alternative might be calling the C functions directly without the macros (similar to how the Java calls take a tag directly).
 
+17
+Thu Mar 19 21:58:38 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a64230dc_1de6d358
+UUID: 66259842_b327d866
+Bytes: 704
+ATRACE_TAG has to be defined to use the ATRACE macros. I'm using the ATRACE macros instead of directly calling the atrace functions because the macros take care of the case where you compile for the host and the atrace functions aren't available.
+
+I agree with you though. At one point Brian suggested creating a trace header file for art that does what's needed to using tracing both on the host and target.
+
+In one of the internal branches, we set ATRACE_TAG in a header file, which caused me problems when I cherry-picked this change in.
+
+Note that it's possible to set the tag as a bitwise OR of multiple tags, to have the trace show up, for example, if either of boot trace or art trace are enabled.
+

@@ -68,6 +68,18 @@ We definitely have (lower_const-1). array[5] will establish array.length's lower
 
 What's the best way to get a (maybe existing) constant from entry block? I also hate to add a constant to entry block here.
 
+965:0-966:46
+Thu Mar 19 10:50:44 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06bbfcf2_5b9557b9
+UUID: 666bd831_e63620b1
+Bytes: 300
+So shouldn't we use LessOrEqual then?
+
+About constants: I think we'll need something when dealing with inlining. As of now, maybe we could go with a simple HGraph::AddConstant interface, and just allocate the constant?
+
+But if you you can use LessOrEqual, we can delay dealing with constants for now.
+
 980:0-981:18
 Wed Mar 18 15:18:01 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -82,6 +94,18 @@ Parent: 666bd831_e3fc523c
 UUID: c6d48430_9cf08d62
 Bytes: 193
 I can rerun the algorithm on the block (I actually did this way first). I thought it's cheaper to just revisit the bounds-check users in the block instead of doing the value range stuffs again.
+
+980:0-981:18
+Thu Mar 19 10:50:44 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c6d48430_9cf08d62
+UUID: 269ba08e_c422b058
+Bytes: 256
+Will both ways cover the same bounds checks? Or a bound on an array length can help for more, maybe unrelated, bounds checks being removed?
+
+Do we care / is it worth it?
+
+I'd definitely add a comment here to explain why you're not re-running the algorithm.
 
 1018:20-1018:22
 Wed Mar 18 15:18:01 2015 +0000
@@ -216,6 +240,14 @@ I do:
 deoptimize->SetEnvironment(bounds_check->GetEnvironment());
 during bce, so it does get an environment, not during ssa_builder phase though.
 
+1492
+Thu Mar 19 10:50:44 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2612c0d8_ec8d8387
+UUID: 269ba08e_e4f6d45e
+Bytes: 149
+Oh, I see. I think it actually helps having the NeedsEnvironment and it's also harmless because the ssa builder will not see this instruction anyway.
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 1546:0-1547:53
@@ -284,4 +316,12 @@ Bytes: 125
 It seems to me to be the case. There is a bug:
 https://b.corp.google.com/issues/17586779
 shertz probably knows more about it.
+
+404:6-404:63
+Thu Mar 19 10:50:44 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66de785c_4edc93e7
+UUID: 269ba08e_24fddc35
+Bytes: 105
+Ok. Can you please expand the comment with this information? I think it's worth keeping this info around.
 

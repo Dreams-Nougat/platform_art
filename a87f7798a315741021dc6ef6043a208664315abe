@@ -27,3 +27,13 @@ I see. So you're doing the work, but then let the inliner throw it away. I'm not
 
 I guess the runtime entrypoints haven't been extended to support it, but maybe it's worth the effort to check whether there is a type index in the current dex file that matches? Another approach would be to try to load the ArtMethod for the inlined method, when necessary.
 
+747:2-747:91
+Thu Mar 19 10:33:32 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6d4f037_300086b7
+UUID: 666bd831_e65f00f9
+Bytes: 435
+About your first point: it's kind of an inlining decision/implementation state. At some point we'll be able to reference other dex cache in an inlined method. So yes, the builder does some extra work, but inlining heuristics should not mess with the builder. Also, it's only done once, as we setup the flag on the method that it's not worth inlining.
+
+About your second point: yes, we could implement this improvement in a next change.
+

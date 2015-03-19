@@ -1,0 +1,89 @@
+Revision: 581f0359b36bd1cd05018bf4efa0046156310df8
+Patch-set: 8
+File: /COMMIT_MSG
+
+9:0-22:46
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a64230dc_5ddc5b10
+Bytes: 107
+These seem like unrelated changes. It will simplify review if they can be split into two different changes.
+
+File: runtime/native/dalvik_system_DexFile.cc
+
+362:0-366:7
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_5fa1aba0
+Bytes: 57
+Why not have this logic in OatFileAssistant::GetStatus()?
+
+File: runtime/oat_file_assistant.cc
+
+174:0-178:7
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_7f56efe8
+Bytes: 115
+if GetStatus is changed to return kNeedsSelfRelocation (or whatever the right name is), this could be made cleaner.
+
+File: runtime/oat_file_assistant.h
+
+50:4-50:14
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_ffc51f3d
+Bytes: 173
+I would have called this kDexOptNeeded (or kDexoptNeeded?), to match with the constants defined in dalvik_system_DexFile.cc. This enum could replace those constants perhaps?
+
+54:4-54:20
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_7fd90f1f
+Bytes: 15
+kPatchoatNeeded
+
+62:7-62:17
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_3fb2a7c6
+Bytes: 145
+Doesn't match the enum name. Probably we don't need to duplicate the name of the enum in the comment here, it is clear by the comment's location.
+
+64:0-65:24
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_1f824301
+Bytes: 31
+Add a blank line between these.
+
+179:2-179:14
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_7f8fcffa
+Bytes: 33
+I would return an OatStatus here.
+
+File: runtime/oat_file_assistant_test.cc
+
+494:11-494:30
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a64230dc_3d7f0f90
+Bytes: 98
+Status should be kNeedsSelfPatchoat, and running MakeUpToDate should update the oat file in place.
+
+503:2-503:32
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c64724eb_1ee9ed80
+Bytes: 32
+This comment doesn't make sense.
+
+535:2-535:68
+Thu Mar 19 17:28:23 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e640a8d5_3f3707af
+Bytes: 28
+This comment is out of date.
+

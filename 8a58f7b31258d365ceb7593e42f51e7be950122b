@@ -12,12 +12,35 @@ http://google-styleguide.googlecode.com/svn/trunk/cppguide.html#Streams
 
 For any non-android, including here also unnecessarily expands what the compiler has to parse.
 
+33:10-33:17
+Thu Mar 19 16:06:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_66040a15
+UUID: 86fc4cc6_b813415a
+Bytes: 169
+Simon: Welcome to Android, where Google style is contended.
+
+Dimitry, sstream is perfectly fine. Alternatively use a std::string and +, as you're only appending strings.
+
 66
 Thu Mar 19 11:28:39 2015 +0000
 Author: Simon Baldwin <1037287@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 06a21cbf_2625e2a2
 Bytes: 100
 Maybe factor the three lines above into, say, jstringToCstring(), and use both here and at 71 below.
+
+66
+Thu Mar 19 16:06:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_2625e2a2
+UUID: 86fc4cc6_58b20dd9
+Bytes: 459
+Dimitry: It's fine the way it is if you don't want to rewrite.
+
+The more interesting point is what you want to do with the pending null-pointer exception...
+
+
+Simon: This requires changes that aren't as simple as moving those lines out. ScopedUtfChars exists to release the char buffer - it doesn't make a copy itself. As such, you'd have to translate everything to std::string all the time, incurring copies. Dimitry is a low-level guy and likes performance.
 
 79
 Thu Mar 19 11:28:39 2015 +0000

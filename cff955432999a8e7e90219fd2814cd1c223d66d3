@@ -2,6 +2,13 @@ Revision: cff955432999a8e7e90219fd2814cd1c223d66d3
 Patch-set: 2
 File: compiler/optimizing/instruction_simplifier.cc
 
+26:2-26:30
+Fri Mar 20 18:54:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_2d8a99b1
+Bytes: 141
+It would be interested to see how many such transformation we actually do. It's pretty easy to count them if you use OptimizingCompilerStats.
+
 29:7-29:22
 Fri Mar 20 17:37:20 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -15,6 +22,16 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 266e407b_ac01ab08
 Bytes: 216
 This seems reasonable, however I wonder whether we could run into infinite loops here.  It might be wise to have a visitor-wide flag stating whether there were a change since we revisited a node, and if not, advance.
+
+68:0-70:39
+Fri Mar 20 18:54:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 266e407b_ac01ab08
+UUID: 466b346a_6d31719a
+Bytes: 203
++1. I don't think we can easily test that this always ends (due to the kind of work done here I think it's not hard to loop through simplifications by mistake).
+
+Should we be worried about converge time?
 
 111:0-112:30
 Fri Mar 20 17:37:20 2015 +0000
@@ -94,6 +111,15 @@ Bytes: 23
 Nit: remove empty line.
 
 File: test/458-checker-instruction-simplification/src/Main.java
+
+281:3-281:15
+Fri Mar 20 18:54:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_8d4f0515
+Bytes: 285
+General comment for all these: I would either (re)name the test names based on the actual function they try to verify (e.g. TryMoveNegOnInputsAfterBinopTest) or add the function name in the test comment.
+
+This will make easier to see the links between the tests and the implementation.
 
 306:28-306:48
 Fri Mar 20 17:37:20 2015 +0000

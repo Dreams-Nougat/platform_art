@@ -80,6 +80,14 @@ About constants: I think we'll need something when dealing with inlining. As of 
 
 But if you you can use LessOrEqual, we can delay dealing with constants for now.
 
+965:0-966:46
+Fri Mar 20 22:56:41 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 666bd831_e63620b1
+UUID: 66259842_30a97106
+Bytes: 71
+Ok, I used LessThanOrEqual now and remembered the constant instruction.
+
 980:0-981:18
 Wed Mar 18 15:18:01 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -106,6 +114,14 @@ Will both ways cover the same bounds checks? Or a bound on an array length can h
 Do we care / is it worth it?
 
 I'd definitely add a comment here to explain why you're not re-running the algorithm.
+
+980:0-981:18
+Fri Mar 20 22:56:41 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 269ba08e_c422b058
+UUID: 66259842_5092edd3
+Bytes: 66
+Ok, I now rerun the algorithm on the block. It's actually simpler.
 
 1018:20-1018:22
 Wed Mar 18 15:18:01 2015 +0000
@@ -338,4 +354,23 @@ Imagine we compile a <clinit> and a sget/sput causes its invocation, then you de
 It's worth adding a comment about this can work only if we never compile <clinit>. Maybe a CHECK would be even better:
   CHECK(kDoNotCompileClinit)
 provided this flag is used by the compiler too.
+
+404:6-404:63
+Fri Mar 20 22:56:41 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 269ba08e_24fddc35
+UUID: 068cdc85_4909f461
+Bytes: 78
+I added this comment:
+// TODO: should be tested more once b/17586779 is fixed.
+
+404:6-404:63
+Fri Mar 20 22:56:41 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 06a21cbf_66c2cab3
+UUID: 66259842_d07efdde
+Bytes: 583
+In the clinit example, it seems to me we should re-execute at the dex_pc? So the change on line 405 should be able to handle that. Invocation is considered done when returning to deoptimized caller so it should execute from the dex instruction following dex_pc. Other instructions should be executed at dex_pc.
+
+Also for the clinit case, right now we go to runtime to do class initialization, and it's calling the <clinit> through an upcall (ArtMethod::Invoke()), which means deoptimization will stop at the upcall and the method that triggers the <clinit> won't even be deoptimized.
 

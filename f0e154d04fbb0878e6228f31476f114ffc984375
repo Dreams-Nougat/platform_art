@@ -19,6 +19,13 @@ Done
 
 File: compiler/optimizing/stack_map_stream.h
 
+126:8-127:22
+Fri Mar 20 12:22:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_eacf872c
+Bytes: 59
+these should be the sizes necessary to represent max values
+
 284:11-284:25
 Fri Mar 20 11:02:31 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -101,6 +108,32 @@ Bytes: 4
 Done
 
 File: runtime/stack_map.h
+
+520:20-520:40
+Fri Mar 20 12:22:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_8a784b44
+Bytes: 415
+I'm not very keen on this design.
+
+Our usual access pattern is something like:
+
+CodeInfo code_info = m->GetOptimizedCodeInfo();
+StackMap map = code_info.GetStackMapForNativePcOffset(native_pc_offset);
+MemoryRegion mask = map.GetStackMask(code_info);
+
+which makes accessing stack map info a bit silly and redundant.
+
+An alternative way is to construct the StackMap with a reference to the parent CodeInfo.
+
+Thoughts?
+
+611:16-611:37
+Fri Mar 20 12:22:41 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_2a14bff3
+Bytes: 104
+Please document which kind of entries these refers to. I know now, but it's easier to loose track later.
 
 616:0-621:88
 Fri Mar 20 11:02:31 2015 +0000

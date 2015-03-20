@@ -19,6 +19,18 @@ You shouldn't need a fence here unless changing the status also implies a change
 
 Stores are not reordered with older loads (but loads may be reordered with stores to *different* locations).
 
+896:17-896:48
+Fri Mar 20 20:22:33 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 46825452_9ba09771
+UUID: 46825452_b20c95c1
+Bytes: 478
+Access flags and the object size had been set at the resolved state which is one state before initialized. So, there should be a happens-before there.
+
+If we see the class in the initialized status here, it's ok to allocate here in this fast path as the other fields should be valid at that point. If we don't and see the resolved state (or an earlier state) instead even if it's already initialized due to the lack of a fence, we'd take the slow path.
+
+So, this seems ok to me.
+
 899
 Fri Mar 20 00:00:10 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -28,6 +40,14 @@ ecx is unused as source after andl? can test be used here instead?
 
 there is also a TEST r/m32 imm8 encoding (F7) so you should be able to get rid of the movl+andl and turn it into a testl
 
+899
+Fri Mar 20 20:22:33 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 068cdc85_842b567a
+UUID: 068cdc85_9c664250
+Bytes: 5
+Done.
+
 901:0-901:87
 Thu Mar 19 23:13:51 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -35,12 +55,28 @@ UUID: 66259842_16e6ba58
 Bytes: 101
 Is it worth maybe having an 8 byte aligned object size inside of Class? Maybe an idea for another CL.
 
+901:0-901:87
+Fri Mar 20 20:22:33 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66259842_16e6ba58
+UUID: 46825452_6d040e43
+Bytes: 61
+I thought about it, too and a good point. It'd be another CL.
+
 910:9-910:36
 Thu Mar 19 23:13:51 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 46825452_b87d6133
 Bytes: 94
 Add with immediate / inc to memory location instead of moving thread_local_objects in and out?
+
+910:9-910:36
+Fri Mar 20 20:22:33 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 46825452_b87d6133
+UUID: 66259842_284a6fb2
+Bytes: 4
+Done
 
 File: runtime/asm_support.h
 
@@ -51,6 +87,22 @@ UUID: 46825452_18210d20
 Bytes: 104
 If we are going to use defines, maybe we could use the define value to set the corresponding enum value?
 
+146:42-146:52
+Fri Mar 20 20:22:33 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 46825452_18210d20
+UUID: 068cdc85_4299d47a
+Bytes: 213
+kAccClassIsFinalizable isn't an enum value.
+
+Do you mean 
+
+static constexpr uint32_t kAccClassIsFinalizable = ACCESS_FLAGS_CLASS_IS_FINALIZABLE
+
+?
+
+I think that would cause a header file circular dependency issue.
+
 File: runtime/mirror/class.h
 
 208:11-208:34
@@ -60,10 +112,26 @@ UUID: 46825452_38e3b149
 Bytes: 37
 Call this from within GetAccessFlags?
 
+208:11-208:34
+Fri Mar 20 20:22:33 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 46825452_38e3b149
+UUID: 46825452_2d6a869b
+Bytes: 4
+Done
+
 533:22-533:38
 Thu Mar 19 23:13:51 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 66259842_164a3ab2
 Bytes: 36
 Call this from within GetObjectSize?
+
+533:22-533:38
+Fri Mar 20 20:22:33 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66259842_164a3ab2
+UUID: 068cdc85_628c1805
+Bytes: 4
+Done
 

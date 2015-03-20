@@ -9,6 +9,25 @@ UUID: 068cdc85_b6cb30f0
 Bytes: 93
 Maybe we need a fence for the status? Hans should know. Though may not be required on X86/64.
 
+896:17-896:48
+Fri Mar 20 00:00:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 068cdc85_b6cb30f0
+UUID: 46825452_9ba09771
+Bytes: 274
+You shouldn't need a fence here unless changing the status also implies a change to some other field (e.g. access flags -- but aren't those flags immutable anyway?)
+
+Stores are not reordered with older loads (but loads may be reordered with stores to *different* locations).
+
+899
+Fri Mar 20 00:00:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 068cdc85_842b567a
+Bytes: 188
+ecx is unused as source after andl? can test be used here instead?
+
+there is also a TEST r/m32 imm8 encoding (F7) so you should be able to get rid of the movl+andl and turn it into a testl
+
 901:0-901:87
 Thu Mar 19 23:13:51 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>

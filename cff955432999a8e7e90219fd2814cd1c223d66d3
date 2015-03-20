@@ -1,0 +1,168 @@
+Revision: cff955432999a8e7e90219fd2814cd1c223d66d3
+Patch-set: 2
+File: compiler/optimizing/instruction_simplifier.cc
+
+29:7-29:22
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_2d7a99b7
+Bytes: 17
+GetRevisitCurrent
+
+68:0-70:39
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_ac01ab08
+Bytes: 216
+This seems reasonable, however I wonder whether we could run into infinite loops here.  It might be wise to have a visitor-wide flag stating whether there were a change since we revisited a node, and if not, advance.
+
+111:0-112:30
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_4e3ef33e
+Bytes: 106
+I know it might seem over the top, but maybe you should wrap this pattern in a new method of this visitor.
+
+241:0-242:35
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_ce298308
+Bytes: 7
+Remove.
+
+252:28-252:36
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_ee2ebf0d
+Bytes: 13
+left->AsNeg()
+
+252:39-252:48
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_8e237b24
+Bytes: 14
+right->AsNeg()
+
+253:38-253:98
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_8c13875a
+Bytes: 92
+This predicate is a recurring pattern in this file, that could be moved into its own method.
+
+253:100-253:101
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_ac18cb76
+Bytes: 15
+Nit: long line.
+
+259:29-259:41
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_0c547724
+Bytes: 55
+optimization (and likewise in the rest of this file) ;)
+
+422:18-422:22
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_ec98037a
+Bytes: 9
+new_left?
+
+423:18-423:23
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_6ee96f29
+Bytes: 10
+new_right?
+
+488:2-488:48
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_6c85f307
+Bytes: 130
+I think you should move back this definition to where it was, as it is better to have variable definitions near their (first) use.
+
+555
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_0c11d755
+Bytes: 23
+Nit: remove empty line.
+
+File: test/458-checker-instruction-simplification/src/Main.java
+
+306:28-306:48
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_2cfdbb35
+Bytes: 141
+"AddNegs1 test case" (Naming test cases is more robust than using a relative location reference, when test cases are modified/moved/deleted).
+
+337:11-337:44
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_2e47e7a8
+Bytes: 67
+Interesting test case; have you had a look at the result after GVN?
+
+405:28-405:43
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_8d45c525
+Bytes: 19
+"AddNeg1 test case"
+
+406:49-406:61
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_6d3df18e
+Bytes: 34
+optimization (and likewise below).
+
+417
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_4c402f12
+Bytes: 33
+Maybe add
+
+  // CHECK-NOT: Sub
+
+?
+
+465
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_b1925854
+Bytes: 144
+Maybe also check that this function returns 0 after constant folding (an optimization that is enabled by the "a + -b → a - b" simplification)?
+
+517:28-517:48
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_8c22a757
+Bytes: 19
+"NegSub1 test case"
+
+600
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_b101f808
+Bytes: 33
+Maybe add
+
+  // CHECK-NOT: Sub
+
+?
+
+608:28-608:48
+Fri Mar 20 17:37:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_cdcadd1f
+Bytes: 19
+"SubNeg1 test case"
+

@@ -1,0 +1,91 @@
+Revision: 3792d2f2d04d4b75937efa5edc7a9e0153ed6a7f
+Patch-set: 3
+File: compiler/optimizing/stack_map_stream.h
+
+43:6-43:31
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_2b47d9a8
+Bytes: 67
+worth mentioning that this hash function does not create collisions
+
+File: runtime/check_reference_map_visitor.h
+
+79:6-80:70
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_cd3f3d6c
+Bytes: 231
+This is getting nasty, as more implementation details are exposed to the user. I think we should invest in finding a good/efficient abstraction for this.
+
+I already had this discussion with Nicolas and I think we should resume it..
+
+File: runtime/memory_region.h
+
+131:20-131:57
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_f1ec60bf
+Bytes: 83
+length must not be larger than the number of bits which can be fitted in `unsigned`
+
+132:2-132:10
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_2c613b7f
+Bytes: 35
+use more exact types. i.e. uint32_t
+
+144:39-144:47
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_ccbc1f53
+Bytes: 5
+ditto
+
+File: runtime/stack.cc
+
+206:1-206:87
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_91e15cc6
+Bytes: 55
+Same comment regarding exposing implementation details.
+
+File: runtime/stack_map.h
+
+225:2-225:41
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_8987f963
+Bytes: 85
+Is there an actual benefit of having this here? I would just use GetValue()/GetKind()
+
+234:6-234:27
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 466b346a_ca5ba38c
+Bytes: 155
+How about naming this DexRegistersRepository? Or something more semantically adequate (even if from a data structure perspective this is a map/dictionary).
+
+428:26-428:57
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 667af834_6e2baf7b
+Bytes: 25
+kNoneLocationEntryIndex ?
+
+433:23-433:33
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_49a261f0
+Bytes: 24
+i would get rid of this.
+
+908:8-908:44
+Fri Mar 20 18:10:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 266e407b_ec5a43d8
+Bytes: 107
+this is a bit hard to read and i think i miss something. Why do you you need to add the offset to the size?
+

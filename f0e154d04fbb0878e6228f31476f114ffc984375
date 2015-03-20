@@ -36,6 +36,14 @@ ignore, I thought this is actually adding the actual value of dex_pc_max and nat
 
 I think my bad was cause by the ComputeStackMapSize is a bit inconsistent anyway: we pass three sizes and then two extra values based on which we compute the rest of the sizes.
 
+126:8-127:22
+Fri Mar 20 14:53:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 266e407b_4906e1d7
+UUID: 466b346a_caa3a325
+Bytes: 220
+Yeah, I think we shouldn't pass sizes for inline info and dex register map, but max offsets. The inconsistency should be temporary, as they should all go through a "HowMayBits" like method, ust like ComputeStackMaskSize.
+
 284:11-284:25
 Fri Mar 20 11:02:31 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -145,6 +153,16 @@ Parent: 466b346a_8a784b44
 UUID: 667af834_ab8c2988
 Bytes: 289
 Actually, we could do that for all of these objects: instead of passing redundant values like `code_info' to StackMap's methods and `number_of_dex_registers' to DexRegisterMap's methods, we could simply pass these to the constructors of these objects.  I suggest we try that in another CL.
+
+520:20-520:40
+Fri Mar 20 14:53:33 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 667af834_ab8c2988
+UUID: 667af834_8b7e0dde
+Bytes: 474
+Let's delay this. As discussed, these classes were written as an abstraction over a memory region. Making them state-full (that is have more fields than the memory region) is not ideal wither because it gives you the impression you can have fast access on the data (which you do not because you need to decompress things).
+
+Ideally, I think we should have a high-level abstraction that contains all fields of a stack map, but uncompressed. And the user should just see that.
 
 611:16-611:37
 Fri Mar 20 12:22:41 2015 +0000

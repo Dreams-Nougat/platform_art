@@ -77,6 +77,18 @@ UUID: 667af834_8e55bb57
 Bytes: 89
 Because we search based on the hash, and we always find ourselves in the list of entries.
 
+320:11-320:42
+Sat Mar 21 14:26:40 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 667af834_8e55bb57
+UUID: c61c8421_76ab5082
+Bytes: 219
+Ok, that's because you're adding it before looking up. I'm not sure I understand why you have to do this? Why don't you
+1) lookup? If found, return
+2) If not found add.
+
+Note: Just found out you're doing this in PS8 :-)
+
 369:12-369:29
 Fri Mar 20 16:12:03 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -161,4 +173,12 @@ Parent: 667af834_ae83d74e
 UUID: 667af834_51b534be
 Bytes: 236
 Yeah, this is a requirement of art::HashMap.  IMHO operator overloading is not so bad, especially when it follows standard patterns (here, the EqualityComparable concept; see http://en.cppreference.com/w/cpp/concept/EqualityComparable).
+
+215:15-215:18
+Sat Mar 21 14:26:40 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 667af834_51b534be
+UUID: c61c8421_169e5c68
+Bytes: 80
+Then please introduce operator!= as well. Writing !(a == b) does not look right.
 

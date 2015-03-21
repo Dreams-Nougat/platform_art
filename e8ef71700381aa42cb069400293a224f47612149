@@ -1,0 +1,50 @@
+Revision: e8ef71700381aa42cb069400293a224f47612149
+Patch-set: 5
+File: compiler/optimizing/bounds_check_elimination.cc
+
+446:26-446:55
+Sat Mar 21 14:09:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a61790fa_55044c42
+Bytes: 38
+Please add a comment what this is for.
+
+720:10-721:57
+Sat Mar 21 14:09:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66111809_930d5c70
+Bytes: 92
+Maybe add some helpers around first_constant_index_bounds_check_map_ to improve readability?
+
+736:0-739:7
+Sat Mar 21 14:09:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a61790fa_15fad4b8
+Bytes: 283
+Why adding this now? I think you should move it to line 697, with the negative check.
+
+Also I think you should introduce a maximum possible indice for all arrays kConstant. I know we haven't setup for the maximum length for now, but here you're kind of introducing something similar.
+
+974:7-974:22
+Sat Mar 21 14:09:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a61790fa_7507c848
+Bytes: 142
+So this is because we are now re-visiting the block, right? I trust your judgement that it's simpler to re-visit instead of special casing :-)
+
+1041:8-1041:61
+Sat Mar 21 14:09:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c61c8421_f6b640ed
+Bytes: 197
+Same comment as above. What triggered the need to check this now? Also, doesn't the check belong more to the loop above? We should decide there whether the constant is worth doing the optimization?
+
+File: test/449-checker-bce/src/Main.java
+
+111
+Sat Mar 21 14:09:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66111809_d317d47b
+Bytes: 81
+For all these tests, shouldn't you check that there is a HDeoptimize instruction?
+

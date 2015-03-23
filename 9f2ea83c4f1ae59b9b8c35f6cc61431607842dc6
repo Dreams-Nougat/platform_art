@@ -9,3 +9,13 @@ UUID: 466b346a_2d14d9f3
 Bytes: 26
 what prompted this change?
 
+51:50-51:64
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 466b346a_2d14d9f3
+UUID: 66111809_330608d7
+Bytes: 631
+This default value does not seem to make sense, as it would create an "empty function" for type `Key' by default, whereas `art::HashMap' expects an "empty function" for type `std::pair<Key, Value>' (in my case,  I provided `art::DexRegisterDictionaryEntriesIndicesEmptyFn' in compiler/optimizing/stack_map_stream.h).  I thought about replacing `EmptyFn' from the `art::HashSet' base class template parameter list with `art::HashMapWrapper<EmptyFn>', but as all users of `art::HashMap' were providing an actual value for `EmptyFn', I decided to make it a non-optional parameter.
+
+I added a similar explanation to the commit message.
+

@@ -9,12 +9,28 @@ UUID: c61c8421_1685bc08
 Bytes: 52
 Is this because the HashMap implementation needs it?
 
+31:0-31:90
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c61c8421_1685bc08
+UUID: a61790fa_95f6e45d
+Bytes: 95
+Yeah; that was supposed to be a short alias, but it's longer than the original type… Removed.
+
 43:6-43:31
 Fri Mar 20 18:10:02 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 667af834_2b47d9a8
 Bytes: 67
 worth mentioning that this hash function does not create collisions
+
+43:6-43:31
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 667af834_2b47d9a8
+UUID: 66111809_533744ad
+Bytes: 18
+Good point!  Done.
 
 File: runtime/check_reference_map_visitor.h
 
@@ -35,6 +51,14 @@ UUID: 66111809_b32fb8ba
 Bytes: 83
 Yeah, for now I suggest just passing the CodeInfo to a query on the DexRegisterMap.
 
+79:6-80:70
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66111809_b32fb8ba
+UUID: 66111809_53fd8434
+Bytes: 5
+Done.
+
 File: runtime/memory_region.h
 
 131:20-131:57
@@ -44,6 +68,14 @@ UUID: 667af834_f1ec60bf
 Bytes: 83
 length must not be larger than the number of bits which can be fitted in `unsigned`
 
+131:20-131:57
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 667af834_f1ec60bf
+UUID: c61c8421_7621901f
+Bytes: 4
+Done
+
 132:2-132:10
 Fri Mar 20 18:10:02 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,12 +83,28 @@ UUID: 266e407b_2c613b7f
 Bytes: 35
 use more exact types. i.e. uint32_t
 
+132:2-132:10
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 266e407b_2c613b7f
+UUID: 66111809_f3393088
+Bytes: 4
+Done
+
 144:39-144:47
 Fri Mar 20 18:10:02 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 266e407b_ccbc1f53
 Bytes: 5
 ditto
+
+144:39-144:47
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 266e407b_ccbc1f53
+UUID: 66111809_d33eb46d
+Bytes: 4
+Done
 
 File: runtime/stack.cc
 
@@ -75,6 +123,14 @@ UUID: c61c8421_76823002
 Bytes: 45
 I agree the dictionary should not be exposed.
 
+206:1-206:87
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c61c8421_76823002
+UUID: 66111809_b3297809
+Bytes: 4
+Done
+
 File: runtime/stack_map.h
 
 194:0-195:40
@@ -84,12 +140,28 @@ UUID: a61790fa_b52fa0ba
 Bytes: 9
 One line?
 
+194:0-195:40
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a61790fa_b52fa0ba
+UUID: a61790fa_15e9342a
+Bytes: 51
+Done (and likewise for the other ctor on line 197).
+
 225:2-225:41
 Fri Mar 20 18:10:02 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 266e407b_8987f963
 Bytes: 85
 Is there an actual benefit of having this here? I would just use GetValue()/GetKind()
+
+225:2-225:41
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 266e407b_8987f963
+UUID: c61c8421_791ea390
+Bytes: 421
+`art::DexRegisterLocationHashFn' deals with internals of `art::DexRegisterLocation' and needs access to the actual values of `art::DexRegisterLocation's attributes.  An accessor could provide a different value (indeed, calling `art::DexRegisterLocation::GetKind()' is actually different from using `art::DexRegisterLocation::kind_'!), especially if the implementation of `art::DexRegisterLocation's changes in the future.
 
 234:6-234:27
 Fri Mar 20 18:10:02 2015 +0000
@@ -98,12 +170,28 @@ UUID: 466b346a_ca5ba38c
 Bytes: 155
 How about naming this DexRegistersRepository? Or something more semantically adequate (even if from a data structure perspective this is a map/dictionary).
 
+234:6-234:27
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 466b346a_ca5ba38c
+UUID: a61790fa_35bb9027
+Bytes: 100
+I'm not sure that "repository" conveys the idea of uniqueness.  What about `DexRegisterLocationSet'?
+
 428:26-428:57
 Fri Mar 20 18:10:02 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 667af834_6e2baf7b
 Bytes: 25
 kNoneLocationEntryIndex ?
+
+428:26-428:57
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 667af834_6e2baf7b
+UUID: c61c8421_d96d3701
+Bytes: 32
+Renamed to NoLocationEntryIndex.
 
 433:23-433:33
 Fri Mar 20 18:10:02 2015 +0000
@@ -112,10 +200,26 @@ UUID: 266e407b_49a261f0
 Bytes: 24
 i would get rid of this.
 
+433:23-433:33
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 266e407b_49a261f0
+UUID: a61790fa_55c28ca0
+Bytes: 199
+We use this idiom throughout this file.  I think it is useful from the consistency perspective, especially since CodeInfo/StackMap/DexRegisterMap form a light, stateless layer on top of MemoryRegion.
+
 908:8-908:44
 Fri Mar 20 18:10:02 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 266e407b_ec5a43d8
 Bytes: 107
 this is a bit hard to read and i think i miss something. Why do you you need to add the offset to the size?
+
+908:8-908:44
+Mon Mar 23 15:49:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 266e407b_ec5a43d8
+UUID: c61c8421_7954e325
+Bytes: 461
+`locations_offset_in_dex_register_map' is the offset where the actual Dex register mapping data starts within the `art::DexRegisterMap' object, just after the live bit mask.  I added a comment, renamed this variable as `location_mapping_data_offset_in_dex_register_map' and renamed `art::DexRegisterMap::GetDexRegisterMapLocationsOffset' as `art::DexRegisterMap::GetLocationMappingDataOffset'.  I renamed some other variables as well for the sake of uniformity.
 

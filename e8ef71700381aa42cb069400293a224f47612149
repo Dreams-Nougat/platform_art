@@ -9,12 +9,30 @@ UUID: a61790fa_55044c42
 Bytes: 38
 Please add a comment what this is for.
 
+446:26-446:55
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a61790fa_55044c42
+UUID: c6a1e40d_82079c19
+Bytes: 135
+I added this comment:
+  // The least number of bounds checks that should be eliminated by triggering
+  // the deoptimization technique.
+
 720:10-721:57
 Sat Mar 21 14:09:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 66111809_930d5c70
 Bytes: 92
 Maybe add some helpers around first_constant_index_bounds_check_map_ to improve readability?
+
+720:10-721:57
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66111809_930d5c70
+UUID: 86728c8f_b49220a6
+Bytes: 124
+Thought about it. Unfortunately didn't come up with a concise name for the helper/variable yet. I'll leave it as is for now.
 
 736:0-739:7
 Sat Mar 21 14:09:37 2015 +0000
@@ -25,6 +43,18 @@ Why adding this now? I think you should move it to line 697, with the negative c
 
 Also I think you should introduce a maximum possible indice for all arrays kConstant. I know we haven't setup for the maximum length for now, but here you're kind of introducing something similar.
 
+736:0-739:7
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a61790fa_15fad4b8
+UUID: 86728c8f_94c0c42f
+Bytes: 504
+It's done here since constant+1 below may overflow.
+
+Basically we still want to remember the max constant used as index. But here we want to get a stronger value range for array length.
+
+Whether or not to apply the deoptimization technique will later add a test that the max constant index is <= certain threshold. If the max constant index used is beyond certain threshold, it's considered as an anomaly and it's likely to throw exception anyway so we don't bother to apply the deoptimization technique.
+
 974:7-974:22
 Sat Mar 21 14:09:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +62,30 @@ UUID: a61790fa_7507c848
 Bytes: 142
 So this is because we are now re-visiting the block, right? I trust your judgement that it's simpler to re-visit instead of special casing :-)
 
+974:7-974:22
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a61790fa_7507c848
+UUID: c6a1e40d_e29b004b
+Bytes: 47
+Yes. This instruction helps narrow value range.
+
 1041:8-1041:61
 Sat Mar 21 14:09:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c61c8421_f6b640ed
 Bytes: 197
 Same comment as above. What triggered the need to check this now? Also, doesn't the check belong more to the loop above? We should decide there whether the constant is worth doing the optimization?
+
+1041:8-1041:61
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c61c8421_f6b640ed
+UUID: a6731093_f5a5787f
+Bytes: 181
+I added such a threshold. The test is now:
+      if (counter >= kThresholdForAddingDeoptimize &&
+          lower_bound_const_instr->GetValue() <= kMaxConstantIndexForDeoptimization)
 
 File: test/449-checker-bce/src/Main.java
 
@@ -47,4 +95,33 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 66111809_d317d47b
 Bytes: 81
 For all these tests, shouldn't you check that there is a HDeoptimize instruction?
+
+111
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 66111809_d317d47b
+UUID: c6a1e40d_42ec948c
+Bytes: 89
+This one doesn't trigger the deoptmization technique. I added a // CHECK-NOT: Deoptimize.
+
+140
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a69cf0d8_10f7740a
+Bytes: 33
+Added a // CHECK-NOT: Deoptimize.
+
+180
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c6a1e40d_4223f45c
+Bytes: 33
+Added a // CHECK-NOT: Deoptimize.
+
+183
+Mon Mar 23 23:39:25 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a69cf0d8_90e36447
+Bytes: 33
+Added a // CHECK-NOT: Deoptimize.
 

@@ -9,6 +9,14 @@ UUID: 43116641_3a258129
 Bytes: 56
 Shouldn't these be member functions of art::HBasicBlock?
 
+21:0-28:1
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_3a258129
+UUID: 23147232_b9c3dfa4
+Bytes: 4
+Done
+
 File: compiler/optimizing/boolean_simplifier.h
 
 18:10-18:16
@@ -17,6 +25,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43116641_9a8feda7
 Bytes: 9
 Nit: cast
+
+18:10-18:16
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_9a8feda7
+UUID: 23147232_99e37b48
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -27,6 +43,14 @@ UUID: 43116641_1a2abdf7
 Bytes: 24
 Nit: "The Java language"
 
+1391:5-1391:18
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_1a2abdf7
+UUID: 23147232_5994c393
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1373:5-1373:18
@@ -35,6 +59,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43116641_fa3ee93b
 Bytes: 6
 Ditto.
+
+1373:5-1373:18
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_fa3ee93b
+UUID: 43116641_1a5cfd7f
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -45,6 +77,14 @@ UUID: 63002af0_fbecaf3b
 Bytes: 6
 Ditto.
 
+1413:5-1413:18
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63002af0_fbecaf3b
+UUID: 63002af0_1b5cfb7f
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.cc
 
 655:4-655:25
@@ -53,6 +93,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43116641_ba38714e
 Bytes: 160
 What about moving this to art::HGraphVisitor::VisitBasicBlock, so that other traversals (such as art::HGraphVisitor::VisitReversePostOrder) may benefit from it?
+
+655:4-655:25
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_ba38714e
+UUID: 63002af0_3b89f777
+Bytes: 232
+There's no need for that. The block merging algorithm removes the blocks from the reverse post order list, so they get skipped automatically. The null checks are really needed only when accessing the 'graph->blocks_' array directly.
 
 1126:2-1126:30
 Wed Mar 25 10:27:18 2015 +0000
@@ -67,6 +115,14 @@ Turn this into a for-loop?
     // ...
   }
 
+1126:2-1126:30
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_f93ef73b
+UUID: 63002af0_1ec989a6
+Bytes: 4
+Done
+
 File: runtime/primitive.h
 
 156:7-156:20
@@ -76,6 +132,14 @@ UUID: 43116641_3ada219f
 Bytes: 6
 Ditto.
 
+156:7-156:20
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_3ada219f
+UUID: 63002af0_fecdbdb2
+Bytes: 4
+Done
+
 File: test/463-checker-boolean-simplifier/src/Main.java
 
 96:5-96:38
@@ -84,4 +148,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43116641_5aab95d5
 Bytes: 59
 This comment does not seem to match the method right after.
+
+96:5-96:38
+Wed Mar 25 11:21:45 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_5aab95d5
+UUID: 43116641_faa269ee
+Bytes: 215
+It does because Java always flips the condition. If you look at the CFG, you'll see that it does IF_GE (instead of LT) and returns the opposite boolean value. I wish I could make it more explicit in the Java code...
 

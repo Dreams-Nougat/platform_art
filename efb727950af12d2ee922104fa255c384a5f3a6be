@@ -11,6 +11,14 @@ I don't think that's the existing signature. Maybe you should first explain why 
 
 A better approach is probably to structure this correctly *now* rather than later, and have both getDeclaredFields and getFields call a helper function filling an array.
 
+105:0-106:73
+Wed Mar 25 21:29:48 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2362b2ee_8f02f936
+UUID: c3fb9632_9e18f230
+Bytes: 273
+I don't think it should matter much since we already need to allocate a Field for every single ArtField. But it is possible to use a helper function with some type of object array chain I suppose. Probably good for another CL since it will be a fairly large amount of code.
+
 162:56-164:8
 Wed Mar 25 03:54:49 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,10 +26,26 @@ UUID: 2362b2ee_4fbf61f4
 Bytes: 107
 The dex cache lookup isn't really expensive now, is it? So I don't see a reason not just to try it first...
 
+162:56-164:8
+Wed Mar 25 21:29:48 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2362b2ee_4fbf61f4
+UUID: 2362b2ee_b2a9a689
+Bytes: 94
+Worth measuring both, that way does more string allocations so may increase ram usage however.
+
 192:21-192:45
 Wed Mar 25 03:54:49 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2362b2ee_8fed5905
 Bytes: 142
 This looks seriously half-assed. If you do it, do it right. Move all of it to avoid the additional call, and throw the few exceptions by hand.
+
+192:21-192:45
+Wed Mar 25 21:29:48 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2362b2ee_8fed5905
+UUID: 435fa627_7357b2b2
+Bytes: 129
+getDeclaredFieldInternal is called by getPublicFieldRecursive, though I supposed I could make getPublicFieldRecursive native too.
 

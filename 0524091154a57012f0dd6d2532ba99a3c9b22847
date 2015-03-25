@@ -44,6 +44,17 @@ UUID: 43116641_5df70fa5
 Bytes: 11
 use brakets
 
+File: tools/dexfuzz/src/dexfuzz/program/CodeTranslator.java
+
+272
+Wed Mar 25 13:42:33 2015 +0000
+Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 43116641_9de487a9
+Bytes: 585
+If I understand correctly, the intention is that you want to always keep going if there is a problem when mutating an input file. If so, then there are a number of other errorAndQuit calls in here that will also need to be replaced with exception throwing.
+
+These exceptions should be thrown all the way out of codeItemToMutatableCode() and mutatableCodeToCodeItem(), back to the Program class, which should then mark itself as invalid, and you can check if the Program is invalidly mutated in the places where you currently check if your received program is null? (Fuzzer.fuzz(), etc)
+
 File: tools/dexfuzz/src/dexfuzz/rawdex/EncodedMethod.java
 
 34:16-34:27

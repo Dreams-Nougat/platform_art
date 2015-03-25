@@ -19,3 +19,11 @@ I don't understand.
 
 In my opinion this is perfectly OK. If the patch is empty, this will create an empty ArrayRef<> which will be nicely forwarded to the CompiledMethod ctor where we shall see it's empty and we will not touch its data().
 
+1097:6-1097:44
+Wed Mar 25 22:38:42 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63002af0_61d5926f
+UUID: 2362b2ee_1a13dbe1
+Bytes: 218
+Ah, yes, I had forgotten that we actually checked against the size, which is weirdly 0 for an arrayref without backing data. That just means the elf-writer should be updated, as you'll never so non-nullptr with size 0.
+

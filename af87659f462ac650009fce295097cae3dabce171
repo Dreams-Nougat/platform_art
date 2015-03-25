@@ -9,3 +9,16 @@ UUID: c3fb9632_6436be1a
 Bytes: 126
 I guess nothing was trying to bit_cast to a smaller type? The base/casts.h seems to only let you use equivalently-sized types.
 
+318
+Wed Mar 25 09:48:55 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3fb9632_6436be1a
+UUID: 63002af0_dbc0d3ab
+Bytes: 562
+Indeed.  I haven't found any use case of this version of bit_cast trying to convert to a smaller type.  There were occurrences of conversions to a larger type in runtime/entrypoints/quick/quick_trampoline_entrypoints.cc though, where I used a static_cast in addition to bit_cast:
+
+* https://android-review.googlesource.com/#/c/143613/1/runtime/entrypoints/quick/quick_trampoline_entrypoints.cc@1264
+* https://android-review.googlesource.com/#/c/143613/1/runtime/entrypoints/quick/quick_trampoline_entrypoints.cc@1277
+
+All other uses were between same-size types.
+

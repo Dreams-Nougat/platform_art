@@ -54,6 +54,14 @@ UUID: c352b622_1be88fa5
 Bytes: 129
 Actually, that seems like it should be optimal, the current approach in libcore resolves strings if they aren't already resolved.
 
+162:56-164:8
+Wed Mar 25 21:55:59 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c352b622_1be88fa5
+UUID: 2362b2ee_f71ee28d
+Bytes: 385
+Yes, but it's not clear what is better - adding the string, or comparing against the dex file with your comparator. I think this is highly dependent on workload (String compare is somewhat optimized, so if we do a sequence of FindField it would be nice to have things populated; on the other hand likely nobody else is gonna touch those strings, so we'd save heap not allocating them).
+
 192:21-192:45
 Wed Mar 25 03:54:49 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

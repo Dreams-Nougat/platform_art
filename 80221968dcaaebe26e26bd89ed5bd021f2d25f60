@@ -26,6 +26,28 @@ UUID: 43116641_a0b6fe68
 Bytes: 161
 For two consecutive entries (key1,value1), (key2,value2), the first entry is valid on the interval [key1,key2). And you're looking for the start of such a range.
 
+137:17-137:21
+Wed Mar 25 20:57:03 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_a0b6fe68
+UUID: 23147232_9fca3bc6
+Bytes: 516
+So FindIntervalStart?  (FindInterval seems to imply it returns a pair)
+
+Or FindLessThenOrEqual / FindLE?  Given that it returns a value such that it->from_ <= from
+
+std::pair<int, bool> Find(uint32_t from)?  That is, make the fact that some entries are implied better hidden.
+
+bool Find(uint32_t from, *int to)
+
+int Find(uint32_t from, int default)
+
+Any variation above with name Remap.
+
+In any case, I do not really mind, so give me a method signature, and I will put it in there :-)
+
+And thanks for the big review!
+
 File: compiler/dex/quick/arm/call_arm.cc
 
 431:21-431:24

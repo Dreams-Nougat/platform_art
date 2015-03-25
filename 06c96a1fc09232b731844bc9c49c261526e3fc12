@@ -10,6 +10,14 @@ Bytes: 216
 Maybe introduce a helper similar to art::HBasicBlock::ReplaceAndRemoveInstructionWith (and also use it within the implementation of art::HBasicBlock::ReplaceAndRemoveInstructionWith)?
 Ditto for similar changes below.
 
+60:10-61:52
+Wed Mar 25 17:40:24 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63002af0_41129690
+UUID: 43116641_a025dea5
+Bytes: 210
+My thoughts exactly. I was gonna create an "inst->ReplaceWithAndRemove" but this is a fairly common pattern throughout the compiler so I didn't want to mix it with this change. Let me do that in a separate one.
+
 File: compiler/optimizing/constant_folding_test.cc
 
 213:0-214:44
@@ -19,12 +27,28 @@ UUID: 63002af0_41417667
 Bytes: 45
 Out of curiosity, what motivated this change?
 
+213:0-214:44
+Wed Mar 25 17:40:24 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63002af0_41417667
+UUID: 63002af0_a1ba7aab
+Bytes: 200
+The fact that constants are now cached. So folding 1+2 doesn't create a new constant but reuses the one from offset 3. I didn't want to change the logic of the tests, so I adjusted the values instead.
+
 499:0-507:52
 Wed Mar 25 16:54:53 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 23147232_3f8faf2e
 Bytes: 9
 Likewise?
+
+499:0-507:52
+Wed Mar 25 17:40:24 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_3f8faf2e
+UUID: 43116641_4015e23d
+Bytes: 15
+Yep, same here.
 
 File: compiler/optimizing/nodes.cc
 
@@ -34,4 +58,13 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43116641_604c66a1
 Bytes: 106
 I guess the Arena allocator prevents any memory leak when we overwrite and existing (non-null) `constant`?
+
+326:29-326:60
+Wed Mar 25 17:40:24 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_604c66a1
+UUID: 23147232_5f6943a3
+Bytes: 332
+Yep, I actually had an implementation that reused the old instance (you need to clear the ID and insert it again) but this situation is so rare that I figured it's not worth making the code more complicated.
+If it does happen, there will just be multiple instances of the same constant which will get freed with the arena. No leaks.
 

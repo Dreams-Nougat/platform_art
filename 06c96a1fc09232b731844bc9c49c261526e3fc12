@@ -51,6 +51,13 @@ UUID: 43116641_00aa4a4e
 Bytes: 31
 OK, thanks for the explanation.
 
+219:14-219:29
+Wed Mar 25 19:07:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 43116641_20278e6a
+Bytes: 56
+any volunteers to rewrite these tests with Checker? :D:P
+
 499:0-507:52
 Wed Mar 25 16:54:53 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -68,6 +75,13 @@ Yep, same here.
 
 File: compiler/optimizing/nodes.cc
 
+291:31-292:51
+Wed Mar 25 19:07:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23147232_7f41a7f9
+Bytes: 160
+explain why. Goto should be pretty obvious, but SuspendCheck is not. Also even for Goto, given the way we actually use the constants it shouldn't really matter.
+
 326:29-326:60
 Wed Mar 25 16:54:53 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -83,4 +97,39 @@ UUID: 23147232_5f6943a3
 Bytes: 332
 Yep, I actually had an implementation that reused the old instance (you need to clear the ID and insert it again) but this situation is so rare that I figured it's not worth making the code more complicated.
 If it does happen, there will just be multiple instances of the same constant which will get freed with the arena. No leaks.
+
+326:29-326:60
+Wed Mar 25 19:07:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_5f6943a3
+UUID: 23147232_3f3b2f80
+Bytes: 92
+does it worth trying to also remove the constant from this when we remove it from the graph?
+
+File: compiler/optimizing/nodes.h
+
+50:6-50:16
+Wed Mar 25 19:07:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23147232_df31d39c
+Bytes: 330
+hmm... I see why you do that but this is not nice. My preference is to avoid such dependencies. What if we end up needing to create Float/Double constants in some other build/optimizations phase?
+
+How about having a Get(Float/Double)Constants on the graph object, similar to the integral case, but which doesn't cache the results?
+
+229:13-229:24
+Wed Mar 25 19:07:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 43116641_60f8e64a
+Bytes: 106
+Document that it does not support double/float constants. Or  add support for them (see my other comment).
+
+File: runtime/primitive.h
+
+125:0-139:5
+Wed Mar 25 19:07:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23147232_1f7d0b31
+Bytes: 42
+return ComponentSize(type) * kBitsPerByte;
 

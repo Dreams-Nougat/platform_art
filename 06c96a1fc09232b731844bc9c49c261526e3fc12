@@ -82,6 +82,14 @@ UUID: 23147232_02ced0ae
 Bytes: 27
 is not in -> should be in ?
 
+483:9-483:57
+Thu Mar 26 10:08:06 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_02ced0ae
+UUID: 23147232_a27844bd
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.cc
 
 291:31-292:51
@@ -90,6 +98,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 23147232_7f41a7f9
 Bytes: 160
 explain why. Goto should be pretty obvious, but SuspendCheck is not. Also even for Goto, given the way we actually use the constants it shouldn't really matter.
+
+291:31-292:51
+Thu Mar 26 10:08:06 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_7f41a7f9
+UUID: 43116641_e36e40f9
+Bytes: 161
+The SuspendCheck is really more about "esthetics". I guess you're right we shouldn't worry about that. Alright, removed and constant folding tests fixed (again).
 
 326:29-326:60
 Wed Mar 25 16:54:53 2015 +0000
@@ -115,6 +131,14 @@ UUID: 23147232_3f3b2f80
 Bytes: 92
 does it worth trying to also remove the constant from this when we remove it from the graph?
 
+326:29-326:60
+Thu Mar 26 10:08:06 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_3f3b2f80
+UUID: 43116641_037254e1
+Bytes: 180
+Could do that but it involves testing if every removed instruction is an IntConst, LongConst, etc, and that seems counterproductive. Plus this way the caching code is in one place.
+
 File: compiler/optimizing/nodes.h
 
 50:6-50:16
@@ -126,12 +150,28 @@ hmm... I see why you do that but this is not nice. My preference is to avoid suc
 
 How about having a Get(Float/Double)Constants on the graph object, similar to the integral case, but which doesn't cache the results?
 
+50:6-50:16
+Thu Mar 26 10:08:06 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_df31d39c
+UUID: 43116641_e39c0071
+Bytes: 516
+I agree but my reasoning was that we should add this stuff once we actually need it. Right now we don't and by moving it we would lose canonicalisation with that clever trick of placing the int/float instructions next to each other which doesn't work once you allow instruction removal. If we ever need it, that somebody will see from the Float/DoubleConst's friends that the SsaBuilder is currently in charge, and will be in a better position to asses if caching is worth it or not based on the actual requirements.
+
 229:13-229:24
 Wed Mar 25 19:07:20 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43116641_60f8e64a
 Bytes: 106
 Document that it does not support double/float constants. Or  add support for them (see my other comment).
+
+229:13-229:24
+Thu Mar 26 10:08:06 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_60f8e64a
+UUID: 43116641_a3a608b7
+Bytes: 4
+Done
 
 File: runtime/primitive.h
 
@@ -142,10 +182,26 @@ UUID: 438406cc_42307219
 Bytes: 20
 ComponentsizeInBits?
 
+124:16-124:39
+Thu Mar 26 10:08:06 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 438406cc_42307219
+UUID: 43116641_a3516837
+Bytes: 181
+I had that but it's feels off. It's not just ComponentSize*8, it's the range of values that can be represented by the type (in bits). That's 2^16 for short but only 2^1 for boolean.
+
 125:0-139:5
 Wed Mar 25 19:07:20 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 23147232_1f7d0b31
 Bytes: 42
 return ComponentSize(type) * kBitsPerByte;
+
+125:0-139:5
+Thu Mar 26 10:08:06 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23147232_1f7d0b31
+UUID: 23147232_df679395
+Bytes: 24
+Doesn't work for boolean
 

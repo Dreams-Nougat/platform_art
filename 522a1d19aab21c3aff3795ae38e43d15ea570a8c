@@ -64,3 +64,12 @@ Bytes: 584
 1. I think you agree that the discriminator is needed where first_line == line (in the first cycle)
 2. I agree that discriminators will increase the size and I just wanted to pin this decision here in comments. But one doubt I still have: imagine a branch, that jumps inside the block of instructions mapped to the same line. A debugger will be unable to set a breakpoint by source line number at the jump target address. To cope with this, it seems, we have to keep track basic block numbers. Essentially they could be the discriminators... I suggest to go ahead and put a TODO here.
 
+604:46-604:48
+Thu Mar 26 12:30:31 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_63cfd02e
+UUID: 438406cc_a2613eba
+Bytes: 666
+1. Why is the discriminator needed if first_line == line?  I am afraid I do not follow.  The intention of code above is to attribute the prologue to some source line, but to tell the debugger it should not put a breakpoint there.
+2. I am not sure I follow, but if I understand, I do not think this can be represented in DWARF line table - using discriminators or otherwise.  I do not think that discriminators have any effect on how branching and breakpoints are handled.  I would argue that the backend should do best effort to ensure that target of branch is start of statement, and the debugger should do best effort to handle situations where it is not the case.
+

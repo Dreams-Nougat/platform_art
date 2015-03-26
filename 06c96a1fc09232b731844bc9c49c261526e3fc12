@@ -158,6 +158,14 @@ UUID: 43116641_e39c0071
 Bytes: 516
 I agree but my reasoning was that we should add this stuff once we actually need it. Right now we don't and by moving it we would lose canonicalisation with that clever trick of placing the int/float instructions next to each other which doesn't work once you allow instruction removal. If we ever need it, that somebody will see from the Float/DoubleConst's friends that the SsaBuilder is currently in charge, and will be in a better position to asses if caching is worth it or not based on the actual requirements.
 
+50:6-50:16
+Thu Mar 26 11:05:47 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_e39c0071
+UUID: 43116641_837f8464
+Bytes: 91
+Oki, then you should document that the reason to keep this dependency around is that trick.
+
 229:13-229:24
 Wed Mar 25 19:07:20 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -189,6 +197,16 @@ Parent: 438406cc_42307219
 UUID: 43116641_a3516837
 Bytes: 181
 I had that but it's feels off. It's not just ComponentSize*8, it's the range of values that can be represented by the type (in bits). That's 2^16 for short but only 2^1 for boolean.
+
+124:16-124:39
+Thu Mar 26 11:05:47 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_a3516837
+UUID: 23147232_821b0074
+Bytes: 357
+Oups, I missed that. I can see the context now... Maybe rename it (MaximumNumberOfBitsUsed) and clearly document that this is not the same as the ComponenentSize in bits. Also, if this is used just in one file I would probably make it static there (though this might be a bit extreme)
+
+Since two of us were mislead I can see great potential for confusion.:P
 
 125:0-139:5
 Wed Mar 25 19:07:20 2015 +0000

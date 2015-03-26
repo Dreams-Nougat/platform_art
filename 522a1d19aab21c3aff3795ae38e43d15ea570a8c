@@ -82,3 +82,13 @@ Bytes: 396
 AFAIU: The spec reads: "Discriminator values are assigned arbitrarily by the DWARF producer and serve to distinguish among multiple blocks that may all be associated with the same source file, line, and column." If first_line == line and pc > 0 then we end up with two blocks with the same line.
 Formally we have to set a new discriminator for every row with a line number that is used elsewhere.
 
+604:46-604:48
+Thu Mar 26 13:57:15 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 438406cc_a2e7feac
+UUID: 23147232_c2645893
+Bytes: 365
+I would say that the discriminator may be used to differentiate the blocks, but it is certainly not a requirement.
+The use case here would be if sampling profiler wanted to know the difference between the instructions inside and outside the prologue.  However, I believe discriminator may be just ignored by debuggers.
+Also, discriminators are DWARF-4 only feature.
+

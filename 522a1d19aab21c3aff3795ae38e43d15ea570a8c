@@ -27,6 +27,14 @@ UUID: 2362b2ee_1a13dbe1
 Bytes: 218
 Ah, yes, I had forgotten that we actually checked against the size, which is weirdly 0 for an arrayref without backing data. That just means the elf-writer should be updated, as you'll never so non-nullptr with size 0.
 
+1097:6-1097:44
+Thu Mar 26 11:36:44 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2362b2ee_1a13dbe1
+UUID: 438406cc_621b3675
+Bytes: 4
+Done
+
 File: compiler/elf_writer_quick.cc
 
 604:46-604:48
@@ -36,4 +44,14 @@ UUID: 438406cc_a2d7fe42
 Bytes: 189
 I think it make sense to add rows with the same line but incremented discriminant? This way would keep a finer grained debug line info.
 Discriminant seems needed in case first_line == line.
+
+604:46-604:48
+Thu Mar 26 11:36:44 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 438406cc_a2d7fe42
+UUID: 43116641_e35400e2
+Bytes: 363
+What would be the benefit of adding the discriminators?
+My understanding is that they are only useful for profile-based opimizations in cases where multiple basic-blocks map to single source line.
+Adding them here would result in new row per every dex bytecode.  This would significantly increase the size of .debug_line, and I do not see immediate benefit of it.
 

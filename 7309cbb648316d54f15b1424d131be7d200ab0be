@@ -13,6 +13,14 @@ See `VIXLRegCodeFromART()` and its counterpart in `compiler/optimizing/common_ar
 
 I suspect SP and ZR registers are not expected here. If that is the case we can do without conversion, but a DCHECK will catch any future errors and inform copy-pasters.
 
+489:33-489:43
+Thu Mar 26 13:57:23 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 438406cc_e2dd06e5
+UUID: 438406cc_c22b2226
+Bytes: 72
+Done. DCHECK added.  SP and ZR registers are indeed not expected anyway.
+
 498
 Thu Mar 26 12:58:02 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -29,10 +37,27 @@ while (registers.IsEmpty()) {
   offset += size;
 }
 
+498
+Thu Mar 26 13:57:23 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_e37e402b
+UUID: 438406cc_2278ce40
+Bytes: 201
+That would generate the cfi at the wrong locations.  The cfi needs to be generated just after the corresponding stp.
+It is not big deal either way, but I am trying to be precise with the generated cfi.
+
 515
 Thu Mar 26 12:58:02 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43116641_c38b3cb3
 Bytes: 6
 Ditto.
+
+515
+Thu Mar 26 13:57:23 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_c38b3cb3
+UUID: 438406cc_427dd22f
+Bytes: 5
+Ditto
 

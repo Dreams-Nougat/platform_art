@@ -55,3 +55,12 @@ What would be the benefit of adding the discriminators?
 My understanding is that they are only useful for profile-based opimizations in cases where multiple basic-blocks map to single source line.
 Adding them here would result in new row per every dex bytecode.  This would significantly increase the size of .debug_line, and I do not see immediate benefit of it.
 
+604:46-604:48
+Thu Mar 26 12:01:11 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43116641_e35400e2
+UUID: 43116641_63cfd02e
+Bytes: 584
+1. I think you agree that the discriminator is needed where first_line == line (in the first cycle)
+2. I agree that discriminators will increase the size and I just wanted to pin this decision here in comments. But one doubt I still have: imagine a branch, that jumps inside the block of instructions mapped to the same line. A debugger will be unable to set a breakpoint by source line number at the jump target address. To cope with this, it seems, we have to keep track basic block numbers. Essentially they could be the discriminators... I suggest to go ahead and put a TODO here.
+

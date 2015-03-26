@@ -73,3 +73,12 @@ Bytes: 666
 1. Why is the discriminator needed if first_line == line?  I am afraid I do not follow.  The intention of code above is to attribute the prologue to some source line, but to tell the debugger it should not put a breakpoint there.
 2. I am not sure I follow, but if I understand, I do not think this can be represented in DWARF line table - using discriminators or otherwise.  I do not think that discriminators have any effect on how branching and breakpoints are handled.  I would argue that the backend should do best effort to ensure that target of branch is start of statement, and the debugger should do best effort to handle situations where it is not the case.
 
+604:46-604:48
+Thu Mar 26 13:02:05 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 438406cc_a2613eba
+UUID: 438406cc_a2e7feac
+Bytes: 396
+AFAIU: The spec reads: "Discriminator values are assigned arbitrarily by the DWARF producer and serve to distinguish among multiple blocks that may all be associated with the same source file, line, and column." If first_line == line and pc > 0 then we end up with two blocks with the same line.
+Formally we have to set a new discriminator for every row with a line number that is used elsewhere.
+

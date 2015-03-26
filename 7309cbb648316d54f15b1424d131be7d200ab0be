@@ -1,0 +1,38 @@
+Revision: 7309cbb648316d54f15b1424d131be7d200ab0be
+Patch-set: 6
+File: compiler/optimizing/code_generator_arm64.cc
+
+489:33-489:43
+Thu Mar 26 12:58:02 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 438406cc_e2dd06e5
+Bytes: 381
+I don't know what reg codes are expected. Be careful that the VIXL register codes are different from the ART arm64 codes.
+
+See `VIXLRegCodeFromART()` and its counterpart in `compiler/optimizing/common_arm64.h`.
+
+I suspect SP and ZR registers are not expected here. If that is the case we can do without conversion, but a DCHECK will catch any future errors and inform copy-pasters.
+
+498
+Thu Mar 26 12:58:02 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 43116641_e37e402b
+Bytes: 352
+I suggest using Peek/PokeCPURegList. These helpers guarantee that the higher indexed registers are stored at higher memory addresses.
+
+Something like:
+
+__ PokeCPURegList(registers, offset);
+while (registers.IsEmpty()) {
+  const CPURegister& reg = registers.PopLowestIndex();
+  GetAssembler()->cfi().RelOffset(DWARFReg(reg, offset));
+  offset += size;
+}
+
+515
+Thu Mar 26 12:58:02 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 43116641_c38b3cb3
+Bytes: 6
+Ditto.
+

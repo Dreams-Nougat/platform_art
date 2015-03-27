@@ -9,6 +9,14 @@ UUID: 63758ab8_90d00582
 Bytes: 99
 Not sure I fully understand why GetBinSizeSum isn't useful here anymore, did some invariant change?
 
+241
+Fri Mar 27 19:03:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_90d00582
+UUID: 63caea3a_4ea5132a
+Bytes: 129
+This is just an optimization. I don't like the repeated calculation of the sum. GetBinSizeSum() is now used only in debug builds.
+
 315
 Fri Mar 27 18:04:21 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,6 +26,19 @@ Not really sure why this doesn't use something like AssignImageBinSlot or SetIma
 
 (I looked at AssignImageBinSlot and it does have handling for kBinDexCache array there, so I am confused why this array is being set in two different places)
 
+315
+Fri Mar 27 19:03:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43d246e8_0e53b5f4
+UUID: c3c55625_d181a697
+Bytes: 277
+I moved this here to avoid triggering the
+
+    DCHECK_LT(bin_slot.GetIndex(), bin_slot_sizes_[bin_slot.GetBin()])
+      << "bin slot offset should not exceed the size of that bin";
+
+in IsImageBinSlotAssigned() when the indexes are assigned out-of-order by AssignImageBinSlot().
+
 343
 Fri Mar 27 18:04:21 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +46,28 @@ UUID: 63758ab8_90a5652d
 Bytes: 51
 Can you please add a comment here about dex caches?
 
+343
+Fri Mar 27 19:03:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_90a5652d
+UUID: 83cfde46_af8fd5a6
+Bytes: 4
+Done
+
 408
 Fri Mar 27 18:04:21 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 63758ab8_70cbe9ef
 Bytes: 155
 Is this still guaranteeing that the offsets(+size) in a bin don't overlap with offsets in other bins? I'm not sure its super clear where this guarantee is?
+
+408
+Fri Mar 27 19:03:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_70cbe9ef
+UUID: 83cfde46_6f07ad9f
+Bytes: 91
+DCHECK()ed in IsImageBinSlotAssigned() called at the end of SetImageBinSlot() called below.
 
 File: compiler/image_writer.h
 
@@ -40,4 +77,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 63758ab8_b0f8a14b
 Bytes: 141
 If it's likely-clean can you move it under "Likely-clean", otherwise can you please add a note that classifies how likely the cleanliness is?
+
+113
+Fri Mar 27 19:03:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_b0f8a14b
+UUID: 63caea3a_8e38db4e
+Bytes: 39
+Added a comment that it doesn't matter.
 

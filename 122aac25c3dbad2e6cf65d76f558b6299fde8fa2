@@ -9,6 +9,14 @@ UUID: 43d246e8_52607bb3
 Bytes: 92
 does class linker itself have this concept? should the constant be shared in class_linker.h?
 
+400:6-400:49
+Fri Mar 27 22:38:35 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43d246e8_52607bb3
+UUID: 43d246e8_65a377a8
+Bytes: 226
+The class linker maintains alignment, but our MANAGED macro doesn't. It results in unaligned fields. To get around this I added padding, which the class linker doesn't consider. This causes the sizeof(obj) != object->sizeOf(0.
+
 File: runtime/jni_internal.cc
 
 350:0-350:60
@@ -17,6 +25,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 63758ab8_cb36cb18
 Bytes: 18
 should this throw?
+
+350:0-350:60
+Fri Mar 27 22:38:35 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_cb36cb18
+UUID: 63758ab8_0bb123c1
+Bytes: 173
+Not that I know, the previous behavior had some DCHECKS and would have resulted in heap corruption or crashes if non fields were passed in. CheckJNI should handle this case.
 
 File: runtime/mirror/accessible_object.h
 
@@ -27,6 +43,14 @@ UUID: 63758ab8_ab5eef52
 Bytes: 4
 2015
 
+2:17-2:21
+Fri Mar 27 22:38:35 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_ab5eef52
+UUID: 63758ab8_ab4d8f4f
+Bytes: 4
+Done
+
 File: runtime/mirror/array.h
 
 1
@@ -35,6 +59,14 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 63758ab8_6b68d7ef
 Bytes: 11
 empty file?
+
+1
+Fri Mar 27 22:38:35 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_6b68d7ef
+UUID: 43d246e8_65ea97ec
+Bytes: 4
+Done
 
 File: runtime/native/java_lang_Class.cc
 
@@ -45,6 +77,14 @@ UUID: 43d246e8_52915bcc
 Bytes: 49
 cut/paste comment, not quite correct in this case
 
+137:0-137:48
+Fri Mar 27 22:38:35 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43d246e8_52915bcc
+UUID: 43d246e8_e513e78f
+Bytes: 4
+Done
+
 File: runtime/native/java_lang_reflect_Field.cc
 
 319:29-319:38
@@ -53,4 +93,12 @@ Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 63a3ca80_7879a5f5
 Bytes: 27
 is that a bug or a feature.
+
+319:29-319:38
+Fri Mar 27 22:38:35 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63a3ca80_7879a5f5
+UUID: 43d246e8_651857a0
+Bytes: 96
+I'll delete it, it should already be resolved since we resolve when we create the reflect Field.
 

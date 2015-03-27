@@ -17,6 +17,16 @@ UUID: c3c55625_ce882324
 Bytes: 57
 Why do you want to remove this? We need it for debugging.
 
+192:0-198:16
+Fri Mar 27 09:28:43 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3c55625_ce882324
+UUID: 63caea3a_cb5a5554
+Bytes: 247
+For Java debug, we won't break in JNI function. When we need to deliver exception or de-optimization, there should always be a callee-save frame(SaveAll) as top quick frame.
+
+I think currently this is only necessary for the stack visitor art test.
+
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
 672:0-674:28
@@ -34,6 +44,14 @@ UUID: 83cfde46_0c8f172e
 Bytes: 88
 Probably me that added this. It is so we don't force ourselves following the native ABI.
 
+672:0-674:28
+Fri Mar 27 09:28:43 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83cfde46_0c8f172e
+UUID: 83cfde46_ac7fe38c
+Bytes: 73
+Now optimizing compiler supports callee-saves. Should we still keep this?
+
 File: runtime/asm_support.h
 
 31:0-32:25
@@ -42,4 +60,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c3c55625_ee85df0a
 Bytes: 44
 I think you can remove this for arm as well.
+
+31:0-32:25
+Fri Mar 27 09:28:43 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3c55625_ee85df0a
+UUID: 83cfde46_8c822700
+Bytes: 72
+It is controlled by ARM_R4_SUSPEND_FLAG? Should we entirely remove that?
 

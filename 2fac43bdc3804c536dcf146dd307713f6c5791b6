@@ -11,6 +11,16 @@ I also forgot to ask, why does there need to be ImageWriter changes? If the dex 
 
 I also don't understand why there needs to be an extra bin? IIUC, dex caches will mutate at runtime as new classes are loaded, so is there a measurable difference in giving it its own bin?
 
+0
+Fri Mar 27 19:26:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43d246e8_5cef372e
+UUID: c3c55625_f1ace21a
+Bytes: 489
+I need fixed layout of the dex cache arrays. This is not so apparent for the current patch (I could have 3 different 'LinkerPatch'es for types, methods and strings) but I've hinted in the comments on the CL that on arm, mips and mips64 I want to promote the start of those arrays to a register and I don't want to waste 3 registers for that.
+
+I'd also like to change those arrays to native which is another reason why I chose to eagerly move them to the beginning (i.e. to the first slot).
+
 241
 Fri Mar 27 18:04:21 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

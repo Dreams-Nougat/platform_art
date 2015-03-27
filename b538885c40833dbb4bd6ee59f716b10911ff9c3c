@@ -1,0 +1,35 @@
+Revision: b538885c40833dbb4bd6ee59f716b10911ff9c3c
+Patch-set: 19
+File: compiler/image_writer.cc
+
+0
+Fri Mar 27 21:37:19 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63758ab8_6841bd67
+Bytes: 143
+Can you please elaborate on what you mean by "fixed layout" for the dex cache? I think that is the crucial concept I am not understanding here?
+
+319
+Fri Mar 27 21:37:19 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a3ca80_58470980
+Bytes: 580
+I took a closer look, and I'm just not sure if there's a need to do this "bin slot" manipulation here?
+
+Once it's added to the dex_cache_array_slots_, you already do a special check in AssignImageBinSlot when objects are arrays.
+
+If you want the objects to be assigned in a specific order (and again, I'm not sure I understand why that would matter?), then changing the visit logic would make more sense to me than adding out-of-band logic to move bins around.
+
+(in other words, removing all the bin_slot_sizes_ and image_end_ manipulations back to where they were before this CL)
+
+File: compiler/image_writer.h
+
+299:27-299:33
+Fri Mar 27 21:37:19 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63758ab8_a58f007e
+Bytes: 174
+Why does this say "slots" (in the comment or the name)?
+
+In the code it's storing the values as the offset relative to the 0th image bin (i.e. the 0th element is at offset 0)
+

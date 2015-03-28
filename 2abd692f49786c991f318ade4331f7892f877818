@@ -17,3 +17,29 @@ UUID: c3c55625_74bf80f4
 Bytes: 268
 I don't think this can happen. We're iterating over the siblings, and the siblings cover the ranges where the instruction is used. So this takes care of environment uses within that range. The only other environment uses are after that range and are checked line 1521.
 
+1428
+Sat Mar 28 16:34:50 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3c55625_74bf80f4
+UUID: e3b7bab3_4dcaed1f
+Bytes: 539
+If we have:
+  def
+  ...
+  if () {
+     ...
+     use1_of_def
+     ...
+     env_use1_of_def
+     ...
+  } else {
+     ...
+     use2_of_def
+     ...
+     env_use2_of_def
+     ...
+  }
+And the live interval for def is split across block boundaries. env_use1_of_def and env_use2_of_def fall into a hole of the live interval, or after the end of the live interval. And neither env_use1_of_def should get a location. That's what I mean by some env uses may be before current->GetStart().
+
+Is that possible? Or did I get the concept wrong somewhere?
+

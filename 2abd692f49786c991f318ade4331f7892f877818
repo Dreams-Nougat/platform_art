@@ -9,3 +9,11 @@ UUID: 63758ab8_4b7e40e0
 Bytes: 192
 If the use is before current->GetStart(), it must be env and should be skipped instead of getting a location. Seems to me that's a possible case. And the same assert on line 1521 should apply.
 
+1428
+Sat Mar 28 14:00:15 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63758ab8_4b7e40e0
+UUID: c3c55625_74bf80f4
+Bytes: 268
+I don't think this can happen. We're iterating over the siblings, and the siblings cover the ranges where the instruction is used. So this takes care of environment uses within that range. The only other environment uses are after that range and are checked line 1521.
+

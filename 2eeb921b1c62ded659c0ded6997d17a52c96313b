@@ -16,6 +16,14 @@ UUID: 83cfde46_928c7c05
 Bytes: 49
 So how come you don't need to decrement i,e here?
 
+996:0-996:28
+Mon Mar 30 11:47:23 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83cfde46_928c7c05
+UUID: 63caea3a_5164d4ce
+Bytes: 106
+Because that's the active list, and there can only be one interval with that register. We break line 1002.
+
 1000:0-1000:53
 Mon Mar 30 09:25:12 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,12 +31,28 @@ UUID: 83cfde46_b28978f4
 Bytes: 8
 and here
 
+1000:0-1000:53
+Mon Mar 30 11:47:23 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83cfde46_b28978f4
+UUID: 63caea3a_7169d0a3
+Bytes: 5
+ditto
+
 1033:0-1033:18
 Mon Mar 30 09:25:12 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 63caea3a_718470e2
 Bytes: 132
 This assumes the other half was in the array right after 'inactive'. Which it should, but could we add a DCHECK? It's not obvious...
+
+1033:0-1033:18
+Mon Mar 30 11:47:23 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63caea3a_718470e2
+UUID: c3c55625_97f0eedf
+Bytes: 86
+Good point. And we're actually in trouble if i is initially at 0. I rewrote the logic.
 
 File: test/467-regalloc-pair/smali/TestCase.smali
 
@@ -38,4 +62,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c3c55625_f431309c
 Bytes: 136
 Did you have to write this method in Smali because you could not get similar Dex code (triggering the issue) from a Java implementation?
+
+19:22-19:30
+Mon Mar 30 11:47:23 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3c55625_f431309c
+UUID: c3c55625_14515cba
+Bytes: 180
+I did not have the Java implementation, just the DEX that triggered the error. I think getting the Java implementation could be tricky, because this code is potentially proguarded.
 

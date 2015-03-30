@@ -2,6 +2,27 @@ Revision: cbcd46f1130db23b2a7427f7b99a07e89c0c3af9
 Patch-set: 1
 File: compiler/optimizing/code_generator_x86.cc
 
+2238:21-2238:28
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63caea3a_5f313b1f
+Bytes: 139
+can this be used for longs as well? We currently don't. Looks sensible to add support but we can do it in a follow CL. For now, add a TODO.
+
+2320:12-2320:32
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83cfde46_00cb569e
+Bytes: 99
+add a dcheck in the beginning as documentation that this applies when the second arg is a constant.
+
+2322:2-2322:7
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63caea3a_1f12d38f
+Bytes: 6
+DCHECK
+
 2338
 Mon Mar 30 17:33:25 2015 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,6 +37,31 @@ UUID: c3ae3665_acca87c5
 Bytes: 13
 __ xorl(o, o)
 
+2324:2-2352:3
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83cfde46_40171e7f
+Bytes: 142
+why not
+
+if (instruction->IsRem()) {
+  __ movl(o, Immediate(0));
+} else {
+  __ movl(o, i1);
+  if (imm == -1) {
+     __ negl(o);
+  }
+}
+?
+     -
+
+2371:2-2371:15
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f1d6a3_2ebaa704
+Bytes: 80
+I think you can handle this case without a cmp. I don't see how this is special.
+
 2372
 Mon Mar 30 17:33:25 2015 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -29,6 +75,34 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3b7bab3_f0da96ea
 Bytes: 10
 xorl(o, o)
+
+2372:0-2383:33
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63caea3a_5f47fb7f
+Bytes: 69
+hmm, does this produce the right result if the left side is negative?
+
+2416:15-2416:17
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83cfde46_a0d7e242
+Bytes: 58
+the if is not needed here. else seems to be enough. right?
+
+2417:10-2417:23
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63caea3a_fff827c0
+Bytes: 139
+for this branch: I think this is long enough to deserve a separate function. e.g. GenerateDivRemWithGenericConstant, or other suitable name
+
+2433:10-2433:39
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83cfde46_e0fbaaba
+Bytes: 58
+you should put this as close as possible to the condition.
 
 2443:13-2443:17
 Mon Mar 30 17:33:25 2015 +0000
@@ -50,6 +124,13 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a3a94260_31c4ab90
 Bytes: 56
 Do we need to have a fixed EBX, or is any register okay?
+
+2543:54-2543:57
+Mon Mar 30 17:43:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63caea3a_7f0d176c
+Bytes: 102
+is EBX mandatory for any reasons? If yes, document why, if not, use RequireRegister. Same for the rem.
 
 2614:54-2614:57
 Mon Mar 30 17:33:25 2015 +0000

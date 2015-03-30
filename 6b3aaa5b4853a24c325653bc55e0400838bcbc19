@@ -230,6 +230,21 @@ UUID: c3c55625_d792f624
 Bytes: 94
 This is the same code as above. I know it doesn't come from you, but could you try sharing it?
 
+127:0-137:1
+Mon Mar 30 14:23:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3c55625_d792f624
+UUID: c3c55625_d740b614
+Bytes: 497
+Leave this as is. I have made the decision to not share the code and I should be the one to deduplicate if needed.
+
+(I have previously considered
+
+  dest->reserve(dest->size(), UnsignedLeb128Size(value));
+  UncodeUnsignedLeb128(&(*dest)[0] + dest->size(), value);
+
+However, this could have very bad impact on performance because, unlike push_back(), consecutive calls to reserve() for one extra element do not guarantee amortized O(1) complexity. libstdc++ would actually reallocate on each call.)
+
 152:0-163:1
 Mon Mar 30 13:58:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

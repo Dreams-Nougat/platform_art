@@ -1,0 +1,20 @@
+Revision: c1f7af4b8dbd695f5b5705bc87ae155f9f186ef1
+Patch-set: 4
+File: compiler/elf_writer_quick.cc
+
+635:4-638:48
+Tue Mar 31 17:58:56 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_07934dd8
+Bytes: 283
+Could you restructure this to make this a bit more expressive? Maybe something like:
+
+ uint32_t low_pc = it->low_pc_;
+ // Add in code delta, e.g., thumb bit 0 for Thumb2 code.
+ low_pc += it->compiled_method_->CodeDelta();
+ 
+ ... , low_pc, ...
+
+
+I believe that has better readability.
+

@@ -1,0 +1,41 @@
+Revision: 0e03579f5511384e475f3caf0b4aa3150513d2a8
+Patch-set: 2
+File: runtime/gc/allocator/rosalloc.cc
+
+1169:26-1169:34
+Tue Mar 31 17:51:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_87157d41
+Bytes: 111
+I think passing the space bitmaps as two arguments might be cleaner here instead of getting them from the heap.
+
+1185:0-1185:25
+Tue Mar 31 17:51:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83143e89_442b83fe
+Bytes: 188
+Since we are walking the heap in increasing order, I don't think we need to keep a side array of runs like this. It should be possible to do the merge in the first loop. Thoughts yamauchi?
+
+1227
+Tue Mar 31 17:51:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83143e89_a49fd7aa
+Bytes: 18
+Missing whitespace
+
+File: runtime/gc/collector/mark_sweep.cc
+
+215:14-215:36
+Tue Mar 31 17:51:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83143e89_241da71f
+Bytes: 40
+Why do we need a page map size snapshot?
+
+1153:8-1153:18
+Tue Mar 31 17:51:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_2fcf442f
+Bytes: 68
+Is it possible to move this logic into RosAllocSpace::Sweep instead?
+

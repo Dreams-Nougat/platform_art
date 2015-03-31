@@ -2,12 +2,102 @@ Revision: 0e03579f5511384e475f3caf0b4aa3150513d2a8
 Patch-set: 2
 File: runtime/gc/allocator/rosalloc.cc
 
+1164:9-1164:40
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_e55eedfc
+Bytes: 26
+Not clear what this means.
+
+1168:0-1168:2
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_9de30ecd
+Bytes: 64
+Insert a space at the beginning of this line to align it better?
+
 1169:26-1169:34
 Tue Mar 31 17:51:54 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a315c284_87157d41
 Bytes: 111
 I think passing the space bitmaps as two arguments might be cleaner here instead of getting them from the heap.
+
+1169:36-1169:49
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_a4a6b788
+Bytes: 106
+Can you call this Sweep() instead of SweepRosSpace()? The RosAlloc class does not depend on RosAllocSpace.
+
+1171:9-1171:20
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_bd3b6a4a
+Bytes: 72
+Can you be declared where it's locally used instead of at the top level?
+
+1172:9-1172:17
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83143e89_d5a27bee
+Bytes: 5
+Same.
+
+1173:9-1173:19
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_e5e42daa
+Bytes: 5
+Same.
+
+1174:9-1174:20
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_85ed798a
+Bytes: 5
+Same.
+
+1175:9-1175:21
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83143e89_3562ef3a
+Bytes: 5
+Same.
+
+1181:37-1181:104
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83143e89_55184b2f
+Bytes: 97
+Better to pass in the live/mark bitmaps to this function rather than getting it through the heap.
+
+1181:0-1181:37
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_fdb042bf
+Bytes: 42
+indentation does not match the convention.
+
+1183:0-1183:37
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_25b125f8
+Bytes: 42
+indentation does not match the convention.
+
+1184:0-1184:1
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_458f017f
+Bytes: 268
+Can you insert an early exit case if live_bitmap == mark_bitmap like in ContinuousMemMapAllocSpace::Sweep() to be safe?
+
+Also, should we have this logic here as in ContinuousMemMapAllocSpace::Sweep()?
+
+  if (swap_bitmaps) {
+    std::swap(live_bitmap, mark_bitmap);
+  }
 
 1185:0-1185:25
 Tue Mar 31 17:51:54 2015 +0000
@@ -16,6 +106,58 @@ UUID: 83143e89_442b83fe
 Bytes: 188
 Since we are walking the heap in increasing order, I don't think we need to keep a side array of runs like this. It should be possible to do the merge in the first loop. Thoughts yamauchi?
 
+1185:0-1185:25
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83143e89_442b83fe
+UUID: 63e4aaf7_5e0c11c0
+Bytes: 306
+To clarify what Mathieu means, since we walk in increasing order (which we don't assume in BulkFree()), it seems possible to remove the second loop (thus no need for "runs") and do the per-run bitmap operations (what we currently do in the second loop) when we reach the end of an run in this (first) loop.
+
+1191:2-1191:57
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_dd34668f
+Bytes: 298
+This is confusing to me because "live_bitmap->Begin()" means the beginning of the bitmap and "live_bitmap_begin" means here the beginning of the space, which are not the same thing.
+
+Can you rename it to simpler "const uintptr_t begin = Begin();" rather than getting the same thing via live_bitmap?
+
+1192:20-1192:47
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83143e89_61d951f8
+Bytes: 51
+If the page map size has changed, why is this safe?
+
+1193:21-1193:30
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_b185530c
+Bytes: 64
+This is accessed without taking a lock. Why is this thread-safe?
+
+1196:0-1197:53
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_5d2b56fe
+Bytes: 88
+This is space bitmap details. Can this logic move to space_bitmap for better modularity?
+
+1222:18-1222:25
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_fbc04a99
+Bytes: 37
+Can this be declared where it's used?
+
+1226:12-1226:74
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63e4aaf7_bed99520
+Bytes: 47
+No lock acquired here. Why is this thread safe?
+
 1227
 Tue Mar 31 17:51:54 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,7 +165,100 @@ UUID: 83143e89_a49fd7aa
 Bytes: 18
 Missing whitespace
 
+1233:41-1233:75
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_9b5156bd
+Bytes: 88
+This is space bitmap details. Can this logic move to space_bitmap for better modularity?
+
+1234:87-1234:88
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_d3ec573c
+Bytes: 20
+Insert space after -
+
+1234:56-1234:57
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63e4aaf7_dbcd93e1
+Bytes: 20
+Insert space after *
+
+1235:41-1235:75
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63e4aaf7_7bdf1f8e
+Bytes: 5
+Same.
+
+1243:12-1243:32
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_7617517f
+Bytes: 109
+This is accessed without taking a lock. Why is this thread-safe? I don't really understand the above comment.
+
+1246:0-1252:62
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_fb6e8a26
+Bytes: 56
+Space bitmap details. Can you move this to space bitmap?
+
+1262:16-1262:28
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63e4aaf7_de2e6138
+Bytes: 105
+We don't need to use "run->to_be_bulk_freed_" because we walk the space in the increasing order. Correct?
+
+1271:0-1295:11
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63e4aaf7_7e946d42
+Bytes: 65
+Factor this code out into a separate function as it's duplicated?
+
+1306:22-1306:45
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_3d73fa69
+Bytes: 59
+This is accessed without taking the lock. Why is this safe?
+
+1320:0-1418:3
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a315c284_d38f36f8
+Bytes: 89
+If this code is identical to the code in BulkFree(), can you factor it out to a function?
+
+File: runtime/gc/allocator/rosalloc.h
+
+36:23-36:40
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_22791bf7
+Bytes: 136
+Is this needed just for ObjectBytePair? If so, can you move ObjectBytePair to a separate file (I suggest runtime/gc/object_byte_pair.h)?
+
+488:0-490:59
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_e5d42d40
+Bytes: 41
+I don't understand this. Can you explain?
+
 File: runtime/gc/collector/mark_sweep.cc
+
+213:47-213:63
+Tue Mar 31 22:45:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 630f4a79_6c4caa4f
+Bytes: 216
+DlMalloc can still be chosen with a build param. This code assumes RosAlloc is used and will probably crash if DlMalloc is used. Can you call SetPageSizeSnapshot() only if GetRosAllocSpace() returns a non-null value?
 
 215:14-215:36
 Tue Mar 31 17:51:54 2015 +0000

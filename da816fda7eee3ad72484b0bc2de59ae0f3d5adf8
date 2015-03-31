@@ -23,6 +23,17 @@ UUID: 43b5e6d8_fad40940
 Bytes: 173
 I could foresee some problems with inlining here. I think it's probably best if you just check the next phi? After all, we only add those equivalent phis next to each other.
 
+203:4-203:34
+Tue Mar 31 23:44:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43b5e6d8_fad40940
+UUID: 03af6e90_181b8575
+Bytes: 249
+I don't immediately see problems with inlining. 
+And I'm not sure that checking just the next one captures all the cases. I think we  could potentially have a non-ref equivalent in between?
+
+I will think more about it and adapt the code accordingly.
+
 File: compiler/optimizing/ssa_builder.cc
 
 198:24-198:67
@@ -45,6 +56,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 43b5e6d8_5addf55c
 Bytes: 111
 How about non-phi inputs? We also want them to be properly typed with null on the left/right side instead of 0.
+
+207:8-207:16
+Tue Mar 31 23:44:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43b5e6d8_5addf55c
+UUID: 23b8f2d3_99f6bbdc
+Bytes: 44
+good point. I'll add logic for that as well.
 
 217:10-217:26
 Tue Mar 31 22:10:05 2015 +0000

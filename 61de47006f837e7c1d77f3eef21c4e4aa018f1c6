@@ -38,3 +38,30 @@ This code is iterating over intervals, which can have multiple ranges. And you m
 
 If the environment use is at 43, it is after the start of the interval.
 
+1415
+Tue Mar 31 13:34:08 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3f1d6a3_cefde336
+UUID: 23cf1274_a16a5e5c
+Bytes: 557
+So my suggestion is to directly iterate through ranges, it's something like:
+range = current->GetFirstRange();
+while (range != nullptr) {
+  // update use's locations. if use is before
+  // range->GetStart(), it's in a hole and we can assert
+  // it must be env use since all real uses must be covered
+  // by ranges.
+
+  range = range->GetNext();
+  if (range == nullptr) {
+    current = current->GetNextSibling();
+    if (current != nullptr) {
+      range = current->GetFirstRange();
+    } else {
+      break;
+    }
+  }
+}
+
+Then there is no hole to deal with.
+

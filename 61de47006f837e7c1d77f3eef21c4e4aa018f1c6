@@ -26,3 +26,15 @@ UUID: 43308612_36d5c23a
 Bytes: 249
 If we iterate through ranges not just intervals, we don't need to test Covers(). Just < range->GetStart() instead since we already tested <= range->GetEnd(). We move to the next sibling when the current sibling runs out of ranges. Is it worth a try?
 
+1415
+Tue Mar 31 09:26:39 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 43308612_36d5c23a
+UUID: c3f1d6a3_cefde336
+Bytes: 207
+This code is iterating over intervals, which can have multiple ranges. And you might have holes between your ranges:
+
+[4, 41[ [52, 87(
+
+If the environment use is at 43, it is after the start of the interval.
+

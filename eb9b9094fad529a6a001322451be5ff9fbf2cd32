@@ -1,0 +1,19 @@
+Revision: eb9b9094fad529a6a001322451be5ff9fbf2cd32
+Patch-set: 1
+File: runtime/globals.h
+
+41:0-55:6
+Wed Apr 01 16:07:49 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23b8f2d3_fc37a5ac
+Bytes: 687
+This makes little to no sense. A native page size vs a page size, with a comment saying that page size equates to the system page size. What was lacking in the original code was that on MIPS 64 the page size should be 16KB. This isn't hard to code:
+
+#ifdef __mips64__
+static constexpr size_t kPageSize = 16 * KB;
+#else
+static constexpr size_t kPageSize = 4 * KB;
+#endif
+
+What was also lacking was that during cross-compilation there are instances where kPageSize was being used as a proxy for 4KB. Fix those cases by passing down an appropriate page size argument for what the large object space is set up, remove kLargeObjectAlignment and make it a member of the large object space, ...
+

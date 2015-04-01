@@ -34,6 +34,18 @@ And I'm not sure that checking just the next one captures all the cases. I think
 
 I will think more about it and adapt the code accordingly.
 
+203:4-203:34
+Wed Apr 01 21:17:01 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03af6e90_181b8575
+UUID: e3a41acd_9fe19316
+Bytes: 512
+Yeah, maybe I'm being too cautious: I was thinking of the same dex register number for two different methods. If two phis of different methods but with the same dex register number, end up in the same block, we would get into trouble.
+
+But it remains to be seen if it can happen.
+
+And yes, you need to check all of them. So when iterating over the phis, you check the next one. If it's the same reg number, you check that they have different type, and continue until you find one that is not the same reg number.
+
 File: compiler/optimizing/ssa_builder.cc
 
 198:24-198:67

@@ -1,0 +1,29 @@
+Revision: c47cec4b7d88709666d6125626f97c9e743d9d48
+Patch-set: 3
+File: compiler/driver/compiler_options.cc
+
+46:20-46:24
+Thu Apr 02 10:59:32 2015 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83e35e1e_6cb4fbc4
+Bytes: 6
+looks?
+
+File: compiler/linker/arm64/relative_patcher_arm64.cc
+
+252
+Thu Apr 02 10:59:32 2015 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83e35e1e_ecbfcba2
+Bytes: 455
+Good. I will add an extra check to exclude cases where adrp is followed by an aligned "ldr reg, pc+offset". This will reduce the matches by another order of magnitude: from 53 matches in boot.oat to just 2 (51 of these have the form "ldr w0, pc+..." and are therefore all aligned). The remaining 2 matches happen to be loads of the kind "ldr wregister, [sp, #(4*i)]". These can also been excluded systematically as sp is guaranteed to be 16 bytes aligned.
+
+File: compiler/linker/relative_patcher_test.h
+
+82:55-82:64
+Thu Apr 02 10:59:32 2015 +0000
+Author: Matteo Franchin <1037505@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3d4e237_ade2ddc7
+Bytes: 10
+trampoline
+

@@ -1,5 +1,14 @@
 Revision: d043889c48f175b67b9e8c8020a519e921e38263
 Patch-set: 1
+File: /COMMIT_MSG
+
+10:0-11:21
+Thu Apr 02 15:40:57 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 23c4727c_cec99f59
+Bytes: 326
+If class unloading were supported then you'd need a free-list to support the gaps in the linear alloc space - or to leak. The overhead from that would eat into these savings. There is also the GC marking overhead of making sure VisitRoots is called. Class unloading was the reason things were done this way in the first place.
+
 File: compiler/optimizing/builder.cc
 
 666:0-667:37

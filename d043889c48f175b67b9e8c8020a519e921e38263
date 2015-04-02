@@ -9,6 +9,14 @@ UUID: 23c4727c_cec99f59
 Bytes: 326
 If class unloading were supported then you'd need a free-list to support the gaps in the linear alloc space - or to leak. The overhead from that would eat into these savings. There is also the GC marking overhead of making sure VisitRoots is called. Class unloading was the reason things were done this way in the first place.
 
+10:0-11:21
+Thu Apr 02 18:08:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 23c4727c_cec99f59
+UUID: 03092eaf_c89aaf47
+Bytes: 217
+The idea is to use one linear alloc per class loader if we want to have unloading. The other things are addressable with root logging / etc. There some advantages to not having the dex caches keep the fields live too.
+
 File: compiler/optimizing/builder.cc
 
 666:0-667:37
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a3d4e237_0da7b1b5
 Bytes: 18
 You can drop this.
+
+666:0-667:37
+Thu Apr 02 18:08:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3d4e237_0da7b1b5
+UUID: 23c4727c_e57da1e2
+Bytes: 4
+Done
 
 File: runtime/base/arena_allocator.h
 
@@ -27,6 +43,14 @@ UUID: 83e35e1e_8c45e775
 Bytes: 38
 Bytes used -> The BytesUsed method ...
 
+230:5-230:15
+Thu Apr 02 18:08:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83e35e1e_8c45e775
+UUID: 23c4727c_d8404467
+Bytes: 4
+Done
+
 File: runtime/check_jni.cc
 
 1
@@ -36,6 +60,14 @@ UUID: 83e35e1e_4c581f5b
 Bytes: 10
 extra line
 
+1
+Thu Apr 02 18:08:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83e35e1e_4c581f5b
+UUID: 23c4727c_98a08ca0
+Bytes: 4
+Done
+
 File: runtime/jdwp/jdwp_event.cc
 
 122:34-122:36
@@ -44,6 +76,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 83e35e1e_2c55d322
 Bytes: 11
 indentation
+
+122:34-122:36
+Thu Apr 02 18:08:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83e35e1e_2c55d322
+UUID: 63de6a5c_d4dc8d63
+Bytes: 4
+Done
 
 File: runtime/mirror/dex_cache.h
 
@@ -56,6 +96,14 @@ Are you sure you want to change the resolved_fields_ array to native? This doesn
 
 I think we should either move all the arrays to native or none of them.
 
+162:2-162:27
+Thu Apr 02 18:08:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2312b2d8_091d69e8
+UUID: 63de6a5c_d42a4da8
+Bytes: 120
+Good point, I think having IntArray or LongArray should work. I will need to add the cross compilation stuff either way.
+
 File: runtime/runtime.h
 
 556:2-556:33
@@ -64,4 +112,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2312b2d8_692f4587
 Bytes: 19
 Move to definition?
+
+556:2-556:33
+Thu Apr 02 18:08:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2312b2d8_692f4587
+UUID: 63de6a5c_742279d0
+Bytes: 4
+Done
 

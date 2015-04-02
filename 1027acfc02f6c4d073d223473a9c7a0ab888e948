@@ -9,6 +9,21 @@ UUID: e3a41acd_dfbefbf6
 Bytes: 43
 How about quick? Maybe add it as a default?
 
+142:67-142:78
+Thu Apr 02 16:53:38 2015 +0000
+Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3a41acd_dfbefbf6
+UUID: 83e35e1e_6f5bcd59
+Bytes: 257
+It seems like quick is there by default, see line 40. I would make --interpreter the default, and let --quick and --optimizing be the selectable ones. Perhaps add an extra flag to remove --interpreter if you really only want to compare quick and optimizing.
+
+159
+Thu Apr 02 16:53:38 2015 +0000
+Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83e35e1e_af8e552e
+Bytes: 15
+Where's --fuzz?
+
 215:4-218:8
 Wed Apr 01 20:02:14 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,4 +37,46 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c3ab969c_debe05f7
 Bytes: 44
 hmm, why not --host --allarm --x86 --x86_64?
+
+226:10-226:13
+Thu Apr 02 16:53:38 2015 +0000
+Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3ab969c_debe05f7
+UUID: 2312b2d8_8c93a75a
+Bytes: 750
+You can't use the fuzzer like that at the moment.
+
+If you specify --host, then you're in host mode, which implies x86.
+If you don't specify --host or --device, then you're in device mode, where you must specify the ISA of that device. If that device is arm64, then arm and arm64 can be used. --device=<name> can be used to connect to a specific ADB-connected device (the arg is used with adb -s <name>)
+
+Would you like --host --allarm --x86 --x86_64 to work? You'll need an arm64 device connected via ADB, and host mode will need to support executing both x86 and x86_64. Additionally we can extend it to support executing on multiple devices, one of which may be a host "device".
+
+Guillaume: for now I'd just make sure you replace --x86 with --host.
+
+228
+Thu Apr 02 16:53:38 2015 +0000
+Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2312b2d8_acfb0b8e
+Bytes: 70
+Perhaps print a message that a full report can be found in report.log?
+
+File: test/run-test
+
+494
+Thu Apr 02 16:53:38 2015 +0000
+Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3d4e237_f0467e82
+Bytes: 222
+Should this be consistent with what you're doing with run-all-tests, and have --fuzz-repeat as well?
+
+Also, should "specify at least two backends" perhaps say which backends can be specified, and how they can be specified?
+
+File: tools/dexfuzz/src/dexfuzz/fuzzers/FuzzerMultipleExecute.java
+
+44
+Thu Apr 02 16:53:38 2015 +0000
+Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83e35e1e_af409565
+Bytes: 17
+Nit: remove this?
 

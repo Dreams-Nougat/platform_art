@@ -23,3 +23,15 @@ Is it impossible to compile apks with --compile-pic?
 
 Any suggestions to not conflate? I thought that having input-oat-gz-fd we can just unzip it to swap-fd then set input-oat-fd=swap-fd as if it was specified by user. I propose to discuss it in the gzip patch (ae0ec6ad7152f12cc116c175aa4c6ff7952bc21c).
 
+9:0-11:19
+Fri Apr 03 06:29:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2312b2d8_2c65db8c
+UUID: 63de6a5c_26071ea0
+Bytes: 570
+No, the usage part is fine. I meant your message conflates those things.
+
+The problem is that we seem to be creating a symlink when we don't need to. The *right* solution is to fix image_space, and remove all the symlinking. Using the symlink was a quick fix for the boot.oat, but should be done the proper way (not just replacing ".art" with ".oat"). Apps should already *not* require symlinks - if they do, that's a bug.
+
+Once that issue is resolved, I think it would be fine to do as you say (if we decide to do that, I know there's a comment on using a swap file...)
+

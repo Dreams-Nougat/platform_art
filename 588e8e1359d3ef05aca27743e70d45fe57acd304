@@ -33,3 +33,11 @@ UUID: 83519eaa_86de0bdf
 Bytes: 173
 Yes, that's a decision at the time we added multilib build support to host modules, lots of modules didn't build for 64-bit, such as the vast number of LLVM related modules.
 
+85:2-85:24
+Mon Apr 06 19:54:57 2015 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83519eaa_86de0bdf
+UUID: 83519eaa_86c4cbbf
+Bytes: 428
+That doesn't make sense now, because we set the primary host arch to x86_64 and the secondary to x86.  The default LOCAL_MULTILIB for host is "first", which will target x86_64, and x86 should work fine, so I don't see why we don't just change the default to "both".  It seems bad to sprinkle LOCAL_MULTILIB := both everywhere, especially because it is not necessary for the device and not clear why it is necessary for the host.
+

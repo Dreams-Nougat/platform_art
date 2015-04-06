@@ -41,3 +41,12 @@ UUID: 83519eaa_86c4cbbf
 Bytes: 428
 That doesn't make sense now, because we set the primary host arch to x86_64 and the secondary to x86.  The default LOCAL_MULTILIB for host is "first", which will target x86_64, and x86 should work fine, so I don't see why we don't just change the default to "both".  It seems bad to sprinkle LOCAL_MULTILIB := both everywhere, especially because it is not necessary for the device and not clear why it is necessary for the host.
 
+85:2-85:24
+Mon Apr 06 20:01:08 2015 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83519eaa_86c4cbbf
+UUID: a34222dc_46e7a355
+Bytes: 227
+I agree. Anything not built for both arch should have been marked properly now, since we actually build with HOST_PREFER_32_BIT when doing SDK builds.
+I'll change the default to both and verify the build later when I have time.
+

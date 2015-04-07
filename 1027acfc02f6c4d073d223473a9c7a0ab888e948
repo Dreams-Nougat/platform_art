@@ -17,6 +17,14 @@ UUID: 83e35e1e_6f5bcd59
 Bytes: 257
 It seems like quick is there by default, see line 40. I would make --interpreter the default, and let --quick and --optimizing be the selectable ones. Perhaps add an extra flag to remove --interpreter if you really only want to compare quick and optimizing.
 
+142:67-142:78
+Tue Apr 07 13:18:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83e35e1e_6f5bcd59
+UUID: 837fde20_4cceffaf
+Bytes: 30
+see my other comment for this.
+
 159
 Thu Apr 02 16:53:38 2015 +0000
 Author: Stephen Kyle <1063758@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,6 +60,16 @@ If you don't specify --host or --device, then you're in device mode, where you m
 Would you like --host --allarm --x86 --x86_64 to work? You'll need an arm64 device connected via ADB, and host mode will need to support executing both x86 and x86_64. Additionally we can extend it to support executing on multiple devices, one of which may be a host "device".
 
 Guillaume: for now I'd just make sure you replace --x86 with --host.
+
+226:10-226:13
+Tue Apr 07 13:18:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2312b2d8_8c93a75a
+UUID: 637aea34_ebbeb1f6
+Bytes: 377
+Oki, perhaps I mixed some other ideas here.
+
+Would be hard to change the fuzzer into a mode where it doesn't require to actually run the programs? The test should be: if Quick can compile it Optimizing should be able to compile it as well. Or more broadly we should never hard crash when compiling valid dex code. Having "runnable test" limits our test throughput in this case.
 
 228
 Thu Apr 02 16:53:38 2015 +0000

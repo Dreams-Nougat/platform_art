@@ -9,6 +9,14 @@ UUID: 837fde20_ecc48b43
 Bytes: 348
 This is brittle and might break in the future if the implementation of art::LiveInterval::GetSiblingAt changes (moreover, art::LiveInterval::GetSiblingAt's documentation does not mention that the reference it returns can be safely used for pointer equality).  I suggest that art::LiveInterval::GetSiblingAt returns a pointer instead of a reference.
 
+1557:6-1557:29
+Tue Apr 07 15:44:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_ecc48b43
+UUID: 837fde20_cc7e6f68
+Bytes: 4
+Done
+
 File: compiler/optimizing/ssa_liveness_analysis.h
 
 349:10-349:33
@@ -18,12 +26,28 @@ UUID: a3706250_adce7d5d
 Bytes: 47
 Why making it conditional (and off by default)?
 
+349:10-349:33
+Tue Apr 07 15:44:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3706250_adce7d5d
+UUID: a3706250_add8bdf5
+Bytes: 259
+The problem is that I need to clearly mark calls which should occur in order (i.e. position >= cache_position) so as to DCHECK that the property holds. Maybe I should make use_cache true by default because the problematic calls are all in reg alloc's DCHECKs.
+
 353:4-353:67
 Tue Apr 07 15:11:07 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 837fde20_ec1fab5d
 Bytes: 56
 Shouldn't this be a postcondition of FindRangeAtOrAfter?
+
+353:4-353:67
+Tue Apr 07 15:44:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_ec1fab5d
+UUID: a3706250_4d411916
+Bytes: 43
+I should trust my own code more... Removed.
 
 362:11-362:33
 Tue Apr 07 15:11:07 2015 +0000
@@ -32,6 +56,14 @@ UUID: 837fde20_4c2fdf86
 Bytes: 6
 Ditto.
 
+362:11-362:33
+Tue Apr 07 15:44:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_4c2fdf86
+UUID: 637aea34_aba42984
+Bytes: 5
+Ditto
+
 838:35-838:37
 Tue Apr 07 15:11:07 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,10 +71,26 @@ UUID: a3706250_6ddad515
 Bytes: 9
 continue;
 
+838:35-838:37
+Tue Apr 07 15:44:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3706250_6ddad515
+UUID: a3706250_ed8325d9
+Bytes: 4
+Done
+
 842:25-842:67
 Tue Apr 07 15:11:07 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a3706250_0dd791ec
 Bytes: 52
 Are we certain not to enter infinite recursion here?
+
+842:25-842:67
+Tue Apr 07 15:44:40 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3706250_0dd791ec
+UUID: a3706250_0db471b1
+Bytes: 234
+Yes, in the recurvice call start_range == first_range_ and hence it won't recurse again. The function is also const, so first_range_ cannot change. But let me just remove that. The DCHECK at the beginning of the method should suffice.
 

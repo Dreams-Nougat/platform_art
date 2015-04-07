@@ -1,0 +1,48 @@
+Revision: e07f8fa66bafb0d3634a6a94c816e2a31703a364
+Patch-set: 7
+File: compiler/optimizing/register_allocator.cc
+
+1557:6-1557:29
+Tue Apr 07 15:11:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 837fde20_ecc48b43
+Bytes: 348
+This is brittle and might break in the future if the implementation of art::LiveInterval::GetSiblingAt changes (moreover, art::LiveInterval::GetSiblingAt's documentation does not mention that the reference it returns can be safely used for pointer equality).  I suggest that art::LiveInterval::GetSiblingAt returns a pointer instead of a reference.
+
+File: compiler/optimizing/ssa_liveness_analysis.h
+
+349:10-349:33
+Tue Apr 07 15:11:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3706250_adce7d5d
+Bytes: 47
+Why making it conditional (and off by default)?
+
+353:4-353:67
+Tue Apr 07 15:11:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 837fde20_ec1fab5d
+Bytes: 56
+Shouldn't this be a postcondition of FindRangeAtOrAfter?
+
+362:11-362:33
+Tue Apr 07 15:11:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 837fde20_4c2fdf86
+Bytes: 6
+Ditto.
+
+838:35-838:37
+Tue Apr 07 15:11:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3706250_6ddad515
+Bytes: 9
+continue;
+
+842:25-842:67
+Tue Apr 07 15:11:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3706250_0dd791ec
+Bytes: 52
+Are we certain not to enter infinite recursion here?
+

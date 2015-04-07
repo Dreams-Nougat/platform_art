@@ -1,0 +1,65 @@
+Revision: 855e0cd0cba6f45bb377cd355e33b1994bf0e3e2
+Patch-set: 4
+File: compiler/optimizing/instruction_simplifier.cc
+
+67:0-68:43
+Tue Apr 07 11:16:44 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2312b2d8_d2a93a06
+Bytes: 67
+Maybe initialize these members here, instead of in the constructor?
+
+71:23-71:53
+Tue Apr 07 11:16:44 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 634caa14_bba48784
+Bytes: 31
+kMaxSamePositionSimplifications
+
+File: test/458-checker-instruction-simplification/src/Main.java
+
+382:0-383:33
+Tue Apr 07 11:16:44 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 634caa14_3b38779c
+Bytes: 115
+Out of curiosity, did you make these changes to defeat another optimization?  If so, please add a comment about it.
+
+431:0-441:56
+Tue Apr 07 11:16:44 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 634caa14_7bdb5ff0
+Bytes: 710
+Actually, David (thanks!) tells me it is simpler to rewrite this as two paragraphs, the first one containing the exact same set of assertions as the "before" stanza, and the second containing only a "CHECK-NOT: Sub" line:
+
+  // CHECK-START: long Main.AddNeg2(long, long) instruction_simplifier (after)
+  // CHECK-DAG:     [[Arg1:j\d+]]     ParameterValue
+  // CHECK-DAG:     [[Arg2:j\d+]]     ParameterValue
+  // CHECK-DAG:     [[Neg:j\d+]]      Neg [ [[Arg2]] ]
+  // CHECK-DAG:     [[Add1:j\d+]]     Add [ [[Arg1]] [[Neg]] ]
+  // CHECK-DAG:     [[Add2:j\d+]]     Add [ [[Arg1]] [[Neg]] ]
+
+  // CHECK-START: long Main.AddNeg2(long, long) instruction_simplifier (after)
+  // CHECK-NOT:                       Sub
+
+614:14-614:27
+Tue Apr 07 11:16:44 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2337126d_44eec000
+Bytes: 14
+simplification
+
+625:0-633:15
+Tue Apr 07 11:16:44 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2337126d_040d186c
+Bytes: 9
+Likewise.
+
+705:0-706:29
+Tue Apr 07 11:16:44 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 634caa14_bb3fa768
+Bytes: 6
+Ditto.
+

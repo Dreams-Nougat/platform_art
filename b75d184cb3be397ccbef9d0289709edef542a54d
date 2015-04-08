@@ -9,6 +9,15 @@ UUID: 83fd1eeb_7c3b399b
 Bytes: 72
 If this is only for testing, we should just provide a dummy output data.
 
+444:0-446:3
+Wed Apr 08 13:14:01 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83fd1eeb_7c3b399b
+UUID: 430966dc_5d80eff7
+Bytes: 444
+It is not just for tests.  I call this method from OptimizingCompiler::CompileOptimized now.
+I confess that I do not fully follow and just guessing.  Is StackMap a newer replacement for vmap?  And that is why the OptimizingCompiler::CompileOptimized does not call BuildMappingTable?  But I want to call it anyway (only if getting debug symbols) just to get src_map.  I believe this is necessary to get line numbers from the optimizing compiler.
+
 File: compiler/optimizing/code_generator_arm.cc
 
 560
@@ -42,4 +51,13 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c3f39619_de724592
 Bytes: 51
 Where's the "ret"? (Also for x86 and x86-64 below.)
+
+58
+Wed Apr 08 13:14:01 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3f39619_de724592
+UUID: c3f39619_61eef000
+Bytes: 225
+GenerateFrameExit does not generate the ret instruction.  It is done by a visitor just after the call.
+I agree that the output looks incomplete without it, but I was not sure how to call it as well.  I will take another look.
 

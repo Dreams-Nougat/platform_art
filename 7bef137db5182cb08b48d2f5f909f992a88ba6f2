@@ -1,5 +1,57 @@
 Revision: 7bef137db5182cb08b48d2f5f909f992a88ba6f2
 Patch-set: 7
+File: compiler/optimizing/code_generator_x86.cc
+
+2281:2-2284:15
+Wed Apr 08 20:44:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_cb16f581
+Bytes: 503
+sorry to come back to this, but this is actually a bit confusing.
+
+`out` should be `locations->Out().AsRegister<Register>();`. And it's actually exactly that, jut written more complicated with the if below.
+
+Only `num` an `edx should be handled  in if, and then you should check that the output has the correct value.
+
+if (instruction->IsDiv()) {
+  DCHECK_EQ(EAX, out);
+} else {
+  DCHECK_EQ(EDX, out);
+}
+
+Also, please check the other assertions. It should be 
+DCHECK_EQ(expected, actual);
+
+Same for x64.
+
+2441:9-2441:65
+Wed Apr 08 20:44:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_2bfcd9b2
+Bytes: 115
+Comments should be full sentences. Start with capital letter and end with full stop.
+
+Same in all the other places.
+
+2442:6-2444:7
+Wed Apr 08 20:44:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_05f472d2
+Bytes: 663
+Hmm,  after your comment I see that now. 
+
+Basically, as far as I can tell you need the temporary for constants only because the output is set to be the same as the input. If they were different you could use the output directly to cache what you need on the fly.
+
+I don't mind forcing the output in EAX or EDX for rem, especially since it seems to make the algorithm simpler, but for constant is not mandatory and we should probably document.
+
+An extra line
+"
+We could have asked for fresh register for output and used that one. However things are slightly simpler if we force the output in EAX and request another temp.
+"
+will do the job.
+
+Same for rem and x64.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 2409:10-2409:15
@@ -8,4 +60,12 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e305fac3_571d6ce7
 Bytes: 14
 IsInt<32>(imm)
+
+2409:10-2409:15
+Wed Apr 08 20:44:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e305fac3_571d6ce7
+UUID: 03d12e8c_c800af06
+Bytes: 15
+or like that :)
 

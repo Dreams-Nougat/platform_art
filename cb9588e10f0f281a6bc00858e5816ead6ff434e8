@@ -34,6 +34,14 @@ UUID: 430966dc_9abe0df6
 Bytes: 4
 Done
 
+285:7-285:13
+Wed Apr 08 03:42:19 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 430966dc_9abe0df6
+UUID: 63f82afb_1baddb14
+Bytes: 87
+Please also fix the other files, I was just too lazy to mark all the other occurrences.
+
 File: compiler/dex/quick/mir_to_lir.h
 
 1915:2-1915:28
@@ -123,6 +131,14 @@ It is actually from our assembler - it always puts space between opcode and args
 
 However, I should have really learned to configure my editor to trim whitespace by now.
 
+94:18-94:19
+Wed Apr 08 03:42:19 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 430966dc_fac3c987
+UUID: e3ec1a3e_ff0bbfa6
+Bytes: 146
+Can you explain though why the ret on line 67 does *not* have the whitespace? It sounds like the x86 disassembler should be fixed. Any takers? :-)
+
 123:15-123:28
 Tue Apr 07 20:57:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -139,6 +155,16 @@ Bytes: 393
 Good to know.  If it disappears, I will update the expected.
 
 How do you plan to handle method identification?  Methods are deduped, so you can not determine the method just from pc alone.  So backtraces might be "wrong" and lldb stepping/breakpoints might not reliably work.  I assumed you used ArtMethod* for this.  It is really bugging me.  I suppose not deduplicating is not an option? :-(
+
+123:15-123:28
+Wed Apr 08 03:42:19 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3f39619_dec885a5
+UUID: e3ec1a3e_3f16c7d1
+Bytes: 444
+By the default we're not gonna emit CFI, anyways. I'm tending towards hiding it behind "debuggable," i.e., the app needs to have android:debuggable=true. The optimizing compiler already states that if an app is not debuggable, everything is best-effort. It seems perfectly reasonable to turn off deduplication for a compile that's requested to be debuggable.
+
+(This ignores the boot-image question, though, just like the optimizing compiler...)
 
 135:18-135:19
 Tue Apr 07 20:37:58 2015 +0000

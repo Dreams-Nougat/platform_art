@@ -9,6 +9,14 @@ UUID: a32b0216_eae8ebab
 Bytes: 147
 Ugh, you copied dallison's assembler test. Everywhere else we're trying hard not to use these things directly. I let vmarko and Nicolas judge this.
 
+34:24-34:29
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a32b0216_eae8ebab
+UUID: 83fd1eeb_dcc88da5
+Bytes: 100
+What is the proper way?  Streams?  Google style say not to use those, but I have seen them around...
+
 File: compiler/dex/quick/arm64/call_arm64.cc
 
 285:7-285:13
@@ -17,6 +25,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 63258a42_68c4e7be
 Bytes: 70
 If this is for what I think you want it to do, then use ALWAYS_INLINE.
+
+285:7-285:13
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63258a42_68c4e7be
+UUID: 430966dc_9abe0df6
+Bytes: 4
+Done
 
 File: compiler/dex/quick/mir_to_lir.h
 
@@ -27,6 +43,14 @@ UUID: 837fde20_ef0c7d72
 Bytes: 91
 Add 2 spaces. (We've got non-standard indentation in this file. Let's stick to it for now.)
 
+1915:2-1915:28
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_ef0c7d72
+UUID: c3f39619_1ecb0d9f
+Bytes: 4
+Done
+
 File: compiler/dex/quick/quick_cfi_test.cc
 
 51:0-53:50
@@ -35,6 +59,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 637aea34_4b510568
 Bytes: 68
 Please use the other constructor so that you don't need the setters.
+
+51:0-53:50
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 637aea34_4b510568
+UUID: 83fd1eeb_7cd85972
+Bytes: 4
+Done
 
 File: compiler/dex/quick/quick_cfi_test_expected.inc
 
@@ -45,12 +77,34 @@ UUID: 837fde20_0f06a94d
 Bytes: 144
 Why is this before the "str r0, [sp, #0]"? The first instruction of the exit sequence is "add sp, sp, 44". (Same for other architectures below.)
 
+21:15-21:34
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_0f06a94d
+UUID: c3f39619_fec3c187
+Bytes: 364
+Good question. If you think about it, the precise location of remember_state does not matter - it will have the same effect either way.
+So I did not bother advancing the address before it, saving  about one byte of data.
+In retrospect, the saving might not be worth lost clarity.
+I will keep it as is, but change if I am forced to regenerate outputs at some point.
+
 31:15-31:33
 Tue Apr 07 20:57:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 637aea34_4ecef3af
 Bytes: 87
 Why is this after the padding "lsls r0, r0, #0"? (Same below wherever there's padding.)
+
+31:15-31:33
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 637aea34_4ecef3af
+UUID: 83fd1eeb_3cced1ae
+Bytes: 446
+https://xkcd.com/859/
+Technically speaking, I could omit this altogether.  Anything past the return is irrelevant.
+However, I just put any "tailing" CFI at the end of code anyway.  One reason is to just visually balance the pushes and pops, and I plan storage optimizations in the future where proper balancing will be important.
+The reason is it past the padding is that it does not below to any assembly instruction... so end of method will do.
 
 94:18-94:19
 Tue Apr 07 20:37:58 2015 +0000
@@ -59,12 +113,32 @@ UUID: 63258a42_e8bb1757
 Bytes: 84
 Whitespace? It's weird if it's from objdump, as it doesn't happen for the ret above.
 
+94:18-94:19
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63258a42_e8bb1757
+UUID: 430966dc_fac3c987
+Bytes: 193
+It is actually from our assembler - it always puts space between opcode and args for simplicity of code.
+
+However, I should have really learned to configure my editor to trim whitespace by now.
+
 123:15-123:28
 Tue Apr 07 20:57:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a3706250_d0ab6285
 Bytes: 85
 Promoted ArtMethod*? I'm in the process of cleaning that up. This may soon disappear.
+
+123:15-123:28
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3706250_d0ab6285
+UUID: c3f39619_dec885a5
+Bytes: 393
+Good to know.  If it disappears, I will update the expected.
+
+How do you plan to handle method identification?  Methods are deduped, so you can not determine the method just from pc alone.  So backtraces might be "wrong" and lldb stepping/breakpoints might not reliably work.  I assumed you used ArtMethod* for this.  It is really bugging me.  I suppose not deduplicating is not an option? :-(
 
 135:18-135:19
 Tue Apr 07 20:37:58 2015 +0000
@@ -73,6 +147,14 @@ UUID: a32b0216_4aa79fb4
 Bytes: 11
 Whitespace?
 
+135:18-135:19
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a32b0216_4aa79fb4
+UUID: 83fd1eeb_1ccb159f
+Bytes: 4
+Done
+
 174:18-174:19
 Tue Apr 07 20:37:58 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -80,12 +162,28 @@ UUID: a32b0216_ea946b46
 Bytes: 11
 Whitespace?
 
+174:18-174:19
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a32b0216_ea946b46
+UUID: 430966dc_dac885a5
+Bytes: 4
+Done
+
 212:18-212:19
 Tue Apr 07 20:37:58 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 832a7e12_b1402766
 Bytes: 11
 Whitespace.
+
+212:18-212:19
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 832a7e12_b1402766
+UUID: 430966dc_3acee1ae
+Bytes: 4
+Done
 
 File: compiler/dex/quick/quick_compiler.h
 
@@ -105,6 +203,14 @@ UUID: a32b0216_8aea971c
 Bytes: 108
 Don't like. Do not remove const-ness for test purposes. How about using the complex constructor in the test?
 
+154:0-156:3
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a32b0216_8aea971c
+UUID: 430966dc_7ad85972
+Bytes: 4
+Done
+
 219
 Tue Apr 07 20:57:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -112,10 +218,26 @@ UUID: a3706250_706f0ef6
 Bytes: 26
 Keep const, remove setter.
 
+219
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3706250_706f0ef6
+UUID: c3f39619_3ecec9ae
+Bytes: 4
+Done
+
 224
 Tue Apr 07 20:57:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 837fde20_af167580
 Bytes: 26
 Keep const, remove setter.
+
+224
+Wed Apr 08 03:34:40 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_af167580
+UUID: 430966dc_1acb1d9f
+Bytes: 4
+Done
 

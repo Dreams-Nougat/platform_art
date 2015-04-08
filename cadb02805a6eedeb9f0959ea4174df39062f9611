@@ -1,0 +1,264 @@
+Revision: cadb02805a6eedeb9f0959ea4174df39062f9611
+Patch-set: 5
+File: /COMMIT_MSG
+
+7:32-7:35
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_de1085d8
+Bytes: 86
+and x86_64.
+
+This is done by implementing div/rem with constant using `...` algorithm.
+
+File: compiler/optimizing/code_generator_utils.cc
+
+2:17-2:21
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_de5525a7
+Bytes: 4
+2015
+
+22:4-22:28
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_5e62b585
+Bytes: 78
+align with the other params.
+
+i.e:
+
+void LongName(a, b
+              c, d) {
+}
+
+File: compiler/optimizing/code_generator_utils.h
+
+2:17-2:21
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_7a721911
+Bytes: 4
+2015
+
+22:5-22:36
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_fe50e1b8
+Bytes: 455
+Add a comment of what this function does. Probably enough to say that it's part of the fancy algorithm you use.
+
+Also, as roland pointed out:
+- Move `magic' and `shift' at the end of the argument list, as required by the C++ style guide.
+- Use a pointer for out arguments `magic' and `shift', as the C++ style guide mandates `const' with reference arguments.
+
+I know this diverges from Quick one but it's ok. We should not propagate style inconsistencies.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+2231:2-2233:39
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_feaf41de
+Bytes: 117
+you can skip locations definition if they are used just once to make the code more compact. Here and everywhere else.
+
+2265:2-2265:7
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_deca45eb
+Bytes: 101
+DCHECK (the difference is that with `D`, the check will be elided at runtime speeding up compilation)
+
+2266:11-2266:14
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_3e99a9f8
+Bytes: 120
+Is this really needed? It seems to me that you can directly use the output and don't request an extra temp in this case.
+
+2267:0-2268:13
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_bea4992f
+Bytes: 21
+you don't need these.
+
+2292:11-2292:14
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_fe24612e
+Bytes: 85
+num is a bit confusing here as it implies a special semantic. How about using `temp`?
+
+2293:11-2293:16
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_9e2f1d09
+Bytes: 50
+you can drop the o_ prefix for standard registers.
+
+2295:11-2295:14
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_7dd85372
+Bytes: 177
+the usual notation for outputs in this file is `out`. It think you can can also use Register out = locations->Out()->AsRegister<Register>() and drop the `Location out` variable.
+
+2316:8-2316:11
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_3e3fe939
+Bytes: 49
+if the input is 0 (stored in eax) do not compute.
+
+2341:5-2341:25
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_7cce99dd
+Bytes: 59
+`shift if needed`. (avoid questions as they may imply TODO)
+
+2379:8-2380:43
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_bdb94b12
+Bytes: 28
+DCHECK that this can't be 0.
+
+2383:19-2383:39
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_7e9331d8
+Bytes: 6
+is_div
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+2219:28-2219:42
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_bcf821fd
+Bytes: 14
+IsLongConstant
+
+2265:14-2265:15
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_9cfd65ed
+Bytes: 77
+`out` and you may drop the `Location out` argument since it's used just once.
+
+2266:14-2266:16
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_fcf2a91a
+Bytes: 77
+`first` or `dividend ` and drop the location definition (it's used just once)
+
+2268:6-2268:44
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_7ece91dd
+Bytes: 126
+use the same kind of tests as below (instruction->GetResultType() == Primitive::kPrimInt). It will make things easier to read.
+
+2274:2-2274:7
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_dedec590
+Bytes: 6
+DCHECK
+
+2274:8-2274:29
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_dcf7ed08
+Bytes: 34
+not needed, you already tested it.
+
+2275:2-2275:30
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_fed901ab
+Bytes: 10
+not needed
+
+2277:14-2277:17
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_3ec409be
+Bytes: 36
+as before, I think `temp` is better.
+
+2278:0-2279:12
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_9de7272a
+Bytes: 10
+no needed.
+
+2294:4-2294:12
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_3ced3136
+Bytes: 9
+DCHECK_EQ
+
+2295:16-2295:21
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_1ceaf51d
+Bytes: 77
+just rdx and I think you can use  out directly without requiring a temp here.
+
+2320:14-2320:17
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_fddc6363
+Bytes: 5
+ditto
+
+2322:14-2322:19
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_5ecbd5cb
+Bytes: 5
+ditto
+
+2323:14-2323:19
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_5ce47d4f
+Bytes: 5
+ditto
+
+2325:14-2325:17
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_dde19f15
+Bytes: 15
+ditto for `out`
+
+2333:6-2333:56
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_9caa85d0
+Bytes: 197
+Ah, this duplication is annoying but I'm not sure we have a way out. Is the only difference between longs and ints that we use `q` instead of 'l`? You think is possible to use some templating here?
+
+2441:2-2441:41
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_9d0c4772
+Bytes: 6
+remove
+
+2455:4-2456:33
+Wed Apr 08 12:28:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_bd078b4e
+Bytes: 28
+DCHECK that it can't happen.
+

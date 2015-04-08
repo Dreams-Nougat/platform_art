@@ -1,0 +1,85 @@
+Revision: 534622c8cb464fd2b506064461b9dae2ba2067ab
+Patch-set: 6
+File: compiler/optimizing/code_generator_x86.cc
+
+2260:11-2260:14
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_5fb74f66
+Bytes: 137
+Is this temporary really needed? It looks that you can use directly the output register and don't request this anymore for powers of two.
+
+2282:2-2282:14
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_e1ca00eb
+Bytes: 56
+nit: minor style issue but I would move this before num.
+
+2442:8-2442:57
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_80833a05
+Bytes: 67
+add an extra comment why a temp is needed here (as you did for x64)
+
+2513:8-2513:57
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_5f90efc9
+Bytes: 5
+ditto
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+2211:2-2212:37
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_a0f63ea6
+Bytes: 6
+inline
+
+2273:2-2273:7
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_c0ab7285
+Bytes: 6
+DCHECK
+
+2327:6-2327:57
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_20034e10
+Bytes: 83
+add a TODO to investigate if the two branches can be written in a more compact way.
+
+2334:10-2334:14
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_ff0bbba6
+Bytes: 26
+give a more explicit name.
+
+2410:10-2411:51
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_81933cd7
+Bytes: 83
+you can reverse the condition and use:
+
+IsInt(kBitsPerByte * sizeof(int32_t), imm);
+
+2415:44-2415:47
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_1f1307e2
+Bytes: 7
+int32_t
+
+2500:19-2500:26
+Wed Apr 08 15:16:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_010c4cbe
+Bytes: 50
+Not needed for power of twos and -1. Same for x86.
+

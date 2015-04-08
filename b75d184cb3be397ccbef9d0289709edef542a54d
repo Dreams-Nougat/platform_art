@@ -18,6 +18,16 @@ Bytes: 444
 It is not just for tests.  I call this method from OptimizingCompiler::CompileOptimized now.
 I confess that I do not fully follow and just guessing.  Is StackMap a newer replacement for vmap?  And that is why the OptimizingCompiler::CompileOptimized does not call BuildMappingTable?  But I want to call it anyway (only if getting debug symbols) just to get src_map.  I believe this is necessary to get line numbers from the optimizing compiler.
 
+444:0-446:3
+Wed Apr 08 13:59:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 430966dc_5d80eff7
+UUID: 83fd1eeb_7f1fab8a
+Bytes: 310
+I think the "src_map" creation should be factored out of BuildMappingTable() to a function of its own.
+
+Yes, StackMap is a replacement for vmap used by the truly Optimizing compiler. (There are 2 modes in the optimizing compiler, the truly Optimizing and Baseline. Only the Baseline calls BuildMappingTable().)
+
 File: compiler/optimizing/code_generator_arm.cc
 
 560
@@ -60,4 +70,12 @@ UUID: c3f39619_61eef000
 Bytes: 225
 GenerateFrameExit does not generate the ret instruction.  It is done by a visitor just after the call.
 I agree that the output looks incomplete without it, but I was not sure how to call it as well.  I will take another look.
+
+58
+Wed Apr 08 13:59:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3f39619_61eef000
+UUID: 83fd1eeb_9fe7172a
+Bytes: 81
+That sounds like the wrong division of responsibility in the optimizing compiler.
 

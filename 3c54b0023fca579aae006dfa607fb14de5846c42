@@ -12,3 +12,15 @@ It is unrelated to machine architecture, elf 32-bit/64-bit, or to augmentation d
 
 Why do not we patch the DWARF sections using .oat_patches or something similar?  I think that would be easier then trying to fix bugs / deficiencies in the DWARF relocator.
 
+1637:50-1637:60
+Wed Apr 08 00:16:51 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_ef2f9d07
+UUID: 23e3924b_7638769d
+Bytes: 644
+I think this was done to not add another s***-load of patch locations. You could try to add the oat_patches entries, and let us know by how much it grows.
+
+I would want to point out that I don't think you are right with "easier then trying to fix / bugs in the DWARF relocator." .oat_patches is our own custom thing, and as far as I remember, everything is 32-bit. To me it sounds like taking advantage of DWARF knowledge is better than trying to encode that into random patches.
+
+Anyways, feel free to clean this code up in a follow-up. This is mostly just a refactor to make it at least not horrible fail when trying to emit 64-bit ELF files.
+

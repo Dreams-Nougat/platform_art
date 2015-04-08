@@ -9,6 +9,14 @@ UUID: 2312b2d8_d2a93a06
 Bytes: 67
 Maybe initialize these members here, instead of in the constructor?
 
+67:0-68:43
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2312b2d8_d2a93a06
+UUID: 2312b2d8_5d6f9bf5
+Bytes: 15
+Oh C++11! Done.
+
 71:23-71:53
 Tue Apr 07 11:16:44 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,30 @@ UUID: 634caa14_bba48784
 Bytes: 31
 kMaxSamePositionSimplifications
 
+71:23-71:53
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 634caa14_bba48784
+UUID: 2337126d_c4009006
+Bytes: 4
+Done
+
 116:0-116:49
 Tue Apr 07 14:48:54 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 837fde20_2c7933c1
 Bytes: 185
 Tiny remark: would it be too much of a hassle to support ((-x) + (-x))? We could have a query left_neg->OnlyUsedBy(binop) instead, but would have to be careful about the removals below.
+
+116:0-116:49
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_2c7933c1
+UUID: 83fd1eeb_9cb0c5f5
+Bytes: 434
+I had a 'next step' in mind that would allow optimizing away IRs with multiple uses. Instead of checking for `HasOnlyOneNonEnvironmentUse()`, the simplifier would perform local transformations if the IR can be optimized away at every use site.
+
+If that's ok I will (or somebody else can) try to produce something along those lines. If we can't reach something acceptable for the general case then we can consider 'local' improvements.
 
 File: test/458-checker-instruction-simplification/src/Main.java
 
@@ -32,6 +58,14 @@ UUID: 637aea34_ab00a904
 Bytes: 122
 Only CHECK if you want to match the first Goto after the two Negs. Otherwise it will match against the entry block's Goto.
 
+359:0-359:42
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 637aea34_ab00a904
+UUID: c3f39619_5e7915c0
+Bytes: 31
+Fixed here and in other places.
+
 362:0-362:63
 Tue Apr 07 14:48:54 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,12 +73,28 @@ UUID: a3706250_2dbb6db3
 Bytes: 83
 If this is meant to occur between SuspendCheck and Goto, you should use plain CHECK
 
+362:0-362:63
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3706250_2dbb6db3
+UUID: c3f39619_be465981
+Bytes: 4
+Done
+
 382:0-383:33
 Tue Apr 07 11:16:44 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 634caa14_3b38779c
 Bytes: 115
 Out of curiosity, did you make these changes to defeat another optimization?  If so, please add a comment about it.
+
+382:0-383:33
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 634caa14_3b38779c
+UUID: 430966dc_3a5b815a
+Bytes: 105
+Reverted. After a rebase the test was broken, and these changes were part of the testing/fixing attempts.
 
 431:0-441:56
 Tue Apr 07 11:16:44 2015 +0000
@@ -71,12 +121,38 @@ UUID: 837fde20_ac19a37a
 Bytes: 600
 Let me just expand on Roland's comment. Be careful with mixing different types of CHECKs. Subsequent CHECK-DAGs don't enforce an order among one another, but a -NOT between will break that. So imagine a scenario: -DAG,-DAG,-NOT,-DAG. The first two assertions can occur in the output in any order, but the last -DAG will be forced to occur later than them and the -NOT will be checked against the output lines between. That is valid but I don't think you wanted to do that anywhere in this test file. If you need to limit the scope of the -NOT, use plain CHECK to emphasize that the order is intended.
 
+431:0-441:56
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_ac19a37a
+UUID: 430966dc_baab1186
+Bytes: 204
+I was misunderstanding the `-DAG` suffix. I have finally read the doc in `checker.py` and I reworked the tests to use in-order checks.
+
+I will also prepare a separate patch to fix other tests in the file.
+
+431:0-441:56
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 634caa14_7bdb5ff0
+UUID: 837fde20_ec456b06
+Bytes: 4
+Done
+
 614:14-614:27
 Tue Apr 07 11:16:44 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2337126d_44eec000
 Bytes: 14
 simplification
+
+614:14-614:27
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2337126d_44eec000
+UUID: 637aea34_0b01bdbc
+Bytes: 4
+Done
 
 625:0-633:15
 Tue Apr 07 11:16:44 2015 +0000
@@ -85,10 +161,26 @@ UUID: 2337126d_040d186c
 Bytes: 9
 Likewise.
 
+625:0-633:15
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2337126d_040d186c
+UUID: 637aea34_2bfef931
+Bytes: 4
+Done
+
 705:0-706:29
 Tue Apr 07 11:16:44 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 634caa14_bb3fa768
 Bytes: 6
 Ditto.
+
+705:0-706:29
+Wed Apr 08 08:36:55 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 634caa14_bb3fa768
+UUID: 83fd1eeb_fc8e292f
+Bytes: 9
+Reverted.
 

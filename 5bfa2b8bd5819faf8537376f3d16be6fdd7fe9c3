@@ -25,3 +25,11 @@ UUID: a3c5c2ce_8535020e
 Bytes: 278
 And the whole sentence actually refers to the fact that previously the sequence was "call +0; pop <reg>; sub <reg>, <offset-of-pop>" and we completely avoid the "sub". Instead, we take the anchor offset into account when generating PC-relative offsets or the large switch table.
 
+10:41-12:50
+Wed Apr 08 21:37:13 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a3c5c2ce_8535020e
+UUID: 83c43ed3_8afd0fed
+Bytes: 323
+SGTM. I think your statement of "rewrite all PC-relative addressing on x86" is some what over the top. You've inlined the macro to compute the beginning of the method and removed the subtract, adjusting the instructions that use the beginning of the method to incorporate the offset. Its more of a tinker than a rewrite ;-)
+

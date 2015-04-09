@@ -9,3 +9,32 @@ UUID: 63a66a29_4eee9300
 Bytes: 83
 458-checker-instruction-simplification (there are two tests using 458 as prefix…)
 
+File: test/458-checker-instruction-simplification/src/Main.java
+
+36:5-36:15
+Thu Apr 09 11:40:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_8b99917d
+Bytes: 685
+You do want -DAG checks here.
+
+The blocks are dumped in the same order they appeared in DEX, so not necessarily in a reverse post order. Here you only have constants and params in the entry block and the arithmetic in another block, but in general the isntructions could be dumped in the wrong order. Plain checks expect the order to be as given (so search for LongConst begins where Param was matched). -DAG checks which *immediately* follow one another will ignore the order and you only need to worry about the data dependency expressed through the inputs.
+
+My previous comment was on mixing -NOTs into the tests because that splits the -DAGs into groups and messes up the ordering.
+
+41:2-44:55
+Thu Apr 09 11:40:04 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_0b864116
+Bytes: 760
+I presume that here you want to express two independent things: (a) the param becomes input of Return, and (b) the Add instruction is removed. You should do that separately:
+
+  // CHECK-START: long Main.Add0(long) instruction_simplifier (after)
+  // CHECK-DAG:         [[Arg:j\d+]] ParameterValue
+  // CHECK-DAG:                      Return [ [[Arg]] ]
+
+  // CHECK-START: long Main.Add0(long) instruction_simplifier (after)
+  // CHECK-NOT:                      Add
+
+What you wrote says: find Param, find Return appearing after Param, make sure there's no Add between them. That happens to be correct for a simple test case like this one, but wouldn't hold for more complicated CFG because the Add could be in a different block, dumped after the Return's block.
+

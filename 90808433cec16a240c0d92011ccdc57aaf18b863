@@ -1,5 +1,134 @@
 Revision: 90808433cec16a240c0d92011ccdc57aaf18b863
 Patch-set: 7
+File: compiler/optimizing/builder.cc
+
+1047:2-1047:54
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_20686e64
+Bytes: 87
+Shouldn't we pass the code generator to the builder instead of storing it in the graph?
+
+1047:2-1047:24
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_658c46cc
+Bytes: 27
+Nit: CodeGenerator* codegen
+
+1049:4-1068:29
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_c230a61f
+Bytes: 64
+Please move this code to its own method (BuildSwitchJumpTable?).
+
+File: compiler/optimizing/code_generator_arm.cc
+
+909:38-909:59
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 430966dc_20ad0e15
+Bytes: 66
+Use ATTRIBUTE_UNUSED here instead of UNUSED on the following line.
+
+914:46-914:67
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 83fd1eeb_827cdeb2
+Bytes: 6
+Ditto.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+1634:40-1634:61
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_24035610
+Bytes: 66
+Use ATTRIBUTE_UNUSED here instead of UNUSED on the following line.
+
+1639:48-1639:69
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_c41a7270
+Bytes: 6
+Ditto.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+811:38-811:59
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_84106a54
+Bytes: 66
+Use ATTRIBUTE_UNUSED here instead of UNUSED on the following line.
+
+816:46-816:67
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c3f39619_640d5e36
+Bytes: 6
+Ditto.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+788:31-788:44
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_6b2f0135
+Bytes: 20
+Nit: num_entries - 1
+
+4067:0-4067:1
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_e5ecb68d
+Bytes: 17
+Nit: extra space.
+
+4068:0-4068:4
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_6b20a11d
+Bytes: 33
+Please use a 2-space indentation.
+
+4071:0-4071:1
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_c5f1ba67
+Bytes: 17
+Nit: extra space.
+
+4078
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_050912dd
+Bytes: 52
+Use ATTRIBUTE_UNUSED instead of UNUSED on line 4079.
+
+4096:47-4096:48
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_45130a0f
+Bytes: 55
+Please remove the space before the opening parenthesis.
+
+4095:0-4096:70
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_65160601
+Bytes: 45
+Please fit this instruction on a single line.
+
+4103:0-4104:64
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_08a007e5
+Bytes: 74
+Likewise (fit on a single line, remove space between opening parenthesis).
+
 File: compiler/optimizing/nodes.h
 
 305:2-305:33
@@ -16,4 +145,59 @@ Parent: 63f82afb_8f6245bc
 UUID: e305fac3_57e44c4f
 Bytes: 84
 The current code creates the HGraph before the CodeGenerator.  Should I change that?
+
+1600:2-1600:10
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_2bcea5ae
+Bytes: 7
+Remove.
+
+File: compiler/optimizing/register_allocator.cc
+
+1327:20-1327:30
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_abe29519
+Bytes: 22
+with an if or a switch
+
+File: compiler/utils/x86_64/assembler_x86_64.cc
+
+2730:1-2730:7
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_e50b16a7
+Bytes: 29
+Please use the explicit type.
+
+2732:28-2732:52
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_0513d2e1
+Bytes: 39
+Add parentheses to improve readability.
+
+2738:25-2738:49
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_0bf921c3
+Bytes: 9
+Likewise.
+
+File: compiler/utils/x86_64/assembler_x86_64.h
+
+304:4-304:15
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_6593a6d8
+Bytes: 48
+Please use GrowableArray instead of std::vector.
+
+741:0-743:3
+Thu Apr 09 10:47:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_ab07354e
+Bytes: 28
+Please fit on a single line.
 

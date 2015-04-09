@@ -36,3 +36,21 @@ IncludeDebugSymbols is a subset of GDBInformation (in fact, the latter forces th
 
 As such, it sounds like you want to change this back, and potentially clean up in a follow-up CL.
 
+438:44-438:69
+Thu Apr 09 15:12:11 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 63a66a29_aea57704
+UUID: 03d12e8c_ebaf6dde
+Bytes: 907
+My vote would be to have just one generic flag.
+
+GDB-info is misleading since Dwarf can be used by many tools - including LLDB, and libbacktrace.
+
+I like DebugSymbols more.  I would say it sounds like a DwarfSymbols (i.e. .debug_* sections), but not everyone might not know the name Dwarf so it is good generic name.
+
+But both of the above seem to imply that they only control inclusion/exclusion of debug data.  I think it would be conceivable that the flag could have deeper effects.  Say, do not deduplicate methods to make sure they can be identified, or omit some optimizations that rearrange code.
+
+Anyway, this is just bike-shedding about names.  I would not want to change it as part of this CL.  I picked GDBInformation here somewhat randomly, and made sure it is at least consistent with Quick and Elf Writer.
+
+Should I change it back to GetIncludeDebugSymbols? (and maybe kill GDB in further CL?)
+

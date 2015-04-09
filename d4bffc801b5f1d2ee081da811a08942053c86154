@@ -17,3 +17,13 @@ UUID: 837fde20_2c8933bb
 Bytes: 188
 I don't think that's a good place for it. If we change the return type to a pointer we might as well allow the use case of testing against nullptr to see if a sibling exists at that point.
 
+1561:0-1562:33
+Thu Apr 09 14:49:19 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837fde20_2c8933bb
+UUID: 63a66a29_eeaf7fde
+Bytes: 298
+Actually, I just noticed that art::LiveInterval::GetSiblingsAt already has this check as invariant in its while-loop, so it is fine.  Maybe it should be part of art::LiveInterval::GetSiblingsAt's documentation?
+
+Feel free to keep the DCHECKs in art::RegisterAllocator::ConnectSplitSiblings as well.
+

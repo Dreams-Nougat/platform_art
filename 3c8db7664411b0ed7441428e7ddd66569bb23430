@@ -1,0 +1,98 @@
+Revision: 3c8db7664411b0ed7441428e7ddd66569bb23430
+Patch-set: 8
+File: compiler/optimizing/inliner.cc
+
+214:0-214:102
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_0b4e41c5
+Bytes: 15
+Nit: long line.
+
+241:33-242:35
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_f111208c
+Bytes: 89
+Maybe try to fit this part on a single line?  Or better, move it to a predicate function?
+
+242:48-242:67
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_aeb90312
+Bytes: 27
+conservative approximation?
+
+248:8-248:47
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_d16ce404
+Bytes: 22
+Is this really needed?
+
+251:13-251:36
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_2816a3d1
+Bytes: 438
+I think it would be more natural to have this `if' be the outermost one:
+
+  if (current->CanThrow()) {
+    if (ends_callee_context && /* ... */) {
+      // ...
+    } else {
+      VLOG(compiler) << "Method " << PrettyMethod(method_index, caller_dex_file)
+                     << " could not be inlined because " << current->DebugName()
+                     << " can throw";
+      return false;
+    }
+  }
+
+and remove the DCHECK on line 247.
+
+File: compiler/optimizing/nodes.cc
+
+328:5-328:9
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_083c8741
+Bytes: 5
+TODO:
+
+File: test/472-checker-inliner-throw/src/Main.java
+
+2:16-2:20
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_88d4f774
+Bytes: 4
+2015
+
+60:0-60:1
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_e8d92bab
+Bytes: 43
+Please indent using spaces instead of tabs.
+
+76:10-76:55
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_28c4e3bd
+Bytes: 37
+!(ex instanceof NullPointerException)
+
+93:11-93:65
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_2ef7d3da
+Bytes: 47
+!(ex instanceof ArrayIndexOutOfBoundsException)
+
+106:10-106:54
+Thu Apr 09 16:21:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_0ef48fd2
+Bytes: 36
+!(ex instanceof ArithmeticException)
+

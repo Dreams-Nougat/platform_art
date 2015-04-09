@@ -73,6 +73,13 @@ Ditto.
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
+766:4-767:53
+Thu Apr 09 11:37:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_05a0f2e4
+Bytes: 28
+document why you need temps.
+
 788:31-788:44
 Thu Apr 09 10:47:58 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -107,6 +114,13 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a3c5c2ce_050912dd
 Bytes: 52
 Use ATTRIBUTE_UNUSED instead of UNUSED on line 4079.
+
+4089:11-4089:25
+Thu Apr 09 11:37:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_659d66b1
+Bytes: 31
+can this actually be unaligned?
 
 4096:47-4096:48
 Thu Apr 09 10:47:58 2015 +0000
@@ -146,12 +160,31 @@ UUID: e305fac3_57e44c4f
 Bytes: 84
 The current code creates the HGraph before the CodeGenerator.  Should I change that?
 
+305:2-305:33
+Thu Apr 09 11:37:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e305fac3_57e44c4f
+UUID: 63a66a29_ce2f23b6
+Bytes: 413
+You only need this in the builder which is constructed after the codegen.
+
+I'm not so fond of this dependency as the builder should not be concerned with codegen details...
+
+I can see this being only temporary until we support switch generation in all backends. So please move this to the builder only, set it in the constructor and document that it should be removed once we completed the other backends as well.
+
 1600:2-1600:10
 Thu Apr 09 10:47:58 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 03d12e8c_2bcea5ae
 Bytes: 7
 Remove.
+
+1619:2-1619:59
+Thu Apr 09 11:37:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_c58d3a84
+Bytes: 29
+I don't think this is needed.
 
 File: compiler/optimizing/register_allocator.cc
 

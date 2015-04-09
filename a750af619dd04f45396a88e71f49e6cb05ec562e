@@ -1,6 +1,142 @@
 Revision: a750af619dd04f45396a88e71f49e6cb05ec562e
 Patch-set: 9
+File: compiler/optimizing/code_generator_utils.cc
+
+0
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_25ba4e21
+Bytes: 96
+Likewise, the contents of this file should be merged into compiler/optimizing.code_generator.cc.
+
+21:54-21:66
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_ee677f1f
+Bytes: 210
+For the sake of type safety, instead of this boolean argument, what about turning this function into a template an introducing CalculateMagicAndShiftForDivRemInt and CalculateMagicAndShiftForDivRemLong facades?
+
+26:5-26:37
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_ee2adfa7
+Bytes: 88
+What I meant was: "Implementation according to", or maybe "Implementation following". :)
+
+27:21-27:22
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_2b898526
+Bytes: 1
+.
+
+36:32-36:84
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_8e623b11
+Bytes: 91
+This condition is exactly the same as the one from the previous line; did I miss something?
+
+42:27-42:36
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_6e1f0f8b
+Bytes: 10
+calculated
+
+46:86-46:90
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_4e1cd394
+Bytes: 6
+32 - p
+
+55:24-56:72
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_8b1fd15e
+Bytes: 208
+What about introducing an intermediate variable here :
+
+  uint64_t sign_bit =
+    is_long ? (static_cast<uint64_t>(divisor) >> 63) : (static_cast<uint32_t>(divisor) >> 31);
+  uint64_t tmp = exp + sign_bit;
+
+?
+
+57:30-57:41
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_8e4b5b89
+Bytes: 23
+Please add parentheses.
+
+File: compiler/optimizing/code_generator_utils.h
+
+0
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_c5b41a38
+Bytes: 130
+If it is meant to be shared among back ends, the contents of this file should be merged into compiler/optimizing.code_generator.h.
+
+22
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_0e580b5a
+Bytes: 39
+, as out arguments `magic` and `shift`.
+
+23:0-23:96
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_85aa22d0
+Bytes: 42
+Move this function to the `art' namespace.
+
 File: compiler/optimizing/code_generator_x86.cc
+
+2231:28-2231:38
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_8ec4fb42
+Bytes: 121
+IsIntConstant? (I believe this method does not support long values yet; maybe implement support for longs in another CL?)
+
+2235:2-2235:5
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_aebf37a3
+Bytes: 7
+int32_t
+
+2250:50-2250:79
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_282503d7
+Bytes: 9
+HDiv* div
+
+2251:2-2251:31
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_681ffb8a
+Bytes: 7
+Remove.
+
+2257:2-2257:5
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_481cbf94
+Bytes: 7
+int32_t
+
+2259:9-2259:32
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_2b93452b
+Bytes: 7
+Remove.
 
 2282:2-2282:57
 Thu Apr 09 10:58:03 2015 +0000
@@ -17,6 +153,20 @@ UUID: a3c5c2ce_65c446ad
 Bytes: 4
 Done
 
+2363:17-2363:27
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_0bdbe1f0
+Bytes: 13
+IsIntConstant
+
+2364:8-2364:11
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_287223e2
+Bytes: 7
+int32_t
+
 2367:13-2367:15
 Thu Apr 09 10:58:03 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,7 +182,65 @@ UUID: a3c5c2ce_45c14a9b
 Bytes: 4
 Done
 
+2442:27-2442:37
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_68553b22
+Bytes: 13
+IsIntConstant
+
+2516
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_28a0639e
+Bytes: 13
+IsIntConstant
+
+File: compiler/optimizing/code_generator_x86.h
+
+166:0-168:68
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_ab63b5c6
+Bytes: 62
+We should implement these for the ARM and ARM64 back ends too.
+
 File: compiler/optimizing/code_generator_x86_64.cc
+
+2216:2-2221:3
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_08864716
+Bytes: 31
+Please use Int64FromConstant().
+
+2251:6-2251:34
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 63a66a29_8ef7db5b
+Bytes: 65
+LOG(FATAL) << "Unexpected type " << instruction->GetResultType();
+
+2255:53-2255:82
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_ab173500
+Bytes: 9
+HDiv* div
+
+2256:2-2256:31
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_a8f1f3b2
+Bytes: 7
+Remove.
+
+2264:2-2269:3
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_6b16dd00
+Bytes: 31
+Please use Int64FromConstant().
 
 2317:14-2317:17
 Thu Apr 09 10:58:03 2015 +0000
@@ -48,4 +256,25 @@ Parent: a3c5c2ce_c529ba04
 UUID: 03d12e8c_6b837d06
 Bytes: 4
 Done
+
+2325:21-2325:27
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 03d12e8c_ab40d5f7
+Bytes: 9
+branches?
+
+2389:16-2389:31
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_c819cf7a
+Bytes: 9
+numerator
+
+2439:4-2444:5
+Thu Apr 09 14:04:02 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a3c5c2ce_889a3746
+Bytes: 31
+Please use Int64FromConstant().
 

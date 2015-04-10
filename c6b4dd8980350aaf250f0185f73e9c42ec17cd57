@@ -26,6 +26,18 @@ UUID: e3617abc_d7d31cda
 Bytes: 256
 Actually, maybe it's an abstraction you need. This code does not have to know about dwarf. So things like RelOffsetForMany should be internal to the assemblers, and the code here should call a method that will take care of lowering it down to dwarf things.
 
+517:0-517:54
+Fri Apr 10 09:22:51 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3617abc_d7d31cda
+UUID: a38a229d_5d8c9bcb
+Bytes: 770
+So some of the methods would start with __ cfi(). and some would be part of assembler?  I would not like the inconsistency.  I could wrap all dwarf methods in all assemblers, but that seems like an overkill.  I also can not do it just once in the base class since the register type is platform specific, and I would like to keep it that way.
+
+The old CFI code just used ints for everything helper methods to covert (ART) ints to (DWARF) ints.  The main motivation for existence of those small helper methods is to make sure the correct remapping from ART reg number to DWARF reg number is always done, and it is difficult to omit or use the wrong one.
+
+To be clear, I do not particularly like those small conversion methods, but it is the best solution I could think of.
+
 521:0-521:52
 Thu Apr 09 21:31:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -57,6 +69,14 @@ UUID: e3617abc_f7d820f7
 Bytes: 40
 OK, but you could still write R0, right?
 
+545:37-545:48
+Fri Apr 10 09:22:51 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3617abc_f7d820f7
+UUID: e3617abc_b71ce823
+Bytes: 52
+Oh, I see what you mean.  Yes, that would be better.
+
 550:39-550:51
 Thu Apr 09 21:31:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -79,6 +99,14 @@ Parent: e3617abc_d714fc44
 UUID: 6394aac1_fba3af22
 Bytes: 20
 Same here, write S0.
+
+550:39-550:51
+Fri Apr 10 09:22:51 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6394aac1_fba3af22
+UUID: 6394aac1_bb0687a0
+Bytes: 5
+True.
 
 1212:0-1215:50
 Thu Apr 09 21:31:38 2015 +0000
@@ -110,6 +138,14 @@ Parent: 6394aac1_1b993bf8
 UUID: e3617abc_370458cd
 Bytes: 150
 Please do. (That was my intention here: https://android-review.googlesource.com/#/c/145700/2/compiler/optimizing/optimizing_cfi_test_expected.inc@58 )
+
+1212:0-1215:50
+Fri Apr 10 09:22:51 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6394aac1_1b993bf8
+UUID: e3617abc_3709b8dd
+Bytes: 263
+I agree.  If fact, I initially put the cfi code in GenerateFrameExit as you suggested.  I found later that I need to move it up a level.  Which also introduces replication.  It also make the cfi test slightly more awkward.  I just was not brave enough to move it.
 
 1226:0-1229:50
 Thu Apr 09 21:31:38 2015 +0000

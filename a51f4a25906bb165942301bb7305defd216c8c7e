@@ -9,6 +9,18 @@ UUID: a38a229d_5d165b00
 Bytes: 142
 I think it's really the cache that bothers me :-) Since we can just look forward for equivalent phis, I think we should just avoid this cache.
 
+119:5-119:46
+Fri Apr 10 10:25:23 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a38a229d_5d165b00
+UUID: 6394aac1_fbf72f08
+Bytes: 470
+:) The alternative is  why would you want to have n^2 traversal instead of a linear one? I know that's just in debug mode but still...
+
+The alternative is to allocate at use site (which is a waste knowing that we need to do it for each method) or have something lighter on the stack (but i was lazy to re-do the bit manipulation of a bitvector and this is more convenient).
+
+No strong opinions here though  (it's a minor thing) so if it bothers you much i can change it.
+
 File: compiler/optimizing/ssa_builder.cc
 
 175:21-175:23
@@ -46,6 +58,14 @@ UUID: a38a229d_bd459f07
 Bytes: 8
 No need?
 
+224:10-224:26
+Fri Apr 10 10:25:23 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a38a229d_bd459f07
+UUID: a38a229d_7dcb17cc
+Bytes: 77
+Indeed. I keep forgetting that we hold phis and the rest in different list :)
+
 230:0-230:26
 Fri Apr 10 08:53:10 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -68,4 +88,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e3617abc_7738909d
 Bytes: 111
 As we saw, makes a new case to handle in a switch :-) You actually don't need this if you get rid of the cache.
+
+60:0-60:25
+Fri Apr 10 10:25:23 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3617abc_7738909d
+UUID: a38a229d_dd242b2f
+Bytes: 84
+nope, it doesn't. It makes a new case only if you introduce a new value in the enum.
 

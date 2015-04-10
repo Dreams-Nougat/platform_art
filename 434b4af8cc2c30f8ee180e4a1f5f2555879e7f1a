@@ -1,0 +1,56 @@
+Revision: 434b4af8cc2c30f8ee180e4a1f5f2555879e7f1a
+Patch-set: 6
+File: test/458-checker-instruction-simplification/src/Main.java
+
+328:2-328:41
+Fri Apr 10 10:53:41 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3617abc_7736d063
+Bytes: 47
+Move this check into its own CHECK-START block?
+
+365:2-365:41
+Fri Apr 10 10:53:41 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3617abc_b7d4e874
+Bytes: 9
+Likewise.
+
+395:0-406:42
+Fri Apr 10 10:53:41 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e3617abc_17c4b4bd
+Bytes: 1016
+Maybe these checks should be uncorrelated? E.g.
+
+1. First ensure the graph is not changed first:
+
+  // CHECK-START: long Main.AddNegs3(long, long) instruction_simplifier (after)
+  // -------------- Arguments and initial negation operations.
+  // CHECK-DAG:     [[Arg1:j\d+]]     ParameterValue
+  // CHECK-DAG:     [[Arg2:j\d+]]     ParameterValue
+  // CHECK-DAG:     [[Neg1:j\d+]]     Neg [ [[Arg1]] ]
+  // CHECK-DAG:     [[Neg2:j\d+]]     Neg [ [[Arg2]] ]
+  // CHECK:                           Goto
+  // -------------- Loop
+  // CHECK:                           SuspendCheck
+  // CHECK:         [[Add:j\d+]]      Add [ [[Neg1]] [[Neg2]] ]
+  // CHECK:                           Goto
+
+2. Then check no Neg instruction has been inserted in the loop:
+
+  // CHECK-START: long Main.AddNegs3(long, long) instruction_simplifier (after)
+  // -------------- Loop
+  // CHECK:                           SuspendCheck
+  // CHECK-NOT:                       Neg
+  // CHECK:                           Goto
+
+David, what do you think?
+
+729:0-750:42
+Fri Apr 10 10:53:41 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a38a229d_c0be00f7
+Bytes: 6
+Ditto?
+

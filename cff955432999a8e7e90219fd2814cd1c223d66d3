@@ -277,6 +277,21 @@ I wrote this because it makes it easy to predict the result.
 I did have a look:
 GVN merges the two additions. Then `instruction_simplifier_after_types` optimizises the `or` away and moves the `neg` after the `add`. Quite cool!
 
+337:11-337:44
+Fri Apr 10 15:34:41 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 83cfde46_b5cac2c5
+UUID: 634caa14_fb51afec
+Bytes: 228
+Indeed!
+
+To prevent regressions, I suggest adding an additional Checker (Czecher?) :) section to make sure the two additions are merged:
+
+  // CHECK-START: int Main.AddNegs2(int, int) GVN (after)
+  // ...
+
+(Maybe in another CL?)
+
 357:73-357:79
 Sat Mar 21 14:13:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -356,6 +371,21 @@ Parent: 667af834_b1925854
 UUID: c61c8421_9c50cde8
 Bytes: 198
 I checked that manually. But when I add a test it fails although the output looks ok. From a quick test it looks like the checker only looks at the first instance of the line matching `CHECK-START`.
+
+465
+Fri Apr 10 15:34:41 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c61c8421_9c50cde8
+UUID: 2312b2d8_12cb52cd
+Bytes: 573
+Yeah,  when an optimization is performed more than once with the same name (here, "constant_folding"), Checker only looks at the first instance.
+
+Can you add add an explicit name (e.g. "constant_folding_after_inlining") to the "fold2" object (through an additional argument to its ctor) in RunOptimizations in compiler/optimizing/optimizing_compiler.cc, and add a new Checker stanza starting with:
+
+  // CHECK-START: int Main.NegNeg2(int) constant_folding_after_inlining (after)
+  // ...
+
+to ensure the second constant folding pass produces this constant 0 as return value?
 
 517:28-517:48
 Fri Mar 20 17:37:20 2015 +0000

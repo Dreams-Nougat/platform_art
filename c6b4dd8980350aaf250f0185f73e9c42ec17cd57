@@ -18,6 +18,14 @@ Bytes: 120
 Where in the assemblers should it be?
 Do you effectively want to revert changes of "Implement CFI for JNI." Patch Set 2?
 
+517:0-517:54
+Fri Apr 10 08:57:29 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a38a229d_5dd73beb
+UUID: e3617abc_d7d31cda
+Bytes: 256
+Actually, maybe it's an abstraction you need. This code does not have to know about dwarf. So things like RelOffsetForMany should be internal to the assemblers, and the code here should call a method that will take care of lowering it down to dwarf things.
+
 521:0-521:52
 Thu Apr 09 21:31:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,6 +49,14 @@ Bytes: 144
 The first argument is the "base register" - it is the register that corresponds to bit 0 in the mask.
 So mask 00000101 would apply to R0 and R2.
 
+545:37-545:48
+Fri Apr 10 08:57:29 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6394aac1_bbf7675b
+UUID: e3617abc_f7d820f7
+Bytes: 40
+OK, but you could still write R0, right?
+
 550:39-550:51
 Thu Apr 09 21:31:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -56,6 +72,14 @@ UUID: e3617abc_d714fc44
 Bytes: 51
 whereas here mask 00000101 would apply to S0 and S2
 
+550:39-550:51
+Fri Apr 10 08:57:29 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3617abc_d714fc44
+UUID: 6394aac1_fba3af22
+Bytes: 20
+Same here, write S0.
+
 1212:0-1215:50
 Thu Apr 09 21:31:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -70,6 +94,14 @@ Parent: e3617abc_57554c21
 UUID: e3617abc_f719007a
 Bytes: 123
 In this case, I could, but not in general.  Usually the generation of "ret" instruction is not part of GenerateFrameExit().
+
+1212:0-1215:50
+Fri Apr 10 08:57:29 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3617abc_f719007a
+UUID: 6394aac1_1b993bf8
+Bytes: 52
+Well then, could we move __ret to GenerateFrameExit?
 
 1226:0-1229:50
 Thu Apr 09 21:31:38 2015 +0000

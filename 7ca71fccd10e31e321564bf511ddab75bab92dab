@@ -60,6 +60,15 @@ UUID: 83c43ed3_b99db9b3
 Bytes: 51
 Nicolas says no to this. Please introduce a struct.
 
+File: compiler/utils/dex_cache_arrays_layout.h
+
+84:31-84:86
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6394aac1_5b166300
+Bytes: 189
+The problem is that you're using non-static functions to compute values of other members. If you used static functions taking an additional pointer size argument, this wouldn't be an issue.
+
 File: patchoat/patchoat.cc
 
 425:0-465:3
@@ -68,6 +77,15 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 237f124e_fba71cb2
 Bytes: 18
 Separate function.
+
+File: runtime/art_field.cc
+
+51:0-51:71
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a38a229d_fd4ba735
+Bytes: 152
+Can you update or remove the comment, please? We have made a deliberate choice to keep the same order as in the dex file to allow binary search by name.
 
 File: runtime/check_jni.cc
 
@@ -94,6 +112,13 @@ UUID: 234d525a_3158f05a
 Bytes: 89
 Why is the order here changed, without any comments? If you had chosen intuitive names...
 
+2928:22-2928:58
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a38a229d_7d2cf73e
+Bytes: 82
+We don't GC proxy classes, do we? (Otherwise we would leak memory allocated here.)
+
 File: runtime/class_linker.h
 
 508:2-510:50
@@ -112,6 +137,42 @@ UUID: 234d525a_f119087a
 Bytes: 100
 This is missing the art_field include (must be pulling it transitively). Please add for cleanliness.
 
+File: runtime/gc/heap.cc
+
+2713:12-2713:37
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6394aac1_db24332f
+Bytes: 108
+I don't think this is still valid. Previously we could have had empty array but now we have nullptr instead.
+
+File: runtime/image.h
+
+149:0-153:28
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6394aac1_3b3c3742
+Bytes: 132
+Maybe we should rename this to native object space offset/size with a view of moving more things here (ArtMethod, dex cache arrays).
+
+File: runtime/jdwp/jdwp_event.cc
+
+122:16-122:22
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6394aac1_bbaa07d0
+Bytes: 15
+Please realign.
+
+File: runtime/linear_alloc.h
+
+37:0-41:5
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a38a229d_9d5623b4
+Bytes: 89
+I don't think the construction of elements should be the responsibility of the allocator.
+
 File: runtime/mirror/class-inl.h
 
 436:2-437:88
@@ -129,6 +190,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 636d8ab3_f37cb036
 Bytes: 26
 Is that really still true?
+
+1157:0-1159:46
+Fri Apr 10 09:56:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 636d8ab3_f37cb036
+UUID: 6394aac1_bb720763
+Bytes: 77
+Please remove. I clearly missed this comment in the field ordering change CL.
 
 1161:41-1161:49
 Thu Apr 09 20:06:33 2015 +0000

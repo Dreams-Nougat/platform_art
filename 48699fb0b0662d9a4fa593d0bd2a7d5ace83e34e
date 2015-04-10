@@ -81,3 +81,13 @@ Since we'll probably end up recompiling it at runtime, potentially many times, i
 
 Jeff: how hard would it be to not rely on the verifier? I guess "baseline" compilation would require data flow analysis....
 
+2277:0-2280:3
+Fri Apr 10 15:28:38 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e3617abc_775fb0f9
+UUID: 636d8ab3_2bc944a7
+Bytes: 490
+Yes, deletion was an optimization of mathieuc for svelte devices. Originally we kept all of them around until driver shutdown.
+
+Yeah, you'd need a dataflow analysis to track which registers have uninitialized copies that magically become fixed. As Quick needs to do the same, I told Jeff to use the verifier results for the time being - that's what VerifiedMethod is for, after all. I think that approach is the right one until 1) Quick is deprecated and 2) we do re-compilation at runtime.
+

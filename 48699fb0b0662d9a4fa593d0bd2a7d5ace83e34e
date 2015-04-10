@@ -69,3 +69,15 @@ UUID: e356daec_9e1a816f
 Bytes: 177
 Jeff is intervening in the build process, as all String.<init> calls need to go to StringFactory.init. But for that you need to keep track of copies of the uninitialized object.
 
+2277:0-2280:3
+Fri Apr 10 08:37:23 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e356daec_9e1a816f
+UUID: e3617abc_775fb0f9
+Bytes: 539
+I see. So about these verified_method objects. They're all being created before any compilation right? So deleting one after its "main" compilation is sort of an optimization.
+
+Since we'll probably end up recompiling it at runtime, potentially many times, if we ever need those results (and Jeff is currently putting that requirement), we'll probably have to keep them around, instead of verifying again and again.
+
+Jeff: how hard would it be to not rely on the verifier? I guess "baseline" compilation would require data flow analysis....
+

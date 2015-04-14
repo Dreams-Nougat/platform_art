@@ -1,0 +1,13 @@
+Revision: 5a65d23e06acc74a5d9dcc3024b772e1b6d42650
+Patch-set: 2
+File: runtime/class_linker.cc
+
+1268:6-1268:35
+Tue Apr 14 05:24:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_3f90c518
+Bytes: 481
+As can be seen here, I'm preparing to remove the special branch in FindClass that checks for this and unify with the code here. The issue is correctly throwing exceptions, which FindClassInPathClassLoader delegates to the actual class-loader (if we fail to load something in fast-path, we'll just call the Java code) - which is obviously a problem if the class-loader is null.
+
+So that's a follow-up CL down the road, but I'm interested in opinions on how to handle that elegantly.
+

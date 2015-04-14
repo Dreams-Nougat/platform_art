@@ -9,6 +9,14 @@ UUID: f0f4e242_c29904c6
 Bytes: 114
 This ShadowFrame is not visited by GC so it may contain stale references if a GC occurred during the invoke above.
 
+470:41-470:64
+Tue Apr 14 07:00:55 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0f4e242_c29904c6
+UUID: 10597645_17b4de31
+Bytes: 24
+Good point! I'll fix it.
+
 File: runtime/thread.h
 
 357:4-359:5
@@ -17,4 +25,24 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 30ebda64_24867c62
 Bytes: 41
 Can you explain why you need this change?
+
+357:4-359:5
+Tue Apr 14 07:00:55 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30ebda64_24867c62
+UUID: 904c868c_a764c4ca
+Bytes: 676
+It's possible there is nested case for QuickExceptionHandler. And each QuickExceptionHandler calls GetLongJumpContext() and then ReleaseLongJumpContext(), so the DCHECK(tlsPtr_.long_jump_context == nullptr); isn't accurate.
+
+tlsPtr_.long_jump_context is basically a cached context to avoid allocating a context each time GetLongJumpContext() is called. Since we only cache one, we just delete the one that's not needed.
+
+Guess I can also do it as:
+    if (tlsPtr_.long_jump_context != nullptr) {
+      // We already have one context for reuse.
+      delete context;
+    } else {
+      // Save context for reuse.
+      tlsPtr_.long_jump_context = context;
+    }
+Is this better?
 

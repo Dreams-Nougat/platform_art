@@ -180,6 +180,28 @@ ditto
 
 File: compiler/optimizing/code_generator_arm64.cc
 
+484
+Tue Apr 14 18:45:53 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0926a12_a37a9eb3
+Bytes: 23
+move to common_arm64.h?
+
+494
+Tue Apr 14 18:45:53 2015 +0000
+Author: Serban Constantinescu <1030338@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 709c722a_8162fe11
+Bytes: 581
+Would be nice to add the extra checks that VIXL uses, just in case we abuse this at some point.
+
+1966   VIXL_ASSERT(!(mem.IsPreIndex() || mem.IsPostIndex()));
+1967   VIXL_ASSERT(!registers.Overlaps(tmp_list_));
+1968   VIXL_ASSERT(!registers.Overlaps(fptmp_list_));
+1969   VIXL_ASSERT(!registers.IncludesAliasOf(sp));
+
+
+Also when the offset cannot be encoded into the immediate field it would be nice to precompute it using BaseMemOperandForLoadStoreCPURegList(). Otherwise this will be computed for each Stp/Ldp. This might be outside the scope of this patch so you can add a TODO.
+
 2453:0-2457:63
 Thu Apr 09 21:31:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

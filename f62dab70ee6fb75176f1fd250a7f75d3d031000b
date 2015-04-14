@@ -1,0 +1,108 @@
+Revision: f62dab70ee6fb75176f1fd250a7f75d3d031000b
+Patch-set: 2
+File: runtime/oat_file.cc
+
+596:56-596:57
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10597645_8f28b605
+Bytes: 177
+Are you using '*' instead of ':' to avoid collision with the multdex separator? If so, perhaps add a comment here, or move the definition of this next to the multidex separator.
+
+602:0-602:43
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10597645_af1b7af3
+Bytes: 272
+What if the dex files this oat file depends on are moved to a different directory? Should we have support for relative encoded dex locations for the classpath dependencies like we have for the encoded dex locations in the oat file? Though I'm not sure how that would work.
+
+602:0-605:42
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 904c868c_8ad30f53
+Bytes: 155
+Is the format of this documented anywhere? In a comment with an example, or in a doc describing the oat file format (is there such a thing?) would be nice.
+
+612:6-612:33
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 506daeeb_1d86576b
+Bytes: 79
+Add a comment to the header file saying dex_dependencies is allowed to be null.
+
+617:0-618:72
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 904c868c_cac907a9
+Bytes: 55
+Put this assumption in the header file so callers know?
+
+621:0-625:3
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 904c868c_aad6cb42
+Bytes: 143
+Would the code be cleaner and more robust if you had two kinds of separators instead of one? Like:  location1=checksum1;location2=checksum2;...
+
+630:59-630:61
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10597645_0f9a86eb
+Bytes: 90
+Are checksums normally printed out in decimal or hex? My personal preference would be hex.
+
+630:4-630:63
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 506daeeb_fd9cc3b7
+Bytes: 133
+You use ostringstream to write the encoded dex locations string. Why not use istringstream to parse the encoded dex locations string?
+
+631:8-631:22
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 506daeeb_dd9f7faa
+Bytes: 28
+Is 0 a legal checksum value?
+
+643:29-643:60
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 506daeeb_5d77ef02
+Bytes: 81
+Add more context to the message, such as " while checking dex file dependencies"?
+
+639:1-653:5
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 904c868c_2adadb65
+Bytes: 183
+The oat file assistant has a function to GetRequiredDexChecksum. Could that function be reused here? I feel like getting the required dex checksum is an OatFileAssistant kind of task.
+
+661:0-673:3
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 506daeeb_bd964b92
+Bytes: 140
+This duplicates code from above. How about parsing the encoded dex dependencies in a separate function that is reused here and in the Check?
+
+File: runtime/oat_file.h
+
+254:0-256:93
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 506daeeb_9dc267a1
+Bytes: 417
+I don't understand this comment, and it isn't obvious to me what this function is checking.
+
+Is it this: dex_dependencies is the std::string returned by EncodeDexFileDependencies on the currently opened dex files, and it checks that the encoded dex file dependencies stored in the oat file match that? And 'msg' is used for an error_msg?
+
+(Presumably it will make more sense to me as I review the rest of the change.)
+
+258:0-261:83
+Tue Apr 14 21:36:54 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10597645_ef64d294
+Bytes: 277
+I feel like this would be more clear if there was some separate EncodedDexLocations class with a GetLocations() method, rather than passing around encoded dex locations as a string (sometimes std::string, sometimes char*) and calling methods on OatFile to encode and decode it.
+

@@ -9,6 +9,14 @@ UUID: 9033a6f4_82376311
 Bytes: 215
 Buffering means cost of copying the pointers (to the roots), which in theory could negate the benefit of reduced dispatch overhead? But the measurement does not indicate an issue. Care might need to be taken though.
 
+12:0-12:62
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9033a6f4_82376311
+UUID: 9033a6f4_980b525d
+Bytes: 148
+The buffering is only used in some places, I have ideas of how we could use it for thread roots but it requires some changes to shadow frame layout.
+
 File: runtime/class_linker.cc
 
 917:24-917:27
@@ -35,6 +43,14 @@ UUID: b0242aae_cfd34b52
 Bytes: 205
 Here, it's ok to just have the ref (the content of the root) instead of the pointer to the root. But is there a reason not to make SingleRootVisitor get the latter? Why restrict SingleRootVisitor this way?
 
+517:17-517:37
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0242aae_cfd34b52
+UUID: b0242aae_15fcc6b0
+Bytes: 162
+It was just for convenience, I am open to changing it, but I think anything that modifies roots probably wants the buffered implementation which should be faster.
+
 File: runtime/gc/collector/mark_sweep.cc
 
 498:16-498:26
@@ -43,6 +59,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0242aae_afea3fa3
 Bytes: 74
 If this is the only VerifyRoot call site, could it be merged/inlined here?
+
+498:16-498:26
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0242aae_afea3fa3
+UUID: b0242aae_35f462d1
+Bytes: 4
+Done
 
 File: runtime/gc_root-inl.h
 
@@ -53,12 +77,28 @@ UUID: b0242aae_0f0cb3ee
 Bytes: 73
 Can this be MirrorType instead Object (and the down_cast can be removed)?
 
+32:34-32:48
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0242aae_0f0cb3ee
+UUID: b0242aae_75daea66
+Bytes: 73
+Same comment as other file, I think that causes strict aliasing problems.
+
 36:40-36:54
 Tue Apr 14 01:16:09 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0242aae_8f47830f
 Bytes: 8
 Here too
+
+36:40-36:54
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0242aae_8f47830f
+UUID: 9033a6f4_f8f016de
+Bytes: 4
+Same
 
 File: runtime/gc_root.h
 
@@ -100,12 +140,28 @@ UUID: 9033a6f4_a27c9f6f
 Bytes: 125
 I mentioned this earlier, but could this be mirror::Object** root. It seems a root visitor should be able to update the root.
 
+124:25-124:45
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9033a6f4_a27c9f6f
+UUID: b0242aae_cae45953
+Bytes: 87
+Single root visitor is only used for when the root isn't updated currently, is that OK?
+
 160:38-160:52
 Tue Apr 14 01:16:09 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9033a6f4_a2281f05
 Bytes: 23
 Can this be MirrorType?
+
+160:38-160:52
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9033a6f4_a2281f05
+UUID: 9033a6f4_7dd898a5
+Bytes: 179
+I think the problem with doing that is that casting a mirror::CompressedReference<MirrorType>* to mirror::CompressedReference<mirror::Object>* breaks strict aliasing requirements.
 
 File: runtime/handle.h
 
@@ -200,4 +256,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0299e86_ba8726a9
 Bytes: 105
 Mostly StackReference == CompressedReference. Maybe worth keeping StackReference for documenting purpose?
+
+62:14-62:28
+Tue Apr 14 03:10:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0299e86_ba8726a9
+UUID: 9033a6f4_dd354c55
+Bytes: 111
+What do you mean keep? I kept it as a typedef. We cast StackReference* to CompressedReference* in a few places.
 

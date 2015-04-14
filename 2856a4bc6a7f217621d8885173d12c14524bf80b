@@ -1,0 +1,192 @@
+Revision: 2856a4bc6a7f217621d8885173d12c14524bf80b
+Patch-set: 26
+File: compiler/dex/mir_method_info.cc
+
+89:96-89:97
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_c45452ac
+Bytes: 16
+Too many columns
+
+File: compiler/dex/quick/dex_file_method_inliner.cc
+
+445:90-445:115
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_df354455
+Bytes: 16
+Too many columns
+
+File: compiler/dex/quick/gen_invoke.cc
+
+1554:31-1554:46
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_041ffae2
+Bytes: 88
+Is there a cleaner way to do this without needing PrettyMethod, maybe vmarko would know.
+
+1554:98-1554:106
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_840beaaa
+Bytes: 7
+Columns
+
+File: compiler/dex/quick/x86/call_x86.cc
+
+349
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_7f63f03f
+Bytes: 16
+ATTRIBUTE_UNUSED
+
+File: runtime/arch/mips/quick_entrypoints_mips.S
+
+979:4-979:37
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_af96bf48
+Bytes: 142
+Seems like there is a lot of areas in this file where we don't call RESTORE_REFS_AND_ARGS_CALLEE_SAVE_FRAME. That is probably compaction bugs.
+
+File: runtime/hprof/hprof.cc
+
+1057:61-1057:66
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_6f48d73e
+Bytes: 84
+Isn't klass here the array class? I don't see how it would ever be the string class.
+
+File: runtime/interpreter/interpreter_common.cc
+
+604:10-604:21
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_bad4c6e3
+Bytes: 76
+Seems like this would regress all calls, is there a way to avoid this check?
+
+File: runtime/interpreter/interpreter_goto_table_impl.cc
+
+528:25-528:26
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_1a5bda10
+Bytes: 111
+This is probably a minor slowdown, we could introduce a new quickened byte code to speed it up if we wanted to.
+
+File: runtime/interpreter/interpreter_switch_impl.cc
+
+432:55-432:70
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_e21e27e5
+Bytes: 9
+Same here
+
+File: runtime/mirror/string-inl.h
+
+28:17-28:18
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_5a3cc274
+Bytes: 65
+class is included twice, and heap should be in the above section.
+
+47:11-47:22
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_fad92ef6
+Bytes: 16
+ATTRIBUTE_UNUSED
+
+90:22-90:24
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_fa0b6ed6
+Bytes: 16
+ATTRIBUTE_UNUSED
+
+107:40-107:46
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_5dc39c8a
+Bytes: 75
+Please don't access members directly, use GetField32 to access count_ here.
+
+107:6-107:14
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_9a546aab
+Bytes: 94
+I think you can rely on overflow behavior i.e. if (static_cast<uint32_t>(index) > count_) {...
+
+150:11-150:18
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_c2bfab0b
+Bytes: 47
+You can just return here without the condition.
+
+162:15-162:25
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_a28c9f8d
+Bytes: 9
+Same here
+
+174:6-174:14
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_8291a3a2
+Bytes: 8
+And here
+
+File: runtime/native/java_nio_charset_Charsets.cc
+
+99:10-99:14
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_1ab3da7b
+Bytes: 57
+Is this copied? Why doesn't it follow the ART convention.
+
+File: runtime/runtime.h
+
+90:72-90:97
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_2f52cf6a
+Bytes: 13
+Line too long
+
+File: runtime/verifier/register_line.cc
+
+144
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_1a151ac2
+Bytes: 48
+This makes a copy, then you insert into the copy
+
+148:26-148:28
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_7d377812
+Bytes: 54
+I think you can do
+std::set<uint32_t> reg_set = { 1 };
+
+File: runtime/well_known_classes.cc
+
+350:21-350:42
+Tue Apr 14 01:15:07 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_3ae21652
+Bytes: 49
+Maybe easier to use an unordered_set or something
+

@@ -1,5 +1,14 @@
 Revision: bb87e0f1a52de656bc77cb01cb887e51a0e5198b
 Patch-set: 6
+File: /COMMIT_MSG
+
+12:0-12:62
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_82376311
+Bytes: 215
+Buffering means cost of copying the pointers (to the roots), which in theory could negate the benefit of reduced dispatch overhead? But the measurement does not indicate an issue. Care might need to be taken though.
+
 File: runtime/class_linker.cc
 
 917:24-917:27
@@ -16,6 +25,40 @@ Parent: 6394aac1_5e62d1be
 UUID: a3214287_6848bbb7
 Bytes: 4
 Done
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+517:17-517:37
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_cfd34b52
+Bytes: 205
+Here, it's ok to just have the ref (the content of the root) instead of the pointer to the root. But is there a reason not to make SingleRootVisitor get the latter? Why restrict SingleRootVisitor this way?
+
+File: runtime/gc/collector/mark_sweep.cc
+
+498:16-498:26
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_afea3fa3
+Bytes: 74
+If this is the only VerifyRoot call site, could it be merged/inlined here?
+
+File: runtime/gc_root-inl.h
+
+32:34-32:48
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_0f0cb3ee
+Bytes: 73
+Can this be MirrorType instead Object (and the down_cast can be removed)?
+
+36:40-36:54
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_8f47830f
+Bytes: 8
+Here too
 
 File: runtime/gc_root.h
 
@@ -49,6 +92,20 @@ Parent: 6394aac1_1e412917
 UUID: e32fba6e_8dab4586
 Bytes: 4
 Done
+
+124:25-124:45
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_a27c9f6f
+Bytes: 125
+I mentioned this earlier, but could this be mirror::Object** root. It seems a root visitor should be able to update the root.
+
+160:38-160:52
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_a2281f05
+Bytes: 23
+Can this be MirrorType?
 
 File: runtime/handle.h
 
@@ -134,4 +191,13 @@ Parent: 6394aac1_ded341da
 UUID: c326369c_2f2249cf
 Bytes: 4
 Done
+
+File: runtime/stack.h
+
+62:14-62:28
+Tue Apr 14 01:16:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_ba8726a9
+Bytes: 105
+Mostly StackReference == CompressedReference. Maybe worth keeping StackReference for documenting purpose?
 

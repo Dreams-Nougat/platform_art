@@ -16,12 +16,36 @@ UUID: 90a1e660_5c285d04
 Bytes: 66
 What's the difference between null and the BootClassLoader loader?
 
+1269:6-1270:77
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0926a12_a0edb408
+UUID: b0242aae_da96664a
+Bytes: 4
+Done
+
+1268:6-1270:77
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_5c285d04
+UUID: d0299e86_30deb208
+Bytes: 194
+There is none. Internally we use null to signal the boot classpath (see for example FindClass), but on the Java side the "fake" java.lang.BootClassLoader is the top-most parent of class-loaders.
+
 1291:5-1291:26
 Tue Apr 14 12:54:46 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 709c722a_3edf8556
 Bytes: 29
 -> User-defined class loader?
+
+1291:5-1291:26
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_3edf8556
+UUID: 9033a6f4_84fbec8c
+Bytes: 107
+It is not just user-defined. E.g., DexClassLoader is not supported right now. I'll change to "Unsupported."
 
 1418:34-1418:36
 Tue Apr 14 12:54:46 2015 +0000
@@ -30,12 +54,28 @@ UUID: 90a1e660_7c2d1913
 Bytes: 34
 boot cp loader -> boot classpath ?
 
+1418:34-1418:36
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_7c2d1913
+UUID: d0299e86_30a9125d
+Bytes: 4
+Done
+
 1419:33-1419:82
 Tue Apr 14 12:54:46 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 709c722a_fef03dde
 Bytes: 31
 -> What is the right exception?
+
+1419:33-1419:82
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_fef03dde
+UUID: 9033a6f4_6417e044
+Bytes: 256
+Depends. See the branches above. If the class is "found," then whatever DefineClass throws. Otherwise a pre-allocated NoClassDefFoundError. I did not want to replicate the above, but in a follow-up the above branch can likely be moved down here completely.
 
 File: runtime/class_linker.h
 
@@ -46,6 +86,14 @@ UUID: 709c722a_bed39552
 Bytes: 23
 Finds (for consistency)
 
+120:5-120:9
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_bed39552
+UUID: b0242aae_dac3063b
+Bytes: 4
+Done
+
 121:69-121:75
 Tue Apr 14 12:54:46 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,10 +101,26 @@ UUID: 90a1e660_fc1129d5
 Bytes: 7
 Returns
 
+121:69-121:75
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_fc1129d5
+UUID: 506daeeb_5dea8fa6
+Bytes: 4
+Done
+
 122:65-122:80
 Tue Apr 14 12:54:46 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0926a12_e0f3bce8
 Bytes: 38
 Please document what non-supported is.
+
+122:65-122:80
+Tue Apr 14 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0926a12_e0f3bce8
+UUID: d0299e86_f0b26ac3
+Bytes: 4
+Done
 

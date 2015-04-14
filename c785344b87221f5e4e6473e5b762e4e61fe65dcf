@@ -1,6 +1,29 @@
 Revision: c785344b87221f5e4e6473e5b762e4e61fe65dcf
 Patch-set: 6
+File: compiler/driver/compiler_driver.h
+
+345:0-345:77
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_530f01e6
+Bytes: 19
+indentation is off.
+
 File: compiler/image_writer.cc
+
+193:8-193:12
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_31dd94e3
+Bytes: 29
+Can this be size_t? Why auto?
+
+229:2-229:12
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_71255c61
+Bytes: 13
+Is this used?
 
 321:8-321:71
 Fri Apr 10 20:15:58 2015 +0000
@@ -24,4 +47,279 @@ Parent: e3617abc_5daacb7d
 UUID: e32fba6e_47ba0e50
 Bytes: 35
 Seems to compile, so I'd assume so.
+
+File: compiler/image_writer.h
+
+134:4-134:19
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_ededf307
+Bytes: 107
+Might be more intuitive if kBinMirrorCount comes after kBinArtMethodNotInitialized and kBinSize comes last?
+
+312:11-312:18
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_eeea80ed
+Bytes: 39
+struct members don't need the _ suffix.
+
+353:32-353:41
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_b16744d4
+Bytes: 47
+Document what this second value of the pair is?
+
+File: imgdiag/imgdiag.cc
+
+172:26-172:38
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_e3f17fae
+Bytes: 100
+Would it be cleaner if GetImageSize() includes the art field size or it's renamed to something else?
+
+File: runtime/art_field.h
+
+1:0-1:2
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_dbe0aa15
+Bytes: 80
+It would have been nicer if git/gerrit showed us a diff from mirror/art_field.h.
+
+File: runtime/check_jni.cc
+
+996:13-996:31
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_18299b83
+Bytes: 17
+Be more specific?
+
+File: runtime/class_linker.cc
+
+81:22-81:41
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_7c765085
+Bytes: 49
+Add a one liner to say what kind of checks we do?
+
+938:6-938:17
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_7ce2d052
+Bytes: 740
+I guess this is the case where we might trigger a read barrier when it may or may not have been visited as a root yet (mostly due to BufferedRootVisitor).
+
+It might be ok either way, using the to-space copy or the from-space one, as VisitFieldRoots only deals with the field in the non-moving ArtField, but it might be less error-prone if this situation can be avoided.
+
+Or, does BufferedRootVisitor guarantee that the class is visited (corresponding to line 937) before the fields are (corresponding to line 938) so that we will always call VisitFieldRoots() on an already forwarded class (root)?
+
+Maybe visit the fields as a separate root set (independent of classes, ie. this function)?
+
+Similar comment in the for loop in lines 941-943.
+
+940:39-940:89
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_5ab38dc8
+Bytes: 326
+This is correct, but for the CC collector, a non-moving object has the notion of whether it's been marked (logically in to-space) for the to-space invariant, we should still visit the declaring classes of fields. I see the code does so fine, but the comment could bemisleading if it's interpreted as not needing to visit them.
+
+1486:26-1487:56
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_6526aab4
+Bytes: 224
+Maybe is there a race condition between this and GC? If some fields are allocated and their declaring class is set, but they haven't been pointed to by the class, GC may not see those declaring class and fail to update them?
+
+1492:16-1492:27
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_d7f07d63
+Bytes: 90
+I assume this would happen for an OOME as a result of heap allocation failure for methods?
+
+1871:18-1871:28
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_37b461c0
+Bytes: 103
+Now that LoadClass is split into two parts, update the comment around class.h:91 to include SetupClass?
+
+1915:2-1915:23
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_f7d499e4
+Bytes: 61
+Is it ok to assume we never fail to allocate in linear alloc?
+
+1933:2-1933:29
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_a55b720e
+Bytes: 108
+Maybe we should call this before above the for loop so GC can see the declaring class field in the ArtField?
+
+File: runtime/class_linker.h
+
+521:0-522:31
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_bc9a7844
+Bytes: 25
+This may fit in one line.
+
+File: runtime/class_linker_test.cc
+
+995:58-995:60
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_1a974548
+Bytes: 11
+indentation
+
+File: runtime/entrypoints/entrypoint_utils-inl.h
+
+473:39-473:40
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_194cfecd
+Bytes: 11
+indentation
+
+File: runtime/entrypoints/entrypoint_utils.h
+
+136:43-136:44
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_dc32e421
+Bytes: 11
+indentation
+
+147:39-147:40
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_9c2c5cc8
+Bytes: 11
+indentation
+
+File: runtime/gc/space/image_space.cc
+
+48:61-48:64
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_dceae4a4
+Bytes: 55
+When do we have end != mem_map->End()? Leave a comment?
+
+File: runtime/linear_alloc.h
+
+31:8-31:13
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_e5f187ae
+Bytes: 20
+Worth inlining this?
+
+File: runtime/mirror/art_method.cc
+
+56:0-57:84
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_180cfbee
+Bytes: 22
+Maybe fit in one line?
+
+File: runtime/mirror/class.h
+
+987:23-987:30
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_a6ea6571
+Bytes: 30
+Why can't this be RootVisitor?
+
+1179:11-1179:31
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_778d4403
+Bytes: 48
+Say this is the size of ifields_ in the comment?
+
+1188:11-1188:29
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_f34b90b5
+Bytes: 7
+similar
+
+File: runtime/mirror/dex_cache-inl.h
+
+62:6-62:7
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_a6cdc568
+Bytes: 16
+Retain UNLIKELY?
+
+74:4-74:12
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_f1202454
+Bytes: 33
+DCHECK_LE? What is this checking?
+
+File: runtime/mirror/dex_cache.cc
+
+39:27-39:42
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_7881bf48
+Bytes: 45
+Should we check this is an int or long array?
+
+File: runtime/mirror/dex_cache.h
+
+120:50-120:58
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_260f9535
+Bytes: 36
+Can/should this be a template param?
+
+124:62-124:70
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_e6186d78
+Bytes: 5
+same.
+
+File: runtime/mirror/object-inl.h
+
+309:2-309:7
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0242aae_7129d482
+Bytes: 37
+Should these four be left as DCHECKs?
+
+File: runtime/verifier/method_verifier.cc
+
+455:59-455:60
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0299e86_c3aa03d4
+Bytes: 18
+Indentation is off
+
+3988:54-3988:55
+Tue Apr 14 21:52:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9033a6f4_58760385
+Bytes: 11
+indentation
 

@@ -17,6 +17,19 @@ UUID: 90a1e660_1ca09518
 Bytes: 161
 If we want to distinguish sp and zr, we *do* have 32 registers. Having different names for sp and zr can help us to detect misuse of these two registers earlier.
 
+161:30-161:49
+Tue Apr 14 14:11:25 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_1ca09518
+UUID: 709c722a_9ec0192b
+Bytes: 508
+If you want to keep kNumberOfXRegisters = 33, it's OK. But then you shouldn't use it as the upper bound for for-loops like this one. If the core_spill_mask contained x0, you could also easily push the bogus x32 here. You can get away with this only because x0 is not in the spill mask.
+
+I'm going to accept this CL as it is but it would be preferable to clean this up everywhere. Preferably by using
+
+  for (uint32_t mask = core_spill_mask; mask != 0u; mask = mask & (mask - 1u)) {
+    int x_reg = CTZ(mask);
+
 File: compiler/utils/arm64/assembler_arm64.cc
 
 647:0-648:61

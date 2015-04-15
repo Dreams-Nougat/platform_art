@@ -1,0 +1,25 @@
+Revision: f192ae90317a9b6325615e62d1626df5a921c62c
+Patch-set: 3
+File: compiler/oat_writer.cc
+
+386:8-391:82
+Wed Apr 15 09:19:55 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d080bec6_568cb48c
+Bytes: 269
+You can avoid the duplication. Use deduped as a flag whether things have been "handled."
+
+  if (!debuggable_) {
+    auto ...
+    if (...) {
+      ...
+      deduped = true;
+    } 
+  }
+  if (!deduped) {
+     ... ;
+     if (!debuggable) {
+       dedupe_map_ ...
+     }
+  }
+

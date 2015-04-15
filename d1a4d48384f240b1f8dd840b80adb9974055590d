@@ -88,6 +88,18 @@ Bytes: 166
 
 Besides allocating two scratch registers on arm32 for pairs, what else is needed?
 
+115:41-116:28
+Wed Apr 15 11:40:14 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_e180a295
+UUID: 90a1e660_62bfb244
+Bytes: 835
+There might be intersecting cycles on arm32, For example, a two intersecting cycles case, (R0,R1 -> R2,R3) (R2->R0) (R3->R1). We allocate a scratch location R6 to save the value of R2. We perform R2->R6, the rest moves becomes (R0,R1 -> R2,R3) (R6->R0) (R3->R1). None of the rest moves can be performed. We still have dependency need to resolve. So we will need another scratch location.
+
+Also we can make cases with more intersecting cycles. So we will need unknown number of scratch locations at the same time. This is the main complexity.
+
+We can allocate stack locations or spill registers on arm32. But to get the best performance, we should try to find out dead registers in the backend. Also the cleanup code here means restoring the sp and registers in case we allocate stack locations(such as, orig_sp - 8) or spill registers.
+
 138:53-138:57
 Tue Apr 14 15:34:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

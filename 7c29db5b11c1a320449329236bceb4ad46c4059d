@@ -18,6 +18,14 @@ UUID: b0926a12_c3156af0
 Bytes: 136
 You should move that to a dedicated method used by both Quick and Optimizing compilers. It's better to have this code in only one place.
 
+89:8-90:25
+Wed Apr 15 16:38:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0926a12_c3156af0
+UUID: b0926a12_517b6474
+Bytes: 39
+And PrettyMethod() is pretty expensive.
+
 164:10-166:65
 Wed Apr 15 09:17:43 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,12 +49,27 @@ UUID: 709c722a_219f6a37
 Bytes: 118
 Your test is slightly different than in compiler/dex/mir_method_info.cc. Having it in a separate method would be nice.
 
+1677:12-1677:88
+Wed Apr 15 16:38:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_219f6a37
+UUID: 709c722a_24af78e5
+Bytes: 56
+Even without the signature, PrettyMethod() is expensive.
+
 1694:29-1694:33
 Wed Apr 15 09:17:43 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 709c722a_41a4f684
 Bytes: 7
 nullptr
+
+1695:0-1701:68
+Wed Apr 15 16:38:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0926a12_91efacb4
+Bytes: 20
+Why do we need this?
 
 1712:10-1712:122
 Wed Apr 15 09:17:43 2015 +0000
@@ -118,12 +141,28 @@ Long line (and below)
 
 File: compiler/dex/quick/dex_file_method_inliner.h
 
+314:26-314:46
+Wed Apr 15 16:38:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a1e660_65c9fc2b
+Bytes: 22
+Reuse kProtoCacheDefs.
+
 355:32-355:52
 Wed Apr 15 09:17:43 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 709c722a_417b9674
 Bytes: 75
 Is it thread safe or should it be guarded by lock_ (like inline_methods_) ?
+
+File: compiler/dex/quick/gen_invoke.cc
+
+897:0-899:98
+Wed Apr 15 16:38:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90a1e660_c5e330a0
+Bytes: 36
+This is also subject to b/19918641 .
 
 File: compiler/dex/quick/mips/call_mips.cc
 

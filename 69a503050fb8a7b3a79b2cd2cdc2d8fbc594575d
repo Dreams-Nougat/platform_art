@@ -17,3 +17,11 @@ UUID: 709c722a_a13b7a98
 Bytes: 73
 Looks that way. Compare "str d8, [sp, #40]" with "stp d8, d9, [sp, #32]".
 
+108:34-108:38
+Wed Apr 15 08:39:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_a13b7a98
+UUID: 907ac6a8_7463e83f
+Bytes: 219
+184 would not be 16B aligned, so violate our stack alignment (and ARM64's). The old frame was rounded up, and padding is inserted "before" the spills. To note here is that for JNI, the handle-scope is part of the frame.
+

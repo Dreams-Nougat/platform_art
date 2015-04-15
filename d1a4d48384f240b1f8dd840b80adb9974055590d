@@ -9,6 +9,16 @@ UUID: 90a1e660_ff86fb16
 Bytes: 19
 Why not WithNoSwap?
 
+99:59-99:67
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_ff86fb16
+UUID: 90a1e660_c2ea46ee
+Bytes: 214
+There will be a lot of work to implement the no swap version on ARM32, because there will be intersecting circles on ARM32 due to register and register pair overlap.
+
+So I prefer to implement this in a separate CL.
+
 File: compiler/optimizing/parallel_move_resolver.cc
 
 310:46-310:70
@@ -17,6 +27,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 709c722a_7ec8ad57
 Bytes: 49
 Why not stack destinations? Please add a comment.
+
+310:46-310:70
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_7ec8ad57
+UUID: b0926a12_c387aaa8
+Bytes: 4
+Done
 
 File: compiler/optimizing/parallel_move_resolver.h
 
@@ -33,6 +51,24 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0926a12_607c8c6f
 Bytes: 43
 I'd drop, it's pretty obvious from the API.
+
+115:41-116:28
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_3fdf8356
+UUID: 709c722a_21e44ad5
+Bytes: 453
+We only need one scratch location to resolve one cycle. And on ARM64, we do have enough blocked registers.
+
+But things will become complicated on ARM32. We can have intersecting cycles on ARM32, because one location can be blocked by multiple moves. We will have to resolve multiple cycles at the same time, which means we will need multiple scratch locations. So GetScratchLocationFor() should have the ability to allocate scratch location dynamically.
+
+116:29-116:93
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0926a12_607c8c6f
+UUID: 90a1e660_8210be85
+Bytes: 47
+Agree. This is actually ARM32 specific comment.
 
 138:53-138:57
 Tue Apr 14 15:34:13 2015 +0000
@@ -55,6 +91,30 @@ UUID: 90a1e660_9fed7709
 Bytes: 17
 returns -> return
 
+138:80-138:87
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_7e9aed47
+UUID: 90a1e660_22152a74
+Bytes: 177
+I mean the backend should not return a scratch stack location which overlaps with current frame. This comment can be dropped, since it is an obvious requirement for the backend.
+
+138:53-138:57
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_1e9f2937
+UUID: 709c722a_c1d486e5
+Bytes: 4
+Done
+
+138:5-138:12
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_9fed7709
+UUID: 90a1e660_a2085a5b
+Bytes: 57
+Dropped, as it is an obvious requirement for the backend.
+
 142:12-142:16
 Tue Apr 14 15:34:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,12 +129,36 @@ UUID: b0926a12_008d8803
 Bytes: 9
 I'd drop.
 
+142:24-142:42
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0926a12_008d8803
+UUID: 90a1e660_c2056642
+Bytes: 4
+Done
+
+142:12-142:16
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0926a12_e08f3cfc
+UUID: 709c722a_61957215
+Bytes: 4
+Done
+
 183:73-183:79
 Tue Apr 14 15:34:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90a1e660_5f0b6f5d
 Bytes: 15
 circle -> cycle
+
+183:73-183:79
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_5f0b6f5d
+UUID: b0926a12_a3185e29
+Bytes: 4
+Done
 
 File: compiler/optimizing/parallel_move_test.cc
 
@@ -84,4 +168,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0926a12_000ca8ee
 Bytes: 12
 extra space?
+
+158:34-158:35
+Wed Apr 15 09:17:47 2015 +0000
+Author: Zheng Xu <1042649@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0926a12_000ca8ee
+UUID: 709c722a_a1fdba36
+Bytes: 4
+Done
 

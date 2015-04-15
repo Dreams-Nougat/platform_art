@@ -15,6 +15,18 @@ LOG(FATAL) << "Failed to find dalvik-cache directory " << dalvik_cache;
 
 so it seems like it should do that if abort_on_error?
 
+1452:6-1452:96
+Wed Apr 15 00:53:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0242aae_05f7e6a2
+UUID: 9033a6f4_2f7e482b
+Bytes: 308
+No. Please look at the original code. All aborts are predicated on create_if_absent. Somebody might have screwed up braces once, but as-is...
+
+This is actually not semantics-preserving, though. I would need to return dalvik_cache instead.
+
+That's why I did not want to refactor before and only tried for Seb.
+
 File: runtime/utils.h
 
 516:0-516:77

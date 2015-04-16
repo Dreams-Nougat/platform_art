@@ -11,3 +11,19 @@ Undefined for C++? And/or which architectures?
 
 Also, though it's undefined, is it consistent? That is the same shift will produce the same result during the same execution?
 
+10:15-10:33
+Thu Apr 16 21:33:45 2015 +0000
+Author: Dan Albert <1043845@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 709c722a_b508905b
+UUID: d080bec6_5ec3578a
+Bytes: 720
+> Undefined for C++? And/or which architectures? 
+
+Undefined for C++.
+
+> Also, though it's undefined, is it consistent? That is the same shift will produce the same result during the same execution?
+
+Our compilers (clang more than gcc, but gcc does it too) love to optimize out undefined behavior. The code isn't question isn't guaranteed to run at all (and if the compiler can prove that it will be UB for a given execution it will in fact screw you over here, we've seen it in v8).
+
+Those arguments aside, I'm trying to turn on parts of ubsan for our host builds (to minimize differences in behavior between gcc/clang and also protect us from future compiler optimizations) and that means we'll have to be ubsan clean.
+

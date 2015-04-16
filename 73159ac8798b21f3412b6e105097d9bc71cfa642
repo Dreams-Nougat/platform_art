@@ -9,3 +9,13 @@ UUID: 10dc16fc_24a0ea18
 Bytes: 214
 Actually this doesn't work, I was wrong. There is check failures since sfields[i].GetDeclaringClass() causes a read barrier which ends up not matching this. Any ideas? Maybe its better to just use the old approach?
 
+939
+Thu Apr 16 20:48:50 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10dc16fc_24a0ea18
+UUID: 907ac6a8_ad860060
+Bytes: 162
+I see how the check can fail as the 'this' pointer in VisitFieldRoots may be a from-space one.
+
+Visiting potentially more than once (the old approach) seems fine.
+

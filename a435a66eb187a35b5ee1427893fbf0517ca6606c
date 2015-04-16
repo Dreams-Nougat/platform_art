@@ -9,3 +9,15 @@ UUID: 907ac6a8_ac284905
 Bytes: 234
 This actually means we don't trace native methods anymore. This has been wrong for a while, though, and when I mentioned it to Brian a while ago he was under the impression we did this correctly before (maybe before we fully deopted).
 
+580:6-580:42
+Thu Apr 16 17:17:03 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 907ac6a8_ac284905
+UUID: 90a1e660_2b76658d
+Bytes: 421
+You're right, disabling that flag will skip instrumentation for native. I'll fix that in the next PS.
+
+When we instrument code with interpreter, we must keep updating native method's entrypoint with the instrumentation entry/exit stubs, interpreter only applies to pure Java methods.
+
+I'd like to test entrypoints in instrumentation_test too. I could not manage to do that because there is no oat file during these tests.
+

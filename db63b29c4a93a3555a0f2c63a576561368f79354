@@ -9,6 +9,15 @@ UUID: b0926a12_ccd4b7e5
 Bytes: 44
 const SafeMap<uint32_t, std::set<uint32_t>>&
 
+File: runtime/entrypoints/quick/quick_alloc_entrypoints.cc
+
+162
+Thu Apr 16 20:17:39 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10dc16fc_7963fb3f
+Bytes: 278
+Just a note: this does not have the kUseTlabFastPath code. But it can't use the kUseTlabFastPath logic because we need to do more than just allocate like copying bytes/chars. As we now combine an allocation call and a constructor call into one, this could be faster than before.
+
 File: runtime/interpreter/interpreter_common.cc
 
 672:4-672:31
@@ -17,4 +26,24 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 709c722a_6f5eb97d
 Bytes: 28
 MethodRefToStringInitRegMap&
+
+File: runtime/mirror/object-inl.h
+
+343:65-343:82
+Thu Apr 16 20:17:39 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 907ac6a8_fb22719c
+Bytes: 130
+How about we call 
+
+return GetClass<kVerifyFlags, kReadBarrierOption>()->IsStringClass<kReadBarrierOption>();
+
+like IsArtMethod()?
+
+348:9-348:72
+Thu Apr 16 20:17:39 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d080bec6_cd81ffd3
+Bytes: 29
+Just call IsString() instead?
 

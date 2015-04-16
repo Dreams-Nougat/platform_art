@@ -1,0 +1,25 @@
+Revision: 7a578517e86e4d1235028b8566b0e6175c887a8f
+Patch-set: 1
+File: runtime/gc/allocator/rosalloc.cc
+
+1053:2-1053:56
+Thu Apr 16 23:27:14 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 907ac6a8_3c68dc67
+Bytes: 178
+If possible, I'd avoid a branch.
+
+would
+
+return ((1U << remain) - 1) << ((kBitsPerVec - remain) & 0x1F);
+
+work?
+
+If not, how about 
+
+if (UNLIKELY(remain == 0)) {
+  return 0;
+}
+
+?
+

@@ -210,6 +210,14 @@ UUID: 9033a6f4_8f153c76
 Bytes: 110
 I changed it to be a kWithoutReadBarrier read before the buffered visitor visit. This should be sound I think.
 
+938:6-938:17
+Thu Apr 16 18:56:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9033a6f4_8f153c76
+UUID: d080bec6_8a1a0da3
+Bytes: 3
+OK.
+
 940:39-940:89
 Tue Apr 14 21:52:23 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -225,6 +233,14 @@ UUID: 9033a6f4_af37d810
 Bytes: 4
 Done
 
+940:39-940:89
+Thu Apr 16 18:56:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9033a6f4_af37d810
+UUID: 907ac6a8_75275032
+Bytes: 37
+What's done? Any code/comment change?
+
 1486:26-1487:56
 Tue Apr 14 21:52:23 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -239,6 +255,14 @@ Parent: b0242aae_6526aab4
 UUID: d0299e86_d5487240
 Bytes: 131
 I think this race is handled by not having any suspend before the arrays are filled in, does that seem correct? I'll add a comment.
+
+1486:26-1487:56
+Thu Apr 16 18:56:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0299e86_d5487240
+UUID: 10dc16fc_d3dd260c
+Bytes: 154
+Seems ok. But under the CC collector, bear in mind that objects may get moved even if a thread holds a shared mutator lock and not having a suspend point.
 
 1492:16-1492:27
 Tue Apr 14 21:52:23 2015 +0000
@@ -299,6 +323,16 @@ Parent: b0242aae_a55b720e
 UUID: d0299e86_b5e2864f
 Bytes: 194
 I thought about that, but that would mean that we have some fields with null declaring classes during this point. I think the current behavior is OK since we never update the roots concurrently.
+
+1933:2-1933:29
+Thu Apr 16 18:56:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0299e86_b5e2864f
+UUID: 10dc16fc_13a08e18
+Bytes: 182
+GC seeing null declaring classes seems fine in terms of marking. A mutator won't see the field yet. What goes wrong with that?
+
+Don't we update the roots concurrently with CMS or CC?
 
 File: runtime/class_linker.h
 

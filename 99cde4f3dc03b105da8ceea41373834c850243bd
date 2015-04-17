@@ -9,3 +9,13 @@ UUID: 90a1e660_36256862
 Bytes: 247
 I'm not sure whether it is relevant, but should we also block VIXLpools in slow-path code?  Here, we load a constant (instruction_->GetStringIndex())) and we record PC information later in line 230 through InvokeRuntime (which calls RecordPcInfo).
 
+229:4-229:84
+Fri Apr 17 15:38:43 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90a1e660_36256862
+UUID: 709c722a_f0a8665a
+Bytes: 366
+Unless the runtime code is looking at the instruction stream to find this particular `mov` instruction, I don't think there is any issue.
+
+The code inserted by VIXL will not modify registers or anything. It will be a dump of data, with a branch over it if required. So the value moved in this reg will still be in the correct place when we reach the call to runtime.
+

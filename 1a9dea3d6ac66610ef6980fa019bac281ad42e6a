@@ -1,0 +1,25 @@
+Revision: 1a9dea3d6ac66610ef6980fa019bac281ad42e6a
+Patch-set: 3
+File: runtime/oat_file.cc
+
+48:70-48:73
+Sat Apr 18 00:34:53 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305cba63_390b0f5f
+Bytes: 3
+ELF
+
+111:0-111:40
+Sat Apr 18 00:34:53 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305cba63_5931a319
+Bytes: 488
+i think selinux might prevent R-X->RW* transitions? so if we know we are going to patch for example, we need to not use dlopen so we don't try to go that path. i could be misremembering the details, but there were issues historically. it might have just been a simpler restriction on installd/dex2oat linux context have restrictions on where it mapped X pages from (only /system, not /data/dalvik-cache). it definitely was an selinux reason, so you could at least comment that vaguely. :)
+
+135:71-136:64
+Sat Apr 18 00:34:53 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305cba63_19628b13
+Bytes: 67
+i'd be more specific, it only honors it for ET_EXEC and not ET_DYN.
+

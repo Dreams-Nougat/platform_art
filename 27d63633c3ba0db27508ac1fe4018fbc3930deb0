@@ -1,5 +1,16 @@
 Revision: 27d63633c3ba0db27508ac1fe4018fbc3930deb0
 Patch-set: 1
+File: runtime/base/mutex.h
+
+547:54-547:92
+Mon Apr 20 16:13:10 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f055c239_664160f8
+Bytes: 849
+The Dekker approach is well-known and inefficient, for GC, precisely because of this - what is the polling interval the garbage collector should use and how do you avoid what Dalvik had of 1ms of sleep before re-polling? Note the 1ms, and without load, leads to 500us of extra GC pause on average, and 1ms at the high-end. It also requires memory barriers on architectures without TSO, meaning an x86 only analysis isn't properly representative. The current Mutex and ReaderWriterMutex are known to be inefficient:
+https://android-review.googlesource.com/#/c/143024/
+Why not fix them as shown in that patch? Your 25% performance improvement is very unspecific and an analysis of GC pause time is also necessary. Pragmatically, given the trade-offs in this patch the option to use a Dekker style approach for the mutator lock should be behind a flag.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 66:0-75:17
@@ -17,4 +28,13 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d06c3e17_cb5af50a
 Bytes: 136
 Why this change? Can you share your analysis that shows this is better? For a simple branch predictor it sounds like this will be worse.
+
+File: runtime/thread_list.cc
+
+556:2-556:40
+Mon Apr 20 16:13:10 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d06c3e17_4b5ee57c
+Bytes: 30
+This is missing documentation.
 

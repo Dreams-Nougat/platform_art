@@ -1,0 +1,48 @@
+Revision: 20d6940aec1e154a35c07340622822392a8bdbc1
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+524:0-524:35
+Mon Apr 20 09:01:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 103a56f6_201d8a66
+Bytes: 49
+I'd drop, since the call is already on two lines.
+
+532:11-532:58
+Mon Apr 20 09:01:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 103a56f6_80129652
+Bytes: 39
+Add a helper in HGraphBuilder for this.
+
+535:17-535:45
+Mon Apr 20 09:01:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10089662_70b930dc
+Bytes: 66
+This looks odd: you're doing "not" but still adding the barrier...
+
+536:7-539:50
+Mon Apr 20 09:01:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7048f2a0_5be9a3ac
+Bytes: 71
+I don't think this works if it's a constructor method that calls "new".
+
+File: test/476-checker-ctor-memory-barrier/src/Main.java
+
+28:2-28:44
+Mon Apr 20 09:01:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10089662_50beacc5
+Bytes: 43
+Maybe check that there is no other barrier?
+
+29:2-29:22
+Mon Apr 20 09:01:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 103a56f6_a0287a80
+Bytes: 61
+What is this? Shouldn't you use CHECK-DAG to check the order?
+

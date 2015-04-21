@@ -19,6 +19,14 @@ Moving them to the front matches what GCC & Clang does and it makes it part of t
 
 The main reason is that I need to patch the pointers in eh_frame.  That can only happen when I know the final offset of .eh_frame and .text.  If I were to do the eh_frame layout in Write(), I would also need to teach Write how to do the patching, or do the patching after the file is written out to disk which sounds even more nasty.  Making .eh_frame part of Init() seemed like best solution.
 
+618:0-621:46
+Tue Apr 21 19:08:52 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f6329f_ee253fa7
+UUID: d0f19ea3_11726e61
+Bytes: 4
+Done
+
 840:8-840:55
 Tue Apr 21 16:21:23 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,6 +41,14 @@ Parent: 302afabf_3247b111
 UUID: d0f19ea3_b141da19
 Bytes: 84
 DCHECK that if eh_frame and eh_frame_hdr is present than it also has SHD_ALLOC flag?
+
+840:8-840:55
+Tue Apr 21 19:08:52 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0f19ea3_b141da19
+UUID: 70f6329f_6ed30fd9
+Bytes: 4
+Done
 
 839:0-850:5
 Tue Apr 21 16:25:22 2015 +0000
@@ -60,4 +76,14 @@ Parent: 102176e2_2bc9052d
 UUID: 70f6329f_ced4c3e5
 Bytes: 191
 We already have something similar, the rodata_builder_ using the CodeOutput and providing its own offset to it. You need to provide other offsets as well but that shouldn't be such a problem.
+
+839:0-850:5
+Tue Apr 21 19:08:52 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f6329f_ced4c3e5
+UUID: 102176e2_4ba55928
+Bytes: 595
+I assume that only works because rodata_builder_ somehow knows its size ahead of time so the layout (Init()) and write stages can be separated.  I know that CodeOutput introduces laziness, but I have not needed to learn the details yet.
+
+I presume I could do memcopy + patching in ElfFilePiece::Write for .eh_frame to achieve similar effect.  I would have to extend the RawSection interface to somehow enable that.  It feels like an overkill.  Unless I could merge Init() and Write() methods into one.  That would be nice, but that is a refactoring I would not like to include in this CL anyway.
 

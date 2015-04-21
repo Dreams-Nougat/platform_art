@@ -9,10 +9,26 @@ UUID: 70f6329f_6b90214c
 Bytes: 92
 I don't understand this comment. Why would a instanceof A be transformed into a boolean not?
 
+112:0-115:30
+Tue Apr 21 08:38:00 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f6329f_6b90214c
+UUID: 102176e2_28962b4b
+Bytes: 287
+It's the instruction simplifier actually... What he means is that the condition can be either 'if (x instanceof y)' or 'if (!(x instanceof y))'. Simplification should get rid of the HCondition (HEqual or HNotEqual) and transform it to either InstanceOf->If or InstanceOf->BooleanNot->If.
+
 117:2-117:82
 Tue Apr 21 08:07:42 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 70f6329f_4b95653a
 Bytes: 28
 Why do you need a guarantee?
+
+117:2-117:82
+Tue Apr 21 08:38:00 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f6329f_4b95653a
+UUID: 102176e2_6890234c
+Bytes: 507
+Because if the simplification does not happen, the code will still contain Equal/NotEqual and won't match the pattern recognized here. But I've given this a thought and I can't find an example when the condition would not be simplified. The simplifier transforms Value->Equal->If to Value->If which is not even affected by inlining. So unless some pass produces that pattern, we should be safe here. Another option would be running the instruction simplifier before this pass. Have you tried DCHECKing this?
 

@@ -30,6 +30,16 @@ UUID: 90148689_07f6b8a5
 Bytes: 206
 When multiple threads change their states intensively, there would be severe cache line invalidations caused by the CAS on mutator lock. I think that is why the patch boosts certain multi-thread benchmarks.
 
+547:54-547:92
+Tue Apr 21 14:42:12 2015 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90148689_07f6b8a5
+UUID: 90148689_a72b647c
+Bytes: 863
+I agree that CAS operations are expensive, the patch I linked above reduces the number by half without losing the locking abstraction and the use of futexes to ensure the last man out wakes the GC. If there is heavy contention on the lock then this may be indicative of other issues going on such as GC thrashing. I don't disagree with the patch but would prefer the behavior were optional. As I stated, the implementation of this was deliberately to the detriment of mutator performance but to the benefit of GC pause times which directly translate into jank in Android.
+
+Given the feedback this patch has generated I expect you can clean it up, including this comment, if its not truly reflective of the implementation. Again, I think this is useful work but looking at mutator performance without GC pause times misses the point of the original implementation.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 66:0-75:17

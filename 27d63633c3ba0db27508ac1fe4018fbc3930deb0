@@ -11,6 +11,17 @@ The Dekker approach is well-known and inefficient, for GC, precisely because of 
 https://android-review.googlesource.com/#/c/143024/
 Why not fix them as shown in that patch? Your 25% performance improvement is very unspecific and an analysis of GC pause time is also necessary. Pragmatically, given the trade-offs in this patch the option to use a Dekker style approach for the mutator lock should be behind a flag.
 
+547:54-547:92
+Tue Apr 21 10:12:59 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f055c239_664160f8
+UUID: b0150a85_a8ddf30c
+Bytes: 1522
+I am sorry to misguide you by a wrong word "polling" used in the comments. This patch does not use the polling mechanism to suspend threads. SuspendAll succeeds when the last runnable thread transits to the suspended state. The only difference is that originally the SuspendAll is achieved by grabbing the mutator lock exclusively and now it is achieved by all other threads pass a barrier. A thread in runnable state will pass the barrier when it transits to suspended state and threads already in suspended will get their barrier passed by the thread requesting the SuspendAll. This modification removes the lock/unlock on the mutator lock when threads transit between runnable and suspended.
+A study shows that in ART thread state change is the costliest part of the JNI. One big problem is that the mutator lock needs CAS to acquire and release between the thread state changes. The 25% JNI performance improvement by this patch is measured by a small benchmark (repeatedly call the same native function which does nothing but return). The benefit could also be observed in some benchmarks like smartbench.Mandelbrot +4%, SmartBench.String +12% and CFBench.javaMIPS +50%. I only observe 2% regression on one benchmark and did not find other negative effects.
+About the GC, I’ve tested this modification on Android GC Bench, the patch does not influence the pause time and we are evaluating the influence on the real apps.
+I will test the effects of this patch on ARM later and also will read the patch you mentioned.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 66:0-75:17
@@ -19,6 +30,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305cba63_6d7c9d34
 Bytes: 77
 What does this have to do with your CL's stated intent? Different CL, please.
+
+66:0-75:17
+Tue Apr 21 10:12:59 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305cba63_6d7c9d34
+UUID: b0150a85_68e49bd6
+Bytes: 38
+I will refactor the code and reupload.
 
 File: runtime/thread-inl.h
 
@@ -29,6 +48,14 @@ UUID: d06c3e17_cb5af50a
 Bytes: 136
 Why this change? Can you share your analysis that shows this is better? For a simple branch predictor it sounds like this will be worse.
 
+131:4-131:18
+Tue Apr 21 10:12:59 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06c3e17_cb5af50a
+UUID: 700f1279_d7bd6ca5
+Bytes: 74
+Not tested yet, maybe this change is wrong, I will check it later. Thanks.
+
 File: runtime/thread_list.cc
 
 556:2-556:40
@@ -37,4 +64,13 @@ Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d06c3e17_4b5ee57c
 Bytes: 30
 This is missing documentation.
+
+556:2-556:40
+Tue Apr 21 10:12:59 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d06c3e17_4b5ee57c
+UUID: b0150a85_48e9dfac
+Bytes: 147
+10s time out for suspend all. Will add the comment.
+Actually, we do not need a timed increment here. just need to increase the barrier number here.
 

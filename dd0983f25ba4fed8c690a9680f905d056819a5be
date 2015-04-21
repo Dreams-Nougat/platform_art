@@ -9,6 +9,16 @@ UUID: d01a7eb3_77d8eff3
 Bytes: 166
 Could you put a comment somewhere that explains why you had to move it to the front? Just for posterity, or so that bdc and vmarko might suggest a different solution.
 
+618:0-621:46
+Tue Apr 21 17:00:28 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d01a7eb3_77d8eff3
+UUID: 70f6329f_ee253fa7
+Bytes: 597
+Moving them to the front matches what GCC & Clang does and it makes it part of the main LOAD_R section which does not force us to allocate extra memory page for them.  But neither is strictly necessary.
+
+The main reason is that I need to patch the pointers in eh_frame.  That can only happen when I know the final offset of .eh_frame and .text.  If I were to do the eh_frame layout in Write(), I would also need to teach Write how to do the patching, or do the patching after the file is written out to disk which sounds even more nasty.  Making .eh_frame part of Init() seemed like best solution.
+
 840:8-840:55
 Tue Apr 21 16:21:23 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +26,30 @@ UUID: 302afabf_3247b111
 Bytes: 24
 Should this be DCHECKed?
 
+840:8-840:55
+Tue Apr 21 17:00:28 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 302afabf_3247b111
+UUID: d0f19ea3_b141da19
+Bytes: 84
+DCHECK that if eh_frame and eh_frame_hdr is present than it also has SHD_ALLOC flag?
+
 839:0-850:5
 Tue Apr 21 16:25:22 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0f19ea3_51a4f684
 Bytes: 154
 I don't like relying on the other_builders_ in Init(). Maybe we should move the rest of Init() to Write(), considering that the split is rather arbitrary.
+
+839:0-850:5
+Tue Apr 21 17:00:28 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0f19ea3_51a4f684
+UUID: 102176e2_2bc9052d
+Bytes: 461
+I have a big local change which changes how the code is split into two functions:
+ Finish() which does wast majority of the work - including deciding where all sections will be stored and generating file pieces.
+ Write() which just does the final WriteOutFile(pieces).
+
+The intention behind still having two functions is that just before calling Write(), I can patch pointers from .eh_frame to .text to be relative (I need to know the section offsets for that).
 

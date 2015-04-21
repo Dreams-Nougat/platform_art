@@ -17,6 +17,14 @@ UUID: 102176e2_28962b4b
 Bytes: 287
 It's the instruction simplifier actually... What he means is that the condition can be either 'if (x instanceof y)' or 'if (!(x instanceof y))'. Simplification should get rid of the HCondition (HEqual or HNotEqual) and transform it to either InstanceOf->If or InstanceOf->BooleanNot->If.
 
+112:0-115:30
+Tue Apr 21 10:47:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 102176e2_28962b4b
+UUID: 102176e2_48ef1f83
+Bytes: 154
+Yea, so I added the comment because this is something that was changed in a previous CL and it was not immediately clear why this transformation was made.
+
 117:2-117:82
 Tue Apr 21 08:07:42 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,4 +39,12 @@ Parent: 70f6329f_4b95653a
 UUID: 102176e2_6890234c
 Bytes: 507
 Because if the simplification does not happen, the code will still contain Equal/NotEqual and won't match the pattern recognized here. But I've given this a thought and I can't find an example when the condition would not be simplified. The simplifier transforms Value->Equal->If to Value->If which is not even affected by inlining. So unless some pass produces that pattern, we should be safe here. Another option would be running the instruction simplifier before this pass. Have you tried DCHECKing this?
+
+117:2-117:82
+Tue Apr 21 10:47:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 102176e2_6890234c
+UUID: d0f19ea3_ae35f787
+Bytes: 107
+nope, This CL is not about fixing this. I just piggy back the comment here so that I don't forget about it.
 

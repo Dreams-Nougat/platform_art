@@ -22,6 +22,14 @@ A study shows that in ART thread state change is the costliest part of the JNI. 
 About the GC, I’ve tested this modification on Android GC Bench, the patch does not influence the pause time and we are evaluating the influence on the real apps.
 I will test the effects of this patch on ARM later and also will read the patch you mentioned.
 
+547:54-547:92
+Tue Apr 21 11:59:51 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f055c239_664160f8
+UUID: 90148689_07f6b8a5
+Bytes: 206
+When multiple threads change their states intensively, there would be severe cache line invalidations caused by the CAS on mutator lock. I think that is why the patch boosts certain multi-thread benchmarks.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 66:0-75:17

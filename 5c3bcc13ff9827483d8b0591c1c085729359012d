@@ -1,5 +1,38 @@
 Revision: 5c3bcc13ff9827483d8b0591c1c085729359012d
 Patch-set: 29
+File: compiler/dex/mir_method_info.cc
+
+160:0-162:7
+Tue Apr 21 10:58:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f6329f_4be9e5ac
+Bytes: 82
+This seems to expose inaccessible constructors if the referer_class is unresolved.
+
+File: compiler/dex/mir_optimization.cc
+
+1665:0-1672:11
+Tue Apr 21 10:58:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f6329f_0bcebd34
+Bytes: 250
+What about the
+
+    (!compiler_driver->GetCompilerOptions().GetCompilePic() &&
+          mUnit->GetCompilationUnit()->instruction_set != kX86 &&
+          mUnit->GetCompilationUnit()->instruction_set != kX86_64)
+
+condition from MirMethodLoweringInfo?
+
+File: compiler/dex/quick/gen_invoke.cc
+
+1557:0-1561:3
+Tue Apr 21 10:58:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0f19ea3_2e1bc72c
+Bytes: 54
+This should be conditional on method_info.IsSpecial().
+
 File: compiler/optimizing/builder.cc
 
 612:0-615:66

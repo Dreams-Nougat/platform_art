@@ -1,0 +1,36 @@
+Revision: eeeb34761cb0f2942f54fe6196cd37d964c03a52
+Patch-set: 4
+File: compiler/optimizing/code_generator_arm.cc
+
+3878:19-3878:34
+Wed Apr 22 15:16:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50984e8f_450fbc33
+Bytes: 432
+You can skip this if !obj->CanBeNull() (obj = instruction_->InAt(0).
+
+So it should be smth like
+if (obj->CanBeNull() || instruction->MustDoNullCheck()).
+
+So given that you need to do an || here I'm thinking that  maybe "MustDoNullCheck" is not the best name either. I don't have a better naming suggestion though.
+
+The alternative is to SetMustDoNullCheck() when the input cannot be null but I also don't know a good place to do it.
+
+File: compiler/optimizing/nodes.h
+
+3352:2-3352:34
+Wed Apr 22 15:16:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90972654_8f7019d7
+Bytes: 103
+Don't think it's needed. There are a lot of other stuff we have for codegen and we don't document them.
+
+File: compiler/optimizing/prepare_for_register_allocation.cc
+
+45:35-45:49
+Wed Apr 22 15:16:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90972654_affb15b9
+Bytes: 50
+you need to do the same for the null check, right?
+

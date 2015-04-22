@@ -32,6 +32,18 @@ UUID: b088aa37_70d2ee04
 Bytes: 4
 Done
 
+3878:19-3878:34
+Wed Apr 22 17:05:23 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9070061a_871488c7
+UUID: 90972654_6f7bed74
+Bytes: 341
+You can't trust the input to have the most precise value, but it will never be incorrect. If it is, then we have a bug.
+
+I mentioned before that we could end up with patterns where the input of the HInstanceOf is a HNewInstance for example.
+
+If we don't check for that or we don't propagate the info then we may miss on not-adding the check.
+
 File: compiler/optimizing/nodes.h
 
 3352:2-3352:34
@@ -48,6 +60,18 @@ Parent: 90972654_8f7019d7
 UUID: 706b9231_6676b085
 Bytes: 98
 I suggested it. It avoids confusing readers that might thing it's the same as Input(0)->CanBeNull.
+
+3352:2-3352:34
+Wed Apr 22 17:05:23 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 706b9231_6676b085
+UUID: 50984e8f_8581449a
+Bytes: 403
+oki, then it's good to add a short story why we need it.
+
+i.e.: Ideally the code generator would only have to look at the input to decide if it needs to null check the object. However, because we replace the inputs during the preparation for register allocator we loose the nullability information. This indicates whether or not the input of the instruction can be null.
+
+or something along these lines.
 
 File: compiler/optimizing/prepare_for_register_allocation.cc
 

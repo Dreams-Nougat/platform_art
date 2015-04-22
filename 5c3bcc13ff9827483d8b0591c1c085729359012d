@@ -9,6 +9,14 @@ UUID: 70f6329f_4be9e5ac
 Bytes: 82
 This seems to expose inaccessible constructors if the referer_class is unresolved.
 
+160:0-162:7
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f6329f_4be9e5ac
+UUID: f02302ea_c2775a4f
+Bytes: 49
+This isn't necessary anymore, so I've removed it.
+
 File: compiler/dex/mir_optimization.cc
 
 1665:0-1672:11
@@ -24,6 +32,14 @@ What about the
 
 condition from MirMethodLoweringInfo?
 
+1665:0-1672:11
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f6329f_0bcebd34
+UUID: f02302ea_a2e2264f
+Bytes: 138
+The compiler needs to turn the new_instance of string into a nop in any case. I've also removed that condition from MirMethodLoweringInfo.
+
 File: compiler/dex/quick/gen_invoke.cc
 
 1557:0-1561:3
@@ -32,6 +48,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0f19ea3_2e1bc72c
 Bytes: 54
 This should be conditional on method_info.IsSpecial().
+
+1557:0-1561:3
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0f19ea3_2e1bc72c
+UUID: 302afabf_fcea08ed
+Bytes: 112
+I added that check in addition to the StringInitMethodIndex check in case we add other special intrinsics later.
 
 File: compiler/optimizing/builder.cc
 
@@ -42,6 +66,14 @@ UUID: 102176e2_889f5762
 Bytes: 25
 Helper in CompilerDriver?
 
+612:0-615:66
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 102176e2_889f5762
+UUID: d08d1e46_821aaaa2
+Bytes: 151
+If you don't mind me having to look up the inliner twice, since I'd have to do that in the helper, and again later when setting the string_init_offset.
+
 616:6-616:17
 Tue Apr 21 08:30:42 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,12 +81,28 @@ UUID: 70f6329f_2bf1f9ad
 Bytes: 14
 is_string_init
 
+616:6-616:17
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f6329f_2bf1f9ad
+UUID: 302afabf_88daaa63
+Bytes: 4
+Done
+
 1881:28-1881:43
 Tue Apr 21 08:30:42 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 102176e2_e8ac139d
 Bytes: 19
 IsStringTypeIndex ?
+
+1881:28-1881:43
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 102176e2_e8ac139d
+UUID: f02302ea_1a755cf4
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -65,6 +113,14 @@ UUID: 102176e2_089b6773
 Bytes: 57
 Why is that here? Don't we know it when we generate code?
 
+2249:6-2249:29
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 102176e2_089b6773
+UUID: 302afabf_e84ec695
+Bytes: 149
+I'd like to store something in the invoke to flag it as a string init, and I might as well just store the offset so I don't have to look it up later.
+
 File: runtime/mirror/class.h
 
 489:73-489:74
@@ -74,6 +130,14 @@ UUID: 309d9a70_b428ce80
 Bytes: 55
 This should pass kReadBarrierOption to IsStringClass().
 
+489:73-489:74
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309d9a70_b428ce80
+UUID: 10a416b9_59d357d8
+Bytes: 35
+Noted. Will address in later patch.
+
 File: runtime/mirror/object-inl.h
 
 343:68-343:69
@@ -82,4 +146,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 10a416b9_93991ef9
 Bytes: 78
 (already mentioned once) Should pass in kReadBarrierOption to IsStringClass().
+
+343:68-343:69
+Wed Apr 22 01:41:05 2015 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10a416b9_93991ef9
+UUID: d08d1e46_8231ca1c
+Bytes: 37
+Noted. Will address in another patch.
 

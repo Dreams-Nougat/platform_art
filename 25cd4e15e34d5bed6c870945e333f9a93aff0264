@@ -24,6 +24,34 @@ At the very end of the optimizations, before code generation, you have all the i
 
 I think a good place for this could be in prepare_for_register_allocation.cc.
 
+93:0-97:7
+Wed Apr 22 13:29:26 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 706b9231_c34bd6b5
+UUID: 90972654_8ced873b
+Bytes: 928
+Doing it here you'll also miss patterns where the direct input cannot be null anyway (which may result because of inlining).
+
+e.g.
+void f() {return new A()}
+void g() {
+ Object x = f(); // this will be inlined and instanceof will not have a bound type as input.
+ if (x instanceof A) {
+ }
+}
+
+However I'm not sure I'd move this to prepare_for_register_allocation.cc.
+
+This still deals with nullability propagation which is one thing this analysis does. Having related stuff together seems better to me. An you already have all the info you need for that after this pass. What do you think Nicolas?
+
+Also, thinking forward we'd like to detect also cases like
+a.f()
+...
+if (a instanceOf A){...}
+which will probably require to look at the dominators anyway. I wouldn't do that either in prepare_for_reg_alloc.
+
+If kept here a good place for it would be as a separate iteration over nodes at the end of ReferenceTypePropagation::Run().
+
 152:0-156:7
 Wed Apr 22 13:14:41 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

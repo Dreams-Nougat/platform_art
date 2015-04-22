@@ -52,6 +52,18 @@ which will probably require to look at the dominators anyway. I wouldn't do that
 
 If kept here a good place for it would be as a separate iteration over nodes at the end of ReferenceTypePropagation::Run().
 
+93:0-97:7
+Wed Apr 22 13:38:02 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_8ced873b
+UUID: b0718a1d_a838734e
+Bytes: 568
+So ideally, at the code generation, you'd like to just do if (input->CanBeNull()).
+
+But we get rid of such information by removing HNullCheck as inputs. So it's the responsability of whoever does this optimization to preserve that info (so prepare_for_register_allocation.cc).
+
+Also recognizing a.f().... if (a instanceof A) is a general type propagation optimization that is sort of out of the scope of what Guillaume is doing. You'd still want to have all optimizations prior to code generation be able to do if (my_input->CanBeNull()) and have the optimized answer.
+
 152:0-156:7
 Wed Apr 22 13:14:41 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

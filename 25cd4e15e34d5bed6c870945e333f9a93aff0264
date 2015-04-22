@@ -1,0 +1,33 @@
+Revision: 25cd4e15e34d5bed6c870945e333f9a93aff0264
+Patch-set: 3
+File: compiler/optimizing/nodes.h
+
+3352:7-3352:21
+Wed Apr 22 13:14:41 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9070061a_872ba87c
+Bytes: 169
+MustDoNullCheck is probably better, as this suggests it it the same thing as Input(0)->CanBeNull.
+
+A comment that this is only used by code generation might be good too.
+
+File: compiler/optimizing/reference_type_propagation.cc
+
+93:0-97:7
+Wed Apr 22 13:14:41 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 706b9231_c34bd6b5
+Bytes: 343
+I don't think this is the right place for doing this.
+
+At the very end of the optimizations, before code generation, you have all the information you need: an HInstanceOf instruction takes an input, and you can just query that input to know whether it can be null.
+
+I think a good place for this could be in prepare_for_register_allocation.cc.
+
+152:0-156:7
+Wed Apr 22 13:14:41 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0718a1d_280643a4
+Bytes: 5
+ditto
+

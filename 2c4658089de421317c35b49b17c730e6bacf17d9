@@ -1,0 +1,50 @@
+Revision: 2c4658089de421317c35b49b17c730e6bacf17d9
+Patch-set: 5
+File: compiler/optimizing/inliner.cc
+
+135:64-135:83
+Thu Apr 23 14:46:13 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90972654_727cb034
+Bytes: 116
+I think this is way too obscure. Just say that we cannot emit a clinit check ourselves due to dex cache limitations.
+
+File: compiler/optimizing/inliner.h
+
+50:17-50:37
+Thu Apr 23 14:46:13 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50984e8f_28492fbe
+Bytes: 77
+Please leave this as HInvoke. We can and will inline InvokeVirtual/Interface.
+
+File: compiler/optimizing/nodes.h
+
+2218:0-2226:4
+Thu Apr 23 14:46:13 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50984e8f_0be0a512
+Bytes: 98
+This looks a bit too much. I'd hide it with just a flag that says we cannot emit the clinit check.
+
+2259:0-2274:3
+Thu Apr 23 14:46:13 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b088aa37_732af833
+Bytes: 62
+Would you need this if the clinit check was the last argument?
+
+2280:0-2288:3
+Thu Apr 23 14:46:13 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b088aa37_930e84e8
+Bytes: 87
+Since this will only be used by one pass, we should probably move this code over there.
+
+2291:0-2309:3
+Thu Apr 23 14:46:13 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90972654_d28ac4b2
+Bytes: 85
+All of this belongs to HInvokeStatic. Callers should know what they are dealing with.
+

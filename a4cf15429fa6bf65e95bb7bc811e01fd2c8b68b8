@@ -1,0 +1,34 @@
+Revision: a4cf15429fa6bf65e95bb7bc811e01fd2c8b68b8
+Patch-set: 1
+File: runtime/reflection.cc
+
+623:5-624:21
+Thu Apr 23 23:53:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 309d9a70_d9a8155b
+Bytes: 123
+We could do a stronger check here. We really expect to see ITE, so we should only allow OOME here, and FATAL out otherwise.
+
+628:6-629:21
+Thu Apr 23 23:53:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 309d9a70_7981e9d1
+Bytes: 171
+This should always be FATAL, as we really expect that constructor. You don't have to allocate here anymore, as the jmethodID is just a wrapper around the ArtMethod, right?
+
+633:0-634:44
+Thu Apr 23 23:53:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 309d9a70_d98f35fc
+Bytes: 62
+Maybe same as above, in a debug build check that it's an OOME?
+
+File: test/etc/run-test-jar
+
+228:45-228:53
+Thu Apr 23 23:53:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10a416b9_18eb7025
+Bytes: 57
+Please put a comment why that was necessary just above...
+

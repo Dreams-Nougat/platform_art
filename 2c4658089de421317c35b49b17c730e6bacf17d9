@@ -9,6 +9,14 @@ UUID: 90972654_727cb034
 Bytes: 116
 I think this is way too obscure. Just say that we cannot emit a clinit check ourselves due to dex cache limitations.
 
+135:64-135:83
+Thu Apr 23 17:16:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_727cb034
+UUID: b088aa37_93b84428
+Bytes: 4
+Done
+
 File: compiler/optimizing/inliner.h
 
 50:17-50:37
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50984e8f_28492fbe
 Bytes: 77
 Please leave this as HInvoke. We can and will inline InvokeVirtual/Interface.
+
+50:17-50:37
+Thu Apr 23 17:16:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50984e8f_28492fbe
+UUID: 50984e8f_4b8a2ded
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -27,12 +43,32 @@ UUID: 50984e8f_0be0a512
 Bytes: 98
 This looks a bit too much. I'd hide it with just a flag that says we cannot emit the clinit check.
 
+2218:0-2226:4
+Thu Apr 23 17:16:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50984e8f_0be0a512
+UUID: 50984e8f_6b585112
+Bytes: 463
+We actually need this, as there are three steps:
+* in the builder, we can have one these three cases: (a) no clinit check required; or (b) an explicit clinit check required (and emitted); or (c) an implicit clinit check required;
+* in the inliner, we need to isolate cases (b), as we do not know how to inline such static methods;
+* in the prepare-for-regalloc phase, we turn cases (c) into cases (b);
+* eventually the regalloc/codegen only sees cases (a) or (b).
+
 2259:0-2274:3
 Thu Apr 23 14:46:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b088aa37_732af833
 Bytes: 62
 Would you need this if the clinit check was the last argument?
+
+2259:0-2274:3
+Thu Apr 23 17:16:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_732af833
+UUID: b088aa37_d399ecc5
+Bytes: 141
+No; but I would still need to keep the checks somewhere.  I'll try to move the extra input at the end of the input list in another patch set.
 
 2280:0-2288:3
 Thu Apr 23 14:46:13 2015 +0000
@@ -41,10 +77,26 @@ UUID: b088aa37_930e84e8
 Bytes: 87
 Since this will only be used by one pass, we should probably move this code over there.
 
+2280:0-2288:3
+Thu Apr 23 17:16:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_930e84e8
+UUID: b088aa37_337cf0e5
+Bytes: 237
+This code is here because art::PrepareForRegisterAllocation::VisitClinitCheck cannot call `inputs_.DeleteAt(0)', as it is private.  Should I make art::PrepareForRegisterAllocation::VisitClinitCheck a friend of art::HInvokeStaticOrDirect?
+
 2291:0-2309:3
 Thu Apr 23 14:46:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90972654_d28ac4b2
 Bytes: 85
 All of this belongs to HInvokeStatic. Callers should know what they are dealing with.
+
+2291:0-2309:3
+Thu Apr 23 17:16:25 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_d28ac4b2
+UUID: 90972654_d24ba4b5
+Bytes: 135
+What do you mean? We no longer have a HInvokeStatic class, as it has been turned into HInvokeStaticOrDirect.  Should we reintroduce it?
 

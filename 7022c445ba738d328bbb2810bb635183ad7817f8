@@ -25,6 +25,14 @@ UUID: 309d9a70_26958c16
 Bytes: 137
 Maybe we want to pass these as arguments, this would be required if we ever want to have multiple RosAlloc spaces exist at the same time.
 
+1216:14-1216:35
+Thu Apr 23 03:15:09 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 309d9a70_26958c16
+UUID: 30867a2e_8c802795
+Bytes: 540
+Actually at the beginning, I tried to make this function an abstract one in space.cc something like SpaceWalkBitmap. After using the bitmaps as the arguments, unfortunately the template function due to ContinuousSpaceBitmap couldn't been inherited. Also it seems inappropriate, since this function is unique for RosSpace. IF there are multiple RosSpace, it's easy to replace the existing GetRosAllocSpace() to get the right RosSpace, since one RosAlloc is corresponding to one RosSpace. I am still trying to find more elegant approach next.
+
 File: runtime/gc/collector/mark_sweep.cc
 
 1182:26-1182:42
@@ -33,6 +41,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 10a416b9_3aa59e04
 Bytes: 88
 Is there a reason we cant change the default RosAllocSpace Sweep to be SweepWalkPagemap?
+
+1182:26-1182:42
+Thu Apr 23 03:15:09 2015 +0000
+Author: Lei Li <1015518@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10a416b9_3aa59e04
+UUID: 5083ee1c_2d63b940
+Bytes: 252
+I haven't found the exceptions yet. If multiple RosSpaces exist, it may need to change a little bit here to make sure that we get the RosSpace right one by one. I will keep an eye on this and fix it if there is any exception here going forward. Thanks.
 
 File: runtime/gc/space/large_object_space.cc
 

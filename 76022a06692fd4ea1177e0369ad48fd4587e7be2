@@ -17,6 +17,25 @@ UUID: b088aa37_53717c8a
 Bytes: 119
 instead of DCHECK, how about ClearMustDoNullCheck(). that way we will be sure that we can't do it even if we want it :)
 
+3354:2-3354:96
+Thu Apr 23 14:04:55 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_53717c8a
+UUID: b088aa37_f36188b9
+Bytes: 398
+so just to clarify on the suggestion.
+
+since we know that we should never transition from false to true here it's better to change this setter into:
+
+void ClearMustDoNullCheck() const { must_do_null_check_ = false; }
+
+and then in the caller we should do
+if (!obj->CanBeNull()) {
+  check_cast->ClearMustDoNullCheck();
+}
+
+It will also be self documenting that this should never go from false to true.
+
 3421:0-3421:96
 Thu Apr 23 13:50:49 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

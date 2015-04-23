@@ -1,5 +1,48 @@
 Revision: c0e22f2b48e771cefcaa219560d1d9f88bdeb4c1
 Patch-set: 8
+File: compiler/optimizing/builder.cc
+
+330:10-330:31
+Thu Apr 23 23:21:56 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d076fe11_d09f1161
+Bytes: 223
+Catching exception is a property of method and not whether the optimization is enabled. Thus, I am not sure that this makes sense to call like this. I would prefer simply marking it to true if there are indeed catch blocks.
+
+File: compiler/optimizing/graph_test.cc
+
+94:12-94:18
+Thu Apr 23 23:21:56 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5083ee1c_73a4b285
+Bytes: 35
+Can you use SetInitialBits instead?
+
+96:2-96:29
+Thu Apr 23 23:21:56 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5083ee1c_33815ad3
+Bytes: 106
+From what I can tell, you are disabling SimplifyCFG because all blocks are visited. Is there a reason why?
+
+File: compiler/optimizing/nodes.h
+
+323:7-323:28
+Thu Apr 23 23:21:56 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30867a2e_ef90b5c8
+Bytes: 45
+I would prefer naming it "has_catch_handlers"
+
+File: compiler/optimizing/ssa_liveness_analysis.cc
+
+230:0-233:11
+Thu Apr 23 23:21:56 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5083ee1c_737bd274
+Bytes: 279
+Maybe comment that this is an over-approximation since it doesn't seem you are actually analyzing what is live into those blocks. I wonder if it would be cleaner to integrate catch blocks into graph and then replace them with deopt nodes once we successfully model the data flow.
+
 File: runtime/thread.h
 
 115:34-115:35

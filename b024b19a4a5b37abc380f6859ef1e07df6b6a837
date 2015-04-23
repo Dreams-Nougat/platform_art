@@ -1,0 +1,23 @@
+Revision: b024b19a4a5b37abc380f6859ef1e07df6b6a837
+Patch-set: 8
+File: compiler/optimizing/instruction_simplifier.cc
+
+155:0-184:1
+Thu Apr 23 13:04:18 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b088aa37_33c87057
+Bytes: 377
+Actually I think we don't need this anymore.
+
+During the instruction simplification we don't remove any instruction that could alter the precision of the nullability information.
+
+So it should be enough to do 
+
+check_cast->SetMustDoNullCheck(check_cast->InputAt(0)->CanBeNull());
+
+in VisitCheckCast.
+
+(simillar for instanceof).
+
+Let me know what you think, or if I miss a case.
+

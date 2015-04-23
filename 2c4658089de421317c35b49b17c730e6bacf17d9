@@ -55,6 +55,23 @@ We actually need this, as there are three steps:
 * in the prepare-for-regalloc phase, we turn cases (c) into cases (b);
 * eventually the regalloc/codegen only sees cases (a) or (b).
 
+2218:0-2226:4
+Thu Apr 23 17:26:02 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50984e8f_6b585112
+UUID: 90972654_75df3a55
+Bytes: 243
+Could we do:
+
+Builder:
+HinvokeStaticOrDirect(arguments, (null if implicit)/(clinit if explicit)).
+
+Inliner:
+Don't inline HInvokeStaticOrDirect that have null at the end of the input.
+
+PepareForAlloc:
+Remove last input of HInvokeStaticOrDirect.
+
 2259:0-2274:3
 Thu Apr 23 14:46:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,6 +86,14 @@ Parent: b088aa37_732af833
 UUID: b088aa37_d399ecc5
 Bytes: 141
 No; but I would still need to keep the checks somewhere.  I'll try to move the extra input at the end of the input list in another patch set.
+
+2259:0-2274:3
+Thu Apr 23 17:26:02 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_d399ecc5
+UUID: 90972654_f5d32a51
+Bytes: 106
+Sure, I'd try to keep the checks. But it would be nice to avoid leaking this start position offset change.
 
 2280:0-2288:3
 Thu Apr 23 14:46:13 2015 +0000
@@ -85,6 +110,16 @@ UUID: b088aa37_337cf0e5
 Bytes: 237
 This code is here because art::PrepareForRegisterAllocation::VisitClinitCheck cannot call `inputs_.DeleteAt(0)', as it is private.  Should I make art::PrepareForRegisterAllocation::VisitClinitCheck a friend of art::HInvokeStaticOrDirect?
 
+2280:0-2288:3
+Thu Apr 23 17:26:02 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_337cf0e5
+UUID: b088aa37_33631041
+Bytes: 257
+Oh I see. Then nevermind, it's probably better to have this here.
+
+Or instead of deleting it, which could be error prone with the InputCount() and number_of_arguments difference, could we just set it to the null constant in prepare_for_register_allocation ?
+
 2291:0-2309:3
 Thu Apr 23 14:46:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -99,4 +134,14 @@ Parent: 90972654_d28ac4b2
 UUID: 90972654_d24ba4b5
 Bytes: 135
 What do you mean? We no longer have a HInvokeStatic class, as it has been turned into HInvokeStaticOrDirect.  Should we reintroduce it?
+
+2291:0-2309:3
+Thu Apr 23 17:26:02 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_d24ba4b5
+UUID: 50984e8f_ebf46156
+Bytes: 175
+Sorry I thought this class was HInvoke. So this should be here, scratch my comment.
+
+Maybe rename IsInvokeStatic to IsStatic to avoid the confusion with the instruction  name?
 

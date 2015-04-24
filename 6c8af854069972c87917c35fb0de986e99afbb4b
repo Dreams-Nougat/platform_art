@@ -17,6 +17,14 @@ UUID: 5083ee1c_7ee9d9ac
 Bytes: 152
 I didn't want to create the slow path if there was no need (i.e. index and length are both constants).  I can combine it, but it will look at bit hokey.
 
+3823:0-3838:3
+Fri Apr 24 17:41:44 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5083ee1c_7ee9d9ac
+UUID: 50984e8f_31aaba7f
+Bytes: 190
+The thing is, if they are both constants, BCE left the bounds check only if won't succeed. So this change more or less looks like doing constant folding in the codegen, which we could avoid.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 3764:0-3779:3

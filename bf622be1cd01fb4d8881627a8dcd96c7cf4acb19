@@ -53,3 +53,18 @@ UUID: d076fe11_d7a54380
 Bytes: 143
 So what is the final decision?  Should I check and not call AddSlowPath if it is in range (with some code rearrangement)?  Or leave the DCHECK?
 
+3838:6-3838:43
+Fri Apr 24 22:12:55 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d076fe11_d7a54380
+UUID: 309d9a70_724e5b4f
+Bytes: 241
+I think Nicolas wants the DCHECK removed. The options are:
+
+1) Generate the slow-path, but not branch to it.
+2) Fast bail-out. I don't think that needs rearrangement. Just a "simple"
+
+ if (isConstant() && isConstant() && ...) {
+   return;
+ }
+

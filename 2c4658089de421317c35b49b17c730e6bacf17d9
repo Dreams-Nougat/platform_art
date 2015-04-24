@@ -72,6 +72,14 @@ Don't inline HInvokeStaticOrDirect that have null at the end of the input.
 PepareForAlloc:
 Remove last input of HInvokeStaticOrDirect.
 
+2218:0-2226:4
+Fri Apr 24 13:40:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_75df3a55
+UUID: 90972654_35ef72b6
+Bytes: 512
+This strategy does not cover case (a), where the clinit check is not required at all.  We could fold case (a) into case (b) by always emitting an explicit clining check, but this means extra costs (instantiating the clinit check in the buider, then destroying it in the prepare-for-allocation phase) for no real gain IMHO.  In some cases, the generated code would even be worse, e.g., if the call is inlined, then the clinit check (actually, the load class instruction) will stay, even it is known to be useless.
+
 2259:0-2274:3
 Thu Apr 23 14:46:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -94,6 +102,14 @@ Parent: b088aa37_d399ecc5
 UUID: 90972654_f5d32a51
 Bytes: 106
 Sure, I'd try to keep the checks. But it would be nice to avoid leaking this start position offset change.
+
+2259:0-2274:3
+Fri Apr 24 13:40:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_f5d32a51
+UUID: 90972654_95dd860d
+Bytes: 156
+Method removed in PS8, as the clinit check now occupies the last position in the input list.  I transferred the check to the overriden InputRecordAt method.
 
 2280:0-2288:3
 Thu Apr 23 14:46:13 2015 +0000
@@ -120,6 +136,18 @@ Oh I see. Then nevermind, it's probably better to have this here.
 
 Or instead of deleting it, which could be error prone with the InputCount() and number_of_arguments difference, could we just set it to the null constant in prepare_for_register_allocation ?
 
+2280:0-2288:3
+Fri Apr 24 13:40:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_33631041
+UUID: 50984e8f_567bf4b9
+Bytes: 673
+But if we were replacing the first (or last) input with an HNullConstant, I believe we would have to also adjust code generators (and I guess intrinsics handlers as well).
+
+We could also decide to always have an extra first (or last, but first make more sense IMHO) input for HInvokeStaticOrDirect as a potential placeholder for a HClinitChech/HClassLoad object, possibly containing a HNullConstant if not used, to avoid special cases.  But I think this also implies changes in all the code generators/intrinsics handlers. 
+
+Also, for art::HInvoke and its subclasses, InputCount relies on the size of inputs_, which is adjusted correctly when inputs_.DeleteAt(0) is called.
+
 2291:0-2309:3
 Thu Apr 23 14:46:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -144,4 +172,12 @@ Bytes: 175
 Sorry I thought this class was HInvoke. So this should be here, scratch my comment.
 
 Maybe rename IsInvokeStatic to IsStatic to avoid the confusion with the instruction  name?
+
+2291:0-2309:3
+Fri Apr 24 13:40:07 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50984e8f_ebf46156
+UUID: 50984e8f_367870bb
+Bytes: 35
+Agreed, sounds better; done in PS8.
 

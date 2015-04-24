@@ -9,12 +9,28 @@ UUID: 5083ee1c_3e620114
 Bytes: 142
 Do you want to consider simplifying Switch blocks if/when https://android-review.googlesource.com/145123 merges?  It should be a different CL.
 
+31
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5083ee1c_3e620114
+UUID: b088aa37_767ca634
+Bytes: 109
+Absolutely. We could even use the numerical bounds analysis from bounds-check elimination to remove branches.
+
 34:26-34:50
 Fri Apr 24 13:06:33 2015 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d076fe11_469a8747
 Bytes: 18
 Make this a local?
+
+34:26-34:50
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d076fe11_469a8747
+UUID: 90972654_f5324a6a
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.cc
 
@@ -25,12 +41,28 @@ UUID: 90972654_953bc64a
 Bytes: 120
 Does this work? Since we simplify the cfg to only have one back edge, how can a loop survive without having a back edge?
 
+922:0-924:5
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_953bc64a
+UUID: b088aa37_d68abab2
+Bytes: 82
+You're right. This can happen only when the entire loop is being deleted. Removed.
+
 939:9-939:52
 Fri Apr 24 13:20:14 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b088aa37_f62c1644
 Bytes: 25
 Explain why this is safe.
+
+939:9-939:52
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_f62c1644
+UUID: 50984e8f_96ddfce4
+Bytes: 4
+Done
 
 950:8-950:59
 Fri Apr 24 13:20:14 2015 +0000
@@ -39,12 +71,28 @@ UUID: b088aa37_36721e62
 Bytes: 8
 Why not?
 
+950:8-950:59
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_36721e62
+UUID: b088aa37_f6b97658
+Bytes: 196
+Ah yeah, let me explain. This would otherwise violate the fact that dominators are removed before the blocks they dominate (`this` would be the dominator of `successor`). I've changed the comment.
+
 956:0-967:5
 Fri Apr 24 13:20:14 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b088aa37_5677aa50
 Bytes: 85
 How many predecessors can you have? Only two right? Isn't the dominator then obvious?
+
+956:0-967:5
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_5677aa50
+UUID: 50984e8f_164e8c4d
+Bytes: 59
+Nope, can have more than two predecessors with the merging.
 
 979:0-981:7
 Fri Apr 24 13:20:14 2015 +0000
@@ -53,12 +101,28 @@ UUID: b088aa37_b6328e9b
 Bytes: 37
 Does this case actually happen today?
 
+979:0-981:7
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_b6328e9b
+UUID: 90972654_55f4fe03
+Bytes: 42
+Yep, e.g. with the block containing Return
+
 1021:47-1021:76
 Fri Apr 24 13:20:14 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50984e8f_d670248a
 Bytes: 37
 Where/when is the deletion happening?
+
+1021:47-1021:76
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50984e8f_d670248a
+UUID: 50984e8f_d647042d
+Bytes: 25
+Moved next to the delete.
 
 File: compiler/optimizing/nodes.h
 
@@ -69,6 +133,14 @@ UUID: 90972654_55223e23
 Bytes: 43
 Huh, but you're calling it unconditionally.
 
+100:0-100:83
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_55223e23
+UUID: 90972654_b59c42b7
+Bytes: 16
+Added condition.
+
 File: compiler/utils/growable_array.h
 
 49:0-49:34
@@ -78,6 +150,14 @@ UUID: 90972654_35d852a5
 Bytes: 15
 Who needs this?
 
+49:0-49:34
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_35d852a5
+UUID: 90972654_d599cec5
+Bytes: 19
+MergeWith in DCHECK
+
 File: test/480-checker-dead-blocks/src/Main.java
 
 117:0-120:13
@@ -86,4 +166,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b088aa37_b67d2e30
 Bytes: 38
 Add a test for while (inlineFalse()) ?
+
+117:0-120:13
+Fri Apr 24 14:14:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b088aa37_b67d2e30
+UUID: 50984e8f_760cb8ef
+Bytes: 4
+Done
 

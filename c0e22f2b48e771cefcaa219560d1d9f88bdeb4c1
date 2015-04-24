@@ -9,6 +9,14 @@ UUID: d076fe11_d09f1161
 Bytes: 223
 Catching exception is a property of method and not whether the optimization is enabled. Thus, I am not sure that this makes sense to call like this. I would prefer simply marking it to true if there are indeed catch blocks.
 
+330:10-330:31
+Fri Apr 24 21:18:05 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d076fe11_d09f1161
+UUID: d0d43e30_aab64937
+Bytes: 41
+Ok. I renamed it to MethodHasCatchBlocks.
+
 File: compiler/optimizing/graph_test.cc
 
 94:12-94:18
@@ -18,12 +26,31 @@ UUID: 5083ee1c_73a4b285
 Bytes: 35
 Can you use SetInitialBits instead?
 
+94:12-94:18
+Fri Apr 24 21:18:05 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5083ee1c_73a4b285
+UUID: d0d43e30_cd363f92
+Bytes: 34
+Thanks. Didn't notice that method.
+
 96:2-96:29
 Thu Apr 23 23:21:56 2015 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5083ee1c_33815ad3
 Bytes: 106
 From what I can tell, you are disabling SimplifyCFG because all blocks are visited. Is there a reason why?
+
+96:2-96:29
+Fri Apr 24 21:18:05 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5083ee1c_33815ad3
+UUID: 10a416b9_d259c0e2
+Bytes: 230
+This CL added a parameter for SimplifyCFG so I just need this parameter. SimplifyCFG does
+  // (1): Split critical edges.
+  // (2): Simplify loops by having only one back edge, and one preheader.
+so I'm not disabling any of those.
 
 File: compiler/optimizing/nodes.h
 
@@ -34,6 +61,14 @@ UUID: 30867a2e_ef90b5c8
 Bytes: 45
 I would prefer naming it "has_catch_handlers"
 
+323:7-323:28
+Fri Apr 24 21:18:05 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30867a2e_ef90b5c8
+UUID: d0d43e30_8d2047c7
+Bytes: 36
+renamed to method_has_catch_blocks_.
+
 File: compiler/optimizing/ssa_liveness_analysis.cc
 
 230:0-233:11
@@ -43,6 +78,16 @@ UUID: 5083ee1c_737bd274
 Bytes: 279
 Maybe comment that this is an over-approximation since it doesn't seem you are actually analyzing what is live into those blocks. I wonder if it would be cleaner to integrate catch blocks into graph and then replace them with deopt nodes once we successfully model the data flow.
 
+230:0-233:11
+Fri Apr 24 21:18:05 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5083ee1c_737bd274
+UUID: 309d9a70_fe413a18
+Bytes: 183
+Add this comment:
+            // This is very coarse-grained since we don't analyze yet whether current
+            // can throw an exception that's caught by one of the catch blocks.
+
 File: runtime/thread.h
 
 115:34-115:35
@@ -51,4 +96,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90972654_ec77ebc9
 Bytes: 6
 const?
+
+115:34-115:35
+Fri Apr 24 21:18:05 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90972654_ec77ebc9
+UUID: d0d43e30_4a01f58a
+Bytes: 5
+Done.
 

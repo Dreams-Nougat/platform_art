@@ -1,5 +1,34 @@
 Revision: 860a2da1cc8aadeb428ab311ce9231d48b4aec58
 Patch-set: 1
+File: runtime/gc/allocator/rosalloc.cc
+
+1666:0-1668:43
+Sat Apr 25 00:35:58 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0d99e70_1106ae4d
+Bytes: 195
+This seems too much of a hardcoding to the existing uses cases and MarkSweep and not necessarily true in the future. I find this error-prone and not a good design from a modularity point of view.
+
+1690:0-1691:52
+Sat Apr 25 00:35:58 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0d42a38_907bba3c
+Bytes: 388
+I believe this move violates the existing locking conventions.
+
+It's unfortunate that we don't have more thread safety annotations.
+
+There may be *some* unnecessary locking in certain cases, but I'd rather follow the basic/static locking conventions unless there's a strong reason not to. 
+
+Otherwise, we'd end up with a locking/thread safety mess, which makes reasoning/maintenance hard.
+
+1754:0-1756:65
+Sat Apr 25 00:35:58 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0d99e70_7158525b
+Bytes: 124
+Similarly, this is too much of a hardcoding to the existing uses cases and MarkSweep and not necessarily true in the future.
+
 File: runtime/gc/allocator/rosalloc.h
 
 621:2-622:53

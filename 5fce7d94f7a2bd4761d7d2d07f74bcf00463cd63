@@ -1,0 +1,112 @@
+Revision: 5fce7d94f7a2bd4761d7d2d07f74bcf00463cd63
+Patch-set: 3
+File: compiler/optimizing/bounds_check_elimination.cc
+
+267:4-267:61
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_0406764d
+Bytes: 12
+GetLoopHead?
+
+268:4-270:69
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f712e2_e331121f
+Bytes: 45
+Please use the HBlocksInLoopIterator instead.
+
+273:0-280:7
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_0210aa83
+Bytes: 240
+How about changing the iteration then:
+
+for (HBasicBlock* block = back_edge; block != header's dominator; block = block->GetDominator()) ?
+
+That might lead to using a different array though :) But it will avoid the expensive Dominates call.
+
+464:31-464:70
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_e4311a1f
+Bytes: 88
+Given the name of the method, you could probably DCHECK that the block is a loop header.
+
+566:5-566:8
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_c4361e15
+Bytes: 69
+Add -> Adds (or Returns -> Return below, as long as it's consistent).
+
+600:5-600:8
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_a42b22af
+Bytes: 5
+ditto
+
+725:10-726:54
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_84302618
+Bytes: 90
+Is there a reason the order is different than line 718? If not, please make it consistent.
+
+946:54-946:57
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_041d568f
+Bytes: 43
+What does it mean to not be "for" the loop?
+
+946:36-946:47
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_64264ae6
+Bytes: 15
+is that `Hif` ?
+
+946:26-946:28
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_82f11ae3
+Bytes: 13
+what's 'it' ?
+
+1192:11-1193:17
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_22ee0e04
+Bytes: 80
+Move this comment to line 1200?
+
+Also please add a DCHECK that this is the case.
+
+File: compiler/optimizing/nodes.cc
+
+510:42-510:80
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_e20a6659
+Bytes: 21
+nit: surround with ()
+
+File: compiler/optimizing/nodes.h
+
+1010:15-1010:18
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f712e2_43a0e69e
+Bytes: 13
+env -> `env`.
+
+1011:35-1011:51
+Sat Apr 25 14:53:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_42eb12f3
+Bytes: 74
+things -> instructions that require an environment (like HDeoptimization).
+

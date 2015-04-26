@@ -1,0 +1,115 @@
+Revision: f0b361e172ce6d03adfbf0a04bfd87381a1bbe64
+Patch-set: 4
+File: compiler/optimizing/bounds_check_elimination.cc
+
+18:0-18:32
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_62b736c7
+Bytes: 32
+I think you can remove this now.
+
+299:12-299:72
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f712e2_430c66ef
+Bytes: 45
+-> if (loop_info->Contains(array->GetBlock())
+
+311:21-311:22
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_24c1722e
+Bytes: 12
+" *" -> "* "
+
+315:13-315:14
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_04be76a0
+Bytes: 11
+extra space
+
+450:0-450:48
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_64de4a09
+Bytes: 110
+It would be nice to get rid of this. It's only used to backtrack right? See my comments below for suggestions.
+
+459:28-459:29
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f712e2_23196a2d
+Bytes: 5
+const
+
+567:0-578:5
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_84e826ab
+Bytes: 161
+Could we refactor this to:
+
+bool CanAddDeoptimizationConstant(HInstruction* value, int32_t constant, bool* is_proven)
+
+Where is_proven is the result of line 572?
+
+601:0-603:53
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f712e2_a33b1a7d
+Bytes: 90
+Ditto:
+
+bool CanAddDeoptimizationArrayLength(value, array_length, offset, bool* is_proven)
+
+716:0-719:7
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f712e2_63364294
+Bytes: 252
+Change this to:
+
+if (AddDeoptimizationConstant(..., &is_constant_proven) && AddDeoptimizationArrayLength(..., &is_array_length_proven) {
+  if (!is_constant_proven) AddDeoptimizationConstant()
+  if (!is_length_proven) AddDeoptimizationArrayLength()
+}
+
+?
+
+721:0-726:7
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_44db4e17
+Bytes: 5
+ditto
+
+730:0-730:39
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_42beb2a1
+Bytes: 29
+Then you shouldn't need this.
+
+748:15-748:47
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_e2e906b2
+Bytes: 42
+Maybe add a finder.HasFoundArray() helper?
+
+945:21-945:25
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fc86c6_24d85218
+Bytes: 18
+not -> not defined
+
+1194:0-1199:11
+Sun Apr 26 14:14:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5034ce65_02ef4ab5
+Bytes: 126
+I don't understand why you need this. We know where the loop body is, why do we need to be conservative on what DEX generates?
+

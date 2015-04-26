@@ -16,6 +16,14 @@ UUID: 70f712e2_e331121f
 Bytes: 45
 Please use the HBlocksInLoopIterator instead.
 
+268:4-270:69
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f712e2_e331121f
+UUID: b0fd0ac2_055f92c1
+Bytes: 80
+Not needed anymore since I changed the way to iterate blocks as commented below.
+
 273:0-280:7
 Sat Apr 25 14:53:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,12 +35,28 @@ for (HBasicBlock* block = back_edge; block != header's dominator; block = block-
 
 That might lead to using a different array though :) But it will avoid the expensive Dominates call.
 
+273:0-280:7
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5034ce65_0210aa83
+UUID: d0027e8c_cc0f6367
+Bytes: 89
+Good idea. I now use this way to iterate blocks in the loop that dominates the back edge.
+
 464:31-464:70
 Sat Apr 25 14:53:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90fc86c6_e4311a1f
 Bytes: 88
 Given the name of the method, you could probably DCHECK that the block is a loop header.
+
+464:31-464:70
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fc86c6_e4311a1f
+UUID: b0fd0ac2_855262ba
+Bytes: 4
+Done
 
 566:5-566:8
 Sat Apr 25 14:53:56 2015 +0000
@@ -41,6 +65,14 @@ UUID: 90fc86c6_c4361e15
 Bytes: 69
 Add -> Adds (or Returns -> Return below, as long as it's consistent).
 
+566:5-566:8
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fc86c6_c4361e15
+UUID: d0027e8c_2cd71742
+Bytes: 16
+Changed to Adds.
+
 600:5-600:8
 Sat Apr 25 14:53:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,12 +80,28 @@ UUID: 90fc86c6_a42b22af
 Bytes: 5
 ditto
 
+600:5-600:8
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fc86c6_a42b22af
+UUID: f00b02a7_0791d6ca
+Bytes: 16
+Changed to Adds.
+
 725:10-726:54
 Sat Apr 25 14:53:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90fc86c6_84302618
 Bytes: 90
 Is there a reason the order is different than line 718? If not, please make it consistent.
+
+725:10-726:54
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fc86c6_84302618
+UUID: b0fd0ac2_65688669
+Bytes: 101
+I was checking initial_ first and then end_. Anyway I reordered it to constant and then array_length.
 
 946:54-946:57
 Sat Apr 25 14:53:56 2015 +0000
@@ -76,6 +124,16 @@ UUID: 5034ce65_82f11ae3
 Bytes: 13
 what's 'it' ?
 
+946:36-946:47
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fc86c6_64264ae6
+UUID: b0fd0ac2_45658a8d
+Bytes: 135
+Changed the comment to:
+          // For monotonic value range, don't handle `instruction`
+          // if it's not in the loop header.
+
 1192:11-1193:17
 Sat Apr 25 14:53:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,6 +142,16 @@ Bytes: 80
 Move this comment to line 1200?
 
 Also please add a DCHECK that this is the case.
+
+1192:11-1193:17
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5034ce65_22ee0e04
+UUID: b0fd0ac2_25628e87
+Bytes: 160
+Moved. Also it's not a DCHECK, I added this comment:
+            // We expect the loop body is in false successor of the loop
+            // in common dex code.
 
 File: compiler/optimizing/nodes.cc
 
@@ -94,6 +162,14 @@ UUID: 5034ce65_e20a6659
 Bytes: 21
 nit: surround with ()
 
+510:42-510:80
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5034ce65_e20a6659
+UUID: f00b02a7_e700028a
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.h
 
 1010:15-1010:18
@@ -103,10 +179,26 @@ UUID: 70f712e2_43a0e69e
 Bytes: 13
 env -> `env`.
 
+1010:15-1010:18
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f712e2_43a0e69e
+UUID: d0027e8c_6cff4fa8
+Bytes: 6
+Fixed.
+
 1011:35-1011:51
 Sat Apr 25 14:53:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5034ce65_42eb12f3
 Bytes: 74
 things -> instructions that require an environment (like HDeoptimization).
+
+1011:35-1011:51
+Sun Apr 26 09:39:19 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5034ce65_42eb12f3
+UUID: d0027e8c_4cfc93b1
+Bytes: 4
+Done
 

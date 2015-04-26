@@ -1,0 +1,13 @@
+Revision: 206d6fd6cae5ba8c4d5f0e230111fe77b9d5c0a5
+Patch-set: 5
+File: compiler/optimizing/bounds_check_elimination.cc
+
+1187:3-1192:11
+Sun Apr 26 19:58:34 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30375a6d_a111be51
+Bytes: 221
+Can the false successor be in an inner loop, and then it's wrong to pick the true successor?
+
+I think here you should do block->GetLoopInformation()->Contains(instruction->IfFalseSuccessor()) to protect against this case.
+

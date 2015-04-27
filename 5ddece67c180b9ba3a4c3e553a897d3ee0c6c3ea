@@ -1,0 +1,49 @@
+Revision: 5ddece67c180b9ba3a4c3e553a897d3ee0c6c3ea
+Patch-set: 34
+File: compiler/optimizing/builder.cc
+
+618:1-622:69
+Mon Apr 27 08:09:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_8cff2778
+Bytes: 174
+Please replace this with:
+
+bool is_string_init = compiler_driver->IsStringInit(dex_file, method_idx, &string_init_offset);
+
+The builder should not know about the inliner map.
+
+630:0-631:83
+Mon Apr 27 08:09:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_6c051b13
+Bytes: 25
+Then you can remove this.
+
+1966:33-1966:59
+Mon Apr 27 08:09:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30375a6d_213cce8f
+Bytes: 18
+-> GetNullConstant
+
+File: compiler/optimizing/intrinsics_arm.cc
+
+872:0-882:1
+Mon Apr 27 08:09:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 500f6eb1_6a90571a
+Bytes: 123
+The intrinsics visitor is not guaranteed to be called. When compiling 'baseline', it is not.
+
+Does this work with baseline?
+
+File: compiler/optimizing/nodes.h
+
+2318:5-2318:84
+Mon Apr 27 08:09:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 500f6eb1_ea7b2776
+Bytes: 91
+Please add: "Note that there are multiple string init methods, each having its own offset".
+

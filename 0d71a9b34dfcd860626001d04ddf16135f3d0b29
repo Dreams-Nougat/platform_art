@@ -9,10 +9,44 @@ UUID: 30375a6d_a4aeace5
 Bytes: 16
 Why this change?
 
+921:0-927:3
+Mon Apr 27 16:01:49 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_a4aeace5
+UUID: 500f6eb1_cdd75d74
+Bytes: 647
+Because it's getting harder and harder to set up the test case.
+
+Previously:
+  - start:     Arg->Equal0->If->Phi->Return
+  - simplify1: Arg->BooleanNot->If->Phi->Return
+  - bool_simp: Arg->BooleanNot->BooleanNot->Return
+  - simplify2: Arg->Return
+
+With the negation removal:
+  - start:     Arg->Equal0->If->Phi->Return
+  - simplify1: Arg->BooleanNot->If->Phi->Return
+  - bool_simp: Arg->Phi->Return, Arg->Return
+
+With the inlining:
+  - start:     Arg->Invoke->NotEqual0->If->Phi->Return
+  - simplify1: Arg->Invoke->If->Phi->Return
+  - inliner:   Arg->If->Phi->If->Phi->Return
+  - bool_simp: Arg->BoolNot->BoolNot->Return
+  - simplify2: Arg->Return
+
 974:0-974:22
 Mon Apr 27 15:50:13 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 500f6eb1_4d124ddb
 Bytes: 32
 I think you want to remove this.
+
+974:0-974:22
+Mon Apr 27 16:01:49 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 500f6eb1_4d124ddb
+UUID: 90e3a61e_8f295940
+Bytes: 6
+Thanks
 

@@ -17,12 +17,30 @@ UUID: 30375a6d_01abca01
 Bytes: 47
 Agreed, I don't see why we need the flag as is.
 
+87:22-87:44
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_01abca01
+UUID: f0f222e5_be11e551
+Bytes: 92
+That flag was there to avoid the checks if we decide it's too much overhead. I'll remove it.
+
 747:17-747:18
 Mon Apr 27 09:45:14 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90e3a61e_8ce847ab
 Bytes: 81
 Shouldn't it be '<' here to match the operator< ? Otherwise it's worth a comment.
+
+747:17-747:18
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_8ce847ab
+UUID: b0d42a38_76ca819e
+Bytes: 236
+I'll add a comment.
+
+It must be >. std::priority_queue is a max-heap, but dex files have types ordered ascendingly. So to be able to 1) iterate over the file easily and 2) grab the smallest element one has to revert the comparison here.
 
 809:4-809:33
 Mon Apr 27 09:45:14 2015 +0000
@@ -31,12 +49,28 @@ UUID: 500f6eb1_0a167bfb
 Bytes: 121
 We should also clear the field of the object. I find it dangerous to delete a pointer and still may be able to access it.
 
+809:4-809:33
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 500f6eb1_0a167bfb
+UUID: d0d99e70_e8cd6f38
+Bytes: 12
+OK, will do.
+
 815:4-815:35
 Mon Apr 27 09:45:14 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90e3a61e_0cb0d7b9
 Bytes: 49
 Shouldn't we delete the DEX file in a destructor?
+
+815:4-815:35
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_0cb0d7b9
+UUID: b0d42a38_82524869
+Bytes: 250
+I decided to use value objects for the pairs, as that makes updating more explicit (otherwise you'd need to make really sure you're not screwing around with something that's in the heap). That means you have to be *really* careful when assigning etc.
 
 820:0-820:82
 Sat Apr 25 00:56:03 2015 +0000
@@ -60,12 +94,28 @@ UUID: 30375a6d_810cbaf0
 Bytes: 76
 This comment is misplaced. You probably want to explain why you need a lock.
 
+825:0-826:32
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_810cbaf0
+UUID: b0d42a38_16b9fd0e
+Bytes: 123
+That comment is placed correctly. The dex_lock_ is used when you look at the oat files. It could be more extensive, agreed.
+
 829:43-829:47
 Mon Apr 27 08:39:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 500f6eb1_2a65bfc5
 Bytes: 55
 'heap' is overloaded. Could you rename this to 'queue'?
+
+829:43-829:47
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 500f6eb1_2a65bfc5
+UUID: f0f222e5_3e0f3535
+Bytes: 8
+Will do.
 
 836:54-836:55
 Mon Apr 27 08:39:40 2015 +0000
@@ -74,12 +124,28 @@ UUID: 30375a6d_610f36e6
 Bytes: 17
 This looks magic.
 
+836:54-836:55
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_610f36e6
+UUID: f0f222e5_1e0c713c
+Bytes: 193
+This isn't magic. You know that if it's not empty than at least index 0 exists - and any dex file out of the boot class-path is fine. I could have used an iterator, but that's just boilerplate.
+
 859:15-859:23
 Mon Apr 27 08:39:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90e3a61e_cc1c0f6c
 Bytes: 22
 the heap -> the queue.
+
+859:15-859:23
+Mon Apr 27 15:24:09 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_cc1c0f6c
+UUID: f0f222e5_fe176d44
+Bytes: 8
+Will do.
 
 943:83-943:95
 Sat Apr 25 00:56:03 2015 +0000

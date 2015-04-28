@@ -1,0 +1,104 @@
+Revision: aa53e1a3df4e976bae51659346bf5ce703810ce4
+Patch-set: 4
+File: runtime/dex_instruction-inl.h
+
+458:52-458:66
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_b5e342ce
+Bytes: 126
+Your max is really 4 so you should use a separate constant. In the verifier, we'll need to check there is at most 4 arguments.
+
+465:10-465:12
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_95e846ab
+Bytes: 214
+I don't understand why you don't follow the format 35c here. For me, the difference is you have a closure/reference instead of a method index, right?
+
+You could have vA=count, vB=closure register, {vC,...,vG}=args.
+
+File: runtime/dex_instruction_list.h
+
+265:92-265:103
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_55b41ec0
+Bytes: 79
+This also needs kVerifyVarArgNonZero (or kVerifyVarArg if there may be no args)
+
+268:10-268:73
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30375a6d_f531c01e
+Bytes: 26
+I think they're fine here.
+
+269:6-269:79
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 500f6eb1_d3aa5efc
+Bytes: 64
+If it is not used, we should remove it (in a separate CL though)
+
+File: runtime/interpreter/interpreter.h
+
+52:16-52:49
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30375a6d_75fff0a7
+Bytes: 157
+It's defined in the interpreter.cc file. However, it seems it is still defined in art::interpreter namespace while we declare in the art namespace only here.
+
+File: runtime/interpreter/interpreter_common.cc
+
+511:63-511:69
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 500f6eb1_d305be97
+Bytes: 12
+DoCallCommon
+
+657:9-657:85
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_957a866f
+Bytes: 333
+It's an optimization for the interpreter. It contains the 1st 16-bits loaded to know the opcode (low 8 bits) so we don't need to reload them to access vA (number of args for invoke-XXX)
+
+However, this used to be useful when this method was inlined. Because of stack space issue, it is no longer inlined so this may no longer be true.
+
+File: runtime/interpreter/interpreter_common.h
+
+140:75-141:37
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_d5992e53
+Bytes: 31
+Should be wrapped to next line.
+
+File: runtime/interpreter/interpreter_goto_table_impl.cc
+
+2405:4-2405:27
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_75903a1a
+Bytes: 173
+Not sure this is needed here. This is used to interpret with instrumentation (especially when debugger is active). I don't think the instruction will impact instrumentation.
+
+File: runtime/stack.h
+
+91:9-91:59
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 500f6eb1_331f7ae3
+Bytes: 49
+This is an artifact of Portable compiler removal.
+
+324:9-324:94
+Tue Apr 28 16:49:40 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90e3a61e_358ab2ec
+Bytes: 72
+Why micro-optimization? This avoids an indirection when accessing vregs.
+

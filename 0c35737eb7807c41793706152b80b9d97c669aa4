@@ -16,6 +16,16 @@ UUID: 5034ce65_c88ae36e
 Bytes: 159
 This is not really a guaranteed. It's kind of explaining the HDeoptimization approach (ie detecting rare cases that do not happen in normal circonstanstances).
 
+725:0-728:50
+Tue Apr 28 21:46:22 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5034ce65_c88ae36e
+UUID: d0d99e70_774f0993
+Bytes: 272
+It needs to be a guarantee. Otherwise there might be performance regressions observed like for Fannkuch.
+
+The guarantee is if the loop doesn't throw AIOOBE, no deoptimization is triggered. It's the same as saying if deoptimization is triggered, the loop must throw AIOOBE.
+
 729:8-729:20
 Mon Apr 27 21:54:14 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,10 +33,26 @@ UUID: 90fc86c6_4dca519e
 Bytes: 8
 of what?
 
+729:8-729:20
+Tue Apr 28 21:46:22 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fc86c6_4dca519e
+UUID: b0d42a38_37b4dc31
+Bytes: 226
+I want to mean if the loop throws AIOOBE, we may not add deoptimization (compare to if deoptimization is triggered, the loop must throw AIOOBE), like when increment is 2. I guess it's not that useful so I deleted this comment.
+
 780:0-782:57
 Mon Apr 27 21:54:14 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5034ce65_e876c705
 Bytes: 87
 The comment about overflow/underflow was clearer to me :-) Why can't we handle +2 then?
+
+780:0-782:57
+Tue Apr 28 21:46:22 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5034ce65_e876c705
+UUID: d0d99e70_26da7566
+Bytes: 198
++2 may skip the last element, so the end_ may not actually be used. Then using end_ to test against array.length is not accurate and may trigger deoptimization even if the loop doesn't throw AIOOBE.
 

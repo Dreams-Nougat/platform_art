@@ -9,6 +9,20 @@ UUID: 90e3a61e_b5e342ce
 Bytes: 126
 Your max is really 4 so you should use a separate constant. In the verifier, we'll need to check there is at most 4 arguments.
 
+458:52-458:66
+Tue Apr 28 18:58:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_b5e342ce
+UUID: d0d99e70_23a02719
+Bytes: 774
+I'm personally not a fan of how my code turned out either (I wrote the smali encoding much much before I saw any of this code here).
+
+What if (in a future CL) I changed it to be more like 35x, always var-args up to 5, but change the verifier to say that it must be *at least 1* to encode the requirement that one of the registers is omnipresent?
+
+I'm not sure about changing this constant for now, I am able to reuse most of the GetVarArgs calling code as well because they both take an array of the same size. If I add a new constant kMaxVarArgs = 4, I'd have to redo the rest of the code to handle different sized arrays.
+
+Maybe this function name could be renamed instead to differentiate it from a regular var arg, like GetAllRegisters25x or something along those lines?
+
 465:10-465:12
 Tue Apr 28 16:49:40 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,6 +31,16 @@ Bytes: 214
 I don't understand why you don't follow the format 35c here. For me, the difference is you have a closure/reference instead of a method index, right?
 
 You could have vA=count, vB=closure register, {vC,...,vG}=args.
+
+465:10-465:12
+Tue Apr 28 18:58:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_95e846ab
+UUID: b0d42a38_491b4e2c
+Bytes: 255
+This one doesn't take a type ID like 35c does, and it also needs only 2 bytes to encode.
+
+If you are saying I should include the type id -- then that's certainly a possibility, and I may want to include the type id here to make it easier for the verifier.
 
 File: runtime/dex_instruction_list.h
 
@@ -41,6 +65,14 @@ UUID: 500f6eb1_d3aa5efc
 Bytes: 64
 If it is not used, we should remove it (in a separate CL though)
 
+269:6-269:79
+Tue Apr 28 18:58:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 500f6eb1_d3aa5efc
+UUID: f0f222e5_47fa24f5
+Bytes: 42
+Ok, I'll try to remove this in a future CL
+
 File: runtime/interpreter/interpreter.h
 
 52:16-52:49
@@ -49,6 +81,16 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 30375a6d_75fff0a7
 Bytes: 157
 It's defined in the interpreter.cc file. However, it seems it is still defined in art::interpreter namespace while we declare in the art namespace only here.
+
+52:16-52:49
+Tue Apr 28 18:58:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_75fff0a7
+UUID: d0d99e70_638cef8c
+Bytes: 190
+Yep, eclipse had a trouble finding it because of the namespaces.
+
+FWIW putting "extern "C"" inside a namespace doesn't seem to do anything, it just erases the namespace from the symbol name.
 
 File: runtime/interpreter/interpreter_common.cc
 
@@ -68,6 +110,18 @@ It's an optimization for the interpreter. It contains the 1st 16-bits loaded to 
 
 However, this used to be useful when this method was inlined. Because of stack space issue, it is no longer inlined so this may no longer be true.
 
+657:9-657:85
+Tue Apr 28 18:58:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_957a866f
+UUID: d0d99e70_c3684322
+Bytes: 365
+As far as I can tell you would still need to switch inside of the GetVarArgs function because inst_data could either be the 0th short or the 1st short 
+
+Unless it always assumes its being passed in the 1st short, but then you won't get the 5th register...
+
+Anyway since 5 registers can't be encoded in a single short for 35x, I just am not sure what the intent was.
+
 File: runtime/interpreter/interpreter_common.h
 
 140:75-141:37
@@ -86,6 +140,14 @@ UUID: 90e3a61e_75903a1a
 Bytes: 173
 Not sure this is needed here. This is used to interpret with instrumentation (especially when debugger is active). I don't think the instruction will impact instrumentation.
 
+2405:4-2405:27
+Tue Apr 28 18:58:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_75903a1a
+UUID: f0f222e5_07af7ce4
+Bytes: 88
+Is it safe to leave in or a correctness issue? What file should I look at to learn more?
+
 File: runtime/stack.h
 
 91:9-91:59
@@ -101,4 +163,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90e3a61e_358ab2ec
 Bytes: 72
 Why micro-optimization? This avoids an indirection when accessing vregs.
+
+324:9-324:94
+Tue Apr 28 18:58:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_358ab2ec
+UUID: d0d99e70_06c899a4
+Bytes: 87
+That's why I was asking. It just makes the code harder to understand the way it is now.
 

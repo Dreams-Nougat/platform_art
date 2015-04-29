@@ -1,5 +1,14 @@
 Revision: aa53e1a3df4e976bae51659346bf5ce703810ce4
 Patch-set: 4
+File: compiler/dex/verified_method.h
+
+116:33-116:41
+Wed Apr 29 09:54:29 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30375a6d_359408bb
+Bytes: 16
+Why this change?
+
 File: runtime/dex_instruction-inl.h
 
 458:52-458:66
@@ -41,6 +50,18 @@ Bytes: 255
 This one doesn't take a type ID like 35c does, and it also needs only 2 bytes to encode.
 
 If you are saying I should include the type id -- then that's certainly a possibility, and I may want to include the type id here to make it easier for the verifier.
+
+465:10-465:12
+Wed Apr 29 09:54:29 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0d42a38_491b4e2c
+UUID: 30375a6d_950cf4f0
+Bytes: 864
+My point is the only difference between an invoke-lambda and other invoke-XXX instructions is you have a closure register index instead of a method index. But yes, because of that difference, you should use a different format (35x?).
+
+However, I still recommend having vA=args count, vB=closure register index and [vC,...,vG]=args because it also adheres to how the verifier checks invoke arguments (see line 864 of https://android.googlesource.com/platform/art/+/master/runtime/verifier/method_verifier.cc).
+
+For the verification itself, you definitely need to know the method index. The create-lambda already has it so I wonder if we can rely on its existence right before the invoke-lambda? Otherwise, you'll need to add it in the invoke-lambda and the format would become vA=args count, vB=method index, [vC,...,VG]=args *always with* vC=closure register index
 
 File: runtime/dex_instruction_list.h
 
@@ -148,6 +169,18 @@ UUID: f0f222e5_07af7ce4
 Bytes: 88
 Is it safe to leave in or a correctness issue? What file should I look at to learn more?
 
+2405:4-2405:27
+Wed Apr 29 09:54:29 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0f222e5_07af7ce4
+UUID: 30375a6d_55166cfc
+Bytes: 639
+The idea behind this "update" was to being able to attach a debugger at any time during app execution. So when returning from a method (after a debugger attached or detached), we would switch to interpret with the "alternative" instruction handlers that support debugging (if attached) or get back to "normal" handlers (that do not support debugging).
+
+Can CREATE_LAMBDA cause method invocation? If yes, this probably needs to stay.
+
+You can take a look at the definitions of these alternative handlers (below, at the end of this method) with macro INSTRUMENTATION_INSTRUCTION_HANDLER. And you can take a look at Instrumentation::IsActive.
+
 File: runtime/stack.h
 
 91:9-91:59
@@ -171,4 +204,13 @@ Parent: 90e3a61e_358ab2ec
 UUID: d0d99e70_06c899a4
 Bytes: 87
 That's why I was asking. It just makes the code harder to understand the way it is now.
+
+File: test/run-test
+
+0
+Wed Apr 29 09:54:29 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 500f6eb1_5edaf5eb
+Bytes: 44
+I think you should do that in a separate CL.
 

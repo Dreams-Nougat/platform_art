@@ -9,3 +9,18 @@ UUID: d0d99e70_f533ee9f
 Bytes: 128
 I don't really like that. Maybe it's better to replace the one delete with something else, e.g., a static counterpart to Create?
 
+79:4-79:58
+Wed Apr 29 08:36:32 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0d99e70_f533ee9f
+UUID: 30375a6d_7504d0cf
+Bytes: 454
+Yes, the delete is in EnterInterpreterFromDeoptimize (interpreter.cc). We allocate memory on the heap only for deoptimization so it makes sense to have dedicated methods. 
+
+I'd rename this method to CreateDeoptimizedFrame and add a DeleteDeoptimizedFrame to be called in EnterInterpreterFromDeoptimize, something like:
+
+  static void DeleteDeoptimizedFrame(ShadowFrame* sf) {
+    uint8_t* memory = reinterpret_cast<uint8_t*>(sf);
+    delete[] memory;
+  }
+

@@ -102,6 +102,16 @@ using LazyWrite = std::function<bool(File*)>;  // NOLINT
 
 I'm sure there's other ways to write it that don't involve lambdas.
 
+223:8-223:17
+Wed Apr 29 09:29:41 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_00b9b60e
+UUID: 90e3a61e_c08f2e2e
+Bytes: 295
+The run time overhead of std::function<> is substantial, starting with its internal usage of new/delete. So, I'm not very keen to use it widely.
+
+It's already slipped into command line parsing and dex2oat's class list parsing but I'm now tempted to remove it so that people don't get used to it.
+
 236:4-236:11
 Tue Apr 28 20:32:46 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

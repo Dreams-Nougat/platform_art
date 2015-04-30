@@ -9,12 +9,28 @@ UUID: 30e3da4b_a1711e5f
 Bytes: 13
 Section* link
 
+119:44-119:57
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30e3da4b_a1711e5f
+UUID: b0598aea_c853afc1
+Bytes: 4
+Done
+
 128
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0598aea_c5a4fa09
 Bytes: 38
 buffer.reserve(dynamics_.size() + 1u);
+
+128
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_c5a4fa09
+UUID: 30e3da4b_64d564de
+Bytes: 328
+Done.  (The reserves where not in the old code, and I did not feel bad enough about it to add them.  I still do not know how I feel about them.  On one hand it is obvious optimization, but on the other hand it seems like unnecessary micro-optimization.  I like the C# variant where the capacity can be specified in constructor.)
 
 229:49-229:55
 Wed Apr 29 18:34:03 2015 +0000
@@ -23,12 +39,28 @@ UUID: 705392ca_03d1ae7b
 Bytes: 10
 CodeOutput
 
+229:49-229:55
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 705392ca_03d1ae7b
+UUID: 30e3da4b_c494301c
+Bytes: 4
+Done
+
 282
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0598aea_e57b36ed
 Bytes: 30
 Maybe buffer.reserve(4 * KB) ?
+
+282
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_e57b36ed
+UUID: 705392ca_2662b8be
+Bytes: 4
+Done
 
 315:12-315:19
 Wed Apr 29 18:34:03 2015 +0000
@@ -37,12 +69,28 @@ UUID: b0598aea_456b2a1e
 Bytes: 58
 "section != nullptr" We try to avoid implicit conversions.
 
+315:12-315:19
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_456b2a1e
+UUID: 705392ca_c64de451
+Bytes: 139
+Done (for the record, I personally strongly agree with the no implicit conversions policy.  I still sometimes forget to fix it in old code)
+
 317:25-317:40
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 705392ca_e3a9f2e0
 Bytes: 73
 Style consistency: All other push_back({...}) avoid the name of the type.
+
+317:25-317:40
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 705392ca_e3a9f2e0
+UUID: 30e3da4b_049f3836
+Bytes: 41
+Done (I keep forgetting this is possible)
 
 336
 Wed Apr 29 18:34:03 2015 +0000
@@ -51,12 +99,28 @@ UUID: b0598aea_e562563b
 Bytes: 37
 buffer.reserve(1u + symbols_.size());
 
+336
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_e562563b
+UUID: 30e3da4b_24a6bc8b
+Bytes: 4
+Done
+
 507:48-507:56
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0598aea_654f46c5
 Bytes: 70
 Reorder dynsym_ and dynstr_? I prefer to use only constructed members.
+
+507:48-507:56
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_654f46c5
+UUID: 30e3da4b_a4800cd0
+Bytes: 199
+Done (The intention was to have the fields sorted in the same order as they are written on disk.  Just for pure organization.  But you convinced me - using only constructed members is more important)
 
 659:7-659:76
 Wed Apr 29 18:34:03 2015 +0000
@@ -65,12 +129,34 @@ UUID: 30e3da4b_e10fa6b4
 Bytes: 98
 Really? Neither bss_.GetSize() nor FindSection(".eh_frame_hdr") require the layout to be finished.
 
+659:7-659:76
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30e3da4b_e10fa6b4
+UUID: 705392ca_8624cc66
+Bytes: 441
+I can not build the programs headers before layout (that is, I can not move all of the code here).
+
+I could determine only the count, but I would have to replicate some of the logic.  Very little logic, but I still would not like the code duplication.
+
+But the main reason is that reserving fixed amount of space is what the old code did, and I wanted to preserve behavior.
+
+It is simple, and it works.  Anything else seems like an overkill.
+
 666:39-666:44
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0598aea_88c29785
 Bytes: 5
 built
+
+666:39-666:44
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_88c29785
+UUID: 705392ca_663f5087
+Bytes: 4
+Done
 
 667:4-667:12
 Wed Apr 29 18:34:03 2015 +0000
@@ -79,12 +165,28 @@ UUID: 705392ca_83859e5f
 Bytes: 7
 Elf_Off
 
+667:4-667:12
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 705392ca_83859e5f
+UUID: 705392ca_263958a0
+Bytes: 4
+Done
+
 668:4-668:12
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0598aea_68cabb9e
 Bytes: 7
 Elf_Off
+
+668:4-668:12
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_68cabb9e
+UUID: b0598aea_e8c30bda
+Bytes: 26
+Done (Elf_Addr is better).
 
 669
 Wed Apr 29 18:34:03 2015 +0000
@@ -93,12 +195,28 @@ UUID: b0598aea_c8df2f56
 Bytes: 46
 section_headers.reserve(1u + sections.size());
 
+669
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_c8df2f56
+UUID: 705392ca_e6cd8038
+Bytes: 4
+Done
+
 673:6-673:9
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 705392ca_c38b9674
 Bytes: 7
 Elf_Off
+
+673:6-673:9
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 705392ca_c38b9674
+UUID: 705392ca_a6d788c2
+Bytes: 4
+Done
 
 783:40-783:59
 Wed Apr 29 18:34:03 2015 +0000
@@ -117,12 +235,28 @@ I wouldn't complain about the missing error checking if it was a DCHECK():
 
   DCHECK_LE(lseek(elf_file->Fd(), 0, SEEK_CUR), offset) << "Seeking backwards";
 
+783:40-783:59
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30e3da4b_413c9242
+UUID: 705392ca_06e77caf
+Bytes: 4
+Done
+
 821:13-821:41
 Wed Apr 29 18:34:03 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 30e3da4b_611c36ec
 Bytes: 32
 Style: remove extra parentheses.
+
+821:13-821:41
+Thu Apr 30 11:03:02 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30e3da4b_611c36ec
+UUID: 705392ca_c6ef2484
+Bytes: 4
+Done
 
 File: compiler/elf_writer_quick.cc
 

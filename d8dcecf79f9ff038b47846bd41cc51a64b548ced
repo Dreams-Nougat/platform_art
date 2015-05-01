@@ -16,12 +16,28 @@ UUID: b0598aea_0ec1cf2d
 Bytes: 192
 This interface does not allow the function to range-check. It should be "std::vector<uint8_t>* buffer" (or "ArrayRef<uint8_t> buffer" but let's keep this consistent with the rest of the file).
 
+152:25-152:40
+Fri May 01 14:50:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0598aea_0ec1cf2d
+UUID: 507cce56_a231fe1f
+Bytes: 4
+Done
+
 204:19-204:33
 Fri May 01 01:47:23 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 70f8f2fa_f6bd8f45
 Bytes: 156
 Please use a better name and document this so I don't have to look at how it's used. Maybe patched_against_section_? patch_base_ wasn't bad in that respect.
+
+204:19-204:33
+Fri May 01 14:50:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f8f2fa_f6bd8f45
+UUID: 70bf1233_2371aada
+Bytes: 36
+Done (patch_base_section_ + comment)
 
 File: compiler/elf_writer_debug.cc
 
@@ -74,6 +90,14 @@ UUID: 300cbaed_f5aa9c7d
 Bytes: 36
 Put into a variable before the loop?
 
+207:21-207:60
+Fri May 01 14:50:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 300cbaed_f5aa9c7d
+UUID: 70bf1233_83ee9eb6
+Bytes: 4
+Done
+
 File: compiler/elf_writer_quick.cc
 
 111:15-111:29
@@ -84,6 +108,14 @@ Bytes: 371
 We treat those like constants, so they're often named like kSubtractMyAddr in the runtime. Also, lately we're avoiding booleans for readability at the call-site, instead introducing enums...
 
 Alternatively you could consider introducing minimal wrappers that have self-explaining names, e.g., PatchMakeRelative or so (though I don't know good names for all combinations).
+
+111:15-111:29
+Fri May 01 14:50:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f8f2fa_96124bd8
+UUID: 70bf1233_a3ae3a97
+Bytes: 47
+I have combined the two bools into single enum.
 
 113:27-113:29
 Fri May 01 01:47:23 2015 +0000
@@ -100,12 +132,30 @@ UUID: 7011d208_13330ca3
 Bytes: 59
 my_address -> buffer_address, other_address -> base_address
 
+113:27-113:29
+Fri May 01 14:50:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7011d208_13330ca3
+UUID: 90c486d3_a443e273
+Bytes: 4
+Done
+
 118:31-118:66
 Fri May 01 09:34:00 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7011d208_b36cd889
 Bytes: 356
 I think the SubtractLocation is unnecessary, considering that we are now adding to *to_patch rather than assigning. We should either choose to subtract location together with my_address if SubtractMyAddress (as it's been done previously), or don't subtract it at all. In both cases we can prepare the original buffer so that this yields the correct result.
+
+118:31-118:66
+Fri May 01 14:50:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7011d208_b36cd889
+UUID: 507cce56_62ad3696
+Bytes: 371
+I known what you mean, I have briefly considered it as well.  However, I have decided that I would rather have the extra complexity here than doing half of the calculation here and half in WriteEhFrame.
+
+The intention is that the unpatched address is just "method_info->low_pc_" in all cases, and the patch method transforms it to its final form - whatever that might be.
 
 148:85-148:86
 Fri May 01 01:47:23 2015 +0000
@@ -120,6 +170,15 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 70f8f2fa_596c7405
 Bytes: 164
 I don't know whether I really see all patches, but it looks like eh_frame doesn't have that many? (In fact, I only see one.) So maybe we could avoid this parameter?
+
+149:64-149:68
+Fri May 01 14:50:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70f8f2fa_596c7405
+UUID: 90c486d3_e43ddae1
+Bytes: 92
+eh_frame should have one patch location per method - so quite a few...
+same for eh_frame_hdr
 
 154:76-154:77
 Fri May 01 01:47:23 2015 +0000

@@ -1,5 +1,21 @@
 Revision: d8dcecf79f9ff038b47846bd41cc51a64b548ced
 Patch-set: 1
+File: compiler/elf_builder.h
+
+152:8-152:13
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 300cbaed_95eec133
+Bytes: 114
+I think the standard style would suffix with Fn or something like that to make clear it's a function pointer type.
+
+204:19-204:33
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f8f2fa_f6bd8f45
+Bytes: 156
+Please use a better name and document this so I don't have to look at how it's used. Maybe patched_against_section_? patch_base_ wasn't bad in that respect.
+
 File: compiler/elf_writer_debug.cc
 
 189:2-190:76
@@ -27,4 +43,64 @@ Parent: b0598aea_ceae5799
 UUID: 70f8f2fa_a2b0e6bb
 Bytes: 18
 Ups, you're right.
+
+207:4-207:76
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 300cbaed_9571a08e
+Bytes: 218
+Can you add a comment here saying that we know the exact layout (eh_frame immediately before eh_frame_hdr) and the data is relative to the start of the eh_frame_hdr, so patching isn't necessary. (In contrast to the PC)
+
+207:21-207:60
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 300cbaed_f5aa9c7d
+Bytes: 36
+Put into a variable before the loop?
+
+File: compiler/elf_writer_quick.cc
+
+111:15-111:29
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f8f2fa_96124bd8
+Bytes: 371
+We treat those like constants, so they're often named like kSubtractMyAddr in the runtime. Also, lately we're avoiding booleans for readability at the call-site, instead introducing enums...
+
+Alternatively you could consider introducing minimal wrappers that have self-explaining names, e.g., PatchMakeRelative or so (though I don't know good names for all combinations).
+
+113:27-113:29
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fd66eb_91dedc05
+Bytes: 92
+Maybe base_address (or base_section_address) is a better name? "my" isn't really expressive.
+
+148:85-148:86
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fd66eb_11c3ec3d
+Bytes: 7
+Period.
+
+149:64-149:68
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70f8f2fa_596c7405
+Bytes: 164
+I don't know whether I really see all patches, but it looks like eh_frame doesn't have that many? (In fact, I only see one.) So maybe we could avoid this parameter?
+
+154:76-154:77
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90fd66eb_f1c76045
+Bytes: 7
+Period.
+
+155:56-155:63
+Fri May 01 01:47:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 300cbaed_b5294486
+Bytes: 251
+Could omit this one, but in general I'd prefer to be expressive here and below to distinguish the different patching modes (different wrapper functions would be nice and intention-revealing here, but I don't know good names for all of 'em, see above).
 

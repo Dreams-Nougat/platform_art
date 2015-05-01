@@ -9,6 +9,13 @@ UUID: 300cbaed_95eec133
 Bytes: 114
 I think the standard style would suffix with Fn or something like that to make clear it's a function pointer type.
 
+152:25-152:40
+Fri May 01 09:34:00 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0598aea_0ec1cf2d
+Bytes: 192
+This interface does not allow the function to range-check. It should be "std::vector<uint8_t>* buffer" (or "ArrayRef<uint8_t> buffer" but let's keep this consistent with the rest of the file).
+
 204:19-204:33
 Fri May 01 01:47:23 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,6 +51,15 @@ UUID: 70f8f2fa_a2b0e6bb
 Bytes: 18
 Ups, you're right.
 
+206:22-206:34
+Fri May 01 09:34:00 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 705392ca_0c7b1bbb
+Bytes: 187
+Either add the patch location to the code address here, or subtract the location from initial_address in WriteEhFrameFDE().
+
+See my comment about SubtractLocation in elf_writer_quick.cc .
+
 207:4-207:76
 Fri May 01 01:47:23 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -75,6 +91,21 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90fd66eb_91dedc05
 Bytes: 92
 Maybe base_address (or base_section_address) is a better name? "my" isn't really expressive.
+
+113:27-113:29
+Fri May 01 09:34:00 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fd66eb_91dedc05
+UUID: 7011d208_13330ca3
+Bytes: 59
+my_address -> buffer_address, other_address -> base_address
+
+118:31-118:66
+Fri May 01 09:34:00 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7011d208_b36cd889
+Bytes: 356
+I think the SubtractLocation is unnecessary, considering that we are now adding to *to_patch rather than assigning. We should either choose to subtract location together with my_address if SubtractMyAddress (as it's been done previously), or don't subtract it at all. In both cases we can prepare the original buffer so that this yields the correct result.
 
 148:85-148:86
 Fri May 01 01:47:23 2015 +0000

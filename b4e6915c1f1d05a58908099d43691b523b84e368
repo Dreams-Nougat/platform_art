@@ -47,6 +47,20 @@ UUID: b017cafa_8aeeb701
 Bytes: 4
 Done
 
+230:33-231:12
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b017cafa_8aeeb701
+UUID: f056a2ec_925d1a81
+Bytes: 348
+Thanks.  Could you also place the first argument on the same line as the function name, as long as it is no longer than 100 characters; e.g.:
+
+  mips64_codegen->MoveLocation(locations->Out(),
+                               calling_convention.GetReturnLocation(type),
+                               type);
+
+(Likewise for similar cases in this file.)
+
 330:36-331:23
 Thu Apr 30 17:33:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -392,6 +406,14 @@ UUID: 504a0e43_92a43c09
 Bytes: 31
 Done but what's the difference?
 
+767:28-767:70
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504a0e43_92a43c09
+UUID: f056a2ec_35fc58b1
+Bytes: 88
+It ensures that `instruction' is indeed an instance of art::HLongConstant in debug mode.
+
 776:28-776:70
 Thu Apr 30 17:33:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -496,6 +518,14 @@ Parent: b0598aea_2b1d9d8f
 UUID: b017cafa_4f9af1ec
 Bytes: 71
 No idea. Copied over from and still exists in the ARM64 implementation.
+
+926:6-926:28
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b017cafa_4f9af1ec
+UUID: 304d9a5a_970a6c58
+Bytes: 222
+There is no such check in the ARM code generator, as `instruction` is not supposed to be null, and I think that should also be the case for the MIPS64 code generator.  I'll investigate the case of the ARM64 code generator.
 
 938:2-938:25
 Thu Apr 30 17:33:25 2015 +0000
@@ -756,6 +786,14 @@ UUID: d01c3e21_fcc2a185
 Bytes: 66
 There are no sge, sgt or sle instructions, only slt. So, ge = !lt.
 
+1762:0-1764:7
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d01c3e21_fcc2a185
+UUID: f056a2ec_55ad5c95
+Bytes: 90
+Alright.  Could you add this explanation as a comment (and likewise for kCondLE)?  Thanks.
+
 1780:0-1782:9
 Thu Apr 30 17:33:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1009,6 +1047,14 @@ UUID: d01c3e21_194fafc5
 Bytes: 4
 Done
 
+2095
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d01c3e21_194fafc5
+UUID: 105416e3_f6de5857
+Bytes: 11
+Not yet. :)
+
 2097
 Thu Apr 30 17:33:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1023,6 +1069,14 @@ Parent: b0598aea_eb71c55d
 UUID: d01c3e21_39526b6b
 Bytes: 4
 Done
+
+2097
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d01c3e21_39526b6b
+UUID: 105416e3_16f4bcd0
+Bytes: 6
+Ditto.
 
 2125:4-2125:12
 Thu Apr 30 17:33:25 2015 +0000
@@ -1042,6 +1096,14 @@ Parent: b0598aea_4b81f996
 UUID: b017cafa_8ffec92f
 Bytes: 4
 Done
+
+2125:4-2125:12
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b017cafa_8ffec92f
+UUID: 304d9a5a_17267ce4
+Bytes: 6
+Ditto.
 
 2146:2-2146:21
 Thu Apr 30 17:33:25 2015 +0000
@@ -1605,6 +1667,14 @@ Parent: 30e3da4b_a4992c54
 UUID: b017cafa_84307095
 Bytes: 62
 Copied over from and still exists in the ARM64 implementation.
+
+263:5-263:26
+Tue May 05 16:02:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b017cafa_84307095
+UUID: f056a2ec_9276fa04
+Bytes: 271
+Fair enough.  There seems to be a single use of MoveLocation with no type argument in both the MIPS64 and ARM64 code generators (resp. in art::mips64::ParallelMoveResolverMIPS64::EmitMove and art::arm64::ParallelMoveResolverARM64::EmitMove).  Let's keep it as is for now.
 
 File: compiler/utils/mips64/assembler_mips64.cc
 

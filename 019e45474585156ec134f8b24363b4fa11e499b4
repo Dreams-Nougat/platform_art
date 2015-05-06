@@ -23,3 +23,42 @@ UUID: 2d62a1ee_cc391f52
 Bytes: 72
 you are checking that the input of a NullCheck is a NullCheck here. why?
 
+596:0-603:2
+Wed May 06 19:47:12 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d62a1ee_cc391f52
+UUID: cd290587_f1b72236
+Bytes: 1099
+I agree, it's confusing. The "first time" you see a method call on a ref, the if is false, and you fall down in the for loop below. This loop replaces all uses of the current NullCheck's source, including next NullCheck. Like this:
+
+Given:
+l6 ParamValue
+...
+l42 NullCheck [ l6 ]
+v43 Invoke [ l42 ... ]
+...
+l52 NullCheck [ l6 ]
+v53 Invoke [ l52 ... ]
+
+When we visit the first Invoke (v43), we will execute the for loop below, replace following uses of l6 with l42, and have this:
+
+l6 ParamValue
+...
+l42 NullCheck [ l6 ]
+v43 Invoke [ l42 ... ]
+...
+l52 NullCheck [ l42 ]
+v53 Invoke [ l52 ... ]
+
+but now l52 has another NullCheck as input. So, when we will visit v53, checking that l52's input is a NullCheck is a way to know that we already changed inputs. Finally, we fall in the if, and output:
+
+l6 ParamValue
+...
+l42 NullCheck [ l6 ]
+v43 Invoke [ l42 ... ]
+...
+l52 NullCheck [ l42 ]  <== output is ignored, will be removed
+v53 Invoke [ l42 ... ] <== notice the s/l52/l42/
+
+Is that more clear? Reversing the order of the if and the for and adding comments will make this more understandable, I guess.
+

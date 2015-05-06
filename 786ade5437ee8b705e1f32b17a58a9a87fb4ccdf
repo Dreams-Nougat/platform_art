@@ -1,0 +1,68 @@
+Revision: 786ade5437ee8b705e1f32b17a58a9a87fb4ccdf
+Patch-set: 1
+File: runtime/instrumentation.cc
+
+171:43-171:48
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad24d1ad_705c4e5a
+Bytes: 103
+When passing 'false', please add a comment to explain why it is not necessary to visit inlined methods.
+
+312:43-312:48
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d62a1ee_ccf11fe3
+Bytes: 5
+ditto
+
+962:57-962:62
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad24d1ad_106bcaee
+Bytes: 5
+ditto
+
+975:57-975:62
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd290587_91a8de85
+Bytes: 5
+ditto
+
+File: runtime/quick_exception_handler.cc
+
+354:10-354:42
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad24d1ad_d09e6265
+Bytes: 105
+Add a comment we don't count inlined methods because we don't instrument them with instrumentation stubs.
+
+File: runtime/stack.cc
+
+88:6-97:1
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad24d1ad_90045a47
+Bytes: 206
+C++11 allows to call the other constructor below:
+
+  StackVisitor::StackVisitor(Thread* thread, Context* context, bool include_inlined_methods) : StackVisitor(thread, context, include_inlined_methods, 0) {}
+
+599:4-599:10
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd290587_f1a162a5
+Bytes: 12
+const size_t
+
+File: runtime/stack.h
+
+415:20-415:43
+Wed May 06 14:19:58 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad24d1ad_302da6c2
+Bytes: 107
+This should be true by default IMO. A subclass should explicitly pass 'false' to not visit inlined methods.
+

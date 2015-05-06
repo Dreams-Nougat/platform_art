@@ -9,3 +9,16 @@ UUID: 0d407d41_96768ccf
 Bytes: 32
 How about *method_name == '-'  ?
 
+140
+Wed May 06 14:56:50 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d407d41_96768ccf
+UUID: ad24d1ad_d0b2e2d5
+Bytes: 360
+I thought about it and decided to be consistent with the line above and let the compiler optimize that. According to objdump, this is the code for the second "strmcp(...) == 0":
+
+  68:   782c            ldrb    r4, [r5, #0]
+  6a:   f1a4 042d       sub.w   r4, r4, #45     ; 0x2d
+  6e:   fab4 f184       clz     r1, r4
+  72:   0948            lsrs    r0, r1, #5
+

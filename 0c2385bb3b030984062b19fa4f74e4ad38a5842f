@@ -9,6 +9,14 @@ UUID: 102df676_d4e4d928
 Bytes: 98
 initial is used in bce for initial value of induction variable. Maybe just call it input1 instead?
 
+1163
+Wed May 06 08:12:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 102df676_d4e4d928
+UUID: ad24d1ad_8d1d6191
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.cc
 
 1307
@@ -18,6 +26,14 @@ UUID: d026fe9b_7dca2d9e
 Bytes: 35
 Should `at` be `to` in the comment?
 
+1307
+Wed May 06 08:12:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d026fe9b_7dca2d9e
+UUID: 2d62a1ee_c96c7105
+Bytes: 17
+Good catch. done.
+
 File: compiler/optimizing/ssa_liveness_analysis.h
 
 977
@@ -26,4 +42,12 @@ Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d19f971_d6d8a2f2
 Bytes: 85
 synthesized uses only seem to be used in some asserts. What's the true purpose of it?
+
+977
+Wed May 06 08:12:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d19f971_d6d8a2f2
+UUID: cd290587_ee8a9f1b
+Bytes: 313
+It's actually used during register allocation. In AllocateblockedReg (where we don't have enough registers for all live instructions), we spill intervals based on the next use of the intervals. Those synthesized uses ensure we prefer spilling an interval used outside of a loop rather than a interval used inside.
 

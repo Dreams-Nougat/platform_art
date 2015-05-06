@@ -1,0 +1,27 @@
+Revision: e6d8374ab47ea28dbf52e77f5a441fa8ec4ccf40
+Patch-set: 5
+File: compiler/image_writer.cc
+
+1152:6-1152:21
+Wed May 06 09:32:12 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad24d1ad_cd000906
+Bytes: 26
+virtual_methods != nullptr
+
+File: runtime/art_method-inl.h
+
+43:6-43:55
+Wed May 06 09:32:12 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd290587_eede1f06
+Bytes: 173
+Since Runtime::GetResolutionMethod() cannot be fully optimized away and you're using this only for DCHECK()s, it would be preferable to make it conditional on kIsDebugBuild.
+
+71:26-71:54
+Wed May 06 09:32:12 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d62a1ee_a926ddb1
+Bytes: 101
+I'd prefer this to be conditional on kIsDebugBuild. (Can a GcRoot<>::Read() be fully optimized away?)
+

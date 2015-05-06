@@ -51,3 +51,13 @@ UUID: cd290587_ee8a9f1b
 Bytes: 313
 It's actually used during register allocation. In AllocateblockedReg (where we don't have enough registers for all live instructions), we spill intervals based on the next use of the intervals. Those synthesized uses ensure we prefer spilling an interval used outside of a loop rather than a interval used inside.
 
+977
+Wed May 06 17:31:01 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd290587_ee8a9f1b
+UUID: cd24a5a6_7d0f6868
+Bytes: 489
+I see. So uses aren't for correctness of register allocation. It's more like a hint thing. The AddLoopRange() in ComputeLiveRanges() guarantees correctness, right?
+
+It seems to me there is no need to add synthesize use at all back edges, since any use that has higher priority then the use added at current->GetLifetimeEnd() is also something used in the loop. It's hard to say another back edge should take priority over that that use. It all depends on which branch in the loop is taken.
+

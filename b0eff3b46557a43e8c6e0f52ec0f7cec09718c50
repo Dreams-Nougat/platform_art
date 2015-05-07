@@ -9,6 +9,14 @@ UUID: 4d8435cc_e2709b05
 Bytes: 128
 Global variables with non trivial destructors cause issues if someone calls exit(), is there a way to avoid this, perhaps char*?
 
+61:25-61:47
+Thu May 07 03:24:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d8435cc_e2709b05
+UUID: 4d8435cc_d379abc0
+Bytes: 53
+I would think a constexpr const char* should be fine.
+
 File: runtime/instrumentation.cc
 
 473:16-473:31
@@ -24,6 +32,23 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d1e2d58_95f68c5d
 Bytes: 130
 Here we are making a copy of the pointer? That doesn't guard against the contents of the list changing underneath us, is that WAI?
+
+933:55-933:63
+Thu May 07 03:24:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d1e2d58_95f68c5d
+UUID: cd24a5a6_872d46c4
+Bytes: 96
+Changing the list creates a completely new list. That's why the whole shared_ptr setup exists...
+
+File: runtime/instrumentation.h
+
+471:18-471:29
+Thu May 07 03:24:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d8435cc_b3f5079c
+Bytes: 82
+From the users right now, it seems a const char* would be fine and more efficient.
 
 File: runtime/instrumentation_test.cc
 

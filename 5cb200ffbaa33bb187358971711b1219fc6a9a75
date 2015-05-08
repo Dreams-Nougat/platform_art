@@ -9,12 +9,30 @@ UUID: 0d407d41_da30b296
 Bytes: 246
 The constant check could be done by checking the input value for IntConstant() with correct range, leaving it as a constant and then adding EAX as a temp.  You would then load it explicitly.  Saves a compare/branch and you can omit the slow case.
 
+948:2-951:55
+Fri May 08 01:02:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d407d41_da30b296
+UUID: cd24a5a6_e40aad57
+Bytes: 361
+If you do feel strongly, I'd suggest a follow-up CL. :-) Maybe Nicolas will override my opinion, though,.
+
+I would have felt more strongly about it if it was possible to give the constraint to the register allocator, i.e., I could say that the input register is eax if it was a register. Else there's another register required, and x86 doesn't have that many...
+
 1042:34-1042:50
 Fri May 08 00:50:00 2015 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d407d41_9a6c6a89
 Bytes: 12
 or constant?
+
+1042:34-1042:50
+Fri May 08 01:02:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d407d41_9a6c6a89
+UUID: 4d8435cc_f09d6c89
+Bytes: 212
+To wire that through, the below code becomes a bit more complicated and branch-y. Personally I don't think it's worth it, as I think it is a lot rarer than the case of the character being searched being constant.
 
 File: compiler/optimizing/intrinsics_x86_64.cc
 
@@ -24,6 +42,14 @@ Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d39c1d0_ba84d50f
 Bytes: 5
 ditto
+
+867:5-870:4
+Fri May 08 01:02:13 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d39c1d0_ba84d50f
+UUID: cd24a5a6_a43f15d8
+Bytes: 110
+Personally I think it's easier to justify here as we have more registers and don't necessarily be saving them.
 
 961:34-961:50
 Fri May 08 00:50:00 2015 +0000

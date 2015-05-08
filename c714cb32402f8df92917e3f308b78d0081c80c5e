@@ -17,6 +17,14 @@ UUID: cd290587_a286e6ac
 Bytes: 166
 Actually forget my comment. You should keep the kCall. Making it a kCall makes it that there is no live register, so you don't need to save them in both "slow paths".
 
+855:77-855:82
+Fri May 08 16:24:17 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd290587_a286e6ac
+UUID: 4d8435cc_c59a4c57
+Bytes: 57
+So you think I can drop the DispatchToSlowPathCode below?
+
 876:2-880:39
 Fri May 08 10:59:34 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,10 +32,28 @@ UUID: 2d62a1ee_fd900f1c
 Bytes: 37
 Why is that not in the assembly impl?
 
+876:2-880:39
+Fri May 08 16:24:17 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d62a1ee_fd900f1c
+UUID: cd24a5a6_d808745b
+Bytes: 133
+Because you can avoid it in the case of constants. Quick is doing that, I haven't implemented it for optimizing (, yet, potentially).
+
 888:8-888:33
 Fri May 08 10:59:34 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d62a1ee_9d87d3e2
 Bytes: 106
 If you were to move SaveLiveRegisters and RestoreLiveRegisters to CodeGenerator would you still need this?
+
+888:8-888:33
+Fri May 08 16:24:17 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d62a1ee_9d87d3e2
+UUID: 4d8435cc_05a1148b
+Bytes: 261
+There's some logic involved storing the offsets of the spilled registers. I think that should not pollute the CodeGenerator.
+
+So in case you're commment on the kCall doesn't apply, I'd rather introduce some helper class that's used here and in the SlowPathCode.
 

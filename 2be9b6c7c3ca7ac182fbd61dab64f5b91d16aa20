@@ -9,3 +9,17 @@ UUID: ad921112_2c9e7b39
 Bytes: 76
 Shouldn't you update the comment, based on Mark's suggestion and add a TODO?
 
+948:0-950:35
+Sat May 09 07:53:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad921112_2c9e7b39
+UUID: 4d6d15ec_707bed3b
+Bytes: 710
+No, this is implemented in the latest version.
+
+I disagree with the complexity of RegisterOrConstant. Even if it's a constant, it *must* end up in ax as that is what repne scasw requires. So it's easiest to request that here.
+
+Below I simply check the instruction's parameter (as an instruction itself), see line 984ff.
+
+There's a tradeoff here. The slow-path(s) may have to re-order things if we do it like this. So there's maybe a bit of space overhead involved in the out-of-line path. On the other hand, it means we need one less register in the "good" case, as the character is already in the right register (and the input doesn't get clobbered). I felt the saved register is worth more, as this is x86...
+

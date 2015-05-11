@@ -43,6 +43,16 @@ UUID: ed5b293d_0cb80e51
 Bytes: 54
 So are you saying you are not sure we need it? Serban?
 
+1043:4-1043:38
+Mon May 11 10:55:52 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed5b293d_0cb80e51
+UUID: cd290587_e8872f13
+Bytes: 386
+We use the BlockPoolsScope whenever we call RecordPcInfo(). This way we make sure that the Vixl MacroAssembler does not generate any Literal or Vermeer Pool behind our back and thus GetAssembler()->CodeSize() will record the correct exact native_pc position of an instruction that might cause a transition to the runtime.
+
+In this case is not needed since we do not call RecordPcInfo().
+
 1057:0-1058:42
 Sat May 09 07:05:43 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

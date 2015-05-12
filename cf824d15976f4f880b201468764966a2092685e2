@@ -1,0 +1,74 @@
+Revision: cf824d15976f4f880b201468764966a2092685e2
+Patch-set: 1
+File: compiler/dwarf/headers.h
+
+44:24-44:49
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d338121_1021b2ca
+Bytes: 61
+Make this an enum, please, for readability at the call-sites.
+
+71:24-71:49
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad3e91ea_1ce6ecb3
+Bytes: 5
+Same.
+
+File: compiler/elf_writer_debug.cc
+
+34:31-34:56
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd43c57f_d890151d
+Bytes: 5
+Same.
+
+170:21-170:46
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd43c57f_b88d4905
+Bytes: 5
+Same.
+
+File: compiler/elf_writer_debug.h
+
+31:21-31:46
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d338121_f01d2e90
+Bytes: 19
+See comment before.
+
+File: compiler/elf_writer_quick.cc
+
+191:6-191:45
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d338121_30615610
+Bytes: 132
+Maybe define somewhere at the top of the file (as a constexpr), that has been common style for flags in other parts of the codebase.
+
+File: runtime/elf_file.cc
+
+1381:2-1381:32
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d338121_d06f4af7
+Bytes: 40
+bdc likes early exit instead of nesting.
+
+1382:4-1396:5
+Tue May 12 15:13:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d338121_5045fa77
+Bytes: 247
+If you write a minimal helper, this can become
+
+ return Update(".debug_frame", base_address_delta) &&
+        Update(".debug_info", base_address_delta) &&
+        Update(".debug_line", base_address_delta);
+
+But that's somewhat personal preference.
+

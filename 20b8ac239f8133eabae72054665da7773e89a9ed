@@ -1,5 +1,14 @@
 Revision: 20b8ac239f8133eabae72054665da7773e89a9ed
 Patch-set: 1
+File: patchoat/patchoat.cc
+
+661:7-661:17
+Wed May 13 20:24:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd1ae5b3_305a05d6
+Bytes: 121
+Please rename this to be more expressive. What do we need to fix up? Generic Elf stuff (vs. our custom oat part above)...
+
 File: runtime/elf_file.cc
 
 1187:0-1190:7
@@ -8,4 +17,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6df6599f_71e5b0d2
 Bytes: 255
 Returning false instead of crashing makes it more resilient. However, it also makes our tests pass as long as Runtime::Current()->IsDexFileFallbackEnabled() returns true even if GetLoadedSize() fails. Maybe we should update tests to disable the fall-back?
+
+1187:0-1190:7
+Wed May 13 20:24:43 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6df6599f_71e5b0d2
+UUID: ad15b184_82444b7b
+Bytes: 237
+There was discussion for this. Problem is some tests test that we can fall back correctly...
+
+We may consider printing a LOG(ERROR) here. That will be visible in tests (but needs to be filtered in that tests where the error is expected).
 

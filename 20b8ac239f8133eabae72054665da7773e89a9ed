@@ -9,6 +9,14 @@ UUID: cd1ae5b3_305a05d6
 Bytes: 121
 Please rename this to be more expressive. What do we need to fix up? Generic Elf stuff (vs. our custom oat part above)...
 
+661:7-661:17
+Thu May 14 10:09:39 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd1ae5b3_305a05d6
+UUID: ad885137_edae0561
+Bytes: 4
+Done
+
 File: runtime/elf_file.cc
 
 1187:0-1190:7
@@ -27,4 +35,12 @@ Bytes: 237
 There was discussion for this. Problem is some tests test that we can fall back correctly...
 
 We may consider printing a LOG(ERROR) here. That will be visible in tests (but needs to be filtered in that tests where the error is expected).
+
+1187:0-1190:7
+Thu May 14 10:09:39 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad15b184_82444b7b
+UUID: 6d92d967_eb0a7120
+Bytes: 177
+LOG(ERROR) here would duplicate the LOG() in OatFileAssistant::GetOatFile(). I'll file a bug to use "-Xno-dex-file-fallback" for all tests that don't actually need the fallback.
 

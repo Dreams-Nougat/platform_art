@@ -1,0 +1,82 @@
+Revision: 9cc4633e06d154d7b2a86b78d6254dfd629f4542
+Patch-set: 5
+File: compiler/optimizing/stack_map_stream.cc
+
+121
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d92d967_111a8c26
+Bytes: 173
+Maybe add something like this:
+
+  DCHECK(current_dex_register_, current_inline_info_.num_dex_registers)
+      << "Inline info contains less registers than expected.";
+
+here?
+
+316
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d92d967_d1b1e4c1
+Bytes: 63
+Maybe check that inline_entry.live_dex_registers_mask is empty?
+
+File: compiler/optimizing/stack_map_test.cc
+
+130:37-130:38
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad885137_f3e5084f
+Bytes: 102
+Maybe introduce a `number_of_dex_registers_in_inline_info' (or any better/shorter name) constant here?
+
+File: runtime/stack_map.cc
+
+263:2-263:51
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8dce2da2_74438822
+Bytes: 51
+Remove and replace with a call to InlineInfo::Dump?
+
+269:0-269:103
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8dce2da2_d4537cf1
+Bytes: 15
+Nit: long line.
+
+275:0-276:72
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adcf719d_b56fe0a9
+Bytes: 29
+Maybe place on a single line?
+
+286:22-286:55
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adcf719d_9574e47c
+Bytes: 126
+Maybe replace with
+
+  uint16_t number_of_dex_registers[]
+
+to make it more explicit that `number_of_dex_registers' is an array?
+
+File: runtime/stack_map.h
+
+988:17-988:41
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdd4a530_36d9981c
+Bytes: 146
+Maybe document that this method retrieves a Dex register map within an InlineInfo object and/or alter this method's name to make it more explicit?
+
+992:0-992:101
+Mon May 18 09:26:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adcf719d_358bd0f0
+Bytes: 15
+Nit: long line.
+

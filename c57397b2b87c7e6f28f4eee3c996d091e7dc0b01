@@ -9,3 +9,18 @@ UUID: adcf719d_1561f4b9
 Bytes: 90
 Does swapping these lines really changes something, giving that they start with CHECK-DAG?
 
+121:0-122:45
+Mon May 18 10:32:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adcf719d_1561f4b9
+UUID: adcf719d_b5d120d3
+Bytes: 381
+Yes, what's changed is where we get the instruction id from. The output is something like this:
+
+  id1  LoadClass
+       ClinitCheck [id1]
+  id11 LoadClass
+       Return [id11]
+
+The test was broken. It first set Class='id1' and matched 'id11' later. This changed fixed the bug and broke the test. Changing the order and finding the id from the Return instruction restores the test.
+

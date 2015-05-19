@@ -65,6 +65,14 @@ It's the second SIGSTOP that's weird. Libbacktrace does SIGSTOP, then ATTACH. Bu
 
 In fact, running the test, in many cases you'll still find wait_for_sigstop failed. But at least this one seems to reliably allow unrolling.
 
+163:2-163:21
+Tue May 19 20:26:29 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d37016d_8a6daf00
+UUID: 2d20e12c_3c4abdb2
+Bytes: 382
+I think the first SIGSTOP is unnecessary. The reason why we need the second is explained in the "Attaching and detaching" section of http://linux.die.net/man/2/ptrace : "The design bug here is that a ptrace attach and a concurrently delivered SIGSTOP may race and the concurrent SIGSTOP may be lost." And maybe we should even try to deliver SIGSTOP repeatedly in wait_for_sigstop().
+
 196
 Tue May 19 13:58:51 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

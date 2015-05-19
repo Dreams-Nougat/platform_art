@@ -2,6 +2,17 @@ Revision: a0cc9d3f5d27aa062478508a3d8d67ca66345034
 Patch-set: 3
 File: runtime/jni_internal.cc
 
+319:25-319:46
+Tue May 19 07:33:12 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d20e12c_f9e53724
+Bytes: 252
+It should be better to save that in a variable since the length does not change during the loop. I don't know if the compiler optimizes it but you can write the loop like this:
+
+  for (size_t i = 0; e = c->NumDirectMethods(); i < e; ++i) {
+     ...
+  }
+
 326
 Tue May 19 06:54:50 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,4 +27,13 @@ Parent: cd4745eb_5e045518
 UUID: adfdb1c1_8831571e
 Bytes: 143
 I think so, I think it's excellent. It separates the distinct blocks for direct and virtual methods. But I'm open to being convinced otherwise.
+
+File: test/139-register-natives/src/Main.java
+
+64:2-64:51
+Tue May 19 07:33:12 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed19690f_77c930a6
+Bytes: 38
+That does not seem to be used. Remove?
 

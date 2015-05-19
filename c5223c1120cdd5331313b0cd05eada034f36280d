@@ -55,6 +55,16 @@ UUID: 0d179dd9_9bd18fd3
 Bytes: 39
 Did you try removing the first SIGSTOP?
 
+163:2-163:21
+Tue May 19 16:30:08 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_9bd18fd3
+UUID: 2d37016d_8a6daf00
+Bytes: 317
+It's the second SIGSTOP that's weird. Libbacktrace does SIGSTOP, then ATTACH. But that didn't work for me in a couple of test runs, so that's why there's the second one after.
+
+In fact, running the test, in many cases you'll still find wait_for_sigstop failed. But at least this one seems to reliably allow unrolling.
+
 196
 Tue May 19 13:58:51 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

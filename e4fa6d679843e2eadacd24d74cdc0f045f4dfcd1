@@ -21,12 +21,28 @@ The next instruction after "jal" is executed before the call. So this will need 
 
 because SETUP_REFS_AND_ARGS_CALLEE_SAVE_FRAME allocates extra space for args.
 
+459:0-459:71
+Wed May 20 07:43:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_bb5d737c
+UUID: 0d179dd9_5e2d258e
+Bytes: 4
+Done
+
 461:4-461:52
 Tue May 19 19:36:17 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed19690f_5df52bcd
 Bytes: 15
 And remove this
+
+461:4-461:52
+Wed May 20 07:43:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_5df52bcd
+UUID: ed19690f_bda24779
+Bytes: 4
+Done
 
 File: runtime/arch/mips64/quick_entrypoints_mips64.S
 
@@ -37,6 +53,14 @@ UUID: 2d20e12c_dc75c1fb
 Bytes: 2
 a2
 
+532:11-532:13
+Wed May 20 07:43:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_dc75c1fb
+UUID: ed19690f_5da8cb57
+Bytes: 4
+Done
+
 533:11-533:13
 Tue May 19 19:36:17 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +68,28 @@ UUID: 2d20e12c_fc7a05e9
 Bytes: 2
 a3
 
+533:11-533:13
+Wed May 20 07:43:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_fc7a05e9
+UUID: ed19690f_7da58f7e
+Bytes: 4
+Done
+
 534:4-534:77
 Tue May 19 19:36:17 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed19690f_9ddae363
 Bytes: 84
 Move one line above. (Yes, the instruction after "jal" is executed before the call.)
+
+534:4-534:77
+Wed May 20 07:43:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_9ddae363
+UUID: 0d179dd9_7e2a6979
+Bytes: 4
+Done
 
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
@@ -59,4 +99,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed19690f_dde05b17
 Bytes: 68
 clang/gcc should optimize away the second GetCallingMethod(), right?
+
+840:0-841:64
+Wed May 20 07:43:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_dde05b17
+UUID: 2d20e12c_9fb73be9
+Bytes: 281
+Yeah, things being in header files should be inlined and then you should end up with two reads at the same location that the compiler could merge.
+
+I wouldn't worry too much about it though: if you want to take inlining into account, both methods will need to do extra computation.
 

@@ -1,0 +1,60 @@
+Revision: 1e7c98edf3ddfbf52001c9ef3979bd7918da339f
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm.cc
+
+63:4-63:42
+Wed May 20 15:23:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d179dd9_2164d4c9
+Bytes: 109
+Initialize description_ through the constructor's initialization list (likewise for other slow path classes).
+
+File: compiler/optimizing/graph_visualizer.cc
+
+30:7-30:27
+Wed May 20 15:23:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d179dd9_a1d1c4d2
+Bytes: 466
+I suggest
+* adding and `ART_' prefix, and
+* handling this similarly to NDEBUG (from runtime/globals.h) is:
+
+  #if defined(ART_CFG_DUMP_DISASSEMBLY)
+  static constexpr bool kCfgDumpDisassembly = false;
+  #else
+  static constexpr bool kCfgDumpDisassembly = true;
+  #endif
+
+and use `kCfgDumpDisassembly' instead of `{ART_,}CFG_DUMP_DISASSEMBLY' (e.g., C++ `if' instead of preprocessor `#ifdef') so that the code would be inspected by the compiler in all configurations.
+
+122:0-122:102
+Wed May 20 15:23:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d179dd9_41e308a3
+Bytes: 15
+Nit: long line.
+
+472:0-476:6
+Wed May 20 15:23:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d179dd9_213db48b
+Bytes: 216
+How about moving these new attributes into a struct (e.g. HGraphVisualizerDisassembler) and have a unique_ptr<HGraphVisualizerDisassembler> here instead?  This pointer would be null when kCfgDumpDisassembly is false.
+
+File: compiler/optimizing/graph_visualizer.h
+
+50:0-51:16
+Wed May 20 15:23:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d179dd9_015430d8
+Bytes: 57
+The trailing `_' is not required for struct member names.
+
+67:77-67:79
+Wed May 20 15:23:58 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed19690f_20185027
+Bytes: 3
+are
+

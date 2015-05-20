@@ -73,6 +73,16 @@ UUID: 2d20e12c_3c4abdb2
 Bytes: 382
 I think the first SIGSTOP is unnecessary. The reason why we need the second is explained in the "Attaching and detaching" section of http://linux.die.net/man/2/ptrace : "The design bug here is that a ptrace attach and a concurrently delivered SIGSTOP may race and the concurrent SIGSTOP may be lost." And maybe we should even try to deliver SIGSTOP repeatedly in wait_for_sigstop().
 
+163:2-163:21
+Wed May 20 17:28:48 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_3c4abdb2
+UUID: 2d37016d_8ed60c44
+Bytes: 153
+I removed the first one.
+
+I tried adding a SIGSTOP to the wait loop, but it doesn't change anything, it still simply times out, but is stopped correctly.
+
 196
 Tue May 19 13:58:51 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

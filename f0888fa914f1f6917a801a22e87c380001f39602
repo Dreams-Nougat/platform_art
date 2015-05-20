@@ -1,0 +1,13 @@
+Revision: f0888fa914f1f6917a801a22e87c380001f39602
+Patch-set: 1
+File: compiler/optimizing/prepare_for_register_allocation.cc
+
+59:0-61:5
+Wed May 20 07:45:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d179dd9_9ecbbd52
+Bytes: 343
+I don't think this is achieving what you're trying to do. If there is a field access, you'll need the clinit even though a static call may have done it already.
+
+I think what you should do is at the HInvokeStaticOrDirect call site, check whether the load class is the previous instruction, and remove the initialization duty of the load class.
+

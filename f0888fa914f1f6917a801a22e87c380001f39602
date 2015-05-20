@@ -11,3 +11,18 @@ I don't think this is achieving what you're trying to do. If there is a field ac
 
 I think what you should do is at the HInvokeStaticOrDirect call site, check whether the load class is the previous instruction, and remove the initialization duty of the load class.
 
+59:0-61:5
+Wed May 20 11:47:42 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_9ecbbd52
+UUID: ed19690f_e0e01817
+Bytes: 457
+If there's a field access then this method will return true and the check will be done.
+
+This states, that if we're only gonna use the class with instruction that don't require the class to be initialized then we shouldn't do it.
+
+Doing it at the call site, is not enough as you may have a CheckCast in between.
+
+
+As a side question, I don't really understand your remark, that if the clinit was done be a static call you need to redo it for a field access.
+

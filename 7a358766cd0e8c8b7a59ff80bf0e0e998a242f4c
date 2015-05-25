@@ -1,0 +1,19 @@
+Revision: 7a358766cd0e8c8b7a59ff80bf0e0e998a242f4c
+Patch-set: 1
+File: runtime/native_bridge_art_interface.cc
+
+137:0-137:54
+Mon May 25 06:12:10 2015 +0000
+Author: Eric Lin <1051588@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d11f908_d94d334e
+Bytes: 166
+doesn't it conflict with comments "Currently, only SIGSEGV is
+supported by the runtime"? in native_bridge.h.Maybe change the comments to be "decided by native bridge"
+
+134:2-142:7
+Mon May 25 06:12:10 2015 +0000
+Author: Eric Lin <1051588@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d11f908_f9d10fd2
+Bytes: 328
+Instead of querying native bridge, what if add a new member in NativeBridgeRuntimeCallbacks, like SetNativeBridgeSignalHandler()? The benefit is: native bridge can decide which signal to "claim" at any time, rather than only in IntializeNativeBridge(). Then native bridge may fully remove sigaction() usage - seems more elegant?
+

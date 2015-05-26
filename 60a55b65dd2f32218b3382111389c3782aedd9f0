@@ -1,0 +1,89 @@
+Revision: 60a55b65dd2f32218b3382111389c3782aedd9f0
+Patch-set: 3
+File: compiler/optimizing/builder.cc
+
+655:43-655:66
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdf3c519_d87c1570
+Bytes: 64
+You could add another attribute to the visualizer and test this.
+
+File: compiler/optimizing/inliner.cc
+
+261:28-261:57
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed8889a6_e275c849
+Bytes: 359
+Hmm, we need to be careful here. Graph with an infinite loop might not have an exit block after simplify+dce. Right now this will work because:
+- above we run DCE first, so "if (const)" will not have been simplified yet
+- DCE does not set Exit block to null if removed (currently not a problem but needs to be fixed, I'll submit a CL)
+- we do not inline loops
+
+File: compiler/optimizing/nodes.cc
+
+1302:22-1302:26
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d0c61ed_b31e9817
+Bytes: 39
+"Skip", "past" cannot be used as a verb
+
+File: compiler/optimizing/register_allocator.cc
+
+1577:22-1577:33
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdf3c519_7860617e
+Bytes: 28
+Is this guaranteed not null?
+
+File: runtime/entrypoints/entrypoint_utils-inl.h
+
+71:15-71:38
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdf3c519_789221d2
+Bytes: 25
+Move inside the if block?
+
+74:12-74:21
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdf3c519_d8fff5f8
+Bytes: 5
+ditto
+
+82:13-82:22
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d0c61ed_b3c218d7
+Bytes: 22
+Check that it is valid
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+310:34-310:47
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdf3c519_f80e31b8
+Bytes: 54
+Do we not have a constant for the host's pointer size?
+
+312:15-312:24
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdf3c519_781b41f4
+Bytes: 14
+Validity check
+
+File: test/466-get-live-vreg/src/Main.java
+
+68:2-69:22
+Tue May 26 10:33:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d0c61ed_3398c8f0
+Bytes: 65
+How about we add another $noinline$ function name marker instead?
+

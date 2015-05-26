@@ -2,6 +2,25 @@ Revision: bfb4ede3aae4424ca6c5a0ad7c5c67affc1b0442
 Patch-set: 1
 File: runtime/base/mutex.cc
 
+557:10-557:77
+Tue May 26 08:49:53 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4daef5fa_8c4d1bcc
+Bytes: 670
+Is there a potential data race here? We do not have 64-bit 
+futex and the futex here could only monitor the low 32 bits 
+of the lock state. When the high 32 bits of the mutex state 
+are not zero but low 32 bits are zero (shared locked) there 
+would be a race between the thread to wait by futex and other 
+threads to clean the high 32 bits (release the shared lock).
+E.g. initial cur_state:
+   0x0000000100000000(shared locked by thread B) 
+-> current thread enters the "else" branch
+-> 0x0000000000000000 (thread B releases the shared lock) 
+-> futex should fail and try again from the beginning, but it 
+will wait because the futex could only monitor the low 32 
+bits.
+
 705
 Fri Mar 20 18:48:47 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

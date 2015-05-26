@@ -17,3 +17,17 @@ UUID: 2d0c61ed_2e24dbda
 Bytes: 227
 First deduped method gets symbol with [DEDUPED] suffix, other deduped methods with the same address have no symbols to save space (see WriteDebugSymbols below).  Methods are not deduped in the first pace if --debuggable is set.
 
+211:0-211:51
+Tue May 26 13:02:57 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d0c61ed_2e24dbda
+UUID: ed8889a6_c5536ef1
+Bytes: 399
+Ok, so:
+1) Debuggable is not set: we can get something irrelevant as a stack, but the irrelevant names are marked [DEDUPED]
+2) Debuggable is set: we get correct stack trace with correct names.
+
+Is that correct?
+
+If a developer gets a crash, will the DEDUPED be visible to her? Will it be obvious what is going on? Wouldn't it be better to not print a method name to not be confusing? Should we care?
+

@@ -1,0 +1,36 @@
+Revision: ad3abb17e11852890d7aa00c0a499f9bb1947fdf
+Patch-set: 4
+File: compiler/optimizing/builder.cc
+
+807:0-809:100
+Wed May 27 12:03:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed8889a6_b4bdb64b
+Bytes: 7
+Remove?
+
+File: compiler/optimizing/nodes.h
+
+3143:6-3143:19
+Wed May 27 12:03:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd782572_39c9aba7
+Bytes: 434
+I don't think this abstraction is really worth it. It's not like it's hiding implementation details, as you are always fetching its two fields. Also, every abstraction adds overhead to the reader:
+1) what's a DexCacheIndex?
+2) grep for its definition
+3) see that it just encodes a dex file and an index
+4) (in this case) Why is the index not const?
+5) Why... ?
+
+So I'd suggest just not adding an abstraction for such a simple concept.
+
+File: compiler/optimizing/reference_type_propagation.cc
+
+43:4-43:18
+Wed May 27 12:03:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed6169bc_574d4cc8
+Bytes: 25
+Why do you need this now?
+

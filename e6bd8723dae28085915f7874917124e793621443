@@ -9,6 +9,13 @@ UUID: 0d5f9dfa_dee94e2b
 Bytes: 91
 This is a pretty ambiguous name. Are you saying that Quick's methods are not optimized? :-)
 
+1325:34-1325:41
+Wed May 27 16:05:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed8889a6_2bc78497
+Bytes: 44
+Brace-enclosed and on it's own line, please.
+
 1372:10-1376:11
 Wed May 27 15:11:01 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,4 +31,25 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d5f9dfa_fecd32e1
 Bytes: 9
 Remove t.
+
+1056:4-1056:75
+Wed May 27 16:05:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed8889a6_48c68eca
+Bytes: 381
+GetStackMaps() should return a container-like interface instead of a MemoryRegion. Then we could use
+
+  const auto& stack_maps = GetStackMaps();
+  auto it = std::lower_bound(stack_maps.begin(), stack_maps.end(), ...);
+  return (it != stack_maps.end()) ? std::distance(stack_maps.begin(), it)
+                                  : kInvalidStackMapNumber;
+
+with appropriate comparator.
+
+1078:51-1078:53
+Wed May 27 16:05:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed8889a6_88c256a2
+Bytes: 46
+I prefer the explicit static_cast<size_t>(-1).
 

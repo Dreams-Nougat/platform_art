@@ -19,3 +19,35 @@ I don't understand the whole thing, anyways. If you did not compile, there are n
 
 Could you please explain?
 
+122:0-122:32
+Wed May 27 20:45:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d5f9dfa_85ff8176
+UUID: ed8889a6_3e0ee0e8
+Bytes: 85
+Good catch. I guess apparently the .PHONY is enough, as it worked. I'll double check.
+
+122:0-122:32
+Wed May 27 20:45:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad73f192_7ebdc5a1
+UUID: ad3851b1_8db7c11a
+Bytes: 690
+It's for the case we are push instead of sync (see line 131), which is used by the buildbot. The way the buildbot runs is by invoking multiple times make:
+1) target gtest
+2) run-test for optimizing
+3) run-test for quick
+4) run-test for interpreter
+
+Invoking make multiple times is to better triage failures. And since any target test has a dependency to test-art-target-sync, the sync (which is actually a push for the buildbot) is always happening. So my plan is:
+
+1) Step1: m -j32 build-art-target-test
+
+2) Step2: m -j32 test-art-target-sync
+
+3) Step3: ART_TEST_NO_SYNC=true m -j32 test-art-target-gtest
+
+4) Step4: ART_TEST_NO_SYNC=true m -j32 test-art-target-run-test-optimizing
+
+5) ....
+

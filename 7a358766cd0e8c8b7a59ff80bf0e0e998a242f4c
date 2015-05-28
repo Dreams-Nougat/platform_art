@@ -25,6 +25,18 @@ UUID: 6d11f908_f9d10fd2
 Bytes: 328
 Instead of querying native bridge, what if add a new member in NativeBridgeRuntimeCallbacks, like SetNativeBridgeSignalHandler()? The benefit is: native bridge can decide which signal to "claim" at any time, rather than only in IntializeNativeBridge(). Then native bridge may fully remove sigaction() usage - seems more elegant?
 
+134:2-142:7
+Thu May 28 17:17:42 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d11f908_f9d10fd2
+UUID: 8d470d3e_75717a07
+Bytes: 449
+Better we keep this as it is. First I thought the suggestion is ok, but then I overlooked the sigaction part...
+
+I think this should be part of the setup process. We should handle only native bridge specific signals and I think they should be well known before and not modified dynamically, right? 
+
+The goal here is to be sure that nb handlers are run before. Dragging apps sigaction into this would create problems (e.g. why would they go first?).
+
 File: sigchainlib/sigchain.cc
 
 80:7-80:47

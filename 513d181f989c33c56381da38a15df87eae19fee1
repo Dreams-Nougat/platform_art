@@ -9,3 +9,15 @@ UUID: 8d470d3e_6fd60dee
 Bytes: 239
 This sounds dangerous. It looks to me that this will replace all array length accesses dominated by this block, which does include blocks after the loop, right? So if there is such an instruction after the loop, it will skip the NPE check.
 
+813:0-813:37
+Thu May 28 12:49:16 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d470d3e_6fd60dee
+UUID: 0d54fde2_178cb387
+Bytes: 415
+In this case array_length must be defined in loop body so there is no use after the loop.
+
+For array_length defined before the loop, we don't need the phi. For array_length defined in loop header (usually should have already been hoisted to pre-header by licm), we bail out the deopt based approach for it (done in CanAddDeoptimizationArrayLength()).
+
+I added some asserts to make sure array_length is in loop body.
+

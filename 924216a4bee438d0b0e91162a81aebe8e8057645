@@ -342,6 +342,14 @@ UUID: 8d99cdfb_03246d65
 Bytes: 55
 Add a check that asserts the array_type is a field bin?
 
+1105:10-1105:11
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d99cdfb_03246d65
+UUID: 0d54fde2_8dbdf6a4
+Bytes: 11
+Is this ok?
+
 1342:0-1349:6
 Tue May 26 13:08:21 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -363,6 +371,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d9499c1_ea13d78f
 Bytes: 63
 Would it make sense to break out of the loop once it finds one?
+
+1367:0-1368:91
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d9499c1_ea13d78f
+UUID: 0d54fde2_2ddfaa03
+Bytes: 11
+Is this ok?
 
 File: compiler/image_writer.h
 
@@ -596,6 +612,14 @@ UUID: 6d9499c1_33961349
 Bytes: 4
 Done
 
+537:0-539:3
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d9499c1_33961349
+UUID: ed56c9ec_7d4ddac8
+Bytes: 7
+Thanks.
+
 File: compiler/utils/arm64/assembler_arm64.cc
 
 304:6-304:27
@@ -629,6 +653,14 @@ Parent: 6d9499c1_8ae333a2
 UUID: 4d0995dc_5e91ec4f
 Bytes: 4
 Done
+
+1757:68-1757:85
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d0995dc_5e91ec4f
+UUID: 0d54fde2_2d5a4a0b
+Bytes: 43
+Did you add a comment here? I don't see it.
 
 File: compiler/utils/x86_64/assembler_x86_64.cc
 
@@ -877,6 +909,28 @@ UUID: 6d9499c1_0d48131e
 Bytes: 132
 Hmm, I'd think that it would be OK to copy the GcRoots over without doing a read barrier. Wouldn't have the same behavior as memcpy?
 
+543:4-543:10
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d9499c1_0d48131e
+UUID: ed56c9ec_24133e5b
+Bytes: 1294
+This seems important.
+
+Why do you think it's ok? It does not seem to be ok to me.
+
+It's usually fine to create a new GC root during GC due to the to-space invariant because mutators can store only a to-space ref into a new GC root when it creates it. And GC does not need to visit those new GC roots as they won't contain from-space refs. There's no race here.
+
+But copying a GcRoot without a read barrier would be equivalent to creating a new GC root and storing a potentially from-space ref (due to lack of read barrier in the copying). In this case, the new GC root may not be visited by GC at all and left with stale/from-space refs.
+
+1) A mutator copies a GcRoot that hasn't been visited by GC and contains a from-space ref. (without a read barrier).
+2) GC visits and updates the original GcRoot (the copy source).
+3) By the time the new ArtMethod containing the new GcRoot (the copy destination) is put in a place where GC would usually be able to visit, GC has already finished visiting GC roots and won't update the new GCRoot.
+
+There's a race here and is related to the other question about the risk that the GC roots in ArtMethods while we create/copy ArtMethods may not be reachable by GC and could be left stale (from-space refs).
+
+What do you mean by "the same behavior as memcpy"?
+
 609:24-609:25
 Wed May 27 01:05:31 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -956,6 +1010,14 @@ UUID: ad73f192_583d818a
 Bytes: 61
 Well, linear alloc doesn't support free yet. I'll add a TODO.
 
+240:4-240:10
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad73f192_583d818a
+UUID: 6d1bb95b_9585020d
+Bytes: 286
+How about clarifying what Realloc() does in a comment that it's caller's responsibility of free the original at least for now? The standard libc realloc() does free the original and the semantics difference could cause a confusion. Either that or rename this function to something else?
+
 260:28-260:29
 Wed May 27 01:05:31 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1010,12 +1072,28 @@ UUID: 6d9499c1_a4a9038b
 Bytes: 57
 Use ScopedAssertNoThreadSuspension around the above code?
 
+2338:8-2338:29
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d9499c1_a4a9038b
+UUID: 6d1bb95b_552d4a8e
+Bytes: 7
+So, no?
+
 2640:4-2640:86
 Wed May 27 01:05:31 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d0995dc_c82ee238
 Bytes: 28
 Does this need read barrier?
+
+2640:4-2640:86
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d0995dc_c82ee238
+UUID: 0d54fde2_308b7d22
+Bytes: 58
+Related to the read barrier ArtMethod::CopyFrom() comment.
 
 3281:12-3281:39
 Wed May 27 01:05:31 2015 +0000
@@ -1040,10 +1118,26 @@ UUID: 6d9499c1_e1093065
 Bytes: 140
 I'm leaving these here in case we want to bound linear alloc and throw OOM if it gets too full or something. It can't return null currently.
 
+3281:12-3281:39
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d9499c1_e1093065
+UUID: 6d1bb95b_75a5e67e
+Bytes: 30
+Add a comment to clarify that?
+
 3297:10-3297:35
 Wed May 27 01:05:31 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d9499c1_e46a2b9b
+Bytes: 5
+Same.
+
+3297:10-3297:35
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d9499c1_e46a2b9b
+UUID: 0d54fde2_5001e106
 Bytes: 5
 Same.
 
@@ -1054,6 +1148,14 @@ UUID: 4d0995dc_a880ce95
 Bytes: 28
 Does this need read barrier?
 
+3921:2-3921:84
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d0995dc_a880ce95
+UUID: 0d54fde2_d01dd165
+Bytes: 45
+Related to the ArtMethod::CopyFrom() comment.
+
 4539:18-4539:38
 Wed May 27 01:05:31 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1062,6 +1164,14 @@ Bytes: 292
 The roots in ArtMethods are only reachable from GC only when they are reachable from the declaring classes. In this function, are there ArtMethods that may be at least temporarily not reachable from their declaring classes?
 
 Is this function moving GC safe with regard to the ArtMethod roots?
+
+4539:18-4539:38
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d5f9dfa_68008f70
+UUID: ed56c9ec_64370690
+Bytes: 117
+I think this concern isn't limited to this function. Whenever we create/copy new ArtMethod, the same concern applies.
 
 4658:23-4658:32
 Tue May 26 13:08:21 2015 +0000
@@ -1106,6 +1216,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d5f9dfa_bd7027d8
 Bytes: 61
 This implicit copying of ArtMethod isn't read barrier unsafe.
+
+4816:82-4816:89
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d5f9dfa_bd7027d8
+UUID: ed56c9ec_a48aceb0
+Bytes: 54
+Same read barrier in copy of ArtMethod/GcRoot concern.
 
 File: runtime/entrypoints/entrypoint_utils-inl.h
 
@@ -1343,6 +1461,14 @@ UUID: ad73f192_38344589
 Bytes: 61
 No, its only supposed to be in linear alloc or image anyways.
 
+26:19-26:26
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad73f192_38344589
+UUID: 0d54fde2_90fc2938
+Bytes: 79
+Already mentioned but clarify this in the comment or rename to avoid confusion?
+
 File: runtime/mirror/abstract_method.h
 
 64:11-64:22
@@ -1359,6 +1485,14 @@ Parent: 4d0995dc_08c3badd
 UUID: ad73f192_58310198
 Bytes: 91
 Not sure if you can do that, we have class linker test which verifies, is that good enough?
+
+64:11-64:22
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad73f192_58310198
+UUID: ed56c9ec_646aa61a
+Bytes: 5
+Sure.
 
 File: runtime/mirror/array-inl.h
 
@@ -1526,6 +1660,16 @@ Parent: 6d9499c1_3db8a225
 UUID: 6d9499c1_30660428
 Bytes: 38
 I guess not, I think there used to be.
+
+964:69-964:90
+Thu May 28 18:32:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d9499c1_30660428
+UUID: ed56c9ec_07e63c30
+Bytes: 61
+Is it still OK to do pointer size logic?
+
+Update the comment?
 
 File: runtime/mirror/object.cc
 

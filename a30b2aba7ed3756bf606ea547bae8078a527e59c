@@ -50,6 +50,16 @@ UUID: ed56c9ec_05d1c27c
 Bytes: 57
 Potentially, yes, if when add MemorySanitizer to the mix.
 
+17:0-18:36
+Fri May 29 21:25:06 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_a528f601
+UUID: ed56c9ec_370fd768
+Bytes: 281
+I don't see how it's a runtime option - the way you're doing it right now, it obviously is not: when you're running on valgrind, you add redzones.
+
+This should be constexpr true, and any use of ADDS_REDZONES should be protected by RUNNING_ON_MEMORY_TOOL (or a cached flag) anyways.
+
 33:28-33:39
 Fri May 29 03:40:51 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -85,6 +95,22 @@ Parent: b91fb853_442058a3
 UUID: 0d54fde2_bf53ae3c
 Bytes: 236
 Exactly. RosAllocSpace::Clear re-creates RosAlloc in the same mapping, and then the memset at "Clear the first page since it is not madvised due to the magic number" trips on the leftover redzones from the previous instance of RosAlloc.
+
+114:0-114:24
+Fri May 29 21:25:06 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_bf53ae3c
+UUID: ed56c9ec_17b81309
+Bytes: 98
+But is there a reason to not be consistent and make it undefined when running under any sanitizer?
+
+114:0-114:24
+Fri May 29 21:25:06 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b91fb853_442058a3
+UUID: b91fb853_7e5520ca
+Bytes: 49
+The comment is out-dated, as you noticed. My bad.
 
 File: runtime/gc/heap.cc
 

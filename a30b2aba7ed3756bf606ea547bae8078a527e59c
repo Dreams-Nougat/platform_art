@@ -60,6 +60,16 @@ I don't see how it's a runtime option - the way you're doing it right now, it ob
 
 This should be constexpr true, and any use of ADDS_REDZONES should be protected by RUNNING_ON_MEMORY_TOOL (or a cached flag) anyways.
 
+17:0-18:36
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_370fd768
+UUID: ed56c9ec_37f5179a
+Bytes: 258
+ASan is a compile-time choice. Valgrind is not: you can run the same binary with or without Valgrind, and RUNNING_ON_VALGRIND will evaluate either to 1 or 0.
+
+ASan and Valgrind are incompatible, so we can make RUNNING_ON_VALGRIND a 0 constant in ASan builds.
+
 33:28-33:39
 Fri May 29 03:40:51 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -121,6 +131,14 @@ UUID: 8d470d3e_13d12b00
 Bytes: 68
 Guard with ADDRESS_SANITIZER (or the corresponding constexpr flag) ?
 
+2066:4-2066:47
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d470d3e_13d12b00
+UUID: 0d54fde2_3f9ede38
+Bytes: 228
+This should not be ASan-specific. These bins are simply free space in the heap, from the end of one allocation to the beginning of another. They are guaranteed to contain redzones. Again, not sure why Valgrind does not catch it.
+
 File: runtime/gc/space/dlmalloc_space.cc
 
 29:0-29:41
@@ -129,6 +147,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d470d3e_53b3b3da
 Bytes: 46
 Includes are sorted, this should go to line 23
+
+29:0-29:41
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d470d3e_53b3b3da
+UUID: b91fb853_9edebc50
+Bytes: 4
+Done
 
 File: runtime/gc/space/memory_tool_malloc_space-inl.h
 
@@ -139,6 +165,14 @@ UUID: d9fb8c32_e4464ed1
 Bytes: 100
 Remove empty line. We used to add such line when including header outisde of the project (<include>)
 
+21
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9fb8c32_e4464ed1
+UUID: ed56c9ec_54eb7976
+Bytes: 4
+Done
+
 22:0-22:29
 Fri May 29 14:27:41 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -146,12 +180,28 @@ UUID: 8d470d3e_73c0af2b
 Bytes: 41
 Includes are sorted, please move that up.
 
+22:0-22:29
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d470d3e_73c0af2b
+UUID: 0d54fde2_1f82fad8
+Bytes: 4
+Done
+
 23
 Fri May 29 14:27:41 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d42d931_007b943c
 Bytes: 29
 Remove empty line (see above)
+
+23
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d42d931_007b943c
+UUID: ed56c9ec_74f07d60
+Bytes: 4
+Done
 
 File: runtime/gc/space/rosalloc_space-inl.h
 
@@ -179,6 +229,14 @@ UUID: 0d54fde2_76409614
 Bytes: 47
 Please don't add spurious non-related newlines.
 
+460:0-460:0
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_76409614
+UUID: 0d54fde2_df8872f3
+Bytes: 4
+Done
+
 467:4-467:54
 Fri May 29 03:37:41 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -188,12 +246,28 @@ Bytes: 52
 
 We don't like to leave such comments in the code.
 
+467:4-467:54
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f6d849_771af02d
+UUID: 0d54fde2_ff6536cd
+Bytes: 4
+Done
+
 486:0-492:6
 Fri May 29 03:37:41 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d54fde2_b63afe91
 Bytes: 92
 Is there a problem with unconditionally doing this? I would think Valgrind would not care...
+
+486:0-492:6
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_b63afe91
+UUID: b91fb853_fe1c909d
+Bytes: 69
+Done. It could be a performance issue for Valgrind, but probably not.
 
 495:0-497:6
 Fri May 29 03:37:41 2015 +0000
@@ -202,6 +276,14 @@ UUID: 0d54fde2_16d2ead5
 Bytes: 6
 Ditto.
 
+495:0-497:6
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_16d2ead5
+UUID: 0d54fde2_df6152bb
+Bytes: 4
+Done
+
 582:0-584:6
 Fri May 29 03:37:41 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -209,12 +291,28 @@ UUID: b9f6d849_b70f58e4
 Bytes: 9
 As above.
 
+582:0-584:6
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f6d849_b70f58e4
+UUID: 0d54fde2_5f4e424a
+Bytes: 4
+Done
+
 768:0-772:6
 Fri May 29 03:37:41 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9f6d849_973c5c86
 Bytes: 9
 As above.
+
+768:0-772:6
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f6d849_973c5c86
+UUID: 0d54fde2_9f40aa15
+Bytes: 4
+Done
 
 File: runtime/mem_map.h
 
@@ -224,6 +322,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d470d3e_f3e49fd8
 Bytes: 12
 const size_t
+
+172:2-172:8
+Fri May 29 21:31:06 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d470d3e_f3e49fd8
+UUID: b91fb853_3e14487c
+Bytes: 4
+Done
 
 File: runtime/runtime.h
 

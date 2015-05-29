@@ -45,6 +45,56 @@ We're averse to #ifdefs in the code. Please consider a constexpr bool hiding the
 
 (Also, is there a particular reason to only do this for ASAN?)
 
+File: runtime/gc/heap.cc
+
+2066:4-2066:47
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d470d3e_13d12b00
+Bytes: 68
+Guard with ADDRESS_SANITIZER (or the corresponding constexpr flag) ?
+
+File: runtime/gc/space/dlmalloc_space.cc
+
+29:0-29:41
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d470d3e_53b3b3da
+Bytes: 46
+Includes are sorted, this should go to line 23
+
+File: runtime/gc/space/memory_tool_malloc_space-inl.h
+
+21
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9fb8c32_e4464ed1
+Bytes: 100
+Remove empty line. We used to add such line when including header outisde of the project (<include>)
+
+22:0-22:29
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d470d3e_73c0af2b
+Bytes: 41
+Includes are sorted, please move that up.
+
+23
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d42d931_007b943c
+Bytes: 29
+Remove empty line (see above)
+
+File: runtime/gc/space/rosalloc_space-inl.h
+
+37:19-37:44
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d470d3e_b3ea17a3
+Bytes: 52
+That definitely needs to be a 'constexpr bool' flag.
+
 File: runtime/mem_map.cc
 
 460:0-460:0
@@ -90,4 +140,31 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9f6d849_973c5c86
 Bytes: 9
 As above.
+
+File: runtime/mem_map.h
+
+172:2-172:8
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d470d3e_f3e49fd8
+Bytes: 12
+const size_t
+
+File: runtime/runtime.h
+
+532:7-532:26
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9fb8c32_04d13a73
+Bytes: 127
+IMO, it should have been named IsRunningOnMemoryTool in the first place. Since you rename it, you can also add the "Is" prefix.
+
+File: runtime/utils_test.cc
+
+29:0-29:29
+Fri May 29 14:27:41 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9fb8c32_e4cd2ed7
+Bytes: 27
+Move to the top of includes
 

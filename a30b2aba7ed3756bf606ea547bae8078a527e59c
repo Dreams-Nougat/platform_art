@@ -78,6 +78,14 @@ UUID: ed56c9ec_d7b20bc5
 Bytes: 264
 But any of the code paths doing the protection are protected by the RUNNING_ON_VALGRIND/MEMORY_TOOL path (if they're not, it's a bug). So the redzone flag is totally independent (you shouldn't even be looking at the flag if you're not running under valgrind/asan).
 
+17:0-18:36
+Fri May 29 21:56:08 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_d7b20bc5
+UUID: b91fb853_61eea1b3
+Bytes: 117
+Ah, ok, I can do that. I actually meant the redzone flag to be used independently of the others, but this works, too.
+
 33:28-33:39
 Fri May 29 03:40:51 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -162,6 +170,15 @@ Don't put the macros in this way. Any such thing should be protected with the fl
  }
 
 That is what allows some of the flags to be clean constexpr, instead of the macro hell. We're happy to trade the one-branch overhead in a non-hot path for this.
+
+2066:4-2066:47
+Fri May 29 21:56:08 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_62e0cd12
+UUID: 0d54fde2_429e6939
+Bytes: 190
+Ok, I can do this.
+Do you want all other uses of MAKE_MEM_* to be wrapped this way? I don't see how it helps anything, with MAKE_MEM_* macros not depending on any constexpr variables at all.
 
 File: runtime/gc/space/dlmalloc_space.cc
 

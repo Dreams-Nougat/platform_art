@@ -78,6 +78,14 @@ It looks like RosAlloc can be re-created without releasing the memory mapping, a
 
 I see comments in the code about RosAlloc not supporting Valgrind, referencing https://b.corp.google.com/u/0/issues/12944686. Do you know if it's still the case, and why does the code create ValgrindMallocSpace<RosAllocSpace, ...> anyway?
 
+114:0-114:24
+Fri May 29 20:55:41 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b91fb853_442058a3
+UUID: 0d54fde2_bf53ae3c
+Bytes: 236
+Exactly. RosAllocSpace::Clear re-creates RosAlloc in the same mapping, and then the memset at "Clear the first page since it is not madvised due to the magic number" trips on the leftover redzones from the previous instance of RosAlloc.
+
 File: runtime/gc/heap.cc
 
 2066:4-2066:47

@@ -1,0 +1,86 @@
+Revision: a30b2aba7ed3756bf606ea547bae8078a527e59c
+Patch-set: 3
+File: runtime/base/memory_tool.h
+
+1:0-2:37
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed56c9ec_34243f66
+Bytes: 18
+Copyright missing.
+
+12:8-14:66
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed56c9ec_b4182f29
+Bytes: 223
+IMHO those names aren't very good. The original valgrind ones at least had valgrind in the name, so the intent was very clear. MAKE_MEM_NOACCESS could just as well be a certain mmap protection scheme...
+
+Please add a prefix
+
+17:0-18:36
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f6d849_5736d4a3
+Bytes: 238
+No, please don't use untyped macros, this is C++11.
+
+Please make this a proper constexpr bool (there's no reason below to use the RUNNING_ON_VALGRIND macro, all usages of these flags should already be protected by RUNNING_ON_MEMORY_TOOL).
+
+File: runtime/gc/allocator/rosalloc.cc
+
+114:0-114:24
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ed56c9ec_f442b700
+Bytes: 156
+We're averse to #ifdefs in the code. Please consider a constexpr bool hiding the ifdef away.
+
+(Also, is there a particular reason to only do this for ASAN?)
+
+File: runtime/mem_map.cc
+
+460:0-460:0
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_76409614
+Bytes: 47
+Please don't add spurious non-related newlines.
+
+467:4-467:54
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f6d849_771af02d
+Bytes: 52
+?
+
+We don't like to leave such comments in the code.
+
+486:0-492:6
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_b63afe91
+Bytes: 92
+Is there a problem with unconditionally doing this? I would think Valgrind would not care...
+
+495:0-497:6
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d54fde2_16d2ead5
+Bytes: 6
+Ditto.
+
+582:0-584:6
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f6d849_b70f58e4
+Bytes: 9
+As above.
+
+768:0-772:6
+Fri May 29 03:37:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f6d849_973c5c86
+Bytes: 9
+As above.
+

@@ -68,6 +68,16 @@ We're averse to #ifdefs in the code. Please consider a constexpr bool hiding the
 
 (Also, is there a particular reason to only do this for ASAN?)
 
+114:0-114:24
+Fri May 29 20:17:45 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_f442b700
+UUID: b91fb853_442058a3
+Bytes: 400
+It looks like RosAlloc can be re-created without releasing the memory mapping, and this is needed to clear the redzones. Not sure why Valgrind does not need it.
+
+I see comments in the code about RosAlloc not supporting Valgrind, referencing https://b.corp.google.com/u/0/issues/12944686. Do you know if it's still the case, and why does the code create ValgrindMallocSpace<RosAllocSpace, ...> anyway?
+
 File: runtime/gc/heap.cc
 
 2066:4-2066:47

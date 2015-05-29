@@ -1401,6 +1401,14 @@ UUID: ed56c9ec_9527b2ae
 Bytes: 76
 Added comment, also fixed the logic above to have NoThreadSuspension assert.
 
+4816:82-4816:89
+Fri May 29 18:10:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed56c9ec_9527b2ae
+UUID: ed56c9ec_14ce56dd
+Bytes: 181
+There's a memcpy() call in Realloc() that copies ArtMethods. This needs a read barrier like CopyFrom()? NoThreadSuspension isn't sufficient as method roots are concurrently visited?
+
 File: runtime/entrypoints/entrypoint_utils-inl.h
 
 580:83-580:96
@@ -1862,6 +1870,14 @@ Parent: ed56c9ec_07e63c30
 UUID: 0d54fde2_cbad269d
 Bytes: 4
 Done
+
+964:69-964:90
+Fri May 29 18:10:27 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d54fde2_cbad269d
+UUID: 0d54fde2_37852856
+Bytes: 61
+Remove "since this is the slow path" as there's no fast path?
 
 File: runtime/mirror/object.cc
 

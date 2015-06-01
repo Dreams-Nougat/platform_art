@@ -9,3 +9,15 @@ UUID: d9fb8c32_e8705cd3
 Bytes: 84
 dcheck sizes please. FillWith is to generic and here we actually expect equal sizes.
 
+673:23-673:31
+Mon Jun 01 13:06:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9fb8c32_e8705cd3
+UUID: 7919c071_a2160078
+Bytes: 392
+Um, that's tricky because BitVector does not know it's true size. It allocates an array of uint32 big enough to fit the highest set bit and all the higher bits are implicitly zero. The size that it returns is the length of the array.
+
+That means:
+- the reported size might be smaller if not all bits are used
+- the reported size might be bigger because the array is allocated in 32-bit chunks
+

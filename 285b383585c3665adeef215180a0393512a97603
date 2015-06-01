@@ -9,10 +9,28 @@ UUID: 6d42d931_88d6c643
 Bytes: 75
 Can't you just compare the poisoned references instead of unpoisoning both?
 
+1152:0-1158:5
+Mon Jun 01 17:41:47 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d42d931_88d6c643
+UUID: 0d54fde2_0fbac54b
+Bytes: 214
+I'll keep it this way because ebx isn't dead after the cmpl (it'd be used later) and unpoisoning ebx after the cmpl would modify the condition codes (the neg instruction), which would invalidate the result of cmpl.
+
 1183:4-1183:42
 Mon Jun 01 07:34:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d42d931_c8e0ce17
 Bytes: 42
 I guess macros taking macros doesn't work?
+
+1183:4-1183:42
+Mon Jun 01 17:41:47 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d42d931_c8e0ce17
+UUID: ed56c9ec_b113ca58
+Bytes: 225
+Not sure what you mean. What macros taking what macros?
+
+Maybe a custom macro could be invented for this pattern, but it seems not worth it, at least not yet, unless it'd be used more than once. I'd add it later if necessary.
 

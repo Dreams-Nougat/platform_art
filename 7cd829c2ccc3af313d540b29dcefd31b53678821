@@ -47,3 +47,11 @@ No for two reasons:
 1) The getSubclass call site is virtual, and the receiver is not statically known.
 2) The method always throws, so won't be inlined thanks to our heuristics, and should probably never be inlined.
 
+367:19-367:30
+Tue Jun 02 11:36:16 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_a916f977
+UUID: b9a97860_082627f1
+Bytes: 317
+for 2). I think we should try inline in this case. It will enable more dead code elimination. Alternatively it should not be hard to figure out that a function always throw and mark everything after the call dead. Anyway, I don't think that's not a common case so it probably doesn't worth thinking about it too much.
+

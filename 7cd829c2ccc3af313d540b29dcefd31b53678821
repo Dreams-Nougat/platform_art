@@ -26,3 +26,24 @@ UUID: 99a8345d_a4c5c29c
 Bytes: 112
 Either way, we should add something like $noinline$, otherwise writing tests will become increasingly difficult.
 
+367:19-367:30
+Tue Jun 02 11:08:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_a4c5c29c
+UUID: b9a97860_c8f1efe0
+Bytes: 135
+Yeah, let's start by adding this $noinline$ as a marker with no effect for now.
+
+We can then think about how to make it have an effect.
+
+367:19-367:30
+Tue Jun 02 11:08:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7919c071_0d5de5f8
+UUID: d9ae2c65_a916f977
+Bytes: 216
+No for two reasons:
+
+1) The getSubclass call site is virtual, and the receiver is not statically known.
+2) The method always throws, so won't be inlined thanks to our heuristics, and should probably never be inlined.
+

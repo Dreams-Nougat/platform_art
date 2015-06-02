@@ -9,10 +9,73 @@ UUID: 99a8345d_84ca063c
 Bytes: 1
 ?
 
+4977
+Tue Jun 02 23:04:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b97b38ac_17e5cfc8
+Bytes: 393
+Just for my understanding, is there some unwritten style guide that says we can't use
+
+  ArtMethod& out_method = *out;
+
+instead?
+
+This would've prevented all the 'wtf?' moments people seem to be having with '&*out' which seems intuitively redundant ( e.g. if 'out' was a regular pointer).
+
+(I checked the google3 style guide and it doesn't seem to ban using lvalue references in this fashion).
+
 5011:44-5011:46
 Tue Jun 02 07:57:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9a97860_45696aa1
 Bytes: 1
 ?
+
+File: runtime/stride_iterator.h
+
+25:44-25:75
+Tue Jun 02 23:04:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59d23ce8_fe5ca6fe
+Bytes: 332
+This can be a regular output iterator if the code uses std::advance instead of += for operator++.
+
+As an aside, it doesn't seem like this iterator actually implements everything to be considered a random access iterator (addition, subtraction, reversing, ...) - see here http://en.cppreference.com/w/cpp/concept/RandomAccessIterator
+
+32:17-32:26
+Tue Jun 02 23:04:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b97b38ac_7460c12d
+Bytes: 580
+This kind of interface design makes it very tempting to break strict aliasing rules.
+
+For example:
+   
+  float x[] = {...};
+  auto x = StrideIterator<int>(x, 1);
+
+  int y = *x;  // breaks strict aliasing
+
+Based on the use case this should probably do this instead:
+
+  StrideIterator(T* ptr, size_t byte_stride) {
+    .....
+    DCHECK(byte_stride >= sizeof(T)); 
+    // don't read into the middle of the type which would be UB
+  }
+
+  StrideIterator& operator++() {    
+    reinterpret_cast<uint8_t*>(ptr_) += byte_stride_;
+    return *this;
+  }
+  
+  T* ptr_;
+  size_t byte_stride_;
+
+44
+Tue Jun 02 23:04:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b97b38ac_34832956
+Bytes: 25
+Why not StrideIterator& ?
 

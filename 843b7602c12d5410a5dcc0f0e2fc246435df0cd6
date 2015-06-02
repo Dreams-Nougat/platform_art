@@ -1,0 +1,152 @@
+Revision: 843b7602c12d5410a5dcc0f0e2fc246435df0cd6
+Patch-set: 6
+File: compiler/optimizing/bounds_check_elimination.cc
+
+25:0-25:62
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a97860_c5a55a03
+Bytes: 205
+Please expand the comment saying that it's for a phi that is not associated to any vref. On the other hand, maybe an invalid index in the HPhi class is better? Or a constructor that does not take an index?
+
+305:0-310:7
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_84f1a60f
+Bytes: 227
+Don't you know it's the first block? Could it make sense to declare the iterator outside of the for, and do an it_loop.Advance() with a dcheck that the current is the loop header?
+
+then you wouldn't need this check in the loop.
+
+347:0-347:46
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a97860_a59cdeba
+Bytes: 106
+Can that only happen with what you're just adding? Should you dcheck that this is the phi you synthesized?
+
+625:0-625:81
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_29dd2952
+Bytes: 261
+Please provide an example. It looks to me that this covers cases like:
+
+for (int a = foo(); a < 42; a++) {}
+
+Where foo() does not dominate the pre-header.
+
+So in most situations, I guess we are not going to add deoptimization for non-constant checks in the for.
+
+656:0-656:57
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_27dd5452
+Bytes: 71
+dcheck that it is the pre header of the loop information of the header?
+
+669:0-669:31
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a97860_854d22bf
+Bytes: 45
+Maybe DCHECK that the check cannot be proven?
+
+723:0-729:5
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_e963910b
+Bytes: 106
+Maybe add a helper (eg CanBeMovedToLoopPreHeader) for this and share it with CanAddDeoptimizationConstant?
+
+731:9-731:44
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_493ae5fa
+Bytes: 13
+what is this?
+
+731:54-731:59
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_070ff86a
+Bytes: 35
+what's the meaning of "right" here?
+
+736:71-736:83
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_c94d7590
+Bytes: 19
+in *the* loop body.
+
+736:47-736:66
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_2939a901
+Bytes: 38
+loop header already -> the loop header
+
+737:44-737:80
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a97860_482c1fd3
+Bytes: 13
+what is this?
+
+737:25-737:33
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_e7f5fcc3
+Bytes: 22
+in loop -> in the loop
+
+809:0-810:45
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_8702083b
+Bytes: 9
+One line?
+
+812:0-820:38
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_e94ab175
+Bytes: 32
+Please add comments around this.
+
+904:0-904:49
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_e991515b
+Bytes: 69
+This comes a bit late. How about making this comment a top-level one?
+
+941:68-941:73
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_8719a8ac
+Bytes: 7
+a legal
+
+1287:41-1287:76
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_a7162478
+Bytes: 18
+Nit: one per line?
+
+1291:0-1292:44
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99a8345d_4753b040
+Bytes: 20
+Please add comments.
+
+1721:0-1725:35
+Tue Jun 02 11:32:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a97860_a816f377
+Bytes: 107
+Instead of making this a state, it might make sense for this pass to control the iteration over the blocks.
+

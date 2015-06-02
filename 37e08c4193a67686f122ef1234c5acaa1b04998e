@@ -9,6 +9,14 @@ UUID: 2d20e12c_4d9259d2
 Bytes: 200
 It seems error prone: it's easy to forget doing this when adding a new return in this part of the code. Why not having a scoped object that pushes/pops the shadow frame in its constructor/destructor ?
 
+570:14-570:61
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_4d9259d2
+UUID: d9ae2c65_09d86d61
+Bytes: 5
+Done.
+
 File: runtime/mirror/art_method.cc
 
 427:9-427:41
@@ -22,6 +30,14 @@ I would give a few more details here:
 
 Feel free to amend it :)
 
+427:9-427:41
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_e7182c78
+UUID: d9ae2c65_e9ee31fe
+Bytes: 69
+Thanks. Since I'm changing the code, I moved the comments to thread.h
+
 428:88-428:95
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,12 +47,28 @@ I think you also need to save the deoptimized return value. Otherwise a nested d
 
 And if the return value is an object, we need the GC to visit it... Though I'm not sure we are doing this at the moment.
 
+428:88-428:95
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_c6d64cc8
+UUID: 99a8345d_04837655
+Bytes: 4
+Done
+
 452:12-452:40
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed19690f_86d934f7
 Bytes: 79
 From my comment above, you'd need to restore the deoptimized return value here.
+
+452:12-452:40
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_86d934f7
+UUID: d9ae2c65_89ebfdec
+Bytes: 4
+Done
 
 File: runtime/thread.cc
 
@@ -47,12 +79,28 @@ UUID: 0d179dd9_a7123454
 Bytes: 23
 DCHECK(sf != nullptr) ?
 
+166:66-166:68
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_a7123454
+UUID: 99a8345d_c4531e63
+Bytes: 256
+A nullptr should be ok. I'm a little concerned if a deopt is triggered on a native method (probably we don't allow this, but anyway), this will happen. A null sf can be handled by interpreter::EnterInterpreterFromDeoptimize() since it will just do nothing.
+
 174:2-174:64
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d179dd9_87885024
 Bytes: 71
 I prefer two DCHECKs so we know which condition is wrong if that fails.
+
+174:2-174:64
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_87885024
+UUID: d9ae2c65_89021d3b
+Bytes: 4
+Done
 
 181:13-181:49
 Thu May 21 15:26:36 2015 +0000
@@ -61,6 +109,14 @@ UUID: ed19690f_e6f03065
 Bytes: 130
 I'd create a common method passing the extra enum kind. This is almost the same code than PushStackedShadowFrameUnderConstruction.
 
+181:13-181:49
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_e6f03065
+UUID: b9a97860_08c14773
+Bytes: 4
+Done
+
 188:2-193:22
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -68,12 +124,28 @@ UUID: 0d179dd9_47823804
 Bytes: 78
 I'd say the same for this method: you could pass the enum kind for the DCHECK.
 
+188:2-193:22
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_47823804
+UUID: d9ae2c65_a9ffd9a1
+Bytes: 4
+Done
+
 2400:6-2401:39
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d20e12c_cd274931
 Bytes: 70
 nit: I would have preferred a for loop but that's a question of style.
+
+2400:6-2401:39
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_cd274931
+UUID: b9a97860_c8ca4f8f
+Bytes: 4
+Done
 
 File: runtime/thread.h
 
@@ -84,12 +156,28 @@ UUID: 2d20e12c_0d054197
 Bytes: 23
 Prefer enum class here.
 
+101:0-101:4
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_0d054197
+UUID: b9a97860_08d86761
+Bytes: 88
+I didn't see many enum class used so I'll just keep enum here. Just like the code above.
+
 106:6-106:30
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d179dd9_678bbc21
 Bytes: 28
 Add DISALLOW_COPY_AND_ASSIGN
+
+106:6-106:30
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_678bbc21
+UUID: b9a97860_e8c70b84
+Bytes: 4
+Done
 
 115:31-115:32
 Thu May 21 15:26:36 2015 +0000
@@ -98,12 +186,28 @@ UUID: 0d179dd9_c7bc08cd
 Bytes: 5
 const
 
+115:31-115:32
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_c7bc08cd
+UUID: b9a97860_88d45733
+Bytes: 4
+Done
+
 116:31-116:32
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed19690f_86405415
 Bytes: 5
 const
+
+116:31-116:32
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_86405415
+UUID: d9ae2c65_492c25d3
+Bytes: 4
+Done
 
 117:28-117:29
 Thu May 21 15:26:36 2015 +0000
@@ -112,12 +216,28 @@ UUID: 2d20e12c_ad09b5b3
 Bytes: 5
 const
 
+117:28-117:29
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_ad09b5b3
+UUID: d9ae2c65_6931e129
+Bytes: 4
+Done
+
 118:37-118:38
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed19690f_263dc88b
 Bytes: 5
 const
+
+118:37-118:38
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed19690f_263dc88b
+UUID: 99a8345d_e4509a58
+Bytes: 4
+Done
 
 121:2-121:14
 Thu May 21 15:26:36 2015 +0000
@@ -126,6 +246,14 @@ UUID: 0d179dd9_079c4067
 Bytes: 18
 ShadowFrame* const
 
+121:2-121:14
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_079c4067
+UUID: b9a97860_a8d11342
+Bytes: 4
+Done
+
 122:2-122:24
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -133,10 +261,26 @@ UUID: 0d179dd9_a790f44d
 Bytes: 28
 const StackedShadowFrameType
 
+122:2-122:24
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d179dd9_a790f44d
+UUID: b9a97860_48de5f53
+Bytes: 4
+Done
+
 123:2-123:27
 Thu May 21 15:26:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d20e12c_4d1b39f4
 Bytes: 31
 StackedShadowFrameRecord* const
+
+123:2-123:27
+Tue Jun 02 11:03:42 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d20e12c_4d1b39f4
+UUID: b9a97860_68e31b1a
+Bytes: 4
+Done
 

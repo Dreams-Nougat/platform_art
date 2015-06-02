@@ -9,3 +9,11 @@ UUID: 99a8345d_c4a55e03
 Bytes: 261
 I don't understand this comment, given that `buf` is 40-bit long and the highest bit set in `bv` is bit 33.  Does this rely on the assumption that the destination buffer is expected to be 32-bit long in all those tests?  If so, this should be explicitly stated.
 
+239:4-239:67
+Tue Jun 02 11:14:54 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_c4a55e03
+UUID: 99a8345d_87ebe8ec
+Bytes: 264
+Ok, let me rephrase the comment. The point is that BitVector allocates storage in 4-byte chunks, so setting bit 33 forces it over the edge to an 8-byte storage. However, copying to a 5-byte buffer should still work because it fits. That's what's being tested here.
+

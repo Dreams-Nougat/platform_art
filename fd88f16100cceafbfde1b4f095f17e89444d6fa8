@@ -1,0 +1,17 @@
+Revision: fd88f16100cceafbfde1b4f095f17e89444d6fa8
+Patch-set: 1
+File: compiler/optimizing/code_generator_x86_64.cc
+
+1266:0-1266:1
+Wed Jun 03 11:20:15 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9ae2c65_0074ba45
+Bytes: 479
+The compiler (seems to be g++) is not happy with this:
+
+  art/compiler/optimizing/code_generator_x86_64.cc: In member function 'virtual art::Location art::x86_64::InvokeDexCallingConventionVisitorX86_64::GetReturnLocation(art::Primitive::Type) const':
+  art/compiler/optimizing/code_generator_x86_64.cc:1266:1: error: control reaches end of non-void function [-Werror=return-type]
+   }
+
+This looks like a spurious warning, as all the values of the enum are covered by the switch.
+

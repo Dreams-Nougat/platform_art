@@ -17,6 +17,23 @@ UUID: 39d588cf_28dbcde6
 Bytes: 128
 I think its cleaner to not have ref here otherwise it isn't clear that it is modifying a dereferenced value when do imt_ref = x.
 
+4809:10-4809:16
+Wed Jun 03 08:29:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39d588cf_28dbcde6
+UUID: d9ae2c65_602c8ed3
+Bytes: 455
+out_imt is an array of ArtMethod. So you can replace auto with ArtMethod.
+
+Also, I actually don't think the array computation that we might think we're saving is worth the hassle. Which leads me to finding the code below more understandable than using auto**:
+
+ArtMethod* existing = out_imt[imt_index];
+if (existing == unimplemted_method) {
+  out_imt[imt_index] = method;
+} else if (existing != conflict_method) {
+  out_imt[imt_index] = conflict_method;
+}
+
 4977
 Tue Jun 02 23:04:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -54,6 +71,16 @@ Parent: b9a97860_45696aa1
 UUID: b97b38ac_5772675e
 Bytes: 21
 Common for iterators.
+
+5011:44-5011:46
+Wed Jun 03 08:29:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b97b38ac_5772675e
+UUID: d9ae2c65_c0ff82a1
+Bytes: 147
+Common where? We have 4 instances in runtime/ and 3 in compiler/. (I include the crazy &**this).
+
+Surely, we have worked around it in other places.
 
 File: runtime/stride_iterator.h
 

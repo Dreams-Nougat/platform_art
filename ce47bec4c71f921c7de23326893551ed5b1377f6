@@ -1,5 +1,41 @@
 Revision: ce47bec4c71f921c7de23326893551ed5b1377f6
 Patch-set: 1
+File: runtime/arch/arm/context_arm.h
+
+48:7-48:14
+Thu Jun 04 08:55:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9ec18cf_964652d0
+Bytes: 128
+Not sure about the abstraction here. Isn't it really SetArtMethod?
+
+SetArg0 seems like there is a generic ABI for all platforms.
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+645:0-645:31
+Thu Jun 04 08:55:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9f1cca3_97c76e85
+Bytes: 84
+How about if (IsSingleFrameDeopt()) { ...
+
+Then you wouldn't need the comment below.
+
+657:0-659:57
+Thu Jun 04 08:55:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99fbd485_b5a4223f
+Bytes: 80
+This is very scary. Why is there an alloca? Why can't the deopt_frame be enough?
+
+669:8-669:38
+Thu Jun 04 08:55:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99fbd485_95a1262f
+Bytes: 28
+Do you plan on keeping this?
+
 File: runtime/quick_exception_handler.cc
 
 326:0-326:69
@@ -8,6 +44,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d96c6c17_71790ff4
 Bytes: 111
 Can probably be unified with the full-deopt visitor, but for quick changes and so on it seemed easier this way.
+
+326:0-326:69
+Thu Jun 04 08:55:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d96c6c17_71790ff4
+UUID: d9f1cca3_d7d1f641
+Bytes: 68
+I don't think it's too crazy thinking to unify it before submitting?
 
 533:0-536:6
 Thu Jun 04 03:44:00 2015 +0000

@@ -11,6 +11,16 @@ Not sure about the abstraction here. Isn't it really SetArtMethod?
 
 SetArg0 seems like there is a generic ABI for all platforms.
 
+48:7-48:14
+Thu Jun 04 14:54:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec18cf_964652d0
+UUID: f955b039_76c0e9be
+Bytes: 286
+Context doesn't know what registers are ABI and supposed to hold methods and so on, so I let the QuickExceptionHandler know and handle it.
+
+And yes, SetArg0 is generic - as the register is platform-dependent and it would be the Context's job (or something else arch-specific) to map it.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 645:0-645:31
@@ -22,6 +32,14 @@ How about if (IsSingleFrameDeopt()) { ...
 
 Then you wouldn't need the comment below.
 
+645:0-645:31
+Thu Jun 04 14:54:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9f1cca3_97c76e85
+UUID: d96c6c17_0c9d20b6
+Bytes: 124
+So if (IsSingleFrameDeopt(self)) or something like that? I don't think it makes sense to do IsSingleFrameDeopt(deopt_frame).
+
 657:0-659:57
 Thu Jun 04 08:55:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -29,12 +47,28 @@ UUID: 99fbd485_b5a4223f
 Bytes: 80
 This is very scary. Why is there an alloca? Why can't the deopt_frame be enough?
 
+657:0-659:57
+Thu Jun 04 14:54:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99fbd485_b5a4223f
+UUID: f955b039_36b6717c
+Bytes: 177
+Because that's how normal interpreter transitions look like. I don't think this is technically required, but it felt the right thing to move back to a unified stack after deopt.
+
 669:8-669:38
 Thu Jun 04 08:55:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99fbd485_95a1262f
 Bytes: 28
 Do you plan on keeping this?
+
+669:8-669:38
+Thu Jun 04 14:54:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99fbd485_95a1262f
+UUID: f923f0e9_7692bedb
+Bytes: 115
+Yes, except if you think that it should be part of VLOG(deopt) (which currently only dumps the stack before deopt).
 
 File: runtime/quick_exception_handler.cc
 
@@ -52,6 +86,14 @@ Parent: d96c6c17_71790ff4
 UUID: d9f1cca3_d7d1f641
 Bytes: 68
 I don't think it's too crazy thinking to unify it before submitting?
+
+326:0-326:69
+Thu Jun 04 14:54:40 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9f1cca3_d7d1f641
+UUID: d96c6c17_6c7934f4
+Bytes: 103
+As mentioned, this is early work and more for people to look at and give early critique than review it.
 
 533:0-536:6
 Thu Jun 04 03:44:00 2015 +0000

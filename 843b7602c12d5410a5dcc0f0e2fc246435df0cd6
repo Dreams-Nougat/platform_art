@@ -9,6 +9,14 @@ UUID: b9a97860_c5a55a03
 Bytes: 205
 Please expand the comment saying that it's for a phi that is not associated to any vref. On the other hand, maybe an invalid index in the HPhi class is better? Or a constructor that does not take an index?
 
+25:0-25:62
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a97860_c5a55a03
+UUID: 99a8345d_79b0cb4e
+Bytes: 120
+I noticed there is a kNoRegNumber in nodes.h and I'm using that one. Also added a comment when we new the synthetic phi.
+
 305:0-310:7
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,12 +26,30 @@ Don't you know it's the first block? Could it make sense to declare the iterator
 
 then you wouldn't need this check in the loop.
 
+305:0-310:7
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_84f1a60f
+UUID: b97b38ac_3e5a287c
+Bytes: 167
+Turned out HBlocksInLoopIterator doesn't guarantee header to be the first block returned. I added a HBlocksInLoopReversePostOrderIterator. Then did what you suggested.
+
 347:0-347:46
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9a97860_a59cdeba
 Bytes: 106
 Can that only happen with what you're just adding? Should you dcheck that this is the phi you synthesized?
+
+347:0-347:46
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a97860_a59cdeba
+UUID: 39d588cf_e229663d
+Bytes: 583
+This is Finder phase so the phi hasn't been added yet. In theory this may happen e.g. for nested loops. The outer loop finds one array and adds deoptimization (thus the phi for array length) for it already so the inner loop should just skip it. However right now, outer loop won't pick up the arrays inside inner loop since the inner loop body doesn't dominate outer loop's back edge.
+
+I added a DCHECK(!length_value->IsPhi()); before the if statement and it didn't catch anything. Still it's on the safe side to skip collecting those arrays just in case there are really such cases.
 
 625:0-625:81
 Tue Jun 02 11:32:30 2015 +0000
@@ -38,12 +64,35 @@ Where foo() does not dominate the pre-header.
 
 So in most situations, I guess we are not going to add deoptimization for non-constant checks in the for.
 
+625:0-625:81
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_29dd2952
+UUID: b97b38ac_d44af5a3
+Bytes: 304
+for (int a = foo(); a < 42; a++) is ok since a=foo() is actually in the loop pre-header.
+
+This covers case like:
+  for (int a = 10; a >= foo(); a--) array[a] = 1;
+since we can't add deopt like
+if (foo() < 0) deopt() in the loop pre-header since we can't move foo() to pre-header.
+
+I'll add some comments.
+
 656:0-656:57
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99a8345d_27dd5452
 Bytes: 71
 dcheck that it is the pre header of the loop information of the header?
+
+656:0-656:57
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_27dd5452
+UUID: 59d23ce8_de26826b
+Bytes: 4
+Done
 
 669:0-669:31
 Tue Jun 02 11:32:30 2015 +0000
@@ -52,12 +101,32 @@ UUID: b9a97860_854d22bf
 Bytes: 45
 Maybe DCHECK that the check cannot be proven?
 
+669:0-669:31
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a97860_854d22bf
+UUID: d96c6c17_7d03a87b
+Bytes: 223
+I added a test that if the test can be proven, such as between constants, we can totally skip the loop body entry test.
+
+I didn't do the DCHECK() to make sure this call is necessary though. It seems a little too repetitive.
+
 723:0-729:5
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9ae2c65_e963910b
 Bytes: 106
 Maybe add a helper (eg CanBeMovedToLoopPreHeader) for this and share it with CanAddDeoptimizationConstant?
+
+723:0-729:5
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_e963910b
+UUID: b97b38ac_3726cbf1
+Bytes: 180
+I'll move the value-before-header tests before we do Finder to quickly skip such cases.
+
+I don't do CanBeMovedToLoopPreHeader check though. I assume licm has already done its part.
 
 731:9-731:44
 Tue Jun 02 11:32:30 2015 +0000
@@ -73,6 +142,16 @@ UUID: 99a8345d_070ff86a
 Bytes: 35
 what's the meaning of "right" here?
 
+731:54-731:59
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_070ff86a
+UUID: 59d23ce8_7e60b62d
+Bytes: 444
+I'll use "correct". array_length_in_loop_body_if_needed will hold the correct array.length value inside the loop body. But array_length_in_loop_body_if_needed will be always 0 if the loop body isn't entered so it would be wrong to use array_length_in_loop_body_if_needed as array.length in the loop header if the loop isn't entered.
+
+I'll move the comments containing array_length_in_loop_body_if_needed earlier so it comes before this comment.
+
 736:71-736:83
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -86,6 +165,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9ae2c65_2939a901
 Bytes: 38
 loop header already -> the loop header
+
+736:71-736:83
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_c94d7590
+UUID: d9ae2c65_60532e41
+Bytes: 4
+Done
 
 737:44-737:80
 Tue Jun 02 11:32:30 2015 +0000
@@ -101,12 +188,38 @@ UUID: 99a8345d_e7f5fcc3
 Bytes: 22
 in loop -> in the loop
 
+737:25-737:33
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_e7f5fcc3
+UUID: 39d588cf_45471cce
+Bytes: 4
+Done
+
+737:44-737:80
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a97860_482c1fd3
+UUID: b97b38ac_f7c0531f
+Bytes: 332
+As explained above. I also added some debug check to make sure phi's use is dominated by array_length inside the loop body.
+
+Some uses are not officially in the loop since some can be on the exit edge (like a return block) and won't be considered as part of the loop. Still the use is safe since it's after the loop body is entered.
+
 809:0-810:45
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99a8345d_8702083b
 Bytes: 9
 One line?
+
+809:0-810:45
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_8702083b
+UUID: 39d588cf_a8057d4b
+Bytes: 59
+Looks close to that red line on the right. Let me try it :)
 
 812:0-820:38
 Tue Jun 02 11:32:30 2015 +0000
@@ -115,12 +228,28 @@ UUID: d9ae2c65_e94ab175
 Bytes: 32
 Please add comments around this.
 
+812:0-820:38
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_e94ab175
+UUID: 59d23ce8_60d1f0c4
+Bytes: 4
+Done
+
 904:0-904:49
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9ae2c65_e991515b
 Bytes: 69
 This comes a bit late. How about making this comment a top-level one?
+
+904:0-904:49
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_e991515b
+UUID: 39d588cf_e83dc59b
+Bytes: 94
+I'll move it before the very first mention of deopt-based loop bce to set the context earlier.
 
 941:68-941:73
 Tue Jun 02 11:32:30 2015 +0000
@@ -129,12 +258,28 @@ UUID: 99a8345d_8719a8ac
 Bytes: 7
 a legal
 
+941:68-941:73
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_8719a8ac
+UUID: d9ae2c65_8058aa5c
+Bytes: 4
+Done
+
 1287:41-1287:76
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99a8345d_a7162478
 Bytes: 18
 Nit: one per line?
+
+1287:41-1287:76
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_a7162478
+UUID: 39d588cf_486ad113
+Bytes: 4
+Done
 
 1291:0-1292:44
 Tue Jun 02 11:32:30 2015 +0000
@@ -143,10 +288,26 @@ UUID: 99a8345d_4753b040
 Bytes: 20
 Please add comments.
 
+1291:0-1292:44
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99a8345d_4753b040
+UUID: 39d588cf_480651d3
+Bytes: 4
+Done
+
 1721:0-1725:35
 Tue Jun 02 11:32:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9a97860_a816f377
 Bytes: 107
 Instead of making this a state, it might make sense for this pass to control the iteration over the blocks.
+
+1721:0-1725:35
+Thu Jun 04 20:14:38 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a97860_a816f377
+UUID: 39d588cf_933a2ef8
+Bytes: 132
+GetReversePostOrder() is read only and returns constant so it's kind of difficult to control it myself. I'll just leave it this way.
 

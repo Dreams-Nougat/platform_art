@@ -1,0 +1,31 @@
+Revision: 470d0d77d231c7673eacd1da7a1a2ccd6978bf9c
+Patch-set: 5
+File: runtime/debugger.cc
+
+4085:2-4090:34
+Thu Jun 04 09:32:45 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99fbd485_d5d72e64
+Bytes: 140
+The reply must be sent *only* if the debugger is still attached. If it detached in the middle of the invoke, we just need to skip the reply.
+
+File: runtime/thread.cc
+
+2488:2-2488:33
+Thu Jun 04 09:32:45 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99fbd485_f5da2a8e
+Bytes: 98
+Remove: it's no longer true. The debugger may have detached in the middle of the method execution.
+
+File: runtime/thread_list.cc
+
+883:2-890:3
+Thu Jun 04 09:32:45 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9f1cca3_373afaf9
+Bytes: 409
+I don't think the thread must suspend itself again if the debugger detached before returning from the requested method invoke. Otherwise, who would resume us?
+
+When the debugger detached, it already cancelled all debugger suspensions. We (the current thread) have been resumed by the JDWP thread to execute a method. But if the debugger detached before we get to this point, we must not suspend ourself again.
+

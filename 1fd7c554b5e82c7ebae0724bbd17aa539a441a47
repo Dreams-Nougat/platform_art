@@ -9,6 +9,14 @@ UUID: b9a97860_71dd438c
 Bytes: 15
 Nit: long line.
 
+9:0-9:74
+Thu Jun 04 10:43:55 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a97860_71dd438c
+UUID: b9ec18cf_36795ef5
+Bytes: 4
+Done
+
 File: compiler/optimizing/inliner.cc
 
 79:12-79:41
@@ -17,6 +25,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9ae2c65_edf876be
 Bytes: 31
 Maybe move this into ArtMethod?
+
+79:12-79:41
+Thu Jun 04 10:43:55 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_edf876be
+UUID: d9f1cca3_7734820a
+Bytes: 107
+It's only really useful to a compiler/optimizer. We can think of moving it if the runtime sees a use of it.
 
 File: compiler/optimizing/optimizing_compiler.cc
 
@@ -28,6 +44,14 @@ Bytes: 233
 did you notice a regression on the null check and type check instruction? We record this stats and it's easy to see the diff.
 
 Would also be interested to see if we would gain anything consistent if we run it again after the inliner.
+
+347:5-347:21
+Thu Jun 04 10:43:55 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_2d268ef1
+UUID: d9f1cca3_97abee5d
+Bytes: 192
+Good point. There was a regression for the number of checkcast, I suspect due to running it before the inliner. I now do another run, and we remove more null checks and checkcasts than before.
 
 File: compiler/optimizing/reference_type_propagation.cc
 
@@ -46,4 +70,12 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9ae2c65_ad027e3a
 Bytes: 49
 Why not "instruction_simplifier_after_types" too?
+
+30:40-30:51
+Thu Jun 04 10:43:55 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9ae2c65_ad027e3a
+UUID: b9ec18cf_d69c5abc
+Bytes: 102
+Because this is known non null at build time. The first first simplier wil lget rid of the null check.
 

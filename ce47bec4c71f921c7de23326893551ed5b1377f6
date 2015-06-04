@@ -21,6 +21,16 @@ Context doesn't know what registers are ABI and supposed to hold methods and so 
 
 And yes, SetArg0 is generic - as the register is platform-dependent and it would be the Context's job (or something else arch-specific) to map it.
 
+48:7-48:14
+Thu Jun 04 15:36:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f955b039_76c0e9be
+UUID: d9f1cca3_e2826e82
+Bytes: 188
+Yeah, but was is arg0 really? Is that the c++ abi arg0? the art abi arg0? But then the actual argument or the method?
+
+Hence the suggestion to use SetArtMethod which makes it pretty clear.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 645:0-645:31
@@ -40,6 +50,14 @@ UUID: d96c6c17_0c9d20b6
 Bytes: 124
 So if (IsSingleFrameDeopt(self)) or something like that? I don't think it makes sense to do IsSingleFrameDeopt(deopt_frame).
 
+645:0-645:31
+Thu Jun 04 15:36:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d96c6c17_0c9d20b6
+UUID: 99fbd485_7bd10bc5
+Bytes: 102
+Oh I didn't realize the deopt frame was on the thread, I though it was on this object. Nevermind then.
+
 657:0-659:57
 Thu Jun 04 08:55:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -55,6 +73,14 @@ UUID: f955b039_36b6717c
 Bytes: 177
 Because that's how normal interpreter transitions look like. I don't think this is technically required, but it felt the right thing to move back to a unified stack after deopt.
 
+657:0-659:57
+Thu Jun 04 15:36:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f955b039_36b6717c
+UUID: d9f1cca3_826d6a7f
+Bytes: 146
+I understand the unified statement, it's more the magic that you're pushing the frame on the C stack. But I can see it'd done below, so nevermind.
+
 669:8-669:38
 Thu Jun 04 08:55:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,6 +95,14 @@ Parent: 99fbd485_95a1262f
 UUID: f923f0e9_7692bedb
 Bytes: 115
 Yes, except if you think that it should be part of VLOG(deopt) (which currently only dumps the stack before deopt).
+
+669:8-669:38
+Thu Jun 04 15:36:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f923f0e9_7692bedb
+UUID: d9f1cca3_a273465e
+Bytes: 41
+Yeah, I think VLOG(deopt) is good enough.
 
 File: runtime/quick_exception_handler.cc
 

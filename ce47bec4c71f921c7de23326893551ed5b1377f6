@@ -1,0 +1,34 @@
+Revision: ce47bec4c71f921c7de23326893551ed5b1377f6
+Patch-set: 1
+File: runtime/quick_exception_handler.cc
+
+326:0-326:69
+Thu Jun 04 03:44:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d96c6c17_71790ff4
+Bytes: 111
+Can probably be unified with the full-deopt visitor, but for quick changes and so on it seemed easier this way.
+
+533:0-536:6
+Thu Jun 04 03:44:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d96c6c17_31a037ef
+Bytes: 181
+Alternative for this is another entrypoint that "wraps" the interpreter bridge and does the stack update transparently (so is a nop for arm). Or just not re-use the bridge at all...
+
+600:2-602:3
+Thu Jun 04 03:44:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d96c6c17_119d3bb6
+Bytes: 86
+Could have delegated this further, but it seemed to weird to have "smash_except_arg0."
+
+File: runtime/quick_exception_handler.h
+
+91:0-93:91
+Thu Jun 04 03:44:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f955b039_16ec0d04
+Bytes: 164
+This is special-purposed because it's only for debugging - I didn't want to play in the regular StackDumpVisitor which is quite heavyweight (for lock dumping etc.).
+

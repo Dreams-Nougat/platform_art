@@ -9,6 +9,14 @@ UUID: 30375a6d_359408bb
 Bytes: 16
 Why this change?
 
+116:33-116:41
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_359408bb
+UUID: 90fd66eb_1c3f9587
+Bytes: 42
+Fixes a warning about an initialized field
+
 File: runtime/dex_instruction-inl.h
 
 458:52-458:66
@@ -62,6 +70,16 @@ My point is the only difference between an invoke-lambda and other invoke-XXX in
 However, I still recommend having vA=args count, vB=closure register index and [vC,...,vG]=args because it also adheres to how the verifier checks invoke arguments (see line 864 of https://android.googlesource.com/platform/art/+/master/runtime/verifier/method_verifier.cc).
 
 For the verification itself, you definitely need to know the method index. The create-lambda already has it so I wonder if we can rely on its existence right before the invoke-lambda? Otherwise, you'll need to add it in the invoke-lambda and the format would become vA=args count, vB=method index, [vC,...,VG]=args *always with* vC=closure register index
+
+465:10-465:12
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_950cf4f0
+UUID: 300cbaed_39042fcf
+Bytes: 510
+Thanks for the recommendation, I will definitely go ahead and change the format as you suggested (not sure about whether it needs a method index yet). That is a very helpful insight.
+
+Is it ok if I fix it in a later CL once I'm adding verification support, and for the time being leave in a TODO here with your suggestion? It's a bit of a large change to do it now because smali already has all the support, plus I'm not actually 100% sure if we'll need the method id (or for example a class id) at this point.
 
 File: runtime/dex_instruction_list.h
 
@@ -159,6 +177,14 @@ UUID: 90e3a61e_a0754278
 Bytes: 117
 Beware https://android-review.googlesource.com/148090 where ArtMethod is no longer a Java object but a native object.
 
+177:5-177:77
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90e3a61e_a0754278
+UUID: 90fd66eb_bcc8212a
+Bytes: 92
+Yep, thanks for bringing that up. I think the unit tests will just fail at that point right?
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 2405:4-2405:27
@@ -187,6 +213,16 @@ The idea behind this "update" was to being able to attach a debugger at any time
 Can CREATE_LAMBDA cause method invocation? If yes, this probably needs to stay.
 
 You can take a look at the definitions of these alternative handlers (below, at the end of this method) with macro INSTRUMENTATION_INSTRUCTION_HANDLER. And you can take a look at Instrumentation::IsActive.
+
+2405:4-2405:27
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30375a6d_55166cfc
+UUID: 90fd66eb_1c9795c2
+Bytes: 124
+Removed UPDATE_HANDLER_TABLE.
+
+create-lambda cannot cause a method invocation. However invoke-lambda can so I left it there.
 
 File: runtime/stack.h
 

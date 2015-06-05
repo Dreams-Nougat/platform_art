@@ -161,6 +161,14 @@ UUID: cd43c57f_85e10150
 Bytes: 53
 Is it just this part that's wrong, or the whole todo?
 
+290:63-290:79
+Fri Jun 05 09:39:04 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd43c57f_85e10150
+UUID: f9b130f2_dae4a1a6
+Bytes: 258
+Andreas is right, I forgot about that. To improve interpreter performance, we'd like to get rid of the extra reference array as much as possible to avoid the double-store. In this case, we'd still need to know whether the shadow has a reference array or not.
+
 306:4-306:44
 Thu May 07 01:00:18 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -200,6 +208,14 @@ UUID: 2d338121_16640aca
 Bytes: 84
 Ok, well it's either that or we delete this function altogether because it's unused.
 
+2361:6-2361:39
+Fri Jun 05 09:39:04 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d338121_16640aca
+UUID: f9b130f2_fae16593
+Bytes: 42
+If the function is unused, just remove it.
+
 File: runtime/verifier/method_verifier.cc
 
 1977
@@ -234,6 +250,18 @@ Well I'm in the process of implementing these, so I just put the CHECK in here t
 BAD_CLASS_HARD seemed more appropriate for true unused opcodes.
 
 I can just change it to do a fall through if that's what you would rather have.
+
+2865:6-2865:64
+Fri Jun 05 09:39:04 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd43c57f_459259a7
+UUID: f9b130f2_1aee1984
+Bytes: 141
+Note you could replace the CHECK(false) by 
+
+  UNIMPLEMENTED(FATAL) << "Implement opcodes for lambdas"
+
+which I find even more explicit here.
 
 File: runtime/verifier/method_verifier.h
 

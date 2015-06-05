@@ -9,6 +9,14 @@ UUID: d9df0c22_be0519c7
 Bytes: 144
 These log statements are probably too spammy, you can use verbose logging like VLOG(heap) so that it only prints if the verbose flag is enabled.
 
+131:11-131:12
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9df0c22_be0519c7
+UUID: 99e914d2_e51c6c75
+Bytes: 4
+Done
+
 File: runtime/debugger.h
 
 209:22-209:43
@@ -18,12 +26,28 @@ UUID: 19d6040d_80d636bc
 Bytes: 109
 The ArtMethods are no longer in java heap, mutator lock is probably not required for most of these functions.
 
+209:22-209:43
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19d6040d_80d636bc
+UUID: d9df0c22_e7cab03c
+Bytes: 4
+Done
+
 274:7-274:40
 Fri Jun 05 00:33:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 19d6040d_4087cee9
 Bytes: 65
 Should be HashAllocRecordStackTraceElement to follow style guide.
+
+274:7-274:40
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19d6040d_4087cee9
+UUID: d9df0c22_07c87c42
+Bytes: 4
+Done
 
 281:7-281:33
 Fri Jun 05 00:33:28 2015 +0000
@@ -32,12 +56,28 @@ UUID: 19d6040d_40418eeb
 Bytes: 16
 Style here also.
 
+281:7-281:33
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19d6040d_40418eeb
+UUID: 19d6040d_064b1ea9
+Bytes: 4
+Done
+
 336:24-336:25
 Fri Jun 05 00:33:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99e914d2_bc63610c
 Bytes: 98
 We have something called STLDeleteValues which does this, you can call STLDeleteValues(&entries_);
+
+336:24-336:25
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99e914d2_bc63610c
+UUID: d9df0c22_27f49883
+Bytes: 4
+Done
 
 348:24-348:30
 Fri Jun 05 00:33:28 2015 +0000
@@ -46,6 +86,15 @@ UUID: 99e914d2_dc190dac
 Bytes: 95
 Can we create a SafeMap somewhere so that the run time is faster if there is a lot of entries_.
 
+348:24-348:30
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99e914d2_dc190dac
+UUID: d9df0c22_47f9a47a
+Bytes: 44
+Done.
+This method is unused and now removed.
+
 361:6-361:30
 Fri Jun 05 00:33:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,12 +102,28 @@ UUID: d9df0c22_7ec0f1be
 Bytes: 82
 Things which don't modify the entries array could maybe use SHARED_LOCKS_REQUIRED?
 
+361:6-361:30
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9df0c22_7ec0f1be
+UUID: 19d6040d_29b7152a
+Bytes: 4
+Done
+
 403:62-403:63
 Fri Jun 05 00:33:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99e914d2_5c209da3
 Bytes: 62
 is this supposed to be GUARDED_BY(Locks::alloc_tracker_lock_)?
+
+403:62-403:63
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99e914d2_5c209da3
+UUID: d9df0c22_67eea0b3
+Bytes: 4
+Done
 
 File: runtime/hprof/hprof.cc
 
@@ -68,6 +133,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 19d6040d_209baa52
 Bytes: 100
 This may cause conflict on 64 bits if two pointers have same low 32 bits but different high 32 bits.
+
+196:10-196:31
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19d6040d_209baa52
+UUID: 99e914d2_252654c3
+Bytes: 101
+Yes, but many places already use PointerToLowMemUInt32() for IDs, such as for class ID and object ID.
 
 File: runtime/runtime.cc
 
@@ -93,4 +166,12 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 19d6040d_003b06a7
 Bytes: 83
 PT_GUARDED_BY seems to just be an empty macro, does the normal GUARDED_BY not work?
+
+646:40-646:59
+Fri Jun 05 06:19:04 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19d6040d_003b06a7
+UUID: 99e914d2_051a3876
+Bytes: 4
+Done
 

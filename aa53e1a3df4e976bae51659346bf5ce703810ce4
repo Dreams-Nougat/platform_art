@@ -81,6 +81,18 @@ Thanks for the recommendation, I will definitely go ahead and change the format 
 
 Is it ok if I fix it in a later CL once I'm adding verification support, and for the time being leave in a TODO here with your suggestion? It's a bit of a large change to do it now because smali already has all the support, plus I'm not actually 100% sure if we'll need the method id (or for example a class id) at this point.
 
+465:10-465:12
+Fri Jun 05 09:39:04 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 300cbaed_39042fcf
+UUID: 39b828d4_1c637993
+Bytes: 579
+If you change that in a later CL, please mention it in the commit message so it's obvious this is only a first part.
+
+I'd prefer we do not leave a "temp" DEX format in the code to avoid anyone from using it while the lambda support is not complete yet (at least interpreter and verifier). But if it makes your life easier then go for it.
+
+I think we should have a flag (kEnableLambdaOpcodes?) saying whether lambda support is enabled. It would remain false until the support is complete. You would only set it to true locally (and never merge it) to continue your work. Opinions?
+
 File: runtime/dex_instruction_list.h
 
 265:92-265:103
@@ -185,6 +197,14 @@ UUID: 90fd66eb_bcc8212a
 Bytes: 92
 Yep, thanks for bringing that up. I think the unit tests will just fail at that point right?
 
+177:5-177:77
+Fri Jun 05 09:39:04 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fd66eb_bcc8212a
+UUID: 39b828d4_3c04bd1c
+Bytes: 136
+I believe so. You will have a *native* object in the shadow frame which has no sense. Plus the GC will crash when visiting that pointer.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 2405:4-2405:27
@@ -223,6 +243,14 @@ Bytes: 124
 Removed UPDATE_HANDLER_TABLE.
 
 create-lambda cannot cause a method invocation. However invoke-lambda can so I left it there.
+
+2405:4-2405:27
+Fri Jun 05 09:39:04 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90fd66eb_1c9795c2
+UUID: 19afe490_1b045f85
+Bytes: 4
+SGTM
 
 File: runtime/stack.h
 

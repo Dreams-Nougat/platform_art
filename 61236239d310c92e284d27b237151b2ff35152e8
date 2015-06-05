@@ -1,0 +1,96 @@
+Revision: 61236239d310c92e284d27b237151b2ff35152e8
+Patch-set: 2
+File: runtime/debugger.cc
+
+131:11-131:12
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9df0c22_be0519c7
+Bytes: 144
+These log statements are probably too spammy, you can use verbose logging like VLOG(heap) so that it only prints if the verbose flag is enabled.
+
+File: runtime/debugger.h
+
+209:22-209:43
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19d6040d_80d636bc
+Bytes: 109
+The ArtMethods are no longer in java heap, mutator lock is probably not required for most of these functions.
+
+274:7-274:40
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19d6040d_4087cee9
+Bytes: 65
+Should be HashAllocRecordStackTraceElement to follow style guide.
+
+281:7-281:33
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19d6040d_40418eeb
+Bytes: 16
+Style here also.
+
+336:24-336:25
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99e914d2_bc63610c
+Bytes: 98
+We have something called STLDeleteValues which does this, you can call STLDeleteValues(&entries_);
+
+348:24-348:30
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99e914d2_dc190dac
+Bytes: 95
+Can we create a SafeMap somewhere so that the run time is faster if there is a lot of entries_.
+
+361:6-361:30
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9df0c22_7ec0f1be
+Bytes: 82
+Things which don't modify the entries array could maybe use SHARED_LOCKS_REQUIRED?
+
+403:62-403:63
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99e914d2_5c209da3
+Bytes: 62
+is this supposed to be GUARDED_BY(Locks::alloc_tracker_lock_)?
+
+File: runtime/hprof/hprof.cc
+
+196:10-196:31
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19d6040d_209baa52
+Bytes: 100
+This may cause conflict on 64 bits if two pointers have same low 32 bits but different high 32 bits.
+
+File: runtime/runtime.cc
+
+408:2-408:27
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19d6040d_404fce0a
+Bytes: 192
+I think there is a race condition here since there may be objects allocated after the GC is done marking which will not be marked according to the visitor callback, see DisallowNewSystemWeaks.
+
+File: runtime/runtime.h
+
+645:7-645:30
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9df0c22_3ea0297c
+Bytes: 91
+I think we should maybe move the alloc tracking logic into the Heap instead of the Runtime.
+
+646:40-646:59
+Fri Jun 05 00:33:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19d6040d_003b06a7
+Bytes: 83
+PT_GUARDED_BY seems to just be an empty macro, does the normal GUARDED_BY not work?
+

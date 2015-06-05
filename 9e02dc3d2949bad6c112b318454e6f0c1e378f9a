@@ -9,12 +9,28 @@ UUID: cd24a5a6_c2a8cf86
 Bytes: 194
 To play advocatus diaboli, this will slow down compilation for all backends, as now everything has to first scan all instructions and compare against this list. Do you have performance for this?
 
+426:0-429:2
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_c2a8cf86
+UUID: 59595c72_9d504758
+Bytes: 155
+No performance numbers for this. This is just a temporary solution though until we can get compiler support, we won't be shipping a release this way as-is.
+
 431:28-431:31
 Thu May 07 00:01:27 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cd24a5a6_c7a8e186
 Bytes: 40
 Nope. We're going with null in comments.
+
+431:28-431:31
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_c7a8e186
+UUID: 7948e0a0_fe121d0d
+Bytes: 4
+Done
 
 File: compiler/dex/verified_method.h
 
@@ -25,6 +41,14 @@ UUID: 4d8435cc_1ff2bce6
 Bytes: 103
 Cleanup maybe in a separate CL? That way that can be merged immediately. But not a strong preference...
 
+123:2-123:42
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d8435cc_1ff2bce6
+UUID: 395ca863_3f3acff9
+Bytes: 65
+SGTM, I'll separate cleanup in CLs going forward (in future CLs).
+
 File: runtime/dex_instruction-inl.h
 
 479:11-479:18
@@ -33,6 +57,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cd24a5a6_02afe710
 Bytes: 25
 Coding style is reg_list.
+
+479:11-479:18
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_02afe710
+UUID: 7948e0a0_9e73195f
+Bytes: 63
+I'm surprised lint didn't catch that, is this a common mistake?
 
 File: runtime/dex_instruction.cc
 
@@ -43,12 +75,28 @@ UUID: cd24a5a6_029807ef
 Bytes: 10
 Long line.
 
+230:100-230:114
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_029807ef
+UUID: ad3e91ea_d0f105e3
+Bytes: 88
+Its the same as above, do you want me to change this entire function to obey line limit?
+
 333:6-333:27
 Thu May 07 00:36:23 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d1e2d58_1556fc2e
 Bytes: 78
 Why is fall-through intended here? Seems more like LOG(FATAL) ; UNREACHABLE();
+
+333:6-333:27
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d1e2d58_1556fc2e
+UUID: ad3e91ea_705c715a
+Bytes: 71
+Right, I think I just want to do a default case here '%s v%d, thing@%d"
 
 File: runtime/mirror/class-inl.h
 
@@ -84,12 +132,34 @@ UUID: 8d1e2d58_f5b140c1
 Bytes: 1
 ?
 
+149:5-150:29
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d1e2d58_f5b140c1
+UUID: cd43c57f_c5394952
+Bytes: 723
+Basically GetVregReference can return a non-null pointer if the vreg is a reference..right?
+
+Except that on non-moving collectors, they don't bother updating the vreg references part of the array ever, so it could return some pointer looking thing even though that current vreg only holds a plain old primitive.
+
+On the other hand on moving collectors the vreg references array section are always updated , since when an object gets moved the pointer would otherwise point to not-valid memory. So it needs to update.
+
+Anyway, this is just a comment to explain *why* you have to do this weird check of "GetVreg == GetVregReference" every time you use this function. Please let me know if I should reword it to be more clear.
+
 290:63-290:79
 Thu May 07 01:00:18 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cd24a5a6_8292d7a4
 Bytes: 66
 Not necessarily. The goal was to not use a reference array, but...
+
+290:63-290:79
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_8292d7a4
+UUID: cd43c57f_85e10150
+Bytes: 53
+Is it just this part that's wrong, or the whole todo?
 
 306:4-306:44
 Thu May 07 01:00:18 2015 +0000
@@ -105,6 +175,14 @@ UUID: 8d1e2d58_b54f4848
 Bytes: 15
 Lines too long.
 
+318:0-321:101
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d1e2d58_b54f4848
+UUID: 7948e0a0_7e928ddb
+Bytes: 127
+Wasn't sure what the right indentation was for comments overflowing (google3 style guide doesn't say), please advise in next PS
+
 File: runtime/thread.cc
 
 2361:6-2361:39
@@ -113,6 +191,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d8435cc_7d1990ad
 Bytes: 82
 Separate cleanup. And it was put that way because it seems to be the style here...
+
+2361:6-2361:39
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d8435cc_7d1990ad
+UUID: 2d338121_16640aca
+Bytes: 84
+Ok, well it's either that or we delete this function altogether because it's unused.
 
 File: runtime/verifier/method_verifier.cc
 
@@ -137,6 +223,18 @@ UUID: cd24a5a6_24fb10bb
 Bytes: 126
 Why is this a CHECK at this point? The conservative behavior is the BAD_CLASS_HARD below until you actually use those opcodes.
 
+2865:6-2865:64
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd24a5a6_24fb10bb
+UUID: cd43c57f_459259a7
+Bytes: 287
+Well I'm in the process of implementing these, so I just put the CHECK in here to quickly crash it to remind me to finish implementing them. 
+
+BAD_CLASS_HARD seemed more appropriate for true unused opcodes.
+
+I can just change it to do a fall through if that's what you would rather have.
+
 File: runtime/verifier/method_verifier.h
 
 81:0-83:73
@@ -145,6 +243,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d1e2d58_b5c86828
 Bytes: 100
 Please put a note here why this is necessary. This should be removed once you have verifier support.
+
+81:0-83:73
+Fri Jun 05 01:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d1e2d58_b5c86828
+UUID: 395ca863_dff8f343
+Bytes: 4
+Done
 
 File: test/955-lambda-smali/smali/SanityCheck.smali
 

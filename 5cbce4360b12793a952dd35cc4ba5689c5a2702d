@@ -1,0 +1,47 @@
+Revision: 5cbce4360b12793a952dd35cc4ba5689c5a2702d
+Patch-set: 7
+File: runtime/debugger.cc
+
+4695:28-4695:34
+Mon Jun 08 20:30:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9d9cc70_c80e336d
+Bytes: 83
+Worth adding a comment that we do reverse order to get the most recent allocations?
+
+File: runtime/gc/allocation_record.cc
+
+32:29-32:46
+Mon Jun 08 20:30:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d41838_2d138d14
+Bytes: 43
+Not sure if these really need to be static.
+
+File: runtime/gc/allocation_record.h
+
+232:22-232:37
+Mon Jun 08 20:30:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d41838_8d23a167
+Bytes: 70
+Probably want this to be GcRoot before merging to not break any tests.
+
+File: runtime/gc/heap.cc
+
+3669:6-3669:28
+Mon Jun 08 20:30:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 796b8031_efe42ca6
+Bytes: 143
+Since we only do this when its enabled, we probably want to clear the records when it becomes disabled. Otherwise there will be stale pointers.
+
+File: runtime/hprof/hprof.cc
+
+864:84-864:91
+Mon Jun 08 20:30:28 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9d9cc70_1d747ff3
+Bytes: 136
+If we pass in custom hash and equal functions into std::unordered_map here, we could deduplicate frames and stack traces easily I think.
+

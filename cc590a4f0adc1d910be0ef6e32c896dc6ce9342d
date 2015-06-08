@@ -1,0 +1,166 @@
+Revision: cc590a4f0adc1d910be0ef6e32c896dc6ce9342d
+Patch-set: 7
+File: compiler/optimizing/bounds_check_elimination.cc
+
+338:0-338:39
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_94dbc416
+Bytes: 145
+Having this DCHECK after the if here looks as if we're not sure what is going on. If you want to be on the safe side, I'd just remove the DCHECK.
+
+429:59-429:62
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_74c14821
+Bytes: 22
+woot, python style :-)
+
+522:15-522:35
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_75db88e6
+Bytes: 40
+Isn't that GetLoopHeaderSuccessorInLoop?
+
+536:0-536:62
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_5392e460
+Bytes: 50
+That's redundant with the check above, I'd remove.
+
+537:8-537:73
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_339f6869
+Bytes: 24
+false_successor_in_loop?
+
+541:13-541:73
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_54be4cb1
+Bytes: 21
+ditto for redundancy.
+
+536:0-543:31
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_7544a819
+Bytes: 102
+Change this to:
+
+return false_successor_in_loop ? h_if->IfFalseSccessor() : h_if->IfTrueSccessor();
+
+?
+
+738:0-740:54
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_f4f3189b
+Bytes: 9
+One line?
+
+798:28-798:41
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_d4f81c7a
+Bytes: 12
+transforming
+
+864:6-864:12
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_139c6c70
+Bytes: 9
+DCHECK_EQ
+
+896:73-896:79
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_353e3098
+Bytes: 6
+in the
+
+901:9-901:13
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_153b34a8
+Bytes: 17
+have -> use the ?
+
+934:0-941:5
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_f5c6780d
+Bytes: 70
+Would it be simpler to just DCHECK(CanAddDeoptimzationArrayLength()) ?
+
+956:33-956:38
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_d38cb43f
+Bytes: 9
+the array
+
+977:0-977:83
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_737cc098
+Bytes: 68
+Instead of creating a new one, could you just move the existing one?
+
+998:19-998:41
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_74e828a3
+Bytes: 19
+Can't that be null?
+
+1011:0-1011:63
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_5379c4a6
+Bytes: 59
+Move this to the if? And do the if test based on 'offset' ?
+
+1016:0-1017:53
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_55d88ce7
+Bytes: 9
+One line?
+
+1019:6-1019:85
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_54e52cc7
+Bytes: 26
+Move this in the if above?
+
+1035:0-1036:62
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_34e2b0c1
+Bytes: 34
+Move this to GetFoundArrayLength ?
+
+1072:0-1094:7
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_74af086c
+Bytes: 172
+Isn't the only difference with the code above just two or three variables? (roughly the first two parameters of method methods).
+
+Would it make sense to factorize the code?
+
+File: compiler/optimizing/nodes.h
+
+3374:0-3375:62
+Mon Jun 08 08:59:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_d3039414
+Bytes: 29
+Ins't that in another change?
+

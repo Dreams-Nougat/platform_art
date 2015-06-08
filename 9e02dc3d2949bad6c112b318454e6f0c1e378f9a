@@ -192,6 +192,16 @@ Which would basically happen only for what, static functions that can only call 
 
 I imagine you could do that analysis during quickening.
 
+290:63-290:79
+Mon Jun 08 06:23:57 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9df0c22_f84df1bd
+UUID: 79c9c09b_f352103c
+Bytes: 401
+Not exactly. We use an extra reference array for the GC. We could remove this extra array when the GC knows which registers are references at a certain DEX pc in an interpreter frame (ShadowFrame). Only compiled methods have this information at the moment.
+
+The GC could follow the deoptimization scheme where we run the verifier to know register types for a DEX pc. But it takes a non-trivial time...
+
 306:4-306:44
 Thu May 07 01:00:18 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

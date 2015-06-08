@@ -25,3 +25,17 @@ UUID: 99ce74a2_f73b1a8c
 Bytes: 137
 Ah! But then the long is formed of int and reference, which is clearly bogus :-) whereas int + int could be fine with the interpreter....
 
+11:23-11:25
+Mon Jun 08 15:35:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99ce74a2_f73b1a8c
+UUID: 399bc88e_f019ee38
+Bytes: 603
+Yes, there's a middle ground, though it isn't super feasible because we do have the assumption everywhere except the interpreter...
+
+This code would have passed the verifier (and the compilers in non-debug) before (it's exactly the fuzzed code). So I just extracted that.
+
+About half a year ago we discussed the pair thing in different settings (where fuzzing exposed int+int != long), and everyone agreed that pairs are expected. So while you're right that the spec isn't telling you about it, and the interpreter just works, this seemed the right way to go.
+
+Let's see how many apps this will break...
+

@@ -9,3 +9,13 @@ UUID: b9cfb89d_7596e81d
 Bytes: 124
 Shouldn't that be a LMain$AbstractClass; ? Otherwise the verifier error you get here is that m does not exist on LB21646347;
 
+9:26-9:37
+Mon Jun 08 15:29:30 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9cfb89d_7596e81d
+UUID: 796b8031_9294c24d
+Bytes: 452
+The point here was that Main$AbstractClass.m() is Miranda. So what the verifier did was take the declaring class (the interface), then check the receiver against it. Even though the receiver is of a totally different class, this would pass, as interface checks aren't done at verification time.
+
+So you're basically right, you'll get an error about B21646347 (it's not assignable to AbstractClass), but that is exactly what it's supposed to be testing.
+

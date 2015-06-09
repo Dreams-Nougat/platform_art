@@ -1,0 +1,92 @@
+Revision: 4ba9872c338a50cb852aac50c35b7dca06cce1a1
+Patch-set: 10
+File: /COMMIT_MSG
+
+9:0-9:72
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9d9cc70_0b9d47eb
+Bytes: 31
+This is what we aim in this CL?
+
+10
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 796b8031_494a93fc
+Bytes: 94
+Did we reimplement the ddms recent allocation logic with the new code? If so, mention it here?
+
+File: runtime/debugger.cc
+
+4704:16-4704:47
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 796b8031_69682f6e
+Bytes: 77
+Is it possible to allocate this on the stack and avoid the delete code below?
+
+4802:0-4806:5
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d41838_1d346808
+Bytes: 232
+Does this exist only to delete the empty AllocRecordObjectMap we allocate in line 4704?
+
+If so, maybe we could simplify this by having a bool that indicates we allocated an empty AllocRecordObjectMap and delete it here if it's true?
+
+File: runtime/gc/allocation_record.h
+
+128:24-128:95
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d41838_fdf2bc94
+Bytes: 114
+Should we call operator()(const AllocRecordStackTraceElement& r) to compute the hash of the stack element instead?
+
+File: runtime/gc/heap.cc
+
+3666:0-3668:35
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d41838_fd487c01
+Bytes: 84
+Does this really work?
+
+Is this double checked locking necessary in the first place?
+
+File: runtime/gc/heap.h
+
+1217:7-1217:30
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9d9cc70_f65c2250
+Bytes: 76
+Should this be Atomic<bool> for the double checked locking to work properly?
+
+File: runtime/hprof/hprof.cc
+
+866:10-866:24
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 796b8031_e9697f1e
+Bytes: 68
+Class* may move. Is this safe? Is this map only used during a pause?
+
+File: runtime/runtime.cc
+
+405:13-405:38
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d41838_9d44d8c8
+Bytes: 39
+Does it make sense to remove the "Try"?
+
+1475:0-1476:96
+Tue Jun 09 20:21:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9d41838_1dfea8e3
+Bytes: 93
+Is this going to be left?
+
+If it's safe to leave this unimplemented for this CL, comment why?
+

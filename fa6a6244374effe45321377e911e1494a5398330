@@ -18,7 +18,25 @@ UUID: d902ac8c_6996211e
 Bytes: 109
 Can't you do the same just by comparing the pointer in kUnsupportedOpcodes against kUnsupportedLambdaOpcodes?
 
+File: runtime/dex_instruction.h
+
+144:24-144:35
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_1c559994
+Bytes: 29
+Misaligned with values above.
+
 File: runtime/interpreter/interpreter_common.cc
+
+484:5-484:17
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_5c89d1a8
+Bytes: 314
+This is adding an extra call for invoking a method in the interpreter that potentially is another performance penalty.
+
+You could force DoCall and DoLambdaCall to be inlined (using ALWAYS_INLINE) to keep the same number of function calls. It seems to me they only extract invoke arguments from the DEX instruction.
 
 720:0-720:84
 Wed Jun 10 07:54:20 2015 +0000
@@ -43,6 +61,14 @@ UUID: 79c9c09b_dc67219c
 Bytes: 14
 mirror::Object
 
+149:2-149:8
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79c9c09b_dc67219c
+UUID: b9cfb89d_6993ad2c
+Bytes: 191
+There is a 'using ::art::mirror::Object;' to void the need for mirror::. I agree we should keep the mirror::Object and remove these 'using' declarations. That can be changed in a separate CL.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 81:61-81:84
@@ -51,6 +77,36 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5934fc65_02b0aa4d
 Bytes: 72
 It looks more like you'd want a DCHECK here with inst->IsExperimental().
+
+File: runtime/interpreter/interpreter_switch_impl.cc
+
+2:1-2:2
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_08cd575a
+Bytes: 29
+Please remove this extra line
+
+2246:11-2246:15
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_68be0bb2
+Bytes: 22
+Instruction::UNUSED_F4
+
+2247:11-2247:15
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_493eb198
+Bytes: 5
+ditto
+
+2248:11-2248:24
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_293b75a8
+Bytes: 5
+ditto
 
 File: runtime/parsed_options.cc
 
@@ -68,6 +124,16 @@ UUID: 99fcb4c6_24dbb295
 Bytes: 3
 are
 
+552:4-554:71
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_fc0e5dbe
+Bytes: 165
+Not sure this is how we handle long string in the code. I'd write:
+
+  LOG(WARNING) << "blablablabla...blablablabla "
+               << "blablablabla...blablablabla "
+
 File: runtime/read_barrier-inl.h
 
 34:2-34:11
@@ -77,6 +143,47 @@ UUID: 99ce74a2_4876afb7
 Bytes: 16
 Why this change?
 
+File: runtime/runtime_options.def
+
+33:0-34:2
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_dc13a1e6
+Bytes: 117
+Except the extra -X[no]experimental-opcodes option, this should be part of a separate CL (not related to new opcodes)
+
+File: runtime/verifier/method_verifier.cc
+
+2847:9-2847:13
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_69416d08
+Bytes: 22
+Instruction::UNUSED_F4
+
+2848:9-2848:13
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_a8db0316
+Bytes: 5
+ditto
+
+2849:9-2849:22
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ce74a2_88c16724
+Bytes: 5
+ditto
+
+File: runtime/verifier/method_verifier.h
+
+80:33-80:43
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79c9c09b_9c1d29f4
+Bytes: 8
+complete
+
 File: test/955-lambda-smali/info.txt
 
 2:0-2:104
@@ -85,6 +192,19 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79c9c09b_5c743146
 Bytes: 79
 I'd drop. This file is for explaining the test, not the testing infrastructure.
+
+File: test/955-lambda-smali/run
+
+18:52-18:108
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9cfb89d_09c7990b
+Bytes: 99
+Should it be 
+
+  -Xcompiler-option --runtime-arg -Xcompiler-option -Xexperimental-opcodes
+
+instead?
 
 File: test/955-lambda-smali/smali/Main.smali
 
@@ -144,4 +264,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9cfb89d_29b6d5c5
 Bytes: 41
 This doesn't seem related to this change.
+
+99
+Wed Jun 10 08:41:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9cfb89d_29b6d5c5
+UUID: 99ce74a2_48cb4f42
+Bytes: 38
+Agreed, it's one of my comments on PS4
 

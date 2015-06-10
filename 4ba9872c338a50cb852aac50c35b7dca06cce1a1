@@ -9,12 +9,28 @@ UUID: d9d9cc70_0b9d47eb
 Bytes: 31
 This is what we aim in this CL?
 
+9:0-9:72
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9d9cc70_0b9d47eb
+UUID: d902ac8c_a05e666c
+Bytes: 40
+I think it is. Also updated to be clear.
+
 10
 Tue Jun 09 20:21:43 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 796b8031_494a93fc
 Bytes: 94
 Did we reimplement the ddms recent allocation logic with the new code? If so, mention it here?
+
+10
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 796b8031_494a93fc
+UUID: d902ac8c_80548a4c
+Bytes: 4
+Done
 
 File: runtime/debugger.cc
 
@@ -25,6 +41,14 @@ UUID: 796b8031_69682f6e
 Bytes: 77
 Is it possible to allocate this on the stack and avoid the delete code below?
 
+4704:16-4704:47
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 796b8031_69682f6e
+UUID: d902ac8c_404e92ba
+Bytes: 125
+Done. Use a local object instead. This method is not performance critical so allocating a dummy object shouldn't matter much.
+
 4802:0-4806:5
 Tue Jun 09 20:21:43 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,6 +58,14 @@ Does this exist only to delete the empty AllocRecordObjectMap we allocate in lin
 
 If so, maybe we could simplify this by having a bool that indicates we allocated an empty AllocRecordObjectMap and delete it here if it's true?
 
+4802:0-4806:5
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9d41838_1d346808
+UUID: 99fcb4c6_87026876
+Bytes: 4
+Done
+
 File: runtime/gc/allocation_record.h
 
 128:24-128:95
@@ -42,6 +74,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9d41838_fdf2bc94
 Bytes: 114
 Should we call operator()(const AllocRecordStackTraceElement& r) to compute the hash of the stack element instead?
+
+128:24-128:95
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9d41838_fdf2bc94
+UUID: 5934fc65_65f8a0f5
+Bytes: 4
+Done
 
 File: runtime/gc/heap.cc
 
@@ -54,6 +94,14 @@ Does this really work?
 
 Is this double checked locking necessary in the first place?
 
+3666:0-3668:35
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9d41838_fd487c01
+UUID: 3937486d_47f9e244
+Bytes: 39
+Done. Made it a read from Atomic<bool>.
+
 File: runtime/gc/heap.h
 
 1217:7-1217:30
@@ -62,6 +110,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d9d9cc70_f65c2250
 Bytes: 76
 Should this be Atomic<bool> for the double checked locking to work properly?
+
+1217:7-1217:30
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d9d9cc70_f65c2250
+UUID: d902ac8c_1bd24f46
+Bytes: 4
+Done
 
 File: runtime/hprof/hprof.cc
 
@@ -72,6 +128,14 @@ UUID: 796b8031_e9697f1e
 Bytes: 68
 Class* may move. Is this safe? Is this map only used during a pause?
 
+866:10-866:24
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 796b8031_e9697f1e
+UUID: 193e044a_86792eaa
+Bytes: 152
+Yes, it is only use during a pause, so it should be safe. The Class* is generated from Object.GetClass() during the same pause, which has read barriers.
+
 File: runtime/runtime.cc
 
 405:13-405:38
@@ -81,6 +145,14 @@ UUID: b9d41838_9d44d8c8
 Bytes: 39
 Does it make sense to remove the "Try"?
 
+405:13-405:38
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9d41838_9d44d8c8
+UUID: 5934fc65_05b0b44d
+Bytes: 4
+Done
+
 1475:0-1476:96
 Tue Jun 09 20:21:43 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -89,4 +161,12 @@ Bytes: 93
 Is this going to be left?
 
 If it's safe to leave this unimplemented for this CL, comment why?
+
+1475:0-1476:96
+Wed Jun 10 00:17:36 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9d41838_1dfea8e3
+UUID: 193e044a_c6af369b
+Bytes: 4
+Done
 

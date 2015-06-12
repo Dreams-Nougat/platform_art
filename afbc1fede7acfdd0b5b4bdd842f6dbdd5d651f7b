@@ -17,6 +17,18 @@ UUID: 79f8e0fa_befe557b
 Bytes: 223
 Here, the default actually covers the VOID case. We read a byte for the type tag from the debugger. It *should* match an enum value. However, in the case we receive garbage (from a bad debugger?), we need to cover our back.
 
+1737:4-1739:20
+Fri Jun 12 16:18:18 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79f8e0fa_befe557b
+UUID: 59095cdc_3d7c1b98
+Bytes: 412
+The idiom is to cover your back by returning out of all cases with a return, so that the "implicit default" is the exit of the switch, where you put the LOG(FATAL). That's why I said you'd have to create its own function.
+
+You'd also put the VOID explicitly and have an expressive failure message.
+
+I understand why all of that is overhead here, so it's your choice, but it is easily doable for the case below...
+
 1844:2-1844:24
 Fri Jun 12 16:02:46 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

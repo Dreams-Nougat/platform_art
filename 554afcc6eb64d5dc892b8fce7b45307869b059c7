@@ -1,0 +1,147 @@
+Revision: 554afcc6eb64d5dc892b8fce7b45307869b059c7
+Patch-set: 11
+File: runtime/dex_instruction-inl.h
+
+458:0-458:76
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79bf0033_234eca8b
+Bytes: 121
+Why do you need all this? I thought we would have a invoke-lambda and invoke-lambda-range, to mimic what we already have.
+
+File: runtime/interpreter/interpreter_common.cc
+
+498:34-498:44
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_411d9296
+Bytes: 21
+Nit: number_of_inputs
+
+720:12-720:71
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9733893_b53ea0ea
+Bytes: 19
+Indentation is off.
+
+738:0-739:36
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_81179a74
+Bytes: 50
+Isn't all of this handled before the DoLambdaCall?
+
+File: runtime/interpreter/interpreter_common.h
+
+114:19-114:39
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79bf0033_c3389600
+Bytes: 21
+IsValidLambdaTarget ?
+
+135:38-135:44
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_a12bbeba
+Bytes: 70
+-> creates an exception, puts it in the thread tls, and returns false?
+
+138:43-138:54
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_012b8ab9
+Bytes: 21
+vA and vA + 1, right?
+
+138:10-138:26
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_e125c6e4
+Bytes: 19
+What's a method ID?
+
+146:65-146:84
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 799460c1_5b7103d5
+Bytes: 99
+How can the method index be a target for invoke-lambda if the invoke-lambda is in another dex file?
+
+146:0-146:84
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_c130c229
+Bytes: 43
+method  ID -> method index in the dex file.
+
+168:56-168:66
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 799460c1_3b643714
+Bytes: 10
+Impossible
+
+183:13-183:19
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9733893_756ec8f5
+Bytes: 21
+I'd drop the 'always'
+
+184:55-184:74
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 799460c1_7b6ebff5
+Bytes: 27
+What does it mean "up to" ?
+
+184:13-184:19
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9733893_9539a407
+Bytes: 5
+ditto
+
+191:28-191:47
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_21208ed1
+Bytes: 52
+There's no such notion yet. Please be more explicit.
+
+File: runtime/parsed_options.cc
+
+552:34-552:41
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9733893_d5331c21
+Bytes: 7
+lambdas
+
+552:61-552:85
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_a152de3a
+Bytes: 42
+Opcodes for lambda implementation have ...
+
+File: runtime/verifier/method_verifier.cc
+
+2832:0-2845:5
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9733893_f5381800
+Bytes: 43
+When/How do you plan on implementing these?
+
+File: test/etc/default-build
+
+11:0-11:69
+Sun Jun 14 15:11:36 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_c157e229
+Bytes: 76
+What happened to your lambda test? You surely can keep it under this change.
+

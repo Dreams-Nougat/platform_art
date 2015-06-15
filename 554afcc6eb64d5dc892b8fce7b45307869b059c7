@@ -9,6 +9,18 @@ UUID: 79bf0033_234eca8b
 Bytes: 121
 Why do you need all this? I thought we would have a invoke-lambda and invoke-lambda-range, to mimic what we already have.
 
+458:0-458:76
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bf0033_234eca8b
+UUID: 597cfc56_4c6dc029
+Bytes: 198
+This is a new format 25x, there wasn't a 25x format before.
+
+The rest of the code just follows the rest of the file's convention.
+
+(and yeah we will have an invoke-lambda and an invoke-lambda-range)
+
 File: runtime/interpreter/interpreter_common.cc
 
 498:34-498:44
@@ -17,6 +29,20 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 397f484e_411d9296
 Bytes: 21
 Nit: number_of_inputs
+
+498:34-498:44
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_411d9296
+UUID: b98a589d_b1edc888
+Bytes: 458
+I thought you'd appreciate that I renamed it from num_ins to num_inputs to begin with (see 497 of older file) ;).
+
+If you could tell me in more detail what the rule is here, I would like to document it so we can expand out the words correctly in the future.
+
+For example, there are some "string_init" here in this method, why not "string_initialize" ? "num_regs" -> why not "number_of_registers"?
+
+Is it because those are local and num_inputs is a parameter?
 
 720:12-720:71
 Sun Jun 14 15:11:36 2015 +0000
@@ -32,6 +58,16 @@ UUID: 397f484e_81179a74
 Bytes: 50
 Isn't all of this handled before the DoLambdaCall?
 
+738:0-739:36
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_81179a74
+UUID: 5965dcc2_a3874819
+Bytes: 409
+Well this gets handled by create-lambda (it only searches for static methods), but I'm not sure if we can rely on that since now that the instructions are split up it's possible (though unlikely) for something to go wrong in between the create-lambda and invoke-lambda.
+
+I can remove this if you think it's completely unnecessary. It should really be a proper verifier-like check where it throws an exception.
+
 File: runtime/interpreter/interpreter_common.h
 
 114:19-114:39
@@ -41,12 +77,34 @@ UUID: 79bf0033_c3389600
 Bytes: 21
 IsValidLambdaTarget ?
 
+114:19-114:39
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bf0033_c3389600
+UUID: 597cfc56_6c6a8414
+Bytes: 236
+Is that appropriate naming given that this can throw an exception as a side effect? I would expect "IsX" to be pure, or at least lazy.
+
+For example most of the optimizing functions in locations seem to have "IsX" being a const function.
+
 135:38-135:44
 Sun Jun 14 15:11:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 397f484e_a12bbeba
 Bytes: 70
 -> creates an exception, puts it in the thread tls, and returns false?
+
+135:38-135:44
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_a12bbeba
+UUID: 594a3c43_1502f6c6
+Bytes: 425
+I am happy to of course change this comment, please help me understand the code better so that I can write the most accurate comments.
+
+Can you elaborate why this extra detail is necessary?
+
+Are there cases when we *don't* throw the exception in the way you described (by putting it in the thread tls)? Creating an exception too should be quite common, we only want to throw preallocated exceptions in the rare case (eg OOM).
 
 138:43-138:54
 Sun Jun 14 15:11:36 2015 +0000
@@ -62,6 +120,22 @@ UUID: 397f484e_e125c6e4
 Bytes: 19
 What's a method ID?
 
+138:43-138:54
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_012b8ab9
+UUID: 796d40b3_36f536fb
+Bytes: 89
+Thanks, I had it just in vA before the art method change. The 'vA and vA+1' is temporary.
+
+138:10-138:26
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_e125c6e4
+UUID: 594a3c43_35061ad2
+Bytes: 155
+dex method ID (I'll add a comment). I wasn't sure if the extra clarification was necessary since this is already at the interpreter scope dealing with dex.
+
 146:65-146:84
 Sun Jun 14 15:11:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -76,12 +150,50 @@ UUID: 397f484e_c130c229
 Bytes: 43
 method  ID -> method index in the dex file.
 
+146:0-146:84
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_c130c229
+UUID: b98a589d_b1cce85f
+Bytes: 609
+The term for method identifier (method_id_item) is used almost interchangably with the method index (method_idx). I can change it to be less ambiguous (method_idx offset into the method_ids)
+
+See also https://source.android.com/devices/tech/dalvik/dex-format.html
+
+That being said the invoke docs refer to method_id instead of method_idx. 
+
+> invoke-super is used to invoke the closest superclass's virtual method (as opposed to the one with the same method_id in the calling class). The same method restrictions hold as for invoke-virtual.
+
+https://source.android.com/devices/tech/dalvik/dalvik-bytecode.html
+
+146:65-146:84
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 799460c1_5b7103d5
+UUID: 597cfc56_7f9f8867
+Bytes: 623
+It's not any different than invoke-virtual, etc (they also take a method index).
+
+I haven't really looked at the dex file in detail in that case, but I imagine they just have the bare minimum needed to reconstruct the method's type signature.
+
+Sidenote, this is for create-lambda (not invoke-lambda). create-lambda would almost always be in the same dex file (although it's not a requirement).
+
+If I did want to add a method_idx to invoke-lambda then that would be purely to make it easier for the verifier to know which single-abstract-method it corresponds to (i.e. we don't actually need the ID to do the call dispatch).
+
 168:56-168:66
 Sun Jun 14 15:11:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 799460c1_3b643714
 Bytes: 10
 Impossible
+
+168:56-168:66
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 799460c1_3b643714
+UUID: 5965dcc2_4364ac14
+Bytes: 2
+(:
 
 183:13-183:19
 Sun Jun 14 15:11:36 2015 +0000
@@ -104,12 +216,34 @@ UUID: b9733893_9539a407
 Bytes: 5
 ditto
 
+184:55-184:74
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 799460c1_7b6ebff5
+UUID: 796d40b3_f9dc8f57
+Bytes: 222
+It's like all the other non-range invokes, it encodes the # of vregs in a 4-bit half-word ("the count") and then uses the other 5 half-words to potentially encode a vreg#.
+
+The actual encoding is documented in the CC file.
+
 191:28-191:47
 Sun Jun 14 15:11:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 397f484e_21208ed1
 Bytes: 52
 There's no such notion yet. Please be more explicit.
+
+191:28-191:47
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_21208ed1
+UUID: 796d40b3_99047b4f
+Bytes: 229
+The full explanation is in the docs, there are pictures of diagrams. 
+
+I can make it slightly more detailed without getting very specific:
+
+ 'this should be a closure that also captures the variables instead of just an ArtMethod'
 
 File: runtime/parsed_options.cc
 
@@ -127,6 +261,14 @@ UUID: 397f484e_a152de3a
 Bytes: 42
 Opcodes for lambda implementation have ...
 
+552:61-552:85
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_a152de3a
+UUID: 597cfc56_8244efc8
+Bytes: 4
+Done
+
 File: runtime/verifier/method_verifier.cc
 
 2832:0-2845:5
@@ -136,6 +278,14 @@ UUID: b9733893_f5381800
 Bytes: 43
 When/How do you plan on implementing these?
 
+2832:0-2845:5
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9733893_f5381800
+UUID: 594a3c43_98b0dd81
+Bytes: 75
+All the lambda opcodes working in the interpreter first, then the verifier.
+
 File: test/etc/default-build
 
 11:0-11:69
@@ -144,4 +294,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 397f484e_c157e229
 Bytes: 76
 What happened to your lambda test? You surely can keep it under this change.
+
+11:0-11:69
+Mon Jun 15 21:06:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_c157e229
+UUID: 796d40b3_d98b5374
+Bytes: 54
+Thanks, I think they got lost after I split up the CLs
 

@@ -1,0 +1,20 @@
+Revision: 864a2d955aa85ab989c86d7f1eeacbe0b11f8b0f
+Base-for-patch-set: 1
+File: runtime/debugger.cc
+
+3205:2-3205:64
+Mon Jun 15 15:08:38 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79bf0033_83969e9d
+Bytes: 687
+We must keep that here because DeoptimizationRequest::Method (which may be called in ProcessDeoptimizationRequest) uses a ScopedObjectAccessUnchecked:
+
+    ArtMethod* Method() const SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) {
+    ScopedObjectAccessUnchecked soa(Thread::Current());
+    return soa.DecodeMethod(method_);
+  }
+
+ScopedObjectAccessUnchecked creates a ScopedThreadStateChange for the kRunnable state. Since we are not kRunnable, it will try to TransitionFromSuspendedToRunnable and fail a debug check:
+
+art F 119285 119287 art/runtime/base/mutex.h:356] Check failed: !IsSharedHeld(self) mutator lock level=51 owner=119287 state=-1 num_pending_writers=0 num_pending_readers=0
+

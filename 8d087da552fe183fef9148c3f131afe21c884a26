@@ -11,6 +11,14 @@ Did you need to change this at all? I don't see how this code is different from 
 
 Actually the original condition on line 199 seems completely redundant too, as the code cannot be reached otherwise.
 
+187:20-187:31
+Mon Jun 15 08:36:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_01870a18
+UUID: b9733893_959a844c
+Bytes: 317
+I could leave it as is, but here I'm adding one extra DCHECK: the code before was not doing anything if the input was not an int constant (which was the reason for the bug). Because this code is now run after reundant phi elimination, we know we can only get an int constant, which is why I added the DCHECK line 203.
+
 File: test/498-type-propagation/src/Main.java
 
 21:0-21:32
@@ -19,4 +27,12 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 799460c1_db819305
 Bytes: 55
 Why not just leave the output empty as we do elsewhere?
+
+21:0-21:32
+Mon Jun 15 08:36:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 799460c1_db819305
+UUID: 79bf0033_e3d672ed
+Bytes: 136
+This test was sort of copy/pasted from another, where I think the println was expsoing a bug in our test infrastructure. I'll remove it.
 

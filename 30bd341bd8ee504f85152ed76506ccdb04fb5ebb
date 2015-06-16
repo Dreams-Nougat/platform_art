@@ -18,3 +18,29 @@ UUID: 79bf0033_065abc00
 Bytes: 78
 I don't understand, I thought we were not initializing app classes in dex2oat.
 
+1009:7-1009:46
+Tue Jun 16 07:17:22 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bf0033_065abc00
+UUID: 799460c1_7eaced23
+Bytes: 411
+We do initialize app classes when they don't have a <clinit> method (think about a class without any static fields for instance) and their super class can also be initialized in the same way. This way, the status becomes kStatusInitialized.
+
+What I don't understand here is why can't we assume it is initialized then? Does the compiled code expect more from an initialized class that may not be true at runtime?
+
+1017:9-1017:66
+Tue Jun 16 07:17:22 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 799460c1_5eaf3119
+Bytes: 24
+IsImageClass(descriptor)
+
+File: compiler/driver/compiler_driver.h
+
+197:2-199:50
+Tue Jun 16 07:17:22 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 397f484e_2477bc4d
+Bytes: 61
+Why not private? This is only used by CompilerDriver methods.
+

@@ -1,0 +1,24 @@
+Revision: 069231f0e61dd84a0d7c9629661d3241294b9c97
+Patch-set: 4
+File: compiler/driver/compiler_driver.cc
+
+996:0-996:72
+Tue Jun 16 14:21:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79bf0033_09be4db0
+Bytes: 328
+Following our conversation, this should probably be split in two:
+CanAssumeClassIsInitialized
+CanAssumeClassIsLoaded
+
+Then I think the CanAssumeclassIsInitialized is just a check on klass->IsInitialized.
+
+CanAssumeClassIsLoaded will probably be "is dex2oat compiling the boot image" in OAT case, and klass->IsLoaded in JIT case.
+
+1002:7-1002:30
+Tue Jun 16 14:21:56 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79bf0033_a9cc595f
+Bytes: 167
+Not sure I understand why you mention class unloading? If a klass has been loaded by a class loader, it will be initialized once, and live until the class loader dies.
+

@@ -44,6 +44,16 @@ For example, there are some "string_init" here in this method, why not "string_i
 
 Is it because those are local and num_inputs is a parameter?
 
+498:34-498:44
+Tue Jun 16 15:17:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b98a589d_b1edc888
+UUID: 195444e3_33c8f295
+Bytes: 295
+Yes, thank you for having changed it to num_inputs :-). Changing it to number_of_inputs, I think, makes it clearer what it is. In general, I avoid abbreviations.
+
+string_init is fine, because the methods are called <init>, not <initialize>. I would also have changed num_regs to number_of_vregs.
+
 720:12-720:71
 Sun Jun 14 15:11:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -68,6 +78,14 @@ Well this gets handled by create-lambda (it only searches for static methods), b
 
 I can remove this if you think it's completely unnecessary. It should really be a proper verifier-like check where it throws an exception.
 
+738:0-739:36
+Tue Jun 16 15:17:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5965dcc2_a3874819
+UUID: 397f484e_07d63abd
+Bytes: 183
+Yes, I agree it should be a verifier check. The line is a bit blur between what the interpreter should DCHECK when it comes to things the verifier should have done, so it's up to you.
+
 File: runtime/interpreter/interpreter_common.h
 
 114:19-114:39
@@ -87,6 +105,14 @@ Is that appropriate naming given that this can throw an exception as a side effe
 
 For example most of the optimizing functions in locations seem to have "IsX" being a const function.
 
+114:19-114:39
+Tue Jun 16 15:17:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 597cfc56_6c6a8414
+UUID: 397f484e_27db3ee7
+Bytes: 205
+It's mostly a nit, since the method returns bool. You could also name it ValidateLambdaTargetOrThrow, or IsValidLambdaTargetOrThrow. Maybe the former is better, as you can still return false and not throw.
+
 135:38-135:44
 Sun Jun 14 15:11:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -105,6 +131,14 @@ I am happy to of course change this comment, please help me understand the code 
 Can you elaborate why this extra detail is necessary?
 
 Are there cases when we *don't* throw the exception in the way you described (by putting it in the thread tls)? Creating an exception too should be quite common, we only want to throw preallocated exceptions in the rare case (eg OOM).
+
+135:38-135:44
+Tue Jun 16 15:17:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 594a3c43_1502f6c6
+UUID: 79bf0033_8986bdeb
+Bytes: 162
+It's just that the "throws" in my opinion implies that you won't return from this method. I know some ART methods do not follow this rule but I find it confusing.
 
 138:43-138:54
 Sun Jun 14 15:11:36 2015 +0000
@@ -180,6 +214,22 @@ Sidenote, this is for create-lambda (not invoke-lambda). create-lambda would alm
 
 If I did want to add a method_idx to invoke-lambda then that would be purely to make it easier for the verifier to know which single-abstract-method it corresponds to (i.e. we don't actually need the ID to do the call dispatch).
 
+146:0-146:84
+Tue Jun 16 15:17:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b98a589d_b1cce85f
+UUID: 195444e3_93043e4f
+Bytes: 123
+I see. Talk about confusing :-) The compiler code (both driver/quick/optimizing) AFAIK exclusively talk about method_index.
+
+146:65-146:84
+Tue Jun 16 15:17:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 597cfc56_7f9f8867
+UUID: 799460c1_a19ada4b
+Bytes: 205
+My point is that the other dex file, when doing the invoke-lambda, if it only has the method index of where that lambda was defined it is not enough. That method index is irrelevant for the other dex file.
+
 168:56-168:66
 Sun Jun 14 15:11:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -244,6 +294,14 @@ The full explanation is in the docs, there are pictures of diagrams.
 I can make it slightly more detailed without getting very specific:
 
  'this should be a closure that also captures the variables instead of just an ArtMethod'
+
+191:28-191:47
+Tue Jun 16 15:17:37 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 796d40b3_99047b4f
+UUID: 79bf0033_498de502
+Bytes: 147
+I see. Maybe to make things clearer for the reader, add something like: "introduce a closure abstraction that will contain the captured variables".
 
 File: runtime/parsed_options.cc
 

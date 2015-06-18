@@ -12,12 +12,28 @@ CanAssumeClassIsInitializedAndLoaded?
 We could introduce a somewhat similar:
 CanAssumeClassIsInitializedOnceLoaded
 
+236:28-236:55
+Thu Jun 18 11:48:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fef4b642_bf01773a
+UUID: 5ed222e8_921b1c7a
+Bytes: 101
+Rather not, at least not with this CL. It would require a cascade of related renames for consistency.
+
 253:10-253:35
 Wed Jun 17 21:12:12 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5e114241_7a2d39cd
 Bytes: 83
 Why would you need this check? It looks bogus if the caller passes a null referrer.
+
+253:10-253:35
+Thu Jun 18 11:48:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e114241_7a2d39cd
+UUID: 7e7526b8_b3c67837
+Bytes: 137
+We sometimes compile methods where the referrer class could not be resolved because we can't find a superclass. For example in test apks.
 
 File: compiler/driver/compiler_driver.cc
 
@@ -27,4 +43,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9e057a00_3cd9f165
 Bytes: 75
 Maybe add a comment that having a klass object, implies it has been loaded.
+
+999:0-1000:16
+Thu Jun 18 11:48:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e057a00_3cd9f165
+UUID: 5ed222e8_b23180f7
+Bytes: 4
+Done
 

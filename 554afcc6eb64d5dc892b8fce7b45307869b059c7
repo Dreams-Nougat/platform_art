@@ -114,6 +114,20 @@ UUID: 397f484e_07d63abd
 Bytes: 183
 Yes, I agree it should be a verifier check. The line is a bit blur between what the interpreter should DCHECK when it comes to things the verifier should have done, so it's up to you.
 
+738:0-739:36
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_07d63abd
+UUID: 3e700ec3_3c61dd07
+Bytes: 672
+(The existing TODO is a marker that the existing code as-is is insufficient, as you pointed out)
+
+Ok so basically the idea here is that when I implement verifier support I will have a good idea of what specific exception to raise (this is a bit muddy for me since there's nothing about that in the JLS since it's more of a bytecode specification, so we'll have to find something most consistent).
+
+Then in this code if "do_assignability_check" is true (i.e. soft fail, let interpreter do on-the-fly verification) then it will raise an exception here.
+
+Otherwise if do_assignability_check is false (e.g. preverified) then leave the DCHECK in there just for safety purposes.
+
 File: runtime/interpreter/interpreter_common.h
 
 114:19-114:39
@@ -140,6 +154,14 @@ Parent: 597cfc56_6c6a8414
 UUID: 397f484e_27db3ee7
 Bytes: 205
 It's mostly a nit, since the method returns bool. You could also name it ValidateLambdaTargetOrThrow, or IsValidLambdaTargetOrThrow. Maybe the former is better, as you can still return false and not throw.
+
+114:19-114:39
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 397f484e_27db3ee7
+UUID: 3e700ec3_5c3b71fc
+Bytes: 4
+Done
 
 135:38-135:44
 Sun Jun 14 15:11:36 2015 +0000
@@ -338,6 +360,14 @@ Parent: 796d40b3_99047b4f
 UUID: 79bf0033_498de502
 Bytes: 147
 I see. Maybe to make things clearer for the reader, add something like: "introduce a closure abstraction that will contain the captured variables".
+
+191:28-191:47
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bf0033_498de502
+UUID: 3e700ec3_3c3a3df6
+Bytes: 4
+Done
 
 File: runtime/parsed_options.cc
 

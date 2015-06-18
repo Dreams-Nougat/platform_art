@@ -33,6 +33,14 @@ And the 'expected (non-default) key-value' definitely make use of this, because 
 ------
 So I guess I can just specify the type explicitly for now.
 
+108:4-108:8
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b10858_2037d4ec
+UUID: 5e6dc2eb_7dd193f6
+Bytes: 4
+Done
+
 109:4-109:5
 Wed Jun 17 16:47:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -47,6 +55,14 @@ Parent: 79bf0033_f77bc871
 UUID: b99c18d9_aaf27610
 Bytes: 9
 No reason
+
+109:4-109:5
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b99c18d9_aaf27610
+UUID: 5e6dc2eb_1dd657f0
+Bytes: 4
+Done
 
 540:2-540:3
 Wed Jun 17 16:47:37 2015 +0000
@@ -63,6 +79,14 @@ UUID: 19b8c43c_97ec0306
 Bytes: 127
 Ok, I'll get rid of the {}s here. The other tests introduced the same local variable over and over again so they needed the {}.
 
+540:2-540:3
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19b8c43c_97ec0306
+UUID: 1e67ca0f_9bc7cfa5
+Bytes: 4
+Done
+
 File: runtime/dex_instruction-inl.h
 
 449:25-449:35
@@ -72,12 +96,30 @@ UUID: 7e00c6ef_dbc6938a
 Bytes: 55
 For consistency, shouldn't you name this HasVarArgs35c?
 
+449:25-449:35
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e00c6ef_dbc6938a
+UUID: 9e7adaa8_947564f5
+Bytes: 4
+Done
+
 463:7-463:12
 Wed Jun 17 20:48:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fef4b642_3f0e876d
 Bytes: 28
 Where is there no vA and vB?
+
+463:7-463:12
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fef4b642_3f0e876d
+UUID: 3e700ec3_5cb6112f
+Bytes: 217
+Yeah, that was me writing the specification without realizing that the names already had a clear-cut convention in the existing art code.
+
+See line 484 for how I'm going to fix this up once I'm doing verifier support.
 
 465:10-465:12
 Wed Jun 17 20:48:05 2015 +0000
@@ -86,6 +128,22 @@ UUID: fef4b642_5f094b63
 Bytes: 49
 I don't understand: vB is not mentioned line 463.
 
+465:10-465:12
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fef4b642_5f094b63
+UUID: 7e9c462a_fe4b5d77
+Bytes: 386
+vB is documented on line 467.
+
+line 463 is the mnemonic (what you would write in smali or see in dex-dump)
+
+vB is what you get if you use the VRegB_25x() function to raw-decode the instruction.
+
+(it's pretty standard for most of the invokes, since they have variable arguments, one of the half-words is used to transparently encode the # of args)
+
+(added a comment that it's 'implicit')
+
 467:6-467:8
 Wed Jun 17 20:48:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -93,12 +151,30 @@ UUID: bef6be49_9dd0033f
 Bytes: 60
 But what is it? You haven't said what vC is in this comment.
 
+467:6-467:8
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bef6be49_9dd0033f
+UUID: 7e9c462a_be45d565
+Bytes: 93
+The semantic meaning of vC is up to the instruction that uses this format. I added a comment.
+
 470:0-477:34
 Wed Jun 17 20:48:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5e114241_5a095563
 Bytes: 122
 Maybe add an example as well. Even though I understand where you're going to, all the comments above confused me a lot :-)
+
+470:0-477:34
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e114241_5a095563
+UUID: 3e700ec3_5c04d14e
+Bytes: 209
+Not sure how it can get more explicit than this (it's already far more documented than the other opcodes in this file) diagram?
+
+If you have a specific example you have in mind, I can add it into the comments.
 
 File: runtime/dex_instruction.h
 
@@ -109,12 +185,38 @@ UUID: bef6be49_5de4bb21
 Bytes: 30
 Rename these to GetAllArgs35c?
 
+394:7-395:17
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bef6be49_5de4bb21
+UUID: 5e6dc2eb_5d3b6ffc
+Bytes: 692
+Originally my new function was named was 'GetVarArgs25x'
+
+However shertz asked me to do some renaming there and we ended up with 'GetAllArgs35x'
+
+The semantic meaning is slightly different because for 25x 'vC' is not a variable-arg (its always there), whereas for 35c it is a var-arg (not always there)
+
+So what I can do here is rename it to GetVarArgs35c if you want.
+
+Another thing we can do is combine the two functions and switch on the opcode to determine how to do the decoding (leave the name as GetVarArgs or GetAllArgs), but I wasn't sure if we wanted to take extra branches in existing code.
+
+(I left a TODO here until I can get your feedback, this might have to go into another CL)
+
 551:10-551:16
 Wed Jun 17 20:48:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fef4b642_1f13c397
 Bytes: 56
 Why do you need this now? I haven't seen any user of it.
+
+551:10-551:16
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fef4b642_1f13c397
+UUID: 7e9c462a_9e76d9b6
+Bytes: 230
+Thanks, this slipped through. I was using this originally but then saw the rest of the code using a 'Fetch16' style (even though personally I found it more confusing, and we don't need it anymore since we're always little-endian).
 
 File: runtime/interpreter/interpreter_common.cc
 
@@ -125,6 +227,14 @@ UUID: 7e00c6ef_9bd00b3f
 Bytes: 19
 Indentation is off.
 
+485:32-491:55
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e00c6ef_9bd00b3f
+UUID: 1e67ca0f_bb4173b9
+Bytes: 4
+Done
+
 495:24-501:27
 Wed Jun 17 20:48:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -132,12 +242,28 @@ UUID: 7e00c6ef_7bdf7f4d
 Bytes: 5
 ditto
 
+495:24-501:27
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e00c6ef_7bdf7f4d
+UUID: 3e700ec3_5ca051ae
+Bytes: 4
+Done
+
 629:74-629:79
 Wed Jun 17 20:48:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9e057a00_7cdf794d
 Bytes: 13
 slots -> slot
+
+629:74-629:79
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e057a00_7cdf794d
+UUID: 9e7adaa8_3761f207
+Bytes: 4
+Done
 
 File: runtime/interpreter/interpreter_common.h
 
@@ -148,12 +274,28 @@ UUID: 9e057a00_dcc68d8a
 Bytes: 28
 should the ',' be an 'and' ?
 
+110:21-110:22
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e057a00_dcc68d8a
+UUID: 1e67ca0f_9b582fcf
+Bytes: 4
+Done
+
 192:33-192:47
 Wed Jun 17 20:48:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9e057a00_9cd0053f
 Bytes: 50
 Please consider my suggestion in a former comment.
+
+192:33-192:47
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e057a00_9cd0053f
+UUID: 9e7adaa8_57526e3e
+Bytes: 4
+Done
 
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
@@ -164,6 +306,14 @@ UUID: 5e114241_1a13dd97
 Bytes: 11
 Missing '.'
 
+78:52-78:56
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e114241_1a13dd97
+UUID: 7e9c462a_fe935d2a
+Bytes: 4
+Done
+
 File: runtime/runtime.h
 
 734:66-734:71
@@ -172,6 +322,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7e00c6ef_5be4c321
 Bytes: 14
 Their -> The ?
+
+734:66-734:71
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e00c6ef_5be4c321
+UUID: 3e700ec3_9c9d8970
+Bytes: 4
+Done
 
 File: test/955-lambda-smali/smali/SanityCheck.smali
 
@@ -182,6 +340,14 @@ UUID: fef4b642_fff7ffcb
 Bytes: 28
 I cannot parse this comment.
 
+26:38-26:93
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fef4b642_fff7ffcb
+UUID: 5e6dc2eb_3d26bbc1
+Bytes: 4
+Done
+
 File: test/955-lambda-smali/smali/TrivialHelloWorld.smali
 
 47:35-47:63
@@ -190,4 +356,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5e114241_faf709cc
 Bytes: 48
 do we have such a thing? Are you introducing it?
+
+47:35-47:63
+Thu Jun 18 17:06:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e114241_faf709cc
+UUID: 1e67ca0f_dbf8e7f5
+Bytes: 228
+No, it's just a placeholder signature (hence the TODO) because I didn't want to do the '\ClosureType;' right off the bat. We're not even using the 0th parameter for anything right now because liberate-variable isn't implemented.
 

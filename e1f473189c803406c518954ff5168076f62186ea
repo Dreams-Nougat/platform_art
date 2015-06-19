@@ -1,5 +1,22 @@
 Revision: e1f473189c803406c518954ff5168076f62186ea
 Patch-set: 3
+File: compiler/optimizing/intrinsics_arm64.cc
+
+899:2-899:4
+Fri Jun 19 19:47:55 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_8d88e727
+Bytes: 336
+(I saw a missing-poisoning-code crash in java.util.concurrent.ConcurrentHashMap.tabAt during a volantis boot.)
+
+I think this needs unpoisoning/poisoning code.
+
+An easy way may be to poison both 'expected' and 'value' first and do the following unchanged?
+
+Similarly, in the else block below.
+
+And similarly, for the other architectures.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 643:7-643:28

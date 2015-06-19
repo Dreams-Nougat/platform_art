@@ -1,5 +1,14 @@
 Revision: 8437f045d25c021fbc52028852560db8239b4e94
 Patch-set: 1
+File: compiler/driver/compiler_driver_test.cc
+
+149:2-149:44
+Fri Jun 19 19:02:05 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1e67ca0f_29cd12d5
+Bytes: 179
+Good catch. Can you replace this with TEST_DISABLED_FOR_READ_BARRIER() rather than removing this line? I think without it art-read-barrier on master-art-host would start to break.
+
 File: compiler/optimizing/code_generator_arm.cc
 
 1341:28-1341:29
@@ -46,6 +55,14 @@ Parent: 5e6dc2eb_4e13b396
 UUID: be7b1eac_b8f97546
 Bytes: 283
 This method is part of the LocationsBuilderARM class: it computes the locations ("in register", "in stack", "as a constant", etc.) of the inputs and output of the `instruction`.  The code generation for this type of instruction is done in InstructionCodeGeneratorARM::HandleFieldSet.
+
+2980:26-2980:40
+Fri Jun 19 19:02:05 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: be7b1eac_b8f97546
+UUID: 1e67ca0f_89dc5e91
+Bytes: 52
+Now I realize the class name. Thanks for the answer.
 
 3548:71-3548:72
 Fri Jun 19 00:27:49 2015 +0000
@@ -307,6 +324,14 @@ Parent: 3e700ec3_4e92cfab
 UUID: 9ecf3a47_af27d567
 Bytes: 141
 I intend to land https://android-review.googlesource.com/#/c/155056 before this CL, so that we actually use a `movl` (and not a `movw`) here.
+
+3330:14-3330:15
+Fri Jun 19 19:02:05 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ecf3a47_af27d567
+UUID: 9e7adaa8_7183efdf
+Bytes: 73
+OK. Does the CL description have it backward? "Use movl instead of movw"?
 
 3708:75-3708:76
 Fri Jun 19 00:27:49 2015 +0000

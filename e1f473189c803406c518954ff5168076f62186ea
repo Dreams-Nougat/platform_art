@@ -1,5 +1,139 @@
 Revision: e1f473189c803406c518954ff5168076f62186ea
 Patch-set: 3
+File: compiler/optimizing/code_generator_arm.cc
+
+2741:45-2741:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9ecf3a47_35133298
+Bytes: 144
+I'd remove the notion of Quick here. It's just an entry point. The fact that it's being called quick is because we had portable entrypoints too.
+
+2762:45-2762:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_fc5b5dc9
+Bytes: 5
+ditto
+
+3018:0-3020:53
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9ecf3a47_d5f74ecc
+Bytes: 41
+Isn't that just for the negation of null?
+
+3479:0-3480:55
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9ecf3a47_9501c63a
+Bytes: 76
+I don't see the use of this in the codegen implementation below (line 3572).
+
+3496:0-3497:55
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_9c5829cf
+Bytes: 91
+ditto. It looks like this is just for the 'null' case, where we don't need a write barrier.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+1286:0-1288:75
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9ecf3a47_152716ef
+Bytes: 87
+You can 'Release' registers. Maybe that makes it easier to read than a block + comment?
+
+2591:45-2591:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_1cbad95e
+Bytes: 12
+ditto: drop?
+
+2616:45-2616:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efbba85_ac934364
+Bytes: 5
+ditto
+
+File: compiler/optimizing/code_generator_x86.cc
+
+2979:45-2979:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_3cbf954f
+Bytes: 5
+ditto
+
+3001:45-3001:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_dca30136
+Bytes: 5
+ditto
+
+3419:0-3422:3
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_fca03d2b
+Bytes: 31
+Same comment for the null case.
+
+3763:0-3763:55
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efbba85_ec9d4b6f
+Bytes: 7
+unused?
+
+3786:0-3789:5
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dec53225_f7aa9258
+Bytes: 5
+ditto
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+3037:45-3037:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: beecfece_6d72f590
+Bytes: 5
+ditto
+
+3061:45-3061:50
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efbba85_cc9a0f75
+Bytes: 5
+ditto
+
+3278:0-3279:53
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_bcaac505
+Bytes: 14
+Just for null?
+
+3612:1-3612:55
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efbba85_2c89132e
+Bytes: 7
+Unused?
+
+3632:0-3633:55
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efbba85_0c8ed735
+Bytes: 14
+Just for null?
+
 File: compiler/optimizing/intrinsics_arm64.cc
 
 899:2-899:4
@@ -31,6 +165,23 @@ On a related note, it seems on an eng build (on device) with poisoning is enable
 An alternative is to use userdebug. But would it be less confusing and safer if JIT/Quick is disabled when poisoning is enabled?
 
 I'm not sure what would be the best way, maybe "if (kPoisonHeapReference) { return nullptr;} " in QuickCompiler::Compile() would be the most reassuring? Open to ideas.
+
+643:7-643:28
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3e700ec3_b8e3b09c
+UUID: 9ecf3a47_f51daa97
+Bytes: 85
+Yeah, I agree maybe doing the poisoning check in the QuickCompiler:: method is nicer.
+
+File: compiler/utils/arm/assembler_arm.cc
+
+537:6-537:27
+Mon Jun 22 14:48:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_fc891da9
+Bytes: 137
+Since the assembler already doe these kinds of checks, consider doing the kPoison check in its methods rather than in the code generator?
 
 File: test/Android.run-test.mk
 

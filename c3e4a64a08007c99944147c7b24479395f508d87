@@ -1,0 +1,113 @@
+Revision: c3e4a64a08007c99944147c7b24479395f508d87
+Patch-set: 10
+File: compiler/optimizing/builder.cc
+
+282:4-282:60
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: beecfece_d0458265
+Bytes: 46
+Please add a comment why this may not be true.
+
+277:0-285:3
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_c2179c75
+Bytes: 90
+I guess this is to create the blocks with HTryBoundary instructions? Please add a comment.
+
+322:22-322:34
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_8257642c
+Bytes: 23
+try_boundary = nullptr;
+
+330:41-330:59
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: beecfece_70aace8d
+Bytes: 18
+Nit: one per line.
+
+342:0-343:23
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_0263540f
+Bytes: 135
+Why hasn't it been split? The builder updates the block at each instruction. Why don't we have a new block for the start of a try item?
+
+351
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dec53225_425082d9
+Bytes: 47
+Add a DCHECK that the try_boundary is not null?
+
+371:0-375:55
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: beecfece_50afd29b
+Bytes: 49
+Same question about why hasn't it been split yet?
+
+487:0-487:51
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: beecfece_b0939664
+Bytes: 38
+Update to FindOrCreateBlockStartingAt?
+
+500:0-500:58
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dec53225_a2e3669c
+Bytes: 6
+ditto?
+
+517:0-517:53
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dec53225_c2e0f291
+Bytes: 5
+ditto
+
+537:0-537:58
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: beecfece_90901a59
+Bytes: 5
+ditto
+
+555:64-555:69
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efbba85_2f3bc5fd
+Bytes: 7
+dex_pc.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+1000:0-1002:3
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9efbba85_6f35cd06
+Bytes: 271
+Should you DCHECK that the try boundary is an exit?
+
+Also is it just to simplify the builder that now returns don't necessarily jump to the exit block? So now we can have:
+HReturn
+HThrow
+HTryBoundary
+
+that can jump to the exit block. Could we avoid the HTryBoundary case?
+
+File: compiler/optimizing/nodes.h
+
+1954:0-1957:42
+Tue Jun 23 13:42:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e7526b8_423aacf6
+Bytes: 24
+Maybe remove these then?
+

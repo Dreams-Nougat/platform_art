@@ -9,6 +9,14 @@ UUID: 7ef6069f_d4e9f2f3
 Bytes: 96
 Seems a lot slower for small strings, is the plan to add an intrinsic to avoid the JNI overhead?
 
+18:0-19:45
+Tue Jun 23 00:56:52 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ef6069f_d4e9f2f3
+UUID: 7ef6069f_944bea78
+Bytes: 43
+Yes exactly, that's what I'll work on next!
+
 File: runtime/native/java_lang_String.cc
 
 49:49-49:55
@@ -17,4 +25,12 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7ef6069f_74d91e65
 Bytes: 110
 I think there is a missing instance check? The old code returned false if the object wasn't a string instance.
+
+49:49-49:55
+Tue Jun 23 00:56:52 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ef6069f_74d91e65
+UUID: 5e2782f4_c07917a8
+Bytes: 239
+It is not necessary, because I believe soa.Decode<mirror::String*>(java_rhs) is null if java_rhs is not an instance of a string.  If you look at the implementation of equals in runtime/mirror/string.cc, I return false if the input is null.
 

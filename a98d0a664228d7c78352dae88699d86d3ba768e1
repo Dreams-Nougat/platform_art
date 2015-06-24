@@ -1,0 +1,20 @@
+Revision: a98d0a664228d7c78352dae88699d86d3ba768e1
+Patch-set: 1
+File: runtime/gc/heap-inl.h
+
+173:56-173:61
+Wed Jun 24 22:07:29 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: de02928c_5af68509
+Bytes: 124
+Can you use obj->GetClass() here? klass is possibly a stale pointer since PushOnAllocationStack can cause thread suspension.
+
+File: runtime/gc/heap.h
+
+714:86-714:88
+Wed Jun 24 22:07:29 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: befddec1_d955e3cc
+Bytes: 98
+Can you add LOCKS_EXCLUDED(alloc_tracker_lock_) since these functions acquire alloc_tracker_lock_.
+

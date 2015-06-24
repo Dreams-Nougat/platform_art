@@ -9,6 +9,14 @@ UUID: 3e9bae8e_21326efb
 Bytes: 35
 builders? do we have more than one?
 
+12:14-12:22
+Wed Jun 24 10:41:09 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3e9bae8e_21326efb
+UUID: 1ea26abf_c0205ea7
+Bytes: 24
+GraphBuilder, SsaBuilder
+
 File: compiler/optimizing/graph_checker.cc
 
 31:0-31:78
@@ -35,6 +43,24 @@ UUID: de761212_266d96ad
 Bytes: 2
 +1
 
+31:10-31:15
+Wed Jun 24 10:41:09 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: deab729c_de8de539
+UUID: 3e9bae8e_6191965b
+Bytes: 644
+It actually complains about not ending with a control flow instruction (line 93), everything else is skipped because all the lists are empty.
+
+Builder currently creates a block after every branch, regardless of whether it can fall through or not which is why these blocks can exist. I can change it, and that would also get rid of some dead code, but we would have to be more clever in the presence of try/catch:
+
+  try_start:
+    nop
+  jump_here:
+    ... code ...
+  try_end:
+
+is valid code and and will produce an empty block like this one... If we opt for simplicity in the Builder, then we should just let these blocks pass the GraphChecker.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 95:0-98:50
@@ -44,10 +70,26 @@ UUID: de761212_262cb6a0
 Bytes: 19
 indentation is off.
 
+95:0-98:50
+Wed Jun 24 10:41:09 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: de761212_262cb6a0
+UUID: deab729c_7e7db192
+Bytes: 4
+Done
+
 182:0-182:30
 Wed Jun 24 08:42:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9eb57afa_9c608505
 Bytes: 71
 Why do you need this? Do we crash if we just attempt to dump the graph?
+
+182:0-182:30
+Wed Jun 24 10:41:09 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9eb57afa_9c608505
+UUID: deab729c_9e875d18
+Bytes: 246
+Dumping the graph is fine but it won't validate. If you look below at how Builder is run, if it finds a problem, it stops whatever it was doing and passes on to Quick. If we try to validate the graph in that state the compiler will crash instead.
 

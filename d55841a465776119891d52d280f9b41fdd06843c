@@ -9,6 +9,14 @@ UUID: beecfece_3052063e
 Bytes: 210
 Could you also add this comment somewhere in the builder? It's great to have it here, but usually we read the code and less the commit messages. Having this explanations there will make things easier to follow.
 
+14:0-24:26
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: beecfece_3052063e
+UUID: beecfece_1040aa58
+Bytes: 168
+The splitting is documented in builder.cc:310. The high-level overview doesn't really belong there and I'll add those comments to SsaBuilder in the next CL. Sound good?
+
 File: compiler/optimizing/builder.cc
 
 264:12-264:28
@@ -18,12 +26,31 @@ UUID: 7e7526b8_47871e61
 Bytes: 38
 I don't really understand this remark.
 
+264:12-264:28
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e7526b8_47871e61
+UUID: 7e7526b8_422cecce
+Bytes: 8
+Removed.
+
 268:25-268:84
 Tue Jun 23 11:37:53 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7e7526b8_e7a66a0f
 Bytes: 105
 Nit: maybe encapsulate this in a method of HBasicBlock (and use it inside HBasicBlock::IsSingleGoto too)?
+
+268:25-268:84
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e7526b8_e7a66a0f
+UUID: 7e7526b8_e7542a4f
+Bytes: 502
+I'm just realizing that this and the change to IsSingleGoto really isn't very clean. So what i did is:
+- HBasicBlock::IsSingleGoto returns whether there is just one instruction and that is a Goto (this is the behaviour expected in BooleanSimplifier)
+- HBasicBlock::IsSingleTryBoundary does the same for TryBoundary (used here)
+- HBasicBlock::IsSingleJump returns true if emitting the block doesn't generate nothing but a Goto or a TryBoundary (this is the behaviour of IsSingleGoto expected in codegen)
 
 332:22-332:34
 Tue Jun 23 12:47:55 2015 +0000
@@ -32,12 +59,28 @@ UUID: 9ecf3a47_f5512a5c
 Bytes: 34
 initialize to nullptr for clarity.
 
+332:22-332:34
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ecf3a47_f5512a5c
+UUID: 9ecf3a47_c06c6efd
+Bytes: 4
+Done
+
 339:76-339:77
 Tue Jun 23 12:47:55 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7e7526b8_47607e2b
 Bytes: 27
 why 0? document the dcheck.
+
+339:76-339:77
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e7526b8_47607e2b
+UUID: 7e7526b8_225c504d
+Bytes: 322
+Because `predecessor` is a block that splits an edge, hence has just one predecessor and one (non-exceptional flow) successor. I've expanded the comment above and created a HBasicBlock::GetSinglePredecessor function which DCHECKs that there is just one, so hopefully that makes the whole thing a tad more self-explanatory.
 
 File: compiler/optimizing/builder.h
 
@@ -48,6 +91,14 @@ UUID: 9ecf3a47_b572c208
 Bytes: 217
 `index` for this methods is misleading. I thought of it in terms of block ids but is actually a pc. I've seen some other uses of `idx` as an address. Please document and fix even if it's not you who started the trend.
 
+97:2-99:58
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ecf3a47_b572c208
+UUID: dec53225_62681e9e
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.cc
 
 1053:69-1053:82
@@ -57,6 +108,14 @@ UUID: 7e7526b8_62dfa84d
 Bytes: 173
 i know they behave the same, but I wonder if there will be cases where we  actually want different stuff from Goto and TryBoundary... if so, IsSingleGoto will be misleading.
 
+1053:69-1053:82
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7e7526b8_62dfa84d
+UUID: dec53225_e2440e1d
+Bytes: 59
+PS11 creates different methods for the different use cases.
+
 File: compiler/optimizing/nodes.h
 
 1916:15-1916:37
@@ -65,4 +124,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9ecf3a47_60b6da2f
 Bytes: 27
 What is "Normal"? Document.
+
+1916:15-1916:37
+Thu Jun 25 11:25:08 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ecf3a47_60b6da2f
+UUID: dec53225_e202cec6
+Bytes: 24
+Added a ton of comments.
 

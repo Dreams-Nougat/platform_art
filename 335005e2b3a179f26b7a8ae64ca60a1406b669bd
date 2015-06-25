@@ -9,6 +9,18 @@ UUID: 9efd7aeb_852b4834
 Bytes: 89
 seems a bit of a wart, why not the boot image too? Why not use CompilerDriver::IsImage()?
 
+7:0-7:58
+Thu Jun 25 16:01:27 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9efd7aeb_852b4834
+UUID: 3e6e4e7b_cc997f59
+Bytes: 509
+I should have made the message more explicit. It's when compiling an app against the core image, not compiling the core image.
+
+The reason I need this is so that the checks we do on Java names (eg $inline$foo() has to be inlined) only aborts when we are compiling against the core image (which is a strong indication we are running a run-test).
+
+When we compile regular apps, we are compiling against the "boot" image, so won't abort if a method happens to have $inline$ in its name, but is not being inlined.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 709:0-712:1

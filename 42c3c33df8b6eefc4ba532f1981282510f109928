@@ -1,0 +1,24 @@
+Revision: 42c3c33df8b6eefc4ba532f1981282510f109928
+Patch-set: 3
+File: runtime/gc/allocation_record.cc
+
+110:40-110:50
+Fri Jun 26 23:53:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 93a1f560_c26566c2
+Bytes: 535
+I think there is an invariant that IsMarkedCallback() won't get nullptr passed to it (see MarkSweep, SemiSpace or ConcurrentCopying) . It seems that this CL breaks that if we ever collect class objects. Before this CL, it was fine as we delete the entry if the object gets collected and the GcRoot becomes nullptr. It isn't the case any more as we now keep nullptr GcRoots around.
+
+Besides, there's no point in calling callback if old_object is nullptr (for performance reason).
+
+How about not calling 'callback' if old_object is null?
+
+132:33-132:41
+Fri Jun 26 23:53:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 934c958c_98d9259a
+Bytes: 156
+Same here.
+
+Not sure why it isn't already causing an error as old_object can actually be nullptr here (as we do collect those objects unlike class objects)?
+

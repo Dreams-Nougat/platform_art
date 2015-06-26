@@ -1,5 +1,14 @@
 Revision: ca76479d632c321bea77d10c88da571fab4c6439
 Patch-set: 2
+File: runtime/base/mutex.h
+
+400
+Fri Jun 26 22:19:46 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 138ee5ef_232e941c
+Bytes: 77
+Add comment about "mutator_lock_ is never truly held by any mutator threads".
+
 File: runtime/thread-inl.h
 
 130:45-130:71
@@ -38,6 +47,16 @@ Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: be731e93_3e4c2d90
 Bytes: 196
 I don't understand how this lock acquire (and the one above with timeout) can succeed, given that mutator threads do not actually release the mutator_lock_ on suspend. Could you elaborate on this?
+
+471:24-471:37
+Fri Jun 26 22:19:46 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: be731e93_3e4c2d90
+UUID: 934c958c_ead843e8
+Bytes: 297
+I think I understand it now: the mutator_lock_ is never actually held by any mutator threads. When a thread starts, it will call TransitionFromSuspendedToRunnable(), which only registers but not acquires the mutator_lock_.
+
+There should be a comment about this on the declaration of mutator_lock_.
 
 537:37-537:52
 Mon May 18 22:39:01 2015 +0000

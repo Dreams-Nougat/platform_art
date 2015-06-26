@@ -1,6 +1,43 @@
 Revision: ca76479d632c321bea77d10c88da571fab4c6439
 Patch-set: 2
+File: runtime/thread-inl.h
+
+130:45-130:71
+Fri Jun 26 05:52:59 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: de8ff2ab_180dbd3e
+Bytes: 122
+Should this be CompareExchangeWeakSequentiallyConsistent() or CompareExchangeWeakRelease() as the lock release is removed?
+
+142:0-144:63
+Fri Jun 26 05:52:59 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: de8ff2ab_b83a09f7
+Bytes: 86
+I think it's cleaner to use a while loop here (also consistent with rest of the code).
+
+166:6-168:61
+Fri Jun 26 05:52:59 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: be731e93_fb03a77a
+Bytes: 49
+Are these redundant (same as the outer if check)?
+
+173:56-173:82
+Fri Jun 26 05:52:59 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e65c2c2_a361088d
+Bytes: 75
+Should this be CompareExchangeWeakAcquire() as the lock acquire is removed?
+
 File: runtime/thread_list.cc
+
+471:24-471:37
+Fri Jun 26 05:52:59 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: be731e93_3e4c2d90
+Bytes: 196
+I don't understand how this lock acquire (and the one above with timeout) can succeed, given that mutator threads do not actually release the mutator_lock_ on suspend. Could you elaborate on this?
 
 537:37-537:52
 Mon May 18 22:39:01 2015 +0000
@@ -16,4 +53,11 @@ Parent: eda409cd_41d689ed
 UUID: ed4089d5_7fb34fdb
 Bytes: 38
 Yes, should be "this is safe". Thanks!
+
+582:2-582:32
+Fri Jun 26 05:52:59 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9e99fafb_25125462
+Bytes: 120
+The body of this function doesn't seem to have changed  anything significant. Maybe just inline this function as before?
 

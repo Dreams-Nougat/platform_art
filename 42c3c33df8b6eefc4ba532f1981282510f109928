@@ -47,3 +47,19 @@ UUID: 73a3a180_c3747648
 Bytes: 118
 Can we see the value of this change in the middle of a GC and end up with mismatched allow/disallow calls? Is it safe?
 
+3720:6-3720:28
+Sat Jun 27 22:09:41 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 73a3a180_c3747648
+UUID: f390710b_0e45b3c6
+Bytes: 1009
+Yes, this value can change in the middle of a GC.
+
+For a change from Enabled to Disabled, it is safe because disabling tracking deallocates the entries, thus GC won't need to sweep entries or call AllowNewAllocationRecords().
+
+For a change from Disabled to Enabled, the result is that AllowNewAllocationRecords() and EnsureNewAllocationRecordsDisallowed() could be called when new allocations should be disallowed but are actually allowed. This might fail the CHECK() in EnsureNewAllocationRecordsDisallowed(). But it is safe for AllowNewAllocationRecords(), which just does a redundant store of "true" and a redundant Broadcast().
+
+It is also possible that new allocation records get added to the list in this period, and they will be deleted on the next sweep. But I think this is OK since it just misses the first few allocation records, which is the same result as the user not clicking the button soon enough.
+
+Therefore I think I can just remove EnsureNewAllocationRecordsDisallowed() to fix this issue.
+

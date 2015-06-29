@@ -1,0 +1,18 @@
+Revision: 220ea1c0987cf896ca5b415e52e8e3a87ddb9f87
+Patch-set: 16
+File: compiler/optimizing/nodes.h
+
+1691:0-1696:44
+Mon Jun 29 07:17:49 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b367d930_d5cf3c9d
+Bytes: 390
+We discussed about this in the team. We think we should avoid doing this here, and we have a suggestion: how about adding a new node in your case, eg HLoadConstantFromConstantPool and change all users of the original constant to that that node instead?
+
+You would end up with something like:
+i0 = HComputeBaseMethodAddress();
+i1 = HLoadConstantFromConstantPool(i1)
+i2 = HAdd(i42, i1)
+
+WDYT?
+

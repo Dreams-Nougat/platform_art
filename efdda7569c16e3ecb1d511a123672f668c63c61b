@@ -1,0 +1,65 @@
+Revision: efdda7569c16e3ecb1d511a123672f668c63c61b
+Patch-set: 3
+File: runtime/thread-inl.h
+
+81:0-85:3
+Mon Jun 29 23:37:22 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 934c958c_a41837a4
+Bytes: 170
+Is this part necessary for correctness (i.e. a thread will pass the barrier in a bounded time), or it's just for performance (i.e. a thread will pass the barrier sooner)?
+
+File: runtime/thread.cc
+
+803:4-803:73
+Mon Jun 29 23:37:22 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 132185e2_88b91738
+Bytes: 36
+AtomicSetFlag() does the same thing.
+
+817:0-822:5
+Mon Jun 29 23:37:22 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 332a09c0_bd21b7d9
+Bytes: 522
+I think this part is the inner if check of a double-checked locking. All the callers to this function except SuspendAllInternal() would first check the kActiveSuspendBarrier flag without holding the thread_suspend_count_lock_. The race is that the suspender thread calling SuspendAllInternal() and the "this" thread could execute this function simultaneous, because SuspendAllInternal() would install the pass barrier for all non-ignored threads.
+
+Probably it's more intuitive to comment about this double-checked locking?
+
+850:0-855:5
+Mon Jun 29 23:37:22 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 53277df4_33dcda56
+Bytes: 414
+However, I don't think this is possible. Have you verified this can ever happen?
+
+The check point function is only installed for runnable threads, and the thread requesting a check point would only execute the check point function for threads without the function installed. See Thread::RequestCheckpoint() and its callers.
+
+Besides, the old CHECK(found_checkpoint) is not failing. So maybe change this to a CHECK?
+
+File: runtime/thread.h
+
+970:0-974:5
+Mon Jun 29 23:37:22 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 73f6419f_aed857e7
+Bytes: 42
+Same here. For correctness or performance?
+
+File: runtime/thread_list.cc
+
+543:8-543:12
+Mon Jun 29 23:37:22 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 53277df4_0a67db48
+Bytes: 10
+two spaces
+
+986:0-997:9
+Mon Jun 29 23:37:22 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 934c958c_c1c685aa
+Bytes: 80
+These are the same as the code below, after the else block. Are these redundant?
+

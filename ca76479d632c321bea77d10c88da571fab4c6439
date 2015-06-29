@@ -9,6 +9,14 @@ UUID: 138ee5ef_232e941c
 Bytes: 77
 Add comment about "mutator_lock_ is never truly held by any mutator threads".
 
+400
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 138ee5ef_232e941c
+UUID: 73a3a180_c64b247c
+Bytes: 4
+Done
+
 File: runtime/thread-inl.h
 
 130:45-130:71
@@ -18,12 +26,28 @@ UUID: de8ff2ab_180dbd3e
 Bytes: 122
 Should this be CompareExchangeWeakSequentiallyConsistent() or CompareExchangeWeakRelease() as the lock release is removed?
 
+130:45-130:71
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: de8ff2ab_180dbd3e
+UUID: 73a3a180_e648a081
+Bytes: 52
+Yes, memory ordering should be imposed here. Thanks.
+
 142:0-144:63
 Fri Jun 26 05:52:59 2015 +0000
 Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: de8ff2ab_b83a09f7
 Bytes: 86
 I think it's cleaner to use a while loop here (also consistent with rest of the code).
+
+142:0-144:63
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: de8ff2ab_b83a09f7
+UUID: 3333e921_8428e8bf
+Bytes: 4
+Done
 
 166:6-168:61
 Fri Jun 26 05:52:59 2015 +0000
@@ -32,12 +56,28 @@ UUID: be731e93_fb03a77a
 Bytes: 49
 Are these redundant (same as the outer if check)?
 
+166:6-168:61
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: be731e93_fb03a77a
+UUID: 53305d12_623dd67b
+Bytes: 34
+Yes. These could be removed. Done.
+
 173:56-173:82
 Fri Jun 26 05:52:59 2015 +0000
 Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5e65c2c2_a361088d
 Bytes: 75
 Should this be CompareExchangeWeakAcquire() as the lock acquire is removed?
+
+173:56-173:82
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5e65c2c2_a361088d
+UUID: 3333e921_642de4cd
+Bytes: 4
+Done
 
 File: runtime/thread_list.cc
 
@@ -58,6 +98,16 @@ I think I understand it now: the mutator_lock_ is never actually held by any mut
 
 There should be a comment about this on the declaration of mutator_lock_.
 
+471:24-471:37
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 934c958c_ead843e8
+UUID: 53305d12_a22ebe46
+Bytes: 464
+Yes. The objective of this CL is to remove the acquiring/releasing of the mutator_lock_ when a mutator thread enters/exits the kRunnable state. Now, the mutator_lock_ will not be truly held by any mutator threads. It would only be grabbed exclusively by the GC/debugger thread. The mutator_lock_ could be replaced by an ordinary Mutex but this would introduce too much effort. We just get it registered to fulfill the thread safety analysis in the ART code.
+
+Done.
+
 537:37-537:52
 Mon May 18 22:39:01 2015 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -73,10 +123,26 @@ UUID: ed4089d5_7fb34fdb
 Bytes: 38
 Yes, should be "this is safe". Thanks!
 
+537:37-537:52
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed4089d5_7fb34fdb
+UUID: 133a65f6_c0d2de75
+Bytes: 4
+Done
+
 582:2-582:32
 Fri Jun 26 05:52:59 2015 +0000
 Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9e99fafb_25125462
 Bytes: 120
 The body of this function doesn't seem to have changed  anything significant. Maybe just inline this function as before?
+
+582:2-582:32
+Mon Jun 29 11:16:40 2015 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e99fafb_25125462
+UUID: 133a65f6_a0cfdacf
+Bytes: 4
+Done
 

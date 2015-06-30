@@ -9,6 +9,15 @@ UUID: b367d930_d865b1c2
 Bytes: 38
 Why is that not in OptimizingCompiler?
 
+656:0-662:3
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b367d930_d865b1c2
+UUID: b388b937_8d64a119
+Bytes: 185
+Because we agreed to move it from art::OptimizingCompiler::Compile to art::QuickCompiler::Compile (see the comments of PS3). :)
+(I removed the comment though, which is irrelevant here.)
+
 File: compiler/optimizing/code_generator_arm.cc
 
 3104:0-3104:57
@@ -18,12 +27,28 @@ UUID: b3a99960_0b32a11c
 Bytes: 38
 Add a DCHECK that the type is PrimNot?
 
+3104:0-3104:57
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b3a99960_0b32a11c
+UUID: f3a6b1c2_af931960
+Bytes: 4
+Done
+
 4229:0-4229:56
 Tue Jun 30 11:44:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d3ae0d65_0cbf1bff
 Bytes: 159
 I think this comment is confusing. Don't you want to say "We go into slow path if classes are not equal"? You can successfully checkast with different classes.
+
+4229:0-4229:56
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d3ae0d65_0cbf1bff
+UUID: b388b937_ed6b65e4
+Bytes: 131
+Agreed.  I copied and pasted this comment from the other code generator for uniformity reasons.  I made this less ambiguous in PS7.
 
 File: compiler/optimizing/code_generator_arm64.cc
 
@@ -34,6 +59,14 @@ UUID: b3a99960_2b375d0d
 Bytes: 5
 ditto
 
+1624:0-1624:56
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b3a99960_2b375d0d
+UUID: 93973554_cc04ef4c
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_x86.cc
 
 3487:0-3487:57
@@ -43,12 +76,28 @@ UUID: b3a99960_cb4b297c
 Bytes: 38
 add a DCHECK that the type is PrimNot?
 
+3487:0-3487:57
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b3a99960_cb4b297c
+UUID: 7392c167_4b28e5be
+Bytes: 4
+Done
+
 3896:12-3896:68
 Tue Jun 30 11:44:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b3a99960_eb486581
 Bytes: 100
 Isn't it a bug if PrimNot && zero ? The constant should be a NullConstant, so line 3894 would crash.
+
+3896:12-3896:68
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b3a99960_eb486581
+UUID: 7392c167_0b07bd55
+Bytes: 29
+Done (here and in line 3915).
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -59,6 +108,14 @@ UUID: f3b791b3_aaf02f07
 Bytes: 5
 ditto
 
+3359:0-3359:64
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f3b791b3_aaf02f07
+UUID: d38d2d46_4ead53a6
+Bytes: 102
+CodeGenerator::GetInt32ValueOf accepts HIntConstant and HNullConstant objects, so this should be fine.
+
 3746:0-3746:68
 Tue Jun 30 11:44:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -66,12 +123,28 @@ UUID: d3ae0d65_ccc8239b
 Bytes: 5
 ditto
 
+3746:0-3746:68
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d3ae0d65_ccc8239b
+UUID: f3a6b1c2_8f101557
+Bytes: 9
+Likewise.
+
 3767:0-3767:68
 Tue Jun 30 11:44:17 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 13b505ac_ce37b7e9
 Bytes: 5
 ditto
+
+3767:0-3767:68
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 13b505ac_ce37b7e9
+UUID: 93973554_2c33b332
+Bytes: 9
+Likewise.
 
 File: compiler/optimizing/intrinsics_arm64.cc
 
@@ -83,4 +156,12 @@ Bytes: 174
 Consistency: do like in the other backends.
 
 Note that I don't have a strong preference. I'll leave it to your preference whether to use a block or calling explictly Release.
+
+795:0-797:40
+Tue Jun 30 15:43:50 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 13b505ac_ee34fbe6
+UUID: 93973554_4c28ffbe
+Bytes: 197
+I think the block approach is more concise, especially when dealing with several temporaries, so I went for this one.  I converted the remaining use of Release to this scope-based implicit release.
 

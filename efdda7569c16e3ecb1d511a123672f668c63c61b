@@ -39,6 +39,16 @@ I will add a comment at the SuspendAllInternal to state that certain thread migh
 
 For SetState, if we could ensure that the original state cannot be the kRunnable in ART, no pass barrier check is needed. Currently, SetState will not be used to set the state from runnable to suspended in ART (suspended state -> suspended state in all places). But maybe we could keep the check here cause the SetState definition does not forbid setting the state from runnable to suspended?
 
+81:0-85:3
+Tue Jun 30 23:17:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 133a65f6_a3b9a437
+UUID: 339be98e_e7e01611
+Bytes: 464
+Thanks for the explanation. Yes, I agree that the check in SetStateUnsafe is necessary to avoid the starvation in your example, and the exclusive mutator_lock_ in this case guarantees the safety. It's probably not a bad idea to remove SetStateUnsafe altogether.
+
+For SetState, I think we can just put a CHECK_NE(old_state_and_flags.state, kRunnable) instead. The use of both SetState and SetStateUnsafe should be strictly restricted, they are both somewhat unsafe.
+
 File: runtime/thread.cc
 
 803:4-803:73
@@ -55,6 +65,14 @@ Parent: 132185e2_88b91738
 UUID: 53305d12_85846417
 Bytes: 121
 Here two flags (kSuspendRequest and kActiveSuspendBarrier) might be set simultaneously. AtomicSetFlag could only set one.
+
+803:4-803:73
+Tue Jun 30 23:17:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 53305d12_85846417
+UUID: 5383fd1c_64f0668c
+Bytes: 19
+Yes, you are right.
 
 817:0-822:5
 Mon Jun 29 23:37:22 2015 +0000

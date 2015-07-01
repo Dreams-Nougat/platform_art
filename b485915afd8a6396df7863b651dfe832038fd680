@@ -9,3 +9,15 @@ UUID: b3cfd99d_b54120e0
 Bytes: 129
 I guess we were just lucky before. ArtMethod being in the linear space don't get aligned with kObjectAligment anymore (it seems).
 
+334:25-334:64
+Wed Jul 01 16:03:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b3cfd99d_b54120e0
+UUID: 33c4c97c_02e40b59
+Bytes: 375
+No, I don't think so. See the comment on the PtrSizedFields struct. The compiler inserts padding, so you either have 28 + 3*4 = 40 =~ 0(8), or 28 + 4 + 3*8 = 56 ~= 0(8).
+
+So it's your change that's breaking things... :-)
+
+Please do *not* remove the check, but make it weaker. E.g., alignment by pointer-size should always be the case. We're already not very defensive here...
+

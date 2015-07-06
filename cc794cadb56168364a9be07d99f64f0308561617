@@ -9,3 +9,13 @@ UUID: 931655ff_ba0ca9c9
 Bytes: 54
 Aren't those runtime calls to stubs that cannot throw?
 
+3041:4-3041:51
+Mon Jul 06 09:12:03 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 931655ff_ba0ca9c9
+UUID: 13d1858c_2e0b53df
+Bytes: 426
+I didn't check. I am not clear on the details of what calls can or cannot trigger GC. For now I added the dependency to anything that could call (`kCall` or `kCallOnSlowPath`), assuming this would be a superset of what can trigger GC.
+
+One issue right now is that whether GC can happen or not is arch-dependent, but we decide that in an arch-dependent way so we must be conservative. Trying to improve that is on my TODO list.
+

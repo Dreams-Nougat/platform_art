@@ -63,3 +63,13 @@ It is also possible that new allocation records get added to the list in this pe
 
 Therefore I think I can just remove EnsureNewAllocationRecordsDisallowed() to fix this issue.
 
+3720:6-3720:28
+Mon Jul 06 20:52:43 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f390710b_0e45b3c6
+UUID: 736d61b3_59466373
+Bytes: 540
+> It is also possible that new allocation records get added to the list in this period, and they will be deleted on the next sweep. But I think this is OK since it just misses the first few allocation records, which is the same result as the user not clicking the button soon enough.
+
+Is it safe for a new allocation record (a class strong root and a weak object root) to be added while GC is sweeping? How is this different such that the original reason that we needed to disable new allocation records during sweeping does not apply here?
+

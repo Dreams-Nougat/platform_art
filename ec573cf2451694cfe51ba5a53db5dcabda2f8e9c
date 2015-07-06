@@ -25,6 +25,18 @@ UUID: 931655ff_dd151f78
 Bytes: 169
 That's kind of obscure, and unfortunate we need a Jack specific file every time we need to do this. Why isnt' the directory structure (src and src-multidex) good enough?
 
+1
+Mon Jul 06 13:12:10 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 931655ff_dd151f78
+UUID: 13b8a53c_f62d981f
+Bytes: 355
+Because there is a cross reference between Main and OtherDex classes (they both reference each other).
+
+This works with javac using "-implicit:none" command-line option. We cannot do this for Jack using source files.
+
+I can also disable this test for Jack and keep using javac+dx. Or, compile them with javac to get classes, then use jill+jack to compile.
+
 File: test/etc/default-build
 
 50:39-50:47

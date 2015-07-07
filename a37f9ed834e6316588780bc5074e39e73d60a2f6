@@ -9,3 +9,11 @@ UUID: d8fb8a32_de92055e
 Bytes: 172
 Given the size of the generated code, would it make sense instead to specialize the code of System.arrayCopyChar and just take the hit for the static call at the call site?
 
+1023:0-1023:75
+Tue Jul 07 13:55:15 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8fb8a32_de92055e
+UUID: d3260d9c_a6c90622
+Bytes: 230
+It is a good question.  I guess that this is not invoked too often, but those invokes happen to be in important places like StringBuilder, which usually have 0 as the src/dest position.  We found that it was a performance benefit.
+

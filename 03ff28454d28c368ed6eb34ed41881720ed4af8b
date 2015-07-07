@@ -25,6 +25,13 @@ UUID: f8f4ce42_9f7593aa
 Bytes: 120
 Shouldn't it be the one with the highest (or lowest, not sure which way they are going) frame id? Could you DCHECK that?
 
+220:6-220:12
+Tue Jul 07 13:10:36 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_9f1913a9
+Bytes: 9
+DCHECK_EQ
+
 File: runtime/stack.cc
 
 481:0-481:32
@@ -34,7 +41,35 @@ UUID: d829ca86_ae6db7fb
 Bytes: 114
 Looks like GetDebuggerShadowFrameForFrameId never returns null if search_only is false. Should you DCHECK instead?
 
+481:2-481:32
+Tue Jul 07 13:10:36 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_40bcce57
+Bytes: 121
+Yeah, the ShadowFrame must exist here so it's more a CHECK(shadow_frame != nullptr) (and you can remove the if statement)
+
 File: runtime/thread.cc
+
+242:1-242:8
+Tue Jul 07 13:10:36 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8fb8a32_7e06515b
+Bytes: 55
+Also add DISALLOW_COPY_AND_ASSIGN(FrameIdToShadowFrame)
+
+243:2-243:8
+Tue Jul 07 13:10:36 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_a31964a8
+Bytes: 12
+const size_t
+
+244:2-244:14
+Tue Jul 07 13:10:36 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_9fdeb3ce
+Bytes: 18
+ShadowFrame* const
 
 248:54-250:72
 Tue Jul 07 09:39:36 2015 +0000
@@ -52,10 +87,29 @@ no delete of the entry?
 
 File: runtime/thread.h
 
+822:15-822:47
+Tue Jul 07 13:10:36 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_cefda332
+Bytes: 371
+It's more "GetOrCreateDebuggerShadowFrameForFrameId" since you may create the frame if requested.
+
+Why not having two distinct methods and remove the bool search_only flag? You would have:
+
+  * FindDebuggerShadowFrameForFrameId: for finding the frame
+  * GetOrCreateDebuggerShadowFrameForFrameId: for finding or creating the frame, using FindDebuggerShadowFrameForFrameId
+
 1238:21-1238:26
 Tue Jul 07 09:39:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d8fb8a32_7e39b100
 Bytes: 22
 more of a linked list?
+
+1241:26-1241:50
+Tue Jul 07 13:10:36 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8fb8a32_9e9c7d70
+Bytes: 100
+We must CHECK this is null when the thread exits, to be sure we do not leave any shadow frame there.
 

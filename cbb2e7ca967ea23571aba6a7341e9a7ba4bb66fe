@@ -1,0 +1,158 @@
+Revision: cbb2e7ca967ea23571aba6a7341e9a7ba4bb66fe
+Patch-set: 5
+File: compiler/optimizing/code_generator_arm64.cc
+
+1592
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_ce2fe342
+Bytes: 81
+Missing line:
+
+  // `InstructionSimplifierArm64::TryExtractArrayAccessAddress()`.
+
+File: compiler/optimizing/code_generator_arm64.h
+
+185:2-186:84
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_b0af581a
+Bytes: 33
+Where is this method implemented?
+
+File: compiler/optimizing/common_arm64.h
+
+206:6-207:89
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_23b1d4ff
+Bytes: 13
+One per line?
+
+File: compiler/optimizing/instruction_simplifier_arch.cc
+
+23:2-23:33
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_0e6f2b77
+Bytes: 57
+I know it's a bit premature, but maybe use a switch here?
+
+File: compiler/optimizing/instruction_simplifier_arch.h
+
+24
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_3095a8c1
+Bytes: 104
+Add a comment saying that this class implements arch-specific instruction simplifications/optimizations.
+
+File: compiler/optimizing/instruction_simplifier_arm64.cc
+
+29:0-43:2
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_838b0028
+Bytes: 169
+Turn `array`, `index` and `access_size` into arguments of TryExtractArrayAccessAddress and let VisitArrayGet and VisitArraySet pass them to TryExtractArrayAccessAddress?
+
+72:30-72:31
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_6390fc51
+Bytes: 17
+Nit: extra space.
+
+File: compiler/optimizing/nodes_arm64.h
+
+24:6-24:31
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_ae7db729
+Bytes: 53
+Briefly document the purpose of this new instruction?
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+358:2-358:32
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_6e490f07
+Bytes: 29
+Likewise, introduce a switch?
+
+File: test/511-checker-arm64-array-access-split/info.txt
+
+1:33-1:45
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8fb8a32_9e291d3f
+Bytes: 12
+optimization
+
+File: test/511-checker-arm64-array-access-split/src/Main.java
+
+2:0-15:2
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_b08878a6
+Bytes: 19
+Indentation is off.
+
+210:64-210:74
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_df2f9b42
+Bytes: 10
+simplifier
+
+215:54-215:56
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_ce5923d2
+Bytes: 49
+Is this relevant to check that this offset is 12?
+
+228:54-228:56
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_302fe818
+Bytes: 9
+Likewise?
+
+266:54-266:56
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_6eb22f89
+Bytes: 9
+Likewise?
+
+282:54-282:56
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8fb8a32_fe73815d
+Bytes: 9
+Likewise?
+
+289
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_2ebc2757
+Bytes: 45
+Add
+
+  CHECK-NOT: Arm64IntermediateAddress
+
+?
+
+291
+Tue Jul 07 14:05:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_d0453cc9
+Bytes: 45
+Add
+
+  CHECK-NOT: Arm64IntermediateAddress
+
+?
+

@@ -1,0 +1,81 @@
+Revision: 89d96ed51f1b3829d254a6ac62b1543321db0fe5
+Patch-set: 5
+File: compiler/optimizing/nodes.h
+
+1358:14-1358:21
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_311fea62
+Bytes: 62
+Maybe IsValidHandle, to not confuse it with the other IsValid?
+
+1413:0-1415:17
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_d3be66ad
+Bytes: 80
+Is it really worth it? What callers can we have that shouldn't acquire the lock?
+
+3743:25-3743:47
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_f3c16a25
+Bytes: 45
+This doesn't sound right. Why do you need it?
+
+3996:2-4002:3
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_a26a80df
+Bytes: 162
+Yeah, the virtual just for the DCHECK is maybe too much. I'd put this logic in just one SetReferenceTypeInfo method:
+
+
+if (kIsDebugBuild && IsBoundType()) { ... }
+
+File: compiler/optimizing/reference_type_propagation.cc
+
+255:0-258:76
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_b3cbe241
+Bytes: 92
+Please add a comment about this special case. Could you DCHECK something on the given klass?
+
+297:7-297:11
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_1124eeb8
+Bytes: 115
+Isn't the TODO really about parsing the signature of the current method to know the actual types of the parameters?
+
+313:25-313:41
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_8239bc03
+Bytes: 104
+Nit: parens.
+
+Also, please add a TODO with the reference about the bug of why we are doing a null check.
+
+352:0-353:41
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_f13842db
+Bytes: 189
+Instead of having them be invalid, could we have them be java.lang.Object instead? Would that make it simpler? Or is the non valid type (pretty much the bottom type), helping the algorithm?
+
+417:16-417:22
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_23343467
+Bytes: 45
+Not really parent, more "object", or "array".
+
+482:4-482:26
+Tue Jul 07 21:23:48 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_4233b421
+Bytes: 110
+Please add a comment why you need to add to the worklist in that case, but not if UpdateArrayGet returns true.
+

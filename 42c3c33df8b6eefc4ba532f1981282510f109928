@@ -73,3 +73,13 @@ Bytes: 540
 
 Is it safe for a new allocation record (a class strong root and a weak object root) to be added while GC is sweeping? How is this different such that the original reason that we needed to disable new allocation records during sweeping does not apply here?
 
+3720:6-3720:28
+Tue Jul 07 01:40:28 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 736d61b3_59466373
+UUID: 135425e3_f93c8b81
+Bytes: 553
+It is thread-safe because the sweeping is also guarded by Locks::alloc_tracker_lock_. The worst case is the new allocation record get removed, or the object root or class root is set to null. The null class root case is not handled though, which I'll fix.
+
+It is different because in this case, we could only miss records in the *first* GC cycle after user clicks the button and before the sweep. Without the disabling new records, in *every* subsequent GC cycle new allocations that happen between DisallowNewSystemWeaks() and the sweep will be missed.
+

@@ -2,12 +2,39 @@ Revision: 073766e084b4bda160eebcc1ead2ea7f33c974f1
 Patch-set: 2
 File: compiler/optimizing/code_generator_arm64.cc
 
+91
+Tue Jul 07 14:16:32 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_2e4307e9
+Bytes: 393
+Why `hi` and `hs`? I think it works, but so would `ge` and `gt`. They would be less confusing, and we could use the helper above.
+
+Not considering the NaN cases, the NZCV flags are set as follow for FP comparisons (ARMv8 ARM AppxG-5105):
+
+==  0110
+<   1000
+>   0010
+
+Then the condition code mean:
+
+hs = 2,   // C set
+hi = 8,   // C set, Z clear
+ge = 10,  // N == V
+gt = 12,  // Z clear, N == V
+
 1660
 Tue Jul 07 13:49:07 2015 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d8fb8a32_defd6532
 Bytes: 74
 This seems pretty architecture independent. Should we move it out of here?
+
+1767
+Tue Jul 07 14:16:32 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_4e653397
+Bytes: 80
+What about `if (Primitive::IsFloatingPointType(type) ...` instead of the switch?
 
 1782
 Tue Jul 07 13:49:07 2015 +0000
@@ -22,4 +49,30 @@ __ Csinc(res, res, wzr, InvertCondition(vs));
 } else if (gt_bias && ((cond == LT) || (cond == LE))) || (!gt_bias && (cond == EQ)) {
 __ Csel(res, wzr, res, vs);
 }
+
+1782
+Tue Jul 07 14:16:32 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_3f39e78f
+UUID: d8fb8a32_be7df929
+Bytes: 122
+Actually VIXL will handle this nicely.
+
+__ Cset(res, cond);
+int val = <nan case> ? 0 : 1;
+__ Csel(res, res, Operand(val));
+
+2111
+Tue Jul 07 14:16:32 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_10ed043d
+Bytes: 48
+This is misnamed. `on_NaN_label`? `on_vs_label`?
+
+2178
+Tue Jul 07 14:16:32 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_6e60ef88
+Bytes: 6
+Ditto.
 

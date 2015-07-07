@@ -1,0 +1,48 @@
+Revision: bd824548c571a9fc51ee0bf1b6fe3c38742163a8
+Patch-set: 4
+File: compiler/optimizing/intrinsics_arm.cc
+
+865:0-870:51
+Tue Jul 07 11:37:03 2015 +0000
+Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8fb8a32_feab815e
+Bytes: 98
+Too many temps may cause unnecessary spills, this can be done easily with 3 temps with some reuse.
+
+872:47-872:49
+Tue Jul 07 11:37:03 2015 +0000
+Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_903d7499
+Bytes: 7
+Why R0?
+
+906:2-906:33
+Tue Jul 07 11:37:03 2015 +0000
+Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_3f7b2772
+Bytes: 155
+Is there an explicit null check for the invoke? It could be an implicit check on this LDR but it needs to be moved before the "argument==null" check above.
+
+907:19-907:36
+Tue Jul 07 11:37:03 2015 +0000
+Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_c050de56
+Bytes: 53
+Don't use implicit class_offset==0, make it explicit.
+
+914:5-914:9
+Tue Jul 07 11:37:03 2015 +0000
+Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_2062ea36
+Bytes: 28
+The string length is 32-bit.
+
+933:2-933:51
+Tue Jul 07 11:37:03 2015 +0000
+Author: Vladimir Marko <1033066@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_1052a4e0
+Bytes: 339
+Compare 2 characters at a time, please.
+
+Thanks to value_offset%4==0, we can start comparing characters two at a time without any hassle. And thanks to kObjectAlignment%4==0 all strings with an odd length will be zero-padded, so we can use 32-bit comparison even for the last character. (Use static_assert or DCHECK for those assumptions.)
+

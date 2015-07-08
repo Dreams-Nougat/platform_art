@@ -1,0 +1,20 @@
+Revision: 80791054279e813358e24d6dbb552647fa267525
+Patch-set: 6
+File: runtime/interpreter/interpreter_common.cc
+
+498:15-498:44
+Wed Jul 08 08:13:56 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_f06de02c
+Bytes: 127
+nit: ArtMethod is a native object, you could save it to a local to avoid all these "new_shadow_frame->GetMethod()" expressions.
+
+504:9-505:46
+Wed Jul 08 08:13:56 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_2eb2e755
+Bytes: 256
+You need to call ClassLinker::IsQuickToInterpreterBridge in case the entrypoint comes from the image. So this should be
+
+  Runtime::Current()->GetClassLinker()->IsQuickToInterpreterBridge(new_shadow_frame->GetMethod()->GetEntryPointFromQuickCompiledCode())
+

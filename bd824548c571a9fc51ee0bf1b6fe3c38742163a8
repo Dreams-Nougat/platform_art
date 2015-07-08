@@ -164,6 +164,17 @@ Compare 2 characters at a time, please.
 
 Thanks to value_offset%4==0, we can start comparing characters two at a time without any hassle. And thanks to kObjectAlignment%4==0 all strings with an odd length will be zero-padded, so we can use 32-bit comparison even for the last character. (Use static_assert or DCHECK for those assumptions.)
 
+934
+Wed Jul 08 15:15:48 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8f4ce42_e5c41286
+Bytes: 290
+We should not enter the body of the loop if the length is 0.
+
+We won't hit this bug as long as all the zero-length strings point to the same interned "" because of the reference equality check above. So we should make sure we have a test that checks the result of
+
+  new String().equals("")
+
 935:33-935:34
 Tue Jul 07 12:25:09 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -39,12 +39,28 @@ We should not eagerly allocate stuff. What if we decide to skip blocks?
 
 We need a lazy solution for this and only when needed.
 
+32:4-34:5
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 782e1e92_4b908551
+UUID: 18f28255_26344267
+Bytes: 100
+I'm thinking about instantiating this lazily. Maybe this optimization should come in an upcoming CL?
+
 46:11-46:13
 Wed Jul 08 14:58:57 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 782e1e92_cb92355e
 Bytes: 40
 who is `ni`? i think you want `property`
+
+46:11-46:13
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 782e1e92_cb92355e
+UUID: 1840c241_16f61c89
+Bytes: 4
+Done
 
 54:11-54:13
 Wed Jul 08 14:58:57 2015 +0000
@@ -53,6 +69,14 @@ UUID: f8f4ce42_6296b8a0
 Bytes: 5
 ditto
 
+54:11-54:13
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_6296b8a0
+UUID: f8f4ce42_a5ce0aa0
+Bytes: 4
+Done
+
 59:39-59:42
 Wed Jul 08 14:58:57 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,12 +84,28 @@ UUID: 18f28255_e659bad1
 Bytes: 45
 what does res stand for? Maybe use old_value?
 
+59:39-59:42
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f28255_e659bad1
+UUID: f8f4ce42_65e2421a
+Bytes: 4
+Done
+
 109:6-109:34
 Wed Jul 08 14:58:57 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1840c241_d60c1445
 Bytes: 76
 resize will not give you the exact requested size. check the implementation.
+
+109:6-109:34
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1840c241_d60c1445
+UUID: 782e1e92_ebea919b
+Bytes: 42
+I know, it'll be bigger. Is that an issue?
 
 111:0-113:7
 Wed Jul 08 14:58:57 2015 +0000
@@ -83,6 +123,14 @@ What's the rationale for storing the current block?
 
 I don't think it's ok to hold the state here. I can see a lot of confusion from this and imo is better to pass it as an argument when you set/get properties.
 
+118:6-118:16
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_c2c584a0
+UUID: f8f4ce42_25155a78
+Bytes: 162
+It was about making the interface lighter since I was seeing the HContext in the context of a traversal, working on the current block. That might not be relevant.
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 347:44-347:70
@@ -91,6 +139,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1840c241_d63534e3
 Bytes: 10
 IsStatic()
+
+347:44-347:70
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1840c241_d63534e3
+UUID: f8f4ce42_a5004a36
+Bytes: 4
+Done
 
 348:4-348:47
 Wed Jul 08 14:58:57 2015 +0000
@@ -104,6 +160,16 @@ a.bar() -> a cannot be null at this point
 
 yet after this call the context will think that a cannot be null during the entire block.
 
+348:4-348:47
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_345a3851
+UUID: 782e1e92_0b527de0
+Bytes: 286
+At the moment we're inspecting a.foo(), a is marked as can be null. After this call, a is marked as cannot be null, and a.bar() has the correct info.
+
+The fact is that I have a deeply dynamic vision of it, used during a traversal, while you're seeing as a static storage for properties.
+
 File: compiler/optimizing/reference_type_propagation.h
 
 30:43-30:48
@@ -113,10 +179,26 @@ UUID: 1840c241_96168c4f
 Bytes: 67
 Shouldn't this be true? the default value should be the safe value.
 
+30:43-30:48
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1840c241_96168c4f
+UUID: 1840c241_566f04a8
+Bytes: 132
+No. The default value is the monoidal 0 wrt Merge. If you do not respect this, merging blocks is not a sound mathematical operation.
+
 35:2-35:6
 Wed Jul 08 14:58:57 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d829ca86_342918c2
 Bytes: 5
 const
+
+35:2-35:6
+Wed Jul 08 17:07:18 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_342918c2
+UUID: f8f4ce42_455a9e51
+Bytes: 4
+Done
 

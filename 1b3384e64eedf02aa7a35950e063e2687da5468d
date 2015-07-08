@@ -9,12 +9,28 @@ UUID: d829ca86_11ed0e3d
 Bytes: 31
 HasValidHandle -> IsValidHandle
 
+1358:14-1358:28
+Wed Jul 08 13:05:43 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_11ed0e3d
+UUID: d829ca86_b19e3aaf
+Bytes: 4
+Done
+
 1362:1-1364:3
 Wed Jul 08 12:00:18 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d8fb8a32_81de5c85
 Bytes: 68
 I'd keep this IsValid (again, to not confuse with the other method).
+
+1362:1-1364:3
+Wed Jul 08 13:05:43 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8fb8a32_81de5c85
+UUID: d829ca86_d1a1c6f8
+Bytes: 4
+Done
 
 File: compiler/optimizing/reference_type_propagation.cc
 
@@ -24,4 +40,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1840c241_d36ae612
 Bytes: 144
 But if the phi goes from String[] to Object[] don't we have a problem? the array get will be typed as string, and then not put in the work list.
+
+501:0-504:26
+Wed Jul 08 13:05:43 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1840c241_d36ae612
+UUID: f8f4ce42_a229603e
+Bytes: 215
+It will be added to the worklist again because it is an user of something that changes. This is just an optimistic attempt to speed up convergence (if the input object type does not change we will not revisit this).
 

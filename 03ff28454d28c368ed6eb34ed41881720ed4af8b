@@ -32,6 +32,17 @@ UUID: f8f4ce42_9f1913a9
 Bytes: 9
 DCHECK_EQ
 
+240:12-240:61
+Wed Jul 08 09:29:53 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8fb8a32_c140e408
+Bytes: 961
+This is wrong (and all others SetVRegXXX below) when the ShadowFrame has been created for the debugger with a value for the current vreg. Otherwise, we overwrite all values set by the debugger.
+
+This means we need to know which registers have been set by the debugger so we do not override them, thus only set the vregs that have not been "touched" by the debugger. I think you need to keep a kind of set of all vregs modified by the debugger in the FrameIdToShadowFrame.
+
+An alternative solution is to init your ShadowFrame (like we do it here) when creating it in Thread::GetDebuggerShadowFrameForFrameId. Therefore, when we deoptimize the current frame and we find there is already a ShadowFrame for it (in Thread::tlsPtr_.frame_id_to_shadow_frame list), it is already initialized (and even updated by the debugger) so there is nothing more to do (except linking it to previous ShadowFrame). It prevents from tracking which vregs are touched by the debugger.
+
 File: runtime/stack.cc
 
 481:0-481:32

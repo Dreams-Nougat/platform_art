@@ -178,3 +178,19 @@ UUID: d829ca86_2ece6727
 Bytes: 6
 Ditto?
 
+938:0-939:31
+Wed Jul 08 14:56:20 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 782e1e92_6b2581b8
+Bytes: 599
+This is really hurting benchmarks for long strings. Either use the return_false and return_true labels as suggested by Roland, or (since you've already used SUBS instead of CMP here)  you can go really tricky: change all the "CMP ..." above to "SUBS out, ..." as well, change the exit sequence to
+
+  // Calculate "out = (out == 0) ? 1 : 0" using RSB+ADC.
+  is_zero:
+    RSB temp, out, #0
+    ADC out, out, temp
+  // End of code.
+  end:
+
+and change all the "ITcc+MOV out, #0+Bcc end" sequences to "Bcc is_zero" or "Bcc end" as needed. Use Location::kNoOutputOverlap for "out" to avoid ugly surprises.
+

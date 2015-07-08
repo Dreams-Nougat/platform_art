@@ -43,6 +43,17 @@ This means we need to know which registers have been set by the debugger so we d
 
 An alternative solution is to init your ShadowFrame (like we do it here) when creating it in Thread::GetDebuggerShadowFrameForFrameId. Therefore, when we deoptimize the current frame and we find there is already a ShadowFrame for it (in Thread::tlsPtr_.frame_id_to_shadow_frame list), it is already initialized (and even updated by the debugger) so there is nothing more to do (except linking it to previous ShadowFrame). It prevents from tracking which vregs are touched by the debugger.
 
+240:12-240:61
+Wed Jul 08 18:21:49 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8fb8a32_c140e408
+UUID: 534a1d43_ef311619
+Bytes: 642
+Very good point! I'll try this approach:
+Have a CreateDebuggerShadowFrame() that returns a ShadowFrame that has another uint32_t array at the end that keeps track of which values are set. Debugger shadow frame will have a special dex_pc of 0xffffffff. A ShadowFrame::SetVRegForDebugger() will do regular SetVReg() plus setting a flag in the new array at the end. So later when we initialize deoptimized shadow frame here we check if the value has been set first.
+
+Another thing is GetVRegFromOptimizedCode() also needs to check the debugger shadow frame first if one is available before it visits the real optimized stack frame to get values.
+
 File: runtime/stack.cc
 
 481:0-481:32

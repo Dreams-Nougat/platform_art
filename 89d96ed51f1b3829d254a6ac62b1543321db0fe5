@@ -9,6 +9,14 @@ UUID: d829ca86_311fea62
 Bytes: 62
 Maybe IsValidHandle, to not confuse it with the other IsValid?
 
+1358:14-1358:21
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_311fea62
+UUID: f8f4ce42_c2fa2438
+Bytes: 4
+Done
+
 1413:0-1415:17
 Tue Jul 07 21:23:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,29 @@ UUID: 1840c241_d3be66ad
 Bytes: 80
 Is it really worth it? What callers can we have that shouldn't acquire the lock?
 
+1413:0-1415:17
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1840c241_d3be66ad
+UUID: 18f28255_06393edd
+Bytes: 191
+Probably not. I had much more unguarded DCHECK before the final CL and it kinda made sense. Now only the visits in NullCheck and ArrrayGet are unguarded. So I removed this and added the lock.
+
 3743:25-3743:47
 Tue Jul 07 21:23:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1840c241_f3c16a25
 Bytes: 45
 This doesn't sound right. Why do you need it?
+
+3743:25-3743:47
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1840c241_f3c16a25
+UUID: 18f28255_a616124f
+Bytes: 67
+For unresolved types.
+Previous we would use Top, now we use Object.
 
 3996:2-4002:3
 Tue Jul 07 21:23:48 2015 +0000
@@ -33,6 +58,14 @@ Yeah, the virtual just for the DCHECK is maybe too much. I'd put this logic in j
 
 if (kIsDebugBuild && IsBoundType()) { ... }
 
+3996:2-4002:3
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_a26a80df
+UUID: d829ca86_91857e90
+Bytes: 4
+Done
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 255:0-258:76
@@ -42,12 +75,28 @@ UUID: 1840c241_b3cbe241
 Bytes: 92
 Please add a comment about this special case. Could you DCHECK something on the given klass?
 
+255:0-258:76
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1840c241_b3cbe241
+UUID: d829ca86_b1887aa6
+Bytes: 4
+done
+
 297:7-297:11
 Tue Jul 07 21:23:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d829ca86_1124eeb8
 Bytes: 115
 Isn't the TODO really about parsing the signature of the current method to know the actual types of the parameters?
+
+297:7-297:11
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_1124eeb8
+UUID: 1840c241_d34546c9
+Bytes: 185
+yes. this comment was misplaced. it was meant to be in ArrayGet/ArraySet. They can be used to bound the input object to an array type in their context (in case it was merged to Object).
 
 313:25-313:41
 Tue Jul 07 21:23:48 2015 +0000
@@ -58,12 +107,28 @@ Nit: parens.
 
 Also, please add a TODO with the reference about the bug of why we are doing a null check.
 
+313:25-313:41
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_8239bc03
+UUID: f8f4ce42_0247ec22
+Bytes: 4
+Done
+
 352:0-353:41
 Tue Jul 07 21:23:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d829ca86_f13842db
 Bytes: 189
 Instead of having them be invalid, could we have them be java.lang.Object instead? Would that make it simpler? Or is the non valid type (pretty much the bottom type), helping the algorithm?
+
+352:0-353:41
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_f13842db
+UUID: f8f4ce42_826adc96
+Bytes: 113
+Yes, it's helping the precision. If we go directly to Object we will miss the opportunity to have a precise type.
 
 417:16-417:22
 Tue Jul 07 21:23:48 2015 +0000
@@ -72,10 +137,26 @@ UUID: 18f28255_23343467
 Bytes: 45
 Not really parent, more "object", or "array".
 
+417:16-417:22
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f28255_23343467
+UUID: 1840c241_73357a66
+Bytes: 67
+Ok, it's a parent in the data flow graph. I don't mind changing it.
+
 482:4-482:26
 Tue Jul 07 21:23:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8f4ce42_4233b421
 Bytes: 110
 Please add a comment why you need to add to the worklist in that case, but not if UpdateArrayGet returns true.
+
+482:4-482:26
+Wed Jul 08 11:50:49 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_4233b421
+UUID: f8f4ce42_c267c4ca
+Bytes: 4
+Done
 

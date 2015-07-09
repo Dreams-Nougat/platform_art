@@ -62,6 +62,16 @@ UUID: f8f4ce42_6586c2f2
 Bytes: 164
 I actually liked Sebastien's other suggestion of creating the deopt frame and eagerly fetch the values of vregs :-) Any reason you preferred to do it the other way?
 
+240:12-240:61
+Thu Jul 09 17:55:46 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_6586c2f2
+UUID: 731ba15b_57563ca1
+Bytes: 777
+1) creating the deopt frame requires verifier, class loading and may set thread local. I'm not sure if jdwp thread is a java thread and can do all of those. Class loading is done at a different time from the real deoptimization time from a different thread. And I'm a little uncomfortable about the possibility of accidentally setting jdwp thread's thread local which should be done on the visited thread.
+
+2) since class loading can fail (especially if it's done from a different thread at a different time) so initializing the deopt frame can fail. Then it's not able to signal it's uninitialized values. I plan some change on GetVRegFromOptimizedCode() side also to get the set values first before visiting the compiled frame so it's good to be able to make the distinction.
+
 File: runtime/stack.cc
 
 481:0-481:32

@@ -55,6 +55,14 @@ UUID: d829ca86_b703ca42
 Bytes: 222
 Let's try to have it in this CL. Note that blocks may be delete along the way, which leaves you gaps in your storage (i.e. we might have graphs with non contiguos block ids) I can think of worst cases where we waste a lot.
 
+32:4-34:5
+Thu Jul 09 11:28:01 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_b703ca42
+UUID: 18f28255_694e9d11
+Bytes: 4
+Done
+
 46:11-46:13
 Wed Jul 08 14:58:57 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -123,12 +131,28 @@ UUID: 782e1e92_0b903d9e
 Bytes: 156
 it is, cause the logic doesn't work as you want. Below you only initialize up to `idx+1` so the rest of the position up to the real size are not initialized
 
+109:6-109:34
+Thu Jul 09 11:28:01 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 782e1e92_0b903d9e
+UUID: 1840c241_b903c342
+Bytes: 65
+Oh right, GrowableArray has some unusual instantiation semantics.
+
 111:0-113:7
 Wed Jul 08 14:58:57 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d829ca86_1415fc77
 Bytes: 73
 see my comment in the ctor of this function about wasting space for this.
+
+111:0-113:7
+Thu Jul 09 11:28:01 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_1415fc77
+UUID: 782e1e92_8e6afbdf
+Bytes: 4
+Done
 
 118:6-118:16
 Wed Jul 08 14:58:57 2015 +0000
@@ -195,6 +219,14 @@ Bytes: 200
 As we discuss, if you go with the current approach you need to document it much better as it was not clear from the context. 
 One thing to think about: how does this work with the fix point iteration?
 
+348:4-348:47
+Thu Jul 09 11:28:01 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_97e7ae22
+UUID: 1867e20f_f8c4d185
+Bytes: 164
+During fix point iteration, since a loop is one of its own predecessor, so, by calling StartBlock() over and over again on the same block, it will work as expected.
+
 File: compiler/optimizing/reference_type_propagation.h
 
 30:43-30:48
@@ -222,6 +254,18 @@ What I think I'm missing from the big picture is:
 - i would have imagine that Zero is the default value for what we don't know so it must be conservative. Am I'm wrong....?
 - where is Zero actually used? I don't see anything. No use == No Need usually.
 - to complement this: I don't see a few methods from HContext being used. Why have them?
+
+30:43-30:48
+Thu Jul 09 11:28:01 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 782e1e92_ab9ec9ae
+UUID: 18f28255_49bcf957
+Bytes: 527
+> i would have imagine that Zero is the default value for what we don't know so it must be conservative. Am I'm wrong....?
+
+Yes. Zero is not a convenient default value. It is, as its name indicates, a Zero. It's called few times in the Context and guarantees that the datastructure and its operations are sound.
+
+Some methods of the HContext are not used because they are not useful with a property beeing a boolean, but will be useful in other cases. MergeProperty() and SetProperty() are, in this case, strictly equivalent. I
 
 35:2-35:6
 Wed Jul 08 14:58:57 2015 +0000

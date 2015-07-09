@@ -18,6 +18,14 @@ UUID: f8f4ce42_3f068728
 Bytes: 143
 So are we guaranteeing that every managed frame that is deoptimized *will* end up here and pick up its shadow frame (if created by SetValues) ?
 
+214:0-214:74
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_3f068728
+UUID: 98a11261_d03d2c98
+Bytes: 86
+debugger side will be responsible for that by patching the return pc's and reach here.
+
 215:0-215:97
 Tue Jul 07 09:39:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +33,28 @@ UUID: f8f4ce42_9f7593aa
 Bytes: 120
 Shouldn't it be the one with the highest (or lowest, not sure which way they are going) frame id? Could you DCHECK that?
 
+215:0-215:97
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_9f7593aa
+UUID: 98a11261_f0d708b6
+Bytes: 81
+Not sure if there is highest. The range can be from 0 to max allowed stack depth.
+
 220:6-220:12
 Tue Jul 07 13:10:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8f4ce42_9f1913a9
 Bytes: 9
 DCHECK_EQ
+
+220:6-220:12
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8f4ce42_9f1913a9
+UUID: d8970a01_4d8ae522
+Bytes: 35
+For nullptr DCHECK_EQ doesn't work.
 
 240:12-240:61
 Wed Jul 08 09:29:53 2015 +0000
@@ -104,6 +128,14 @@ UUID: 18f28255_40bcce57
 Bytes: 121
 Yeah, the ShadowFrame must exist here so it's more a CHECK(shadow_frame != nullptr) (and you can remove the if statement)
 
+481:2-481:32
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f28255_40bcce57
+UUID: 789c5e2a_c4d81495
+Bytes: 4
+Done
+
 File: runtime/thread.cc
 
 242:1-242:8
@@ -113,12 +145,28 @@ UUID: d8fb8a32_7e06515b
 Bytes: 55
 Also add DISALLOW_COPY_AND_ASSIGN(FrameIdToShadowFrame)
 
+242:1-242:8
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8fb8a32_7e06515b
+UUID: 789c5e2a_44064490
+Bytes: 4
+Done
+
 243:2-243:8
 Tue Jul 07 13:10:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18f28255_a31964a8
 Bytes: 12
 const size_t
+
+243:2-243:8
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f28255_a31964a8
+UUID: d8970a01_2dd8b916
+Bytes: 4
+Done
 
 244:2-244:14
 Tue Jul 07 13:10:36 2015 +0000
@@ -134,12 +182,28 @@ UUID: 18f28255_a026fa44
 Bytes: 18
 Nit: one per line?
 
+248:54-250:72
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f28255_a026fa44
+UUID: d8970a01_2df19990
+Bytes: 83
+Done. Now there is one arg anyway after refactoring to Findxxx and FindOrCreatexxx.
+
 282:0-283:13
 Tue Jul 07 09:39:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d8fb8a32_5e3ef5ea
 Bytes: 23
 no delete of the entry?
+
+282:0-283:13
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8fb8a32_5e3ef5ea
+UUID: 586ddaeb_e3d740b6
+Bytes: 29
+Nice catch. Added the delete.
 
 File: runtime/thread.h
 
@@ -155,6 +219,14 @@ Why not having two distinct methods and remove the bool search_only flag? You wo
   * FindDebuggerShadowFrameForFrameId: for finding the frame
   * GetOrCreateDebuggerShadowFrameForFrameId: for finding or creating the frame, using FindDebuggerShadowFrameForFrameId
 
+822:15-822:47
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_cefda332
+UUID: 98a11261_b0fae036
+Bytes: 4
+Done
+
 1238:21-1238:26
 Tue Jul 07 09:39:36 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -162,10 +234,26 @@ UUID: d8fb8a32_7e39b100
 Bytes: 22
 more of a linked list?
 
+1238:21-1238:26
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8fb8a32_7e39b100
+UUID: 789c5e2a_2401b876
+Bytes: 49
+Changed to "a linked list that keeps the mapping"
+
 1241:26-1241:50
 Tue Jul 07 13:10:36 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d8fb8a32_9e9c7d70
 Bytes: 100
 We must CHECK this is null when the thread exits, to be sure we do not leave any shadow frame there.
+
+1241:26-1241:50
+Thu Jul 09 21:43:58 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8fb8a32_9e9c7d70
+UUID: 387026c3_42a70897
+Bytes: 35
+Added a check in Thread::~Thread().
 

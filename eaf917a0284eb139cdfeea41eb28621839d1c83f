@@ -20,6 +20,13 @@ UUID: d829ca86_025dbabd
 Bytes: 21
 one -> a shadow frame
 
+233:12-233:40
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8438a7f_1e0b8d60
+Bytes: 125
+You can know it depending on whether you found a frame in the frame_id_to_shadow_frame list or whether you just created here.
+
 233:0-236:9
 Fri Jul 10 11:09:34 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,12 +34,38 @@ UUID: d829ca86_e2598ed1
 Bytes: 59
 Why can't you just check  whether a value is already there?
 
+233:0-236:9
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d829ca86_e2598ed1
+UUID: d8438a7f_3e06495a
+Bytes: 246
+I don't think we can use any magic number for vregs as an int could be any 32-bit value.
+
+That's why I was thinking about initializing earlier (when the debugger needs to create the frame to set a value) so we don't have to think about that here.
+
 328:0-331:5
 Fri Jul 10 11:09:34 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18f28255_b4f1980d
 Bytes: 74
 Do this line 219? Also, will you need this if my comment above is correct?
+
+File: runtime/stack.cc
+
+487:2-487:8
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1840c241_64a7f2c9
+Bytes: 26
+Using CHECK is safer here.
+
+583:2-583:8
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_c2b572ba
+Bytes: 5
+ditto
 
 File: runtime/stack.h
 
@@ -42,6 +75,66 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 782e1e92_f15de0f6
 Bytes: 87
 Do you still need this if you change the deopt to check whether a value is already set?
+
+46:7-46:12
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_741b102e
+Bytes: 9
+constexpr
+
+69:0-69:95
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_3425886e
+Bytes: 62
+Since you introduce a new layout, you should describe it here.
+
+87:61-88:59
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_94169406
+Bytes: 28
+No need to change line here.
+
+91:59-91:83
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3833c621_01eb2aef
+Bytes: 261
+You could use less memory using a bitset. 
+
+Anyhow, I find it weird to allocate extra memory for this purpose when we'll only use it as part of deoptimization (to initialize the ShadowFrame), not execution. Can't we move that to the FrameIdToShadowFrame struct?
+
+92:67-92:89
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d829ca86_22a79698
+Bytes: 37
+Or you could use DexFile::kDexNoIndex
+
+140:7-140:22
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1867e20f_d8fa2dea
+Bytes: 123
+This needs a comment: "Indicates whether this frame has been created by the debugger to change the value of a DEX register"
+
+216:4-216:11
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18f28255_346fc877
+Bytes: 386
+If the value is a reference, it must be stored in the reference array of the shadow frame by using SetVRegReference. So you need to make a distinction between primitive 32-bit values and reference here. 
+
+The debugger will call StackVisitor::SetVReg passing a VRegKind of kReferenceVReg. So you need to pass that information to all calls (including SetVRegFromOptimizedCode) until here.
+
+345:14-345:34
+Fri Jul 10 13:26:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 782e1e92_11386cf9
+Bytes: 171
+Bad name. I'd prefer something like "GetUpdatedVregsSet" with a comment describing how it is used "Returns the set of DEX registers that have been updated by the debugger"
 
 File: runtime/thread.cc
 

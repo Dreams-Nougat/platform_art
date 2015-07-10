@@ -19,6 +19,16 @@ UUID: 98cf5247_2c38d3f9
 Bytes: 96
 That's what shertz suggested if I understand it correctly. @shertz, is this what should be done?
 
+3491:0-3493:3
+Fri Jul 10 14:19:10 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98cf5247_2c38d3f9
+UUID: 3833c621_41a252ba
+Bytes: 387
+Yes, I was mainly thinking about the exception flow. Maybe we can be more precise here. Anyway, I'll have to update return_pc for threads suspended on a suspend check (not in the interpreter) so they are deoptimized.
+
+By the way, in the CL for tests (https://android-review.googlesource.com/#/c/158452), I no longer use breakpoint for suspension so I don't think interpreter is executed.
+
 File: runtime/quick_exception_handler.cc
 
 214:16-214:19
@@ -241,6 +251,16 @@ UUID: 78ca9e3a_0b105d87
 Bytes: 133
 I was copying what's done in StackVisitor::SetVReg() for shadow frames. Should the same thing be done then for regular shadow frames?
 
+216:4-216:11
+Fri Jul 10 14:19:10 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 78ca9e3a_0b105d87
+UUID: d8438a7f_de9c8571
+Bytes: 403
+Wow, so we have a bug in StackVisitor::SetVReg! ShadowFrame::SetVReg considers the value to be a primitive (like an int), not a reference. I fyou look at the code, it even clears the reference array slot to not disturb GC.
+
+So the StackVisitor::SetVReg should call ShadowFrame::SetVRegReference when kind == kReferenceVReg, otherwise call ShadowFrame::SetVReg. I think this can be part of a separate CL.
+
 345:14-345:34
 Fri Jul 10 13:26:46 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -274,4 +294,12 @@ Parent: 18f28255_74ad50f6
 UUID: 78ca9e3a_4b06655b
 Bytes: 101
 Looks like the statement isn't accurate. So we do need to visit the roots. @shertz, is that the case?
+
+2535:40-2535:43
+Fri Jul 10 14:19:10 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 78ca9e3a_4b06655b
+UUID: 78a37e80_2338eaf9
+Bytes: 146
+We need to visit these roots. I think it comes from the fact that we incorrectly use ShadowFrame::SetVReg even when we do write a reference value.
 

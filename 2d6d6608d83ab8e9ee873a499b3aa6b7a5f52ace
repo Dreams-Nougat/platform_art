@@ -9,12 +9,35 @@ UUID: 18d6020d_a0ea5a9a
 Bytes: 75
 I don't understand why this would make the new predecessor non-exceptional?
 
+285:0-292:7
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d6020d_a0ea5a9a
+UUID: f8d84e3c_1f160308
+Bytes: 399
+Hmm, kingdom for pictures. I'm using the SplitBefore method which will
+
+ * create `new_block` and move all instructions from `block` to it
+ * link `block` and `new_block` with a Goto
+
+After that, I change the normal-flow edges to point to `new_block`, hence leaving `block` with the exceptional ones.
+
+Would you prefer I'd add a thorough comment or rather rewrite it using more low-level operations?
+
 1131:0-1131:26
 Mon Jul 13 13:01:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18d6020d_409d0e40
 Bytes: 98
 Porbably related to my comment above, but it would seem logical to at lease DCHECK the code below.
+
+1131:0-1131:26
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d6020d_409d0e40
+UUID: d8df0a22_1ec44d08
+Bytes: 38
+Yeah, this seems dangerous... Removed.
 
 File: compiler/optimizing/nodes.h
 
@@ -25,12 +48,28 @@ UUID: f8d84e3c_df401b09
 Bytes: 28
 ComputeTryEntryOfSuccessors?
 
+852:16-852:36
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8d84e3c_df401b09
+UUID: 18d6020d_2053aae8
+Bytes: 4
+Done
+
 2029:0-2029:54
 Mon Jul 13 13:01:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 98e912d2_fc5329ae
 Bytes: 54
 Please add a comment what this iterator iterates over.
+
+2029:0-2029:54
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98e912d2_fc5329ae
+UUID: f8d84e3c_bf06f7d2
+Bytes: 4
+Done
 
 File: compiler/optimizing/ssa_builder.cc
 
@@ -41,6 +80,14 @@ UUID: 98e912d2_9cfa25e9
 Bytes: 6
 avoids
 
+354:50-354:55
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98e912d2_9cfa25e9
+UUID: 98e912d2_fc7409f6
+Bytes: 4
+Done
+
 356:1-362:32
 Mon Jul 13 13:01:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,12 +95,28 @@ UUID: 18d6020d_a0ab3a5f
 Bytes: 64
 Could this be done earlier, eg in the SimplifyCatchBlocks phase?
 
+356:1-362:32
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d6020d_a0ab3a5f
+UUID: 18d6020d_c0911e23
+Bytes: 107
+It could but it would need to find a predecessor that is not a back edge. Here, it is always the first one.
+
 584:6-584:10
 Mon Jul 13 13:01:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d8df0a22_de8e6502
 Bytes: 15
 Replace please.
+
+584:6-584:10
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8df0a22_de8e6502
+UUID: f8d84e3c_5fe7aba7
+Bytes: 83
+Done, but I thought we agreed longer than 10-character type was a good candidate...
 
 File: compiler/optimizing/ssa_builder.h
 
@@ -63,6 +126,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8d84e3c_1fc44308
 Bytes: 4
 Why?
+
+62:4-62:8
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8d84e3c_1fc44308
+UUID: d8df0a22_be435913
+Bytes: 4
+Done
 
 70:45-70:54
 Mon Jul 13 13:01:56 2015 +0000
@@ -74,4 +145,12 @@ Is collected the right word? Maybe:
 "We record an an incoming input of a catch phi at throwing instructions. We must therefore eagerly create the catch phis. Unused phis will be removed in the dead phi analysis".
 
 ?
+
+70:45-70:54
+Mon Jul 13 13:47:01 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8d84e3c_5fcecb27
+UUID: 18d6020d_008ce607
+Bytes: 4
+Done
 

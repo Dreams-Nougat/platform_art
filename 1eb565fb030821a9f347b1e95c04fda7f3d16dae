@@ -9,6 +9,14 @@ UUID: 18d6020d_6043f2e7
 Bytes: 278
 I thought we agreed to get rid of current_block here and let the analysis handle this. I don't think holding the state in the generic context is good. It seems out of place for the context class to maintain the current block. The analysis should have the logic to maintain this.
 
+39:1-42:2
+Mon Jul 13 15:58:27 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d6020d_6043f2e7
+UUID: 18d6020d_a01fbae5
+Bytes: 195
+Did we agreed on this? It's giving the feeling that you can randomly write-access blocks, which is completely wrong since it expects a topological traversal to have a sound MergeBlocks operation.
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 66:2-66:17
@@ -17,6 +25,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 98e912d2_bfbef3ab
 Bytes: 211
 I still think this doesn't work. When you process the worklist you will be left with the context set to the last block (as you do this in VisitBasiBlock) and thus you might have wrong information in the context.
+
+66:2-66:17
+Mon Jul 13 15:58:27 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98e912d2_bfbef3ab
+UUID: 38cf4674_01c30a9b
+Bytes: 59
+That's why the Worklist does not access the context anymore
 
 281:17-281:38
 Mon Jul 13 15:13:47 2015 +0000
@@ -35,6 +51,14 @@ a = new Foo();
 
 b.foo_field = a;  // a can't be null here. But your change will make us miss it.
 
+281:17-281:38
+Mon Jul 13 15:58:27 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8df0a22_9ea5bd3f
+UUID: 38cf4674_4196f29f
+Bytes: 108
+Oh okay, then I did a mistake (cf my previous comment) I will move this back into the instruction simplifier
+
 295:17-295:25
 Mon Jul 13 15:13:47 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +68,35 @@ This will not have the effect you desire. Phis are not returned in GetInstructio
 
 Try to write tests who exercise all new code path that you introduce.
 
+295:17-295:25
+Mon Jul 13 15:58:27 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8d84e3c_3f1107de
+UUID: 98e912d2_ff3ddb97
+Bytes: 78
+I need some more testing before addressing this comment. I'm really surprised.
+
 311:17-311:21
 Mon Jul 13 15:13:47 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8d84e3c_7f346f68
 Bytes: 95
 shouldn't this be merge? I'm surprized that I don't see any Context::Merge in this algorithm...
+
+311:17-311:21
+Mon Jul 13 15:58:27 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8d84e3c_7f346f68
+UUID: f8d84e3c_fff15f0c
+Bytes: 330
+NullInfo::Merge being defined in terms of ||, this is strictly equivalent. If you prefer, I can write it like this:
+
+    for (size_t i = 0; i < phi->InputCount(); i++) {
+        ctx_.MergeProperty(ctx, ctx_.GetProperty(phi->InputAt(i)));
+    }
+    phi->SetCanBeNull(ctx_.GetProperty(phi));
+
+but that would reduce the performances.
 
 File: test/444-checker-nce/src/Main.java
 

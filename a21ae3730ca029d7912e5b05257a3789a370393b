@@ -1,0 +1,77 @@
+Revision: a21ae3730ca029d7912e5b05257a3789a370393b
+Patch-set: 9
+File: compiler/optimizing/graph_checker.cc
+
+140:2-140:19
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8df0a22_de5665a1
+Bytes: 158
+Do you think there's anything worth checking for the first successor? Can it be a catch block?
+
+In any case, please add a comment on why you're starting at 1.
+
+328:0-328:46
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 98e912d2_3f2ae387
+Bytes: 109
+Please explain why it is fine to not count exceptional successors (eg they are synthesized/artificial edges).
+
+351:16-351:22
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 98e912d2_5f1faf60
+Bytes: 19
+drop the 'saved_' ?
+
+398:0-399:44
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 38cf4674_410c32af
+Bytes: 9
+else if ?
+
+568:0-568:27
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 98e912d2_bf3513e4
+Bytes: 99
+Don't negate the condition, and add a comment in the if block why catch phis are handled specially?
+
+File: compiler/optimizing/nodes.cc
+
+1157:10-1157:12
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8d84e3c_3f3ae755
+Bytes: 20
+Isn't that an '&&' ?
+
+File: compiler/optimizing/ssa_builder.cc
+
+570:7-570:68
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 98e912d2_1ff7e788
+Bytes: 135
+Most instructions can throw, but not all blocks are in try, so it seems more natural to me to test the other way around. But your call.
+
+577:0-581:44
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8df0a22_feac0127
+Bytes: 380
+This looks odd. You're removing the phi because one of these edges may not have a value for it, right? And therefore, if the catch was to use that phi, the verified would have rejected it?
+
+Please add a comment. We're probably saving a few bytes, not having to add inputs of phis that are unused, but we could also just delegate the removal of the phi to the dead phi analysis....
+
+File: compiler/optimizing/ssa_phi_elimination.cc
+
+141:0-142:32
+Mon Jul 13 15:12:47 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18d6020d_60bcd258
+Bytes: 69
+I'd do the IsCatchPhi check in the if. StriclyDominates is not cheap.
+

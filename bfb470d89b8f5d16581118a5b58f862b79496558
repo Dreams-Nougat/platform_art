@@ -267,6 +267,29 @@ Yes. Zero is not a convenient default value. It is, as its name indicates, a Zer
 
 Some methods of the HContext are not used because they are not useful with a property beeing a boolean, but will be useful in other cases. MergeProperty() and SetProperty() are, in this case, strictly equivalent. I
 
+30:43-30:48
+Mon Jul 13 15:13:47 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f28255_49bcf957
+UUID: 98e912d2_1f81a7d8
+Bytes: 500
+So right now you return Zero when you don't find the property in the context. I'm concerned that if that doesn't get updated this acts as an optimistic algorithm but which is not correct.
+
+What happens for parameters? If you just use their values you will assume they cannot be null.
+
+e.g.
+
+void foo(Object a, Object b, boolean c) {
+  Object x = null;
+  if (c) {
+    x = a;
+  } else {
+    x = b;
+  }
+  // I didn't run, but I think you will consider x to be not null here because of that.
+  x.foo();
+}
+
 35:2-35:6
 Wed Jul 08 14:58:57 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>

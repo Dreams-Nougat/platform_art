@@ -1,0 +1,34 @@
+Revision: 49a63e058b095d42f866f6143efcce748b0e6df9
+Patch-set: 6
+File: compiler/optimizing/intrinsics_arm.cc
+
+924:2-924:40
+Mon Jul 13 12:07:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 98e912d2_3c583100
+Bytes: 302
+IsAligned<4>(kObjectAlignment) is constexpr, so this could be static_assert.
+
+(On the other hand, value_offset isn't constexpr and though we could constexpr-ify the class MemberOffset, I'm not sure the macro OFFSETOF_MEMBER can be a constexpr. Anyway, such refactoring should not be a part of this CL.)
+
+932:2-932:42
+Mon Jul 13 12:07:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8d84e3c_1f98c350
+Bytes: 25
+Merge with the ADD above?
+
+943:2-943:57
+Mon Jul 13 12:07:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 38cf4674_8180fad2
+Bytes: 184
+Move this 2 instructions up for better instruction scheduling. Here it's causing a stall with the dependent CMP below; the execution between LDR and CMP above will be essentially free.
+
+945:14-945:16
+Mon Jul 13 12:07:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18d6020d_60069229
+Bytes: 138
+HS (i.e. CS) is the correct condition, though I guess the allocation of a String with 2GiB data would fail, so PL is essentially the same.
+

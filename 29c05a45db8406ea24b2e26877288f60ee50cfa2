@@ -17,6 +17,14 @@ UUID: 5384ddcb_1c940d48
 Bytes: 44
 (Ignore for now, maybe a follow-up some day)
 
+220:15-220:37
+Mon Jul 13 18:27:55 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5384ddcb_1c940d48
+UUID: 332a09c0_6f2e651d
+Bytes: 3
+ack
+
 File: runtime/base/memory_tool.h
 
 31:0-31:30
@@ -25,6 +33,17 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f390710b_a8027a11
 Bytes: 24
 Is this still necessary?
+
+31:0-31:30
+Mon Jul 13 18:27:55 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f390710b_a8027a11
+UUID: 132185e2_ebc6cda9
+Bytes: 275
+For implicit_so_checks_ in runtime.cc.
+This looks like something specific to Valgrind, at least sanitizers don't have that problem.
+We could change it to a constexpr, such that the check would look like
+implicit_so_checks_ = !(RUNNING_ON_MEMORY_TOOL && kMemoryToolIsValgrind)
 
 File: runtime/gc/heap.cc
 
@@ -35,12 +54,28 @@ UUID: f390710b_48288ebe
 Bytes: 5
 const
 
+2093:2-2093:6
+Mon Jul 13 18:27:55 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f390710b_48288ebe
+UUID: 332a09c0_2ffd8d7f
+Bytes: 4
+Done
+
 2204:52-2205:75
 Mon Jun 29 17:21:27 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 934c958c_8edf9c83
 Bytes: 22
 Fits on the same line.
+
+2204:52-2205:75
+Mon Jul 13 18:27:55 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 934c958c_8edf9c83
+UUID: 73f6419f_71adb0a6
+Bytes: 35
+Oh, do you use 100-character lines?
 
 File: runtime/gc/space/large_object_space.cc
 
@@ -51,6 +86,14 @@ UUID: f390710b_8851b637
 Bytes: 7
 Naming?
 
+35:6-35:14
+Mon Jul 13 18:27:55 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f390710b_8851b637
+UUID: 73f6419f_f1a080ab
+Bytes: 4
+Done
+
 File: runtime/mem_map.cc
 
 479:6-479:32
@@ -59,6 +102,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5384ddcb_bc45e167
 Bytes: 36
 Looks like it fits on the last line?
+
+479:6-479:32
+Mon Jul 13 18:27:55 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5384ddcb_bc45e167
+UUID: 132185e2_6b42dde3
+Bytes: 4
+Done
 
 File: runtime/thread.h
 
@@ -70,4 +121,12 @@ Bytes: 162
 Yuck, another dependency.
 
 kStackOverflowProtectedSize seems to only be used in thread.cc. If that's really the case, move to the include and the constexpr there.
+
+32:0-32:29
+Mon Jul 13 18:27:55 2015 +0000
+Author: Evgenii Stepanov <1005967@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f390710b_28942a48
+UUID: 332a09c0_2fc58d04
+Bytes: 4
+Done
 

@@ -9,6 +9,26 @@ UUID: 389bc68e_816eda26
 Bytes: 65
 What does this output look like? Can you give me a short example?
 
+100:23-100:25
+Tue Jul 14 15:49:45 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389bc68e_816eda26
+UUID: 18a282bf_a337a40b
+Bytes: 329
+For example in test 521, the arm disassembler gives:
+
+    0x00000060: f8d9e1cc  ldr.w   lr, [r9, #460]  ; pAputObject
+
+and the arm64 disassembler gives:
+
+    0x00000098: f9417a7e	ldr lr, [tr, #752] (pAputObject)
+
+and we would fail to match
+
+    /// CHECK:          pAputObject
+
+at test/521-checker-array-set-null/src/Main.java:31
+
 File: test/run-test
 
 637:0-637:22
@@ -18,6 +38,15 @@ UUID: b8a6d6d3_3d43afc5
 Bytes: 16
 Do we need this?
 
+637:0-637:22
+Tue Jul 14 15:49:45 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8a6d6d3_3d43afc5
+UUID: d88d4a46_31fcea68
+Bytes: 150
+Yes.
+This size seems to be sufficient. Otherwise I have hit situations where only part of the .cfg file was retrieved and we would fail checker tests.
+
 639:0-639:39
 Tue Jul 14 15:06:04 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +54,28 @@ UUID: f8a4cecc_ff341f6c
 Bytes: 52
 The limit gets set below, why are you doing it here?
 
+639:0-639:39
+Tue Jul 14 15:49:45 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8a4cecc_ff341f6c
+UUID: 389bc68e_84fa68b1
+Bytes: 83
+This was mistakenly left over after the rebase on top of the jack-and-jill changes.
+
 663:0-663:59
 Tue Jul 14 15:06:04 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18a282bf_a3c20479
 Bytes: 113
 Running this here will change the run_exit status. Why not do it before line 669, like you do in the other modes?
+
+663:0-663:59
+Tue Jul 14 15:49:45 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_a3c20479
+UUID: b8a6d6d3_5dcf9bcf
+Bytes: 6
+Fixed.
 
 File: tools/checker/file_format/checker/parser.py
 
@@ -40,4 +85,12 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d88d4a46_91383edb
 Bytes: 56
 Remove this? It should be set by the command line logic.
+
+170:62-170:66
+Tue Jul 14 15:49:45 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d88d4a46_91383edb
+UUID: f8a4cecc_bfe7b75e
+Bytes: 68
+The argument is not always provided, for example when running tests.
 

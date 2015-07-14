@@ -11,12 +11,30 @@ Do you think there's anything worth checking for the first successor? Can it be 
 
 In any case, please add a comment on why you're starting at 1.
 
+140:2-140:19
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8df0a22_de5665a1
+UUID: 18a282bf_80101658
+Bytes: 162
+Replaced with ExceptionHandlerIterator and comment added.
+
+Yes, it can be a catch block before catch blocks are simplified at the beginning of BuildDominatorTree.
+
 328:0-328:46
 Mon Jul 13 15:12:47 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 98e912d2_3f2ae387
 Bytes: 109
 Please explain why it is fine to not count exceptional successors (eg they are synthesized/artificial edges).
+
+328:0-328:46
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98e912d2_3f2ae387
+UUID: f8a4cecc_9f89932f
+Bytes: 4
+Done
 
 351:16-351:22
 Mon Jul 13 15:12:47 2015 +0000
@@ -25,6 +43,14 @@ UUID: 98e912d2_5f1faf60
 Bytes: 19
 drop the 'saved_' ?
 
+351:16-351:22
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98e912d2_5f1faf60
+UUID: d88d4a46_0e350b67
+Bytes: 4
+Done
+
 398:0-399:44
 Mon Jul 13 15:12:47 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +58,28 @@ UUID: 38cf4674_410c32af
 Bytes: 9
 else if ?
 
+398:0-399:44
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 38cf4674_410c32af
+UUID: 389bc68e_21e26ec3
+Bytes: 4
+Done
+
 568:0-568:27
 Mon Jul 13 15:12:47 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 98e912d2_bf3513e4
 Bytes: 99
 Don't negate the condition, and add a comment in the if block why catch phis are handled specially?
+
+568:0-568:27
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98e912d2_bf3513e4
+UUID: d88d4a46_2eb72778
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.cc
 
@@ -48,6 +90,14 @@ UUID: 18d6020d_200c8ac7
 Bytes: 27
 Maybe document this DCHECK?
 
+290:6-290:69
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d6020d_200c8ac7
+UUID: 18a282bf_20c94a49
+Bytes: 4
+Done
+
 1157:10-1157:12
 Mon Jul 13 15:12:47 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -55,12 +105,28 @@ UUID: f8d84e3c_3f3ae755
 Bytes: 20
 Isn't that an '&&' ?
 
+1157:10-1157:12
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8d84e3c_3f3ae755
+UUID: 18a282bf_e0fb6270
+Bytes: 74
+Nope. I've expanded the logic into several If branches and added comments.
+
 1211:5-1211:43
 Mon Jul 13 17:11:39 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18d6020d_e029c216
 Bytes: 86
 Could you provide more details on this?  I'm not sure to understand where this set is.
+
+1211:5-1211:43
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d6020d_e029c216
+UUID: 389bc68e_c14ce247
+Bytes: 98
+Sry, my bad. What I meant is that the lists cannot contain duplicates. I've rephrased the comment.
 
 File: compiler/optimizing/ssa_builder.cc
 
@@ -71,6 +137,14 @@ UUID: 98e912d2_1ff7e788
 Bytes: 135
 Most instructions can throw, but not all blocks are in try, so it seems more natural to me to test the other way around. But your call.
 
+570:7-570:68
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98e912d2_1ff7e788
+UUID: b8a6d6d3_ddfbab70
+Bytes: 4
+Done
+
 577:0-581:44
 Mon Jul 13 15:12:47 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -79,6 +153,14 @@ Bytes: 380
 This looks odd. You're removing the phi because one of these edges may not have a value for it, right? And therefore, if the catch was to use that phi, the verified would have rejected it?
 
 Please add a comment. We're probably saving a few bytes, not having to add inputs of phis that are unused, but we could also just delegate the removal of the phi to the dead phi analysis....
+
+577:0-581:44
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8df0a22_feac0127
+UUID: f8a4cecc_9ff5137e
+Bytes: 191
+Yeah, you're right, it's more of a precaution but not necessary. I've simplified this but had to add an extra test into redundant phi elimination, because now catch phis can have zero inputs.
 
 File: compiler/optimizing/ssa_phi_elimination.cc
 
@@ -89,6 +171,14 @@ UUID: 18d6020d_60bcd258
 Bytes: 69
 I'd do the IsCatchPhi check in the if. StriclyDominates is not cheap.
 
+141:0-142:32
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d6020d_60bcd258
+UUID: 389bc68e_a178be6b
+Bytes: 205
+Are you sure? That would mean giving up on elimination of redundant catch phis altogether, unless we do it as part of some later try-catch simplification pass where we extract the candidate out of the try.
+
 File: test/510-checker-try-catch/smali/SsaBuilder.smali
 
 20:8-20:12
@@ -98,10 +188,28 @@ UUID: 38cf4674_8415687a
 Bytes: 3
 in?
 
+20:8-20:12
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 38cf4674_8415687a
+UUID: d88d4a46_4e1633d7
+Bytes: 4
+Done
+
 60:0-60:57
 Mon Jul 13 17:11:39 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d8df0a22_3e0ca9ae
 Bytes: 30
 Do we have a way to test that?
+
+60:0-60:57
+Tue Jul 14 12:26:57 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8df0a22_3e0ca9ae
+UUID: f8a4cecc_dfd27bfa
+Bytes: 643
+Unfortunately not. Right now this at least makes sure that dex2oat does not crash in the presence of catch loops.
+
+We could implement something though. One way would be to add an assertion to Checker that there's no graph dumps after "ssa_builder", e.g. that that there's no "instruction_simplifier" dump. Another way would be to label the graph dump as invalid. PassObserver already knows that the graph was rejected, so it could pass that info to GraphVisualizer, which would rename the dump to something like "ssa_builder (after, in_bad_state)". Doing a CHECK-START on that name would then fail unless the pass existed. How does that sound?
 

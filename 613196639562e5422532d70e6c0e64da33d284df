@@ -9,6 +9,14 @@ UUID: 18a282bf_80d816e7
 Bytes: 44
 Check that the successors are indeed normal?
 
+336:2-337:61
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_80d816e7
+UUID: d88d4a46_512976c0
+Bytes: 139
+I have been doing that below (starting line 373). But you're right - it makes sense to move that outside to make more explicit. (Done that)
+
 591:7-591:13
 Tue Jul 14 12:45:45 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: f8a4cecc_7f95af0d
 Bytes: 20
 Number -> The number
 
+591:7-591:13
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8a4cecc_7f95af0d
+UUID: 389bc68e_412a120c
+Bytes: 4
+Done
+
 592:61-592:64
 Tue Jul 14 12:45:45 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b8a6d6d3_7d5ed7f3
 Bytes: 29
 .. to its -> caught by this ?
+
+592:61-592:64
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8a6d6d3_7d5ed7f3
+UUID: 18a282bf_c015fec9
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.cc
 
@@ -31,6 +55,28 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 389bc68e_613076a2
 Bytes: 4
 Why?
+
+1163:59-1164:28
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389bc68e_613076a2
+UUID: b8a6d6d3_9d240373
+Bytes: 428
+Example code:
+
+  :initial_block
+  <some instructions>
+  
+  # fallthrough into the catch block
+  # try entry here
+
+  :catch_all
+  :try_start
+    <more instructions>
+  :try_end
+  .catchall { :try_start .. :try_end }, :catch_all
+
+Before catch blocks are simplified, the catch block is both the TryBoundary's normal successor and an exception handler of the try. Therefore, it appears in the list of this block's predecessors twice.
 
 1165:28-1165:31
 Tue Jul 14 12:45:45 2015 +0000
@@ -46,6 +92,22 @@ UUID: 389bc68e_a1479ef1
 Bytes: 10
 occurrence
 
+1165:66-1165:75
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389bc68e_a1479ef1
+UUID: 389bc68e_618cf6ba
+Bytes: 4
+Done
+
+1165:28-1165:31
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d88d4a46_0e7a6be6
+UUID: d88d4a46_d1eac6e9
+Bytes: 158
+I meant "we will consider the first occurrence to be the normal edge and a second occurrence (if it is also an exception handler) to be the exceptional edge".
+
 1165:44-1166:24
 Tue Jul 14 12:45:45 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,12 +115,28 @@ UUID: 18a282bf_e0f12263
 Bytes: 50
 I don't understand the last part of this sentence.
 
+1165:44-1166:24
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_e0f12263
+UUID: d88d4a46_71159277
+Bytes: 15
+explained above
+
 1170:7-1170:10
 Tue Jul 14 12:45:45 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8a4cecc_1f8c6307
 Bytes: 19
 its -> one of its ?
+
+1170:7-1170:10
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8a4cecc_1f8c6307
+UUID: 18a282bf_805db6bf
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -68,4 +146,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18a282bf_40e20e9d
 Bytes: 56
 Why this change? Drop the const if it makes you do this.
+
+2012:9-2012:42
+Tue Jul 14 14:34:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_40e20e9d
+UUID: f8a4cecc_1f3ea393
+Bytes: 389
+Not ideal, i know. It's about being able to call HasExceptionHandler from const methods, in this particular case from a DCHECK in IsExceptionalPredecessor. HasExceptionHandler gets a const-friendly interface and hides the fact that the successors are stored as non-const.
+
+I'd love to change GrowableArray::Contains to take "const T" but that doesn't seem to work when T is a pointer type.
 

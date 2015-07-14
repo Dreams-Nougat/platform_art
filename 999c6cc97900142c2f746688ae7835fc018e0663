@@ -1,0 +1,48 @@
+Revision: 999c6cc97900142c2f746688ae7835fc018e0663
+Patch-set: 3
+File: compiler/oat_writer.cc
+
+539:0-542:5
+Tue Jul 14 16:01:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 389bc68e_842388e1
+Bytes: 414
+You need to ReverseSpace() unconditionally. Adding the method header could otherwise push the the pending thunk beyond the reach of relative calls (thumb2/arm64). I think passing the same parameters should be OK as the dex-to-dex'd methods don't have any LinkerPatches. However, you'll need to fix the expectation that "compiled_method->GetQuickCode() != nullptr" in ArmBaseRelativePatcher::ReserveSpaceInternal().
+
+627:10-627:15
+Tue Jul 14 16:01:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8a4cecc_9f051384
+Bytes: 14
+INTERNAL_FATAL
+
+632
+Tue Jul 14 16:01:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 18a282bf_c332a81d
+Bytes: 14
+UNREACHABLE();
+
+633:5-633:11
+Tue Jul 14 16:01:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 389bc68e_04509831
+Bytes: 51
+Style: Don't use "else", just put it on a new line.
+
+636
+Tue Jul 14 16:01:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 389bc68e_c459905d
+Bytes: 44
+else set to nullptr? Or is that unnecessary?
+
+File: runtime/oat_file-inl.h
+
+73:0-73:6
+Tue Jul 14 16:01:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 389bc68e_0439b801
+Bytes: 51
+Nice catch! (ODR violation, no diagnostic required)
+

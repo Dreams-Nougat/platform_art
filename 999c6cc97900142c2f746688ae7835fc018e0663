@@ -16,6 +16,22 @@ UUID: 18a282bf_4379f8a2
 Bytes: 140
 Get rid of the always true "quick_code != nullptr". And since SetCode() is used only from the constructor, you can just move the code there.
 
+30:6-30:27
+Tue Jul 14 17:37:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_4379f8a2
+UUID: f8a4cecc_e2b80817
+Bytes: 4
+Done
+
+30:31-30:51
+Tue Jul 14 17:37:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d88d4a46_d18e4602
+UUID: f8a4cecc_c2bd0405
+Bytes: 4
+Done
+
 File: compiler/oat_writer.cc
 
 539:0-542:5
@@ -25,6 +41,14 @@ UUID: 389bc68e_842388e1
 Bytes: 414
 You need to ReverseSpace() unconditionally. Adding the method header could otherwise push the the pending thunk beyond the reach of relative calls (thumb2/arm64). I think passing the same parameters should be OK as the dex-to-dex'd methods don't have any LinkerPatches. However, you'll need to fix the expectation that "compiled_method->GetQuickCode() != nullptr" in ArmBaseRelativePatcher::ReserveSpaceInternal().
 
+539:0-542:5
+Tue Jul 14 17:37:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389bc68e_842388e1
+UUID: d88d4a46_f13d0298
+Bytes: 4
+Done
+
 627:10-627:15
 Tue Jul 14 16:01:53 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +56,28 @@ UUID: f8a4cecc_9f051384
 Bytes: 14
 INTERNAL_FATAL
 
+627:10-627:15
+Tue Jul 14 17:37:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8a4cecc_9f051384
+UUID: f8a4cecc_3f516759
+Bytes: 4
+Done
+
 632
 Tue Jul 14 16:01:53 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18a282bf_c332a81d
 Bytes: 14
 UNREACHABLE();
+
+632
+Tue Jul 14 17:37:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_c332a81d
+UUID: f8a4cecc_5f542b49
+Bytes: 4
+Done
 
 633:5-633:11
 Tue Jul 14 16:01:53 2015 +0000
@@ -52,6 +92,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 389bc68e_c459905d
 Bytes: 44
 else set to nullptr? Or is that unnecessary?
+
+636
+Tue Jul 14 17:37:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389bc68e_c459905d
+UUID: f8a4cecc_1f4ea3b9
+Bytes: 106
+The existing entry point works fine (be it null or the itnerpreter bridge), so I prefered not changing it.
 
 702:18-702:31
 Tue Jul 14 16:24:09 2015 +0000
@@ -71,6 +119,14 @@ Actually, this should be invalid. Use
   wrapped = ArrayRef<const uint8_t>(*quick_code);
 
 I guess I should add more "explicit" qualifiers and fix the compile errors that come up.
+
+702:18-702:31
+Tue Jul 14 17:37:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8a4cecc_7fa5af03
+UUID: 389bc68e_e4293494
+Bytes: 4
+Done
 
 File: runtime/oat_file-inl.h
 

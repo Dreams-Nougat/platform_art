@@ -9,6 +9,14 @@ UUID: b8a6d6d3_9db083fd
 Bytes: 15
 Nit: purposely?
 
+97:10-97:22
+Tue Jul 14 10:34:15 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8a6d6d3_9db083fd
+UUID: 389bc68e_21c94e49
+Bytes: 76
+Done. I wasn't aware of the distinction between the two adverbs until today.
+
 File: test/524-checker-caller-callee-regs/src/Main.java
 
 2:0-15:2
@@ -17,6 +25,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 389bc68e_c11e2264
 Bytes: 24
 Nit: indentation is off.
+
+2:0-15:2
+Tue Jul 14 10:34:15 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 389bc68e_c11e2264
+UUID: b8a6d6d3_7d7ff78a
+Bytes: 4
+Done
 
 60
 Tue Jul 14 10:05:29 2015 +0000
@@ -29,6 +45,37 @@ Maybe add a
 
 ?  We'll take care of it.
 
+60
+Tue Jul 14 10:34:15 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_40a0ceaa
+UUID: 389bc68e_41e572c9
+Bytes: 857
+Done.
+
+I we have tests for all archs we could do something like
+
+/// CHECK-START:  ...
+/// CHECK-DAG:    ...
+/// CHECK-arm:    <check the line of interest>
+/// CHECK-arm64:  <check the same line for arm64>
+/// CHECK-mips64:
+/// CHECK-x86:
+/// CHECK-x86_64:
+/// CHECK:         ...
+
+to avoid having to copy paste the full block for every arch.
+
+The issue with that is that it sometimes does not work nicely if we don't list all archs. Ideally we could express the test with
+
+/// CHECK-START:   <block for all archs>
+...
+/// CHECK-arm:     <special case for arm>
+/// CHECK-x86:     <special case for x86>
+/// CHECK-others:  <default case>
+
+But supporting such behaviours would require more logic in the checker. I stuck with the current solution because it has a minimal impact on the existing code. We can improve this arch-specific tests later if we need to.
+
 File: test/run-test
 
 641:0-641:1
@@ -37,6 +84,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8a4cecc_5f4aeb78
 Bytes: 24
 Nit: indentation is off.
+
+641:0-641:1
+Tue Jul 14 10:34:15 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8a4cecc_5f4aeb78
+UUID: d88d4a46_6e6f6f76
+Bytes: 4
+Done
 
 File: tools/checker/README
 
@@ -47,6 +102,14 @@ UUID: 18a282bf_008be629
 Bytes: 79
 Please insert a blank line between the previous paragraph and the code example.
 
+58
+Tue Jul 14 10:34:15 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_008be629
+UUID: 18a282bf_002526b8
+Bytes: 4
+Done
+
 File: tools/checker/checker.py
 
 20:0-20:55
@@ -55,4 +118,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b8a6d6d3_fd8ae723
 Bytes: 35
 Is this actually used in this file?
+
+20:0-20:55
+Tue Jul 14 10:34:15 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8a6d6d3_fd8ae723
+UUID: 389bc68e_01988a50
+Bytes: 65
+Yes, just below when defining the `--arch` command-line argument.
 

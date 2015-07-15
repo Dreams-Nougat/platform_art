@@ -17,6 +17,30 @@ UUID: 985112ab_dcf62d8b
 Bytes: 52
 Why do we need that dependency for the array access?
 
+24:0-25:43
+Wed Jul 15 12:29:42 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 985112ab_dcf62d8b
+UUID: d8470aeb_1e148df7
+Bytes: 634
+Currently the code will behave correctly even without this additional side effect. I am thinking about the following case for an hypothetical XYZ pass.
+
+    before XYZ pass
+
+    IntermediateAddress  (DependsOnGC)
+    ArrayGet             (None)
+    Div                  (ChangesGC)
+
+Since ArrayGet is not dependent on GC, nothing prevents the pass from reordering the Div before it, yielding
+
+    after XYZ pass
+
+    IntermediateAddress  (DependsOnGC)
+    Div                  (ChangesGC)
+    ArrayGet             (None)
+
+So we want to prevent any IR that can trigger GC to be inserted between IntermediateAddress and any of its uses.
+
 File: compiler/optimizing/nodes.h
 
 4424:3-4424:31
@@ -32,4 +56,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 18f0c2db_b005981c
 Bytes: 16
 Stray character?
+
+4428:49-4428:50
+Wed Jul 15 12:29:42 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f0c2db_b005981c
+UUID: b8fdf6c1_854702f2
+Bytes: 6
+Fixed.
 

@@ -15,3 +15,18 @@ if (graph_->InSsaForm()) {
 }
 return !IsFirstIndexOfPredecessor(predecessor, idx);
 
+1168:0-1168:56
+Wed Jul 15 04:29:20 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18a282bf_63619c07
+UUID: 38e906fb_f1b3283a
+Bytes: 395
+I'm not so sure that's worthwhile because (a) this function is used only by the catch block simplification pass (so not InSsaForm), and (b) if I start differentiating between non-SSA/SSA then I might as well start the function with:
+
+  if (graph_->InSsaForm()) {
+    DCHECK(everything)
+    return IsCatchBlock();
+  }
+
+because only catch blocks have exceptional predecessors after simplification.
+

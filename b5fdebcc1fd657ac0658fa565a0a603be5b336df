@@ -9,6 +9,24 @@ UUID: 18f0c2db_50bf8ca9
 Bytes: 160
 How about always allocating 4 bytes in the stack (alongside the lambda) to point to that boxed lambda? It would be initialized to null when creating the lambda.
 
+9:0-10:44
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18f0c2db_50bf8ca9
+UUID: 3837466d_44e800f1
+Bytes: 512
+That approach doesn't seem to always work:
+
+  A = create-lambda
+  B = [mem]copy A (e.g. via a return or a field store)
+  X = box A // write box into A's stack slot
+  Y = box B // write box into B's stack slot
+  assert (X == Y) // fails
+
+Let me know if you want to talk about this and we can set something up (or just use a few mins in Monday's meeting). It's certainly possible there's even a better way to do this.
+
+FWIW we are kind of tied by spec for object referential equality so we have to do it *somehow*.
+
 File: runtime/lambda/box_table.cc
 
 64:7-64:18
@@ -17,6 +35,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3837466d_a1cd3e2b
 Bytes: 104
 What other errors do you expect? Otherwise, check for OOM explicitly (there is an Assert..., I believe)?
+
+64:7-64:18
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3837466d_a1cd3e2b
+UUID: f8404ed5_bf8f9780
+Bytes: 281
+So this is the same exact code I had in a previous CL, I just moved it here and added the extra map code :).
+
+If you want I can clean up CreateFromArtMethod to have documented as "if this returns null there's always an OOM exception" and then it would be a sane invariant to check.
 
 132:2-132:8
 Wed Jul 15 01:38:24 2015 +0000
@@ -39,6 +67,16 @@ UUID: 187d22ed_5c8b3d76
 Bytes: 118
 You can use the it = set->Erase(it) to avoid needing to construct the remove_list. See InternTable::Table::SweepWeaks.
 
+147:2-147:39
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 187d22ed_5c8b3d76
+UUID: f8404ed5_3f9ce7b5
+Bytes: 217
+Thanks, I didn't think Hash_Set::Erase preserves the order of the elements (C++11's unordered_set doesn't, only C++14) as described
+
+(the only example in hash_set_test erased every element so that wasn't clear either)
+
 File: runtime/lambda/box_table.h
 
 28:18-28:40
@@ -48,12 +86,32 @@ UUID: f8404ed5_bfb0f7fc
 Bytes: 60
 Unusual to add this comment. You did not add it to Object...
 
+28:18-28:40
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8404ed5_bfb0f7fc
+UUID: 3837466d_842048d5
+Bytes: 189
+Must have forgot.
+
+I've seen this style before "//forward declaration" so I was just copying that.
+
+Anyway, in the new world hopefully we can just use _fwd.h to get around this boilerplate.
+
 47:2-51:50
 Wed Jul 15 15:21:56 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3837466d_21e28e9c
 Bytes: 58
 LOCKS_EXCLUDED(lambd_table_lock_), maybe? Similarly below?
+
+47:2-51:50
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3837466d_21e28e9c
+UUID: 5834fa65_a2b1be52
+Bytes: 60
+Thanks.. looks like I'm also missing GUARDED_BY for the map_
 
 61:2-61:53
 Wed Jul 15 15:21:56 2015 +0000
@@ -62,6 +120,14 @@ UUID: 5834fa65_827cba95
 Bytes: 38
 Stale comment? Otherwise a TODO maybe?
 
+61:2-61:53
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5834fa65_827cba95
+UUID: 5834fa65_62bc1626
+Bytes: 67
+Thanks, I meant to delete RegisterBoxedLambda and must have forgot.
+
 69:0-69:0
 Wed Jul 15 15:21:56 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,10 +135,28 @@ UUID: 183e024a_20792aa4
 Bytes: 71
 Mathieu will be impressed with your vertical whitespace. Why two lines?
 
+69:0-69:0
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 183e024a_20792aa4
+UUID: 3837466d_446b20e6
+Bytes: 12
+I blame lint
+
 91:2-91:55
 Wed Jul 15 15:21:56 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 183e024a_e0fb4289
 Bytes: 70
 Maybe a short explanation of why you set it to half the regular value?
+
+91:2-91:55
+Wed Jul 15 18:53:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 183e024a_e0fb4289
+UUID: f8404ed5_df905ba5
+Bytes: 251
+It's just an arbitrary value, I figured setting it to the min load factor would be too aggressive if something immediately starts erasing elements.
+
+We could also move this into hash_set if it makes more sense to put it there (like e.g. MaybeShrink())
 

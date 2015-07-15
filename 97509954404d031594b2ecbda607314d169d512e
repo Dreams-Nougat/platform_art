@@ -9,6 +9,14 @@ UUID: 183e024a_6395fc0d
 Bytes: 39
 This needs an OVERRIDE (and a virtual)?
 
+124:7-124:23
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 183e024a_6395fc0d
+UUID: f8404ed5_e58032d7
+Bytes: 27
+Its not required, but done.
+
 File: runtime/gc/collector/garbage_collector.h
 
 184:60-184:72
@@ -17,6 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8404ed5_228ff0ff
 Bytes: 16
 at compile time?
+
+184:60-184:72
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8404ed5_228ff0ff
+UUID: 183e024a_a31544ca
+Bytes: 5
+Fixed
 
 File: runtime/gc/collector/mark_compact.cc
 
@@ -27,6 +43,14 @@ UUID: 3837466d_242dbc49
 Bytes: 8
 nullptr?
 
+145:11-145:14
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3837466d_242dbc49
+UUID: 3837466d_677f468b
+Bytes: 4
+Done
+
 File: runtime/gc/collector/mark_sweep.cc
 
 501:0-508:1
@@ -35,6 +59,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 78f7fee1_5b78bee7
 Bytes: 76
 Would it make sense to move these to the header file for potential inlining?
+
+501:0-508:1
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 78f7fee1_5b78bee7
+UUID: 5834fa65_05ad14f6
+Bytes: 97
+Moved MarkObject, it isn't hot though, since the one with the holder and offset is normally used.
 
 File: runtime/gc/collector/mark_sweep.h
 
@@ -45,6 +77,14 @@ UUID: 78f7fee1_0f50c831
 Bytes: 15
 Update comment?
 
+208:13-208:17
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 78f7fee1_0f50c831
+UUID: 5834fa65_c505ec82
+Bytes: 4
+Done
+
 File: runtime/gc/reference_queue.cc
 
 191:15-191:32
@@ -53,6 +93,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 183e024a_23b614c6
 Bytes: 136
 It looks like this used to be an IsHeapReferenceMarkedCallback call but now it's MarkHeapReference call. Did this preserve the behavior?
+
+191:15-191:32
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 183e024a_23b614c6
+UUID: 78f7fee1_7bdc9587
+Bytes: 187
+The new behavior is correct, the old callback was an IsMarked callback which performed marking. The behavior should be a conditional mark if the SoftReference is supposed to be preserved.
 
 File: runtime/gc/reference_queue.h
 
@@ -63,10 +111,26 @@ UUID: 5834fa65_65474022
 Bytes: 113
 An alternative would be to declare an interface (visitor) that has both IsMarkedHeapReference() and MarkObject().
 
+72:45-72:61
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5834fa65_65474022
+UUID: 5834fa65_65bc2026
+Bytes: 124
+Was considering that, but it seems like the current approach is OK for now. Maybe I will change it if I add more unit tests.
+
 84:39-84:55
 Wed Jul 15 20:55:46 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5834fa65_05c9941e
 Bytes: 64
 An alternative would be to declare IsMarkedHeapReferenceVisitor.
+
+84:39-84:55
+Wed Jul 15 21:51:56 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5834fa65_05c9941e
+UUID: 183e024a_63497ce3
+Bytes: 4
+Same
 

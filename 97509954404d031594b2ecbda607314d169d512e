@@ -1,0 +1,72 @@
+Revision: 97509954404d031594b2ecbda607314d169d512e
+Patch-set: 2
+File: runtime/gc/collector/concurrent_copying.h
+
+124:7-124:23
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 183e024a_6395fc0d
+Bytes: 39
+This needs an OVERRIDE (and a virtual)?
+
+File: runtime/gc/collector/garbage_collector.h
+
+184:60-184:72
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f8404ed5_228ff0ff
+Bytes: 16
+at compile time?
+
+File: runtime/gc/collector/mark_compact.cc
+
+145:11-145:14
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3837466d_242dbc49
+Bytes: 8
+nullptr?
+
+File: runtime/gc/collector/mark_sweep.cc
+
+501:0-508:1
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 78f7fee1_5b78bee7
+Bytes: 76
+Would it make sense to move these to the header file for potential inlining?
+
+File: runtime/gc/collector/mark_sweep.h
+
+208:13-208:17
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 78f7fee1_0f50c831
+Bytes: 15
+Update comment?
+
+File: runtime/gc/reference_queue.cc
+
+191:15-191:32
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 183e024a_23b614c6
+Bytes: 136
+It looks like this used to be an IsHeapReferenceMarkedCallback call but now it's MarkHeapReference call. Did this preserve the behavior?
+
+File: runtime/gc/reference_queue.h
+
+72:45-72:61
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5834fa65_65474022
+Bytes: 113
+An alternative would be to declare an interface (visitor) that has both IsMarkedHeapReference() and MarkObject().
+
+84:39-84:55
+Wed Jul 15 20:55:46 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5834fa65_05c9941e
+Bytes: 64
+An alternative would be to declare IsMarkedHeapReferenceVisitor.
+

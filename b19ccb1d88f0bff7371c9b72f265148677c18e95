@@ -9,6 +9,14 @@ UUID: 183e024a_03c9901e
 Bytes: 70
 Is this true? Runnable threads no longer hold the shared mutator lock?
 
+10:32-11:27
+Wed Jul 15 21:31:16 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 183e024a_03c9901e
+UUID: 3837466d_c75e5243
+Bytes: 236
+Yes, it is true. Runnable threads would "pretend" to hold the mutator lock by calling BaseMutex::RegisterAsLocked() before transitioning to runnable, in order to pass various assertion checks, but they are not actually holding the lock.
+
 File: runtime/gc/collector/concurrent_copying.cc
 
 76:24-76:41
@@ -28,4 +36,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f8404ed5_8561260a
 Bytes: 156
 So I didn't follow the JNI CL, but is this supposed to have about the same latency as before? Is there a chance that the worst case latency could be longer?
+
+384:2-384:20
+Wed Jul 15 21:31:16 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8404ed5_8561260a
+UUID: f8404ed5_45e23ec4
+Bytes: 125
+In my limited performance experiments, I didn't see any significant slowdown for SuspendAll(). I shared the results with you.
 

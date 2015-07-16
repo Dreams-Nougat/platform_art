@@ -1,0 +1,23 @@
+Revision: ebc93d5aa8b72168c0c12b3294d1d2552a1b2003
+Patch-set: 2
+File: runtime/lambda/box_table.cc
+
+140:15-140:37
+Thu Jul 16 21:31:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8754a3f_ce80a3d7
+Bytes: 351
+Depending on the nature of this data structure, in general, both adding a new weak ref and accessing an existing weak ref (loading the ref out of a GcRoot) need to be temporarily blocked (excluding GC's sweeping code SweepWeakBoxedLambdas). I am the impression that it's already the case here, but I'd like to check if this matches your understanding.
+
+162:50-162:54
+Thu Jul 16 21:31:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b8709650_6d0735d1
+Bytes: 222
+This should disable the read barrier as this is called from GC with a comment like:
+
+// This does not need a read barrier because this is called by GC.
+... Read<kWithoutReadBarrier>();
+
+eg. InternTable::Table::SweepWeaks()
+

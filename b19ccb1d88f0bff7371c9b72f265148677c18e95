@@ -17,6 +17,18 @@ UUID: 3837466d_c75e5243
 Bytes: 236
 Yes, it is true. Runnable threads would "pretend" to hold the mutator lock by calling BaseMutex::RegisterAsLocked() before transitioning to runnable, in order to pass various assertion checks, but they are not actually holding the lock.
 
+10:32-11:27
+Thu Jul 16 00:25:48 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3837466d_c75e5243
+UUID: 183e024a_4976d9b5
+Bytes: 333
+Hm, I have an impression that it could be potentially leaky/error-prone.
+
+What happens if a mutator thread calls Locks::mutator_lock_->SharedUnlock(self) and then Locks::mutator_lock_->SharedLock(self) when it pretends to hold the shared mutator lock? Does it actually hold the lock now?
+
+Is there a way to avoid the need to pretend?
+
 File: runtime/gc/collector/concurrent_copying.cc
 
 76:24-76:41

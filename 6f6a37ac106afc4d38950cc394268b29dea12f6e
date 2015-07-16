@@ -9,6 +9,21 @@ UUID: b8fdf6c1_0b8c4107
 Bytes: 5
 Nice!
 
+25:0-26:49
+Thu Jul 16 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d8470aeb_a14218e2
+Bytes: 715
+This looks odd given that we now compare 2 characters at a time. Unfortunately, this is hard to guess right and one has to measure a lot and it even depends on the actual hardware. Some experimentation would be in order. Things to try:
+
+1. Iterate forward rather than backward. I read CPUs are more likely to actively prefetch with this access pattern. (+1 temp as you can't compare temp1 with a constant for the termination condition.)
+
+2. Use post-indexed LDRs as in PS4 (+2 temps).
+
+3. Change the loop back to use an unconditional back branch as in PS5. I heard this is good for Cortex-A53 but doesn't really affect Cortex-A57. No idea how that works out for Thumb2 on Nexus 9.
+
+4. Add explicit PLDs to the loop.
+
 File: build/Android.common_build.mk
 
 262:3-262:5

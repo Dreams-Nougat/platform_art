@@ -9,6 +9,14 @@ UUID: 3837466d_c733b27f
 Bytes: 83
 Any reason why not just "vios << std::flush" ? The extra * just seems to add noise.
 
+731
+Thu Jul 16 09:04:20 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3837466d_c733b27f
+UUID: 18f0c2db_d6337431
+Bytes: 56
+Do you want to change the parameter type to a reference?
+
 File: runtime/indenter.h
 
 125
@@ -25,4 +33,12 @@ None of the built-in operator<< in basic_ostream are using that.
 should be sufficient, isn't it?
 
 I am not sure I understand the value in ever having operator<< parameter get moved-from, like that would somehow make printing faster (which is a read-only operation)?
+
+125
+Thu Jul 16 09:04:20 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 78f7fee1_a9c2c727
+UUID: b8fdf6c1_a8b1b352
+Bytes: 104
+The intent of this operator is to forward parameters, so I would be suspicious if I saw "const T&" here.
 

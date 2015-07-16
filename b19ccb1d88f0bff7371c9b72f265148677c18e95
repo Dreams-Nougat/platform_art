@@ -29,6 +29,18 @@ What happens if a mutator thread calls Locks::mutator_lock_->SharedUnlock(self) 
 
 Is there a way to avoid the need to pretend?
 
+10:32-11:27
+Thu Jul 16 01:17:48 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 183e024a_4976d9b5
+UUID: 78f7fee1_a45d4ebf
+Bytes: 570
+I agree this is error prone and we should make it better.
+
+mutator_lock_->SharedLock() and mutator_lock_->SharedUnlock() still work as before, that the calling thread would hold/release the lock after the call. But after the JNI patch, a mutator thread would not call these two functions for thread state transitions. Calling them improperly could lead ReaderWriterMutex::state_ having a incorrect value.
+
+I think we can remove the pretending part, but we may as well remove a lot of SHARED_LOCKS_REQUIRED(Locks::mutator_lock_) annotations, since this is no longer true.
+
 File: runtime/gc/collector/concurrent_copying.cc
 
 76:24-76:41

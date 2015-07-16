@@ -25,6 +25,16 @@ UUID: b8fdf6c1_cb5749d1
 Bytes: 100
 I would prefer a reference too, but the C++ style guide prevents us from using non-const references.
 
+731
+Thu Jul 16 15:52:13 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8fdf6c1_cb5749d1
+UUID: d8d9ca70_71a6124b
+Bytes: 433
+There's a limit to how far we can stretch that, so it can't always apply. As an extreme correctness case: iostream overloads aren't implemented with an iostream pointer argument, since it wouldn't even work otherwise.
+
+It seems like the whole point of using "operator<<" here is to make it look much cleaner and readable, and getting rid of the * (by turning the parameter into an lvalue reference) would make it cleaner looking too.
+
 File: runtime/indenter.h
 
 125
@@ -57,4 +67,43 @@ Parent: b8fdf6c1_a8b1b352
 UUID: b8fdf6c1_eb5205e3
 Bytes: 65
 Exactly; std::forward is the generic way of forwarding arguments.
+
+125
+Thu Jul 16 15:52:13 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8fdf6c1_eb5205e3
+UUID: 98fcb2c6_67576c50
+Bytes: 1217
+Yes, but forwarding it into what?
+
+It seems like it's forwarding into std::ostream&
+
+and the std::ostream& interface doesn't have any overloads of operator<< that take an rvalue reference (I suppose someone could write a free function that did it, but I can't fathom why).
+
+The practical downside is that the user of the API no longer knows if the parameter will be treated as const or not. Perfect forwarding can resolve to a "Lvalue&" type, which means it could end up being mutated by the callee.
+
+IMHO iostreams should not be mutating the data they consume, so it doesn't seem clear why we'd ever want the parameters to be non-const.
+
+---------
+Aside:
+
+a const lvalue& works for everything as the "in" argument, it just can't be moved-from in the definition
+
+   void foo(const T& x)
+  
+   T y;
+   foo(y) // ok
+   T& z = y;
+   foo(z) // ok
+   const T& w = y;
+   foo(w) = ok
+   T&& r = std::move(y);
+   foo(r) // ok
+   foo(T{}); // ok
+
+and so on.
+
+It's possible I may have missed a best practice regarding perfect forwarding on iostreams?
+
+To me perfect forwarding makes more sense when forwarding into a templated type or into a type having the full range of parameter overloads (that include an rvalue reference).
 

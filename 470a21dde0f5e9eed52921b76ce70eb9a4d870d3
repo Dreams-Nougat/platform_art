@@ -1,0 +1,48 @@
+Revision: 470a21dde0f5e9eed52921b76ce70eb9a4d870d3
+Patch-set: 2
+File: runtime/gc/weak_root_state.h
+
+26:25-28:96
+Fri Jul 17 21:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 787a9e34_7fd597ac
+Bytes: 15
+Align comments.
+
+File: runtime/intern_table.cc
+
+237:4-237:89
+Fri Jul 17 21:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 586b1a6a_3e9c01b6
+Bytes: 146
+Shouldn't you be testing that the other mutex is actually the mutator lock. It's a debug build, so you don't have to trust lock annotations... :-)
+
+245:4-247:5
+Fri Jul 17 21:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 188c4286_cab087fe
+Bytes: 123
+Can you explain how this can happen? From what I can see, this is only set in a pause? So how can we have the mutator lock?
+
+245:4-261:5
+Fri Jul 17 21:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 38858659_850d9240
+Bytes: 100
+This would be more readable if it was refactored into a small helper function, WaitAccessible or so.
+
+264:6-264:23
+Fri Jul 17 21:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b8709650_1cd26146
+Bytes: 15
+Remove newline.
+
+266:2-281:53
+Fri Jul 17 21:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 386e667b_dddccb57
+Bytes: 205
+I understand why there's no EnsureNoWeakRootStateChange, as that's covered by holding the mutator lock at this point. But could you add a comment towards this? (Maybe even add an AssertHeld in debug mode?)
+

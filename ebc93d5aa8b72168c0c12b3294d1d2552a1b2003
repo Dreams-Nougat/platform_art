@@ -9,6 +9,16 @@ UUID: d8754a3f_ce80a3d7
 Bytes: 351
 Depending on the nature of this data structure, in general, both adding a new weak ref and accessing an existing weak ref (loading the ref out of a GcRoot) need to be temporarily blocked (excluding GC's sweeping code SweepWeakBoxedLambdas). I am the impression that it's already the case here, but I'd like to check if this matches your understanding.
 
+140:15-140:37
+Fri Jul 17 01:04:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8754a3f_ce80a3d7
+UUID: 987f5221_ecc80b1d
+Bytes: 213
+Yes, I always calls BlockUntilWeaksAllowed before reading a GC root (in particular, I always call it after taking the lambda lock)
+
+*except* in SweepWeakBoxedLambdas which would block forever if I called it there.
+
 162:50-162:54
 Thu Jul 16 21:31:19 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,4 +30,12 @@ This should disable the read barrier as this is called from GC with a comment li
 ... Read<kWithoutReadBarrier>();
 
 eg. InternTable::Table::SweepWeaks()
+
+162:50-162:54
+Fri Jul 17 01:04:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b8709650_6d0735d1
+UUID: 386e667b_ec39e361
+Bytes: 4
+Done
 

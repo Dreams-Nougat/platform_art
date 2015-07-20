@@ -9,12 +9,28 @@ UUID: f8d3ee93_67f572f8
 Bytes: 97
 nit: empty line will do fine here. we don't generate any sort of docs which would make use of <p>
 
+1160:3-1160:6
+Mon Jul 20 16:04:01 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f8d3ee93_67f572f8
+UUID: b8eed634_26f7dccb
+Bytes: 4
+Done
+
 1206:14-1206:19
 Mon Jul 20 14:04:22 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 38dae6a9_0cf777cb
 Bytes: 84
 potentially this could lead up to mallformed SideEffects wrt Int/Float alias. right?
+
+1206:14-1206:19
+Mon Jul 20 16:04:01 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 38dae6a9_0cf777cb
+UUID: f8884ea6_ff6e3f78
+Bytes: 178
+Not really. You can only construct side effects through the public methods. And anything with an I or F (or J and D) gets automatically the conservative other one attached to it.
 
 1263:10-1263:11
 Fri Jul 17 18:40:29 2015 +0000
@@ -32,6 +48,14 @@ UUID: 18d1a28c_0ba92167
 Bytes: 184
 Could we have this fix up in the constructor? Since this is needed for correctness, it feels safer to be at the place when we actually construct the SideEffect (see the union comment).
 
+1264:18-1264:26
+Mon Jul 20 16:04:01 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d1a28c_0ba92167
+UUID: d8f38a19_848fcafd
+Bytes: 215
+Well, there is no other way to construct the value then through this method. The code I have now has the advantage that once you fix the aliasing problem, we only have to remove this method, the rest stays the same!
+
 1280:18-1280:27
 Mon Jul 20 14:04:22 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,12 +65,28 @@ How about naming the other one TypeFlagFixup (or something simillar) and leave t
 
 Alternatively, you could consider making this a static creator function `SideEffect CreateFromType(...)`. Since it seems that you only use it when creating side effects.
 
+1280:18-1280:27
+Mon Jul 20 16:04:01 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 18d1a28c_6b8ffdfe
+UUID: d81c6a21_fc2e2119
+Bytes: 114
+Ok, again the idea was to minimize name changes later, but I will use something with AddAlias to the other method.
+
 1290:11-1290:22
 Mon Jul 20 14:04:22 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 38b10658_b19040a4
 Bytes: 67
 add a DCHECK here for checking Int/Float, Long/Double dependencies.
+
+1290:11-1290:22
+Mon Jul 20 16:04:01 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 38b10658_b19040a4
+UUID: 18ea8220_a6393263
+Bytes: 4
+Done
 
 3964:91-3964:104
 Mon Jul 20 14:04:22 2015 +0000

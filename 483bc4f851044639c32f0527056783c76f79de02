@@ -25,6 +25,23 @@ Since a volatile read basically invalidates the "cache", we know that any prior 
 
 If the fact that others may start using this in the wrong way worries you, I am happy to make this an All() instead in both cases. It won't have a very adverse affect.
 
+1236:10-1236:20
+Mon Jul 20 23:41:43 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 185442e3_d932671d
+UUID: 0d0ec228_d78c1cc0
+Bytes: 390
+Actually you convinced me already :-)
+
+For example
+
+for (i ..) {
+      a[i] = mVolatile;
+      b[i] = mNormal
+}
+
+should not lift the mNormal out of the loop (which would be done with a "does mNormal depend on anything in the loop" query), since it could break the happens-before from another thread the writes mNormal and then mVolatile, to the read of of mVolatile and then read of mNormal
+
 4277:10-4277:29
 Mon Jul 20 22:46:24 2015 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>

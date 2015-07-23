@@ -1,0 +1,22 @@
+Revision: 88b6b051cc1c92b40537941c68061fc0d3b46a9f
+Patch-set: 1
+File: runtime/base/hash_set.h
+
+473
+Thu Jul 23 17:53:32 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4dd51ace_94d9b4a6
+Bytes: 305
+One thing I never quite understood, if the data isn't owned how is it supposed to handle a resize safely?
+
+It looks like that Resize will allocate and deallocate the storage regardless.
+
+Is the intention here for a hashset of pointers, where removing an item from the hashset will also delete the pointer?
+
+478
+Thu Jul 23 17:53:32 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4dd51ace_542cac1c
+Bytes: 100
+minor: shouldn't deallocate work with a nullptr? if it's just delete or free then it ignores nullptr
+

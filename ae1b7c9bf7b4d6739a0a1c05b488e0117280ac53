@@ -1,0 +1,18 @@
+Revision: ae1b7c9bf7b4d6739a0a1c05b488e0117280ac53
+Patch-set: 1
+File: test/484-checker-register-hints/src/Main.java
+
+29
+Thu Jul 23 19:01:45 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6dfe5e71_b860a1ae
+Bytes: 314
+The reason this file is changed is with this CL, this assert fails. Since those unused parameters z,a,b,c,d,m will be spilled in the entry block (if it's not already passed on stack) due to the added HDeoptimize from bce. Changing to field accesses won't need HDeoptimize. This test will still test register hints.
+
+47
+Thu Jul 23 19:01:45 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ddfa2f3_7811b012
+Bytes: 197
+Even without this additional live value, spilling is already forced. However I add another live here so that this test is causing the same number of spills so it's testing the same thing as before.
+

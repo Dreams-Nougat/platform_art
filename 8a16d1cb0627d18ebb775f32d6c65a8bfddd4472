@@ -50,6 +50,17 @@ UUID: ed1a4eb3_46ff12db
 Bytes: 111
 The two sArrZ get fields that were there originally have been optimized into one by GVN  by the time LICM runs.
 
+296:6-296:11
+Fri Jul 24 09:17:37 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cda66ad5_9dd88367
+Bytes: 633
+Nit: You might want to consider using CHECK-DAG as the default for testing the SSA form.
+
+The reason is that basic blocks are dumped in the order of their IDs, i.e. somebody might write a pass that inserts a new block (highest ID) in the reverse post order and moves some instructions in there (unlikely but semantically correct). The order in which the instructions appear in the graph dump might reverse and your second CHECK will fail.
+
+We use CHECK when order matters (e.g. 510/smali/Builder.smali) or for testing number of occurrences ("CHECK: X, CHECK: X, CHECK: X, CHECK-NOT: X" guarantees that X appears exactly three times).
+
 298
 Thu Jul 23 23:06:17 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

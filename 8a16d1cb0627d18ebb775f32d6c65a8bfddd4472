@@ -61,6 +61,23 @@ The reason is that basic blocks are dumped in the order of their IDs, i.e. someb
 
 We use CHECK when order matters (e.g. 510/smali/Builder.smali) or for testing number of occurrences ("CHECK: X, CHECK: X, CHECK: X, CHECK-NOT: X" guarantees that X appears exactly three times).
 
+296:6-296:11
+Fri Jul 24 16:08:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cda66ad5_9dd88367
+UUID: 4d86fa2e_2f272dbb
+Bytes: 510
+Thanks for the feedback. 
+
+I actually used CHECK on purpose because it was not clear from the doc if using
+
+CHECK-DAG( <x> )
+CHECK-DAG( <x> )
+
+where the pattern <x> is the same really checks if two *different* matches occur, or, since the order does not matter, it could match the same pattern. This is why I used CHECK in my before patterns. Can you please confirm or deny if this is the case?
+
+I could, for sure, use CHECK-DAG in the cases where the patterns are not the same to ensure order does not matter.
+
 298
 Thu Jul 23 23:06:17 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

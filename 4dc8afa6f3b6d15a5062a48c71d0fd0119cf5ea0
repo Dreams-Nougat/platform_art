@@ -1,0 +1,30 @@
+Revision: 4dc8afa6f3b6d15a5062a48c71d0fd0119cf5ea0
+Patch-set: 1
+File: compiler/optimizing/intrinsics_arm.cc
+
+1056:0-1057:49
+Fri Jul 24 09:46:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adce96a1_f4d9d86d
+Bytes: 244
+Can you add these as well?
+
+Given the partial deprecation of IT in ARMv8, I think the Long version should be
+
+    clz result, high_reg      # requires different registers
+    cbne high_reg, end
+    clz result, low_reg
+    add result, #32
+  end:
+
+File: test/082-inline-execute/src/Main.java
+
+1052
+Fri Jul 24 09:46:44 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0da5e2c6_3fe847ec
+Bytes: 234
+Please add tests for integers of the form (0xffffffff >>> i) and ((1 << i) + 1). Similar for long below.
+
+Note that the four individual Asserts outside the loop will then be covered inside the loop. (The MIN_VALUE is already covered.)
+

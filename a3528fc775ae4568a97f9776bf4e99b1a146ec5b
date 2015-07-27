@@ -9,6 +9,16 @@ UUID: 6dc1fe6b_ba1471d2
 Bytes: 181
 Out of curiosity, where does this constraint come from?  Is this to have $sp 16-bit aligned *and* $a0 placed at ($sp) for the call to artReadBarrierSlow?  If so, please document it.
 
+655:38-655:63
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6dc1fe6b_ba1471d2
+UUID: 0d4162d7_3fe5c712
+Bytes: 245
+I think the position of the padding can be anywhere, and MIPS ABI doesn't require arguments be placed on the stack. I just saw in other places of this file that the padding is never at 0($sp), so I just placed it here.
+
+Add a comment about this.
+
 668:36-668:73
 Mon Jul 27 13:06:32 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +26,28 @@ UUID: adce96a1_346bd093
 Bytes: 92
 # use branch delay slot to reserve argument slots before the call to artReadBarrierSlow here
 
+668:36-668:73
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adce96a1_346bd093
+UUID: 4d37da6b_a1853e15
+Bytes: 4
+Done
+
 669
 Mon Jul 27 13:06:32 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0dbec2e2_575e4cf9
 Bytes: 48
 # restore stack after call to artReadBarrierSlow
+
+669
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dbec2e2_575e4cf9
+UUID: adfcd6c5_444fce8a
+Bytes: 4
+Done
 
 671:4-671:20
 Mon Jul 27 13:06:32 2015 +0000
@@ -36,12 +62,29 @@ Why not
 
 here?
 
+671:4-671:20
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adce96a1_1468d492
+UUID: cdfd8ac1_25c72e3a
+Bytes: 170
+Because the READ_BARRIER macro is already tightly coupled with art_quick_aput_obj, and $v0 is not used as a dest for any heap load in art_quick_aput_obj.
+Added a comment.
+
 673:70-673:90
 Mon Jul 27 13:06:32 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: adce96a1_f45318eb
 Bytes: 13
 Why is it so?
+
+673:70-673:90
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adce96a1_f45318eb
+UUID: ad5136aa_fc2c49cf
+Bytes: 42
+Similar to above comment. Added a comment.
 
 File: runtime/arch/mips64/quick_entrypoints_mips64.S
 
@@ -52,6 +95,14 @@ UUID: 6dc1fe6b_fa31c978
 Bytes: 6
 Ditto.
 
+918:38-918:63
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6dc1fe6b_fa31c978
+UUID: adfcd6c5_2416127f
+Bytes: 16
+Added a comment.
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 1186:4-1186:6
@@ -61,6 +112,14 @@ UUID: 0dbec2e2_d7c7fc0b
 Bytes: 64
 Nit: Add another level of comments, for the sake of consistency?
 
+1186:4-1186:6
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dbec2e2_d7c7fc0b
+UUID: adfcd6c5_641c0aa1
+Bytes: 4
+Done
+
 File: runtime/entrypoints/quick/quick_field_entrypoints.cc
 
 25:0-25:19
@@ -69,4 +128,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0dbec2e2_97d184cb
 Bytes: 22
 Is this really needed?
+
+25:0-25:19
+Mon Jul 27 18:45:38 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dbec2e2_97d184cb
+UUID: 4d86fa2e_359f7b43
+Bytes: 4
+Done
 

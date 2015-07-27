@@ -1,0 +1,13 @@
+Revision: daaf3265806eb2eadb2e03302bd68022fab5ca28
+Patch-set: 7
+File: runtime/native/java_lang_reflect_Field.cc
+
+258:9-258:24
+Mon Jul 27 22:56:52 2015 +0000
+Author: Fredrik Roubert <1024310@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d82de52_b2d82067
+Bytes: 442
+This is a very unfortunate copy-paste mistake, for this code happens to still work for any char that isn't larger than 8 bits (ie. the characters of ASCII and ISO-8859-1, and the current test cases use ASCII test characters and therefore still pass) but it will truncate all other characters (which totally breaks deserialization, which is why I found it). I've sent you a patch for review now:
+
+https://android-review.googlesource.com/161790
+

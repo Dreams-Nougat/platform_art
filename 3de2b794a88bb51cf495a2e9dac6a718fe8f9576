@@ -16,6 +16,22 @@ UUID: 4d335a20_047a1897
 Bytes: 213
 I don't see an immediate gain for this and we are more verbose. What's the actual benefit? equal instructions returned and HIntConstant before as well based on the previous implementation of the static evaluation?
 
+9:7-9:15
+Mon Jul 27 17:15:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d335a20_047a1897
+UUID: 6dc1fe6b_fa7c29e2
+Bytes: 673
+Could you rephrase your last sentence?  I had a hard time parsing it. :)
+
+The benefit is that we can properly process operations with different signatures regarding inputs and output, e.g.:
+
+- arithmetic operations: (T, T) → T
+- condition (including merged compare & condition) : (T, T) → bool ("converted" to int).
+- comparisons: (T, T) → int
+
+So I separated the dispatch part (Evaluate) from the computation part (Compute*), much like the Visitor design pattern does.  Sometimes the latter is the same for all cases; sometimes we have various cases (e.g. ComputeIntegral vs ComputeFP).  See also https://android-review.googlesource.com/#/c/161016 for more examples.
+
 File: compiler/optimizing/nodes.cc
 
 1016:5-1016:66
@@ -24,6 +40,16 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d48f2a1_db3c934c
 Bytes: 42
 how about shift which can be "long << int"
+
+1016:5-1016:66
+Mon Jul 27 17:15:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d48f2a1_db3c934c
+UUID: adce96a1_545f6cbc
+Bytes: 335
+Can this actually happen?  Dex instructions such as shl-int or shl-long expect either two ints or two longs.  Also, the code generators seem to handle only (int, int) and (long, long) cases; e.g. see art::arm::InstructionCodeGeneratorARM::HandleShift.
+
+(And currently the worst case is, this doesn't get optimized by constant folding.)
 
 File: compiler/optimizing/nodes.h
 
@@ -34,6 +60,16 @@ UUID: cd3e6aec_5dffdbda
 Bytes: 4
 why?
 
+2052:2-2052:21
+Mon Jul 27 17:15:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd3e6aec_5dffdbda
+UUID: 2dbb86f3_9836559c
+Bytes: 240
+Note: this was present in the initial code (see Base set, line 2679); I just moved it higher for dependency reasons.
+
+This is required by art::HGraph::GetNullConstant, which instantiates an art::HNullConstant (the ctor of which is private).
+
 2063:11-2063:33
 Thu Jul 23 16:18:19 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,10 +77,30 @@ UUID: 4d335a20_c4983087
 Bytes: 68
 DCHECK, otherwise we get might get a sigsegv which is less readable.
 
+2063:11-2063:33
+Mon Jul 27 17:15:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d335a20_c4983087
+UUID: 2dbb86f3_782ca14a
+Bytes: 177
+Note: this was present in the initial code (see Base set, line 2690); I just moved it higher for dependency reasons.
+
+I've added DCHECKs, here and in other HConstant subclasses.
+
 2261:30-2261:42
 Thu Jul 23 16:18:19 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d538656_9b67af15
 Bytes: 24
 why not HConstant  then?
+
+2261:30-2261:42
+Mon Jul 27 17:15:22 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d538656_9b67af15
+UUID: 0dbec2e2_37263869
+Bytes: 184
+Because:
+1. I'm using overloading to select the right method here (see TryStaticEvaluation methods);
+2. We need the exact type of the concrete classes to be able to call x->GetValue().
 

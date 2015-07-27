@@ -1,0 +1,72 @@
+Revision: a3528fc775ae4568a97f9776bf4e99b1a146ec5b
+Patch-set: 9
+File: runtime/arch/mips/quick_entrypoints_mips.S
+
+655:38-655:63
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6dc1fe6b_ba1471d2
+Bytes: 181
+Out of curiosity, where does this constraint come from?  Is this to have $sp 16-bit aligned *and* $a0 placed at ($sp) for the call to artReadBarrierSlow?  If so, please document it.
+
+668:36-668:73
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adce96a1_346bd093
+Bytes: 92
+# use branch delay slot to reserve argument slots before the call to artReadBarrierSlow here
+
+669
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dbec2e2_575e4cf9
+Bytes: 48
+# restore stack after call to artReadBarrierSlow
+
+671:4-671:20
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adce96a1_1468d492
+Bytes: 67
+Why not
+
+  .ifnc \rDest, $v0
+      move \rDest, $v0
+  .endif
+
+here?
+
+673:70-673:90
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adce96a1_f45318eb
+Bytes: 13
+Why is it so?
+
+File: runtime/arch/mips64/quick_entrypoints_mips64.S
+
+918:38-918:63
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6dc1fe6b_fa31c978
+Bytes: 6
+Ditto.
+
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+1186:4-1186:6
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dbec2e2_d7c7fc0b
+Bytes: 64
+Nit: Add another level of comments, for the sake of consistency?
+
+File: runtime/entrypoints/quick/quick_field_entrypoints.cc
+
+25:0-25:19
+Mon Jul 27 13:06:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0dbec2e2_97d184cb
+Bytes: 22
+Is this really needed?
+

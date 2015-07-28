@@ -29,3 +29,26 @@ Alright.  It makes sense. :)
 
 Do you plan to have different CHECK stanzas for the various back ends?
 
+19:0-20:19
+Tue Jul 28 09:13:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d657ec3_9ad9cd6f
+UUID: 2d862697_e00a225d
+Bytes: 552
+With the current changes we would first need to have one test per arch:
+
+    CHECK-START-X86: void Main ...
+    CHECK:        ParameterValue liveness:2 ranges:{[2,222222)} ...
+
+    CHECK-START-ARM: void Main ...
+    CHECK:        ParameterValue liveness:2 ranges:{[2,444444)} ...
+
+    ...
+
+
+As discussed before, eventually we would like to be able to do something like
+
+    CHECK-START: void Main ...
+    CHECK-default:        ParameterValue liveness:2 ranges:{[2,222222)} ...
+    CHECK-ARM:            ParameterValue liveness:2 ranges:{[2,444444)} ...
+

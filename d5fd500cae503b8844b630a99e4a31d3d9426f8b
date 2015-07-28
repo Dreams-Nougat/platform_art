@@ -142,3 +142,18 @@ AFAIK the JLS provides clear guidance. Expression evaluation doesn't apply here,
 
 I did not want to intimate that we can rely on C++11 guarantees. I just wanted to state that it doesn't matter what the target does. The target must be doing it as defined by the JLS (which is double precision, not 80b, with defined rounding mode), or we're doing things wrong...
 
+3327
+Tue Jul 28 21:10:46 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6dae5efb_b5d94a6f
+UUID: 4db19a56_bad9356f
+Bytes: 835
+As far as I can tell:
+
+1) C and C++ allow 80 bit arithmetic, though everybody is probably right that this is unlikely in practice with modern compiler options.
+2) 80 bit operations can give the wrong results by Java rules, under unlikely conditions, even for a single operation.  Consider an operation that has to very slightly round up to get the nearest 80 bit result x.  Assume that x is half-way between the two closest 64 bit results, and the higher one is even.  Thus rounding to 64 bits gets us the higher value, which is not the nearest 64-bit result to the true answer.
+
+Thus doing this portably and correctly, probably does require a library.  Or possibly just checking our compiler options might do.
+
+I'm also not positive that C++ arithmetic will handle denormals correctly.  That presumably also depends on compiler flags.
+

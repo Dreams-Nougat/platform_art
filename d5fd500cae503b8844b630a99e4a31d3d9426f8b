@@ -41,3 +41,12 @@ UUID: cd174afa_953c2481
 Bytes: 341
 I don't think this really matters. It seems rather unlikely that there will be code produced that doesn't use intermediates. For some reason, multiple operations would have to line up somewhere. I don't think the driver for the constant folding looks that way. (I'd contend that any inliner/unroller that produces such code is a bit insane.)
 
+3327
+Tue Jul 28 16:36:32 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd174afa_953c2481
+UUID: 4d7fda4c_21fece2d
+Bytes: 302
+I think that is incorrect and that the issue can happen for a single operation.
+If 80bit FP is enabled, the operation can happen with more precision, and when rounded back to 64bit FP the value can be different. I think we have seen this issue in real-world examples when working on the VIXL simulator.
+

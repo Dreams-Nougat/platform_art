@@ -122,3 +122,23 @@ UUID: 6dae5efb_12caecc2
 Bytes: 306
 This is theoretically true, but in practice is probably irrelevant.  If you really want to do this portably, you should be using a software IEEE-754 implementation that does what Java wants.  Then it doesn't matter on what machine this is executed on.  I have seen this on other compilers I have worked on.
 
+3327
+Tue Jul 28 18:16:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6dae5efb_12caecc2
+UUID: 2db8e63c_33bd72b1
+Bytes: 333
+A library would make all this definite. But honestly we'd have to change the interpreter then, too. Instead we may check for the compiler support. Googling gives, for example:
+ http://stackoverflow.com/questions/5777484/how-to-check-if-c-compiler-uses-ieee-754-floating-point-standard
+hboehm, danalbert and srhines may have opinions.
+
+3327
+Tue Jul 28 18:16:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d68ba9e_9910fb11
+UUID: 6dae5efb_b5d94a6f
+Bytes: 491
+AFAIK the JLS provides clear guidance. Expression evaluation doesn't apply here, as long as the folding takes both precedence and order specified in the JLS into account (both of which are above the ComputeFP).
+
+I did not want to intimate that we can rely on C++11 guarantees. I just wanted to state that it doesn't matter what the target does. The target must be doing it as defined by the JLS (which is double precision, not 80b, with defined rounding mode), or we're doing things wrong...
+

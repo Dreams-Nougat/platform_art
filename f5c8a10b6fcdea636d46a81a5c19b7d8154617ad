@@ -90,6 +90,24 @@ UUID: 4d68ba9e_59cd83c7
 Bytes: 156
 I second that.  Maybe also move the checks on compiler_options.GetInlineDepthLimit() and ompiler_options.GetInlineMaxCodeUnits() inside the inliner as well?
 
+413:0-413:67
+Wed Jul 29 13:20:18 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d68ba9e_59cd83c7
+UUID: 4d7fda4c_e40a345d
+Bytes: 361
+I disagree here. You will need to have something like:
+
+HInliner::Run() {
+  // inliner
+  // type propagation
+  // fold
+}
+
+And you end up with a pass that does much more then it should do. 
+
+It's similar with the fact that we want to run instruction simplifier after various passes. We don't really want to code that in the pass that enables more simplification.
+
 419
 Wed Jul 29 13:00:54 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

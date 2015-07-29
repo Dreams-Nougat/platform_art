@@ -32,6 +32,16 @@ The benefit is that we can properly process operations with different signatures
 
 So I separated the dispatch part (Evaluate) from the computation part (Compute*), much like the Visitor design pattern does.  Sometimes the latter is the same for all cases; sometimes we have various cases (e.g. ComputeIntegral vs ComputeFP).  See also https://android-review.googlesource.com/#/c/161016 for more examples.
 
+9:7-9:15
+Wed Jul 29 18:43:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6dc1fe6b_fa7c29e2
+UUID: 4d7fda4c_44ba00ba
+Bytes: 102
+Sorry for the bad wording.
+
+I missed that actually for HEqual we returned either an int32 or an int64.
+
 File: compiler/optimizing/nodes.cc
 
 1016:5-1016:66
@@ -50,6 +60,20 @@ Bytes: 335
 Can this actually happen?  Dex instructions such as shl-int or shl-long expect either two ints or two longs.  Also, the code generators seem to handle only (int, int) and (long, long) cases; e.g. see art::arm::InstructionCodeGeneratorARM::HandleShift.
 
 (And currently the worst case is, this doesn't get optimized by constant folding.)
+
+1016:5-1016:66
+Wed Jul 29 18:43:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adce96a1_545f6cbc
+UUID: 0d8962a8_3f6ee722
+Bytes: 288
+during codegen, for long, the second argument gets a register so maybe this is why is not immediately clear that you can have a HLongConstant << HIntConstatn.
+
+try a simple example:
+  public static void main(String[] args) {
+    long x = 23l << args.length;
+    System.out.println(x);
+  }
 
 File: compiler/optimizing/nodes.h
 
@@ -70,6 +94,14 @@ Note: this was present in the initial code (see Base set, line 2679); I just mov
 
 This is required by art::HGraph::GetNullConstant, which instantiates an art::HNullConstant (the ctor of which is private).
 
+2052:2-2052:21
+Wed Jul 29 18:43:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dbb86f3_9836559c
+UUID: 4d7fda4c_64c70439
+Bytes: 26
+thanks. I forgot about it.
+
 2063:11-2063:33
 Thu Jul 23 16:18:19 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -87,6 +119,16 @@ Note: this was present in the initial code (see Base set, line 2690); I just mov
 
 I've added DCHECKs, here and in other HConstant subclasses.
 
+2063:11-2063:33
+Wed Jul 29 18:43:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dbb86f3_782ca14a
+UUID: 6d657ec3_1d993789
+Bytes: 84
+thanks, 
+
+Sometime when stuff gets moved is harder to see what changed and what not.
+
 2261:30-2261:42
 Thu Jul 23 16:18:19 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -103,4 +145,12 @@ Bytes: 184
 Because:
 1. I'm using overloading to select the right method here (see TryStaticEvaluation methods);
 2. We need the exact type of the concrete classes to be able to call x->GetValue().
+
+2261:30-2261:42
+Wed Jul 29 18:43:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0dbec2e2_37263869
+UUID: 6d657ec3_3d96fb57
+Bytes: 144
+I think an HIntConstant here with and if IsIntConstant would save lines when we invokes this. But I dont' mind if you want to keep it like this.
 

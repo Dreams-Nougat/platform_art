@@ -35,6 +35,14 @@ There's a limit to how far we can stretch that, so it can't always apply. As an 
 
 It seems like the whole point of using "operator<<" here is to make it look much cleaner and readable, and getting rid of the * (by turning the parameter into an lvalue reference) would make it cleaner looking too.
 
+731
+Wed Jul 29 17:04:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d8d9ca70_71a6124b
+UUID: 0d8962a8_ff9abff5
+Bytes: 82
+Fair enough; I turned the pointers into references.  This is admittedly better. :)
+
 File: runtime/indenter.h
 
 125
@@ -106,4 +114,14 @@ and so on.
 It's possible I may have missed a best practice regarding perfect forwarding on iostreams?
 
 To me perfect forwarding makes more sense when forwarding into a templated type or into a type having the full range of parameter overloads (that include an rvalue reference).
+
+125
+Wed Jul 29 17:04:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 98fcb2c6_67576c50
+UUID: ed8faeab_21524835
+Bytes: 327
+To me, the API lies in the recipients of the forwarder (which could be free to implement move semantics), not the forwarder itself, which follows a canonical modern C++ idiom.
+
+I've changed this to use a const l-value reference, as in practice we always delegate to operator<< whose second operand is a const l-value reference.
 

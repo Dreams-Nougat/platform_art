@@ -9,12 +9,28 @@ UUID: cd73ca92_35a61042
 Bytes: 6
 size_t
 
+54:15-54:18
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd73ca92_35a61042
+UUID: 8d9472c2_3b8d17ba
+Bytes: 35
+pitfalls of copy pasting... thanks.
+
 55:15-55:18
 Wed Jul 29 13:03:30 2015 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d8962a8_bf6bd765
 Bytes: 6
 size_t
+
+55:15-55:18
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d8962a8_bf6bd765
+UUID: 2d862697_80a156f1
+Bytes: 4
+Done
 
 File: compiler/optimizing/optimizing_compiler.cc
 
@@ -24,6 +40,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0d8962a8_df709b54
 Bytes: 33
 Nit: rename as type_propagation1?
+
+405:4-405:20
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d8962a8_df709b54
+UUID: 8d9472c2_1b905bd3
+Bytes: 4
+Done
 
 413:0-413:67
 Wed Jul 29 13:01:22 2015 +0000
@@ -40,12 +64,38 @@ UUID: cd8aea9e_9dae23ee
 Bytes: 60
 How about you run the two passes inside the inliner instead?
 
+413:0-413:67
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d68ba9e_19c30ba0
+UUID: 2d862697_40a74e05
+Bytes: 109
+yea, I agree. Didn't see an easy way out until we have a proper pass manager and dependencies between passes.
+
+413:0-413:67
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd8aea9e_9dae23ee
+UUID: 6d657ec3_fa94899a
+Bytes: 234
+It's better here. Having them in the inliner will add to obfuscation and will mix different concerns.
+
+Note that this is not to cover the inlined function. This is to cover the effects of the inlined function on the rest of the graph.
+
 419
 Wed Jul 29 13:00:54 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ad9936fb_5f7acf98
 Bytes: 67
 Pass "reference_type_propagation_after_inlining" as third argument?
+
+419
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad9936fb_5f7acf98
+UUID: 0d8962a8_7f822fa1
+Bytes: 59
+that's done in a different CL which was temporary reverted.
 
 426:19-426:27
 Wed Jul 29 13:00:54 2015 +0000
@@ -54,10 +104,26 @@ UUID: cd8aea9e_9dff03dd
 Bytes: 9
 checkcast
 
+426:19-426:27
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd8aea9e_9dff03dd
+UUID: 6d657ec3_9a954d9a
+Bytes: 4
+Done
+
 428:6-428:11
 Wed Jul 29 13:03:30 2015 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6d657ec3_5acd75c7
 Bytes: 81
 is it ok to move this constant folding pass ahead of the boolean simplification ?
+
+428:6-428:11
+Wed Jul 29 13:12:15 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d657ec3_5acd75c7
+UUID: 4d7fda4c_44ebe0ea
+Bytes: 142
+yes, they should have been the other way around anyway. Boolean simplification can get more out of constant folding than the other way around.
 

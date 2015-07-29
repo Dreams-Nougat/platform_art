@@ -157,3 +157,24 @@ Thus doing this portably and correctly, probably does require a library.  Or pos
 
 I'm also not positive that C++ arithmetic will handle denormals correctly.  That presumably also depends on compiler flags.
 
+3327
+Wed Jul 29 08:52:06 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4db19a56_bad9356f
+UUID: 6d657ec3_7af5d943
+Bytes: 803
+I talked with Jacob and dug a little in VIXL. So we have seen issues like Hans explains in the VIXL simulator, in a similar context where we do *one* operation at a time.
+Custom code has been implemented to handle the simulation of FP operations. Correctness is checked in the tests by validating an execution trace of the simulator against real hardware, so we are confident in the results.
+
+Some pointers:
+
+- simulation
+vixl/src/vixl/a64/simulator-a64.cc: `Simulator::VisitFPDataProcessing2Source`
+- simulation helpers declaration:
+vixl/src/vixl/a64/simulator-a64.h: look for `#define NEON_FP3SAME_LIST(V)`
+- simulation helpers implementation:
+vixl/src/vixl/a64/logic-a64.cc: look for `LogicVRegister Simulator::FN`
+
+- tests
+vixl/test/test-simulator-a64.cc: look for `DEFINE_TEST_FP(fadd, 2Op, Basic)`
+

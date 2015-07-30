@@ -9,6 +9,14 @@ UUID: cd73ca92_55262c69
 Bytes: 82
 Use CompareAndBranchIfNonZero() and relax the input location (don't force R0, R1).
 
+241:7-241:11
+Thu Jul 30 09:36:36 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd73ca92_55262c69
+UUID: 0d8962a8_3f8d07ba
+Bytes: 4
+Done
+
 262:2-262:64
 Wed Jul 29 11:20:04 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,6 +33,16 @@ UUID: 0d8962a8_bf159700
 Bytes: 51
 Why not 0xf0f0? What are the op3 != 0 instructions?
 
+1459:23-1459:29
+Thu Jul 30 09:36:36 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d8962a8_bf159700
+UUID: ed8faeab_c190c459
+Bytes: 319
+Good catch, it should be 0xf0f0 - I'm masking for 1111----1000---- in the second halfword.
+
+As for op3 != 0, none where op2 == 0b0101011 (specifically, bits[5:4] in the first halfword == 0b11 for clz only). Other encodings in the same space are UNDEFINED (ARM ARM v7-A/R, encoding Table A6-27 Miscellaneous operations).
+
 File: test/082-inline-execute/src/Main.java
 
 1049:66-1049:67
@@ -35,6 +53,14 @@ Bytes: 131
 This will be cleaner if you change "+" to "|" and get rid of the Math.max().
 The test above already covers numberOfLeadingZeros(2).
 
+1049:66-1049:67
+Thu Jul 30 09:36:36 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d9472c2_1b7bfb36
+UUID: 0d8962a8_1f9043d3
+Bytes: 4
+Done
+
 1051
 Wed Jul 29 11:15:42 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -42,4 +68,12 @@ UUID: 6d657ec3_1aa93d13
 Bytes: 140
 This isn't actually testing numberOfLeadingZeros(0). Please add that back outside the loop.
 (Sorry for misleading you in my comment on PS1.)
+
+1051
+Thu Jul 30 09:36:36 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d657ec3_1aa93d13
+UUID: cd73ca92_d52b1c04
+Bytes: 4
+Done
 

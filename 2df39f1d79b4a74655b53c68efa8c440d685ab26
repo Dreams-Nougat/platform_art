@@ -1,0 +1,28 @@
+Revision: 2df39f1d79b4a74655b53c68efa8c440d685ab26
+Patch-set: 2
+File: runtime/jit/jit_instrumentation.cc
+
+94:4-94:22
+Fri Jul 31 01:18:45 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a2e188f_913d7c47
+Bytes: 197
+Worth adding a comment that accesses to increment_counter_ and the samples[dex_method_index] below are racy, that we could lose some increment. But it's OK since the counters here can be imprecise.
+
+107:4-107:83
+Fri Jul 31 01:18:45 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea523422_8ca1ebf1
+Bytes: 145
+Better to have something like:
+
+const size_t kMaxCount = (1u << kBitsPerByte * sizeof(samples[0])) - 1;
+sample_count += sample_count < kMaxCount;
+
+121:6-121:52
+Fri Jul 31 01:18:45 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a59ac45_d1c2d679
+Bytes: 98
+For the racy counter increment, two threads could both try to compile the same method. Is it safe?
+

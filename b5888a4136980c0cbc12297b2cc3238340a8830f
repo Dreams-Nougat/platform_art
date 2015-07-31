@@ -1,0 +1,84 @@
+Revision: b5888a4136980c0cbc12297b2cc3238340a8830f
+Patch-set: 2
+File: compiler/optimizing/induction_var_analysis.cc
+
+23
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca2490af_c15c52c8
+Bytes: 69
+Isn't this just checking if the instruction is outside of the 'loop'?
+
+62
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea523422_6ceb4f6f
+Bytes: 106
+Aren't SCCs pretty common as well? Would it perhaps make sense to factor it out into a separate algorithm?
+
+101
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa33dcf3_32eb689e
+Bytes: 235
+minor: doing 2 O(logn) lookups here which could be avoided by first constructing state_, df_ and then moving it into the map
+
+e.g. 
+
+  map_[id] = NodeInfo{kOnStack, df};
+
+(I also noticed an access on 112 but it's probably not worth it)
+
+145:13-145:21
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca4d7087_ab400db9
+Bytes: 37
+nit: looking up the map element twice
+
+148
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca2490af_1cc1a177
+Bytes: 11
+nit: kDone?
+
+File: compiler/optimizing/induction_var_analysis.h
+
+73
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a2e188f_11b3cc07
+Bytes: 34
+What is the point of having a nop?
+
+103
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca4d7087_cb45891b
+Bytes: 111
+nit: I think Nicolas would prefer slightly longer variable names
+
+(class, op, info_a, info_b, instruction, etc)
+
+112
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a5f2428_ed03c1c5
+Bytes: 35
+SCC = Strongly Connected Component?
+
+131
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a6260ef_12bd1221
+Bytes: 106
+nit: I think Nicolas would prefer df to be spelled out to whatever it stands for (descendant-first count?)
+
+134
+Fri Jul 31 00:13:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a59ac45_8ef55f48
+Bytes: 112
+minor: not sure if this should be std::map or std::unordered_map, especially since the key is so nicely hashable
+

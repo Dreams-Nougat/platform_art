@@ -2,6 +2,34 @@ Revision: 502a4aee63c62042c46b546861813cd3668b5a5b
 Patch-set: 3
 File: compiler/optimizing/induction_var_analysis.cc
 
+156:27-156:35
+Fri Jul 31 21:08:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca2490af_766a010b
+Bytes: 2
+0?
+
+160
+Fri Jul 31 21:08:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea295486_e2a74e05
+Bytes: 145
+Is phi guaranteed to be true for IsLoopHeaderPhi? If yes, a DCHECK here would be nice to tie the SSA-based cycle detection back to CFG-based one.
+
+166
+Fri Jul 31 21:08:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea295486_82976aa1
+Bytes: 166
+The loop phi's input0 is always loop invariant so it's not necessary to try the two orders, if it's guaranteed to be a loop header phi as said in my previous comment.
+
+246
+Fri Jul 31 21:08:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea523422_a0e5c615
+Bytes: 95
+So even though SCC (a graph) is detected, we only handle a single-cycle case now for iv, right?
+
 297:10-297:17
 Fri Jul 31 17:43:17 2015 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,4 +51,13 @@ we get a new linear expression
    (a_ * y) * i + (b_ * y)
 
 Perhaps naming the parameters x and y instead of a and b would be a bit more clear to see the difference between top and sub expressions better (as I realized writing down the explanation :-)
+
+File: compiler/optimizing/induction_var_analysis.h
+
+62
+Fri Jul 31 21:08:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5ce834_fbb137cd
+Bytes: 51
+I think we don't use xxx_ naming for public fields.
 

@@ -92,3 +92,23 @@ Our comments crossed :-)
 If you really insist, I will change
 but imho nothing that uses regexpr is readable :-)
 
+403:5-403:7
+Sat Aug 01 00:44:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa33dcf3_2138b487
+UUID: 6a5f2428_999ec76c
+Bytes: 730
+I believe only having to escape \\d+ would be ideal but that seems like a lot of work so it's probably not worth it. If we were doing this in every single optimizing test then it probably is worth it.
+
+It's common in a few places (such as vim) to flip around their regex escapes so that things like () etc are regular literals.
+
+--- 
+As a less interesting alternative (and this is more of thinking out loud than asking for any changes),
+
+Using [x] instead of \\x should be slightly more readable because I think we as programmers are trained a little bit better to handle open/close pairs
+
+  [)][)][)] is slightly more readable than
+  \\)\\)\\)
+
+and also because we can ignore every other character instead of every 2/3 characters
+

@@ -47,3 +47,38 @@ Unfortunately we use + as literal, and also as reg exp in d+
 
 (there are ways around that, but seems this is easiest way)
 
+403:5-403:7
+Sat Aug 01 00:35:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a6260ef_2b22d8a8
+UUID: 0a5ce834_6128fa88
+Bytes: 884
+It looks like it's trying to express these literal characters:
+
+  (:)*+
+
+however since in regex grammar they are special (denoting a capture group, a wildcard, and so on..) they need to be escaped with a \, but then C++ makes us escape with \\
+
+So usages instead end up looking like:
+
+  \\(
+  \\:
+  \\)
+  \\*
+  \\+
+
+The only situation here which wants to use a non-literal is '\d+' as that is truly trying to match any digit
+
+I don't see any capture groups or wild cards used here, so I was just musing the following characters could get \\ substituted after-the-fact (with a string replace):
+
+  (:)*  
+
+(but not + since there's another + which is used without \\)
+
+e.g.
+
+  "((2:Constant) * i + ...".replace(r"\\(|\\:\\)\\*", "\\$1") ,
+   // replace with actual regex method there
+
+(or alternatively just use [:], [(], [+], [*], thats slightly more readable than \\: , \\(, etc IMHO).
+

@@ -9,12 +9,37 @@ UUID: 8a61b821_b9c1d798
 Bytes: 59
 I presume we need a com.android.tools... package for this..
 
+17:8-17:12
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a61b821_b9c1d798
+UUID: aa667c34_5dda2f5e
+Bytes: 53
+yep, we should use com.android.* to be good citizens.
+
+23:0-24:32
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca673030_1b8c4310
+Bytes: 123
+as gfrost suggested elsewhere, coding style is not to use *
+
++ no spaces between import sections in art/libcore/dalvik code
+
 55:13-55:24
 Mon Aug 03 19:26:16 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a5c2064_5ce7d158
 Bytes: 105
 What exception are we catching here?  java.lang.Exception seems too broad, probably should be IOException
+
+55:13-55:24
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a5c2064_5ce7d158
+UUID: 0a0b0862_d52d6c94
+Bytes: 55
+multicatch is preferred to a general Exception catchall
 
 File: tools/ahat/src/ahat/AhatSnapshot.java
 
@@ -54,6 +79,13 @@ Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a08cc62_d649f483
 Bytes: 116
 We dealt with query being null.  Does the algorithm below have to deal with id being left as its default value of 0?
+
+57:8-57:31
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca673030_7b761781
+Bytes: 49
+should this be in a helper function? unit tested?
 
 File: tools/ahat/src/ahat/CompareInstance.java
 
@@ -98,6 +130,14 @@ UUID: aa667c34_fabb41a8
 Bytes: 30
 Consider a StringBuilder here?
 
+174:4-174:10
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa667c34_fabb41a8
+UUID: 4a5c2064_1f38ab59
+Bytes: 52
+yes, generally we shouldn't be concatenating Strings
+
 File: tools/ahat/src/ahat/HtmlWriter.java
 
 52:34-52:62
@@ -107,12 +147,28 @@ UUID: ea6cf416_50105410
 Bytes: 56
 why not public void print(String format, Object...args)?
 
+52:34-52:62
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea6cf416_50105410
+UUID: 2a536c56_7e2d6917
+Bytes: 43
+if arg1 is special, give it a special name?
+
 56:4-58:5
 Mon Aug 03 19:26:16 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca673030_bb69cfeb
 Bytes: 19
 System.arraycopy()?
+
+56:4-58:5
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca673030_bb69cfeb
+UUID: 0a24e8f1_674fb23d
+Bytes: 2
++1
 
 File: tools/ahat/src/ahat/Main.java
 
@@ -137,6 +193,14 @@ UUID: 2a536c56_de6635c8
 Bytes: 31
 Why is this H (upper case) elp?
 
+33:21-33:25
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a536c56_de6635c8
+UUID: 4a01803c_b7d550b7
+Bytes: 19
+style is lower case
+
 File: tools/ahat/src/ahat/ObjectHandler.java
 
 76:24-76:73
@@ -146,6 +210,16 @@ UUID: ea6cf416_f059a0d5
 Bytes: 291
 This note applies across this whole app.   There are a lot of embedded html tags in text strewn through here.  I have to believe that there is a Google preferred way of generating html.  I know there are external tools (rendersnake, jatl, ecj) that make this easier to write and to maintain.
 
+76:24-76:73
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea6cf416_f059a0d5
+UUID: ca673030_7b4f373d
+Bytes: 229
+google preferred != android preferred... we aren't going to use GWT :)
+
+I'm fine with something quick and dirty to keep this easy to work on without needing to learn some third party toolkit that is just wrapping text generation.
+
 File: tools/ahat/src/ahat/RootsHandler.java
 
 35:4-35:11
@@ -154,6 +228,14 @@ Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a01803c_57098435
 Bytes: 145
 I prefer using the interface/abstraction 'Set<Instance> rootset = new HashSet<Instance>();' rather than the concrete type 'HashSet rootset = ...'
+
+35:4-35:11
+Mon Aug 03 19:50:50 2015 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a01803c_57098435
+UUID: 4a5c2064_3fd80f9f
+Bytes: 34
+that is the libcore style as well.
 
 File: tools/ahat/src/ahat/Site.java
 

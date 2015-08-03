@@ -1,0 +1,191 @@
+Revision: 768638029c48f876c73417ccf355e9652a02afbf
+Patch-set: 2
+File: tools/ahat/src/ahat/AhatHandler.java
+
+17:8-17:12
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a61b821_b9c1d798
+Bytes: 59
+I presume we need a com.android.tools... package for this..
+
+55:13-55:24
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a5c2064_5ce7d158
+Bytes: 105
+What exception are we catching here?  java.lang.Exception seems too broad, probably should be IOException
+
+File: tools/ahat/src/ahat/AhatSnapshot.java
+
+19:38-19:39
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa667c34_7ad5712e
+Bytes: 77
+Can we separate out the imported classes. Rather than using the wildcard here
+
+49
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a5c2064_3fb2cf35
+Bytes: 44
+null parent I assume.  I would comment this.
+
+112
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea6cf416_f0e52015
+Bytes: 105
+I am not sure what the google comment convention is for recursion, but I would comment the recursion here
+
+File: tools/ahat/src/ahat/BitmapHandler.java
+
+26:38-26:39
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa667c34_1a2efdc5
+Bytes: 41
+replace wildcards with actual references.
+
+48
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a08cc62_d649f483
+Bytes: 116
+We dealt with query being null.  Does the algorithm below have to deal with id being left as its default value of 0?
+
+File: tools/ahat/src/ahat/CompareInstance.java
+
+40
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca673030_38d8259f
+Bytes: 128
+You should probably implement @Override Object.equals(Object other) as part of the Comparator contract (see Comparator javadoc).
+
+63:3-64:47
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a0b0862_120f0abf
+Bytes: 121
+I had to scan this a few times.  Maybe replaced with 
+
+Comparator<Instance>compare = new ByTotalRetainedSize(new ById());
+
+File: tools/ahat/src/ahat/DominatedList.java
+
+86:4-98:6
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a61b821_dc9e416d
+Bytes: 516
+It looks like this AIC(anonymous inner class) is just used to build data for the table rendering. I would refactor this.  It does not seem to be capturing any state from the call site, so you could move this out as a static final field (and comment it and it's relationship to the other AIC below). Honestly I had to scan these two implementations a few times to work out what was going on. 
+
+You may also consider creating a separate class for the AIC below.  There is a little too much content (for me) for an AIC.
+
+100:43-119:6
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a5c2064_3f8daf3e
+Bytes: 152
+I think this should be a separate class.  Maybe a static non-anonymous inner class of DominatedList which includes the static final value defined above.
+
+174:4-174:10
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa667c34_fabb41a8
+Bytes: 30
+Consider a StringBuilder here?
+
+File: tools/ahat/src/ahat/HtmlWriter.java
+
+52:34-52:62
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea6cf416_50105410
+Bytes: 56
+why not public void print(String format, Object...args)?
+
+56:4-58:5
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca673030_bb69cfeb
+Bytes: 19
+System.arraycopy()?
+
+File: tools/ahat/src/ahat/Main.java
+
+23:28-23:37
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca673030_3ba49fbe
+Bytes: 19
+is this used below?
+
+29:29-29:31
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a61b821_3c55b5d1
+Bytes: 63
+Again I think we should use explicit class names not wildcards.
+
+33:21-33:25
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a536c56_de6635c8
+Bytes: 31
+Why is this H (upper case) elp?
+
+File: tools/ahat/src/ahat/ObjectHandler.java
+
+76:24-76:73
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea6cf416_f059a0d5
+Bytes: 291
+This note applies across this whole app.   There are a lot of embedded html tags in text strewn through here.  I have to believe that there is a Google preferred way of generating html.  I know there are external tools (rendersnake, jatl, ecj) that make this easier to write and to maintain.
+
+File: tools/ahat/src/ahat/RootsHandler.java
+
+35:4-35:11
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a01803c_57098435
+Bytes: 145
+I prefer using the interface/abstraction 'Set<Instance> rootset = new HashSet<Instance>();' rather than the concrete type 'HashSet rootset = ...'
+
+File: tools/ahat/src/ahat/Site.java
+
+157
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a0b0862_353f98e6
+Bytes: 102
+Again I think you may need to implement equals(Object other) too (as part of the Comparator contract).
+
+File: tools/ahat/src/ahat/SiteHandler.java
+
+94:3-97:49
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea6cf416_f087e096
+Bytes: 137
+is this 
+Comparator<Site.ObjectsInfo> compare = 
+   new  ObjectsInfoByHeapName(new ObjectsInfoBySize(new ObjectInfoByClassName(null))));?
+
+143:18-143:26
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca673030_5b099b35
+Bytes: 38
+are we sure that classObj is not null?
+
+145
+Mon Aug 03 19:26:16 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca673030_9b0a1328
+Bytes: 57
+Again I think we need to implement 'equals(Object other)'
+

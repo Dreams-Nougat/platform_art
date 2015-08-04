@@ -11,6 +11,14 @@ This only works if we transition out of the interpreter after setting local vari
 
 I believe we need to install instrumentation exit stubs for each method in the stack to trigger deoptimization. Therefore, we'd no longer need this check anymore.
 
+3486:2-3491:3
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad9936fb_108cb486
+UUID: eadf9421_f3a192a9
+Bytes: 29
+So I should just remove this?
+
 File: runtime/quick_exception_handler.cc
 
 238:12-238:39
@@ -23,6 +31,14 @@ I think
   updated_vreg_flags != nullptr 
 
 is enough (and you no longer need 'new_frame_is_debugger_frame')
+
+238:12-238:39
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_d5907c59
+UUID: 2ad60c0d_342928be
+Bytes: 35
+Done. I removed updated_vreg_flags.
 
 File: runtime/stack.cc
 
@@ -38,6 +54,14 @@ We really need to catch this kind of error at compilation-time, by not allowing 
 
 2) We must call ShadowFrame::GetVRegReference for references (kind == kReferenceVReg)
 
+279:6-279:41
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea1a34b3_e6c55e32
+UUID: 8a0ff877_ec26df68
+Bytes: 24
+Very good catches. Done.
+
 File: runtime/thread.cc
 
 325:4-325:10
@@ -51,6 +75,14 @@ delete[] because FrameIdToShadowFrame is allocated using "new uint8_t[...]". So 
 
 Though I think it's nicer to have a function doing this like DeleteFrameIdToShadowFrame(FrameIdToShadowFrame*).
 
+325:4-325:10
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d862697_14e90474
+UUID: 0ad9483e_2e10f70f
+Bytes: 4
+Done
+
 334:6-334:12
 Tue Aug 04 10:55:18 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,12 +90,28 @@ UUID: 4d7fda4c_3599a889
 Bytes: 5
 ditto
 
+334:6-334:12
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_3599a889
+UUID: eadf9421_13dc3e04
+Bytes: 4
+Done
+
 1668:52-1668:53
 Tue Aug 04 10:55:18 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ed8faeab_72ffc09f
 Bytes: 162
 It's worth adding a message when that happens to give more context. At least adding something like "Not all deoptimized frames have been consumed by the debugger"
+
+1668:52-1668:53
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ed8faeab_72ffc09f
+UUID: ca157084_df6623c8
+Bytes: 81
+Added: // All debugger shadow frames should have been consumed by deoptimization.
 
 2709:30-2709:42
 Tue Aug 04 10:55:18 2015 +0000
@@ -74,6 +122,14 @@ nit: you don't really need a local var here, you could just do
 
   mapper.VisitShadowFrame(record->GetShadowFrame());
 
+2709:30-2709:42
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea1a34b3_26f13691
+UUID: 4acfc072_568cf210
+Bytes: 4
+Done
+
 File: runtime/thread.h
 
 844:71-844:72
@@ -83,10 +139,26 @@ UUID: 4d7fda4c_f5858014
 Bytes: 34
 "or return null if there is none."
 
+844:71-844:72
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_f5858014
+UUID: 4acfc072_fbcfaf9e
+Bytes: 4
+Done
+
 858:5-858:11
 Tue Aug 04 10:55:18 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a2a60c0_e9b1b57b
 Bytes: 19
 "Remove and delete"
+
+858:5-858:11
+Tue Aug 04 21:38:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a2a60c0_e9b1b57b
+UUID: eadf9421_d3e1f6ba
+Bytes: 70
+Changed to "Delete the entry that maps from frame_id to shadow_frame".
 

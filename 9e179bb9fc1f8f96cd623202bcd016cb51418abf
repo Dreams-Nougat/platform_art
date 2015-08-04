@@ -9,6 +9,14 @@ UUID: ad9936fb_b0d860a2
 Bytes: 77
 Hint: you can put this on the first line, so that reviewers won't miss it. :)
 
+9:1-9:4
+Tue Aug 04 17:23:20 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad9936fb_b0d860a2
+UUID: aa14bc88_e170a1cf
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 928
@@ -18,12 +26,28 @@ UUID: 4acfc072_aa587384
 Bytes: 25
 testl ecx,ecx is smaller.
 
+928
+Tue Aug 04 17:23:20 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4acfc072_aa587384
+UUID: ca157084_19f61b89
+Bytes: 4
+Done
+
 936:15-936:29
 Tue Aug 04 12:52:18 2015 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aae91cd1_65605c01
 Bytes: 24
 Don't you need to add 3?
+
+936:15-936:29
+Tue Aug 04 17:23:20 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aae91cd1_65605c01
+UUID: 6acc847d_d697241b
+Bytes: 268
+Done. I thought that objects were 4-byte aligned, so in order to determine if an additional 4-character comparison was necessary (only for the case where the length ends in 11), adding 1 was sufficient. This is not the case though, so adding 3 is the correct approach.
 
 936:0-937:20
 Tue Aug 04 09:33:29 2015 +0000
@@ -32,12 +56,28 @@ UUID: 4a2a60c0_c9231157
 Bytes: 132
 Shouldn't you swap lines 936 and 937 for the test in lines 950–951 to be correct (e.g., when the strings' length is 4 characters)?
 
+936:0-937:20
+Tue Aug 04 17:23:20 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a2a60c0_c9231157
+UUID: ca157084_59ea5368
+Bytes: 316
+The test on lines 950-951 was to determine if an additional 2 character comparison was necessary, in which case the result of adding 1 to the length would result in the length ending in either 10 or 11. This is no longer necessary since objects are 8-byte aligned and I can compare the whole string using repe_cmpsq.
+
 941:0-942:91
 Tue Aug 04 13:22:26 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d7fda4c_952d1496
 Bytes: 88
 These should probably change to 8-byte alignment, see the comment at repe_cmpsq() below.
+
+941:0-942:91
+Tue Aug 04 17:23:20 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_952d1496
+UUID: 0ad9483e_b348f032
+Bytes: 4
+Done
 
 945:2-945:18
 Tue Aug 04 13:22:26 2015 +0000
@@ -47,4 +87,12 @@ Bytes: 208
 Given kObjectAlignment==8, you can go to the very end and avoid the tail comparison below.
 
 If we remove the hash code, value_offset will no longer be 8-byte aligned and we will need an extra head comparison.
+
+945:2-945:18
+Tue Aug 04 17:23:20 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a2a60c0_4932817b
+UUID: 4acfc072_d019eaaf
+Bytes: 4
+Done
 

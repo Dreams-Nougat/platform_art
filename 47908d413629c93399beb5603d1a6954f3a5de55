@@ -1,0 +1,33 @@
+Revision: 47908d413629c93399beb5603d1a6954f3a5de55
+Patch-set: 3
+File: compiler/image_writer.cc
+
+884
+Tue Aug 04 21:25:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ad60c0d_6f767d81
+Bytes: 69
+Where is it guaranteeing the alignment (does it need to?) is 8 bytes?
+
+File: runtime/length_prefixed_array.h
+
+60
+Tue Aug 04 21:25:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6acc847d_bc2c414b
+Bytes: 509
+Not sure if this is always guaranteed to align data to 8 bytes.  It is fairly common for larger data to be aligned to smaller boundaries when the native word size is smaller than the data size.
+
+To ensure this, alignas(sizeof(uint64_t)) on the next line and add a static_assert to be extra sure 
+
+  static_assert(alignof(LengthPrefixedArray<specific type>) >= 8, "msg")
+
+Not sure how much this will matter "in practice" since this object can't be reasonably allocated directly anyway to due to flexible array.
+
+66
+Tue Aug 04 21:25:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca157084_ffc5df31
+Bytes: 73
+nit: this could just go into the LengthPrefixedArray as a static function
+

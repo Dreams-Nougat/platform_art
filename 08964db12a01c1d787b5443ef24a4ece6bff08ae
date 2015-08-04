@@ -1,0 +1,136 @@
+Revision: 08964db12a01c1d787b5443ef24a4ece6bff08ae
+Patch-set: 14
+File: compiler/optimizing/builder.cc
+
+956:27-956:58
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cadad034_31c8584d
+Bytes: 105
+Nit: MethodLoadType -> MethodLoadKind? ("type" is too overloaded
+).
+
+method_load_type -> method_load_kind
+
+970:29-970:55
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4acfc072_109fd26a
+Bytes: 32
+Can this be a kConstant instead?
+
+978:8-978:12
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad9483e_7333c8af
+Bytes: 21
+DexCacheArraysLayout.
+
+987:27-987:53
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ad60c0d_89f0218b
+Bytes: 20
+ditto for a kStatic.
+
+992:19-993:61
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6acc847d_56f0745b
+Bytes: 97
+Maybe add somewhere that this is multidex and we currently only recognize multidex for the image.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+4508:10-4508:73
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ad60c0d_495459a4
+Bytes: 146
+This comparison looks brittle, and assumes an implementation optimization that pointers are the same. How about a IsSameDexFile method in DexFile?
+
+File: compiler/optimizing/code_generator_arm.h
+
+334:2-334:96
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ad60c0d_69a83d60
+Bytes: 38
+Could you introduce a typedef instead?
+
+340:0-345:4
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa14bc88_2192b960
+Bytes: 170
+Since other backends have the same struct, please move this to code_generator.h, and I wouldn't worry about the private.
+
+Also RelativeCallPatchData -> RelativeCallInfo ?
+
+356:18-356:22
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eadf9421_18929d2a
+Bytes: 32
+Please avoid "data" in comments.
+
+360:11-360:21
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aae91cd1_10e6f420
+Bytes: 10
+ArenaDeque
+
+File: compiler/optimizing/code_generator_arm64.h
+
+366:0-369:69
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cadad034_f17990ea
+Bytes: 8
+typedef?
+
+377:9-377:32
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa14bc88_c4c5b384
+Bytes: 30
+PcRelativeDexCacheAccessInfo ?
+
+378:28-378:42
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aae91cd1_306690a0
+Bytes: 16
+const DexFile& ?
+
+File: compiler/optimizing/nodes.h
+
+2857:23-2857:27
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eadf9421_3323fab0
+Bytes: 14
+Type -> Kind ?
+
+2870:4-2870:20
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4acfc072_dbc2eb79
+Bytes: 21
+kCallDirectWithFixup?
+
+2871:4-2871:15
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a0ff877_2c6637a0
+Bytes: 12
+kCallDirect?
+
+2872:4-2872:15
+Tue Aug 04 18:53:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ad60c0d_b497f854
+Bytes: 15
+kCallArtMethod?
+

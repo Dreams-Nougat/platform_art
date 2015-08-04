@@ -1,0 +1,109 @@
+Revision: 14c3bf91b2ec434295ec84d6446f495fb7de6d5c
+Patch-set: 3
+File: runtime/gc/collector/mark_sweep.cc
+
+1009:2-1009:17
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad9483e_020b0cdc
+Bytes: 131
+I assume this change is because we only query whether an object has been marked but do not mark an object (change the heap bitmap).
+
+File: runtime/gc/weak_root_state.h
+
+31:2-31:28
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4acfc072_a7c50e85
+Bytes: 60
+This looks unused. What is this for? Clarify in the comment?
+
+File: runtime/intern_table.cc
+
+93:2-93:33
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca157084_08b9a766
+Bytes: 20
+What does this mean?
+
+242:76-242:89
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eadf9421_a4b186ce
+Bytes: 201
+Comment what the value of this flag implies?
+
+If false, we can only hold the mutator lock at the entry?
+
+If true, we can hold other locks in addition to the mutator lock and we shouldn't be running GC?
+
+261:0-264:26
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6acc847d_a546e8d5
+Bytes: 221
+We could make it clearer that we only expect holding_locks_ = true when we don't expect GC (like image writing time).
+
+Add something like:
+
+if (holding_locks) {
+  CHECK_EQ(weak_root_state_, gc::kWeakRootStateNormal);
+}
+
+?
+
+269:0-270:79
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4acfc072_47ffe273
+Bytes: 78
+We can reduce this to
+
+CHECK_EQ(weak_root_state_, gc::kWeakRootStateNormal)
+
+?
+
+322:0-323:54
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aae91cd1_bf45131c
+Bytes: 312
+Is this duplicated in Runtime::AllowNewSystemWeaks()?
+
+Dedup and keep the one in AllowNewSystemWeaks() for now until we convert the others (monitor_list, java_vm)?
+
+Regardless of that, this would be redundant for the CC collector as it uses the thread-local flag. Surround it with if (!kUseReadBarrier) { ... } ?
+
+File: runtime/intern_table.h
+
+64:18-64:35
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa14bc88_19a9f794
+Bytes: 121
+Add "Strong" in the name?
+Say that we can hold a lock while calling this in the comment or imply that with a name suffix?
+
+File: runtime/thread.cc
+
+2740:0-2740:48
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cadad034_40a2702b
+Bytes: 87
+Not sure about this. How about
+
+count += mu != nullptr ? 1 : 0;
+
+as this is debug code?
+
+File: runtime/thread_state.h
+
+46:2-46:22
+Tue Aug 04 00:28:19 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ad9483e_e5cf129f
+Bytes: 79
+Is kWaitingWeakGcRootRead better as we aren't necessarily in a GC context here?
+

@@ -32,3 +32,19 @@ UUID: 4a2a60c0_c9231157
 Bytes: 132
 Shouldn't you swap lines 936 and 937 for the test in lines 950–951 to be correct (e.g., when the strings' length is 4 characters)?
 
+941:0-942:91
+Tue Aug 04 13:22:26 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d7fda4c_952d1496
+Bytes: 88
+These should probably change to 8-byte alignment, see the comment at repe_cmpsq() below.
+
+945:2-945:18
+Tue Aug 04 13:22:26 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a2a60c0_4932817b
+Bytes: 208
+Given kObjectAlignment==8, you can go to the very end and avoid the tail comparison below.
+
+If we remove the hash code, value_offset will no longer be 8-byte aligned and we will need an extra head comparison.
+

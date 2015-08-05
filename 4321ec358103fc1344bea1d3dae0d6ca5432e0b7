@@ -1,0 +1,104 @@
+Revision: 4321ec358103fc1344bea1d3dae0d6ca5432e0b7
+Patch-set: 5
+File: compiler/optimizing/context.h
+
+53:23-53:36
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6d657ec3_4e785338
+Bytes: 115
+As already mentioned offline, I'd prefer if you used HInstruction* instead, and HBasicBlock* for the typedef below.
+
+87:2-89:5
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a2724f5_add509b7
+Bytes: 27
+Nit: Use // comments in C++
+
+110:2-110:55
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad9936fb_96cefca2
+Bytes: 24
+Why is this not private?
+
+116:4-116:6
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a2a60c0_cc231f57
+Bytes: 32
+Nit: I'd put this inside the if.
+
+116:36-116:56
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad9936fb_f6bca008
+Bytes: 15
+already existed
+
+File: compiler/optimizing/ranges.cc
+
+44:8-44:18
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d7fda4c_500c7a45
+Bytes: 62
+Nit: no need for the variables if you only use the values once
+
+57:0-57:75
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d7fda4c_90160254
+Bytes: 73
+Can you please explain this in more detail? When would an input overflow?
+
+58:20-58:25
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a2724f5_0df0955a
+Bytes: 72
+If this comparison is useful, maybe you should do static_cast<U>(min())?
+
+61:6-61:24
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a2a60c0_8c76474b
+Bytes: 109
+No need to special case this. If you store the min,max values as they are, they will return false for IsValid
+
+101:2-101:3
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d7fda4c_b02146a8
+Bytes: 42
+As discussed, please make Range immutable.
+
+139:0-139:68
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a2724f5_8dfbe53a
+Bytes: 185
+How about you have just one method called IsIfBranch that you'd use on line 252 and then test if you're in true or false branch inside HandleComingFromIf? No need to duplicate the code.
+
+199:16-200:46
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d7fda4c_f004ae21
+Bytes: 33
+Create a new const range instead?
+
+214
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea1a34b3_69766181
+Bytes: 174
+How about you make this more symmetric by only testing for !IsValid in each branch? It would make things more obvious and you wouldn't need that awkward 'return' on line 204.
+
+237:6-237:13
+Wed Aug 05 15:47:21 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d7fda4c_303616ed
+Bytes: 78
+Please make this the case kCondEQ and explain why you cannot narrow the range.
+

@@ -41,6 +41,18 @@ UUID: 0a0b0862_d52d6c94
 Bytes: 55
 multicatch is preferred to a general Exception catchall
 
+55:13-55:24
+Wed Aug 05 23:19:42 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a0b0862_d52d6c94
+UUID: cac3b058_495b715b
+Bytes: 669
+For debugging purposes, I would like to see stack traces for exceptions in the handlers, which the HttpServer does not report. Sometimes these are IOExceptions, but more often they are NullPointerExceptions. Presumably there could be other kinds of exceptions I would like to see a stack trace for rather than just having the page hang or fail to load.
+
+1. Is general Exception catchall appropriate for this use case?
+2. Should I add IOException, NullPointerException, and others to a multicatch as I see them arise?
+3. Or should I not print the stack traces at all in the checked in code, and only modify the code locally or use a debugger (?) to see the stack traces?
+
 File: tools/ahat/src/ahat/AhatSnapshot.java
 
 19:38-19:39
@@ -116,6 +128,20 @@ It looks like this AIC(anonymous inner class) is just used to build data for the
 
 You may also consider creating a separate class for the AIC below.  There is a little too much content (for me) for an AIC.
 
+86:4-98:6
+Wed Aug 05 23:19:42 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a61b821_dc9e416d
+UUID: caa650d5_a3ac3e73
+Bytes: 804
+My goal is to share code for producing tables that contain heap numbers. What changes between each table, currently, is the description of what the heap values mean, how to get the heap values, and how to render any additional columns in the table.
+
+I'm not terribly happy with the approach I'm using, where I provide an implementation of a configuration interface to configure the table. Is there a better way? Is there a more canonical way for doing this kind of thing in Java?
+
+For example, would it be better to have HeapTable be an abstract base class that I subclass for each instance of the table I want to render? Does that violate "inheritance vs. composition" arguments?
+
+I really just want a nice way to pass functions (or rather, a list of functions) as arguments. Can I use lambdas for that?
+
 100:43-119:6
 Mon Aug 03 19:26:16 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -154,6 +180,23 @@ Parent: ea6cf416_50105410
 UUID: 2a536c56_7e2d6917
 Bytes: 43
 if arg1 is special, give it a special name?
+
+52:34-52:62
+Wed Aug 05 23:19:42 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a536c56_7e2d6917
+UUID: 2aa28cbf_80a8160f
+Bytes: 709
+arg1 is not special. Is the comment not clear?
+
+"
+The format string itself will not be sanitized. To ensure an unsanitized string is not accidentally passed as the format string, this requires at least one format argument. To print an already sanitized string, use:
+  print("%R", str);
+To print a string that needs to be sanitized, use:
+  print("%s", str);
+"
+
+I separate arg1 so you'll get a compiler error if you do something like 'html.print(instance.toString())'. This is dangerous, because instance.toString() may not have been sanitized. Requiring the user explicitly put "%R" as the first object makes it harder to make that mistake (I hope), and easier to grep for "%R" for potential problems later on.
 
 56:4-58:5
 Mon Aug 03 19:26:16 2015 +0000
@@ -219,6 +262,16 @@ Bytes: 229
 google preferred != android preferred... we aren't going to use GWT :)
 
 I'm fine with something quick and dirty to keep this easy to work on without needing to learn some third party toolkit that is just wrapping text generation.
+
+76:24-76:73
+Wed Aug 05 23:19:42 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca673030_7b4f373d
+UUID: 8ac9b89e_33bc08a1
+Bytes: 301
+The recommendations I've seen are GWT, Closure Templates, jslayout, and GXP. The first three of those generate JavaScript code, but it is important to me that javascript not be required to view the heap dump.
+
+GXP may work, but I agree with Brian. I think it will add more complexity than it is worth.
 
 File: tools/ahat/src/ahat/RootsHandler.java
 

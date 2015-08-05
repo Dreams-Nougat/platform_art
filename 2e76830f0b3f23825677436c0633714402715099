@@ -9,3 +9,17 @@ UUID: eadf9421_1b0b74dc
 Bytes: 110
 Could you do this in the InlineInto instead? Returning the return instruction from InlineInto is pretty weird.
 
+453:0-477:3
+Wed Aug 05 11:19:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eadf9421_1b0b74dc
+UUID: 4d7fda4c_f5b82035
+Bytes: 807
+I considered that option too. 
+
+The main reason I ended up doing it here is because of the `handles_`. I'd like to keep their scope as small as possible. It makes it easier to reason about their correctness. It also keeps the signature easier and separate the concerns better (to create RTIs we need reference to handles and class linker, passing them around to the graph seems more weird to me and everything becomes pretty ugly). Going a step forward, if we go more precise and merge the phi's inputs (see TODO) we need to share stuff (i.e. merging) between reference type propagation and nodes, that's again something that I'd rather not do.
+
+That said, having the instruction properly typed at their place of creation does sound cleaner, but in practice it will get messier.
+
+Let me know what you think.
+

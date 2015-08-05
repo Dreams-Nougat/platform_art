@@ -1,0 +1,35 @@
+Revision: f834a540d2a18360a312da94db8651e85262d3b3
+Patch-set: 7
+File: runtime/quick_exception_handler.cc
+
+236:12-236:39
+Wed Aug 05 12:40:43 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2aafec90_38cda95d
+Bytes: 235
+The ShadowFrame created for the debugger is incomplete: it only contains values for the registers set by the debugger. You still need to set "untouched" registers, so you still need to test whether the register has been updated or not.
+
+File: runtime/stack.cc
+
+280:54-280:62
+Wed Aug 05 12:40:43 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ad9936fb_0bef29a9
+Bytes: 28
+It's more an uintptr_t here.
+
+497:2-507:14
+Wed Aug 05 12:40:43 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2aafec90_b8d299ca
+Bytes: 677
+2 comments here for discussion:
+
+
+1) Why not doing the same for Quick? As long as Optimizing compiler can fallback to Quick, we must support it too. Besides, the code seems compatible with both compilers IMO.
+
+
+2) Shouldn't we ensure this is only used by the debugger? I mean it only works iff the debugger ensures we do trigger a deopt (by installing instrumentation exit stub on each method's return pc). What if, in the future, some other part of the runtime starts using SetVReg? It would also need to ensure deopt happens, consequently would need to update instrumentation too.
+
+As an example, see run-test 455-set-vreg (set_vreg_jni.cc) which calls StackVisitor::SetVReg.
+

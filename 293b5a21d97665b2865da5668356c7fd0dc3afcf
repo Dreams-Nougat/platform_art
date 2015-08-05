@@ -1,0 +1,47 @@
+Revision: 293b5a21d97665b2865da5668356c7fd0dc3afcf
+Patch-set: 2
+File: runtime/intern_table.cc
+
+252:0-254:5
+Wed Aug 05 00:40:06 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ad60c0d_75d56a2e
+Bytes: 378
+It occurs to me that this won't fail but isn't effective as a check with the CC collector as it doesn't use DisallowNewSystemWeaks/AllowNewSystemWeaks and weak_root_state_ stays gc::kWeakRootStateNormal all the time.
+
+How about something like
+
+if (!kUseReadBarrier) {
+  CHECK_EQ(weak_root_state_, gc::kWeakRootStateNormal);
+} else {
+  CHECK(self->GetWeakRefAccessEnabled())
+}
+
+?
+
+272:2-272:55
+Wed Aug 05 00:40:06 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6acc847d_290b8edc
+Bytes: 141
+Same.
+
+if (!kUseReadBarrier) {
+  CHECK_EQ(weak_root_state_, gc::kWeakRootStateNormal);
+} else {
+  CHECK(self->GetWeakRefAccessEnabled())
+}
+
+?
+
+File: runtime/intern_table.h
+
+190:64-190:65
+Wed Aug 05 00:40:06 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cadad034_52b96265
+Bytes: 219
+Just passing hold_locks = true when holding other locks doesn't make it safe to call this function if GC may be running. We also require GC won't happen, which is true in the image writer. 
+
+Worth clarifying this point?
+

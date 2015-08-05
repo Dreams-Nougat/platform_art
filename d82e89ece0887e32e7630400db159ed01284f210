@@ -1,0 +1,15 @@
+Revision: d82e89ece0887e32e7630400db159ed01284f210
+Patch-set: 1
+File: runtime/gc/accounting/mod_union_table.cc
+
+125:45-125:55
+Wed Aug 05 19:46:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eaab149c_be757974
+Bytes: 438
+Seems to work, but would it make more sense to call MarkHeapReference() instead like the old code?
+
+- SemiSpace's MarkHeapReference() already updates the root and we can remove the Assign call below?
+
+- If a collector requires an atomic write (cas), calling MarkHeapReference() would allow the collector to use a cas internally without hardcoding a non-atomic write here? The CC collector does not currently use mod union tables, however.
+

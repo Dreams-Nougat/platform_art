@@ -9,6 +9,14 @@ UUID: 6d657ec3_4e785338
 Bytes: 115
 As already mentioned offline, I'd prefer if you used HInstruction* instead, and HBasicBlock* for the typedef below.
 
+53:23-53:36
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6d657ec3_4e785338
+UUID: 4d7fda4c_70bdfe9d
+Bytes: 4
+Done
+
 87:2-89:5
 Wed Aug 05 15:47:21 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,30 @@ UUID: 6a2724f5_add509b7
 Bytes: 27
 Nit: Use // comments in C++
 
+87:2-89:5
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a2724f5_add509b7
+UUID: 4d7fda4c_90ba82a5
+Bytes: 4
+Done
+
 110:2-110:55
 Wed Aug 05 15:47:21 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ad9936fb_96cefca2
 Bytes: 24
 Why is this not private?
+
+110:2-110:55
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad9936fb_96cefca2
+UUID: ea1a34b3_691ae12f
+Bytes: 295
+Because you may want the merging operation to be accessible. Let's say (as a silly example) that you wanna count how many time you access something. Your merge operation is '+', and you want to do "+1" every time you encounter this value.
+
+You might not always want to replace the current value.
 
 116:4-116:6
 Wed Aug 05 15:47:21 2015 +0000
@@ -37,6 +63,22 @@ UUID: ad9936fb_f6bca008
 Bytes: 15
 already existed
 
+116:4-116:6
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a2a60c0_cc231f57
+UUID: 4a2a60c0_ac906bd5
+Bytes: 4
+Done
+
+116:36-116:56
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad9936fb_f6bca008
+UUID: 4a2a60c0_8c8da7bb
+Bytes: 4
+Done
+
 File: compiler/optimizing/ranges.cc
 
 44:8-44:18
@@ -46,12 +88,28 @@ UUID: 4d7fda4c_500c7a45
 Bytes: 62
 Nit: no need for the variables if you only use the values once
 
+44:8-44:18
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_500c7a45
+UUID: 2aafec90_58917da9
+Bytes: 4
+Done
+
 57:0-57:75
 Wed Aug 05 15:47:21 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d7fda4c_90160254
 Bytes: 73
 Can you please explain this in more detail? When would an input overflow?
+
+57:0-57:75
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_90160254
+UUID: ad9936fb_163d8ce9
+Bytes: 4
+Done
 
 58:20-58:25
 Wed Aug 05 15:47:21 2015 +0000
@@ -60,6 +118,14 @@ UUID: 6a2724f5_0df0955a
 Bytes: 72
 If this comparison is useful, maybe you should do static_cast<U>(min())?
 
+58:20-58:25
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a2724f5_0df0955a
+UUID: 6d657ec3_2e46bfd6
+Bytes: 87
+The compiler will automatically cast to the narrowest type needed to do the comparison.
+
 61:6-61:24
 Wed Aug 05 15:47:21 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,12 +133,30 @@ UUID: 4a2a60c0_8c76474b
 Bytes: 109
 No need to special case this. If you store the min,max values as they are, they will return false for IsValid
 
+61:6-61:24
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a2a60c0_8c76474b
+UUID: 4a2a60c0_4c19ef07
+Bytes: 4
+Done
+
 101:2-101:3
 Wed Aug 05 15:47:21 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d7fda4c_b02146a8
 Bytes: 42
 As discussed, please make Range immutable.
+
+101:2-101:3
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_b02146a8
+UUID: 4a2a60c0_8c1ac7f9
+Bytes: 114
+It is. There is no way to modify those values.
+
+That said, I don't mark them const, that would forbid operator=().
 
 139:0-139:68
 Wed Aug 05 15:47:21 2015 +0000
@@ -88,6 +172,14 @@ UUID: 4d7fda4c_f004ae21
 Bytes: 33
 Create a new const range instead?
 
+199:16-200:46
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_f004ae21
+UUID: 2aafec90_788ba16f
+Bytes: 4
+Done
+
 214
 Wed Aug 05 15:47:21 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -95,10 +187,26 @@ UUID: ea1a34b3_69766181
 Bytes: 174
 How about you make this more symmetric by only testing for !IsValid in each branch? It would make things more obvious and you wouldn't need that awkward 'return' on line 204.
 
+214
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea1a34b3_69766181
+UUID: 4a37c06b_21d04e42
+Bytes: 4
+Done
+
 237:6-237:13
 Wed Aug 05 15:47:21 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d7fda4c_303616ed
 Bytes: 78
 Please make this the case kCondEQ and explain why you cannot narrow the range.
+
+237:6-237:13
+Thu Aug 06 11:12:44 2015 +0000
+Author: Guillaume Sanchez <1068522@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d7fda4c_303616ed
+UUID: 4a37c06b_e1da6660
+Bytes: 4
+Done
 

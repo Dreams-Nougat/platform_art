@@ -1,5 +1,32 @@
 Revision: da7c650022a974be10e2f00fa07d5109e3d8826f
 Patch-set: 2
+File: compiler/driver/compiler_driver.cc
+
+889:5-889:31
+Thu Aug 06 22:59:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0abea8e2_466a1c8e
+Bytes: 102
+We can ignore native roots here as objects pointed to by them are reachable from other paths, correct?
+
+File: compiler/image_writer.cc
+
+1192:0-1193:22
+Thu Aug 06 22:59:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ac9b89e_487b4b9b
+Bytes: 56
+Can you clarify this? What's 'other logic' referring to?
+
+File: patchoat/patchoat.h
+
+184:7-184:66
+Thu Aug 06 22:59:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a0c20ee_ad0e35bf
+Bytes: 75
+I assume some other code updates class roots? Mention that other code here?
+
 File: runtime/art_method.h
 
 452:44-452:69
@@ -18,4 +45,40 @@ Parent: 6d83be1d_9e1e8df0
 UUID: ad977653_153ef6e9
 Bytes: 65
 Ill try cleaning up some NO_THREAD_SAFETY_ANALYSIS in another CL.
+
+File: runtime/class_linker.cc
+
+2795:0-2796:40
+Thu Aug 06 22:59:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2abb6cf3_c2d613f2
+Bytes: 367
+I don't know if the length prefix array CL addresses it or not, but with this change GC visits native roots without taking the classlinker_classes_lock_ (it used to in VisitClassRoots()), would there be race conditions between GC visiting method native roots vs a mutator doing LinkInterfaceMethods and calling this function to update the virtual methods array, etc.?
+
+File: runtime/gc/collector/mark_sweep.cc
+
+669:10-669:21
+Thu Aug 06 22:59:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0abea8e2_c632acab
+Bytes: 137
+As currently kCheckLocks == kDebugLocking == kIsDebugBuild, would it make sense to merge the first two at least? Low priority, I suppose.
+
+File: runtime/gc/heap.cc
+
+1791:7-1791:25
+Thu Aug 06 22:59:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ab8cc3c_19c96fcd
+Bytes: 218
+It may be best if we comment to clarify that these are for method/field native roots. It might not be obvious what root these are based on the function names. Changing the name to indicate that may be harder, I assume.
+
+File: runtime/mirror/class-inl.h
+
+821:6-821:66
+Thu Aug 06 22:59:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a06a8cf_00fbacef
+Bytes: 121
+Is this for the CC collector? If so, GetDeclaringClass() has a read barrier and it was ok? Reordering is harmless though.
 

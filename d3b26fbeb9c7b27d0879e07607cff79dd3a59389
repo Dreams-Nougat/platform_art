@@ -17,3 +17,23 @@ UUID: 4a37c06b_41147275
 Bytes: 196
 Nope, an "invalid" range can be seen as an empty range (I can change the wording if you want). So, looking for a value in an empty set is a valid operation, but obviously the value is never found.
 
+84:11-84:49
+Thu Aug 06 11:18:15 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a37c06b_41147275
+UUID: 6ae6442a_923dfcea
+Bytes: 391
+What I meant is that the function can be simplified. When you rewrite the function as one line, you get:
+
+  bool Contains(T val) const {
+    return IsValid() && min_value <= val && val <= max_value;
+  }
+
+which, when you inline, gives you:
+
+  bool Contains(T val) const {
+    return min_value <= max_value && min_value <= val && val <= max_value;
+  }
+
+But the first comparison is redundant...
+

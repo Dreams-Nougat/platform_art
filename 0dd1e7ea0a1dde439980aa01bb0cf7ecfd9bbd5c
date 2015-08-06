@@ -1,6 +1,108 @@
 Revision: 0dd1e7ea0a1dde439980aa01bb0cf7ecfd9bbd5c
 Patch-set: 8
+File: compiler/optimizing/context.h
+
+44:20-44:26
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8af7f8e0_4350e62b
+Bytes: 6
+remove
+
+45:7-45:19
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae6442a_129fcc6a
+Bytes: 6
+remove
+
+108:4-108:15
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3e0c4a_c08b9e26
+Bytes: 164
+you should document that this might return the default value if not present.
+
+Maybe it's better to assert that you have a property instead of returning the default.
+
+110:4-110:12
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8af7f8e0_e3a352b6
+Bytes: 29
+do you really need this here?
+
+150:7-150:23
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a37c06b_61989684
+Bytes: 127
+I don't understand what this does. Can you please explain? Also, the need of in_ and out_ is a bit unclear. Expand on them too.
+
+166:49-166:52
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3e0c4a_4078ee9c
+Bytes: 53
+rename to a better name (maybe set->graph_properties)
+
+167:4-167:12
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea307480_367178d2
+Bytes: 39
+ditto, do you really need the typename?
+
 File: compiler/optimizing/ranges.cc
+
+23:3-23:7
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8af7f8e0_e38c7243
+Bytes: 26
+drop. "Defined a range..."
+
+24:61-24:65
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8af7f8e0_039f8e6a
+Bytes: 88
+Avoid words like "just", "simply" or similar. They don't add value to the documentation.
+
+24:36-24:59
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cafd70c1_653766ea
+Bytes: 61
+move this to the Merge function, and say it's interval union.
+
+37:11-37:16
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cafd70c1_25316ef3
+Bytes: 86
+does it worth having this as a static member? instead of always creating a new object?
+
+44:18-44:23
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a3e0c4a_a003fa18
+Bytes: 99
+Why do you need to test for validity? Taking the min/max of the lower/upper value should be enough?
+
+89:7-89:14
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aafcbcc5_e4c7da3d
+Bytes: 27
+When can you hit this case?
+
+111:7-111:21
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea307480_f6430069
+Bytes: 86
+Bound types are created only for references. You should not need to analyse them here.
 
 118:38-118:54
 Thu Aug 06 10:59:00 2015 +0000
@@ -16,6 +118,13 @@ Parent: 4a37c06b_c12722e7
 UUID: 4a37c06b_e1558629
 Bytes: 4
 Done
+
+121:0-128:63
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aafcbcc5_a4d1e2fc
+Bytes: 63
+you don't need this here. Make them static top level functions.
 
 131:16-131:28
 Thu Aug 06 10:59:00 2015 +0000
@@ -63,6 +172,35 @@ UUID: aa583ce6_e45a5a57
 Bytes: 4
 Done
 
+174:4-174:10
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8af7f8e0_630e4240
+Bytes: 232
+You could make use of the ternary operator and get rid of the else branch:
+
+low = range.low();
+high = range.high();
+switch() {
+
+  case kCondGT: range = isTrueBranch ? range.ReduceLowerBound() : range.ReduceUpperBound(); break;
+...
+}
+
+188:8-192:9
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae6442a_1278ec9b
+Bytes: 46
+you can use merge with the one value interval.
+
+235:14-235:35
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea307480_164d5c8f
+Bytes: 132
+for equals, which is commutative, this might actually be the constant , not the variable. Check the GetConstantRight implementation.
+
 243:6-243:53
 Thu Aug 06 10:59:00 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -77,4 +215,15 @@ Parent: aafcbcc5_842706e8
 UUID: aa583ce6_04e9b6ef
 Bytes: 4
 Done
+
+254:2-262:3
+Thu Aug 06 13:48:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aafcbcc5_64e52ac6
+Bytes: 297
+This is doing  more then just propagating the ranges. 
+
+I'm not convinced that we should do there. Maybe mark HConditions with always true/false and make the simplification in InstructionSimplifier. As we do with instanceof and the others.
+
+This way, you won't need to keep the two arrays anymore.
 

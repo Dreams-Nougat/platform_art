@@ -1,0 +1,22 @@
+Revision: 50333dd6c9cc15feb4db92378781c5097edfd8c2
+Patch-set: 2
+File: runtime/art_method-inl.h
+
+82:0-109:1
+Thu Aug 06 22:16:22 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eaa1540d_17af7e66
+Bytes: 127
+Does all of this code have to be here? I think it would be nicer to "un-inline" the "Set" part and have that in the .cc file...
+
+File: runtime/art_method.h
+
+550:2-550:25
+Thu Aug 06 22:16:22 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eaa1540d_77bc02a2
+Bytes: 426
+I think bdc will have to see and agree on this. Technically, it doesn't matter that you wouldn't be able to dispatch on it because of the invoke-xxx limitation, but you can still perfectly fine describe it in a valid dex file (and multiple dex files and inheritance make this not too hard to actually workable).
+
+(Though I understand that GetMethodIndex already returned uint16_t [we really need to get Wconversion going] ...)
+

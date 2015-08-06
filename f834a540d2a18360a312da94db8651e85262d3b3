@@ -51,3 +51,13 @@ For 1), do you mean we also use deoptimization for quick's set-local-value?
 
 For 2), I think it should only be from debugger. Changing local value is a very special operation.
 
+497:2-507:14
+Thu Aug 06 12:52:27 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0aa5c8c6_3fdf27fc
+UUID: 2a3e0c4a_807ef689
+Bytes: 335
+Re 1): Yes, Quick is in the same boat IMO. Especially for constant propagation (though we could disable it when --debuggable flag is passed)
+
+Re 2): So I would add dedicated SetVReg methods to StackVisitor, only meant to be used by the debugger (say StackVisitor::SetVReg[Pair]FromDebugger. And it would deopt for Quick and Optimizing.
+

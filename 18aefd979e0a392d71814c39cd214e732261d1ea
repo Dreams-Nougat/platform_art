@@ -9,3 +9,16 @@ UUID: e7242fa6_b93d1b47
 Bytes: 49
 I'd just put the #include at the end of the file.
 
+4840:0-4844:15
+Fri Aug 07 17:21:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7242fa6_b93d1b47
+UUID: 8719b374_5374a474
+Bytes: 381
+Done. It requires slightly changing this define (with a cast) because the HGraphVisitor does not know that the arch-specific IRs inherit from HInstruction.
+
+    #define DECLARE_VISIT_INSTRUCTION_ARCH(arch, name, super)            \
+        virtual void Visit##name(arch::H##name* instr) {            \
+          VisitInstruction(reinterpret_cast<HInstruction*>(instr)); \
+        }
+

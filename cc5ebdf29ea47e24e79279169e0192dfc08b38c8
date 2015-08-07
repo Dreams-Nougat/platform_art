@@ -2,6 +2,50 @@ Revision: cc5ebdf29ea47e24e79279169e0192dfc08b38c8
 Patch-set: 3
 File: runtime/class_linker.cc
 
+1277:1-1279:5
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3068cc_47d68e70
+Bytes: 74
+Is the reason we reinsert here is because the class loader may have moved?
+
+1285:0-1286:33
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7f64b4b_7d66574a
+Bytes: 99
+What's this mean?
+
+Note the CC collector (or SS/GSS) does not currently use kVisitRootFlagNewRoots.
+
+1338:9-1338:27
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7f64b4b_5d6b9b10
+Bytes: 56
+On what condition does this return false (meaning exit)?
+
+1351:6-1351:21
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 67111f42_3ab7c142
+Bytes: 36
+When is self null? At shutdown time?
+
+2779:29-2779:41
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 070ea328_77c1d0fa
+Bytes: 52
+Comment that this can be null for boot class loader?
+
+2868:34-2868:74
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 270ba719_f81cb1f8
+Bytes: 84
+Does this mean we assume there's only one class loader (which is null) in the image?
+
 3988:1-3995:21
 Tue Aug 04 23:57:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,6 +60,72 @@ Parent: eadf9421_de457a1b
 UUID: 2ad60c0d_7a91d9a9
 Bytes: 103
 Yes, that is an alternate implementation. The main thing stopping that was the "null" boot classloader.
+
+3988:1-3995:21
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ad60c0d_7a91d9a9
+UUID: ea26b49b_e98bd125
+Bytes: 115
+Is "null" class loader a valid entry in the map (and SafeMap works as expected)? Leave a comment on this somewhere?
+
+4056:0-4075:5
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 270ba719_f84391c6
+Bytes: 76
+Would it be possible to factor this out as a new ClassLinker::UpdateClass()?
+
+5625:36-5625:52
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7f64b4b_802098a4
+Bytes: 158
+This function is REQUIRES(Locks::classlinker_classes_lock_), which requires a exclusive lock but we only have a shared lock here? Is this working as intended?
+
+File: runtime/class_linker.h
+
+482:13-482:33
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 67111f42_9a880dab
+Bytes: 138
+I guess this is what the CC collector moving class loader objects is problematic for the SafeMap which requires the ordering to be stable?
+
+710:24-710:32
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 070ea328_778430ec
+Bytes: 47
+Would class_tables_ be a more descriptive name?
+
+File: runtime/class_table.cc
+
+27:17-27:31
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7f64b4b_e01abca1
+Bytes: 173
+I see that each class table/class loader pair can contain both zygote and non-zygote classes and this function draws the boundary by creating a new class set at zygote fork?
+
+32:29-32:37
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a3068cc_8a3ecbe6
+Bytes: 43
+Name "class_sets_" would read better to me.
+
+35:0-35:33
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 270ba719_d8a44d05
+Bytes: 125
+Do we need to check this equality? Would turning it into an assertion like
+
+DCHECK_EQ(it->Read(), klass);
+return true;
+
+work?
 
 File: runtime/class_table.h
 
@@ -56,4 +166,14 @@ Parent: 6acc847d_a986beee
 UUID: aae91cd1_c3520535
 Bytes: 138
 So the maximum size of that vector is 2? One for pre-zygote fork, and one for post, is that correct? How about having two ClassSet fields?
+
+112:2-112:32
+Fri Aug 07 01:27:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aae91cd1_c3520535
+UUID: 0a3068cc_ea64a715
+Bytes: 171
+How about naming it "class_sets_"?
+
+Can you leave a comment on what's expected to do with Nicolas's comment? Maximum size is 2, one for pre-zygote and another post-zygote?
 

@@ -1,0 +1,37 @@
+Revision: eb837eb7c27e789bc7b05f474be9aa119f2fd99f
+Patch-set: 2
+File: runtime/class_linker.cc
+
+4056:4-4056:6
+Sat Aug 08 01:55:00 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47333b20_d5729c05
+Bytes: 60
+I don't fully understand this paragraph. I'll ask you later.
+
+4057:35-4057:36
+Sat Aug 08 01:55:00 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 87a3737f_23c6aae2
+Bytes: 62
+Missing words/punctuations here? Should the sentence end here?
+
+4060:0-4063:35
+Sat Aug 08 01:55:00 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 27b567ac_ab403509
+Bytes: 1138
+(Isn't this racy with GC? If so, would this reliably prevent GC from visiting those that the comment refers to?)
+
+I think this could cause GC to miss visiting/updating class roots if the (old) class may be on the mark stack but it's not marked through yet.
+
+Note the CC collector won't visit fields of an object that's allocated during a GC (as it's in the to space and due to the to-space invariant) such as the new copy of the class allocated in line 4055. We can't rely on the new copy to make GC visit the (shared) class roots after making them unreachable from the old copy.
+
+If the class roots are like normal fields, we would have triggered read barriers in Class::CopyOf() and we would be good. But since they are roots in shared Methods/Fields arrays, we don't trigger read barriers. As this situation is sort of like missing read barriers, I think one possible fix would be to overwrite the method/field roots in CopyOf() as in:
+
+  root_ = GcRoot(root_.Read()).
+
+This way, the new class copy is guaranteed to have to-space refs only. There may be other ways.
+
+This could explain the from-space ref crashes with the CC collector.
+

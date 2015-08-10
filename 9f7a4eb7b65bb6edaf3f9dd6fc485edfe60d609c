@@ -2,6 +2,15 @@ Revision: 9f7a4eb7b65bb6edaf3f9dd6fc485edfe60d609c
 Patch-set: 1
 File: compiler/optimizing/intrinsics_arm64.cc
 
+1041
+Mon Aug 10 15:57:52 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e7750f3f_4e07d3d4
+Bytes: 399
+I think it is safe to assume that VIXL could do with just one temp register for this portion of code. (VIXL currently uses x16 and x17 for generating constants and general macroassembler stuff). 
+
+Thus you can remove one of the location->AddTemp(...) and use UseScratchRegisterScope scratch_scope(masm); in the CodeGenerator visitor (see the other examples in this file and code_generator_arm64.cc).
+
 1080:15-1080:22
 Mon Aug 10 15:10:29 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,6 +29,13 @@ With this, that is potentially 3 branches in 4 instructions, which can cause iss
 
 There is work here to automatically insert NOPs in these situations, but for now you might want to add a NOP with a TODO indicating to remove it once VIXL handles that.
 
+1092:0-1094:25
+Mon Aug 10 15:57:52 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 271727da_d8daad97
+Bytes: 94
+You can also move this to the top. There is no need to do the count_offset loads in this case?
+
 1100:5-1100:8
 Mon Aug 10 14:15:13 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,6 +49,20 @@ Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 271727da_d8086dbb
 Bytes: 51
 Did you try using LDP to compare 4 chars at a time?
+
+1105:0-1107:49
+Mon Aug 10 15:57:52 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47209b2d_b9c57fd6
+Bytes: 256
+out is a W reg here, same as temp2. Thus on each load you will be loading sizeof(uint32_t).
+
+Ldr(out.X(), ...)
+Ldr(temp2.X(), ...) 
+Will be loading sizeof(uint64_t).
+
+For ARM64, GP side we have X and W register views, as follows. 
+x[63........w[31      0]]
 
 1111
 Mon Aug 10 15:10:29 2015 +0000

@@ -2,12 +2,44 @@ Revision: 9f7a4eb7b65bb6edaf3f9dd6fc485edfe60d609c
 Patch-set: 1
 File: compiler/optimizing/intrinsics_arm64.cc
 
+1080:15-1080:22
+Mon Aug 10 15:10:29 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c72bab15_55fc2c32
+Bytes: 78
+Drop. `Operand` provides an implicit constructor for readability.
+
+Same below.
+
+1094
+Mon Aug 10 15:10:29 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c72bab15_75f92841
+Bytes: 279
+With this, that is potentially 3 branches in 4 instructions, which can cause issue with the branch predictor.
+
+There is work here to automatically insert NOPs in these situations, but for now you might want to add a NOP with a TODO indicating to remove it once VIXL handles that.
+
 1100:5-1100:8
 Mon Aug 10 14:15:13 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c72bab15_954f243f
 Bytes: 4
 Mov?
+
+1102
+Mon Aug 10 15:10:29 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 271727da_d8086dbb
+Bytes: 51
+Did you try using LDP to compare 4 chars at a time?
+
+1111
+Mon Aug 10 15:10:29 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47209b2d_5979c339
+Bytes: 77
+Avoid the `Cmp` by moving the `Sub(temp, temp, 4)` here and using `SetFlags`?
 
 1117:5-1117:8
 Mon Aug 10 14:15:13 2015 +0000

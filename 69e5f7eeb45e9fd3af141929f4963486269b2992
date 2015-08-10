@@ -1,0 +1,27 @@
+Revision: 69e5f7eeb45e9fd3af141929f4963486269b2992
+Patch-set: 1
+File: build/Android.common_build.mk
+
+314
+Mon Aug 10 23:03:14 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7cf2b9d_3e3e0d42
+Bytes: 184
+I don't think we should be reducing the amount of possible base addresses unless we have a very good reason. Also this could still cause issues if we ever have a device with >1k pages.
+
+File: runtime/gc/space/image_space.cc
+
+64
+Mon Aug 10 23:03:14 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 87c9b39e_c7450eef
+Bytes: 104
+This can be set by builder and there is no reason that delta's < 0 are bad (other than 1 test flakiness)
+
+70
+Mon Aug 10 23:03:14 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7cf2b9d_be5fbd6c
+Bytes: 106
+just put a do-while loop checking for r == 0 here (and a comment explaining why) and remove line 64 above.
+

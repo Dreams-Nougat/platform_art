@@ -11,6 +11,14 @@ I think it is safe to assume that VIXL could do with just one temp register for 
 
 Thus you can remove one of the location->AddTemp(...) and use UseScratchRegisterScope scratch_scope(masm); in the CodeGenerator visitor (see the other examples in this file and code_generator_arm64.cc).
 
+1041
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7750f3f_4e07d3d4
+UUID: a7ceb7a1_9ad9ad22
+Bytes: 4
+Done
+
 1080:15-1080:22
 Mon Aug 10 15:10:29 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,6 +27,14 @@ Bytes: 78
 Drop. `Operand` provides an implicit constructor for readability.
 
 Same below.
+
+1080:15-1080:22
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c72bab15_55fc2c32
+UUID: 47e97bf9_545d42c0
+Bytes: 4
+Done
 
 1094
 Mon Aug 10 15:10:29 2015 +0000
@@ -36,6 +52,22 @@ UUID: 271727da_d8daad97
 Bytes: 94
 You can also move this to the top. There is no need to do the count_offset loads in this case?
 
+1094
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c72bab15_75f92841
+UUID: a7ceb7a1_3a7cd98f
+Bytes: 157
+Done- I moved the move instruction from below between the two branch instructions, and also moved the reference equality check to the top as suggested below.
+
+1092:0-1094:25
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 271727da_d8daad97
+UUID: 47c41b7d_3cbbbdab
+Bytes: 4
+Done
+
 1100:5-1100:8
 Mon Aug 10 14:15:13 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,12 +75,28 @@ UUID: c72bab15_954f243f
 Bytes: 4
 Mov?
 
+1100:5-1100:8
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c72bab15_954f243f
+UUID: 07bea3e2_fa39c58f
+Bytes: 4
+Done
+
 1102
 Mon Aug 10 15:10:29 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 271727da_d8086dbb
 Bytes: 51
 Did you try using LDP to compare 4 chars at a time?
+
+1102
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 271727da_d8086dbb
+UUID: 67e67f2a_55f9be40
+Bytes: 216
+This was an outdated comment- I am comparing 4 characters at a time. Using LDP would be comparing 8 characters at a time, which would complicate things because we don't have the appropriate object alignment for this.
 
 1105:0-1107:49
 Mon Aug 10 15:57:52 2015 +0000
@@ -64,12 +112,28 @@ Will be loading sizeof(uint64_t).
 For ARM64, GP side we have X and W register views, as follows. 
 x[63........w[31      0]]
 
+1105:0-1107:49
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47209b2d_b9c57fd6
+UUID: 87c9b39e_19700bca
+Bytes: 4
+Done
+
 1111
 Mon Aug 10 15:10:29 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 47209b2d_5979c339
 Bytes: 77
 Avoid the `Cmp` by moving the `Sub(temp, temp, 4)` here and using `SetFlags`?
+
+1111
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47209b2d_5979c339
+UUID: 67e67f2a_f5e792a2
+Bytes: 4
+Done
 
 1117:5-1117:8
 Mon Aug 10 14:15:13 2015 +0000
@@ -78,10 +142,26 @@ UUID: a72a3712_3441700d
 Bytes: 4
 Mov?
 
+1117:5-1117:8
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a72a3712_3441700d
+UUID: 87c9b39e_791edf98
+Bytes: 4
+Done
+
 1122:5-1122:8
 Mon Aug 10 14:15:13 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a72a3712_d4c03cfa
 Bytes: 4
 Mov?
+
+1122:5-1122:8
+Mon Aug 10 19:41:25 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a72a3712_d4c03cfa
+UUID: 47c41b7d_1c2b5984
+Bytes: 4
+Done
 

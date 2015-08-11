@@ -1,0 +1,39 @@
+Revision: 8e24c75619567a638be2be9b8ffd0de92209f4c9
+Patch-set: 2
+File: runtime/dex_file.cc
+
+1354:44-1354:58
+Tue Aug 11 22:50:33 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64e83d66_c5e6ac23
+Bytes: 95
+FindArrayClass can cause thread suspension, so you need to guard klass in a handle. Also below.
+
+1508:39-1508:45
+Tue Aug 11 22:50:33 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64111d42_9a2b6d81
+Bytes: 90
+You need to put this in handle or else it can get freed in ProcessEncodedAnnotation below.
+
+1522:62-1522:67
+Tue Aug 11 22:50:33 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44141933_59fde377
+Bytes: 29
+klass needs to be in a handle
+
+1564:39-1564:52
+Tue Aug 11 22:50:33 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 871b735a_e92831bc
+Bytes: 45
+Needs to be in a handle when you allocate it.
+
+1612:91-1612:103
+Tue Aug 11 22:50:33 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64111d42_1af2bd90
+Bytes: 80
+If this isn't called from compilers you can probably just pass in sizeof(void*).
+

@@ -1,0 +1,56 @@
+Revision: 9f19ff3091f3cdbbe16525e72d845aae35b55fe4
+Patch-set: 2
+File: /COMMIT_MSG
+
+10
+Tue Aug 11 17:57:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0706a3cf_d7d97c21
+Bytes: 203
+It looks like classes and their class roots are also visited NOT through their class loaders (eg a class is found by GC in a handle scope). Is it the case (which seems to contradict this commit message)?
+
+File: runtime/class_linker.cc
+
+4378:5-4378:12
+Tue Aug 11 17:57:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 470c1bee_9988db01
+Bytes: 8
+Inherit.
+
+File: runtime/mirror/class_loader-inl.h
+
+29:0-30:63
+Tue Aug 11 17:57:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47b17b56_117f8c87
+Bytes: 82
+This looks like visiting instance fields of class loader. Is this really GC roots?
+
+31:1-31:25
+Tue Aug 11 17:57:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 67ae7ffb_92ab7c90
+Bytes: 300
+I think visiting classes/class roots from a class loader means that we'd need to make sure a class is always reachable from its class loader during the entire loading/linking process (or else we could miss visiting some class roots)? Is this ok?
+
+What happens to the classes of the null class loader?
+
+27:0-37:3
+Tue Aug 11 17:57:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2703a7c0_d81ecd67
+Bytes: 53
+I think we usually don't indent for namespace scopes?
+
+File: runtime/read_barrier_c.h
+
+28:8-28:28
+Tue Aug 11 17:57:42 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47b17b56_3182900d
+Bytes: 92
+Reminder to remove this before submitting.
+
+Do you mind testing device boot with libartd.so?
+

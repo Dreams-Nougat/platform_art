@@ -9,6 +9,14 @@ UUID: 47209b2d_3cfe3da1
 Bytes: 67
 BTW, do you have benchmark numbers for this implementation as well?
 
+15
+Tue Aug 11 18:39:54 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47209b2d_3cfe3da1
+UUID: 07bb033c_4fa20daf
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_arm64.cc
 
 1063:2-1063:96
@@ -17,6 +25,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 47209b2d_dc2941c2
 Bytes: 174
 Are 64-bit values really needed for these offsets?  I thought you only needed to use a 64-bit value to manipulate a quadruplet of characters (four UTF-16 chars) in line 1107.
+
+1063:2-1063:96
+Tue Aug 11 18:39:54 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47209b2d_dc2941c2
+UUID: 47b17b56_71c9b84e
+Bytes: 4
+Done
 
 1073
 Tue Aug 11 10:52:43 2015 +0000
@@ -27,6 +43,14 @@ Order early-outs by chance of return?
 
 i.e. Strings that are strings and of different length are compared far more often than strings with the same reference.
 
+1073
+Tue Aug 11 18:39:54 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a72a3712_57698eeb
+UUID: 0706a3cf_f7ebe09d
+Bytes: 274
+This is what I was initially doing, but this ordering resulted in 3 potential branches in 4 instructions which may cause issues with the branch predictor (see previous patch set) and so moving this check earlier seemed like a better solution than inserting NOP instructions.
+
 File: runtime/base/bit_utils.h
 
 146:7-146:16
@@ -35,4 +59,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6782ff52_35dc1adb
 Bytes: 57
 Do you ever pass a compile-time pointer to this function?
+
+146:7-146:16
+Tue Aug 11 18:39:54 2015 +0000
+Author: Agi Csaki <1074223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6782ff52_35dc1adb
+UUID: c7172bfa_f56e3876
+Bytes: 33
+No, I'm not! Removed this change.
 

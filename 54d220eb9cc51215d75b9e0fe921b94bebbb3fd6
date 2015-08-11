@@ -11,12 +11,28 @@ Elsewhere, you're using
 
     header_size = LengthPrefixedArray<ArtMethod>::ComputeSize(0, method_size)
 
+976:12-976:39
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7750f3f_f1ab028f
+UUID: 07bb033c_8fbb555e
+Bytes: 4
+Done
+
 980:26-980:67
 Tue Aug 11 19:05:20 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 07bb033c_ef6e6176
 Bytes: 41
 This used to be dirty, is it as intended?
+
+980:26-980:67
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 07bb033c_ef6e6176
+UUID: a716b7fe_b49de0f0
+Bytes: 73
+I think they are clean since we don't dirty them after loading the image.
 
 1206:12-1206:16
 Tue Aug 11 18:43:34 2015 +0000
@@ -33,12 +49,36 @@ UUID: 470c1bee_9cfd697c
 Bytes: 3
 ???
 
+1206:12-1206:16
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 470c1bee_9cfd697c
+UUID: 275487e3_70dd10ff
+Bytes: 4
+Done
+
+1206:12-1206:16
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7750f3f_91b07ef9
+UUID: c7172bfa_d564dc3e
+Bytes: 46
+Oops I forgot to revert that change. Will fix.
+
 1303:0-1304:55
 Tue Aug 11 18:43:34 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 47e33b4a_e18206dd
 Bytes: 41
 These 2 lines should be in reverse order.
+
+1303:0-1304:55
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47e33b4a_e18206dd
+UUID: a716b7fe_74dfc8d1
+Bytes: 4
+Done
 
 File: compiler/image_writer.h
 
@@ -48,6 +88,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 07bb033c_0f0485cd
 Bytes: 27
 Is this fake in what sense?
+
+384:5-384:9
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 07bb033c_0f0485cd
+UUID: 47b17b56_f4b0f6f9
+Bytes: 121
+As in the array does not contain the actual methods, we only use it for the header and relocation address. Added comment.
 
 File: runtime/class_linker.cc
 
@@ -60,6 +108,14 @@ Realloc() "moves" (memcpy) the object, so it's lifetime has started. It's evil t
 
 And, in the case that Realloc() just extends the allocated storage, aren't we increasing the number of methods before they have been initialized, running into another possible race?
 
+4956:21-4957:97
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47209b2d_5cfc5132
+UUID: 2703a7c0_788ce1be
+Bytes: 201
+Good point, though the current approach is safe since we use VisitRootIfNonNull and the newly allocated ArtMethods should be zeroed out. I'll change it to set the length after we initialize the methods
+
 File: runtime/gc/heap.cc
 
 2915:35-2915:88
@@ -71,6 +127,14 @@ Having parentheses around the highlighted code may make it clearer.
 
 I assume this code does the right thing for the cases with a null field array.
 
+2915:35-2915:88
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e71c2f21_16413cbf
+UUID: 07bb033c_2f73490c
+Bytes: 56
+Null arrays are handled by null iterators. Added parens.
+
 File: runtime/jit/jit_code_cache_test.cc
 
 53:69-53:70
@@ -79,6 +143,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2703a7c0_58259d5b
 Bytes: 95
 This may not matter, but is there a more realistic value than zero for the second param (size)?
+
+53:69-53:70
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2703a7c0_58259d5b
+UUID: 07bb033c_4f7a0dde
+Bytes: 74
+There is a default parameter, I'll just delete the argument for this case.
 
 File: runtime/length_prefixed_array.h
 
@@ -96,6 +168,22 @@ UUID: 07bb033c_cfab9d5d
 Bytes: 77
 Should this take alignment into account (or is it a caller's responsibility)?
 
+52:11-52:41
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c72bab15_f8abed8e
+UUID: 0706a3cf_7754f04b
+Bytes: 4
+Done
+
+52:11-52:72
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 07bb033c_cfab9d5d
+UUID: a747973d_2ce973f4
+Bytes: 51
+That is the caller's responsibility. Added comment.
+
 File: runtime/mirror/class.h
 
 1208:38-1208:56
@@ -104,6 +192,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0706a3cf_3760b877
 Bytes: 59
 Could say length-prefixed array here as well to be clearer?
+
+1208:38-1208:56
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0706a3cf_3760b877
+UUID: a747973d_4ce6bf23
+Bytes: 4
+Done
 
 File: runtime/stride_iterator.h
 
@@ -114,6 +210,14 @@ UUID: 47b17b56_11ccacde
 Bytes: 23
 Is this cast necessary?
 
+34:16-34:44
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47b17b56_11ccacde
+UUID: 075783ea_ef2841bc
+Bytes: 4
+Done
+
 56:17-56:41
 Tue Aug 11 18:43:34 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -121,10 +225,26 @@ UUID: 27eac720_60c6f23e
 Bytes: 27
 Provide operator+= as well.
 
+56:17-56:41
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 27eac720_60c6f23e
+UUID: 075783ea_4f186da9
+Bytes: 4
+Done
+
 57:4-57:8
 Tue Aug 11 19:05:20 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 470c1bee_79cb47b8
 Bytes: 56
 "StrideIterator<T>" instead of auto may be short enough?
+
+57:4-57:8
+Tue Aug 11 20:57:23 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 470c1bee_79cb47b8
+UUID: 275487e3_30e388c5
+Bytes: 4
+Done
 

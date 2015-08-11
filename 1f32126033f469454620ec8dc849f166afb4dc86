@@ -1,0 +1,11 @@
+Revision: 1f32126033f469454620ec8dc849f166afb4dc86
+Patch-set: 1
+File: compiler/dex/gvn_dead_code_elimination.cc
+
+743:32-743:91
+Tue Aug 11 12:39:29 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47e33b4a_a12e3ec6
+Bytes: 304
+For a narrow def, this is guaranteed to be size-1u as we're trying to kill an instruction with the destination register being overwritten by the last added instruction. For a wide def, this could be either size-1u or kNPos and we could read beyond the end of vreg_chains_.mir_data_ in IsVRegUsed() below.
+

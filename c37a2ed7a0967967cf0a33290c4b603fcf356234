@@ -9,12 +9,28 @@ UUID: e7f34f19_9eb55d1b
 Bytes: 9
 Why this?
 
+1028:46-1028:55
+Tue Aug 11 21:18:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7f34f19_9eb55d1b
+UUID: 275487e3_d335e600
+Bytes: 85
+To actually trigger the bug :-) b/22913897 explains why, let me know if it's unclear.
+
 1255
 Tue Aug 11 08:30:58 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6782ff52_3515fa6e
 Bytes: 30
 also DCHECK low->HasSpillSlot?
+
+1255
+Tue Aug 11 21:18:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6782ff52_3515fa6e
+UUID: 4736dbc8_898339e4
+Bytes: 80
+Done (had to use the parent of the interval though, because of how things work).
 
 File: test/526-long-regalloc/src/Main.java
 
@@ -25,10 +41,26 @@ UUID: e7750f3f_4ecfd3d5
 Bytes: 191
 Hmm, so this actually doesn't crash with the current implementation, does it? The failing DCHECK is the one you're adding in this CL. But I guess we don't have any other way of triggering it.
 
+17
+Tue Aug 11 21:18:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7750f3f_4ecfd3d5
+UUID: 275487e3_531816a9
+Bytes: 325
+It does crash with the current implementation. The allocation of the 'd' variable (which is the phi) will split intervals that hold the register that it allocated for 'd'. It will split a pair register. therefore entering the isLowInterval case of TrySplitNonPairOrUnalignedPairIntervalAt, and fail the existing DCHECK there.
+
 62:0-62:2
 Tue Aug 11 08:30:58 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 271727da_fb40cb60
 Bytes: 10
 Whitespace
+
+62:0-62:2
+Tue Aug 11 21:18:11 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 271727da_fb40cb60
+UUID: c721eb86_e58216dd
+Bytes: 4
+Done
 

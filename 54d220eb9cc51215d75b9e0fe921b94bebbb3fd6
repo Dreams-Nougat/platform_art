@@ -11,10 +11,25 @@ Elsewhere, you're using
 
     header_size = LengthPrefixedArray<ArtMethod>::ComputeSize(0, method_size)
 
+980:26-980:67
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07bb033c_ef6e6176
+Bytes: 41
+This used to be dirty, is it as intended?
+
 1206:12-1206:16
 Tue Aug 11 18:43:34 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e7750f3f_91b07ef9
+Bytes: 3
+???
+
+1206:12-1206:16
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7750f3f_91b07ef9
+UUID: 470c1bee_9cfd697c
 Bytes: 3
 ???
 
@@ -24,6 +39,15 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 47e33b4a_e18206dd
 Bytes: 41
 These 2 lines should be in reverse order.
+
+File: compiler/image_writer.h
+
+384:5-384:9
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07bb033c_0f0485cd
+Bytes: 27
+Is this fake in what sense?
 
 File: runtime/class_linker.cc
 
@@ -36,6 +60,26 @@ Realloc() "moves" (memcpy) the object, so it's lifetime has started. It's evil t
 
 And, in the case that Realloc() just extends the allocated storage, aren't we increasing the number of methods before they have been initialized, running into another possible race?
 
+File: runtime/gc/heap.cc
+
+2915:35-2915:88
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e71c2f21_16413cbf
+Bytes: 147
+Having parentheses around the highlighted code may make it clearer.
+
+I assume this code does the right thing for the cases with a null field array.
+
+File: runtime/jit/jit_code_cache_test.cc
+
+53:69-53:70
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2703a7c0_58259d5b
+Bytes: 95
+This may not matter, but is there a more realistic value than zero for the second param (size)?
+
 File: runtime/length_prefixed_array.h
 
 52:11-52:41
@@ -45,7 +89,30 @@ UUID: c72bab15_f8abed8e
 Bytes: 156
 Is this correct if the last field is a 0-size array? (Correct according to C++11 rather than just the compilers we use. Is a zero-length array OK in C++11?)
 
+52:11-52:72
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07bb033c_cfab9d5d
+Bytes: 77
+Should this take alignment into account (or is it a caller's responsibility)?
+
+File: runtime/mirror/class.h
+
+1208:38-1208:56
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0706a3cf_3760b877
+Bytes: 59
+Could say length-prefixed array here as well to be clearer?
+
 File: runtime/stride_iterator.h
+
+34:16-34:44
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47b17b56_11ccacde
+Bytes: 23
+Is this cast necessary?
 
 56:17-56:41
 Tue Aug 11 18:43:34 2015 +0000
@@ -53,4 +120,11 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 27eac720_60c6f23e
 Bytes: 27
 Provide operator+= as well.
+
+57:4-57:8
+Tue Aug 11 19:05:20 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 470c1bee_79cb47b8
+Bytes: 56
+"StrideIterator<T>" instead of auto may be short enough?
 

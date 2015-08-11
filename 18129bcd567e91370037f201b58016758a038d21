@@ -1,0 +1,123 @@
+Revision: 18129bcd567e91370037f201b58016758a038d21
+Patch-set: 4
+File: tools/ahat/src/AhatSnapshot.java
+
+169
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e71c2f21_96070c57
+Bytes: 149
+I assume this is an 'expected' error (you have seen this?).  I think I would prefer "(class.getName()==NULL)" or something more expressive than "???"
+
+File: tools/ahat/src/BitmapHandler.java
+
+58:13-58:29
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0706a3cf_97070457
+Bytes: 293
+Too broad.  Given that the method itself only declares IOException then I would not broaden this catch any wider than IOException.  Unless you want a multicatch with IOException and RuntimeException(?Throwable?) as options.  have you seen other exceptions here and are protecting against them?
+
+74
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47e97bf9_c61ce02a
+Bytes: 61
+is there an expectation that this should be well-formed html?
+
+File: tools/ahat/src/DominatedList.java
+
+61
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2703a7c0_9859f564
+Bytes: 120
+How big do we expect this to be?  Would it be more efficient to maintain a sorted list and not sort each time we render?
+
+67
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0706a3cf_771870a9
+Bytes: 231
+So this is only final because of the AIC reference below. 
+
+This AIC and its 'setup/initialization' is a little large.  I would consider making a static inner class here and encapsulate the setup/initialization in it's constructor.
+
+File: tools/ahat/src/FieldReader.java
+
+37:4-39:5
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e71c2f21_5670d4ca
+Bytes: 94
+Remind me why readField is not declared as 'readField(ClassInstance inst, String fieldName)' ?
+
+48:8-48:18
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2703a7c0_58475d71
+Bytes: 191
+Should count++ be outside of this conditional if you want to count the actual number. Otherwise I am not sure you will ever see count >1.  In which case the test (count>1) below is redundant.
+
+66:3-68:5
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0706a3cf_777350d9
+Bytes: 83
+Similar to above note.  Why is this not 'readCharArrayAsString(ArrayInstance inst)'
+
+File: tools/ahat/src/HeapTable.java
+
+53
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7172bfa_9559c464
+Bytes: 69
+Is this expected to break from the outer loop or just the inner here?
+
+File: tools/ahat/src/ObjectHandler.java
+
+58:4-58:27
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47b17b56_31f730c8
+Bytes: 32
+Consider html.printBitmap(inst)?
+
+60:6-60:30
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7172bfa_f5359800
+Bytes: 69
+similarly consider making this (and the three below) as methods html?
+
+File: tools/ahat/src/ObjectsHandler.java
+
+39:4-39:5
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 470c1bee_d9f09389
+Bytes: 217
+Return here or protect the code below in case 'site' is null. Even though you handle the case where site is null here (and generate html response) you continue and try to access through site (site.getObjects()) below.
+
+File: tools/ahat/src/Query.java
+
+38:2-49:3
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e71c2f21_363438e1
+Bytes: 356
+If this is called frequently, consider pre-splitting the uri into a parameter map in the constructor then these calls to get are just map lookups.
+
+Or maybe there are libraries already in your project which you can use.  This has some interesting options. 
+http://stackoverflow.com/questions/13592236/parse-the-uri-string-into-name-value-collection-in-java
+
+File: tools/ahat/src/Site.java
+
+150:4-150:37
+Tue Aug 11 17:52:17 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c7172bfa_95fd447c
+Bytes: 141
+Looks like you want the 'hex' address perhaps of (Object)this?  I am not sure what this will actually yield. You might get an exception here.
+

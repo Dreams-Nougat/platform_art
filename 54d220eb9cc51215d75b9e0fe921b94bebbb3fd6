@@ -1,0 +1,56 @@
+Revision: 54d220eb9cc51215d75b9e0fe921b94bebbb3fd6
+Patch-set: 6
+File: compiler/image_writer.cc
+
+976:12-976:39
+Tue Aug 11 18:43:34 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e7750f3f_f1ab028f
+Bytes: 102
+Elsewhere, you're using
+
+    header_size = LengthPrefixedArray<ArtMethod>::ComputeSize(0, method_size)
+
+1206:12-1206:16
+Tue Aug 11 18:43:34 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e7750f3f_91b07ef9
+Bytes: 3
+???
+
+1303:0-1304:55
+Tue Aug 11 18:43:34 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47e33b4a_e18206dd
+Bytes: 41
+These 2 lines should be in reverse order.
+
+File: runtime/class_linker.cc
+
+4956:21-4957:97
+Tue Aug 11 18:43:34 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47209b2d_5cfc5132
+Bytes: 302
+Realloc() "moves" (memcpy) the object, so it's lifetime has started. It's evil to reinitialize it with a placement new.
+
+And, in the case that Realloc() just extends the allocated storage, aren't we increasing the number of methods before they have been initialized, running into another possible race?
+
+File: runtime/length_prefixed_array.h
+
+52:11-52:41
+Tue Aug 11 18:43:34 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c72bab15_f8abed8e
+Bytes: 156
+Is this correct if the last field is a 0-size array? (Correct according to C++11 rather than just the compilers we use. Is a zero-length array OK in C++11?)
+
+File: runtime/stride_iterator.h
+
+56:17-56:41
+Tue Aug 11 18:43:34 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 27eac720_60c6f23e
+Bytes: 27
+Provide operator+= as well.
+

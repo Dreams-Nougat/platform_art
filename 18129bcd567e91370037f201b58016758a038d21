@@ -9,6 +9,16 @@ UUID: e71c2f21_96070c57
 Bytes: 149
 I assume this is an 'expected' error (you have seen this?).  I think I would prefer "(class.getName()==NULL)" or something more expressive than "???"
 
+169
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e71c2f21_96070c57
+UUID: 47b17b56_34bf1ea9
+Bytes: 532
+perflib has a bug where the class of a class object is null instead of java.lang.Class. I fix this in AhatSnapshot, so I don't expect classObj to be null. Still, there are a lot of places in the code where I want to get the class name for an object, and it seems safer to handle the case where the class object is null.
+
+The class name returned is something that will be seen in the user interface. I think "(class.getName()==NULL)" exposes implementation details the user shouldn't be aware of. How about "(class unknown)" instead?
+
 File: tools/ahat/src/BitmapHandler.java
 
 58:13-58:29
@@ -18,12 +28,30 @@ UUID: 0706a3cf_97070457
 Bytes: 293
 Too broad.  Given that the method itself only declares IOException then I would not broaden this catch any wider than IOException.  Unless you want a multicatch with IOException and RuntimeException(?Throwable?) as options.  have you seen other exceptions here and are protecting against them?
 
+58:13-58:29
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0706a3cf_97070457
+UUID: 47b17b56_54c6223e
+Bytes: 246
+I'm not protecting against exceptions. I'm reporting exceptions that would otherwise not be reported. Most often these are NullPointerExceptions due to bugs in my code.
+
+Is there a better place I can put the comment below to make this more clear?
+
 74
 Tue Aug 11 17:52:17 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 47e97bf9_c61ce02a
 Bytes: 61
 is there an expectation that this should be well-formed html?
+
+74
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47e97bf9_c61ce02a
+UUID: 67ae7ffb_9206dc91
+Bytes: 79
+Do you mean that I should add "<html>" and other tags around it? I can do that.
 
 File: tools/ahat/src/DominatedList.java
 
@@ -34,6 +62,14 @@ UUID: 2703a7c0_9859f564
 Bytes: 120
 How big do we expect this to be?  Would it be more efficient to maintain a sorted list and not sort each time we render?
 
+61
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2703a7c0_9859f564
+UUID: 47b17b56_d4ab325d
+Bytes: 347
+I expect render will only be called once for any given Instance of DominatedList. I made render non-static instead of static to make it more convenient to pass the arguments to getNumInstancesToShow and printMenu. Probably I should switch back to having render be a static method that takes the html writer, snapshot, list of instances, and query.
+
 67
 Tue Aug 11 17:52:17 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -42,6 +78,14 @@ Bytes: 231
 So this is only final because of the AIC reference below. 
 
 This AIC and its 'setup/initialization' is a little large.  I would consider making a static inner class here and encapsulate the setup/initialization in it's constructor.
+
+67
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0706a3cf_771870a9
+UUID: a716b7fe_f48d988f
+Bytes: 14
+I'll try this.
 
 File: tools/ahat/src/FieldReader.java
 
@@ -52,12 +96,30 @@ UUID: e71c2f21_5670d4ca
 Bytes: 94
 Remind me why readField is not declared as 'readField(ClassInstance inst, String fieldName)' ?
 
+37:4-39:5
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e71c2f21_5670d4ca
+UUID: c7172bfa_d838918a
+Bytes: 441
+Field values in perflib are represented using Object. This will be a ClassInstance for reference fields, but it will be Integer, Long, etc. for primitive fields. If readField accepts an Object instead of a ClassInstance, it's easier to compose calls where you call readField on a field value.
+
+I'm not terribly happy with the FieldReader code. I'll see if I can re-organize it to not use so many exceptions, and see if that clarifies things.
+
 48:8-48:18
 Tue Aug 11 17:52:17 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2703a7c0_58475d71
 Bytes: 191
 Should count++ be outside of this conditional if you want to count the actual number. Otherwise I am not sure you will ever see count >1.  In which case the test (count>1) below is redundant.
+
+48:8-48:18
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2703a7c0_58475d71
+UUID: 275487e3_7070b0cb
+Bytes: 31
+Yes. Good catch. I'll fix this.
 
 66:3-68:5
 Tue Aug 11 17:52:17 2015 +0000
@@ -75,6 +137,14 @@ UUID: c7172bfa_9559c464
 Bytes: 69
 Is this expected to break from the outer loop or just the inner here?
 
+53
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c7172bfa_9559c464
+UUID: c7172bfa_78285d37
+Bytes: 96
+Just the inner. I'll add a better comment in the code for this, because the code is non-trivial.
+
 File: tools/ahat/src/ObjectHandler.java
 
 58:4-58:27
@@ -91,6 +161,14 @@ UUID: c7172bfa_f5359800
 Bytes: 69
 similarly consider making this (and the three below) as methods html?
 
+60:6-60:30
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c7172bfa_f5359800
+UUID: 07bb033c_8f83555b
+Bytes: 113
+The information printed is specific to the ObjectHandler view of data. I would rather it not be a method of html.
+
 File: tools/ahat/src/ObjectsHandler.java
 
 39:4-39:5
@@ -99,6 +177,14 @@ Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 470c1bee_d9f09389
 Bytes: 217
 Return here or protect the code below in case 'site' is null. Even though you handle the case where site is null here (and generate html response) you continue and try to access through site (site.getObjects()) below.
+
+39:4-39:5
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 470c1bee_d9f09389
+UUID: 075783ea_ef112190
+Bytes: 26
+Good catch. I'll fix this.
 
 File: tools/ahat/src/Query.java
 
@@ -112,6 +198,14 @@ If this is called frequently, consider pre-splitting the uri into a parameter ma
 Or maybe there are libraries already in your project which you can use.  This has some interesting options. 
 http://stackoverflow.com/questions/13592236/parse-the-uri-string-into-name-value-collection-in-java
 
+38:2-49:3
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e71c2f21_363438e1
+UUID: 07bb033c_0f7005fc
+Bytes: 20
+I'll look into this.
+
 File: tools/ahat/src/Site.java
 
 150:4-150:37
@@ -120,4 +214,12 @@ Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c7172bfa_95fd447c
 Bytes: 141
 Looks like you want the 'hex' address perhaps of (Object)this?  I am not sure what this will actually yield. You might get an exception here.
+
+150:4-150:37
+Tue Aug 11 20:11:02 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c7172bfa_95fd447c
+UUID: 27b8073d_16e93cf4
+Bytes: 151
+I want a unique identifier for a Site. I think the real fix is to identify a site using the id of a stack trace and a frame number from the hprof file.
 

@@ -1,0 +1,36 @@
+Revision: 940cb788e97694f40ed3c191252d13788ee7bc5a
+Patch-set: 3
+File: runtime/simulator/code_simulator_arm64.cc
+
+23:14-24:32
+Wed Aug 12 11:12:19 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 240ba519_38b0e9f7
+Bytes: 116
+How do these early return statements prevent linker errors Shouldn't this be achieved with the preprocessor instead?
+
+56:0-58:3
+Wed Aug 12 11:12:19 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c44d6987_e5675618
+Bytes: 235
+Wouldn't it be safer to have
+
+  DCHECK(kCanSimulate);
+
+here instead?  The behavior of UNREACHABLE (i.e. __builtin_unreachable) is undefined at run time, and I think we only use it with LOG(FATAL) (or an abortion/exit statement) in ART.
+
+63:0-65:3
+Wed Aug 12 11:12:19 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 240ba519_58ab9d8f
+Bytes: 6
+Ditto?
+
+70:0-72:3
+Wed Aug 12 11:12:19 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8400d1f0_db4d7394
+Bytes: 6
+Ditto?
+

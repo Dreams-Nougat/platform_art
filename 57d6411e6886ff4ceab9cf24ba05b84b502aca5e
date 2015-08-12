@@ -1,0 +1,52 @@
+Revision: 57d6411e6886ff4ceab9cf24ba05b84b502aca5e
+Patch-set: 3
+File: runtime/class_linker.cc
+
+1281:6-1281:57
+Wed Aug 12 22:19:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4298d86_7d6e63aa
+Bytes: 399
+Since a class loaders is marked here, the classes of that class loader now get marked when the class loader is processed on the mark stack (delayed) rather than right here in VisitClassRoots(). Correct?
+
+Also, if a class or a class loader gets found by GC outside of this function (eg. in a handle on the stack, potentially when it's still being initialized), it gets visited by GC as well. Correct?
+
+2810:0-2812:3
+Wed Aug 12 22:19:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 046a21d9_da0541ce
+Bytes: 121
+I assume this is necessary because we assign a new class table to the class loader, which may have to be rescanned by GC.
+
+File: runtime/hprof/hprof.cc
+
+1027:0-1027:51
+Wed Aug 12 22:19:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 645f5d28_718a07f9
+Bytes: 190
+We use this visitor to visit the roots in ArtFields and ArtMethods reachable from either a class or a class loader (when the "obj" in DumpHeapObject() is a class or a class loader). Correct?
+
+1028:6-1028:23
+Wed Aug 12 22:19:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 645f5d28_9f6ea7f0
+Bytes: 73
+Should we avoid calling these "native" roots? How about ClassRootVisitor?
+
+1048:39-1048:54
+Wed Aug 12 22:19:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04f5c13c_b9418f0f
+Bytes: 34
+Both ArtMethod and ArtField roots?
+
+1048:55-1048:86
+Wed Aug 12 22:19:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 645f5d28_d16bf390
+Bytes: 386
+Not sure what this means exactly. There are no roots in a class object, the roots are in ArtMethods/ArtFields that belong to a class. So, I don't see a distinction between "ArtMethod roots" and "class loader classes".
+
+It seems just that if the root points to a class (like ArtMethod::declaring_class_) then we use kRootStickyClass or kRootVMInternal otherwise? Is that what this means?
+

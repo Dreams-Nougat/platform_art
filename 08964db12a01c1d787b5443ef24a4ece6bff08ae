@@ -12,12 +12,28 @@ Nit: MethodLoadType -> MethodLoadKind? ("type" is too overloaded
 
 method_load_type -> method_load_kind
 
+956:27-956:58
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cadad034_31c8584d
+UUID: e7750f3f_d1028648
+Bytes: 4
+Done
+
 970:29-970:55
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4acfc072_109fd26a
 Bytes: 32
 Can this be a kConstant instead?
+
+970:29-970:55
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4acfc072_109fd26a
+UUID: 07edc337_ff029f15
+Bytes: 143
+I'll leave this as is. This should be done as part of a bigger refactoring of CompilerDriver::GetCodeAndMethodForDirectCall() in a separate CL.
 
 978:8-978:12
 Tue Aug 04 18:53:51 2015 +0000
@@ -26,6 +42,14 @@ UUID: 0ad9483e_7333c8af
 Bytes: 21
 DexCacheArraysLayout.
 
+978:8-978:12
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ad9483e_7333c8af
+UUID: 271727da_5b0777d4
+Bytes: 4
+Done
+
 987:27-987:53
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,12 +57,28 @@ UUID: 2ad60c0d_89f0218b
 Bytes: 20
 ditto for a kStatic.
 
+987:27-987:53
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ad60c0d_89f0218b
+UUID: 47e33b4a_812e9a91
+Bytes: 79
+Also left for a CompilerDriver::GetCodeAndMethodForDirectCall() refactoring CL.
+
 992:19-993:61
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6acc847d_56f0745b
 Bytes: 97
 Maybe add somewhere that this is multidex and we currently only recognize multidex for the image.
+
+992:19-993:61
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6acc847d_56f0745b
+UUID: 045ce134_c74d7e94
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -49,6 +89,14 @@ UUID: 2ad60c0d_495459a4
 Bytes: 146
 This comparison looks brittle, and assumes an implementation optimization that pointers are the same. How about a IsSameDexFile method in DexFile?
 
+4508:10-4508:73
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ad60c0d_495459a4
+UUID: a72a3712_f7fd3a7a
+Bytes: 304
+This comparison is actually correct, unlike the comparison in HInliner::TryInline(). Think about JIT when the user creates a dex file, loads it, deletes it, creates a new dex file with the same name and loads it. You get 2 different dex files with the same location (one being unlinked but still loaded).
+
 File: compiler/optimizing/code_generator_arm.h
 
 334:2-334:96
@@ -57,6 +105,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2ad60c0d_69a83d60
 Bytes: 38
 Could you introduce a typedef instead?
+
+334:2-334:96
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ad60c0d_69a83d60
+UUID: 240ba519_78a661cb
+Bytes: 218
+I agree with our proposed style guide: "do not use typedef in new code. Use using instead, as it fully supercedes typedef and makes the code easier to read by introducing an ‘x = y’ left-to-right readability hint."
 
 340:0-345:4
 Tue Aug 04 18:53:51 2015 +0000
@@ -67,6 +123,16 @@ Since other backends have the same struct, please move this to code_generator.h,
 
 Also RelativeCallPatchData -> RelativeCallInfo ?
 
+340:0-345:4
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa14bc88_2192b960
+UUID: 27eac720_400dae43
+Bytes: 93
+Not exactly, arm64 uses vixl::Label.
+
+But have merged the rest and added a comment for arm64.
+
 356:18-356:22
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -74,12 +140,28 @@ UUID: eadf9421_18929d2a
 Bytes: 32
 Please avoid "data" in comments.
 
+356:18-356:22
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eadf9421_18929d2a
+UUID: e4242da6_966eacf0
+Bytes: 4
+Done
+
 360:11-360:21
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aae91cd1_10e6f420
 Bytes: 10
 ArenaDeque
+
+360:11-360:21
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aae91cd1_10e6f420
+UUID: a47a35a8_941804a9
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm64.h
 
@@ -90,6 +172,14 @@ UUID: cadad034_f17990ea
 Bytes: 8
 typedef?
 
+366:0-369:69
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cadad034_f17990ea
+UUID: 446259ef_49abe18f
+Bytes: 42
+"using" based on the proposed style guide.
+
 377:9-377:32
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -97,12 +187,28 @@ UUID: aa14bc88_c4c5b384
 Bytes: 30
 PcRelativeDexCacheAccessInfo ?
 
+377:9-377:32
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa14bc88_c4c5b384
+UUID: 24400542_9047b472
+Bytes: 4
+Done
+
 378:28-378:42
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aae91cd1_306690a0
 Bytes: 16
 const DexFile& ?
+
+378:28-378:42
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aae91cd1_306690a0
+UUID: e4242da6_3637d80b
+Bytes: 87
+Do you have a strong preference? And do you want to change the target_dex_file as well?
 
 File: compiler/optimizing/nodes.h
 
@@ -113,12 +219,28 @@ UUID: eadf9421_3323fab0
 Bytes: 14
 Type -> Kind ?
 
+2857:23-2857:27
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eadf9421_3323fab0
+UUID: e4242da6_763d50e9
+Bytes: 4
+Done
+
 2870:4-2870:20
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4acfc072_dbc2eb79
 Bytes: 21
 kCallDirectWithFixup?
+
+2870:4-2870:20
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4acfc072_dbc2eb79
+UUID: 24400542_d0965c56
+Bytes: 4
+Done
 
 2871:4-2871:15
 Tue Aug 04 18:53:51 2015 +0000
@@ -127,10 +249,26 @@ UUID: 8a0ff877_2c6637a0
 Bytes: 12
 kCallDirect?
 
+2871:4-2871:15
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a0ff877_2c6637a0
+UUID: 446259ef_c996b156
+Bytes: 4
+Done
+
 2872:4-2872:15
 Tue Aug 04 18:53:51 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2ad60c0d_b497f854
 Bytes: 15
 kCallArtMethod?
+
+2872:4-2872:15
+Wed Aug 12 12:05:36 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ad60c0d_b497f854
+UUID: a405d5ff_9c47e572
+Bytes: 4
+Done
 

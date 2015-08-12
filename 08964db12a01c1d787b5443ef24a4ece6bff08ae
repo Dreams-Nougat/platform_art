@@ -97,6 +97,14 @@ UUID: a72a3712_f7fd3a7a
 Bytes: 304
 This comparison is actually correct, unlike the comparison in HInliner::TryInline(). Think about JIT when the user creates a dex file, loads it, deletes it, creates a new dex file with the same name and loads it. You get 2 different dex files with the same location (one being unlinked but still loaded).
 
+4508:10-4508:73
+Wed Aug 12 18:41:05 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a72a3712_f7fd3a7a
+UUID: 645f5d28_c481f29f
+Bytes: 241
+I agree, HInliner::TryInline is not fully correct. Hence we should probably move all such code that tries to figure out if two dex files are the same in a method on DexFile. It's fine by me if the implementation there just compares pointers.
+
 File: compiler/optimizing/code_generator_arm.h
 
 334:2-334:96

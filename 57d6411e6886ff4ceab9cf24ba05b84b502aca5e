@@ -11,12 +11,28 @@ Since a class loaders is marked here, the classes of that class loader now get m
 
 Also, if a class or a class loader gets found by GC outside of this function (eg. in a handle on the stack, potentially when it's still being initialized), it gets visited by GC as well. Correct?
 
+1281:6-1281:57
+Wed Aug 12 22:38:19 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4298d86_7d6e63aa
+UUID: 645f5d28_b1f3df5f
+Bytes: 21
+Yes, that is correct.
+
 2810:0-2812:3
 Wed Aug 12 22:19:56 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 046a21d9_da0541ce
 Bytes: 121
 I assume this is necessary because we assign a new class table to the class loader, which may have to be rescanned by GC.
+
+2810:0-2812:3
+Wed Aug 12 22:38:19 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 046a21d9_da0541ce
+UUID: c4f6494b_91e90c7a
+Bytes: 72
+I think the root log handles that cases, its mostly for remembered sets.
 
 File: runtime/hprof/hprof.cc
 
@@ -27,12 +43,28 @@ UUID: 645f5d28_718a07f9
 Bytes: 190
 We use this visitor to visit the roots in ArtFields and ArtMethods reachable from either a class or a class loader (when the "obj" in DumpHeapObject() is a class or a class loader). Correct?
 
+1027:0-1027:51
+Wed Aug 12 22:38:19 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 645f5d28_718a07f9
+UUID: e4298d86_bd816ba0
+Bytes: 16
+Added a comment.
+
 1028:6-1028:23
 Wed Aug 12 22:19:56 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 645f5d28_9f6ea7f0
 Bytes: 73
 Should we avoid calling these "native" roots? How about ClassRootVisitor?
+
+1028:6-1028:23
+Wed Aug 12 22:38:19 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 645f5d28_9f6ea7f0
+UUID: a41eb557_8e644f9a
+Bytes: 107
+This also visits dex cache arrays, ClassRootVisitor seems misleading in that case. How about GcRootVisitor?
 
 1048:39-1048:54
 Wed Aug 12 22:19:56 2015 +0000
@@ -49,4 +81,20 @@ Bytes: 386
 Not sure what this means exactly. There are no roots in a class object, the roots are in ArtMethods/ArtFields that belong to a class. So, I don't see a distinction between "ArtMethod roots" and "class loader classes".
 
 It seems just that if the root points to a class (like ArtMethod::declaring_class_) then we use kRootStickyClass or kRootVMInternal otherwise? Is that what this means?
+
+1048:39-1048:54
+Wed Aug 12 22:38:19 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04f5c13c_b9418f0f
+UUID: 44141933_08682fe6
+Bytes: 4
+Done
+
+1048:55-1048:86
+Wed Aug 12 22:38:19 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 645f5d28_d16bf390
+UUID: e4298d86_9d57cfa0
+Bytes: 18
+Clarified comment.
 

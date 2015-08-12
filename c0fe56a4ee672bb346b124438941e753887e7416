@@ -1,0 +1,24 @@
+Revision: c0fe56a4ee672bb346b124438941e753887e7416
+Patch-set: 2
+File: runtime/class_linker.cc
+
+5005:4-5005:42
+Wed Aug 12 10:06:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24400542_305ec849
+Bytes: 118
+The methods are now initialized in this thread but other threads may not see it that way. Do we need a memory barrier?
+
+File: runtime/length_prefixed_array.h
+
+51:5-51:46
+Wed Aug 12 10:06:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c44d6987_a5ff1e9c
+Bytes: 802
+I think some callers don't handle this correctly. The size of the 32-bit ArtMethod is not a multiple of 8, so adding an array with an odd number of them in ImageWriter will end up on an unaligned address. That means the next array will have its length_ member at an unaligned address. So we have unaligned reads in ImageSection::VisitPackedArtFields/Methods(). Luckily (or unluckily because the bug would have been exposed), the gcc/clang generated LDRD on arm requires only 4-byte alignment and the ArtMethods bins are the last, so this doesn't propagate to any other bins.
+
+The size of ArtField is currently a multiple of 8 but if that changed, we would run into the same problem.
+
+I think we should round up here and fix the ImageWriter to round up the bin size after assigning offsets for an array.
+

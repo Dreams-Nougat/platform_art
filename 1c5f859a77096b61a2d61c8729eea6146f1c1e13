@@ -1,0 +1,29 @@
+Revision: 1c5f859a77096b61a2d61c8729eea6146f1c1e13
+Patch-set: 18
+File: compiler/optimizing/builder.cc
+
+965:15-965:78
+Wed Aug 12 22:03:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a41eb557_4e37570a
+Bytes: 44
+So could you make this a helper in DexFile ?
+
+956:0-1029:3
+Wed Aug 12 22:03:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64111d42_293c19ea
+Bytes: 398
+How about we move all this logic to CodeGenerator? And just pass method_ptr/code_ptr to HInvokeStaticOrDirect. This would also nicely move all the new enums intriduced in nodes.h to CodeGenerator.
+
+Compile-time point in case: there's no need to do all this logic if the invoke is actually dead code. I know the compiler driver is also doing it, but that's also something I'd like to see cleaned up.
+
+File: compiler/optimizing/code_generator.h
+
+360:0-368:4
+Wed Aug 12 22:03:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64367de0_fbaf0367
+Bytes: 121
+Because Label is not used by vixl, we are templatizing the CommonGetLabel method in this file. Could we do the same here?
+

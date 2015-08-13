@@ -1,0 +1,34 @@
+Revision: eeedfc8656e8bee9b5daeb52ac727dd66d63e357
+Patch-set: 1
+File: runtime/thread.cc
+
+2463:7-2463:26
+Thu Aug 13 22:44:05 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4aeed64_2920c9a0
+Bytes: 37
+Add a comment why we need to do this?
+
+2464:35-2464:64
+Thu Aug 13 22:44:05 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a8755c_875a08c7
+Bytes: 195
+I think this should be GetDeclaringClassNoBarrier() to avoid the read barrier as we are updating the thread roots here.
+
+Or, add a special VisitDeclaringClass() function to ArtMethod and call it?
+
+2465:8-2465:24
+Thu Aug 13 22:44:05 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64591d73_9d0207c3
+Bytes: 27
+When can the class be null?
+
+2467:6-2467:14
+Thu Aug 13 22:44:05 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8448d1a1_1b839b5d
+Bytes: 121
+Should we avoid visiting the classes of non-static methods as the 'this' pointer will make them alive anyway (redundant)?
+

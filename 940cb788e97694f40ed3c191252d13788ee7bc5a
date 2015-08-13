@@ -9,6 +9,16 @@ UUID: 240ba519_38b0e9f7
 Bytes: 116
 How do these early return statements prevent linker errors Shouldn't this be achieved with the preprocessor instead?
 
+23:14-24:32
+Thu Aug 13 02:47:05 2015 +0000
+Author: Phil Wang <1076443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 240ba519_38b0e9f7
+UUID: 44d5f9cd_d1e684d5
+Bytes: 292
+Compiler will opt out the code because kCanSimulate is a compile time constant.
+So linker will not try to find symbols vixl::Simulator::*.
+Quite a few #ifdef will be introduced if we resort to preprocessor. Even declaration of simulator_ will be wrapped because -Wunused. What's your opinion?
+
 56:0-58:3
 Wed Aug 12 11:12:19 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,6 +29,14 @@ Wouldn't it be safer to have
   DCHECK(kCanSimulate);
 
 here instead?  The behavior of UNREACHABLE (i.e. __builtin_unreachable) is undefined at run time, and I think we only use it with LOG(FATAL) (or an abortion/exit statement) in ART.
+
+56:0-58:3
+Thu Aug 13 02:47:05 2015 +0000
+Author: Phil Wang <1076443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c44d6987_e5675618
+UUID: 44d5f9cd_519cd449
+Bytes: 6
+Agree.
 
 63:0-65:3
 Wed Aug 12 11:12:19 2015 +0000

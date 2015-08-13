@@ -1,0 +1,13 @@
+Revision: 511683764f2580d877725e20514ca4976c91bbfb
+Patch-set: 3
+File: runtime/thread_list.cc
+
+86:8-86:27
+Thu Aug 13 18:59:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 243ac5f6_e0e3a210
+Bytes: 605
+We have a WaitForGcToComplete call in Runtime::~Runtime(). Was it not doing its job? If so, should we merge the two calls and remove the WaitForGcToComplete call in Runtime::~Runtime()?
+
+Also, should we do this DisableGCForShutdown() WaitForGcToComplete() sequence in an earlier point in Runtime::~Runtime() rather than here, maybe around the time we call java_lang_Daemons_stop? It seems that by the time we get to this destructor, we have already started turning things down like the heap thread pool and it may be a bit too late, particularly if we expect that a GC may be in progress up to this point.
+

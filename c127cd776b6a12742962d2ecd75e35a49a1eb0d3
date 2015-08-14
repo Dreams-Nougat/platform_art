@@ -94,6 +94,18 @@ UUID: a4a8755c_4db67179
 Bytes: 64
 No, we want 32 + CLZ(low). That is not the same as CLZ(low) ^ 63
 
+1810:0-1811:30
+Fri Aug 14 16:06:26 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a8755c_4db67179
+UUID: 0456a145_b79288d9
+Bytes: 181
+Did you misread my comment? It's about replacing _two_ lines, not just the last one.
+
+For every x in [0, 31], 32+(x^31) = x^63, i.e.
+
+   32+CLZ(low) = 32+BSR(low)^31 = BSR(low)^63 .
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 1612:7-1612:13

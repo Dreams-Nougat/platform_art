@@ -1,0 +1,72 @@
+Revision: 1205af6854c5698a1bd8aa57e31cdf8a9f0d109a
+Patch-set: 5
+File: patchoat/patchoat.cc
+
+95:0-112:1
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4fb1585_ac0b432f
+Bytes: 123
+Could you use ElfFile::GetSectionOffsetAndSize to get the value of rodata_sec->sh_offset, and avoid the templates that way?
+
+115:34-115:60
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8448d1a1_a1bcfa21
+Bytes: 28
+Is this extra text intended?
+
+116:12-116:28
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4a9e95f_8e3e9f3f
+Bytes: 138
+Should this be called ReadOatPatchDelta instead of ReadOatBaseDelta? I often get confused between the "patch delta" and the "base offset".
+
+890:0-891:44
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a8755c_ed187d02
+Bytes: 23
+This should be updated.
+
+1227:0-1229:3
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c43e49ec_e6157471
+Bytes: 159
+What if the match_delta is set and the current delta is not alligned to a page size? Should this check come after adjusting base_delta given the current delta?
+
+1347:4-1347:32
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4434d7f_b21ba8a4
+Bytes: 348
+This is hard for me to make sense of. Maybe a change in variable names would help:
+
+"current_delta" for the current delta of the oat file.
+"target_delta" for the desired final delta of the oat file.
+"delta" for the change needed to get from current_delta to target delta. Then the following is clear (to me):
+  delta = target_delta - current_delta;
+
+1376:0-1377:51
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8448d1a1_e178c2e4
+Bytes: 101
+Do you need the "&& ret" at the end? If ret is false to start with, FinishFile already returns false.
+
+1383:43-1383:51
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04b861a5_b0c65ead
+Bytes: 9
+and here.
+
+1387:45-1387:52
+Fri Aug 14 16:04:20 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8448d1a1_4167f645
+Bytes: 9
+and here.
+

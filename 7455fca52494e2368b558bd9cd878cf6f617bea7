@@ -9,6 +9,14 @@ UUID: e46c2d17_d6dd8400
 Bytes: 101
 Don't we already do this in optimizing_commpiler.cc after codegen?. Do we need to do it here as well?
 
+1155:1-1158:4
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e46c2d17_d6dd8400
+UUID: c4ec89d0_cda049a8
+Bytes: 29
+This file is a part of Quick.
+
 File: compiler/optimizing/builder.cc
 
 1005:19-1005:21
@@ -18,6 +26,14 @@ UUID: e46c2d17_b6e608d4
 Bytes: 143
 It's hard to make a connection between this 'No' and the first comment in the  if. Either skip it, or add in parentheses No (to what question).
 
+1005:19-1005:21
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e46c2d17_b6e608d4
+UUID: e4f18da3_ce25e35f
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_arm.cc
 
 4532:10-4532:73
@@ -26,6 +42,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a466b534_d42bbc7f
 Bytes: 203
 you explained in PS14 why this is correct. Could you add the explanation as a doc in the code as well? I had to go back to remember, since comparing the pointer does look weird the first time you see it.
+
+4532:10-4532:73
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a466b534_d42bbc7f
+UUID: e4f18da3_8ea63b43
+Bytes: 251
+I think comparing pointers looks perfectly OK. It tells you exactly what it's doing. Calling Equals() doesn't explain any more than comparing pointers, it just hides the actual implementation but you still have to look it up to find out what it means.
 
 File: compiler/optimizing/inliner.cc
 
@@ -38,6 +62,14 @@ when will this be different than method_index?
 
 i.e. when is in invoke_instruction->GetDexMethodIndex() != invoke_instruction->AsInvokeStaticOrDirect()->GetTargetMethod().dex_method_index?
 
+184:8-184:28
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0456a145_77a63099
+UUID: 0456a145_7778f067
+Bytes: 123
+Very often for sharpened calls, plus some odd cases with member access. It may as well be an index in a different dex file.
+
 File: compiler/optimizing/nodes.h
 
 2908:59-2908:69
@@ -47,6 +79,14 @@ UUID: 0456a145_17a1b47f
 Bytes: 55
 why does boot->boot requires fixup for non-relocatable?
 
+2908:59-2908:69
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0456a145_17a1b47f
+UUID: 040b0162_6f1b1179
+Bytes: 100
+Because we haven't yet assigned the final address of the target method. That happens during linking.
+
 2926:13-2926:28
 Fri Aug 14 11:45:22 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -54,12 +94,28 @@ UUID: 4401793c_31ca1049
 Bytes: 177
 This, and the builder implementation suggest that we can have any sort of combination for (MethodLoadKind,CodePtrLocation). E.g. (kDirectAddress, kCallPCRelative). Is this true?
 
+2926:13-2926:28
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4401793c_31ca1049
+UUID: 0456a145_975e64f4
+Bytes: 134
+Theoretically yes, though in practice certain combinations don't really make sense; for example kDirectAddress + kCallDirectWithFixup.
+
 2955:40-2955:53
 Fri Aug 14 11:45:22 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ec89d0_cd47a971
 Bytes: 158
 Related to the inliner questions, this has a method_index inside it. We also have a separate method_index passed here. Please add docs stating the difference.
+
+2955:40-2955:53
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ec89d0_cd47a971
+UUID: 4401793c_11f8ac6f
+Bytes: 4
+Done
 
 File: compiler/optimizing/optimizing_compiler.cc
 
@@ -69,4 +125,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ec89d0_ed4a6579
 Bytes: 18
 de-dup in a helper
+
+552:0-559:5
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ec89d0_ed4a6579
+UUID: e46c2d17_d641040f
+Bytes: 4
+Done
 

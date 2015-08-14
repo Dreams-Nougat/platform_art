@@ -30,3 +30,56 @@ Hm, spec says the result is undefined if the source operand has value 0. Doesn't
 
 Also, ever want to add optional support for lzcnt which would take care of this (including the correction below)?
 
+1809:2-1809:23
+Fri Aug 14 10:37:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a466b534_f415184a
+Bytes: 30
+out is undefined if ZF is set.
+
+1810:0-1811:30
+Fri Aug 14 10:37:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4672930_b50ba02f
+Bytes: 28
+__ xorl(out, Immediate(63));
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+1612:7-1612:13
+Fri Aug 14 10:37:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4f18da3_0e5c0bf8
+Bytes: 8
+Evaluate
+
+1617:14-1617:35
+Fri Aug 14 10:37:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a466b534_94082434
+Bytes: 79
+is_long ? CLZ(static_cast<uint64_t>(value)) : CLZ(static_cast<uint32_t>(value))
+
+1638:0-1639:47
+Fri Aug 14 10:37:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4672930_7502a818
+Bytes: 143
+You need to do much more than this. The manual says
+
+  IF SRC = 0
+     THEN
+         ZF <- 1
+         DEST is undefined;
+     ELSE
+         ...
+
+File: compiler/utils/x86_64/assembler_x86_64_test.cc
+
+1152:80-1152:84
+Fri Aug 14 10:37:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4401793c_31f85089
+Bytes: 4
+bsrq
+

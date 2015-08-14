@@ -1,0 +1,72 @@
+Revision: 7455fca52494e2368b558bd9cd878cf6f617bea7
+Patch-set: 22
+File: compiler/dex/quick/codegen_util.cc
+
+1155:1-1158:4
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e46c2d17_d6dd8400
+Bytes: 101
+Don't we already do this in optimizing_commpiler.cc after codegen?. Do we need to do it here as well?
+
+File: compiler/optimizing/builder.cc
+
+1005:19-1005:21
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e46c2d17_b6e608d4
+Bytes: 143
+It's hard to make a connection between this 'No' and the first comment in the  if. Either skip it, or add in parentheses No (to what question).
+
+File: compiler/optimizing/code_generator_arm.cc
+
+4532:10-4532:73
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a466b534_d42bbc7f
+Bytes: 203
+you explained in PS14 why this is correct. Could you add the explanation as a doc in the code as well? I had to go back to remember, since comparing the pointer does look weird the first time you see it.
+
+File: compiler/optimizing/inliner.cc
+
+184:8-184:28
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0456a145_77a63099
+Bytes: 188
+when will this be different than method_index?
+
+i.e. when is in invoke_instruction->GetDexMethodIndex() != invoke_instruction->AsInvokeStaticOrDirect()->GetTargetMethod().dex_method_index?
+
+File: compiler/optimizing/nodes.h
+
+2908:59-2908:69
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0456a145_17a1b47f
+Bytes: 55
+why does boot->boot requires fixup for non-relocatable?
+
+2926:13-2926:28
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4401793c_31ca1049
+Bytes: 177
+This, and the builder implementation suggest that we can have any sort of combination for (MethodLoadKind,CodePtrLocation). E.g. (kDirectAddress, kCallPCRelative). Is this true?
+
+2955:40-2955:53
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ec89d0_cd47a971
+Bytes: 158
+Related to the inliner questions, this has a method_index inside it. We also have a separate method_index passed here. Please add docs stating the difference.
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+552:0-559:5
+Fri Aug 14 11:45:22 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ec89d0_ed4a6579
+Bytes: 18
+de-dup in a helper
+

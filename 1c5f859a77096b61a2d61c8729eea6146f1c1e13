@@ -25,6 +25,14 @@ UUID: c4672930_751bc878
 Bytes: 53
 Why would an Equals method not belong to the DexFile?
 
+965:15-965:78
+Fri Aug 14 11:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4672930_751bc878
+UUID: 0456a145_97aca474
+Bytes: 130
+Because the definition we need is compiler specific. I wouldn't want to see a comment "compiler needs it this way" in the DexFile.
+
 956:0-1029:3
 Wed Aug 12 22:03:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -59,6 +67,18 @@ Bytes: 190
 Why do you think it will need some thought?
 
 If we agree it's better, I'd rather do this now than in a refactoring CL, which is often delayed because of more (valid) importants things to do.
+
+956:0-1029:3
+Fri Aug 14 11:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4672930_55204ca1
+UUID: 040b0162_af82190b
+Bytes: 737
+I don't want to store the magic values for direct_code and direct_method returned by the ComputeInvokeInfo(). I want to process them right here. It logically belongs together and postponing the processing while keeping the ComputeInvokeInfo() here just spreads the chaos around instead of keeping it localized.
+
+And you're not thinking far enough. For example, this information could be used by inliner; if we actually use kDexCachePcRelative, we can relax the same_dex_file check. So, if we push this to the CodeGenerator now, we may need to pull it back later.
+
+This CL should be considered a first step, not the last one. I have the refactoring on my roadmap because there are a lot of things that the CompilerDriver should do better.
 
 File: compiler/optimizing/code_generator.h
 

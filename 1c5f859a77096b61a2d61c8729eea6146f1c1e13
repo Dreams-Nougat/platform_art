@@ -33,6 +33,14 @@ UUID: 0456a145_97aca474
 Bytes: 130
 Because the definition we need is compiler specific. I wouldn't want to see a comment "compiler needs it this way" in the DexFile.
 
+965:15-965:78
+Fri Aug 14 12:34:21 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0456a145_97aca474
+UUID: e46c2d17_f66b6090
+Bytes: 72
+Oh I see. What would be the definition for other uses than the compiler?
+
 956:0-1029:3
 Wed Aug 12 22:03:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -79,6 +87,16 @@ I don't want to store the magic values for direct_code and direct_method returne
 And you're not thinking far enough. For example, this information could be used by inliner; if we actually use kDexCachePcRelative, we can relax the same_dex_file check. So, if we push this to the CodeGenerator now, we may need to pull it back later.
 
 This CL should be considered a first step, not the last one. I have the refactoring on my roadmap because there are a lot of things that the CompilerDriver should do better.
+
+956:0-1029:3
+Fri Aug 14 12:34:21 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 040b0162_af82190b
+UUID: e4f18da3_ee0fffe8
+Bytes: 355
+There's sort of already stored with the method_load_data.....
+
+Also, why would it affect inlining? The only problem with inlining is being able to recover the call stack, which we cannot do because we rely on the dex_method_index of the outermost method's dex_file. So I don't see why a different call implementation (relative/direct/...) would affect it?
 
 File: compiler/optimizing/code_generator.h
 

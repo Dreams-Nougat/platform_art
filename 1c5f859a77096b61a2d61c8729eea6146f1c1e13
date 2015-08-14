@@ -41,6 +41,14 @@ UUID: e46c2d17_f66b6090
 Bytes: 72
 Oh I see. What would be the definition for other uses than the compiler?
 
+965:15-965:78
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e46c2d17_f66b6090
+UUID: 040b0162_8fe3d5c3
+Bytes: 146
+ClassLinker::FindDexCache() also tries to match location if pointer comparison doesn't yield a result. I don't know what use cases does it target.
+
 956:0-1029:3
 Wed Aug 12 22:03:38 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -97,6 +105,20 @@ Bytes: 355
 There's sort of already stored with the method_load_data.....
 
 Also, why would it affect inlining? The only problem with inlining is being able to recover the call stack, which we cannot do because we rely on the dex_method_index of the outermost method's dex_file. So I don't see why a different call implementation (relative/direct/...) would affect it?
+
+956:0-1029:3
+Fri Aug 14 14:45:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4f18da3_ee0fffe8
+UUID: c4ec89d0_ad34dde3
+Bytes: 398
+method_load_data_ is a union of string_init_offset, method_address and dex_cache_offset, distinguished by method_load_kind_. It no longer needs to be decoded to find out what to do with itm, the decoding has already happened.
+
+Inliner checks
+
+  if (!same_dex_file && current->NeedsDexCache()) { ... }
+
+If we can access a different dex cache with a PC-relative load, we don't need the same dex file.
 
 File: compiler/optimizing/code_generator.h
 

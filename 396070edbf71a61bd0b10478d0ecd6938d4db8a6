@@ -1,0 +1,29 @@
+Revision: 396070edbf71a61bd0b10478d0ecd6938d4db8a6
+Patch-set: 5
+File: compiler/dex/quick/quick_compiler.cc
+
+46:39-46:72
+Fri Aug 14 11:28:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e46c2d17_d6c46438
+Bytes: 475
+This has gone way beyond my comments on PS4 in automatically supporting 32-bit variants on 64-bit architectures. That's OK for make files but don't do that in the C++ code where we should rigorously follow the ART_ENABLE_CODEGEN_<arch> defines.
+
+I commented on all the places where I wanted to see some change, i.e. the x86 and mips bits that required it because they share the backend for 32-bit and 64-bit variants.
+
+Please revert all the extra changes between PS4 and PS5.
+
+869:4-869:15
+Fri Aug 14 11:28:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e46c2d17_16cffc58
+Bytes: 138
+As I've suggested on PS4, this should really be conditional on ART_ENABLE_CODEGEN_mips. Do not force all mips64 devices to support mips32.
+
+879:4-879:14
+Fri Aug 14 11:28:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4672930_b53440e4
+Bytes: 5
+ditto
+

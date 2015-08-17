@@ -120,6 +120,18 @@ Inliner checks
 
 If we can access a different dex cache with a PC-relative load, we don't need the same dex file.
 
+956:0-1029:3
+Mon Aug 17 17:20:35 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ec89d0_ad34dde3
+UUID: 64b59dd9_9a986d4b
+Bytes: 424
+Sure, but (I think) that's independent of the way you do the call. 
+
+Let me know if I'm missing something, but accessing a different dex cache can be decided at build time, where we check if the outermost method has the method/string/class in its dex cache too.
+
+It's actually on my TODO list to do this, and started working on it last week, but realized it wasn't enough for inlining String.equals so it remains on my TODO.
+
 File: compiler/optimizing/code_generator.h
 
 360:0-368:4

@@ -9,6 +9,14 @@ UUID: 04b861a5_d64aea2b
 Bytes: 167
 This may be ok, but the name "ObjectAlignment" may be confused with the managed heap object alignment (kObjectAlignment). How about just Alignment() or something else?
 
+517:16-517:31
+Mon Aug 17 10:20:39 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04b861a5_d64aea2b
+UUID: 04b221f6_971e8495
+Bytes: 103
+This is in line with the ObjectSize() above. We can change both in a follow-up CL if this is confusing.
+
 File: runtime/length_prefixed_array.h
 
 58:4-58:10
@@ -18,6 +26,16 @@ UUID: 243ac5f6_269ac2c5
 Bytes: 84
 I think that this RoundUp is not necessary since OffsetOfElement is already rounded.
 
+58:4-58:10
+Mon Aug 17 10:20:39 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 243ac5f6_269ac2c5
+UUID: 84bd31cc_b3f2b8d4
+Bytes: 159
+Actually, the second RoundUp() in OffsetOfElement is unnecessary. We should just DCHECK that element_size is aligned which makes that RoundUp() useless.
+
+Done.
+
 67:14-67:20
 Fri Aug 14 19:31:23 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,10 +43,26 @@ UUID: c43e49ec_91d4acea
 Bytes: 44
 dchecked_integral_cast like the constructor?
 
+67:14-67:20
+Mon Aug 17 10:20:39 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c43e49ec_91d4acea
+UUID: c4c3a958_152b54b9
+Bytes: 4
+Done
+
 76:2-76:19
 Fri Aug 14 19:31:23 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 243ac5f6_693add80
 Bytes: 90
 Add a comment about what we expect on the alignments here like part of the commit message?
+
+76:2-76:19
+Mon Aug 17 10:20:39 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 243ac5f6_693add80
+UUID: 4486d92e_a9f23dd4
+Bytes: 128
+We do not expect anything beyond the necessary: the alignment being a power of 2 and element_size being a multiple of alignment.
 

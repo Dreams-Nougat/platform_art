@@ -9,3 +9,17 @@ UUID: c4c3a958_959204da
 Bytes: 116
 :-( Adding a new structure IMO does not help. Could you do a first change that just moves out the ClinitCheck logic?
 
+269:9-269:19
+Tue Aug 18 16:36:12 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4c3a958_959204da
+UUID: 247d65ed_c8b3ef7f
+Bytes: 716
+I don't see a big improvement of moving just the clinit logic out. The method still remains hard to follow (even with 100loc less). That was my first step. 
+
+The extra struct is just a convenience and I think it makes things better than unwrapping most of the arguments around, or force to inline the functions. I had a version where everything was explicitly passed around and it was too much.
+
+I was consider experimenting with making everything static in the cc but wanted to have an initial opinion on this. (as static requires threading the graph, block, dex file and compilation unit). 
+
+Do you think that would make things better for you? Or what is that you dislike about having a (private) helper structure?
+

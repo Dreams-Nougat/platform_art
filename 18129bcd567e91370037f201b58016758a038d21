@@ -19,6 +19,14 @@ perflib has a bug where the class of a class object is null instead of java.lang
 
 The class name returned is something that will be seen in the user interface. I think "(class.getName()==NULL)" exposes implementation details the user shouldn't be aware of. How about "(class unknown)" instead?
 
+169
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47b17b56_34bf1ea9
+UUID: c4a9e95f_93547e2c
+Bytes: 39
+Changed the string to "(class unknown)"
+
 File: tools/ahat/src/BitmapHandler.java
 
 58:13-58:29
@@ -53,6 +61,14 @@ UUID: 67ae7ffb_9206dc91
 Bytes: 79
 Do you mean that I should add "<html>" and other tags around it? I can do that.
 
+74
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 67ae7ffb_9206dc91
+UUID: c4a9e95f_7363020f
+Bytes: 35
+I put html tags around the message.
+
 File: tools/ahat/src/DominatedList.java
 
 61
@@ -70,6 +86,14 @@ UUID: 47b17b56_d4ab325d
 Bytes: 347
 I expect render will only be called once for any given Instance of DominatedList. I made render non-static instead of static to make it more convenient to pass the arguments to getNumInstancesToShow and printMenu. Probably I should switch back to having render be a static method that takes the html writer, snapshot, list of instances, and query.
 
+61
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47b17b56_d4ab325d
+UUID: a4fb1585_1dba74a4
+Bytes: 30
+I made render a static method.
+
 67
 Tue Aug 11 17:52:17 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -86,6 +110,14 @@ Parent: 0706a3cf_771870a9
 UUID: a716b7fe_f48d988f
 Bytes: 14
 I'll try this.
+
+67
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a716b7fe_f48d988f
+UUID: a4a8755c_dfff559b
+Bytes: 57
+I move the table configuration into a static inner class.
 
 File: tools/ahat/src/FieldReader.java
 
@@ -106,6 +138,14 @@ Field values in perflib are represented using Object. This will be a ClassInstan
 
 I'm not terribly happy with the FieldReader code. I'll see if I can re-organize it to not use so many exceptions, and see if that clarifies things.
 
+37:4-39:5
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c7172bfa_d838918a
+UUID: 64591d73_28d56960
+Bytes: 142
+I reorganized the code and moved it to InstanceUtils. Now readField is getField and it takes an Instance instead of an Object. Is that better?
+
 48:8-48:18
 Tue Aug 11 17:52:17 2015 +0000
 Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -120,6 +160,14 @@ Parent: 2703a7c0_58475d71
 UUID: 275487e3_7070b0cb
 Bytes: 31
 Yes. Good catch. I'll fix this.
+
+48:8-48:18
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 275487e3_7070b0cb
+UUID: 04806112_b067f918
+Bytes: 32
+Fixed in InstanceUtils.getField.
 
 66:3-68:5
 Tue Aug 11 17:52:17 2015 +0000
@@ -144,6 +192,14 @@ Parent: c7172bfa_9559c464
 UUID: c7172bfa_78285d37
 Bytes: 96
 Just the inner. I'll add a better comment in the code for this, because the code is non-trivial.
+
+53
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c7172bfa_78285d37
+UUID: 04b861a5_b9a4fd38
+Bytes: 68
+I made a function hasNonZeroEntry to hopefully make this more clear.
 
 File: tools/ahat/src/ObjectHandler.java
 
@@ -186,6 +242,14 @@ UUID: 075783ea_ef112190
 Bytes: 26
 Good catch. I'll fix this.
 
+39:4-39:5
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 075783ea_ef112190
+UUID: c4a9e95f_b3abba8e
+Bytes: 73
+Now I default to using the root site if we can't find the requested site.
+
 File: tools/ahat/src/Query.java
 
 38:2-49:3
@@ -206,6 +270,14 @@ UUID: 07bb033c_0f7005fc
 Bytes: 20
 I'll look into this.
 
+38:2-49:3
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 07bb033c_0f7005fc
+UUID: 04b861a5_39900dd1
+Bytes: 4
+Done
+
 File: tools/ahat/src/Site.java
 
 150:4-150:37
@@ -222,4 +294,12 @@ Parent: c7172bfa_95fd447c
 UUID: 27b8073d_16e93cf4
 Bytes: 151
 I want a unique identifier for a Site. I think the real fix is to identify a site using the id of a stack trace and a frame number from the hprof file.
+
+150:4-150:37
+Tue Aug 18 21:39:47 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 27b8073d_16e93cf4
+UUID: a4fb1585_9d5144e3
+Bytes: 4
+Done
 

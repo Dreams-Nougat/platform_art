@@ -1,0 +1,25 @@
+Revision: 35975015ac81327b405df1ae58b10792c25e8e01
+Patch-set: 11
+File: compiler/optimizing/intrinsics_arm.cc
+
+1001:0-1004:18
+Wed Aug 19 09:27:34 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24a485b9_9060347a
+Bytes: 543
+Move the ADD two instructions higher.
+
+Replace the SUB+CMP+BGT with
+
+    __ cmp(temp1, temp);
+    __ b(&loop, LO);
+
+Prepare temp before the loop:
+
+    __ add(temp, temp, ShifterOperand(temp));
+    __ add(temp, temp, ShifterOperand(value_offset));
+
+(Preferably interspersed with the __ LoadImmediate(temp1, .). Note that 16-bit LSL handles only low regs but 16-bit ADD encoding T2 can use high registers as well.)
+
+Add a comment that the temp cannot overflow because we cannot allocate a String object with size 4GiB or greater (let alone two).
+

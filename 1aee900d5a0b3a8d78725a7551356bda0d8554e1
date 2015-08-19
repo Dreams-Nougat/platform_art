@@ -18,6 +18,50 @@ UUID: 8d11d20b_8be4f3ca
 Bytes: 53
 Name should be read_barrier_slow to match convention.
 
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1140:7-1140:14
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a8755c_0a45adcc
+Bytes: 81
+Do we need this flag? Isn't it the case that pop_eax == true iff dest_reg == eax?
+
+1149:0-1149:31
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64591d73_0efd0d2e
+Bytes: 39
+No padding/alignment necessary for x86?
+
+1202:33-1202:100
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4aeed64_141f1694
+Bytes: 151
+This seems tricky as it relies on how READ_BARRIER saves eax. Isn't it more straightforward to push eax here in the caller side like the original code?
+
+1205:4-1205:93
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4aeed64_9454662c
+Bytes: 121
+What's this mean? READ_BARRIER won't make a call if USE_READ_BARRIER is not defined. Why does the stack alignment matter?
+
+1231:0-1232:58
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 243ac5f6_f6c35d7f
+Bytes: 259
+I think this needs a read barrier as whether a read barrier updates the field with a to-space ref depends on the read barrier type/flavor. The current read barrier does *not update* the field, just returns the to-space ref. The field gets updated by GC later.
+
+1748:16-1748:43
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04806112_536c0727
+Bytes: 22
+Why is this necessary?
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 920:0-920:57
@@ -27,6 +71,46 @@ UUID: aa14bc88_50a4d9be
 Bytes: 44
 How about int3 when ART_READ_BARRIER is set?
 
+920:0-920:57
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa14bc88_50a4d9be
+UUID: e4434d7f_2616287d
+Bytes: 230
+Yes.
+
+Note this function can/should implement read barrier fast path only (no read barrier slow path) because this is the fast path of tlab allocation. We can fall back to the allocation slow path to do the read barrier slow path.
+
+1168:68-1168:95
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04806112_c61bd7a3
+Bytes: 27
+This does not use this yet.
+
+1184:0-1184:31
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04b861a5_5f9921fe
+Bytes: 39
+Similarly, any stack alignment concern?
+
+1797:16-1797:43
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04b861a5_bf405df0
+Bytes: 33
+Similarly, why is this necessary?
+
+File: runtime/entrypoints/quick/quick_entrypoints.h
+
+81:62-81:65
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4fb1585_18e1e2ba
+Bytes: 371
+This is already mentioned in person, but we need to load the ref out of the field after checking the is_gray check. Depending on the context, having the ref as a parameter does not seem like the best interface as it could suggest the caller needs to load the ref before checking the is_gray bits, which is the wrong order of loads. Remove it (as it's not currently used)?
+
 File: runtime/entrypoints/quick/quick_field_entrypoints.cc
 
 561:38-561:47
@@ -35,4 +119,11 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca157084_dac2b127
 Bytes: 19
 generated -> given?
+
+568:64-568:68
+Wed Aug 19 01:24:02 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4fb1585_18ba82a4
+Bytes: 55
+Does this really need to be true (kMaybeDuringStartup)?
 

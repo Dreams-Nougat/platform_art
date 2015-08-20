@@ -27,12 +27,29 @@ UUID: a4a8755c_0a45adcc
 Bytes: 81
 Do we need this flag? Isn't it the case that pop_eax == true iff dest_reg == eax?
 
+1140:7-1140:14
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a8755c_0a45adcc
+UUID: a47f9520_0fcea9a6
+Bytes: 303
+I think we need it. I think you mean pop_eax == true iff dest_reg != eax.
+Although it is the case currently, this is just a coincidence for the uses of this macro. For example, it's OK to call this macro and have pop_eax == true and dest_reg == eax, then it would just do "SP = SP + 4" for the pop part.
+
 1149:0-1149:31
 Wed Aug 19 01:24:02 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64591d73_0efd0d2e
 Bytes: 39
 No padding/alignment necessary for x86?
+
+1149:0-1149:31
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64591d73_0efd0d2e
+UUID: 248c8586_960b8c62
+Bytes: 76
+It's aligned. There are 7 pushes (including the ones below) before the call.
 
 1202:33-1202:100
 Wed Aug 19 01:24:02 2015 +0000
@@ -41,12 +58,42 @@ UUID: e4aeed64_141f1694
 Bytes: 151
 This seems tricky as it relies on how READ_BARRIER saves eax. Isn't it more straightforward to push eax here in the caller side like the original code?
 
+1202:33-1202:100
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4aeed64_141f1694
+UUID: c42ba915_b8f1f58d
+Bytes: 577
+For this comment and the comment below:
+The purpose of writing this code this way is because if we write it as:
+
+#if defined(USE_HEAP_POISONING) || defined(USE_READ_BARRIER)
+  PUSH eax
+  READ_BARRIER edx, MIRROR_OBJECT_CLASS_OFFSET, eax, true
+  cmpl %eax, %ebx
+  POP  eax
+#else
+  cmpl MIRROR_OBJECT_CLASS_OFFSET(%edx), %ebx
+#endif
+
+the stack alignment would be off if USE_READ_BARRIER == true (because of the "PUSH eax"). It also saves eax twice (one before READ_BARRIER and one inside READ_BARRIER), which is unnecessary.
+
+So I ended up giving up the symmetry of push/pop eax.
+
 1205:4-1205:93
 Wed Aug 19 01:24:02 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4aeed64_9454662c
 Bytes: 121
 What's this mean? READ_BARRIER won't make a call if USE_READ_BARRIER is not defined. Why does the stack alignment matter?
+
+1205:4-1205:93
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4aeed64_9454662c
+UUID: 048f817d_7232b6f8
+Bytes: 46
+As above. I'll probably make a better comment.
 
 1231:0-1232:58
 Wed Aug 19 01:24:02 2015 +0000
@@ -55,12 +102,28 @@ UUID: 243ac5f6_f6c35d7f
 Bytes: 259
 I think this needs a read barrier as whether a read barrier updates the field with a to-space ref depends on the read barrier type/flavor. The current read barrier does *not update* the field, just returns the to-space ref. The field gets updated by GC later.
 
+1231:0-1232:58
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 243ac5f6_f6c35d7f
+UUID: 048f817d_322c2e98
+Bytes: 16
+OK. I'll add it.
+
 1748:16-1748:43
 Wed Aug 19 01:24:02 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04806112_536c0727
 Bytes: 22
 Why is this necessary?
+
+1748:16-1748:43
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04806112_536c0727
+UUID: a47f9520_0f4b0980
+Bytes: 66
+X86 ABI requires parameters passed on the stack, not in registers.
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
@@ -95,12 +158,28 @@ UUID: 04b861a5_5f9921fe
 Bytes: 39
 Similarly, any stack alignment concern?
 
+1184:0-1184:31
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04b861a5_5f9921fe
+UUID: 048f817d_d29b6251
+Bytes: 65
+Yes, it aligned. Odd number of pushes before the call is aligned.
+
 1797:16-1797:43
 Wed Aug 19 01:24:02 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04b861a5_bf405df0
 Bytes: 33
 Similarly, why is this necessary?
+
+1797:16-1797:43
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04b861a5_bf405df0
+UUID: e430ad80_b9933bb0
+Bytes: 193
+Because of the SETUP_FP_CALLEE_SAVE_FRAME. The x86_64 quick compiler could use float registers, but they are not callee saves in the ABI. See https://android-review.googlesource.com/#/c/100565/
 
 File: runtime/entrypoints/quick/quick_entrypoints.h
 
@@ -110,6 +189,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4fb1585_18e1e2ba
 Bytes: 371
 This is already mentioned in person, but we need to load the ref out of the field after checking the is_gray check. Depending on the context, having the ref as a parameter does not seem like the best interface as it could suggest the caller needs to load the ref before checking the is_gray bits, which is the wrong order of loads. Remove it (as it's not currently used)?
+
+81:62-81:65
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4fb1585_18e1e2ba
+UUID: e4750d3f_b139fa8c
+Bytes: 170
+I'm using it for the instrumentation in optimizing compiler in x86 now. Maybe remove it after the read barrier in optimizing compiler full working, as it helps debugging.
 
 File: runtime/entrypoints/quick/quick_field_entrypoints.cc
 
@@ -126,4 +213,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4fb1585_18ba82a4
 Bytes: 55
 Does this really need to be true (kMaybeDuringStartup)?
+
+568:64-568:68
+Thu Aug 20 18:26:20 2015 +0000
+Author: Man Cao <1073545@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4fb1585_18ba82a4
+UUID: a47f9520_0fba29a5
+Bytes: 26
+I'm not sure about this...
 

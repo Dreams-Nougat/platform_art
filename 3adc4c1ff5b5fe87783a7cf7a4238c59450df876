@@ -1,0 +1,69 @@
+Revision: 3adc4c1ff5b5fe87783a7cf7a4238c59450df876
+Patch-set: 5
+File: compiler/optimizing/builder.cc
+
+145:43-145:67
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a45875e6_c4af1ecb
+Bytes: 85
+This is always zero. HLocal never emits code so might as well keep it kNoDexPc, IMHO.
+
+166:37-166:65
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e45eedce_46c49288
+Bytes: 66
+This will also always be zero, right? So same as HLocal, no point.
+
+177:44-177:68
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0468616f_87b92616
+Bytes: 58
+Always zero. Also, why is this inconsistent with line 166?
+
+182:76-182:93
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c459e9e9_e5b4961f
+Bytes: 67
+You set dex_pc of HLocal to zero, so this will also always be zero.
+
+518:49-518:76
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0468616f_47c48e88
+Bytes: 89
+So, always kNoDexPc. It doesn't make sense for HExit to have a dex_pc in the first place.
+
+521:50-521:78
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e45eedce_06ce9aa6
+Bytes: 63
+So, zero because the SuspendCheck above is the last instruction
+
+1284:76-1284:82
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 845371c9_c3af16cb
+Bytes: 61
+Move to own line, please. Here, below and possibly elsewhere.
+
+2696:32-2696:47
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 847a9131_8bb92d16
+Bytes: 181
+How about you turn the dex_pc into a field of the HGraphBuilder class. It's a state machine anyway, so we might as well make it stateful and you wouldn't have to pass it everywhere.
+
+File: compiler/optimizing/nodes.h
+
+316:60-316:88
+Thu Aug 20 08:10:02 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 446ed97b_89b93916
+Bytes: 141
+Does it make sense to add dex_pc to constants? It's confusing because the HConstant objects are cached, and because they don't emit any code.
+

@@ -27,6 +27,13 @@ vs
 
 Shouldn't the former match the latter (so that `index` can still have a default value in `CodeGeneratorX86::GenerateReadBarrier`)?
 
+1689:50-1689:58
+Thu Aug 20 18:08:45 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84253145_f6353e62
+Bytes: 277
+Note: the reference (the class pointer) has already loaded at 1687 and passed into GenerateReadBarrier here. It's fine for now. But if we do a fast path, we need to do a "is_gray" load/check before the ref load (that is, defer the ref load likely into the GenerateReadBarrier).
+
 5258:0-5297:1
 Thu Aug 20 09:42:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

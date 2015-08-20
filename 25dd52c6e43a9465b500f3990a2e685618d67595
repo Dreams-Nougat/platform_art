@@ -2,6 +2,31 @@ Revision: 25dd52c6e43a9465b500f3990a2e685618d67595
 Patch-set: 1
 File: compiler/optimizing/code_generator_x86.cc
 
+370:25-371:40
+Thu Aug 20 13:32:13 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44e3394a_61139665
+Bytes: 1081
+It's odd that `ReadBarrierSlowPathX86::ReadBarrierSlowPathX86` and `CodeGeneratorX86::GenerateReadBarrier` have non matching signatures (the last two arguments are swapped):
+
+  ReadBarrierSlowPathX86::ReadBarrierSlowPathX86(HInstruction* instruction,
+                                                 Location out,
+                                                 Location ref,
+                                                 Location obj,
+                                                 Location index,
+                                                 uint32_t offset);
+
+vs
+
+  void CodeGeneratorX86::GenerateReadBarrier(HInstruction* instruction,
+                                             Location out,
+                                             Location ref,
+                                             Location obj,
+                                             uint32_t offset,
+                                             Location index);
+
+Shouldn't the former match the latter (so that `index` can still have a default value in `CodeGeneratorX86::GenerateReadBarrier`)?
+
 5258:0-5297:1
 Thu Aug 20 09:42:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -10,4 +35,13 @@ Bytes: 279
 So the problem is that the register allocator does not consider fixed register inputs to be "live registers" at the point of the call. We might need another CallKind to make it so.
 
 For example, I think we do not currently support a fixed input that needs to survive a slow path.
+
+File: compiler/optimizing/intrinsics_x86.cc
+
+1424:28-1424:44
+Thu Aug 20 13:32:13 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 847a9131_2b483980
+Bytes: 9
+down_cast
 

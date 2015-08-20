@@ -1,0 +1,58 @@
+Revision: ca271ae27825d961e871cc53ba65dc2770f62eac
+Patch-set: 4
+File: compiler/driver/compiler_driver-inl.h
+
+34:34-34:49
+Thu Aug 20 00:46:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4aeed64_28c19177
+Bytes: 196
+It's not clear to me what logic drives the FindDexCache -> RegisterDexFile replacement in some places like this line but not for other places (kept as FindDexCache like line 343). Can you clarify?
+
+File: compiler/image_writer.cc
+
+603:15-603:16
+Thu Aug 20 00:46:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4fb1585_a5a69fc7
+Bytes: 114
+This makes a copy of the list, which I assume is needed to avoid a lock order issue or something? Can you clarify?
+
+File: dex2oat/dex2oat.cc
+
+1389:32-1389:49
+Thu Aug 20 00:46:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4434d7f_07804302
+Bytes: 41
+What code removes those local references?
+
+File: runtime/class_linker.cc
+
+2468:44-2468:45
+Thu Aug 20 00:46:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 243ac5f6_32db0ee5
+Bytes: 104
+Add that a null dex cache can occur due to class unloading and we are lazily removing null entries here?
+
+File: runtime/runtime-inl.h
+
+35:0-36:87
+Thu Aug 20 00:46:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4a9e95f_68d8e562
+Bytes: 268
+Is this safe? Does it mean that we may use null as the sentinel up to a point (during class linker initialization) and a non-null value after the initialization is done?
+
+Would it be possible to move up the sentinel allocation site before the first weak global decode?
+
+File: runtime/trace.cc
+
+643:4-643:42
+Thu Aug 20 00:46:08 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4a8755c_f6e6f322
+Bytes: 61
+Does this mean that we aren't visiting roots (trace methods)?
+

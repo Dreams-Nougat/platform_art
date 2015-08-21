@@ -9,6 +9,16 @@ UUID: e45eedce_e616de09
 Bytes: 114
 Return value and pending exception? You'd like to have just one field and a bool whether it's a pending exception?
 
+230:5-230:29
+Fri Aug 21 09:42:34 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e45eedce_e616de09
+UUID: c459e9e9_25db8ee5
+Bytes: 355
+No, I meant merging ClearDeoptimizationReturnValue and ClearDeoptimizationPendingException in one method since they need to be cleared at the same time.
+
+In the end, it is the same question for SetDeoptimizationReturnValue and SetDeoptimizationPendingException. And I start thinking we should only use the DeoptimizationContextRecord to hold these values.
+
 File: runtime/thread.h
 
 1278:0-1279:59
@@ -17,4 +27,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24656596_e83f936f
 Bytes: 68
 Why is the one in deoptimization_return_value_stack not good enough?
+
+1278:0-1279:59
+Fri Aug 21 09:42:34 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24656596_e83f936f
+UUID: a45875e6_845046de
+Bytes: 174
+This one may be set before we push a DeoptimizationContextRecord in the deoptimization_return_value_stack.
+
+I think we should only have the DeoptimizationContextRecord stack.
 

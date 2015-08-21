@@ -10,3 +10,13 @@ Bytes: 309
 Do you think it is more efficient?
 I thought about more complex algorithm. Say check whether deallocation will help to make a pair. for example break of non-aligned pair not definitely helps us to create a pair. If we have ecx,edx pair we always can create edi,edi pair. So no need to break ecx,edx, isn't it?
 
+930:4-930:48
+Fri Aug 21 12:43:21 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a45875e6_64faea37
+UUID: 446ed97b_a972fd56
+Bytes: 393
+No it's not as efficient as trying to re-allocate the out register of the fuse compare. This change is fixing TrySplitNonPairOrUnalignedPairIntervalAt, which was obviously bogus.
+
+I don't think any of our instructions involving longs now would lead us to a "Not enough registers" situation. So your other change (passing first_register_use - 1 instead) could still be a worthwile optimization.
+

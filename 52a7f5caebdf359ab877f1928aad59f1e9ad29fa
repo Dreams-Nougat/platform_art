@@ -1,0 +1,157 @@
+Revision: 52a7f5caebdf359ab877f1928aad59f1e9ad29fa
+Patch-set: 6
+File: runtime/class_linker.cc
+
+573:28-573:55
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_c2886f30
+Bytes: 116
+Is this expected to be zero? If so, assert that and avoid the bit-or? If not, specify more clearly in class_flags.h?
+
+2702:29-2702:64
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_6cf72e00
+Bytes: 103
+A primitive array has only the kClassFlagNoReferenceFields bit set, correct? Say that in class_flags.h?
+
+4392:25-4392:47
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_a0976f51
+Bytes: 137
+What do we expect klass->GetClassFlags() to be? If zero, assert that and avoid the bit-or? If not, specify more clearly in class_flags.h?
+
+5234:0-5235:65
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_a24e938d
+Bytes: 138
+Could we assert that if super_class is null, actually num_reference_fields == 0 and that super_class is null iff. we are java.lang.Object?
+
+5239:17-5239:30
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_ad09a838
+Bytes: 40
+Comment what this block tries to assert?
+
+5245:50-5245:54
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_fa7d0eda
+Bytes: 139
+This indicates at least two ref fields including the class in the header as we don't have the kClassFlagNoReferenceFields bit set? Clarify?
+
+File: runtime/mirror/class.cc
+
+47:33-47:91
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_2c104608
+Bytes: 42
+Similarly, just "mirror::kClassFlagClass"?
+
+File: runtime/mirror/class.h
+
+242:18-242:33
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_a54221c3
+Bytes: 67
+Is this old value expected to be non-zero? If not, avoid or-ing it?
+
+246:11-246:58
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_a5cb01c7
+Bytes: 67
+Could we do GetClassFlags() == kClassFlagClassLoader to be precise?
+
+250:18-250:33
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_9a5e4abc
+Bytes: 5
+Same.
+
+285:11-285:73
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_a23213f5
+Bytes: 93
+Could this be 
+
+GetClassFlags<kVerifyFlags>() == kClassFlagWeakReference
+
+to be more precise?
+
+290:11-290:74
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_3045011b
+Bytes: 5
+same.
+
+295:11-295:79
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_eb0b0361
+Bytes: 5
+same.
+
+300:11-300:77
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_2c7cc6d6
+Bytes: 5
+same.
+
+870:69-871:17
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_22ab6391
+Bytes: 55
+This does not include the class in the header, correct?
+
+File: runtime/mirror/class_flags.h
+
+27:0-28:18
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_4cc82e4a
+Bytes: 654
+I think we can be more explicit what type has what bits set. Something like,
+
+normal instance with at least one ref field (excluding the class in the header): kClassFlagNormal (zero)
+
+normal instance with no ref field (excluding the class in the header): kClassFlagNoReferenceFields
+
+primitive arrays: kClassFlagNoReferenceFields
+
+string: kClassFlagNoReferenceFields | kClassFlagString
+
+object arrays: kClassFlagObjectArray
+
+class: kClassFlagClass
+
+class loader and subclasses: kClassFlagClassLoader
+
+soft/weak/finalizer/phantom ref: kClassFlagSoftReference/kClassFlagWeakReference/kClassFlagFinalizerReference/kClassFlagPhantomReference, respectively
+
+?
+
+File: runtime/mirror/object-inl.h
+
+1018:4-1018:10
+Mon Aug 24 23:33:40 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_f08e993b
+Bytes: 94
+Maybe also assert
+
+!IsStringClass && !IsClassLoaderClass && !ArrayClass
+
+to be extra cautious?
+

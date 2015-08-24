@@ -80,6 +80,13 @@ UUID: a42a3512_4fcecea7
 Bytes: 4
 Done
 
+72:2-72:14
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_f9f76299
+Bytes: 18
+nit: global_depth_
+
 76:6-77:44
 Tue Aug 18 15:56:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -101,6 +108,15 @@ Parent: 24a485b9_50ca4c17
 UUID: c4700952_567f651b
 Bytes: 4
 Done
+
+91
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_4acebca7
+Bytes: 199
+This is a general optimizing compiler question, phis aren't counted in GetInstructions? But they both return HInstructionIterator?
+
+Isn't there something that returns an iterator over both sequences?
 
 91:9-92:33
 Tue Aug 18 15:56:48 2015 +0000
@@ -151,6 +167,26 @@ Bytes: 157
 Just clearing what is no longer needed.
 Note that in a later CL, I want to use a temporary arena, and only copy useful information into a longer lived arena.
 
+137
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_2cdefc51
+Bytes: 281
+It looks like this is the only part that is non-tarjan specific? I'm not sure if everyone else is a hybrid algorithms expert here but it seems like perhaps it might be easier to understand if it was more evident where the separation point was (e.g. by splitting out the code more)?
+
+144
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_77be03ac
+Bytes: 487
+very minor terminology confusion:
+
+I am not sure if ascendant/descendant is the standard optimizing term, but in literature SSA forms use 'use-definition chains' , so this would be more like 'VisitDefinitions' in that regards (which is implied by 146)?
+
+FWIW it also looks like from instruction->InputAt it's more like output(definition)/input(usage) so using 'VisitOutputs' could also make sense in the optimizing terminology
+
+(I suspect descendant here is meant in the dataflow sense?)
+
 155:10-155:24
 Tue Aug 18 15:56:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -180,6 +216,13 @@ Parent: e4c8ad77_b91b7ba4
 UUID: 4485f957_da55b4cc
 Bytes: 9
 see above
+
+175
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_17a1cf7f
+Bytes: 148
+minor, looks like this expression (LookupInfo(...) is used over and over again, does it make sense to split out to a separate local for readability?
 
 196:2-196:7
 Tue Aug 18 15:56:48 2015 +0000
@@ -482,6 +525,15 @@ UUID: 247d65ed_6873e35c
 Bytes: 7
 helper?
 
+411:0-412:47
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_2c591c61
+Bytes: 196
+I probably missed this somewhere, how is InductionInfo supposed to work for trivial inductions like where opA is a constant or a register?
+
+Is it a fetch pointer for both, with op_a going to null?
+
 414:9-414:24
 Tue Aug 18 15:56:48 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -498,6 +550,31 @@ Bytes: 71
 Yes, that is on purpose, but since you asked I added a comment on that.
 
 File: compiler/optimizing/induction_var_analysis.h
+
+53
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_c2e4e4cd
+Bytes: 255
+minor: does the rest of optimizing use plain enums? enum classes should be really preferred for new code since they offer stronger type safety (they aren't just implicitly convertible to int or to other enums)
+
+http://www.stroustrup.com/C++11FAQ.html#enum
+
+89:13-89:18
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_ce8c168b
+Bytes: 147
+Is this supposed to mean 'either the operation a+b, a-b,... OR a fetch instruction' ?
+
+Or it is supposed to mean the operation followed by a fetch?
+
+91
+Mon Aug 24 19:09:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_e73b39f2
+Bytes: 40
+it's only +? what about other operators?
 
 110:19-110:29
 Tue Aug 18 15:56:48 2015 +0000

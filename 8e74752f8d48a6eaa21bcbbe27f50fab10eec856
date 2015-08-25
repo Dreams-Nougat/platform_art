@@ -13,6 +13,14 @@ I'm not sure that adding "Transfer over a phi" for a function called TransferPhi
 
 A layman's explanation or a reference to the section in a paper would be very helpful.
 
+269
+Tue Aug 25 18:44:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84253145_0811a98f
+UUID: e430ad80_2795b296
+Bytes: 126
+Ok, "transfer" is pretty standard in all sorts of compiler propagations over a lattice, but I will try to be more informative.
+
 407:40-407:46
 Tue Aug 25 18:25:17 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,12 +28,28 @@ UUID: c4700952_65e4211a
 Bytes: 12
 nit: loop_id
 
+407:40-407:46
+Tue Aug 25 18:44:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_65e4211a
+UUID: a47f9520_3ebb875f
+Bytes: 4
+Done
+
 419:73-419:79
 Tue Aug 25 18:25:17 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4750d3f_65109a09
 Bytes: 12
 nit: loop_id
+
+419:73-419:79
+Tue Aug 25 18:44:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4750d3f_65109a09
+UUID: 84253145_a883d510
+Bytes: 4
+Done
 
 423
 Tue Aug 25 18:25:17 2015 +0000
@@ -36,6 +60,16 @@ Channeling Nicolas regarding autos, it seems like it could be a bit hard to see 
 
 Perhaps if it->second was brought out into a specific type, this might be slightly more readable?
 
+423
+Tue Aug 25 18:44:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_85f6edc9
+UUID: a47f9520_7eb10f77
+Bytes: 166
+This is really the idiom for stl-flavored operations; you get used to it :-)
+
+In any case, I tried to isolate most of the operations in just a few methods as possible
+
 File: compiler/optimizing/induction_var_analysis.h
 
 83
@@ -44,6 +78,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e430ad80_6782caa5
 Bytes: 141
 I'm not sure I understand why something like "a * i - b" is not itself a linear induction. Is there something special about the "+" operator?
+
+83
+Tue Aug 25 18:44:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e430ad80_6782caa5
+UUID: 84253145_48fd6177
+Bytes: 201
+Ah, but those cases are covered as well (having -b' for the b term). Just think of this as the high school equation of a linear expression ax + b where a and b can by any constant, including negatives.
 
 154:2-154:14
 Tue Aug 25 16:37:28 2015 +0000
@@ -59,4 +101,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a47f9520_bed1b7c7
 Bytes: 170
 If I'm understanding correctly, these are all ints to save 4 bytes on x64, or is there some other reason to prefer instruction IDs over instruction themselves as the key?
+
+156:15-156:18
+Tue Aug 25 18:44:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_bed1b7c7
+UUID: a42a3512_2c3b5988
+Bytes: 198
+No, I can key on instructions just as easily. I looked around a bit and saw both cases happening. Don't feel very strongly either way (as I suspect we will optimize this data structure later anyway)
 

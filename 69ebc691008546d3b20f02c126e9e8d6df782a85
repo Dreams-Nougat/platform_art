@@ -9,6 +9,14 @@ UUID: e4750d3f_6582daa5
 Bytes: 52
 What if it's not in /system ? Where does it go then?
 
+122
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4750d3f_6582daa5
+UUID: c42ba915_a3f459fa
+Bytes: 114
+It will look in dalvik-cache. This behavior is only really needed for test cases like your oat_file_assistant_test
+
 123:0-130:3
 Tue Aug 25 19:23:15 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: a47f9520_7e690f98
 Bytes: 92
 Should this be a method of ImageAssistant? Should we generally prefer /system over all else?
 
+123:0-130:3
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_7e690f98
+UUID: e4750d3f_f083eae0
+Bytes: 284
+No. This is the only case where we would want to choose a /system image over one that is relocated in dalvik_cache. Other places we want to replicate the image loading logic. Here we select slightly differently, using the original image loading logic from before relocation was added.
+
 203:13-203:21
 Tue Aug 25 19:23:15 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 048f817d_3dc87249
 Bytes: 68
 What does this refer to? Is the info loaded, or is the image loaded?
+
+203:13-203:21
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_3dc87249
+UUID: e4750d3f_90994650
+Bytes: 76
+It means the image being examined is loaded. Renamed to better reflect that.
 
 File: runtime/gc/space/image_space.cc
 
@@ -32,6 +56,14 @@ UUID: a42a3512_6c45d119
 Bytes: 28
 DCHECK(error_msg != nullptr)
 
+319
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_6c45d119
+UUID: 248c8586_a9cbc094
+Bytes: 4
+Done
+
 322:19-322:21
 Tue Aug 25 19:23:15 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,12 +73,28 @@ Bytes: 78
 
 This happens other places in the code too.
 
+322:19-322:21
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_ecd32100
+UUID: 4485f957_894b6430
+Bytes: 4
+Done
+
 324:2-338:10
 Tue Aug 25 18:23:36 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84253145_a8c43589
 Bytes: 42
 Easier to read if you don't chain the ifs.
+
+324:2-338:10
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84253145_a8c43589
+UUID: 248c8586_c91f2491
+Bytes: 31
+I personally disagree but done.
 
 346:4-357:17
 Tue Aug 25 18:23:36 2015 +0000
@@ -57,12 +105,28 @@ Doesn't fit the name of the method, considering that "GenerateImage" doesn't ret
 
 Consider refactoring into a helper (as there's another similar copy). Could also consider rolling the FLock part into Init).
 
+346:4-357:17
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e430ad80_875846d0
+UUID: 84253145_8852995f
+Bytes: 66
+Changed name to GenerateAndLoadImage. Refactored image_lock stuff.
+
 364:17-364:19
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e430ad80_47b1ce4c
 Bytes: 66
 channeling Nicolas nit: use longer variable names, image_assistant
+
+364:17-364:19
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e430ad80_47b1ce4c
+UUID: a42a3512_8fde1ffa
+Bytes: 4
+Done
 
 374:3-374:41
 Tue Aug 25 19:23:15 2015 +0000
@@ -71,6 +135,14 @@ UUID: a47f9520_fee73fa0
 Bytes: 123
 Maybe add a helper function such as ImageInfo::ImageIsUseable. That would make the code here a little easier to understand.
 
+374:3-374:41
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_fee73fa0
+UUID: c4700952_a5bd291e
+Bytes: 14
+Made a switch.
+
 383:17-383:24
 Tue Aug 25 19:23:15 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -78,12 +150,28 @@ UUID: 248c8586_7c0d97ef
 Bytes: 57
 It's not obvious based on the name what this method does.
 
+383:17-383:24
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_7c0d97ef
+UUID: c4700952_65c741ab
+Bytes: 23
+Renamed to IsCacheImage
+
 389:3-396:14
 Tue Aug 25 19:23:15 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4700952_a5ea09e6
 Bytes: 44
 Should this logic be part of ImageAssistant?
+
+389:3-396:14
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_a5ea09e6
+UUID: e430ad80_aae749d0
+Bytes: 134
+No. The first part is interpreting runtime options, the second is relocating an image, something only the image loader should ever do.
 
 403:25-403:45
 Tue Aug 25 19:23:15 2015 +0000
@@ -108,6 +196,14 @@ That being said looking at this closely, it is a bit confusing and using image_f
 
 Then again I'm just not a fan of using raw pointers in general for C++ code so I just didn't say anything.
 
+403:25-403:45
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_0eac5af6
+UUID: c4700952_8506edd7
+Bytes: 21
+changed to just copy.
+
 374:2-420:12
 Tue Aug 25 18:23:36 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -123,6 +219,22 @@ UUID: 048f817d_fd4c2a1d
 Bytes: 146
 Yes, and doing an if/else when the if 'returns' is also completely unnecessary (same as Andreas comments on 357) because it just adds indentation.
 
+374:2-420:12
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_c31ab574
+UUID: 4485f957_29eef87f
+Bytes: 4
+Done
+
+374:2-420:12
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_fd4c2a1d
+UUID: c4700952_45ca45b4
+Bytes: 4
+Done
+
 463:38-463:50
 Tue Aug 25 18:23:36 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -131,6 +243,14 @@ Bytes: 356
 Update comment. Also, does this really still apply? From the the enum values that reach here, a system image exists. In those cases, the jar files will be stripped, which means this recompile will definitely fail.
 
 (If you removed this, you could merge DoGenerateImage into here, similar to before [just up where the Unusable is], and unify the Init call).
+
+463:38-463:50
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_83359de0
+UUID: a47f9520_2167ea46
+Bytes: 13
+fixed comment
 
 File: runtime/image_assistant.cc
 
@@ -141,12 +261,28 @@ UUID: 248c8586_b7f318da
 Bytes: 12
 redundant ()
 
+34:32-34:44
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_b7f318da
+UUID: e4750d3f_70529a62
+Bytes: 4
+Done
+
 37
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 048f817d_1da48e36
 Bytes: 25
 DCHECK(header != nullptr)
+
+37
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_1da48e36
+UUID: c42ba915_a3e778d0
+Bytes: 4
+Done
 
 39
 Tue Aug 25 18:56:59 2015 +0000
@@ -157,12 +293,28 @@ nit: don't need .get() for comparing smart pointers
 
   if (image_file == nullptr)
 
+39
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_172b04ba
+UUID: 048f817d_6145f819
+Bytes: 4
+Done
+
 47
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4750d3f_85d58661
 Bytes: 102
 While I'm not really against this, anything that's a pointer should probably be auto* instead of auto.
+
+47
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4750d3f_85d58661
+UUID: c4700952_a558c981
+Bytes: 4
+Done
 
 66:14-66:31
 Tue Aug 25 18:56:59 2015 +0000
@@ -171,12 +323,28 @@ UUID: a47f9520_5e3f733c
 Bytes: 12
 redundant ()
 
+66:14-66:31
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_5e3f733c
+UUID: 4485f957_89784437
+Bytes: 4
+Done
+
 75:13-75:32
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a47f9520_9e45dbce
 Bytes: 12
 redundant ()
+
+75:13-75:32
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_9e45dbce
+UUID: 248c8586_69a1587f
+Bytes: 4
+Done
 
 84:13-84:32
 Tue Aug 25 18:56:59 2015 +0000
@@ -185,12 +353,28 @@ UUID: 4485f957_c9d2cc45
 Bytes: 12
 redundant ()
 
+84:13-84:32
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_c9d2cc45
+UUID: e4750d3f_cbb95f15
+Bytes: 4
+Done
+
 94
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a42a3512_0c73fd5d
 Bytes: 8
 Why not?
+
+94
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_0c73fd5d
+UUID: c42ba915_c3871566
+Bytes: 56
+System is read only. Anything in it cannot be relocated.
 
 103
 Tue Aug 25 18:56:59 2015 +0000
@@ -199,12 +383,28 @@ UUID: c42ba915_e320115c
 Bytes: 25
 DCHECK(reason != nullptr)
 
+103
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_e320115c
+UUID: e430ad80_6dce2ba8
+Bytes: 4
+Done
+
 118:6-118:24
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c42ba915_a303f9c7
 Bytes: 61
 When does this happen exactly during normal course of events?
+
+118:6-118:24
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_a303f9c7
+UUID: 4485f957_c9d3ac00
+Bytes: 78
+We use this before a runtime is set up. (Such as in a few places in patchoat).
 
 129
 Tue Aug 25 18:56:59 2015 +0000
@@ -215,12 +415,28 @@ channeling Nicolas: seems like this should be gc::Heap* heap = runtime->GetHeap(
 
 or at the very least auto* heap.
 
+129
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_c51ab574
+UUID: a47f9520_e4881030
+Bytes: 4
+Done
+
 131
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a42a3512_8c7f0d1b
 Bytes: 7
 see 129
+
+131
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_8c7f0d1b
+UUID: 048f817d_c1d144c7
+Bytes: 4
+Done
 
 139
 Tue Aug 25 18:56:59 2015 +0000
@@ -229,12 +445,28 @@ UUID: 84253145_28f34599
 Bytes: 26
 DCHECKs for null in params
 
+139
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84253145_28f34599
+UUID: 4485f957_e94b1000
+Bytes: 4
+Done
+
 156
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e430ad80_2ad9f969
 Bytes: 56
 Can you add some comments to describe the strategy here?
+
+156
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e430ad80_2ad9f969
+UUID: c4700952_c00b8361
+Bytes: 4
+Done
 
 195:2-195:6
 Tue Aug 25 18:56:59 2015 +0000
@@ -243,12 +475,28 @@ UUID: 048f817d_7d1cbaf5
 Bytes: 64
 This reminds me of using auto for size_t. Please ImageInfo here.
 
+195:2-195:6
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_7d1cbaf5
+UUID: e430ad80_6d72abd7
+Bytes: 4
+Done
+
 199
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a47f9520_1eac8bf6
 Bytes: 3
 195
+
+199
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_1eac8bf6
+UUID: e4750d3f_8bf6f7c9
+Bytes: 4
+Done
 
 File: runtime/image_assistant.h
 
@@ -259,6 +507,14 @@ UUID: e430ad80_a76222b8
 Bytes: 80
 Is this really required? Forward declaring of File or FdFile seems to be enough.
 
+26:0-26:15
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e430ad80_a76222b8
+UUID: e4750d3f_b0bd621e
+Bytes: 4
+Done
+
 30
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -268,12 +524,28 @@ It took me a while to figure out where this was coming from, perhaps add a comme
 
 For that matter it probably wouldn't hurt readability to say near the top of the file that this declares ImageState, ImageAssistant, and ImageInfo
 
+30
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_7e7fcf1b
+UUID: e4750d3f_50cafeb3
+Bytes: 4
+Done
+
 32
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 048f817d_7d783a36
 Bytes: 74
 nit: better to use enum classes for new code since they are more type safe
+
+32
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_7d783a36
+UUID: a47f9520_01666e46
+Bytes: 4
+Done
 
 39:2-39:17
 Tue Aug 25 18:23:36 2015 +0000
@@ -284,12 +556,28 @@ Not a great name, as I had to read the comment again when looking through image_
 
 (Don't have a better suggestion handy, though).
 
+39:2-39:17
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_25b5b919
+UUID: a47f9520_6155f247
+Bytes: 108
+It actually is that way. If an ota has happened the image in dalvik-cache is out of date and cannot be used.
+
 44:2-44:19
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4700952_859a6d79
 Bytes: 13
 sp: Preferred
+
+44:2-44:19
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_859a6d79
+UUID: a42a3512_8f905f21
+Bytes: 4
+Done
 
 58:44-58:52
 Tue Aug 25 18:56:59 2015 +0000
@@ -307,12 +595,39 @@ UUID: a42a3512_ec7ec15b
 Bytes: 47
 Is this searching for a filename or for a file?
 
+58:7-58:30
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_ec7ec15b
+UUID: a47f9520_04bf5cf8
+Bytes: 98
+'filename' is an out argument, holding the name fo the file the image location is associated with.
+
+58:44-58:52
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_d7b9fc14
+UUID: 4485f957_49101c09
+Bytes: 66
+$ git grep filename | wc -l
+    905
+
+I think its fine to leave it.
+
 65
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a47f9520_3e0dc7c6
 Bytes: 43
 Are all of these args optional or required?
+
+65
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_3e0dc7c6
+UUID: 4485f957_093bf487
+Bytes: 69
+required. Also made this private. It isn't super nessecary to expose.
 
 67
 Tue Aug 25 18:56:59 2015 +0000
@@ -323,12 +638,28 @@ This seems like an awfully too many out parameters. Can these be turned into a s
 
 Seems like it's a superset of ImageInfo, ImageDetailedInfo or some such?
 
+67
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_6e52c662
+UUID: c4700952_a56f691e
+Bytes: 44
+Made method private. It does a lot of stuff.
+
 82
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 248c8586_5cf1b307
 Bytes: 62
 Is it supposed to write something into reason? Can it be null?
+
+82
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_5cf1b307
+UUID: 048f817d_2157f0d8
+Bytes: 22
+made reason error_msg.
 
 89
 Tue Aug 25 18:56:59 2015 +0000
@@ -337,12 +668,28 @@ UUID: e4750d3f_0530b66e
 Bytes: 14
 missing const?
 
+89
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4750d3f_0530b66e
+UUID: c42ba915_a3be98a8
+Bytes: 4
+Done
+
 90
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4750d3f_a54522ce
 Bytes: 14
 missing const?
+
+90
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4750d3f_a54522ce
+UUID: c42ba915_c3bb94b8
+Bytes: 4
+Done
 
 92
 Tue Aug 25 18:56:59 2015 +0000
@@ -351,12 +698,28 @@ UUID: a42a3512_ec348196
 Bytes: 58
 Why? This seems more like a ValueObject the way it's used.
 
+92
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_ec348196
+UUID: 048f817d_01566cd8
+Bytes: 8
+Removed.
+
 110
 Tue Aug 25 18:56:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a42a3512_0c569dd8
 Bytes: 67
 Is ImageHeader supposed to be const here, or does it write into it?
+
+110
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_0c569dd8
+UUID: e4750d3f_f0652a3a
+Bytes: 21
+made comment clearer.
 
 117
 Tue Aug 25 18:56:59 2015 +0000
@@ -374,6 +737,14 @@ UUID: e4750d3f_45b1de4c
 Bytes: 69
 channeling Nicolas: please use longer variable names, image_assistant
 
+589
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4750d3f_45b1de4c
+UUID: a47f9520_44f80471
+Bytes: 4
+Done
+
 File: runtime/oat_file_assistant.cc
 
 945
@@ -382,6 +753,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4485f957_69e4001a
 Bytes: 69
 channeling Nicolas: please use longer variable names, image_assistant
+
+945
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_69e4001a
+UUID: 248c8586_89f7dc4c
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -392,6 +771,14 @@ UUID: 248c8586_7c135765
 Bytes: 14
 Line too long.
 
+721:100-721:102
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_7c135765
+UUID: a47f9520_04f2fc90
+Bytes: 4
+Done
+
 File: runtime/utils.cc
 
 1258
@@ -401,6 +788,14 @@ UUID: 048f817d_9d195e07
 Bytes: 7
 DCHECK?
 
+1258
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_9d195e07
+UUID: 4485f957_c9bf2c47
+Bytes: 4
+Done
+
 File: runtime/utils.h
 
 244:88-244:92
@@ -409,4 +804,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 048f817d_3d263244
 Bytes: 29
 sp: true (this is not python)
+
+244:88-244:92
+Tue Aug 25 22:05:44 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_3d263244
+UUID: a47f9520_a4e768d0
+Bytes: 4
+Done
 

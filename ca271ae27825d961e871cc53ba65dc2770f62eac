@@ -9,6 +9,14 @@ UUID: e4aeed64_28c19177
 Bytes: 196
 It's not clear to me what logic drives the FindDexCache -> RegisterDexFile replacement in some places like this line but not for other places (kept as FindDexCache like line 343). Can you clarify?
 
+34:34-34:49
+Tue Aug 25 01:32:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4aeed64_28c19177
+UUID: a42a3512_6362ccbb
+Bytes: 162
+I think most of these don't need to be RegisterDexFile. Probably just the CompileMethod function. Since that will load a class, it should keep the dex cache live.
+
 File: compiler/image_writer.cc
 
 603:15-603:16
@@ -17,6 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4fb1585_a5a69fc7
 Bytes: 114
 This makes a copy of the list, which I assume is needed to avoid a lock order issue or something? Can you clarify?
+
+603:15-603:16
+Tue Aug 25 01:32:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4fb1585_a5a69fc7
+UUID: 64591d73_94ac83f9
+Bytes: 92
+Changed the locking to avoid this scenario. The issue was previously with ClassInClassTable.
 
 File: dex2oat/dex2oat.cc
 
@@ -27,6 +43,14 @@ UUID: e4434d7f_07804302
 Bytes: 41
 What code removes those local references?
 
+1389:32-1389:49
+Tue Aug 25 01:32:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4434d7f_07804302
+UUID: c4a9e95f_a8bb3d5c
+Bytes: 67
+Currently they leak, I suppose I should get rid of them in shutdown
+
 File: runtime/class_linker.cc
 
 2468:44-2468:45
@@ -35,6 +59,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 243ac5f6_32db0ee5
 Bytes: 104
 Add that a null dex cache can occur due to class unloading and we are lazily removing null entries here?
+
+2468:44-2468:45
+Tue Aug 25 01:32:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 243ac5f6_32db0ee5
+UUID: e4750d3f_237db88b
+Bytes: 4
+Done
 
 File: runtime/runtime-inl.h
 
@@ -47,6 +79,14 @@ Is this safe? Does it mean that we may use null as the sentinel up to a point (d
 
 Would it be possible to move up the sentinel allocation site before the first weak global decode?
 
+35:0-36:87
+Tue Aug 25 01:32:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4a9e95f_68d8e562
+UUID: e4750d3f_15ab1391
+Bytes: 177
+I think its possible, although a bit tricky since we do FindSystemClass pretty early on in the class linker. I think the old way was "OK" but its less clear if it was 100% safe.
+
 File: runtime/trace.cc
 
 643:4-643:42
@@ -55,4 +95,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4a8755c_f6e6f322
 Bytes: 61
 Does this mean that we aren't visiting roots (trace methods)?
+
+643:4-643:42
+Tue Aug 25 01:32:55 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4a8755c_f6e6f322
+UUID: c4700952_d69355af
+Bytes: 203
+Yes, we could change it to RegisterDexFile but we currently don't visit the methods in the trace as roots. We would need to do this to ensure that the declaring classes of the methods don't get unloaded.
 

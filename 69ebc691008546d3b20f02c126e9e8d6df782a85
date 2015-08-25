@@ -1,0 +1,63 @@
+Revision: 69ebc691008546d3b20f02c126e9e8d6df782a85
+Patch-set: 2
+File: runtime/gc/space/image_space.cc
+
+324:2-338:10
+Tue Aug 25 18:23:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84253145_a8c43589
+Bytes: 42
+Easier to read if you don't chain the ifs.
+
+346:4-357:17
+Tue Aug 25 18:23:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_875846d0
+Bytes: 224
+Doesn't fit the name of the method, considering that "GenerateImage" doesn't return an ImageSpace.
+
+Consider refactoring into a helper (as there's another similar copy). Could also consider rolling the FLock part into Init).
+
+374:2-420:12
+Tue Aug 25 18:23:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_c31ab574
+Bytes: 94
+Could make this a switch (just move the variables up). Might improve readability a little bit.
+
+463:38-463:50
+Tue Aug 25 18:23:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_83359de0
+Bytes: 356
+Update comment. Also, does this really still apply? From the the enum values that reach here, a system image exists. In those cases, the jar files will be stripped, which means this recompile will definitely fail.
+
+(If you removed this, you could merge DoGenerateImage into here, similar to before [just up where the Unusable is], and unify the Init call).
+
+File: runtime/image_assistant.h
+
+26:0-26:15
+Tue Aug 25 18:23:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_a76222b8
+Bytes: 80
+Is this really required? Forward declaring of File or FdFile seems to be enough.
+
+39:2-39:17
+Tue Aug 25 18:23:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_25b5b919
+Bytes: 230
+Not a great name, as I had to read the comment again when looking through image_space. Something compiled before an OTA is out of date, but not kImageOutOfDate - not very intuitive.
+
+(Don't have a better suggestion handy, though).
+
+File: runtime/runtime.cc
+
+721:100-721:102
+Tue Aug 25 18:23:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_7c135765
+Bytes: 14
+Line too long.
+

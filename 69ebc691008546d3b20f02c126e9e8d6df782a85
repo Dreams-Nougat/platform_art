@@ -1,6 +1,22 @@
 Revision: 69ebc691008546d3b20f02c126e9e8d6df782a85
 Patch-set: 2
+File: patchoat/patchoat.cc
+
+122
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_6582daa5
+Bytes: 52
+What if it's not in /system ? Where does it go then?
+
 File: runtime/gc/space/image_space.cc
+
+319
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_6c45d119
+Bytes: 28
+DCHECK(error_msg != nullptr)
 
 324:2-338:10
 Tue Aug 25 18:23:36 2015 +0000
@@ -18,12 +34,27 @@ Doesn't fit the name of the method, considering that "GenerateImage" doesn't ret
 
 Consider refactoring into a helper (as there's another similar copy). Could also consider rolling the FLock part into Init).
 
+364:17-364:19
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_47b1ce4c
+Bytes: 66
+channeling Nicolas nit: use longer variable names, image_assistant
+
 374:2-420:12
 Tue Aug 25 18:23:36 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c42ba915_c31ab574
 Bytes: 94
 Could make this a switch (just move the variables up). Might improve readability a little bit.
+
+374:2-420:12
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_c31ab574
+UUID: 048f817d_fd4c2a1d
+Bytes: 146
+Yes, and doing an if/else when the if 'returns' is also completely unnecessary (same as Andreas comments on 357) because it just adds indentation.
 
 463:38-463:50
 Tue Aug 25 18:23:36 2015 +0000
@@ -34,6 +65,124 @@ Update comment. Also, does this really still apply? From the the enum values tha
 
 (If you removed this, you could merge DoGenerateImage into here, similar to before [just up where the Unusable is], and unify the Init call).
 
+File: runtime/image_assistant.cc
+
+34:32-34:44
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_b7f318da
+Bytes: 12
+redundant ()
+
+37
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_1da48e36
+Bytes: 25
+DCHECK(header != nullptr)
+
+39
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_172b04ba
+Bytes: 81
+nit: don't need .get() for comparing smart pointers
+
+  if (image_file == nullptr)
+
+47
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_85d58661
+Bytes: 102
+While I'm not really against this, anything that's a pointer should probably be auto* instead of auto.
+
+66:14-66:31
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_5e3f733c
+Bytes: 12
+redundant ()
+
+75:13-75:32
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_9e45dbce
+Bytes: 12
+redundant ()
+
+84:13-84:32
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_c9d2cc45
+Bytes: 12
+redundant ()
+
+94
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_0c73fd5d
+Bytes: 8
+Why not?
+
+103
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_e320115c
+Bytes: 25
+DCHECK(reason != nullptr)
+
+118:6-118:24
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_a303f9c7
+Bytes: 61
+When does this happen exactly during normal course of events?
+
+129
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_c51ab574
+Bytes: 115
+channeling Nicolas: seems like this should be gc::Heap* heap = runtime->GetHeap()
+
+or at the very least auto* heap.
+
+131
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_8c7f0d1b
+Bytes: 7
+see 129
+
+139
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84253145_28f34599
+Bytes: 26
+DCHECKs for null in params
+
+156
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_2ad9f969
+Bytes: 56
+Can you add some comments to describe the strategy here?
+
+195:2-195:6
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_7d1cbaf5
+Bytes: 64
+This reminds me of using auto for size_t. Please ImageInfo here.
+
+199
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_1eac8bf6
+Bytes: 3
+195
+
 File: runtime/image_assistant.h
 
 26:0-26:15
@@ -42,6 +191,22 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e430ad80_a76222b8
 Bytes: 80
 Is this really required? Forward declaring of File or FdFile seems to be enough.
+
+30
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_7e7fcf1b
+Bytes: 273
+It took me a while to figure out where this was coming from, perhaps add a comment "// forward declaration - defined below" ?
+
+For that matter it probably wouldn't hurt readability to say near the top of the file that this declares ImageState, ImageAssistant, and ImageInfo
+
+32
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_7d783a36
+Bytes: 74
+nit: better to use enum classes for new code since they are more type safe
 
 39:2-39:17
 Tue Aug 25 18:23:36 2015 +0000
@@ -52,6 +217,98 @@ Not a great name, as I had to read the comment again when looking through image_
 
 (Don't have a better suggestion handy, though).
 
+44:2-44:19
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_859a6d79
+Bytes: 13
+sp: Preferred
+
+58:44-58:52
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_d7b9fc14
+Bytes: 69
+nit: file_name , FileName, etc. 
+
+Not sure that 'filename' is a word?
+
+65
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_3e0dc7c6
+Bytes: 43
+Are all of these args optional or required?
+
+67
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_6e52c662
+Bytes: 160
+This seems like an awfully too many out parameters. Can these be turned into a struct?
+
+Seems like it's a superset of ImageInfo, ImageDetailedInfo or some such?
+
+82
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_5cf1b307
+Bytes: 62
+Is it supposed to write something into reason? Can it be null?
+
+89
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_0530b66e
+Bytes: 14
+missing const?
+
+90
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_a54522ce
+Bytes: 14
+missing const?
+
+92
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_ec348196
+Bytes: 58
+Why? This seems more like a ValueObject the way it's used.
+
+110
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_0c569dd8
+Bytes: 67
+Is ImageHeader supposed to be const here, or does it write into it?
+
+117
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_e562510a
+Bytes: 56
+Seems like this should return an std::unique_ptr<File> ?
+
+File: runtime/native/dalvik_system_VMRuntime.cc
+
+589
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_45b1de4c
+Bytes: 69
+channeling Nicolas: please use longer variable names, image_assistant
+
+File: runtime/oat_file_assistant.cc
+
+945
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_69e4001a
+Bytes: 69
+channeling Nicolas: please use longer variable names, image_assistant
+
 File: runtime/runtime.cc
 
 721:100-721:102
@@ -60,4 +317,22 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 248c8586_7c135765
 Bytes: 14
 Line too long.
+
+File: runtime/utils.cc
+
+1258
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_9d195e07
+Bytes: 7
+DCHECK?
+
+File: runtime/utils.h
+
+244:88-244:92
+Tue Aug 25 18:56:59 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_3d263244
+Bytes: 29
+sp: true (this is not python)
 

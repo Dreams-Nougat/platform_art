@@ -9,6 +9,14 @@ UUID: a45875e6_c4af1ecb
 Bytes: 85
 This is always zero. HLocal never emits code so might as well keep it kNoDexPc, IMHO.
 
+145:43-145:67
+Tue Aug 25 10:37:37 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a45875e6_c4af1ecb
+UUID: a45875e6_67098c36
+Bytes: 84
+I agree that this is always zero, but only because entry_block_->GetDexPc() is zero.
+
 166:37-166:65
 Thu Aug 20 08:10:02 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +30,14 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0468616f_87b92616
 Bytes: 58
 Always zero. Also, why is this inconsistent with line 166?
+
+177:44-177:68
+Tue Aug 25 10:37:37 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0468616f_87b92616
+UUID: 847a9131_4e3593dd
+Bytes: 31
+fixed inconsistency in line 166
 
 182:76-182:93
 Thu Aug 20 08:10:02 2015 +0000
@@ -44,6 +60,14 @@ UUID: e45eedce_06ce9aa6
 Bytes: 63
 So, zero because the SuspendCheck above is the last instruction
 
+521:50-521:78
+Tue Aug 25 10:37:37 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e45eedce_06ce9aa6
+UUID: 845371c9_462fb440
+Bytes: 317
+Here is the most obvious case that we can put 0 instead of the last dex_pc of the block. But in other cases you mentioned I would stick to the generic approach, which is to set block's dex_pc or the dex_pc of the last instruction of the block. It seems safer and error prone to possible future changes of the sources.
+
 1284:76-1284:82
 Thu Aug 20 08:10:02 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,12 +75,29 @@ UUID: 845371c9_c3af16cb
 Bytes: 61
 Move to own line, please. Here, below and possibly elsewhere.
 
+1284:76-1284:82
+Tue Aug 25 10:37:37 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 845371c9_c3af16cb
+UUID: 446ed97b_ace76ba1
+Bytes: 4
+Done
+
 2696:32-2696:47
 Thu Aug 20 08:10:02 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 847a9131_8bb92d16
 Bytes: 181
 How about you turn the dex_pc into a field of the HGraphBuilder class. It's a state machine anyway, so we might as well make it stateful and you wouldn't have to pass it everywhere.
+
+2696:32-2696:47
+Tue Aug 25 10:37:37 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 847a9131_8bb92d16
+UUID: 44e3394a_87934a2d
+Bytes: 120
+I agree that dex_pc could be passed as a field of the builder.
+But I did it the same way as the *instruction was passed.
 
 File: compiler/optimizing/nodes.h
 
@@ -66,4 +107,13 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 446ed97b_89b93916
 Bytes: 141
 Does it make sense to add dex_pc to constants? It's confusing because the HConstant objects are cached, and because they don't emit any code.
+
+316:60-316:88
+Tue Aug 25 10:37:37 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 446ed97b_89b93916
+UUID: 0468616f_ca8e433c
+Bytes: 168
+Some back-ends might need to emit a code (possiby in future).
+In general, we should try providing all HInstructions with any dex_pc that makes more sense than kNoDexPc.
 

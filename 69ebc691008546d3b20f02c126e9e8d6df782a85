@@ -92,6 +92,22 @@ UUID: 4485f957_0eac5af6
 Bytes: 103
 This looks funny to me. The assumption is the object returned by GetFilename is not a temporary object?
 
+403:25-403:45
+Tue Aug 25 20:41:54 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_0eac5af6
+UUID: a47f9520_41df9685
+Bytes: 565
+This is sadly safe-ish.
+
+if info.GetFilename() returned a non-reference, this wouldn't even compile.
+
+since it's returning a reference to the inside of the info data, the pointer is valid for as long as info is.
+------------
+That being said looking at this closely, it is a bit confusing and using image_filename as a string pointer seems like an unnecessary microoptimization. ImageSpace::Create doesn't seem like something that will get called very often.
+
+Then again I'm just not a fan of using raw pointers in general for C++ code so I just didn't say anything.
+
 374:2-420:12
 Tue Aug 25 18:23:36 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

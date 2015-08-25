@@ -1,0 +1,188 @@
+Revision: 0edbf6f12cee43a9a186c86e86d4687598955884
+Patch-set: 7
+File: compiler/optimizing/code_generator_arm.cc
+
+4238:7-4238:33
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_eb878365
+Bytes: 210
+I think we don't need unpoisoning any more as the resolved type array is no longer an object array.
+
+Do you mind leaving a comment that we will need a read barrier there?
+
+Similarly for the other architectures.
+
+4299:5-4299:31
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_e28c8b8a
+Bytes: 145
+Similarly, this should be removed.
+
+Do you mind leaving a comment that we will need a read barrier there?
+
+Similarly for the other architectures.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+2627:20-2627:46
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_27170508
+Bytes: 25
+No unpoisoning necessary?
+
+2688:18-2688:44
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_d0ba7527
+Bytes: 25
+No unpoisoning necessary?
+
+File: compiler/optimizing/code_generator_x86.cc
+
+4725:7-4725:33
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_90bdcd1e
+Bytes: 7
+Remove?
+
+4784:5-4784:31
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_9d75e43f
+Bytes: 7
+Remove?
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+4557:7-4557:33
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_dc2a8f02
+Bytes: 7
+Remove?
+
+4607:5-4607:31
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_16d9ca69
+Bytes: 7
+Remove?
+
+File: runtime/art_method-inl.h
+
+100:2-100:36
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_70f70900
+Bytes: 7
+Remove?
+
+152:2-152:36
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_cbf4fffb
+Bytes: 7
+Remove?
+
+532:5-532:26
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_3c08739e
+Bytes: 309
+Should this visit the roots in the (now native) dex cache resolved types array pointed to by this method?
+
+If there can be a case where a DexCache becomes unreachable from GC but an ArtMethod is reachable and points to the resolved types array, GC would need to visit them to update them?
+
+Mathieu, any views?
+
+File: runtime/art_method.h
+
+523:39-523:63
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_906f0d1f
+Bytes: 214
+Can this be private? If we need to do card mark when we write to the resolved type array, avoiding exposing the GcRoot* unnecessarily would allow us to minimize the locations we'd need to insert the card mark code.
+
+File: runtime/class_linker.cc
+
+1065:4-1065:8
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_4f690498
+Bytes: 11
+ArtMethod*?
+
+5392:13-5392:30
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_ddd84c1d
+Bytes: 61
+Does this need a card mark for the mod union tables, Mathieu?
+
+5417:17-5417:32
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_804593ce
+Bytes: 61
+Does this need a card mark for the mod union tables, Mathieu?
+
+File: runtime/mirror/class.h
+
+1088:18-1088:36
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_66ce50a8
+Bytes: 82
+Like DexCache::GetStrings(), can this be private if we add GetDexCacheString(idx)?
+
+File: runtime/mirror/dex_cache-inl.h
+
+42:22-42:39
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_9c996750
+Bytes: 66
+Does this need to do a card mark for the mod union table, Mathieu?
+
+53:22-53:37
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_cd1184e2
+Bytes: 66
+Does this need to do a card mark for the mod union table, Mathieu?
+
+63:2-63:6
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4485f957_702f0941
+Bytes: 19
+auto* -> ArtField*?
+
+79:2-79:6
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_c0462bfb
+Bytes: 20
+auto* -> ArtMethod*?
+
+File: runtime/mirror/dex_cache.h
+
+128:2-128:30
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84253145_86fdaf2f
+Bytes: 204
+Can this be private? If we need to do a card mark on a write to the GcRoot array, putting the card mark code in SetResolvedString() as opposed to a caller and hiding GetString() would be cleaner, I think.
+
+132:2-132:35
+Tue Aug 25 01:20:51 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_1c6ed7a8
+Bytes: 31
+Similarly, can this be private?
+

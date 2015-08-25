@@ -1,6 +1,49 @@
 Revision: 8e74752f8d48a6eaa21bcbbe27f50fab10eec856
 Patch-set: 11
+File: compiler/optimizing/induction_var_analysis.cc
+
+269
+Tue Aug 25 18:25:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84253145_0811a98f
+Bytes: 325
+Would it perhaps be possible to add more details about what a "transfer" is?
+
+I'm not sure that adding "Transfer over a phi" for a function called TransferPhi adds any more clarity on what this does (at the very least I'm still lost :)).
+
+A layman's explanation or a reference to the section in a paper would be very helpful.
+
+407:40-407:46
+Tue Aug 25 18:25:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_65e4211a
+Bytes: 12
+nit: loop_id
+
+419:73-419:79
+Tue Aug 25 18:25:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_65109a09
+Bytes: 12
+nit: loop_id
+
+423
+Tue Aug 25 18:25:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_85f6edc9
+Bytes: 211
+Channeling Nicolas regarding autos, it seems like it could be a bit hard to see what types are being used here. 
+
+Perhaps if it->second was brought out into a specific type, this might be slightly more readable?
+
 File: compiler/optimizing/induction_var_analysis.h
+
+83
+Tue Aug 25 18:25:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_6782caa5
+Bytes: 141
+I'm not sure I understand why something like "a * i - b" is not itself a linear induction. Is there something special about the "+" operator?
 
 154:2-154:14
 Tue Aug 25 16:37:28 2015 +0000
@@ -9,4 +52,11 @@ UUID: 048f817d_8261ff7e
 Bytes: 201
 Nicolas,
 this has std:map as basic implemetantion; however, as Igor mentioned earlier, no point in keeping the elements ordered, hashing is fine; any plans to provide this in the ArenaSafeXXX wrappers?
+
+156:15-156:18
+Tue Aug 25 18:25:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a47f9520_bed1b7c7
+Bytes: 170
+If I'm understanding correctly, these are all ints to save 4 bytes on x64, or is there some other reason to prefer instruction IDs over instruction themselves as the key?
 

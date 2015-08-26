@@ -2,6 +2,28 @@ Revision: 4f6da63732dcab5813f4a69fc7bd03cd3bbce79f
 Patch-set: 3
 File: runtime/image_assistant.h
 
+35:0-48:2
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_3b72bad6
+Bytes: 1542
+It's not obvious reading the code that these states are disjoint. The reading I have is we have the following states:
+
+A. No Image File Found
+B. Image File Found
+In the case where an image file is found, the image that is found can have the following properties:
+ 1. The checksum is or is not up to date.
+ 2. The image has or has not been relocated (only relevant if the checksum is up to date).
+ 3. The image is or is not for the preferred abi.
+
+Then we have the following cases:
+1. No image file found (kImageUnusable)
+2. Preferred image found with up-to-date checksum and relocated (kImageUsable)
+3. Preferred image found with up-to-date checksum but not relocated (kImageNeedsRelocation). The comment claims this can only happen for system images. Is that because all other images are assumed to already be relocated? Or is it because you can't relocate the system image? If it's the later, it seems like the real question we are asking is not "what is the state of the image", but rather, "what should we do to make the image up to date". Maybe choosing different names based on that idea would make this more understandable.
+4. Preferred image found, but it's not up to date. (kImageOutOfDate? Though presumably an out-of-date image is also unusable?)
+5. No preferred image found, but a non-preferred image was found that is up to date and relocated (kImageNotPreferred).
+6. No preferred image found, but a non-preferred image was found that is up to date, but not relocated. (kImageNotPreferred? kImageNeedsRelocation? kImageUnusable?)
+
 50:6-50:20
 Tue Aug 25 22:46:55 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -11,6 +33,64 @@ Did you mean to do this?
 
   class ImageAssistant : ValueObject
 
+53:5-53:49
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_c65e42bd
+Bytes: 103
+Put the constructor implementations in image_assistant.cc instead of in-lining them in the header file.
+
+68:2-68:11
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_27d9406a
+Bytes: 81
+Info is a nebulous word. How about 'ImageStatus' instead? And 'GetImageStatus()'?
+
+68:15-68:23
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 048f817d_07bf5cf8
+Bytes: 66
+What does "Selected" mean? Maybe call this "GetImageInfo" instead?
+
+69:33-69:55
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_26313677
+Bytes: 416
+What does this parameter do?
+
+My interpretation is if relocation_needed is True, this does the same as GetSelectedImageInfo(), otherwise this may return the info for a system image that hasn't been relocated, even if relocation is enabled. In that case, maybe have two distinct functions: 'GetRelocatedImageInfo()' for when relocation_needed is true, and 'GetUpToDateImageInfo()' for when relocation_needed is false.
+
+73:7-73:27
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_d52a6402
+Bytes: 184
+Add a comment saying what this function means. Under what conditions would you not be allowed to create the image? Is it because of runtime parameters? File permissions? Other reasons?
+
+93:0-95:28
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_b519e806
+Bytes: 150
+If you aren't caching anything, why have an ImageAssistant class? Instead just use static functions, passing the location and isa manually every time.
+
+112:26-112:32
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4700952_9b096e39
+Bytes: 7
+image's
+
+112:52-112:91
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c42ba915_0630ba6e
+Bytes: 76
+Will it fill in header if the image is not readable or the image is invalid?
+
 115
 Tue Aug 25 22:46:55 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,10 +98,54 @@ UUID: a47f9520_27a61aca
 Bytes: 212
 Might be helpful to leave a comment here, not really sure what the difference here is between these two. Presumably GetImageState is the same thing as the other one with the parameter set to either true or false?
 
+115:27-115:49
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e430ad80_38171308
+Bytes: 58
+It's odd that the state of the image depends on our needs.
+
+118:7-118:15
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4750d3f_96a93ede
+Bytes: 81
+IsImageValid().
+
+Why isn't this part of the ImageState returned by GetImageState?
+
 120
 Tue Aug 25 22:46:55 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4485f957_840cab48
 Bytes: 21
 Why not a unique_ptr?
+
+120:2-120:19
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_22bb652d
+Bytes: 70
+Can this fail? Return an error message if so indicating how it failed?
+
+127:0-129:32
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84253145_0e4c5117
+Bytes: 44
+Put the implementation in image_assistant.cc
+
+131:0-136:3
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a42a3512_15da1c97
+Bytes: 90
+But this already is an ImageInfo. What does it mean to get an ImageInfo from an ImageInfo?
+
+142:0-142:30
+Wed Aug 26 00:52:39 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 248c8586_e2bd5d1d
+Bytes: 9
+What for?
 

@@ -163,6 +163,51 @@ In the ImageAssistant case, it doesn't appear that you need to introduce a kind 
 
 Or maybe the issue is that the ImageInfo class is the cache. Then remove the extra class definition and rename the ImageInfo class ImageAssistant.
 
+93:0-95:28
+Wed Aug 26 22:30:30 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_30bbb45f
+UUID: 048f817d_7b6fdded
+Bytes: 2491
+Thanks for the interesting viewpoint :). I don't have a strong opinion against this FWIW.
+
+----
+
+If the issue is that it is too similar to ImageAssistant, what if he just renames it to something else like ImageFileHelper, or pretty much anything with +Image -Assistant. That might be the easiest fix.
+
+On the other hand, if it was purely static helpers do you envision every function with 2 extra arguments?
+
+  ImageFileHelper::GetSelectedImageInfo(location, isa)
+
+?
+
+That might be a little verbose for a lot of different calls, and it becomes really tempting to fabricate isa from kRuntimeISA. I suppose if it was one arg that might be fine.
+
+  ImageLocation image_location(location, isa);
+  // Option A:
+  ImageFileHelper::GetSelectedImageInfo(image_location);
+  // Option B: I suppose it could also be a free function,
+  GetSelectedImageFileInfo(image_location);
+
+
+This seems like it could be an OK-ish change, though definitely not the kind of code I would normally write.
+
+Option A is still a few more characters to read though than what it was already doing today. Option B makes it significantly harder to find the source code where the function is actually declared without grepping.
+
+  ImageAssistant image_assistant(location, isa);
+  image_assistant.GetSelectedImageInfo();
+
+One thing that might help to note is that ImageAssistant is immutable (perhaps we should even change all the local variables to 'const ImageAssistant image_assistant' to make it more obvious), which is a pretty common design pattern in OO-like languages that lack purity.
+
+In regards to modularity, just separating out code into separate classes usually reduces tight coupling and increases cohesion (think object-oriented design). I'm not sure if lazy evaluation is meant to traditionally affect modularity, it's usually used as a correctness (can't eagerly evaluate if it's too early, e.g. no runtime yet) or as a performance (re-evaluation is expensive, e.g. disk reads) feature.
+
+For statics vs non-static methods that do the same thing, i.e.
+
+  static void foo(Type& t, ... Args);
+  void foo(... Args);
+
+There is indeed very little difference other than the syntax, basically the call-site (and declaration) becomes much larger to read/write, hurting code readability. Instance methods (syntactically) are just generally preferred over static methods if their semantics are identical, am happy to explain more offline as this is a more philosophical discussion without a concretely right/wrong answer.
+
 112:26-112:32
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>

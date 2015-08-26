@@ -149,6 +149,20 @@ My understanding behind this CL was that the whole intention was to refactor the
 
 Which this CL seems to have successfully accomplished.
 
+93:0-95:28
+Wed Aug 26 22:01:48 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84253145_8eb1417a
+UUID: 048f817d_30bbb45f
+Bytes: 1239
+Given the name of the class "ImageAssistant", I assume the ImageAssistant is meant to be analogous to the OatFileAssistant.
+
+The goal of the OatFileAssistant was to avoid duplicating the  code for checking the status of an oat file. Previously there were multiple copies across the code base of the code for checking the status of an oat file, each with minor variations. The reason the OatFileAssistant is a class, rather than a set of static functions, is because providing static functions without duplicating code would require the same expensive operations to be executed multiple times in many of the use cases. The OatFileAssistant is a cache for those expensive operations. (From a Haskell point of view: lazy evaluation improves modularity; the OatFileAssistant is a localized implementation of lazy evaluation to improve the modularity of getting the status of an oat file).
+
+In the ImageAssistant case, it doesn't appear that you need to introduce a kind of lazy evaluation for modularity, and it would be simpler and easier to understand if you provided static functions instead.
+
+Or maybe the issue is that the ImageInfo class is the cache. Then remove the extra class definition and rename the ImageInfo class ImageAssistant.
+
 112:26-112:32
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -24,6 +24,18 @@ Then we have the following cases:
 5. No preferred image found, but a non-preferred image was found that is up to date and relocated (kImageNotPreferred).
 6. No preferred image found, but a non-preferred image was found that is up to date, but not relocated. (kImageNotPreferred? kImageNeedsRelocation? kImageUnusable?)
 
+35:0-48:2
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_3b72bad6
+UUID: c42ba915_2c2b55ba
+Bytes: 338
+They are not totally disjoint. 
+
+kImageUnusable is only returned for images that are corrupt or missing. all other states mean the image could be used but the runtime would not pick it for various reasons.
+
+kImageNeedsRelocation will only be returned for /system images. If the /system image would be preferred we would never return this.
+
 50:6-50:20
 Tue Aug 25 22:46:55 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,6 +60,14 @@ UUID: c42ba915_c65e42bd
 Bytes: 103
 Put the constructor implementations in image_assistant.cc instead of in-lining them in the header file.
 
+53:5-53:49
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_c65e42bd
+UUID: e430ad80_330df4c6
+Bytes: 132
+If you really want me to I will but these are fairly trivial, keeping them near the declarations seems to be better for readability.
+
 68:2-68:11
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -62,6 +82,22 @@ UUID: 048f817d_07bf5cf8
 Bytes: 66
 What does "Selected" mean? Maybe call this "GetImageInfo" instead?
 
+68:15-68:23
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_07bf5cf8
+UUID: 849451c2_7bcb1f96
+Bytes: 16
+Removed selected
+
+68:2-68:11
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_27d9406a
+UUID: e4750d3f_83dedbd2
+Bytes: 105
+I think info is better since it includes a lot of other information about the image then just its status.
+
 69:33-69:55
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -71,12 +107,28 @@ What does this parameter do?
 
 My interpretation is if relocation_needed is True, this does the same as GetSelectedImageInfo(), otherwise this may return the info for a system image that hasn't been relocated, even if relocation is enabled. In that case, maybe have two distinct functions: 'GetRelocatedImageInfo()' for when relocation_needed is true, and 'GetUpToDateImageInfo()' for when relocation_needed is false.
 
+69:33-69:55
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_26313677
+UUID: e430ad80_5ebaf7a5
+Bytes: 100
+Added a comment explaining the parameter. I think that it is better just to leave it as a parameter.
+
 73:7-73:27
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a42a3512_d52a6402
 Bytes: 184
 Add a comment saying what this function means. Under what conditions would you not be allowed to create the image? Is it because of runtime parameters? File permissions? Other reasons?
+
+73:7-73:27
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_d52a6402
+UUID: 4485f957_7f3cb146
+Bytes: 118
+Added. It can only fail because the global /data/dalvik-cache/<isa>/ is special and should not be created by programs.
 
 93:0-95:28
 Wed Aug 26 00:52:39 2015 +0000
@@ -111,6 +163,24 @@ UUID: c42ba915_0630ba6e
 Bytes: 76
 Will it fill in header if the image is not readable or the image is invalid?
 
+112:52-112:91
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c42ba915_0630ba6e
+UUID: 4485f957_ffe8a12a
+Bytes: 108
+Made comment clearer.
+
+If the file is not readable no, otherwise yes. This should not be relied upon though.
+
+112:26-112:32
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4700952_9b096e39
+UUID: 248c8586_73d85d98
+Bytes: 4
+Done
+
 115
 Tue Aug 25 22:46:55 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -125,6 +195,22 @@ UUID: e430ad80_38171308
 Bytes: 58
 It's odd that the state of the image depends on our needs.
 
+115
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_27a61aca
+UUID: e430ad80_5e299738
+Bytes: 4
+Done
+
+115:27-115:49
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e430ad80_38171308
+UUID: e4750d3f_26ab755f
+Bytes: 26
+added comment explanation.
+
 118:7-118:15
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -133,6 +219,14 @@ Bytes: 81
 IsImageValid().
 
 Why isn't this part of the ImageState returned by GetImageState?
+
+118:7-118:15
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4750d3f_96a93ede
+UUID: e430ad80_9e616f7f
+Bytes: 137
+It is, if this returns false then the state will be kImageUnusable (or kImageOutOfDate on a cache image if a valid /system image exists).
 
 120
 Tue Aug 25 22:46:55 2015 +0000
@@ -147,6 +241,22 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 248c8586_22bb652d
 Bytes: 70
 Can this fail? Return an error message if so indicating how it failed?
+
+120
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_840cab48
+UUID: 84253145_ff297dbd
+Bytes: 4
+Done
+
+120:2-120:19
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_22bb652d
+UUID: 248c8586_2e2b4eba
+Bytes: 164
+only in the same way that OpenFileForReading does (i.e. it doesn't exist/no perms to read). That doesn't have an error message so I don't thing that this needs one.
 
 127:0-129:32
 Wed Aug 26 00:52:39 2015 +0000
@@ -163,6 +273,14 @@ UUID: a42a3512_55f17407
 Bytes: 47
 Is this a style rule somewhere? I don't recall.
 
+127:0-129:32
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_55f17407
+UUID: 849451c2_7bc79faa
+Bytes: 184
+The google style guide doesn't mention it and this is done in other places in art. Also these are so trivial it is probably better for readability to have them in the class definition.
+
 131:0-136:3
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -170,10 +288,26 @@ UUID: a42a3512_15da1c97
 Bytes: 90
 But this already is an ImageInfo. What does it mean to get an ImageInfo from an ImageInfo?
 
+131:0-136:3
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a42a3512_15da1c97
+UUID: 84253145_1f547929
+Bytes: 147
+These are internal function used in the implementation of GetImageState (which depends partly on the contents of both the system and cache images).
+
 142:0-142:30
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 248c8586_e2bd5d1d
 Bytes: 9
 What for?
+
+142:0-142:30
+Wed Aug 26 20:48:18 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_e2bd5d1d
+UUID: a47f9520_33f89870
+Bytes: 82
+To allow ImageAssistant (and no-one else) to directly create ImageInfo structures.
 

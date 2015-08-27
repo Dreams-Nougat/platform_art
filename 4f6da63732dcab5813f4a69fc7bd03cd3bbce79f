@@ -208,6 +208,20 @@ For statics vs non-static methods that do the same thing, i.e.
 
 There is indeed very little difference other than the syntax, basically the call-site (and declaration) becomes much larger to read/write, hurting code readability. Instance methods (syntactically) are just generally preferred over static methods if their semantics are identical, am happy to explain more offline as this is a more philosophical discussion without a concretely right/wrong answer.
 
+93:0-95:28
+Thu Aug 27 21:39:48 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_7b6fdded
+UUID: c42ba915_58168b56
+Bytes: 909
+Just to defend my current design.
+
+There are a few places (most notably patchoat) where the fact that ImageAssistant is a class is helpful. It allows one to write functions that pick between a cache and system image in a different manner without having to pass around the location and isa all the time.
+
+Furthermore if we wanted to make ImageInfo not be a class we would need to have everything pass around both the system and cache image filenames (or recalculate them every time) due to the way that status checking works which would be very confusing.
+
+Also this was mainly designed to pull all the different logics we use to choose images into one single place and allow one to easily implement slightly different logics if need be. This is because none of the operations involved in choosing an art file are particularly expensive. We could change it in the future to be caching if it becomes so however.
+
 112:26-112:32
 Wed Aug 26 00:52:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>

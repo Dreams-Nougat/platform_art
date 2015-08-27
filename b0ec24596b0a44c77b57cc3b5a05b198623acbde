@@ -1,0 +1,19 @@
+Revision: b0ec24596b0a44c77b57cc3b5a05b198623acbde
+Patch-set: 3
+File: compiler/utils/arm/assembler_arm.h
+
+380
+Thu Aug 27 11:26:24 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e45eedce_8ca5cb8c
+Bytes: 610
+I need to read the patch more in details, but I am wondering about one thing.
+
+`kCcDontCare` is used as a default for the `set_cc` arg in instructions. If I understand correctly it means that  instructions that don't override the default can be generated as setting the condition flags, and implies that everything should work if we replace the default with `kCcSet`. Does it?
+
+I don't know about the arm32/T2 code, but I'm pretty sure such a behaviour would break the arm64 code in the opt compiler. We write code like:
+
+    subs dst, in1, in2
+    <do some other stuff not setting the flags>
+    b.cond target
+

@@ -17,3 +17,13 @@ I don't know about the arm32/T2 code, but I'm pretty sure such a behaviour would
     <do some other stuff not setting the flags>
     b.cond target
 
+380
+Thu Aug 27 11:55:41 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e45eedce_8ca5cb8c
+UUID: c459e9e9_2efdaba2
+Bytes: 697
+Yes, everything should work if the default is changed to kCcSet, but some instructions would use the 32-bit encoding instead of available 16-bit encoding, for example ADD/MOV with high registers and many instructions in IT blocks.
+
+On arm64, the S flag is uniformly present for all instructions (notably CMP is an alias for SUBS). This is not the case for 16-bit Thumb instructions which we want to prioritize over 32-bit versions, so we use a different approach. So if you want to use such code on Thumb2, you will have to specify kCcKeep for all instructions in "<do some other stuff not setting the flags>". And this wasn't even possible before, so such code was previously impossible to write.
+

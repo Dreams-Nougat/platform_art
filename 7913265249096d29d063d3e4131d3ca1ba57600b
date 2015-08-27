@@ -17,6 +17,20 @@ If relocation is disabled *but* there is a cache image, you get the GetCacheImag
 
 How does it know if relocation is enabled or not since its not a parameter? The global runtime flags?
 
+71
+Thu Aug 27 21:39:48 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 248c8586_4c949b97
+UUID: 046221c0_1772f407
+Bytes: 287
+> If relocation is disabled *and* there is no cache image, you get the system image (GetSystemImageInfo).
+
+No it will only return the cache image if the checksum matches.
+
+Otherwise you are correct.
+
+It knows if relocation is enabled by asking the runtime with Runtime::ShouldRelocate().
+
 73
 Wed Aug 26 22:01:22 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -29,6 +43,14 @@ And this version of the function assumes relocation is needed from the argument?
 (as opposed to just having GetImageInfo(bool relocation_needed=true)) 
 
 If these behave differently then maybe its better to rename one?
+
+73
+Thu Aug 27 21:39:48 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 048f817d_d0fca8e5
+UUID: a47f9520_7e16e456
+Bytes: 37
+It behaves the same. Comment updated.
 
 130
 Wed Aug 26 22:01:22 2015 +0000
@@ -48,4 +70,12 @@ Why not make this more explicit, e.g.?
 or similar. Then there's not a need for 2 separate functions.
 
 (line 71 GetImageInfo might similarly be able to use this)
+
+130
+Thu Aug 27 21:39:48 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a47f9520_c5f70bfe
+UUID: 046221c0_3758d880
+Bytes: 150
+It is possible but all places that might want to ignore what the runtime says currently hold this info as a bool, it is easier just to keep it as one.
 

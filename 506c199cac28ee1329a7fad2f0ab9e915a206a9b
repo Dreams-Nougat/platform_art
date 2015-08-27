@@ -34,6 +34,16 @@ UUID: 84253145_4e5249b8
 Bytes: 156
 The original code had a bug where it returned a verifier which had a stale handle. This caused occasional heap corruption with the new weak dex cache roots.
 
+815:4-815:44
+Thu Aug 27 01:11:16 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84253145_4e5249b8
+UUID: 4468999e_d936f30c
+Bytes: 311
+I see the bug.
+
+I think this works, but I think creating a handle wrapping the dex cache before calling DumpVerifier() and passing that handle to DumpVerifier() would allow us to use the common pattern of StackHandleScope (no unique_ptr, no passing StackHandleScope as a parameter, etc), if that actually works.
+
 File: runtime/base/mutex.h
 
 67:2-67:18

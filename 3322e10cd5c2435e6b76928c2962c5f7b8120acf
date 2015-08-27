@@ -33,6 +33,14 @@ UUID: 44e3394a_0afd7fdf
 Bytes: 33
 CHECK(IsUint<21>(imm21)) << imm21
 
+95
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44e3394a_0afd7fdf
+UUID: 4485f957_0802097f
+Bytes: 282
+Such checks may require introducing "& constant" on the caller site, if not already there. And the caller is quite aware of the cases when the immediate/offset field is not 8, 16, 32 or 64 bits. I'm not sure there's a value in introducing checks and moving "& const" to the callers.
+
 98:28-98:39
 Thu Aug 27 12:21:36 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -347,6 +355,14 @@ UUID: e48fcdab_fee721a0
 Bytes: 17
 CHECK(fs % 2, 0);
 
+666
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e48fcdab_fee721a0
+UUID: 4485f957_a8f73dfe
+Bytes: 156
+Not really. When the FPU is 32-bit, 64-bit doubles can be accessed as 32-bit halves using mtc1/mfc1, those halves are both even- and odd-numbered registers.
+
 670
 Thu Aug 27 12:16:38 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -531,6 +547,14 @@ UUID: c473a992_b506a05a
 Bytes: 50
 Is this case really needed?  It looks sub-optimal.
 
+1129:2-1130:71
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c473a992_b506a05a
+UUID: 248c8586_00f892ec
+Bytes: 273
+Sub-optimal in what sense? It's debugging/testing code path that must be optimized out since the caller uses the default implicit value of max_short_distance = UINT32_MAX. If the caller provides a different value explicitly, this code will be compiled and will have effect.
+
 1131:28-1131:38
 Thu Aug 27 12:16:38 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -552,6 +576,14 @@ UUID: 24656596_91d39e01
 Bytes: 32
 Shouldn't we abort in this case?
 
+1162:4-1162:19
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24656596_91d39e01
+UUID: e4750d3f_9216237b
+Bytes: 35
+It was copied from ARM at the time.
+
 1171:14-1171:34
 Thu Aug 27 12:16:38 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -565,6 +597,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c473a992_f510188e
 Bytes: 67
 Please try to factor common parts of Buncond, Bcond and Call below.
+
+1232
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c473a992_f510188e
+UUID: 048f817d_cac07497
+Bytes: 88
+Yet another helper or two for functions of this size? Or do you envision something else?
 
 1236:12-1236:21
 Thu Aug 27 12:21:28 2015 +0000
@@ -593,6 +633,15 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64e03d3d_6be4111a
 Bytes: 74
 This has a quadratic complexity.  Could this be achieved more efficiently?
+
+1306:2-1321:20
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64e03d3d_6be4111a
+UUID: 048f817d_eabd381d
+Bytes: 155
+Is this not an NP-complete problem?
+Further, the entire Android has been successfully built and booted only using short branches (+/-128KB range of jumps).
 
 1326:6-1326:18
 Thu Aug 27 12:16:38 2015 +0000
@@ -830,6 +879,14 @@ UUID: c459e9e9_2e160b7d
 Bytes: 15
 Which function?
 
+1876:5-1876:64
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c459e9e9_2e160b7d
+UUID: 048f817d_8aca6cb1
+Bytes: 126
+StoreImmediateToThread32. AFAIR, it exists/existed in implementations for other architectures, but I couldn't find any caller.
+
 2057:37-2057:45
 Thu Aug 27 12:16:38 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -947,6 +1004,14 @@ UUID: e478ad71_76cb3096
 Bytes: 54
 Please put comments before the documented enum values.
 
+441:11-441:21
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e478ad71_76cb3096
+UUID: 849451c2_af7d61db
+Bytes: 41
+Misplaced comment or could you elaborate?
+
 456:41-456:54
 Thu Aug 27 12:16:38 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -975,6 +1040,14 @@ UUID: e478ad71_b6ddc856
 Bytes: 90
 Why `~`?  Is this to highlight the space occupied by the composite instruction themselves?
 
+506:54-506:55
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e478ad71_b6ddc856
+UUID: e4750d3f_12631310
+Bytes: 235
+~ is what I opted to use instead of ≈, which isn't ASCII. It means approximate (not the entire 4GB range end to end is supported, it can be around, AFAIR, 2GB-64KB on one side due to sign extension peculiarities). Use a word instead?
+
 529:59-529:69
 Thu Aug 27 12:16:38 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -989,6 +1062,14 @@ UUID: e45eedce_cc20a3a7
 Bytes: 30
 Why not using `Register` here?
 
+547:4-547:25
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e45eedce_cc20a3a7
+UUID: 046221c0_17be74aa
+Bytes: 33
+Tried to save space. Suggestions?
+
 549:4-549:25
 Thu Aug 27 12:16:38 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1002,6 +1083,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 446ed97b_6ffac537
 Bytes: 28
 What is the purpose of this?
+
+550:31-550:34
+Thu Aug 27 13:19:48 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 446ed97b_6ffac537
+UUID: e4750d3f_b268ffe8
+Bytes: 33
+Tried to save space. Suggestions?
 
 552:15-552:18
 Thu Aug 27 12:16:38 2015 +0000

@@ -41,6 +41,16 @@ UUID: 4485f957_0802097f
 Bytes: 282
 Such checks may require introducing "& constant" on the caller site, if not already there. And the caller is quite aware of the cases when the immediate/offset field is not 8, 16, 32 or 64 bits. I'm not sure there's a value in introducing checks and moving "& const" to the callers.
 
+95
+Thu Aug 27 13:34:43 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4485f957_0802097f
+UUID: e45eedce_6c488f33
+Bytes: 251
+Readability: I find it _very_ confusing that EmitI21() accepts input that isn't 21-bit.
+
+Maybe you want a signed 21-bit value? Then why is the argument uint32_t? It should be int32_t, CHECK(IsInt<21>(imm21)) << imm21 and the "& const" needs to remain.
+
 98:28-98:39
 Thu Aug 27 12:21:36 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

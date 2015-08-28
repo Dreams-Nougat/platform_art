@@ -9,3 +9,150 @@ UUID: 845371c9_0c16bb55
 Bytes: 15
 nit: not sorted
 
+126:9-128:56
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 446ed97b_b21fc662
+Bytes: 406
+Please refactor this using something similar to https://android-review.googlesource.com/#/c/167353/2/compiler/optimizing/codegen_test.cc:
+
+  static bool CanExecuteOnHardware(InstructionSet target_isa) {
+    return (target_isa == kRuntimeISA)
+        // Handle the special case of ARM, with two instructions sets
+        // (ARM32 and Thumb-2).
+        || (kRuntimeISA == kArm && target_isa == kThumb2);
+  }
+
+133:33-133:47
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e45eedce_4ca913db
+Bytes: 124
+Use a pointer instead of reference, as per our C++ style guide ("all parameters passed by reference must be labeled const").
+
+File: runtime/code_simulator_container.cc
+
+27:0-28:38
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 444df958_91535c43
+Bytes: 33
+Break the line after `=` instead.
+
+31:2-31:12
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c459e9e9_aec43bda
+Bytes: 274
+I would send the message to the verbose log instead, for debugging purposes:
+
+  const char* libart_compiler_so_name =
+      kIsDebugBuild ? "libartd-simulator.so" : "libart-simulator.so";
+  VLOG(compiler) << "Could not load " << libart_compiler_so_name << ": " << dlerror();
+
+34:0-35:64
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c459e9e9_6ea72341
+Bytes: 15
+Nit: long line.
+
+36:63-36:70
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c459e9e9_0eb46f67
+Bytes: 6
+symbol
+
+File: runtime/code_simulator_container.h
+
+35:2-35:16
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e478ad71_96b52c6d
+Bytes: 115
+As `simulator_` can be null, I would return a pointer here (even if we're supposed to call CanSimulate before Get).
+
+40:2-40:22
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 845371c9_eca0ff7d
+Bytes: 6
+Ditto.
+
+47
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 444df958_5172d4d6
+Bytes: 62
+Also add:
+
+  DISALLOW_COPY_AND_ASSIGN(CodeSimulatorContainer);
+
+File: runtime/simulator/Android.mk
+
+100:0-105:5
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 845371c9_ec89df03
+Bytes: 85
+Shouldn't we prevent the simulator from being built on targets (at least by default)?
+
+File: runtime/simulator/code_simulator.h
+
+27:2-27:71
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e478ad71_d69884fe
+Bytes: 112
+Add a comment saying that this functions returns a null pointer if a simulator cannot be found for `target_isa`.
+
+32:31-32:32
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 446ed97b_d2c91a55
+Bytes: 5
+const
+
+33:35-33:36
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e48fcdab_e136a00c
+Bytes: 5
+const
+
+34:35-34:36
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64e03d3d_0b4745f8
+Bytes: 5
+const
+
+34
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e478ad71_f69d80eb
+Bytes: 65
+Also add:
+
+  private:
+   DISALLOW_COPY_AND_ASSIGN(CodeSimulator);
+
+37:0-38:62
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64e03d3d_ab51f9b3
+Bytes: 21
+Put on a single line.
+
+File: runtime/simulator/code_simulator_arm64.h
+
+52
+Fri Aug 28 13:48:23 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 444df958_913c3cef
+Bytes: 58
+Also add:
+
+  DISALLOW_COPY_AND_ASSIGN(CodeSimulatorArm64);
+

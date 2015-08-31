@@ -9,3 +9,14 @@ UUID: 8497f201_de44653c
 Bytes: 196
 seems potentially confusing when reworking code, previously deleting arguments to format string would have triggered an error, makes me wonder if a separate path would be better like appendLiteral
 
+File: tools/ahat/src/DocString.java
+
+65
+Mon Aug 31 20:51:29 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6424bead_70dc4e01
+Bytes: 452
+Remember a user of your API can still pass Object[] for args. The varargs is just syntactic sugar. So a caller could call append("format...", new Object[]{a1,a2}) (your code will be safe here) or sadly they could call append("format ...", null); which I think will cause a NPE here.   If you truly want to guard this code consider adding a null check on args. 
+   
+String text = (args != null && args.length > 0) ? String.format(format, args) : format;
+

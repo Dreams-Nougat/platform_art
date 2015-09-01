@@ -1,0 +1,79 @@
+Revision: 13ddf9e58eae08716b0abffbd4803933ed5d0c70
+Patch-set: 6
+File: compiler/utils/mips/assembler_mips.cc
+
+563
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46956e6_d7f0bccd
+Bytes: 7
+<< cond
+
+619
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 447a5aab_d4175c7f
+Bytes: 7
+<< cond
+
+896:2-896:30
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 447a5aab_342330e9
+Bytes: 235
+Please replace with
+
+  CHECK_NE(condition, kUncond);
+
+and add `utils/mips/assembler_mips.h` to `LIBART_COMPILER_ENUM_OPERATOR_OUT_HEADER_FILES_mips` in compiler/Android.mk to generate an operator<< for `MipsAssembler::BranchCondition`.
+
+981
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4deb6f4_af0ef966
+Bytes: 7
+<< cond
+
+1262:0-1263:33
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46956e6_f7edc0f2
+Bytes: 187
+I was thinking about this instead:
+
+  branches_.emplace_back(IsR6(), buffer_.Size(), target);
+
+and turning `branches_` into an `std::vector<Branch>` (and likewise in other methods below).
+
+1402:6-1402:64
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46956e6_97fa44aa
+Bytes: 29
+Use CHECK_EQ, here and below.
+
+1440:0-1441:20
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04d222e7_f2edc8f2
+Bytes: 54
+Please introduce a Push method to factor this pattern.
+
+1447:6-1447:20
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 447a5aab_f414d87c
+Bytes: 75
+Please introduce a Pop method to factor the Lw + DecreaseFrameSize pattern.
+
+2210:0-2211:39
+Tue Sep 01 10:44:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4dbaa04_9011d48b
+Bytes: 157
+Likewise, replace with:
+
+  exception_blocks_.emplace_back(scratch, stack_adjust);
+
+and turn `exception_blocks_` into an `std::vector<MipsExceptionSlowPath>`.
+

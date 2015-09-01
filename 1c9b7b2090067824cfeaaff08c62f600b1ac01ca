@@ -1,6 +1,57 @@
 Revision: 1c9b7b2090067824cfeaaff08c62f600b1ac01ca
 Patch-set: 5
+File: /COMMIT_MSG
+
+14
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6492fe15_a69dccd0
+Bytes: 44
+Is there a bug for this? Add the bug number?
+
 File: patchoat/patchoat.cc
+
+144:0-152:1
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 644d9e85_1931bb20
+Bytes: 333
+It looks like the goal here is to open a valid image file (preferring the system image location over the cache image location). I think that would be a good function to implement in the image assistant as a convenience, rather than having to make three calls here to achieve the same thing: GetImageInfo, IsImageValid, and OpenImage.
+
+163:0-167:3
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8429b287_bdfa8ba9
+Bytes: 107
+It looks like we don't do anything with the image header information that is read. Why read it at all here?
+
+203:1-203:30
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 644d9e85_993c8bf7
+Bytes: 73
+What is this check for? Should it come right after we get the image info?
+
+245:0-255:1
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6424bead_c796a23a
+Bytes: 175
+Here you could make use of the image assistant convenience function I suggested above and avoid duplicating the sequence of calls to GetImageInfo, IsImageValid, and OpenImage.
+
+264:0-268:3
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 644d9e85_599e135a
+Bytes: 72
+As before, the image_header is unused. Don't read it in the first place?
+
+304:1-304:30
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8429b287_fd8c932c
+Bytes: 68
+Same comment as above. What is this for? Should it be moved earlier?
 
 1192:20-1192:63
 Tue Sep 01 14:12:54 2015 +0000
@@ -8,6 +59,15 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4deb6f4_ef1e416c
 Bytes: 54
 Why not adding a helper for this: info.IsImageUsable ?
+
+1188:4-1198:48
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 045f8228_b9c62bcf
+Bytes: 289
+It looks like the goal of using an ImageAssistant and ImageInfo here is solely to find the patched_image_filename. I think it would be nice to move this code to the image assistant as a convenience function, such as:
+
+patched_image_filename = GetImageFilename(patched_image_location, isa).
 
 File: runtime/gc/space/image_space.cc
 
@@ -20,12 +80,56 @@ Bytes: 33
 
 Also, explain why.
 
+324:2-324:55
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_4d0d053f
+Bytes: 139
+It looks like the only way this info is used is to get the filename. How about having a function to get the cached image filename directly?
+
 350:27-351:38
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4d42ed5_518374ce
 Bytes: 17
 nit: one per line
+
+378:0-384:33
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 644d9e85_f9a81f5c
+Bytes: 302
+Some of whether the image is relocated is encoded in ImageState, right? Is there a reason to have a separate ImageState and methods like IsRelocated, IsCacheImage, etc. in ImageInfo? Could all of the state be represented in ImageState alone, or could all of the state be represented in ImageInfo alone?
+
+390:0-392:62
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_5baffbfc
+Bytes: 68
+Is the comment wrong? Is this about relocation or about compilation?
+
+436:0-457:3
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 045f8228_39bd9b0f
+Bytes: 222
+This if statement follows the switch statement on line 375. Can you merge them into a single switch statement, or a single if statement? I think that would make it easier to understand what actions are taken in what cases.
+
+482:0-483:45
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4618eea_63db5e59
+Bytes: 22
+What is this lock for?
+
+File: runtime/gc/space/image_space.h
+
+109:0-114:44
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_bb9887f7
+Bytes: 111
+Is there any reason to include this in the header file? Can it be a static function entirely in image_space.cc?
 
 File: runtime/image_assistant.cc
 
@@ -156,6 +260,50 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4dbaa04_90fc7438
 Bytes: 17
 nit: one per line
+
+File: runtime/native/dalvik_system_VMRuntime.cc
+
+589:1-590:84
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_ed5e515d
+Bytes: 187
+I think it would be nice to move this logic into a convenience function in the image assistant. Something like:
+ return ImageIsUseable(Runtime::Current()->GetImageLocation().c_str(), isa)
+
+File: runtime/oat_file_assistant.cc
+
+939:0-953:7
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4618eea_3894757d
+Bytes: 139
+Can you use the image assistant for both isa == kRuntimeISA and isa != kRuntimeISA cases? Would that have adverse performance implications?
+
+File: runtime/oat_file_assistant_test.cc
+
+58:0-58:73
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_ad684901
+Bytes: 64
+Why is this needed? Should it be in common_runtime_test instead?
+
+102:2-104:1
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_db10eb16
+Bytes: 36
+Did you mean to add this line twice?
+
+File: runtime/runtime.cc
+
+714:63-714:81
+Tue Sep 01 21:12:35 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 045f8228_994807f5
+Bytes: 62
+Why do we use the system image here, and not the cached image?
 
 File: runtime/utils.h
 

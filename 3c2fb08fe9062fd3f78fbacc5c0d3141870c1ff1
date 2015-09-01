@@ -49,6 +49,35 @@ UUID: e486eed4_30d6d6df
 Bytes: 30
 I have no idea how to do this.
 
+276
+Tue Sep 01 19:07:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_30d6d6df
+UUID: 8497f201_525364dd
+Bytes: 859
+It's pretty straight forward despite looking a bit scary, just need to specialize CmdlineType<T>
+
+For example (and see cmdline/cmdline_types.h for more info)
+
+   enum ExperimentalFlags {
+       kExperimentalNone,  // this has to be first, its the default
+       kExperimentalLambdas,
+       kExperimentalDefaultMethods,
+   };
+
+   struct CmdlineType<ExperimentalFlags> : CmdlineTypeParser<ExperimentalFlags> {
+ 
+   void ParseAndAppend(const std::string& option, ExperimentalFlags& existing) { 
+      if (option == "lambdas") existing |= kLambdas;
+      if (option == "defaultmethods") ...
+   }
+
+   };
+
+Just look at the other options using 'AppendValues', it's pretty straight forward, the only difference is they usually parse into std::vector usually instead of enum flags.
+
+Also would need a new unit test in cmdline_parser_test.cc for these flags and types.
+
 File: runtime/verifier/method_verifier.cc
 
 573:1-581:3

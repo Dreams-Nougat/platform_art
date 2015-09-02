@@ -9,12 +9,35 @@ UUID: c4dbaa04_7329dac8
 Bytes: 140
 What about returning a (non-null) pointer pointing to the integer constant if `instruction` is a HIntConstant, and a null pointer otherwise?
 
+48:45-48:59
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_7329dac8
+UUID: 644d9e85_3f857790
+Bytes: 190
+I like the idiom
+
+if (IsInt(instruction, &val) && val == 10
+
+with a pointer this would read a bit more obscure at the client
+
+int *ptr = IsInt(instruction);
+if (ptr != nullptr && *ptr == 10)
+
 263:8-263:35
 Wed Sep 02 15:38:03 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4dbaa04_131e4ea0
 Bytes: 91
 Nit: move this to a local variable; or better (IMHO), turn this `if/else if` into a switch?
+
+263:8-263:35
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_131e4ea0
+UUID: e486eed4_4d009cc7
+Bytes: 4
+Done
 
 265:29-265:37
 Wed Sep 02 15:38:03 2015 +0000
@@ -23,12 +46,28 @@ UUID: e4d42ed5_51e5b44c
 Bytes: 64
 Could you add a comment about why the last SCC is not processed?
 
+265:29-265:37
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_51e5b44c
+UUID: e4618eea_95d6872f
+Bytes: 86
+Ah, yes, the last stmt is named phi. Added a comment to make that clear in both cases.
+
 279:0-279:115
 Wed Sep 02 15:38:03 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4dbaa04_332352e9
 Bytes: 15
 Nit: long line.
+
+279:0-279:115
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_332352e9
+UUID: e4618eea_75db1359
+Bytes: 4
+Done
 
 349:20-349:21
 Wed Sep 02 15:38:03 2015 +0000
@@ -37,6 +76,14 @@ UUID: e4d42ed5_510cd4b6
 Bytes: 76
 For safety reasons, use a default value outside the [0,31) range? (E.g. -1.)
 
+349:20-349:21
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_510cd4b6
+UUID: 644d9e85_ff8ebfb2
+Bytes: 4
+Done
+
 351:72-351:91
 Wed Sep 02 15:38:03 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +91,29 @@ UUID: e4d42ed5_7111d8cd
 Bytes: 79
 "Potential side effect in HIR."?  (The constant could already be in the graph.)
 
+351:72-351:91
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_7111d8cd
+UUID: 8497f201_45b95901
+Bytes: 34
+Yes, you are right. Added comment.
+
 359:87-359:93
 Wed Sep 02 15:38:03 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2461e61f_f377f098
 Bytes: 6
 yield?
+
+359:87-359:93
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2461e61f_f377f098
+UUID: e4618eea_15ea97e3
+Bytes: 44
+Transfer over X yields Y
+(singular subject)?
 
 File: compiler/optimizing/induction_var_analysis.h
 
@@ -60,6 +124,14 @@ UUID: e4d42ed5_914b1cf1
 Bytes: 123
 This `inline` keyword is superfluous here, as this method is defined in the class' body (likewise for other methods below).
 
+98:2-98:8
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_914b1cf1
+UUID: e486eed4_0d8ff4b0
+Bytes: 26
+okay, removed in all cases
+
 150
 Wed Sep 02 15:38:03 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,12 +139,28 @@ UUID: a46956e6_77ce90f0
 Bytes: 140
 It would be nice to document these members (otherwise, their role has to be inferred from compiler/optimizing/induction_var_analysis.cc…).
 
+150
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a46956e6_77ce90f0
+UUID: e486eed4_ed95f0bd
+Bytes: 40
+Yes, you are right. Added comments back.
+
 154:15-154:28
 Wed Sep 02 15:38:03 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8480d2c5_365338df
 Bytes: 62
 Thanks for using `HInstruction*` instead of bare `int` values!
+
+154:15-154:28
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8480d2c5_365338df
+UUID: 84529221_9c8352ce
+Bytes: 81
+Yes, it reads a lot better, and the cc code is more intuitive too now. Thank you!
 
 File: compiler/optimizing/induction_var_analysis_test.cc
 
@@ -83,10 +171,26 @@ UUID: 247566b9_b39af8d4
 Bytes: 90
 I preferred when you were displaying the instruction name; what made you change your mind?
 
+232:18-232:19
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 247566b9_b39af8d4
+UUID: 6424bead_39eeaa81
+Bytes: 229
+Actually, it was your earlier comment (in the previous CL) on displaying the constant value instead :-) I actually liked that suggestion since it reads so much better now then with the less intuitive link back to instruction IDs.
+
 544:16-544:19
 Wed Sep 02 15:38:03 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4dbaa04_f3ccea4b
 Bytes: 156
 For better readability, maybe use basic regexps here, so that you can match an opening parenthesis with `(` instead of `\\(` (and likewise for `)` and `+`).
+
+544:16-544:19
+Wed Sep 02 16:35:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_f3ccea4b
+UUID: 0484e2ca_5f05a4d5
+Bytes: 74
+Can you please point me to an example of basic regexp so I can try it out?
 

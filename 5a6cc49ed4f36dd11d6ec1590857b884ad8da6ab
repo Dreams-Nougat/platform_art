@@ -9,3 +9,20 @@ UUID: a4deb6f4_efa0810a
 Bytes: 68
 Shouldn't we check that `instruction_->IsInstanceOf()` in this case?
 
+267:58-267:74
+Wed Sep 02 19:25:16 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_efa0810a
+UUID: 247566b9_33c26890
+Bytes: 238
+I can add an extra DCHECK to all the TypeCheckSlowPaths. However a couple of lines below we do:
+
+if (instruction->IsInstanceOf()) {
+...
+} else {
+DCHECK(instruction->IsCheckCast());
+...
+}
+
+Thus only an InstanceOf and a CheckCast will pass.
+

@@ -2,6 +2,20 @@ Revision: 2d41d53b65d77134befbedce0f98058b536a5989
 Patch-set: 6
 File: compiler/optimizing/induction_var_analysis.cc
 
+48
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a40a365b_aff21962
+Bytes: 103
+nit: wouldn't expect an "IsXXX" named function to have any side-effects, perhaps "MaybeGetInt" instead?
+
+54
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_80b3cb43
+Bytes: 25
+Why not also handle long?
+
 78:20-78:34
 Wed Sep 02 18:04:49 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -47,7 +61,101 @@ Also, e.g. graph visualizer code (one that uses similar map) does exactly the sa
 
    instruction_intervals_(std::less<const HInstruction*>(), allocator->Adapter())
 
+267:30-267:39
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0484e2ca_a23293bd
+Bytes: 12
+Why size -1?
+
+274:21-274:26
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84f1b2a4_cec323be
+Bytes: 7
+Why =2?
+
+274:30-274:36
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a40a365b_8fef557a
+Bytes: 11
+Why = size?
+
+286
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84529221_3205a5d7
+Bytes: 103
+Not sure what I understand what this is supposed to be doing, would it make sense to add more comments?
+
+309
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64ecbece_50d51220
+Bytes: 161
+nit: less indentation on the whole function if we return nullptr right away when either a or b is null (since it looks like none of the other code falls-through)
+
+341
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0484e2ca_2245230d
+Bytes: 7
+see 309
+
+358
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0484e2ca_a2805381
+Bytes: 283
+Not sure if this is right?  According to JLS bit shifting should use 0x1f mask , so the original constant value range shouldn't matter because once its masked with 0x1f it will always be in range of [0,31]
+
+See JLS 15.19 or this StackOverflow post
+http://stackoverflow.com/a/10516830
+
 File: compiler/optimizing/induction_var_analysis.h
+
+51
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64ecbece_6d8b1556
+Bytes: 36
+What happened to None and Monotonic?
+
+103
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a40a365b_2fdf49cf
+Bytes: 54
+Does this need any DCHECKs for null a/b or is null ok?
+
+107
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6492fe15_52db6206
+Bytes: 53
+Does this need any DCHECKs for null f, or is null ok?
+
+111
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a40a365b_6fe95178
+Bytes: 55
+Does this need any DCHECKs for null a/b, or is null ok?
+
+139
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a40a365b_4fee0d82
+Bytes: 21
+What does first mean?
+
+140
+Wed Sep 02 19:00:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0484e2ca_c2131721
+Bytes: 24
+What does a period mean?
 
 150:75-150:76
 Wed Sep 02 18:04:49 2015 +0000

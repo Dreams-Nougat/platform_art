@@ -9,12 +9,29 @@ UUID: a40a365b_aff21962
 Bytes: 103
 nit: wouldn't expect an "IsXXX" named function to have any side-effects, perhaps "MaybeGetInt" instead?
 
+48
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_aff21962
+UUID: c4072a51_19328fbf
+Bytes: 102
+renamed into IsIntAndGet()
+(it takes away some of the conciseness of the code, but since you asked :-)
+
 54
 Wed Sep 02 19:00:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e486eed4_80b3cb43
 Bytes: 25
 Why not also handle long?
+
+54
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_80b3cb43
+UUID: a40a365b_eff9c1ef
+Bytes: 13
+Okay then :-)
 
 78:20-78:34
 Wed Sep 02 18:04:49 2015 +0000
@@ -76,6 +93,14 @@ UUID: 0484e2ca_a23293bd
 Bytes: 12
 Why size -1?
 
+267:30-267:39
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0484e2ca_a23293bd
+UUID: 8497f201_687f8ca7
+Bytes: 17
+See comment above
+
 274:21-274:26
 Wed Sep 02 19:00:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -90,12 +115,28 @@ UUID: a40a365b_8fef557a
 Bytes: 11
 Why = size?
 
+274:30-274:36
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_8fef557a
+UUID: 84529221_741e6aa1
+Bytes: 36
+We do down now. Added more comments.
+
 286
 Wed Sep 02 19:00:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84529221_3205a5d7
 Bytes: 103
 Not sure what I understand what this is supposed to be doing, would it make sense to add more comments?
+
+286
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84529221_3205a5d7
+UUID: 8497f201_0874c8c6
+Bytes: 32
+Okay, more comments, better name
 
 309
 Wed Sep 02 19:00:00 2015 +0000
@@ -104,12 +145,37 @@ UUID: 64ecbece_50d51220
 Bytes: 161
 nit: less indentation on the whole function if we return nullptr right away when either a or b is null (since it looks like none of the other code falls-through)
 
+309
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64ecbece_50d51220
+UUID: c4072a51_593c1792
+Bytes: 123
+We talked on this earlier
+
+I like the
+
+if() {
+
+}
+return fail value
+
+pattern, unless it really really gives bad indentation.
+
 341
 Wed Sep 02 19:00:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0484e2ca_2245230d
 Bytes: 7
 see 309
+
+341
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0484e2ca_2245230d
+UUID: 644d9e85_4e076259
+Bytes: 4
+Done
 
 358
 Wed Sep 02 19:00:00 2015 +0000
@@ -121,6 +187,16 @@ Not sure if this is right?  According to JLS bit shifting should use 0x1f mask ,
 See JLS 15.19 or this StackOverflow post
 http://stackoverflow.com/a/10516830
 
+358
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0484e2ca_a2805381
+UUID: e486eed4_e33c21f8
+Bytes: 187
+Ah, you know that in C this was a bit portability issue. I once debugged someone's chess engine that run fine on x86 but not on ARM. 
+
+Even if you are right, however, does it matter much?
+
 File: compiler/optimizing/induction_var_analysis.h
 
 51
@@ -130,12 +206,32 @@ UUID: 64ecbece_6d8b1556
 Bytes: 36
 What happened to None and Monotonic?
 
+51
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64ecbece_6d8b1556
+UUID: 0484e2ca_bde158ba
+Bytes: 282
+I don't need None anymore.
+
+I still plan to implement Monotonic at one point, but maybe only if we need it. I don't want to get carried away (too much) getting it academically sound without having direct applications in our code.
+
+(but expect it at some point, I cannot help myself)
+
 103
 Wed Sep 02 19:00:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a40a365b_2fdf49cf
 Bytes: 54
 Does this need any DCHECKs for null a/b or is null ok?
+
+103
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_2fdf49cf
+UUID: 64ecbece_b044363b
+Bytes: 4
+Done
 
 107
 Wed Sep 02 19:00:00 2015 +0000
@@ -144,12 +240,28 @@ UUID: 6492fe15_52db6206
 Bytes: 53
 Does this need any DCHECKs for null f, or is null ok?
 
+107
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_52db6206
+UUID: 84529221_34f112d0
+Bytes: 4
+Done
+
 111
 Wed Sep 02 19:00:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a40a365b_6fe95178
 Bytes: 55
 Does this need any DCHECKs for null a/b, or is null ok?
+
+111
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_6fe95178
+UUID: 64ecbece_90413a2b
+Bytes: 4
+Done
 
 139
 Wed Sep 02 19:00:00 2015 +0000
@@ -158,12 +270,28 @@ UUID: a40a365b_4fee0d82
 Bytes: 21
 What does first mean?
 
+139
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_4fee0d82
+UUID: 6492fe15_d26c528e
+Bytes: 4
+Done
+
 140
 Wed Sep 02 19:00:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0484e2ca_c2131721
 Bytes: 24
 What does a period mean?
+
+140
+Wed Sep 02 20:06:52 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0484e2ca_c2131721
+UUID: 84529221_d4f75ec0
+Bytes: 36
+Renamed the method to be more clear.
 
 150:75-150:76
 Wed Sep 02 18:04:49 2015 +0000

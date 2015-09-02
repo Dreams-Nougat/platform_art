@@ -1,0 +1,92 @@
+Revision: a2d85a849b44a80a616f56b6339e0c3f4b2358d0
+Patch-set: 5
+File: compiler/optimizing/induction_var_analysis.cc
+
+48:45-48:59
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4dbaa04_7329dac8
+Bytes: 140
+What about returning a (non-null) pointer pointing to the integer constant if `instruction` is a HIntConstant, and a null pointer otherwise?
+
+263:8-263:35
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4dbaa04_131e4ea0
+Bytes: 91
+Nit: move this to a local variable; or better (IMHO), turn this `if/else if` into a switch?
+
+265:29-265:37
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4d42ed5_51e5b44c
+Bytes: 64
+Could you add a comment about why the last SCC is not processed?
+
+279:0-279:115
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4dbaa04_332352e9
+Bytes: 15
+Nit: long line.
+
+349:20-349:21
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4d42ed5_510cd4b6
+Bytes: 76
+For safety reasons, use a default value outside the [0,31) range? (E.g. -1.)
+
+351:72-351:91
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4d42ed5_7111d8cd
+Bytes: 79
+"Potential side effect in HIR."?  (The constant could already be in the graph.)
+
+359:87-359:93
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2461e61f_f377f098
+Bytes: 6
+yield?
+
+File: compiler/optimizing/induction_var_analysis.h
+
+98:2-98:8
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4d42ed5_914b1cf1
+Bytes: 123
+This `inline` keyword is superfluous here, as this method is defined in the class' body (likewise for other methods below).
+
+150
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46956e6_77ce90f0
+Bytes: 140
+It would be nice to document these members (otherwise, their role has to be inferred from compiler/optimizing/induction_var_analysis.cc…).
+
+154:15-154:28
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8480d2c5_365338df
+Bytes: 62
+Thanks for using `HInstruction*` instead of bare `int` values!
+
+File: compiler/optimizing/induction_var_analysis_test.cc
+
+232:18-232:19
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 247566b9_b39af8d4
+Bytes: 90
+I preferred when you were displaying the instruction name; what made you change your mind?
+
+544:16-544:19
+Wed Sep 02 15:38:03 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4dbaa04_f3ccea4b
+Bytes: 156
+For better readability, maybe use basic regexps here, so that you can match an opening parenthesis with `(` instead of `\\(` (and likewise for `)` and `+`).
+

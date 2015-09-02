@@ -9,6 +9,14 @@ UUID: 6492fe15_a69dccd0
 Bytes: 44
 Is there a bug for this? Add the bug number?
 
+14
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_a69dccd0
+UUID: c4072a51_30996871
+Bytes: 39
+not as far as I know. I could make one.
+
 File: patchoat/patchoat.cc
 
 144:0-152:1
@@ -18,12 +26,30 @@ UUID: 644d9e85_1931bb20
 Bytes: 333
 It looks like the goal here is to open a valid image file (preferring the system image location over the cache image location). I think that would be a good function to implement in the image assistant as a convenience, rather than having to make three calls here to achieve the same thing: GetImageInfo, IsImageValid, and OpenImage.
 
+144:0-152:1
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_1931bb20
+UUID: a40a365b_8ff75593
+Bytes: 58
+Also use info to get header and check that loading worked.
+
 163:0-167:3
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8429b287_bdfa8ba9
 Bytes: 107
 It looks like we don't do anything with the image header information that is read. Why read it at all here?
+
+163:0-167:3
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8429b287_bdfa8ba9
+UUID: a40a365b_8f70f5d3
+Bytes: 112
+I didn't add the IsImagePic thing. 
+
+It seems to be there purely for debug logging. I can remove it if you want.
 
 203:1-203:30
 Tue Sep 01 21:12:35 2015 +0000
@@ -32,12 +58,28 @@ UUID: 644d9e85_993c8bf7
 Bytes: 73
 What is this check for? Should it come right after we get the image info?
 
+203:1-203:30
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_993c8bf7
+UUID: a40a365b_cf6afddf
+Bytes: 117
+It checks that we loaded the image successfully (this is done in lines 174-188). Moved up closer to where it happens.
+
 245:0-255:1
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6424bead_c796a23a
 Bytes: 175
 Here you could make use of the image assistant convenience function I suggested above and avoid duplicating the sequence of calls to GetImageInfo, IsImageValid, and OpenImage.
+
+245:0-255:1
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6424bead_c796a23a
+UUID: 0484e2ca_22e7631b
+Bytes: 18
+See above comment.
 
 264:0-268:3
 Tue Sep 01 21:12:35 2015 +0000
@@ -46,6 +88,14 @@ UUID: 644d9e85_599e135a
 Bytes: 72
 As before, the image_header is unused. Don't read it in the first place?
 
+264:0-268:3
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_599e135a
+UUID: 64ecbece_4d92991a
+Bytes: 18
+See above comment.
+
 304:1-304:30
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,12 +103,28 @@ UUID: 8429b287_fd8c932c
 Bytes: 68
 Same comment as above. What is this for? Should it be moved earlier?
 
+304:1-304:30
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8429b287_fd8c932c
+UUID: 64ecbece_ad969d0a
+Bytes: 4
+Done
+
 1192:20-1192:63
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4deb6f4_ef1e416c
 Bytes: 54
 Why not adding a helper for this: info.IsImageUsable ?
+
+1192:20-1192:63
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_ef1e416c
+UUID: 8497f201_a5e4dda1
+Bytes: 4
+Done
 
 1188:4-1198:48
 Tue Sep 01 21:12:35 2015 +0000
@@ -68,6 +134,22 @@ Bytes: 289
 It looks like the goal of using an ImageAssistant and ImageInfo here is solely to find the patched_image_filename. I think it would be nice to move this code to the image assistant as a convenience function, such as:
 
 patched_image_filename = GetImageFilename(patched_image_location, isa).
+
+1188:4-1198:48
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 045f8228_b9c62bcf
+UUID: 6492fe15_92db2a58
+Bytes: 303
+We also want to print useful error messages and detect if the image is unusable. Also I don't think replacing this with:
+
+    bool is_usable = false;
+    patched_image_filename = GetImageFilename(patched_image_location, isa, &is_usable);
+    if (!is_usable) {
+         Usage(...);
+    }
+
+is much better.
 
 File: runtime/gc/space/image_space.cc
 
@@ -80,12 +162,28 @@ Bytes: 33
 
 Also, explain why.
 
+323:29-323:34
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a46956e6_1708742f
+UUID: 84529221_f7b93f50
+Bytes: 4
+Done
+
 324:2-324:55
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8497f201_4d0d053f
 Bytes: 139
 It looks like the only way this info is used is to get the filename. How about having a function to get the cached image filename directly?
+
+324:2-324:55
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_4d0d053f
+UUID: a40a365b_0fba45a8
+Bytes: 62
+Changed to not store the ImageInfo and only store std::string.
 
 350:27-351:38
 Tue Sep 01 14:12:54 2015 +0000
@@ -94,12 +192,30 @@ UUID: e4d42ed5_518374ce
 Bytes: 17
 nit: one per line
 
+350:27-351:38
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_518374ce
+UUID: 8497f201_a5805d81
+Bytes: 4
+Done
+
 378:0-384:33
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 644d9e85_f9a81f5c
 Bytes: 302
 Some of whether the image is relocated is encoded in ImageState, right? Is there a reason to have a separate ImageState and methods like IsRelocated, IsCacheImage, etc. in ImageInfo? Could all of the state be represented in ImageState alone, or could all of the state be represented in ImageInfo alone?
+
+378:0-384:33
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_f9a81f5c
+UUID: c4072a51_708db0f8
+Bytes: 210
+No. ImageState does not always encode any of this information (cache or system is encoded in some of them).
+
+We could have all of these be in ImageState but I think that would make the enum even more confusing.
 
 390:0-392:62
 Tue Sep 01 21:12:35 2015 +0000
@@ -108,6 +224,16 @@ UUID: e486eed4_5baffbfc
 Bytes: 68
 Is the comment wrong? Is this about relocation or about compilation?
 
+390:0-392:62
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_5baffbfc
+UUID: e486eed4_403703af
+Bytes: 91
+It is right. If Dex2Oat is disabled we don't do patching either.
+
+This is only for testing.
+
 436:0-457:3
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -115,12 +241,32 @@ UUID: 045f8228_39bd9b0f
 Bytes: 222
 This if statement follows the switch statement on line 375. Can you merge them into a single switch statement, or a single if statement? I think that would make it easier to understand what actions are taken in what cases.
 
+436:0-457:3
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 045f8228_39bd9b0f
+UUID: 84529221_125f495b
+Bytes: 255
+Not without utilizing switch fallthough (and really ugly switch fallthough at that).
+
+Basically this if is to recover from a failure of ImageSpace::Init. The switch is to choose what to init.
+
+Added an explanatory comment and made the first if an else-if.
+
 482:0-483:45
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4618eea_63db5e59
 Bytes: 22
 What is this lock for?
+
+482:0-483:45
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4618eea_63db5e59
+UUID: a40a365b_0f56c5f7
+Bytes: 148
+prevents races with patchoat/dex2oat. This was already in the code I just moved it into the ::Init function since that is its whole lifetime anyway.
 
 File: runtime/gc/space/image_space.h
 
@@ -131,6 +277,14 @@ UUID: e486eed4_bb9887f7
 Bytes: 111
 Is there any reason to include this in the header file? Can it be a static function entirely in image_space.cc?
 
+109:0-114:44
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_bb9887f7
+UUID: 644d9e85_3af105a2
+Bytes: 49
+Needs to be able to call the private Init method.
+
 File: runtime/image_assistant.cc
 
 45:39-45:54
@@ -140,12 +294,28 @@ UUID: 04d222e7_926d5cfb
 Bytes: 8
 new line
 
+45:39-45:54
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04d222e7_926d5cfb
+UUID: 6492fe15_f2faae7c
+Bytes: 4
+Done
+
 50:2-50:6
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4dbaa04_700b10ef
 Bytes: 7
 Runtime
+
+50:2-50:6
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_700b10ef
+UUID: e486eed4_40aaa3ee
+Bytes: 4
+Done
 
 60:0-62:40
 Tue Sep 01 14:12:54 2015 +0000
@@ -154,12 +324,28 @@ UUID: a4deb6f4_8f1bf57a
 Bytes: 31
 Do this before the cache_state?
 
+60:0-62:40
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_8f1bf57a
+UUID: 6492fe15_b2042621
+Bytes: 4
+Done
+
 104:0-107:56
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64c03e16_0d7ab1b7
 Bytes: 70
 Please add comments. This looks obscure when talking about relocation.
+
+104:0-107:56
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64c03e16_0d7ab1b7
+UUID: 644d9e85_9a747996
+Bytes: 4
+Done
 
 116:18-117:77
 Tue Sep 01 14:12:54 2015 +0000
@@ -168,12 +354,28 @@ UUID: a4deb6f4_4fb50db7
 Bytes: 17
 nit: one per line
 
+116:18-117:77
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_4fb50db7
+UUID: 6492fe15_121f1a6a
+Bytes: 4
+Done
+
 125:2-125:6
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64c03e16_2d7f6da8
 Bytes: 7
 Runtime
+
+125:2-125:6
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64c03e16_2d7f6da8
+UUID: 64ecbece_4df45901
+Bytes: 4
+Done
 
 135:2-135:6
 Tue Sep 01 14:12:54 2015 +0000
@@ -182,12 +384,28 @@ UUID: 84c53226_6eec8fca
 Bytes: 7
 Runtime
 
+135:2-135:6
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84c53226_6eec8fca
+UUID: 0484e2ca_e2741b97
+Bytes: 4
+Done
+
 136:27-136:43
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4dbaa04_300588d7
 Bytes: 23
 new line here and below
+
+136:27-136:43
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_300588d7
+UUID: 6492fe15_d218d27f
+Bytes: 4
+Done
 
 145:39-147:86
 Tue Sep 01 14:12:54 2015 +0000
@@ -196,12 +414,28 @@ UUID: 8480d2c5_56e7d4e6
 Bytes: 17
 Nit: one per line
 
+145:39-147:86
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8480d2c5_56e7d4e6
+UUID: 0484e2ca_02457f35
+Bytes: 4
+Done
+
 164:0-164:31
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4d42ed5_d196840c
 Bytes: 17
 do this line 156?
+
+164:0-164:31
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_d196840c
+UUID: 0484e2ca_c24eb759
+Bytes: 4
+Done
 
 167:17-168:75
 Tue Sep 01 14:12:54 2015 +0000
@@ -210,12 +444,28 @@ UUID: 64c03e16_cd7349df
 Bytes: 12
 one per line
 
+167:17-168:75
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64c03e16_cd7349df
+UUID: 84f1b2a4_2e7bc756
+Bytes: 4
+Done
+
 172:30-173:60
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8480d2c5_76ec50ca
 Bytes: 5
 ditto
+
+172:30-173:60
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8480d2c5_76ec50ca
+UUID: 84529221_1222a9b2
+Bytes: 4
+Done
 
 187:20-188:70
 Tue Sep 01 14:12:54 2015 +0000
@@ -224,12 +474,28 @@ UUID: 447a5aab_14f154a1
 Bytes: 12
 one per line
 
+187:20-188:70
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 447a5aab_14f154a1
+UUID: 0484e2ca_8238afb9
+Bytes: 4
+Done
+
 200:20-201:70
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 447a5aab_34f6d09a
 Bytes: 5
 ditto
+
+200:20-201:70
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 447a5aab_34f6d09a
+UUID: 84529221_72bafda9
+Bytes: 4
+Done
 
 206:2-206:6
 Tue Sep 01 14:12:54 2015 +0000
@@ -238,12 +504,28 @@ UUID: 8480d2c5_16f15ca1
 Bytes: 7
 Runtime
 
+206:2-206:6
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8480d2c5_16f15ca1
+UUID: 644d9e85_3a3225d7
+Bytes: 4
+Done
+
 224:0-244:1
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04d222e7_b26ae0de
 Bytes: 77
 These look redundant with FindCache/FindSystem. Hint for another abstraction?
+
+224:0-244:1
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04d222e7_b26ae0de
+UUID: 0484e2ca_82df4fcd
+Bytes: 96
+Possibly. We need both filenames for these so hence not using those functions. Made one smaller.
 
 File: runtime/image_assistant.h
 
@@ -254,12 +536,28 @@ UUID: 447a5aab_b46ae0de
 Bytes: 16
 nit: drop parens
 
+121:11-121:12
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 447a5aab_b46ae0de
+UUID: c4072a51_700010c8
+Bytes: 4
+Done
+
 148:12-149:26
 Tue Sep 01 14:12:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4dbaa04_90fc7438
 Bytes: 17
 nit: one per line
+
+148:12-149:26
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_90fc7438
+UUID: e486eed4_80b0ab60
+Bytes: 4
+Done
 
 File: runtime/native/dalvik_system_VMRuntime.cc
 
@@ -271,6 +569,14 @@ Bytes: 187
 I think it would be nice to move this logic into a convenience function in the image assistant. Something like:
  return ImageIsUseable(Runtime::Current()->GetImageLocation().c_str(), isa)
 
+589:1-590:84
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_ed5e515d
+UUID: 0484e2ca_423707af
+Bytes: 4
+Done
+
 File: runtime/oat_file_assistant.cc
 
 939:0-953:7
@@ -279,6 +585,14 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4618eea_3894757d
 Bytes: 139
 Can you use the image assistant for both isa == kRuntimeISA and isa != kRuntimeISA cases? Would that have adverse performance implications?
+
+939:0-953:7
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4618eea_3894757d
+UUID: 644d9e85_da167113
+Bytes: 30
+Yes. Performance is identical.
 
 File: runtime/oat_file_assistant_test.cc
 
@@ -289,12 +603,28 @@ UUID: 8497f201_ad684901
 Bytes: 64
 Why is this needed? Should it be in common_runtime_test instead?
 
+58:0-58:73
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_ad684901
+UUID: 644d9e85_9a10f915
+Bytes: 5
+Done.
+
 102:2-104:1
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e486eed4_db10eb16
 Bytes: 36
 Did you mean to add this line twice?
+
+102:2-104:1
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_db10eb16
+UUID: 8497f201_8581a137
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -304,6 +634,16 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 045f8228_994807f5
 Bytes: 62
 Why do we use the system image here, and not the cached image?
+
+714:63-714:81
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 045f8228_994807f5
+UUID: 8497f201_4562b94d
+Bytes: 292
+This path is only executed if image loading failed and relocation is enabled. We must not have (and are unable to create) a valid cache image. Therefore we should try to see if there is a /system image. If there is we use the /system oat file to run from the embedded dex files.
+
+See line 719
 
 File: runtime/utils.h
 
@@ -320,4 +660,20 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4deb6f4_0f08652f
 Bytes: 19
 I'd drop the "will"
+
+244:69-244:74
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 247566b9_b36af8de
+UUID: 0484e2ca_c2c6b7d0
+Bytes: 4
+Done
+
+244:76-244:81
+Wed Sep 02 21:04:23 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_0f08652f
+UUID: a40a365b_8f1d952a
+Bytes: 4
+Done
 

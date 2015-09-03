@@ -9,6 +9,14 @@ UUID: 04d222e7_95cc66a2
 Bytes: 35
 Why do we now transition to native?
 
+2381:4-2381:59
+Thu Sep 03 18:12:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04d222e7_95cc66a2
+UUID: 6492fe15_fc96000c
+Bytes: 155
+We need to be in runnable to create a handle scope to contain the dex cache handle. And we go back to suspended to not block GC as much during compilation.
+
 File: compiler/optimizing/builder.cc
 
 1340:64-1340:74
@@ -17,6 +25,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a455d63a_97282463
 Bytes: 83
 You're using "dex_compilation_unit_->GetDexCache()" above. Is there any difference?
+
+1340:64-1340:74
+Thu Sep 03 18:12:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a455d63a_97282463
+UUID: 240f267a_66085031
+Bytes: 114
+Not sure, but I think its easier to reason its correct if the dex_cache_ is clearly associated with the dex_file_.
 
 File: compiler/optimizing/inliner.cc
 
@@ -27,6 +43,16 @@ UUID: 04d222e7_9511c68b
 Bytes: 47
 I think this one can be in a StackHhandleScope.
 
+279:0-279:90
+Thu Sep 03 18:12:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04d222e7_9511c68b
+UUID: 8497f201_95a8e87c
+Bytes: 226
+That causes problems due to the handle scope ordering:
+Check failed: top_handle_scope == this (top_handle_scope=0x2b827004c270, this=0x2b82193fdf90)
+Which is from the handles_ scopes not lining up with the stack allocated one.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 718:21-718:22
@@ -35,4 +61,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8480d2c5_5932a729
 Bytes: 2
 1?
+
+718:21-718:22
+Thu Sep 03 18:12:54 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8480d2c5_5932a729
+UUID: 44141a88_4a5a776b
+Bytes: 4
+Done
 

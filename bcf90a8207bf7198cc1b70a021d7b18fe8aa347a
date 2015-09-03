@@ -36,6 +36,24 @@ UUID: e486eed4_cf6fbbc5
 Bytes: 17
 L379? not enough?
 
+381
+Thu Sep 03 21:01:40 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_cf6fbbc5
+UUID: 6492fe15_7f1742dd
+Bytes: 613
+Well that sort of explains why it's <31 and not <=31 but only because you already explained that to me offline. It might just need to be a bit more explicit.
+
+For example a slightly more verbose explanation would be more enlightening:
+
+   // The restriction on the shift factor (using the range [0,31) instead of [0,31]) 
+   // is to avoid generating a negative constant (i.e. x << 31 is the same as x * negative_value).
+
+And it also doesn't address why it's 0 and 31 and not 12345 and 78910.
+
+   // Don't handle any values outside of [0,31) because they are unlikely
+   // to occur as a constant in typical code.
+
 383
 Thu Sep 03 18:32:59 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -33,6 +33,24 @@ UUID: 8497f201_32756a0c
 Bytes: 74
 Yes. I wanted to upload this as a "refactor" so it's easier to discuss it.
 
+90:0-90:48
+Thu Sep 03 18:29:16 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_32756a0c
+UUID: 44141a88_aa47ab15
+Bytes: 422
+Just because the destructor hasn't changed doesn't mean the destructor is a no-op
+
+For a simple example,
+
+  struct StringWrapper {
+     std::string hello;
+  }
+
+StringWrapper itself has no user-defined destructor, but hello does and we'd still want to call ~StringWrapper() to deallocate the hello string.
+
+The exact term for this in C++ is "trivial type" (e.g. a trivial type does not need to have its destructor invoked).
+
 92
 Wed Sep 02 20:15:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

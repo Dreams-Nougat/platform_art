@@ -34,6 +34,18 @@ UUID: 6492fe15_1c8acc0e
 Bytes: 284
 This has nothing to do with relying on luck. He's in the lucky position that the type completely defines the storage size, and then the default parameter will work (we both verified that). I was just jealous, as the same is not possible for dynamically sized things like ShadowFrames.
 
+41:2-44:3
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_1c8acc0e
+UUID: 84529221_8ee1cdba
+Bytes: 455
+Yeah, I'm just going to omit this file from this CL, there is no test for it anyway because I didn't end up needing it. Sorry for adding it to the review.
+
+FWIW this templated version is not very useful either because the size should be dynamic. If the size is static then using alloca is fairly pointless.
+
+I've been some deep thought how to cleanly and reusably handle dynamically-sized structs/classes and alloca and I will post something in later CLs.
+
 File: runtime/lambda/art_lambda_method.cc
 
 33:2-36:33
@@ -42,6 +54,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e486eed4_be139066
 Bytes: 31
 Why not in an initializer list?
+
+33:2-36:33
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_be139066
+UUID: 6492fe15_dc9a24d6
+Bytes: 178
+Doesn't really matter to me, would you rather?
+
+This is not part of the style right now so we should add that if you want this to always be part of the [member] initializer list.
 
 43:29-43:30
 Wed Sep 02 23:15:34 2015 +0000
@@ -59,6 +81,16 @@ UUID: a40a365b_f2c6c6cf
 Bytes: 20
 Vertical whitespace?
 
+81:2-81:68
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_f2c6c6cf
+UUID: e486eed4_cf2a5c41
+Bytes: 180
+Do you always want a blank line in between function definitions/declarations *even if* there's a comment in between?
+
+This is not part of the style right now so we should add that.
+
 89:9-89:35
 Thu Sep 03 14:57:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -66,12 +98,28 @@ UUID: 8480d2c5_b9017b10
 Bytes: 8
 NumberOf
 
+89:9-89:35
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8480d2c5_b9017b10
+UUID: 64159e82_4b2399e7
+Bytes: 27
+NumberOfCapturedVariables ?
+
 94:5-94:85
 Thu Sep 03 14:57:09 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4d42ed5_b4df2e76
 Bytes: 12
 Explain why.
+
+94:5-94:85
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_b4df2e76
+UUID: e486eed4_4f4e4c37
+Bytes: 49
+to avoid the extra indirect load? it's on line 95
 
 100:42-100:46
 Thu Sep 03 14:57:09 2015 +0000
@@ -86,6 +134,16 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 247566b9_d68c422d
 Bytes: 36
 isn't that the definition of shorty?
+
+102:50-102:88
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 247566b9_d68c422d
+UUID: 84529221_0e94bd01
+Bytes: 238
+Yes it is, that's why it says "e.g." as a quick example to remind them what a shorty is.
+
+Would you rather I not have an example here (I personally get lost when there's specially formatted strings without examples of how they look like)?
 
 104:51-104:56
 Thu Sep 03 14:57:09 2015 +0000
@@ -109,6 +167,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4072a51_848bb654
 Bytes: 57
 Personally I dislike this. What does the style guide say?
+
+78:6-78:41
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4072a51_848bb654
+UUID: 644d9e85_879addab
+Bytes: 234
+This ends up generating pretty tight code, when I was debugging even in O2 most of these [unused] variables (and branches) were optimized out.
+
+That being said, can you elaborate on what exactly you dislike so I can see how to fix it?
 
 140:9-140:29
 Thu Sep 03 14:57:09 2015 +0000
@@ -140,6 +208,14 @@ UUID: c4072a51_e4a442ed
 Bytes: 28
 Technically java/lang/Object
 
+56:12-56:18
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4072a51_e4a442ed
+UUID: 6492fe15_dc31c485
+Bytes: 89
+This was just referring to an arbitrary object, not to the specific one. Fix or leave it?
+
 File: runtime/lambda/closure_builder.cc
 
 33:58-33:72
@@ -164,4 +240,19 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4deb6f4_52c932e5
 Bytes: 47
 Why do we need this when we have PrimitiveType?
+
+44:7-44:22
+Thu Sep 03 18:10:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_52c932e5
+UUID: 84529221_2e453936
+Bytes: 560
+TL;DR I wanted to keep the CL shorter to make it easier for reviewers
+
+--
+I need to refactor these together later (as on line 37)
+
+Right now the PrimitiveType assumes everything not a primitive is an object, and I just didn't want this CL to also have to refactor every other piece of art code where PrimitiveType was used because this is just the infrastructure side of the closures.
+
+As for the rest of the functionality here, it's helpful to have it be part of the class instead of the rest of art code hardcoding the logic on what the traits of a type are.
 

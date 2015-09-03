@@ -19,6 +19,14 @@ You are right, I knew you would say that (I tried to avoid it by adding one at t
 
 If this grows more, we make it a vistor, okay?
 
+209:4-209:45
+Thu Sep 03 16:25:24 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_9cec9ccb
+UUID: 2461e61f_364b16a1
+Bytes: 124
+I'm fine with the dispatch as-is, so your proposal sounds good to me. :)  (But maybe other people want to chime in, though.)
+
 378:38-378:62
 Thu Sep 03 11:52:29 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -35,4 +43,14 @@ Bytes: 408
 Well, please note that I don't do the 31 case (since that would yield a negative multiplier constant; although semantically correct in wrap-around arithmetic, it would confuse the induction a bit).
 
 How about this compromise: we perform the masking in the instructions simplifier on constants. That way, there is a central place with this knowledge, and all later phases don't have to jump through the hoops?
+
+378:38-378:62
+Thu Sep 03 16:25:24 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64159e82_e84ecb58
+UUID: 2461e61f_16509a49
+Bytes: 232
+Ah right, I forgot about the 31 case.
+
+Yes, factoring the masking of constants used in shifts in the InstructionSimplifier seems like a good idea.  We can always DCHECK this in the code generators after (if we do not already do it).
 

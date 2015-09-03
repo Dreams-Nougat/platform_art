@@ -53,6 +53,16 @@ That causes problems due to the handle scope ordering:
 Check failed: top_handle_scope == this (top_handle_scope=0x2b827004c270, this=0x2b82193fdf90)
 Which is from the handles_ scopes not lining up with the stack allocated one.
 
+279:0-279:90
+Thu Sep 03 21:46:25 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_95a8e87c
+UUID: 2461e61f_96702ad4
+Bytes: 176
+Ah yes. This sucks, we are going to grow the handles_scopes_ proportional to the methods we are going to try to inline. 
+
++calin: We need a better solution for handles_scopes_.
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 718:21-718:22

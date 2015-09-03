@@ -40,6 +40,14 @@ UUID: 8480d2c5_192c2fc8
 Bytes: 197
 From what I understand, the location (Dex PC) of this "synthesized" HTryBoundary could either be `predecessor->GetDexPc()` or `successor->GetDexPc()`.  What made you choose `successor->GetDexPc()`?
 
+325:63-325:84
+Thu Sep 03 12:30:01 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8480d2c5_192c2fc8
+UUID: 04d222e7_1555d639
+Bytes: 127
+I could use only one and did not want to use kNoDexPc. So my choice was arbitrary. Please propose whatever you think is better.
+
 2741:32-2742:47
 Thu Sep 03 11:19:39 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -223,4 +231,12 @@ Parent: a4deb6f4_d2f20264
 UUID: c4dbaa04_f34e2a02
 Bytes: 111
 Why mandatory? I thought we agreed we are not going to require all code that creates nodes to provide a dex pc.
+
+27
+Thu Sep 03 12:30:01 2015 +0000
+Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4dbaa04_f34e2a02
+UUID: 04d222e7_d55e6e5d
+Bytes: 283
+When we finish adding dex_pc params to all new instruction allocations (new patch sets will be needed), we will be able to make this parameter mandatory. From that moment all new code with allocations will have to set dex_pc. This will allow us to keep dex_pc coverage close to 100%.
 

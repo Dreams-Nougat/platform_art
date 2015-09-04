@@ -9,12 +9,28 @@ UUID: 644d9e85_138aae0e
 Bytes: 87
 Nicolas had a comment before about multiple back edges cases. Do you plan to handle it?
 
+41
+Fri Sep 04 23:56:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_138aae0e
+UUID: 44141a88_ae717820
+Bytes: 134
+Yes, I have to study the impact on the classification a bit more before I can feel good about handling those. For now, this is robust.
+
 89
 Fri Sep 04 23:30:35 2015 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6492fe15_70c21191
 Bytes: 96
 Can you add a comment about the order? If it affects the outcome, or just for better efficiency.
+
+89
+Fri Sep 04 23:56:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_70c21191
+UUID: e486eed4_24452636
+Bytes: 4
+Done
 
 234
 Fri Sep 04 23:30:35 2015 +0000
@@ -23,6 +39,14 @@ UUID: 644d9e85_1394ee01
 Bytes: 112
 Same, multiple back edge support? Maybe just make sure input 1 .. (size-1) are the same value before continuing?
 
+234
+Fri Sep 04 23:56:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_1394ee01
+UUID: e486eed4_44294a64
+Bytes: 171
+Ah, I do that for phis inside the loop. But for this classification I feel a little better keeping the L230 test (for now). I will give that multi edge some thought later.
+
 336
 Fri Sep 04 23:30:35 2015 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +54,30 @@ UUID: 04cce27b_9f676c5b
 Bytes: 171
 Can you do some kind of assertion that it's only for periodic here? I'm a little worried that some other induction class (in the future) may not fit this calculation here.
 
+336
+Fri Sep 04 23:56:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04cce27b_9f676c5b
+UUID: 64159e82_64315f20
+Bytes: 225
+Actually, it is periodic or wrap-around and the quickest way is to test != linear. I am afraid adding more DCHECKS may make this a bit less readable.
+
+But I shared your concern earlier which is why I added the comments above.
+
 345
 Fri Sep 04 23:30:35 2015 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e486eed4_e4965e3a
 Bytes: 5
 Same.
+
+345
+Fri Sep 04 23:56:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_e4965e3a
+UUID: 644d9e85_b63868b9
+Bytes: 4
+same
 
 File: compiler/optimizing/induction_var_analysis.h
 
@@ -45,4 +87,12 @@ Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64159e82_11fd4f33
 Bytes: 45
 Can you add an assert for kNeg, a is nullptr?
+
+116
+Fri Sep 04 23:56:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64159e82_11fd4f33
+UUID: 44141a88_4eb3a444
+Bytes: 82
+That would be at L104. Good idea. I also check that is not nullptr for the others.
 

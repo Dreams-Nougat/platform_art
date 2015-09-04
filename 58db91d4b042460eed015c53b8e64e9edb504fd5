@@ -1,0 +1,26 @@
+Revision: 58db91d4b042460eed015c53b8e64e9edb504fd5
+Patch-set: 3
+File: runtime/class_linker.cc
+
+0
+Fri Sep 04 22:47:07 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84529221_8af3ef67
+Bytes: 512
+We may want to gate all the new changes around the experimental default methods runtime options flag.
+
+(i.e. it should use the original behavior unless we enable experimental default methods from the command line)
+
+One reason is that going forward we may want to change this to use a dex version flag (so older DEX files don't get the new behavior). Another reason might be to make it easier not to break any tests or the existing apps until the feature is fully functional (which I expect will be multiple CLs).
+
+File: runtime/modifiers.h
+
+52
+Fri Sep 04 22:47:07 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cce27b_ff415800
+Bytes: 243
+I'm not sure I understand why we would need to add it to dex only (perhaps you meant runtime, as a faster lookup?)
+
+It seems like it should already be enough to check that the method's class is an interface and that the method is non-abstract?
+

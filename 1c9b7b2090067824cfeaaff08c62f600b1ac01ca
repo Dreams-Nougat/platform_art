@@ -17,6 +17,14 @@ UUID: c4072a51_30996871
 Bytes: 39
 not as far as I know. I could make one.
 
+14
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4072a51_30996871
+UUID: 240f267a_37b5e0b8
+Bytes: 11
+b/11301553?
+
 File: patchoat/patchoat.cc
 
 144:0-152:1
@@ -33,6 +41,14 @@ Parent: 644d9e85_1931bb20
 UUID: a40a365b_8ff75593
 Bytes: 58
 Also use info to get header and check that loading worked.
+
+144:0-152:1
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_8ff75593
+UUID: 6492fe15_750523d6
+Bytes: 246
+If you remove the call to IsImagePic below, you don't need to get the header, and you can check the that image loading worked in the convenience function: if the image didn't load successfully, return null, otherwise return the opened valid file.
 
 163:0-167:3
 Tue Sep 01 21:12:35 2015 +0000
@@ -51,6 +67,14 @@ I didn't add the IsImagePic thing.
 
 It seems to be there purely for debug logging. I can remove it if you want.
 
+163:0-167:3
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_8f70f5d3
+UUID: e486eed4_381a2f3a
+Bytes: 68
+Yes, please remove it. Then you don't need to load the image header.
+
 203:1-203:30
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -65,6 +89,14 @@ Parent: 644d9e85_993c8bf7
 UUID: a40a365b_cf6afddf
 Bytes: 117
 It checks that we loaded the image successfully (this is done in lines 174-188). Moved up closer to where it happens.
+
+203:1-203:30
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_cf6afddf
+UUID: 8497f201_73ba1146
+Bytes: 177
+With the helper function I proposed above, this check wouldn't be necessary at all, because the image assistant would prevent you from getting an open file for an invalid image.
 
 245:0-255:1
 Tue Sep 01 21:12:35 2015 +0000
@@ -151,6 +183,22 @@ We also want to print useful error messages and detect if the image is unusable.
 
 is much better.
 
+1188:4-1198:48
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6492fe15_92db2a58
+UUID: 0484e2ca_247448c7
+Bytes: 935
+You can return a useful error message and detect if the image is unusable in the same function. It would look nicer if the function returned the 'is_usable' and took patched_image_filename as an out parameter:
+
+if (!GetImageFilename(patched_image_location, &patched_image_filename, &error_msg)) {
+   Usage(error_msg);
+}
+
+Either way, I think the 3 or 5 new lines of code needed is much better than the 11 lines of code that it would replace.
+
+Now that I look at it more closely, it looks like patched_image_filename is used solely as an argument to ReadBaseDelta to get the image patch delta. What makes it slightly messy is that the user can specify either an image location or an image filename. Getting the patch delta for a given image location (possibly overridden with an explicit image filename) is the same kind of thing the oat file assistant needs, and makes sense to me to encapsulate entirely within an image file assistant.
+
 File: runtime/gc/space/image_space.cc
 
 323:29-323:34
@@ -217,6 +265,14 @@ No. ImageState does not always encode any of this information (cache or system i
 
 We could have all of these be in ImageState but I think that would make the enum even more confusing.
 
+378:0-384:33
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4072a51_708db0f8
+UUID: 240f267a_173d44a8
+Bytes: 100
+It's confusing to me. I'll spend some more time looking at the code to try and understand it better.
+
 390:0-392:62
 Tue Sep 01 21:12:35 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -233,6 +289,14 @@ Bytes: 91
 It is right. If Dex2Oat is disabled we don't do patching either.
 
 This is only for testing.
+
+390:0-392:62
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e486eed4_403703af
+UUID: 04cce27b_37684a2e
+Bytes: 31
+Update the comment to say this.
 
 436:0-457:3
 Tue Sep 01 21:12:35 2015 +0000
@@ -267,6 +331,14 @@ Parent: e4618eea_63db5e59
 UUID: a40a365b_0f56c5f7
 Bytes: 148
 prevents races with patchoat/dex2oat. This was already in the code I just moved it into the ::Init function since that is its whole lifetime anyway.
+
+482:0-483:45
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40a365b_0f56c5f7
+UUID: 0484e2ca_840d1442
+Bytes: 85
+Can you add a comment to the code describing the scenario where the lock is required?
 
 File: runtime/gc/space/image_space.h
 
@@ -594,6 +666,16 @@ UUID: 644d9e85_da167113
 Bytes: 30
 Yes. Performance is identical.
 
+939:0-953:7
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 644d9e85_da167113
+UUID: 8497f201_b30bb99b
+Bytes: 254
+The image assistant uses the image info from the image space if the runtime is kRuntimeISA, rather than finding and reading the info from disk?
+
+If there isn't a serious performance degredation, please do use the image file assistant to cover both cases.
+
 File: runtime/oat_file_assistant_test.cc
 
 58:0-58:73
@@ -644,6 +726,14 @@ Bytes: 292
 This path is only executed if image loading failed and relocation is enabled. We must not have (and are unable to create) a valid cache image. Therefore we should try to see if there is a /system image. If there is we use the /system oat file to run from the embedded dex files.
 
 See line 719
+
+714:63-714:81
+Fri Sep 04 17:19:43 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8497f201_4562b94d
+UUID: 8497f201_b3909981
+Bytes: 182
+Makes sense. Can you add a comment to the OpenDexFilesFromImage and OpenDexFiles functions saying that they are used to read the dex files out of the image when image loading failed?
 
 File: runtime/utils.h
 

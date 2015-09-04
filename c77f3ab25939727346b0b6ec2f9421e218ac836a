@@ -1,0 +1,75 @@
+Revision: c77f3ab25939727346b0b6ec2f9421e218ac836a
+Patch-set: 3
+File: runtime/class_linker-inl.h
+
+168
+Fri Sep 04 18:30:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cce27b_e972866a
+Bytes: 299
+Wow this is surprisingly compliant to the letter of the style but hard to read, but would be better to split into 2-3 lines
+
+  Type* root = GetClassRoot(kJavaLangObject);
+  return root->Alloc<true, false>(self,
+                                  Runtime::Current()->GetHeap()->GetCurrentAllocator());
+
+File: runtime/class_linker.cc
+
+1567
+Fri Sep 04 18:30:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_43baa445
+Bytes: 286
+Ewwww.
+
+I think for this we could maybe do
+
+  mirror::ObjectArray<mirror::StackTraceElement>*
+  ClassLinker::AllocStackTraceElementArray(Thread* self,
+                                           size_t length)
+
+in other words put the return type on its own line.
+
+Does that seem cleaner?
+
+5035:8-5035:12
+Fri Sep 04 18:30:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cce27b_09c7aacd
+Bytes: 12
+this auto :(
+
+File: runtime/class_linker.h
+
+136
+Fri Sep 04 18:30:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e486eed4_036d7c87
+Bytes: 130
+What do you think about order of SHARED_REQUIRES vs REQUIRES?
+
+Maybe all REQUIRES after SHARED_REQUIRES (alphabetical attributes?)
+
+277:25-279:82
+Fri Sep 04 18:30:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8497f201_f667efab
+Bytes: 12
+one per line
+
+317
+Fri Sep 04 18:30:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0484e2ca_a468582f
+Bytes: 94
+I think Andreas prefer an empty line before this declaration.
+
+Do we agree this is good style?
+
+723
+Fri Sep 04 18:30:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04cce27b_a9d87eb2
+Bytes: 35
+Does this really not fit on 1 line?
+

@@ -13,6 +13,14 @@ We may want to gate all the new changes around the experimental default methods 
 
 One reason is that going forward we may want to change this to use a dex version flag (so older DEX files don't get the new behavior). Another reason might be to make it easier not to break any tests or the existing apps until the feature is fully functional (which I expect will be multiple CLs).
 
+0
+Sat Sep 05 00:06:45 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84529221_8af3ef67
+UUID: 644d9e85_167bbc89
+Bytes: 80
+Yeah I'm going to do that once I've got a working-ish thing i'm ready to submit.
+
 File: runtime/modifiers.h
 
 52
@@ -23,4 +31,16 @@ Bytes: 243
 I'm not sure I understand why we would need to add it to dex only (perhaps you meant runtime, as a faster lookup?)
 
 It seems like it should already be enough to check that the method's class is an interface and that the method is non-abstract?
+
+52
+Sat Sep 05 00:06:45 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04cce27b_ff415800
+UUID: 04cce27b_22664334
+Bytes: 218
+Yeah sorry. It should be // method (runtime)
+
+Also shouldn't kAccMiranda be the same...
+
+We need it during method linking since defaults might get overriden in subclasses even if the subclass never defines that method.
 

@@ -69,6 +69,14 @@ Instead of doing the "& (regsize - 1)" twice (the first one is useless), I think
 
     uint32_t ror_shift = (regsize - rhs.immediate) & (regsize - 1);
 
+377:4-377:53
+Mon Sep 07 17:20:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_35f49800
+UUID: c4ae4a93_987dd57f
+Bytes: 167
+Or "(-static_cast<uint32_t>(rhs.immediate())) & (regsize - 1u)" if you expect this code to run on hardware that's not using two's complement representation of int64_t.
+
 File: runtime/quick/inline_method_analyser.h
 
 75:0-76:23

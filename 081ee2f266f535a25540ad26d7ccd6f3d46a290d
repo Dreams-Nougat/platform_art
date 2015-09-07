@@ -113,3 +113,11 @@ UUID: a455d63a_fa418500
 Bytes: 166
 Yes, I understand :-) What I'm saying is that those a + 0, a * 1 nodes, you'll never see them in production because the instruction simplifier will have removed them.
 
+496:0-529:3
+Mon Sep 07 17:40:19 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a455d63a_fa418500
+UUID: 0484e2ca_974ea534
+Bytes: 388
+Put in the meanwhile, it adds to the memory footprint during analysis. Since we will pass induction_ mapping to next phases, having hundred  "100 * i + x" will take a lot less bytes than the same hundred "(100 * 1) * i + (x + 0)". So if you only care about the eventually generated code, then yes, but I guess we also care about how much memory the optimizing compiler itself uses, right?
+

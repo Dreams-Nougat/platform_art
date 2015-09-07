@@ -9,6 +9,18 @@ UUID: c4ae4a93_780d613f
 Bytes: 109
 Please use a more revealing name and add documentation. *New* will not be so *new* anymore after a few weeks.
 
+490:61-490:83
+Mon Sep 07 17:01:55 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_780d613f
+UUID: 6492fe15_ee687d02
+Bytes: 194
+? :-)
+
+New is not because I wrote this code yesterday, but it denotes I am creating a new node, possibly simplified.
+
+See L103-113 in the header, NewInvariantOp, NewInvariantFetch, NewInduction.
+
 493:5-493:52
 Mon Sep 07 09:14:50 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +28,26 @@ UUID: a4deb6f4_f5413029
 Bytes: 29
 Perform some light-weight....
 
+493:5-493:52
+Mon Sep 07 17:01:55 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_f5413029
+UUID: 44141a88_a4ccf74a
+Bytes: 4
+Done
+
 496:0-529:3
 Mon Sep 07 09:14:50 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4deb6f4_b54ba847
 Bytes: 105
 Do you actually see this in practice? I'd assume other optimization phases would take care of it already.
+
+496:0-529:3
+Mon Sep 07 17:01:55 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_b54ba847
+UUID: 240f267a_2c375219
+Bytes: 421
+Yes, the 1, 0, and probably -1 are very common in induction. Note that these nodes are not in the HIR yet. If they would be, indeed instruction simplification would kick in, which is why I only do some light weight here, I will rely on HIR simplification later. But avoiding some of the very obvious cases saves a ton of new nodes in memory during analysis (viz. x + 0 and 1 * x occur a lot, see the tests alone already).
 

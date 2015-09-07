@@ -1,0 +1,80 @@
+Revision: e99b288880e47d93df187a1f7f3b679668b03cf3
+Patch-set: 1
+File: compiler/optimizing/intrinsics_arm.cc
+
+361:0-367:5
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4d56a01_a0741a11
+Bytes: 176
+The "& 0x3F" and handling is_left should be in the reverse order, otherwise it's very confusing and inefficient. Yes, there is an "LSR Rd, Rm, #32" but I'd rather use the MOVs.
+
+373:0-375:23
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24bd66ca_53d6c4df
+Bytes: 31
+std::swap(in_reg_hi, in_reg_lo)
+
+393
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ae4a93_7892c11a
+Bytes: 571
+The whole setup is inefficient. I think you should just start with
+
+  __ and_(rot, rhs.AsRegister<Register>(), ShifterOperand(0x1F));
+  __ Lsrs(tmp, rhs.AsRegister<Register>(), 6);          // Carry := rhs & 0x20.
+  __ rsb(tmp, rot, ShifterOperand(0x20), AL, kCcKeep);  // Preserve carry.
+  if (is_left) {
+    __ b(&right, CS);
+  } else {
+    __ b(&right, CC);
+    std::swap(rot, tmp);
+  }
+
+and exchange the "rot" and "tmp" in the "right" branch. Drop this MOV, the AND below and both RSB below.
+
+It would make sense to rename variables rot->shift_left, tmp->shift_right.
+
+400:0-402:47
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ae4a93_98a8755c
+Bytes: 45
+Multi-instruction IT despite the deprecation?
+
+411:7-411:10
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4d42ed5_5a8389ce
+Bytes: 118
+ORR is always 32-bit but we know that the bits don't overlap, so we can use ADD which will be 16-bit because Rd == Rn.
+
+452:0-453:51
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ae4a93_78c4812b
+Bytes: 109
+Do we know at this point if the InputAt(1) is a constant? Can we avoid requesting these temporaries if it is?
+
+File: compiler/optimizing/intrinsics_arm64.cc
+
+377:4-377:53
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a4deb6f4_35f49800
+Bytes: 195
+Instead of doing the "& (regsize - 1)" twice (the first one is useless), I think you should just prepare the final shift here:
+
+    uint32_t ror_shift = (regsize - rhs.immediate) & (regsize - 1);
+
+File: runtime/quick/inline_method_analyser.h
+
+75:0-76:23
+Mon Sep 07 17:14:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4d56a01_a0adfad4
+Bytes: 61
+Nit: I would put these right after the NumberOfTrailingZeros.
+

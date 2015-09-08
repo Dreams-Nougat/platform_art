@@ -16,6 +16,16 @@ UUID: 04d222e7_55dfdecd
 Bytes: 40
 Probably want to figure this one out :-)
 
+673:0-674:39
+Tue Sep 08 16:16:27 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04d222e7_55dfdecd
+UUID: 644d9e85_79ef812e
+Bytes: 138
+It's just ugly to test, that's all. I'll have to chain deopts to be sure... :-)
+
+It should work, as there's a transition frame in-between.
+
 File: runtime/thread.cc
 
 235:6-235:20
@@ -25,6 +35,19 @@ UUID: 04d222e7_75e462a1
 Bytes: 51
 why this flag when it's only for the debug version?
 
+235:6-235:20
+Tue Sep 08 16:16:27 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04d222e7_75e462a1
+UUID: 44141a88_84629b4a
+Bytes: 868
+By default the other users pull here and assume that the returned frame was pushed with the given type. In that case an assert is what we want (could argue it should be a CHECK instead of a DCHECK).
+
+For the deopt transition, I'm reusing the interpreter bridge. To then check whether it's from deopt, I try to get the top of the stack and see whether it's a single-frame deopt frame. This must not abort - because it may fail, e.g., when there's no top frame (e.g., when we're doing a normal managed->interpreted transition).
+
+
+There are two alternatives: add another function to inspect the type of the top of the stack (also requires a "none" type added to the enum, or an option-type), or add another assembly bridge for single-frame deopt and not share with the regular interpreter bridge. This was the minimal change, and consistent with a couple of other places.
+
 File: test/449-checker-bce/src/Main.java
 
 611:8-611:32
@@ -33,4 +56,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2461e61f_d6af425f
 Bytes: 85
 If this was for inlining, the try/catch is currently Quick compiled so it won't work.
+
+611:8-611:32
+Tue Sep 08 16:16:27 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2461e61f_d6af425f
+UUID: 0484e2ca_3a19c081
+Bytes: 97
+It should inline inside the Forward2 function, though, shouldn't it, and that's what I don't see.
 

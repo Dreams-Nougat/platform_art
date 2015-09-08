@@ -9,6 +9,14 @@ UUID: e4d42ed5_1a1e61a0
 Bytes: 153
 As discussed, you wouldn't need this method if you had a special instruction that holds the environment at the beginning of the catch. Please add a TODO.
 
+813:20-813:40
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_1a1e61a0
+UUID: 24bd66ca_93ff7cd5
+Bytes: 4
+Done
+
 842:0-844:7
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: c4ae4a93_182465f1
 Bytes: 16
 Do we need this?
 
+842:0-844:7
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_182465f1
+UUID: a4deb6f4_f8e6051d
+Bytes: 22
+You're right. Removed.
+
 855:0-855:53
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24bd66ca_53d08431
 Bytes: 86
 Why do you need this other loop? Looks like you could do everything in the first loop.
+
+855:0-855:53
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24bd66ca_53d08431
+UUID: e4d42ed5_e5173e7f
+Bytes: 48
+Done. Yep, don't need it without the stack mask.
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -32,6 +56,14 @@ UUID: c4ae4a93_382929ca
 Bytes: 64
 Please add a comment, and explain why you don't need to restore.
 
+70:6-70:23
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_382929ca
+UUID: e4d42ed5_455aca6b
+Bytes: 31
+Done. Here and everywhere else.
+
 File: compiler/optimizing/register_allocator.cc
 
 1345:15-1345:21
@@ -41,6 +73,14 @@ UUID: a4deb6f4_753d40a7
 Bytes: 47
 interval? parent will start from the beginning.
 
+1345:15-1345:21
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_753d40a7
+UUID: 24bd66ca_f3f6f0fc
+Bytes: 4
+Done
+
 1388:0-1388:84
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,12 +88,28 @@ UUID: 2461e61f_f67ebeee
 Bytes: 52
 expand the comment with why, I guess from line 1393.
 
+1388:0-1388:84
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2461e61f_f67ebeee
+UUID: 24bd66ca_5394047e
+Bytes: 4
+Done
+
 1399:36-1399:45
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 049a2278_d2e3a40a
 Bytes: 16
 which intervals?
+
+1399:36-1399:45
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 049a2278_d2e3a40a
+UUID: 24bd66ca_739900b5
+Bytes: 4
+Done
 
 File: compiler/optimizing/ssa_liveness_analysis.cc
 
@@ -64,12 +120,28 @@ UUID: 2461e61f_d67bc2fc
 Bytes: 86
 I'd rephrase the comment with "will be kept alive .... through the environment uses...
 
+192:32-192:36
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2461e61f_d67bc2fc
+UUID: a4deb6f4_98049921
+Bytes: 4
+Done
+
 194:32-195:15
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4deb6f4_1532b4d6
 Bytes: 71
 Wouldn't it be safer to also do it here? What do we lose from doing it?
+
+194:32-195:15
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_1532b4d6
+UUID: a4deb6f4_f8f7e591
+Bytes: 300
+I didn't want to do that because it would be slightly hackish. We don't know what the phi_input_index is to create the phi use. That's later used by UsePosition::RequiresRegister but doesn't matter at all for phis, so we could just use zero but it's another little hack we would have to keep in mind.
 
 File: compiler/optimizing/stack_map_stream.h
 
@@ -87,12 +159,36 @@ UUID: a4deb6f4_3537b8c7
 Bytes: 26
 instruction -> safepoint ?
 
+66:8-66:35
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 049a2278_f2e0a800
+UUID: 64c3de5a_95d84492
+Bytes: 4
+Done
+
+66:12-66:23
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_3537b8c7
+UUID: 24bd66ca_f3a430ed
+Bytes: 4
+Done
+
 136:9-136:29
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24bd66ca_93e93cf1
 Bytes: 27
 NumberOfSafepointStackMaps?
+
+136:9-136:29
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24bd66ca_93e93cf1
+UUID: 64c3de5a_b5d54059
+Bytes: 4
+Done
 
 File: runtime/quick_exception_handler.cc
 
@@ -103,12 +199,28 @@ UUID: 2461e61f_79d0df31
 Bytes: 11
 number_of_?
 
+358:8-358:18
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2461e61f_79d0df31
+UUID: 2461e61f_79373faf
+Bytes: 4
+Done
+
 362:7-362:17
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ae4a93_f865f127
 Bytes: 79
 Why do you need another visit? The exception handler must have done it already.
+
+362:7-362:17
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_f865f127
+UUID: e4d42ed5_c5c9da90
+Bytes: 273
+Yeah, that's more of an API issue - the GetVReg method is a member of StackVisitor and that doesn't allow to just jump to a certain frame straightaway. I could do this inside FindCatchBlock, i.e. during the first walk, but I was following the precedent set by Deoptimize...
 
 375:105-375:107
 Mon Sep 07 10:59:15 2015 +0000
@@ -117,12 +229,28 @@ UUID: a455d63a_9a1e896b
 Bytes: 13
 line too long
 
+375:105-375:107
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a455d63a_9a1e896b
+UUID: a4d8763b_8260fccb
+Bytes: 4
+Done
+
 393:6-393:12
 Mon Sep 07 10:59:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2461e61f_59d52320
 Bytes: 10
 DCHECK_EQ?
+
+393:6-393:12
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2461e61f_59d52320
+UUID: a455d63a_3ae5bd4e
+Bytes: 52
+Doesn't know how to print the value, same as nullptr
 
 File: test/510-checker-try-catch/smali/Runtime.smali
 
@@ -132,4 +260,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ae4a93_1832a528
 Bytes: 56
 remove (for consistency with other file) here and below?
+
+25:6-25:7
+Tue Sep 08 18:26:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_1832a528
+UUID: a455d63a_dacda1bd
+Bytes: 4
+Done
 

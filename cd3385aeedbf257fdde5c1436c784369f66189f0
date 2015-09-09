@@ -9,6 +9,14 @@ UUID: a4d8763b_a2198046
 Bytes: 51
 Add a comment why you can just stop the stack walk.
 
+3502:20-3502:26
+Wed Sep 09 14:02:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4d8763b_a2198046
+UUID: e41fceee_19cd8b9c
+Bytes: 4
+Done
+
 3506:0-3507:18
 Tue Sep 08 16:05:04 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: a4d8763b_e2138820
 Bytes: 149
 Can we really enter here? I assume we hit this code when we are in a Quick ManagedFragment, and the upcall check above prevents seeing a ShadowFrame.
 
+3506:0-3507:18
+Wed Sep 09 14:02:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4d8763b_e2138820
+UUID: c43d6a4e_a0069a5a
+Bytes: 127
+Right, this visitor should only be called for managed code. Indeed, we do not expect seeing shadow frame. i'll make it a CHECK.
+
 3515:0-3515:31
 Tue Sep 08 16:05:04 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4d42ed5_450c0a7c
 Bytes: 81
 I don' think so? I believe it should always be true if there was a deopt request?
+
+3515:0-3515:31
+Wed Sep 09 14:02:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_450c0a7c
+UUID: 44517aa7_9ca2e59b
+Bytes: 30
+Done. I forgot to remove that.
 
 3554:0-3554:47
 Tue Sep 08 16:05:04 2015 +0000
@@ -38,6 +62,16 @@ UUID: e4c34e74_a23684c7
 Bytes: 82
 The visitor ignores the method == nullptr case anyway, so true param isn't needed?
 
+3554:0-3554:47
+Wed Sep 09 14:02:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a455d63a_9afcc9e1
+UUID: 24f726e3_e32352e9
+Bytes: 541
+Makes sense. However, with the CL deopting for SetValue (https://android-review.googlesource.com/158320) we'd also need to deallocate pre-deopted frames that are going to be unwound. If we start from catch handler, we might not deoptimize (if no method in the stack require that) and miss them.
+
+An alternative would be to deallocate these pre-deopted ShadowFrames as part of unwinding, possibly in QuickExceptionHandler::UpdateInstrumentationStack (that can be done in https://android-review.googlesource.com/158320 based on the current CL)
+
 File: runtime/debugger.h
 
 585:0-585:41
@@ -47,6 +81,14 @@ UUID: c4d56a01_c31e886c
 Bytes: 14
 4 space indent
 
+585:0-585:41
+Wed Sep 09 14:02:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4d56a01_c31e886c
+UUID: 44517aa7_3c94f12f
+Bytes: 4
+Done
+
 File: runtime/quick_exception_handler.h
 
 48:18-48:35
@@ -55,6 +97,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4deb6f4_789e955a
 Bytes: 53
 Why the flag? It's always passed true in this change.
+
+48:18-48:35
+Wed Sep 09 14:02:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_789e955a
+UUID: 0434e264_62f176cf
+Bytes: 79
+Done and renamed to ResetForDeoptimization to be more explicit about the usage.
 
 File: runtime/thread.cc
 
@@ -81,4 +131,14 @@ Can we try this? Let the interpreter handle the try-cache. It seems simpler. No 
     } else {
       exception_handler.FindCatch(exception);
     }
+
+2364:24-2364:29
+Wed Sep 09 14:02:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_18a3c9a1
+UUID: 8447f2eb_5eea15e5
+Bytes: 230
+In FindCatch, we notify the debugger of the exception. That can suspend the thread on an EXCEPTION event. During that event, we may request new event(s) that require deoptimization.
+
+It's missing in the comment so I'll add a note.
 

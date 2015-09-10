@@ -1,0 +1,19 @@
+Revision: be8dec8c690783cfd3ab1ca54255228e35fa27c0
+Patch-set: 2
+File: compiler/optimizing/intrinsics_arm.cc
+
+444:2-444:74
+Thu Sep 10 16:03:08 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4164adc_18a825c0
+Bytes: 350
+For clarity, this should be
+
+  if (invoke->InputAt(1)->IsConstant()) {
+    locations->SetInAt(1, Location::ConstantLocation(invoke->InputAt(1)));
+  } else {
+    locations->SetInAt(1, Location::RequiresRegister());
+  }
+
+Otherwise, we're relying on the register allocator to avoid putting a constant into a register if you ask for RegisterOrConstant().
+

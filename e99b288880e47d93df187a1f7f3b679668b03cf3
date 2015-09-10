@@ -108,6 +108,19 @@ I think in this case the assembler will choose a 16-bit encoding for ORR as it's
 
 Looking at Thumb2Assembler::Is32BitDataProcessing, ADD and ORR seem equally likely to use a 32-bit encoding depending on set_cc.
 
+411:7-411:10
+Thu Sep 10 16:03:08 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a44076d4_7f8cafb9
+UUID: 8447f2eb_5e5215aa
+Bytes: 395
+ORR register has a 16-bit encoding (ooops, I was previously looking at ORR immediate) but it allows only low registers, so I would still prefer ADD which has a 16-bit encoding also for high registers (for kCcKeep and kCcDontCare).
+
+  bool can_contain_high_register =
+      (opcode == CMP) ||
+      (opcode == MOV && set_cc != kCcSet) ||
+      ((opcode == ADD) && (rn == rd) && set_cc != kCcSet);
+
 452:0-453:51
 Mon Sep 07 17:14:21 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

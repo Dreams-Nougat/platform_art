@@ -9,6 +9,16 @@ UUID: c43d6a4e_a020da34
 Bytes: 140
 Is it worth having a second class? Could we just put the Labels as fields and pay the price for vixl? Alternatively templating SlowPathCode?
 
+118:0-130:2
+Thu Sep 10 15:38:59 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c43d6a4e_a020da34
+UUID: c4ef2afe_3b0de73f
+Bytes: 350
+Templating means that all functions handling (base) slow paths will have to be templated as well. I assumed that would have been against your wishes for simplicity.
+
+Using this as the base class seems OK, as I don't imagine there are a gazillion of those in flight at any point in time, so the overhead shouldn't kill us. It's just not as clean IMHO.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 5449:0-5454:7
@@ -17,4 +27,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4164adc_d8538ddf
 Bytes: 44
 Do we need to consider target_reg_lo == EDX?
+
+5449:0-5454:7
+Thu Sep 10 15:38:59 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4164adc_d8538ddf
+UUID: 44fdfae7_3c2b7119
+Bytes: 172
+I guess I assumed the target would come from the register allocator, which I believe allocates this in "regular" pairs. AFAIK you won't get EDX as the low partner. Nicolas?
 

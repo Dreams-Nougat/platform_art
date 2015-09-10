@@ -9,12 +9,28 @@ UUID: c4d56a01_a0741a11
 Bytes: 176
 The "& 0x3F" and handling is_left should be in the reverse order, otherwise it's very confusing and inefficient. Yes, there is an "LSR Rd, Rm, #32" but I'd rather use the MOVs.
 
+361:0-367:5
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4d56a01_a0741a11
+UUID: e41fceee_791fe768
+Bytes: 4
+Done
+
 373:0-375:23
 Mon Sep 07 17:14:21 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24bd66ca_53d6c4df
 Bytes: 31
 std::swap(in_reg_hi, in_reg_lo)
+
+373:0-375:23
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24bd66ca_53d6c4df
+UUID: e41fceee_d9e633ea
+Bytes: 4
+Done
 
 393
 Mon Sep 07 17:14:21 2015 +0000
@@ -37,12 +53,28 @@ and exchange the "rot" and "tmp" in the "right" branch. Drop this MOV, the AND b
 
 It would make sense to rename variables rot->shift_left, tmp->shift_right.
 
+393
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_7892c11a
+UUID: 0434e264_05b43409
+Bytes: 24
+Yes. That's much better.
+
 400:0-402:47
 Mon Sep 07 17:14:21 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ae4a93_98a8755c
 Bytes: 45
 Multi-instruction IT despite the deprecation?
+
+400:0-402:47
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_98a8755c
+UUID: 8447f2eb_7ef83184
+Bytes: 4
+Done
 
 411:7-411:10
 Mon Sep 07 17:14:21 2015 +0000
@@ -51,12 +83,45 @@ UUID: e4d42ed5_5a8389ce
 Bytes: 118
 ORR is always 32-bit but we know that the bits don't overlap, so we can use ADD which will be 16-bit because Rd == Rn.
 
+411:7-411:10
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_5a8389ce
+UUID: a44076d4_7f8cafb9
+Bytes: 898
+I think in this case the assembler will choose a 16-bit encoding for ORR as it's outside an IT block and set_cc is kCcDontCare. e.g:
+
+ 0x00001284: fa03f704      lsl     r7, r3, r4
+ 0x00001288: fa22f601      lsr     r6, r2, r1
+ 0x0000128c: 4337          orr     r7, r6
+ 0x0000128e: fa02f604      lsl     r6, r2, r4
+ 0x00001292: fa23f401      lsr     r4, r3, r1
+ 0x00001296: 4326          orr     r6, r4
+ 0x00001298: e00b          b       +22 (0x000012b2)
+ 0x0000129a: f1c40120      rsb     r1, r4, #32
+ 0x0000129e: fa23f704      lsr     r7, r3, r4
+ 0x000012a2: fa02f601      lsl     r6, r2, r1
+ 0x000012a6: 4337          orr     r7, r6
+ 0x000012a8: fa22f604      lsr     r6, r2, r4
+ 0x000012ac: fa03f401      lsl     r4, r3, r1
+ 0x000012b0: 4326          orr     r6, r4
+
+Looking at Thumb2Assembler::Is32BitDataProcessing, ADD and ORR seem equally likely to use a 32-bit encoding depending on set_cc.
+
 452:0-453:51
 Mon Sep 07 17:14:21 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ae4a93_78c4812b
 Bytes: 109
 Do we know at this point if the InputAt(1) is a constant? Can we avoid requesting these temporaries if it is?
+
+452:0-453:51
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_78c4812b
+UUID: c4164adc_38c72925
+Bytes: 4
+Done
 
 File: compiler/optimizing/intrinsics_arm64.cc
 
@@ -77,6 +142,22 @@ UUID: c4ae4a93_987dd57f
 Bytes: 167
 Or "(-static_cast<uint32_t>(rhs.immediate())) & (regsize - 1u)" if you expect this code to run on hardware that's not using two's complement representation of int64_t.
 
+377:4-377:53
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4deb6f4_35f49800
+UUID: c43d6a4e_433d58f0
+Bytes: 4
+Done
+
+377:4-377:53
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ae4a93_987dd57f
+UUID: c43d6a4e_a379c4c4
+Bytes: 75
+ISO C11 says intN_t must be twos complement. Do I need to worry about this?
+
 File: runtime/quick/inline_method_analyser.h
 
 75:0-76:23
@@ -85,4 +166,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4d56a01_a0adfad4
 Bytes: 61
 Nit: I would put these right after the NumberOfTrailingZeros.
+
+75:0-76:23
+Thu Sep 10 15:33:52 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4d56a01_a0adfad4
+UUID: c4164adc_d8b2ad40
+Bytes: 4
+Done
 

@@ -9,12 +9,28 @@ UUID: a4bdd6e7_40faff3b
 Bytes: 35
 Why keep this around in this shape?
 
+68:0-69:1
+Thu Sep 10 17:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4bdd6e7_40faff3b
+UUID: c43d6a4e_03baf0a8
+Bytes: 34
+As discussed, not need so removed.
+
 108:6-108:17
 Thu Sep 10 16:08:21 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44517aa7_9f3177d4
 Bytes: 22
 when can this be null?
+
+108:6-108:17
+Thu Sep 10 17:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44517aa7_9f3177d4
+UUID: c43d6a4e_83a6008c
+Bytes: 158
+Maybe not right now due to the way the interpreter works, but I think we should be on the defensive, in case a faster interpreter / optimizations comes along.
 
 File: runtime/jit/profiling_info.h
 
@@ -27,10 +43,26 @@ Don't really understand the test. I would have expected:
 
  !classes_[1].IsNull() && classes_[kIndividualCacheSize - 1].IsNull()
 
+77:6-80:57
+Thu Sep 10 17:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e436ee6e_21704e61
+UUID: e436ee6e_a1a9befa
+Bytes: 4
+Done
+
 83:53-83:54
 Thu Sep 10 16:06:07 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84d4522f_bd0a2097
 Bytes: 179
 This is a weird size. As the overall size is not a power of two, it means you can't access something in the cache_ array optimally (or there may be padding, but I don't think so).
+
+83:53-83:54
+Thu Sep 10 17:35:12 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d4522f_bd0a2097
+UUID: e41fceee_9c06695b
+Bytes: 129
+There won't be padding. The size was based on heuristics. Do you feel strongly about making the size of InlineCache power of two?
 

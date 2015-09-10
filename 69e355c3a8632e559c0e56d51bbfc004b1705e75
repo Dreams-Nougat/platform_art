@@ -27,6 +27,16 @@ UUID: e436ee6e_01674aae
 Bytes: 100
 I agree it's not as clean. Look at line 393: it wouldn't be the first time we template due to Label.
 
+118:0-130:2
+Thu Sep 10 21:12:03 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e436ee6e_01674aae
+UUID: e4c34e74_a51a0938
+Bytes: 308
+The difference is that CodeGenerator doesn't have to store that templated class - MethodPatchInfo is stored and handled by the sub-classes (only trivial .
+
+SlowPathCode, on the other hand, is managed by CodeGenerator itself. If you're OK with templatizing the whole of CodeGenerator, then I'm happy to do it.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 5449:0-5454:7
@@ -51,4 +61,12 @@ Parent: 44fdfae7_3c2b7119
 UUID: 0434e264_65eae0e5
 Bytes: 141
 Unfortunately, you never know, as some instructions might say they want lo to be EDX. You can use ParallelMoveResolver to solve your problem.
+
+5449:0-5454:7
+Thu Sep 10 21:12:03 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0434e264_65eae0e5
+UUID: 44cedaa4_c98c01ff
+Bytes: 129
+I'd rather clean this up in a follow-up CL, if that's OK. I intended this as a plain "move-stuff-around-to-reduce-copy-pasta" CL.
 

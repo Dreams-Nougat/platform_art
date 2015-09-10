@@ -19,6 +19,14 @@ Templating means that all functions handling (base) slow paths will have to be t
 
 Using this as the base class seems OK, as I don't imagine there are a gazillion of those in flight at any point in time, so the overhead shouldn't kill us. It's just not as clean IMHO.
 
+118:0-130:2
+Thu Sep 10 15:44:14 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ef2afe_3b0de73f
+UUID: e436ee6e_01674aae
+Bytes: 100
+I agree it's not as clean. Look at line 393: it wouldn't be the first time we template due to Label.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 5449:0-5454:7
@@ -35,4 +43,12 @@ Parent: c4164adc_d8538ddf
 UUID: 44fdfae7_3c2b7119
 Bytes: 172
 I guess I assumed the target would come from the register allocator, which I believe allocates this in "regular" pairs. AFAIK you won't get EDX as the low partner. Nicolas?
+
+5449:0-5454:7
+Thu Sep 10 15:44:14 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44fdfae7_3c2b7119
+UUID: 0434e264_65eae0e5
+Bytes: 141
+Unfortunately, you never know, as some instructions might say they want lo to be EDX. You can use ParallelMoveResolver to solve your problem.
 

@@ -1,5 +1,14 @@
 Revision: 7944b6e53390a538c686d8e414ebadb3d887b53b
 Patch-set: 9
+File: runtime/art_method.h
+
+408:4-408:23
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e41fceee_9ca2e99b
+Bytes: 55
+A better place is in SetEntryPointFromJniPtrSize below.
+
 File: runtime/debugger.cc
 
 222:40-222:49
@@ -8,6 +17,15 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44cedaa4_bbaea8fe
 Bytes: 16
 ATTRIBUTE_UNUSED
+
+File: runtime/instrumentation.h
+
+101:15-101:39
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e41fceee_bca7adaa
+Bytes: 14
+Add a comment?
 
 File: runtime/jit/jit_instrumentation.cc
 
@@ -18,12 +36,69 @@ UUID: 24c9e69c_95217768
 Bytes: 12
 Assert this?
 
+77:19-77:21
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a44076d4_df805b34
+Bytes: 12
+Why not >= ?
+
+83:19-83:21
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e436ee6e_016d0a3d
+Bytes: 24
+Same question than above
+
 99:69-99:81
 Fri Sep 11 02:08:22 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04c1426c_fa589efd
 Bytes: 16
 ATTRIBUTE_UNUSED
+
+100:6-100:28
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24f726e3_26fbb8b1
+Bytes: 70
+How can this_object be null for an invoke-virtual or invoke-interface?
+
+105:2-109:63
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24f726e3_06f8bcb0
+Bytes: 161
+Since there is only one statement, it might be simpler to write:
+
+  if (info != nullptr) {
+     info->AddInvokeInfo(thread, dex_pc, this_object->GetClass());
+  }
+
+File: runtime/jit/jit_instrumentation.h
+
+96:2-96:9
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e436ee6e_e167c65c
+Bytes: 51
+nit: virtual is not really needed here (and above).
+
+File: runtime/jit/profiling_info.cc
+
+21:0-21:27
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e41fceee_5c8d3125
+Bytes: 73
+nit: it looks like we often place the header of the current module first.
+
+95:48-95:56
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6442fedf_7d727725
+Bytes: 15
+You mean return
 
 File: runtime/jit/profiling_info.h
 
@@ -33,4 +108,11 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44fdfae7_a51be407
 Bytes: 31
 No indent in namespace usually.
+
+44:5-44:78
+Fri Sep 11 08:19:01 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6442fedf_bd8f9f5f
+Bytes: 27
+Thanks for giving a reason!
 

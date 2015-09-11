@@ -9,6 +9,14 @@ UUID: 24c9e69c_928f4daf
 Bytes: 16
 typo. Also tabs?
 
+11:47-11:48
+Fri Sep 11 00:58:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c9e69c_928f4daf
+UUID: 44cedaa4_bb3c685a
+Bytes: 4
+Done
+
 File: compiler/optimizing/bounds_check_elimination.cc
 
 131:4-142:23
@@ -18,12 +26,32 @@ UUID: 44fdfae7_0238ce65
 Bytes: 104
 You removed the checks. Now this function doesn't protect that you'll get something totally unrelated...
 
+131:4-142:23
+Fri Sep 11 00:58:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44fdfae7_0238ce65
+UUID: 24c9e69c_55fd1f31
+Bytes: 366
+This code is only used to match instructions that reach a array length and something related. By hunting "deeper" it becomes more likely they match.
+
+For example, two array lengths on the same array match, but now we also match e.g. trip count "n" vs. the length of "new int[n]".
+
+It actually improves the already existing BCE (without induction) for some cases too.
+
 1418:6-1419:59
 Thu Sep 10 22:56:16 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84d4522f_5605291a
 Bytes: 113
 Why is this arena-allocated, actually? I don't see anything that would make it non-viable to stack-allocate here.
+
+1418:6-1419:59
+Fri Sep 11 00:58:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d4522f_5605291a
+UUID: 84d4522f_9143cb79
+Bytes: 93
+I actually had that, but decided to stay closer to the original. Changed to stack though now.
 
 File: compiler/optimizing/bounds_check_elimination.h
 
@@ -33,4 +61,12 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44cedaa4_4956b16b
 Bytes: 48
 Looks like a forward declaration is enough here.
+
+20:0-20:35
+Fri Sep 11 00:58:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44cedaa4_4956b16b
+UUID: 84d4522f_f1543f3f
+Bytes: 48
+Excellent point. Save an include, use a forward!
 

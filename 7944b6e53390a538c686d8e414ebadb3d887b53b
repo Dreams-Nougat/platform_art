@@ -9,6 +9,14 @@ UUID: e41fceee_9ca2e99b
 Bytes: 55
 A better place is in SetEntryPointFromJniPtrSize below.
 
+408:4-408:23
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e41fceee_9ca2e99b
+UUID: e41fceee_1c1c9971
+Bytes: 68
+I actually can't because of how things are done in the class linker.
+
 File: runtime/debugger.cc
 
 222:40-222:49
@@ -17,6 +25,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44cedaa4_bbaea8fe
 Bytes: 16
 ATTRIBUTE_UNUSED
+
+222:40-222:49
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44cedaa4_bbaea8fe
+UUID: 8447f2eb_e1fca0ae
+Bytes: 4
+Done
 
 File: runtime/instrumentation.h
 
@@ -27,6 +43,14 @@ UUID: e41fceee_bca7adaa
 Bytes: 14
 Add a comment?
 
+101:15-101:39
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e41fceee_bca7adaa
+UUID: 8447f2eb_0102ec49
+Bytes: 4
+Done
+
 File: runtime/jit/jit_instrumentation.cc
 
 72:4-72:32
@@ -36,12 +60,28 @@ UUID: 24c9e69c_95217768
 Bytes: 12
 Assert this?
 
+72:4-72:32
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c9e69c_95217768
+UUID: c4164adc_5b8d3725
+Bytes: 4
+Done
+
 77:19-77:21
 Fri Sep 11 08:19:01 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a44076d4_df805b34
 Bytes: 12
 Why not >= ?
+
+77:19-77:21
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a44076d4_df805b34
+UUID: e436ee6e_04dbd859
+Bytes: 88
+You only want to do this once. Multiple threads may see the same value, but that's fine.
 
 83:19-83:21
 Fri Sep 11 08:19:01 2015 +0000
@@ -50,6 +90,14 @@ UUID: e436ee6e_016d0a3d
 Bytes: 24
 Same question than above
 
+83:19-83:21
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e436ee6e_016d0a3d
+UUID: 6442fedf_0002e849
+Bytes: 5
+ditto
+
 99:69-99:81
 Fri Sep 11 02:08:22 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -57,12 +105,30 @@ UUID: 04c1426c_fa589efd
 Bytes: 16
 ATTRIBUTE_UNUSED
 
+99:69-99:81
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04c1426c_fa589efd
+UUID: 8447f2eb_c10ba463
+Bytes: 4
+Done
+
 100:6-100:28
 Fri Sep 11 08:19:01 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24f726e3_26fbb8b1
 Bytes: 70
 How can this_object be null for an invoke-virtual or invoke-interface?
+
+100:6-100:28
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24f726e3_26fbb8b1
+UUID: e436ee6e_a4cf8c90
+Bytes: 166
+It's to be on the safe side: we might get notified before the null check happens.
+
+Calin also asked why. Since it's confusing for now, I'll just DCHECK it's not null.
 
 105:2-109:63
 Fri Sep 11 08:19:01 2015 +0000
@@ -75,6 +141,14 @@ Since there is only one statement, it might be simpler to write:
      info->AddInvokeInfo(thread, dex_pc, this_object->GetClass());
   }
 
+105:2-109:63
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24f726e3_06f8bcb0
+UUID: 0434e264_45023c15
+Bytes: 4
+Done
+
 File: runtime/jit/jit_instrumentation.h
 
 96:2-96:9
@@ -83,6 +157,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e436ee6e_e167c65c
 Bytes: 51
 nit: virtual is not really needed here (and above).
+
+96:2-96:9
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e436ee6e_e167c65c
+UUID: 8447f2eb_a106985a
+Bytes: 4
+Done
 
 File: runtime/jit/profiling_info.cc
 
@@ -93,12 +175,28 @@ UUID: e41fceee_5c8d3125
 Bytes: 73
 nit: it looks like we often place the header of the current module first.
 
+21:0-21:27
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e41fceee_5c8d3125
+UUID: c4164adc_7b8a7b10
+Bytes: 4
+Done
+
 95:48-95:56
 Fri Sep 11 08:19:01 2015 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6442fedf_7d727725
 Bytes: 15
 You mean return
+
+95:48-95:56
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6442fedf_7d727725
+UUID: a44076d4_02dbcc59
+Bytes: 4
+Done
 
 File: runtime/jit/profiling_info.h
 
@@ -108,6 +206,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44fdfae7_a51be407
 Bytes: 31
 No indent in namespace usually.
+
+30:0-30:2
+Fri Sep 11 12:57:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44fdfae7_a51be407
+UUID: 44517aa7_9fbc1714
+Bytes: 4
+Done
 
 44:5-44:78
 Fri Sep 11 08:19:01 2015 +0000

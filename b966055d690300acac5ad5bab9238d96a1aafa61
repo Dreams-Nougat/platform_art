@@ -9,3 +9,15 @@ UUID: 24f726e3_2640586b
 Bytes: 41
 Maybe move the logic of this method here?
 
+46:5-46:36
+Fri Sep 11 22:20:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24f726e3_2640586b
+UUID: 6473de94_35737071
+Bytes: 468
+The default intrinsics code uses the function, too, so it seemed more reasonable to keep it in the visitor rather than the slow-path.
+
+I could move it to a top-level method here, if you prefer that.
+
+There's the potential to refactor some more and split up EmitNativeCode into the surrounding (binding entry and jumping to exit) and laying down the actual call. Then the latter would be reusable for the other users of MoveArguments. Not sure how good that is, though.
+

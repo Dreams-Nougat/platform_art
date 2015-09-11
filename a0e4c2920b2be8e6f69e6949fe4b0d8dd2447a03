@@ -9,6 +9,21 @@ UUID: c43d6a4e_234ff456
 Bytes: 124
 So this methods returns either a length or an array. That's very bizarre, could we break it down into two different methods?
 
+144:0-144:44
+Fri Sep 11 15:11:17 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c43d6a4e_234ff456
+UUID: e4b0ae55_d1d4e426
+Bytes: 526
+Well please note that the bizarre behavior was already there in the original (length or array reference). I just added the ability to go back to the length over a new array
+so that e.g.
+
+"n" vs "new int[n]"
+
+map to the same length. Since it is really only used at L156/157, I feel breaking up is a bit overkill, but I am open for suggestion on better comments to make the bizarre behavior more clear
+
+[I stared at it too for a while while learning this code, but it starts to make more sense after going through many examples]
+
 1170:49-1170:56
 Fri Sep 11 11:08:21 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +31,33 @@ UUID: 24f726e3_c636241b
 Bytes: 41
 Do you have a less generic name for this?
 
+1170:49-1170:56
+Fri Sep 11 15:11:17 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24f726e3_c636241b
+UUID: 24a64628_ebb81101
+Bytes: 234
+I am using the same name as used in range checking
+(context is where you use it, instruction is it value).
+
+I could call it calling site or something like that. For now I just improved the comment in the hope that makes it more clear.
+
 1417:0-1422:7
 Fri Sep 11 11:08:21 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0434e264_85f84485
 Bytes: 22
 Do we still need this?
+
+1417:0-1422:7
+Fri Sep 11 15:11:17 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0434e264_85f84485
+UUID: 64175efc_3518b0b0
+Bytes: 406
+Yes, the local analysis uses a few nifty tricks in e.g. straight line code (if (i < x) a[i] without the context of a loop). I actually ran a test that check fails if local eliminates a bound that induction can *not* remove, and found those cases. So let's keep both.
+
+I do plan to remove the induction variable recognizer in this file though (used for the dynamic case). That now seems a lot of redundancy.
 
 File: compiler/optimizing/bounds_check_elimination.h
 
@@ -32,6 +68,14 @@ UUID: a44076d4_22cdb09c
 Bytes: 32
 I'd get rid of this constructor.
 
+28:0-28:92
+Fri Sep 11 15:11:17 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a44076d4_22cdb09c
+UUID: c4b72a4b_10e7841a
+Bytes: 151
+I will! I needed it to keep the unit tests of BCE running, but I plan to plug in induction analysis there too to get the full setting in the unit tests
+
 File: compiler/optimizing/induction_var_range.h
 
 73:24-74:86
@@ -41,6 +85,14 @@ UUID: 24f726e3_a62b28b1
 Bytes: 17
 nit: one per line
 
+73:24-74:86
+Fri Sep 11 15:11:17 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24f726e3_a62b28b1
+UUID: 44ab3af0_eccf8b8f
+Bytes: 147
+You are right! Over the years I started to develop my own aligned layout of parameters, but I should adhere to the team style. Changed, also below.
+
 File: test/530-checker-loops/src/Main.java
 
 32:21-32:27
@@ -49,4 +101,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 24f726e3_86302c1e
 Bytes: 45
 Java code starts with lower case for methods.
+
+32:21-32:27
+Fri Sep 11 15:11:17 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24f726e3_86302c1e
+UUID: e4b0ae55_f1cf688f
+Bytes: 66
+You are right again. One should not mix Java and C++ too often :-)
 

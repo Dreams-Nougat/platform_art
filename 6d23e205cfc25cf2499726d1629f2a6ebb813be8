@@ -25,3 +25,22 @@ That is, the documentation doesn't specify a register value which goes into that
 
 Also, other previously added functions for emitting other machine instructions (such as MultR2, MultuR2, DivR2, DivuR2, Sll, Srl, Sra, Dsll, Dsrl, Dsra, Dsll32, Dsrl32, Dsra32, Lui, etc.) follow this convention. I probably didn't write the function from scratch, but copied some other function which already used this convention, and just modified the other fields, as needed.
 
+239:14-239:41
+Fri Sep 11 17:41:37 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64cf5e9f_a943f778
+UUID: 64175efc_b51680de
+Bytes: 595
+Sorry, tradition isn't a good argument.
+
+I'd rather have functions where types agree with what is expected. As such, EmitR isn't correct here. Your argument that it's zero and you don't want ZERO doesn't really apply if you have to cast it to GpuRegister. In that case, EmitR should actually take integrals always, and you let the GpuRegister be implicitly converted to that.
+
+I'd rather have this gone, even if you hide it somewhere like:
+
+ // A GPURegister value that will be encoded as a sequence of zeroes.
+ static GpuRegister ZeroValue() {
+   return ZERO;
+ }
+
+Vladimir, what's your opinion?
+

@@ -88,6 +88,46 @@ synchronized, besides mutual exclusion, is used for memory visibility between th
 
 it does not matter for now, since you are just being overly conservative; but having this "inside monitor" concept may scare future developers; I would much rather see a proper solution around monitor-enter/exit calls
 
+527:60-527:61
+Fri Sep 11 21:10:22 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24a64628_0b947d01
+UUID: 6473de94_756b28e5
+Bytes: 862
+Agreed.
+
+I'm not sufficiently familiar with this code base to tell whether this actually satisfies the necessary restrictions.
+
+Some examples of the memory model rules for checking purposes.  Here v is volatile, x is not:
+
+r1 = x;
+r2 = v;
+r3 = x;
+
+Here the second load of x can NOT be replaced by r1.  (If there are no intervening uses, the other way around works.)
+The same of the middle statement is replaced by another "acquire" operation, e.g. MonitorEnter. 
+
+r1 = v;
+r2 = v;  
+
+It's fine to combine these if there are no intervening shared memory accesses.  This is not important, but I wanted to emphasize that these are not C volatiles.
+
+In general the effect on the algorithm of a volatile load should be essentially the same as MonitorEnter, and volatile store should be treated similarly to MonitorExit.  But the dramatic asymmetry between those cases.
+
+538:28-538:55
+Fri Sep 11 21:10:22 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44725a92_34a6108e
+Bytes: 531
+The real monitor level is presumably dynamic, since it depends on callers as well.  I don't think this test makes any sense here.  Note that if you have
+
+r1 = x;
+synchronized (p1) {...};
+synchronized (p2) {...};
+r2 = x;
+
+it is not safe to eliminate the second load, no matter what's in the ellipses.  A safe, though probably too strong, rule is to have the first monitor entry call kill all prior information.  (This particular case may actually be safe with a single critical section.  I'd need to think about it.  It is for C++.)
+
 778:24-778:25
 Fri Sep 11 16:20:09 2015 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -44,3 +44,46 @@ I'd rather have this gone, even if you hide it somewhere like:
 
 Vladimir, what's your opinion?
 
+239:14-239:41
+Fri Sep 11 20:25:56 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64175efc_b51680de
+UUID: 848ff2ac_fedac101
+Bytes: 1745
+That's fine. Internally, the suggestion was made that a new "Emit" function could be created for cases such as this, i.e., cases where register type instructions don't use all of the register positions. It's been my understanding that each patch should only address one issue. Would you prefer that this fix be rolled into this patch or submitted as a separate patch?
+
+The methods which are using EmitR but using fewer than 3 registers fall into three categories. Instructions which use
+- the t & d registers,
+- the s & d registers,
+- don't use any of the registers.
+
+I'm proposing for the first case, quit using the the EmitR function and instead use a new function EmitRtd which would be implemented as:
+
+void Mips64Assembler::EmitRtd(int opcode, GpuRegister rt, GpuRegister rd,
+                               int shamt, int funct) {
+  CHECK_NE(rt, kNoGpuRegister);
+  CHECK_NE(rd, kNoGpuRegister);
+  uint32_t encoding = static_cast<uint32_t>(opcode) << kOpcodeShift |
+                      0u << kRsShift |  // Not needed?
+                      static_cast<uint32_t>(rt) << kRtShift |
+                      static_cast<uint32_t>(rd) << kRdShift |
+                      shamt << kShamtShift |
+                      funct;
+  Emit(encoding);
+}
+
+The second case would be similar but use a new function called EmitRsd.
+
+The "nop", nominally, falls into category 3, but architecturally it's really a special case of sll (sll ZERO, ZERO, 0) which puts it into the first case.
+
+For the third case I would propose that the "sync" instruction be modified to use Emit directly:
+
+void Mips64Assembler::Sync(uint32_t stype) {
+  Emit((0u << kOpcodeShift) |
+       (0u << kRdShift) |
+       ((stype & 0x1f) << kShamtShift) |
+       0xf);
+}
+
+Thoughts? Thanks.
+

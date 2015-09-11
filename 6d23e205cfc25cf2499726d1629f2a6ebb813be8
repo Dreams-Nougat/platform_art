@@ -9,3 +9,19 @@ UUID: 244c8613_8475a70d
 Bytes: 28
 Why not [GpuRegister::]ZERO?
 
+239:14-239:41
+Fri Sep 11 12:17:16 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 244c8613_8475a70d
+UUID: 64cf5e9f_a943f778
+Bytes: 691
+Because the instruction format is described in the documentation as:
+
+SPECIAL3                         BITSWAP  BSHFL
+ 011111   00000    rt     rd      00000  100000
+          ^^^^^
+
+That is, the documentation doesn't specify a register value which goes into that field but says that the field must be all zeroes.
+
+Also, other previously added functions for emitting other machine instructions (such as MultR2, MultuR2, DivR2, DivuR2, Sll, Srl, Sra, Dsll, Dsrl, Dsra, Dsll32, Dsrl32, Dsra32, Lui, etc.) follow this convention. I probably didn't write the function from scratch, but copied some other function which already used this convention, and just modified the other fields, as needed.
+

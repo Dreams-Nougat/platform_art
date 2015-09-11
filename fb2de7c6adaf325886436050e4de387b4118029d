@@ -9,6 +9,107 @@ UUID: c4ef2afe_ee6423e9
 Bytes: 4
 2015
 
+27:2-31:3
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24c9e69c_f006795b
+Bytes: 136
+Isn't it cleaner to have two constructors?
+
+Though I guess your usage is targeted towards having a unified get-or-insert for both cases.
+
+57:11-57:24
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c34e74_bbd46a25
+Bytes: 152
+Is that a standard term? I haven't heard it in this context, but I also haven't kept up with the field. To me, "direct_use_only" seems more descriptive.
+
+60:10-60:46
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 244c8613_f080e633
+Bytes: 86
+I assume that includes the constructor, so you only see that for inlined constructors?
+
+108:45-108:51
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64cf5e9f_a6ba0643
+Bytes: 347
+ref_ is ambiguous.
+
+You might want to note here that this is zero for arrays (so they are all equivalent, and somewhat synonymous with Object).
+
+And you should note that this is the declaring class of the field being accessed, otherwise.
+
+(I want to point out there are issues here, considering inlining and the consistency of indices. Resolving )
+
+108:2-108:26
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44fdfae7_a585a442
+Bytes: 273
+class_def_index only works for resolved classes.
+
+Even then, if you want to stay with an index, maybe prefer the type index. It's easy to go from the field index to the type index, so you don't have to cache it in the HInstruction (so no changes to nodes.h and builder.cc).
+
+108:10-108:26
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 244c8613_c493af95
+Bytes: 49
+Rename. This should be declaring_class_def_index.
+
+111:28-111:29
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04c1426c_179a0bae
+Bytes: 6
+Space.
+
+180:6-180:20
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 244c8613_9072c222
+Bytes: 27
+DCHECK for the equals case.
+
+201:2-209:3
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84d4522f_d1aee3ff
+Bytes: 85
+You should profile this. I wonder if a map is an acceptable space-time tradeoff here.
+
+296:36-296:44
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ef2afe_ce971f80
+Bytes: 35
+Indentation, plus line-break style.
+
+339:40-339:41
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 04c1426c_9a75220e
+Bytes: 99
+You could disambiguate this (if it's similar to "singleton"). Negative component type, for example.
+
+370:4-370:10
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4c34e74_9beac6e2
+Bytes: 24
+Prefer ATTRIBUTE_UNUSED.
+
+527:41-527:67
+Fri Sep 11 04:47:02 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4ef2afe_6ea953c4
+Bytes: 172
+As in the in-person discussion, this needs to be investigated. I don't think this is true, you may only not eliminate over monitor-enter and monitor-exit, separately, IMHO.
+
 File: compiler/optimizing/load_store_elimination.h
 
 2:17-2:21

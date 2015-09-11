@@ -1,0 +1,151 @@
+Revision: ab1efba41e1d8fe32157cb4adffb9ce8d6defcfd
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+1188
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4b72a4b_902894c7
+Bytes: 135
+const uint16_t
+
+(browsing around this file, we don't seem to generally do that, but it is a good style to make write-once locals const)
+
+1325:2-1325:10
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64175efc_9536e419
+Bytes: 14
+const uint16_t
+
+File: compiler/optimizing/load_store_elimination.cc
+
+27:2-27:10
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24a64628_4b3de5f0
+Bytes: 13
+why explicit?
+
+42:7-42:26
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4b72a4b_500f4c64
+Bytes: 92
+something like "may become" is not very clear at first reading, please add more detailed doc
+
+53:6-53:19
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a405d6c4_77fb50b0
+Bytes: 142
+C++ style guide requires every class to get a top comment
+please follow that rule so that your readers can grasp the meaning of classes faster
+
+55:2-55:10
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44ab3af0_0cf81783
+Bytes: 9
+explicit?
+
+59:10-59:14
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4b72a4b_904ff4a9
+Bytes: 91
+use (1) instead of 1) so that some old style tools for matching brackets don't get confused
+
+186:10-186:11
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 84a1b20e_8e287bc7
+Bytes: 12
+const size_t
+
+247:50-247:53
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c4b72a4b_f054803f
+Bytes: 5
+const
+
+325:67-325:70
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 841c5220_b64a089a
+Bytes: 8
+const 2x
+
+527:60-527:61
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24a64628_0b947d01
+Bytes: 744
+this makes me a bit uncomfortable, the volatile stuff is fine but just being a sync block is not what is preventing optimizations (since the method itself can be inside a sync block) 
+
+synchronized, besides mutual exclusion, is used for memory visibility between threads (through the happens-before relation). What is needed is that, conceptually, when a lock is acquired, the "cache" is invalided and all loads need to occur again. Likewise, when the lock is released the "cache" is flushed, i.e. all writes need to be done.
+
+it does not matter for now, since you are just being overly conservative; but having this "inside monitor" concept may scare future developers; I would much rather see a proper solution around monitor-enter/exit calls
+
+778:24-778:25
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24a64628_6b126190
+Bytes: 284
+this is conservative, and imho not needed at all
+(synchronized method is no different from calling a method on an object with the object's lock held)
+
+so at least add comments to document why you do that now so that future developers are not afraid to go in and improve this later :-)
+
+786:33-786:37
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24a64628_4b0fa564
+Bytes: 85
+"would act" 
+seems a bit more clear than "acts", so that we understand why you return
+
+File: compiler/optimizing/load_store_elimination.h
+
+28:2-28:10
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e4b0ae55_b12320ea
+Bytes: 62
+no need for explicit keyword since you have multiple args here
+
+42:47-42:49
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 64175efc_f52bd8af
+Bytes: 47
+empty line before the DISALLOW macro invocation
+
+File: compiler/optimizing/nodes.h
+
+4087:11-4087:36
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44ab3af0_6c6efbf6
+Bytes: 89
+the "Declaring" seems a bit overkill in the name, since none of the other getters do that
+
+File: test/530-checker-lse/src/Main.java
+
+61:39-61:40
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 24a64628_2b5fb95a
+Bytes: 13
+this is nice!
+
+427:2-427:3
+Fri Sep 11 16:20:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c402caba_5802bd14
+Bytes: 116
+uh, don't you want to verify the output of the methods?
+
+optimization without verification is, well, very dangerous!
+

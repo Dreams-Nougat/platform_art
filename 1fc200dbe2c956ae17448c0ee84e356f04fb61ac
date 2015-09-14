@@ -9,6 +9,14 @@ UUID: 64cf5e9f_66498ef7
 Bytes: 32
 I don't think we use this, ever.
 
+85:21-85:29
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64cf5e9f_66498ef7
+UUID: 6442fedf_e0233ce9
+Bytes: 32
+Then we will use this, never! :)
+
 File: compiler/utils/mips/assembler_mips.cc
 
 29:0-36:1
@@ -22,12 +30,28 @@ Similarly, as you have already included assembler_mips.h there, just add the dec
 
 (Compare to constants_arm.h)
 
+29:0-36:1
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44cedaa4_def032a0
+UUID: 6442fedf_40f8f0b1
+Bytes: 235
+I tried that, and when I do, the script just gets confused on D0 = 0 in the enum and it halts the compilation. Also it seems that the operator<< is explicitly defined in assembler_arm.cc as well - seems to me that it's the same reason.
+
 563:54-563:76
 Thu Sep 10 09:45:49 2015 +0000
 Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 64cf5e9f_b7911b17
 Bytes: 309
 While this is technically correct, I believe we want something more readable. See, for example, std::ostream& operator<<(std::ostream& os, const DRegister& rhs) at the beginning of this file. We want something similar for type BranchCondition and it should print readable conditions, e.g. "kCondLT" and so on.
+
+563:54-563:76
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64cf5e9f_b7911b17
+UUID: 09e87b64_82d77a2d
+Bytes: 43
+Fixed. Now using auto-generated operator<<.
 
 619:54-619:76
 Thu Sep 10 09:45:49 2015 +0000
@@ -36,12 +60,28 @@ UUID: 244c8613_aaa2ef9a
 Bytes: 6
 Ditto.
 
+619:54-619:76
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 244c8613_aaa2ef9a
+UUID: 09e87b64_62dc764f
+Bytes: 10
+See above.
+
 742:20-742:21
 Thu Sep 10 09:45:49 2015 +0000
 Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4c34e74_6eba9346
 Bytes: 62
 Use a named constant. We must have one already, kMipsWordSize.
+
+742:20-742:21
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c34e74_6eba9346
+UUID: a9f4cf41_ffc13f6b
+Bytes: 6
+Fixed.
 
 748:20-748:21
 Thu Sep 10 09:45:49 2015 +0000
@@ -50,12 +90,28 @@ UUID: 04c1426c_01ec09c8
 Bytes: 6
 Ditto.
 
+748:20-748:21
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04c1426c_01ec09c8
+UUID: 490513fd_1cbd15ed
+Bytes: 6
+Fixed.
+
 754:20-754:21
 Thu Sep 10 09:45:49 2015 +0000
 Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a4bdd6e7_a0a9db60
 Bytes: 6
 Ditto.
+
+754:20-754:21
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a4bdd6e7_a0a9db60
+UUID: 44209a82_44692e04
+Bytes: 6
+Fixed.
 
 912:2-912:30
 Thu Sep 10 10:25:33 2015 +0000
@@ -76,12 +132,28 @@ UUID: 04c1426c_d5bdabee
 Bytes: 188
 As Alexey noted above, you're only missing the operator<< (as the CHECK will try to print the values on fail). As soon as that's there, CHECK_NE(condition, kUncond) should work, I believe.
 
+912:2-912:30
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04c1426c_d5bdabee
+UUID: a44076d4_9f61734a
+Bytes: 6
+Fixed.
+
 997:54-997:76
 Thu Sep 10 09:45:49 2015 +0000
 Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e4c34e74_4ec7cfcc
 Bytes: 6
 Ditto.
+
+997:54-997:76
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c34e74_4ec7cfcc
+UUID: 64211e85_85d5e225
+Bytes: 10
+See above.
 
 1174:6-1174:14
 Thu Sep 10 10:25:33 2015 +0000
@@ -103,6 +175,14 @@ Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a40b16a8_6a2cd776
 Bytes: 65
 Unless I'm missing something, this method should've stayed const.
+
+1239:0-1239:60
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a40b16a8_6a2cd776
+UUID: 490513fd_fcc1496b
+Bytes: 17
+Added back const.
 
 1296:2-1296:31
 Thu Sep 10 10:25:33 2015 +0000
@@ -146,6 +226,14 @@ UUID: 44cedaa4_23e03436
 Bytes: 6
 Ditto.
 
+1433:24-1433:25
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44cedaa4_23e03436
+UUID: 691f3755_d5be5ce7
+Bytes: 10
+See above.
+
 1438:6-1438:15
 Thu Sep 10 10:25:33 2015 +0000
 Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -160,6 +248,14 @@ UUID: 44cedaa4_030c18b5
 Bytes: 6
 Ditto.
 
+1446:24-1446:25
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44cedaa4_030c18b5
+UUID: 09e87b64_42d17235
+Bytes: 10
+See above.
+
 File: compiler/utils/mips/assembler_mips.h
 
 455:15-455:21
@@ -168,6 +264,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e436ee6e_612c1677
 Bytes: 75
 Naming convention: length, instr_offset, pc_org, offset_size, offset_shift.
+
+455:15-455:21
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e436ee6e_612c1677
+UUID: e9ea475e_612a36bf
+Bytes: 5
+Done.
 
 570:1-570:8
 Thu Sep 10 10:11:44 2015 +0000
@@ -204,4 +308,12 @@ Bytes: 244
 Is the static_cast<const...> actually necessary?
 
 And is duplication of a one-liner really that bad? const_cast is really ugly, no matter where you put it. I'd rather see the logic of getting the vector element duplicated than the const_cast...
+
+585:0-588:3
+Mon Sep 14 07:08:47 2015 +0000
+Author: Pavle Batuta <1080239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44cedaa4_3e6ba6e6
+UUID: 89fb8b33_9ee11d06
+Bytes: 55
+Removed the cast, switched to a duplicate const method.
 

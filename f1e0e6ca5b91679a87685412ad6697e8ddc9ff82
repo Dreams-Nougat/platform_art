@@ -1,0 +1,133 @@
+Revision: f1e0e6ca5b91679a87685412ad6697e8ddc9ff82
+Patch-set: 6
+File: /COMMIT_MSG
+
+7:28-7:51
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44209a82_a76664af
+Bytes: 26
+check-cast and instance-of
+
+File: compiler/optimizing/code_generator_arm.cc
+
+4422:6-4422:26
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e9ea475e_84ae68b9
+Bytes: 264
+This is wrong from code size perspective. We can emit a loop that goes back to the LoadFromOffset() above, instead of repeating the LoadFromOffset()+Unpoison()+CompareAndBranchIfZero() in the kClassHierarchyCheck path.
+
+Same for check-cast and other architectures.
+
+4432:6-4432:47
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 691f3755_55124cd5
+Bytes: 150
+This is backward branch, so it's never CBNZ. We could use "CBZ zero; B loop" which would make smaller code but it could negatively impact performance.
+
+4433:6-4433:18
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 89fb8b33_9ecc7dc0
+Bytes: 58
+"out" is null i.e. 0, so we could jump straight to "done".
+
+4443:6-4443:44
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 490513fd_bccf41b4
+Bytes: 70
+Jump to "done". If out is null, i.e. 0, we don't need to reload the 0.
+
+4445:0-4446:22
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2900dfee_7e33ed2d
+Bytes: 105
+What about
+
+  static_assert(Primitive::kPrimNot == 0, "...");
+  __ CompareAndBranchIfNotZero(out, &zero);
+
+4469:10-4469:26
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 691f3755_d5fd3cdc
+Bytes: 45
+Use zero.IsLinked() just as you do for arm64.
+
+4476:6-4476:22
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 490513fd_9ccc85c0
+Bytes: 5
+ditto
+
+4481:6-4481:22
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e9ea475e_c4cb5087
+Bytes: 5
+ditto
+
+4596:0-4597:43
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2900dfee_5e383106
+Bytes: 23
+kPrimNot == 0 as above.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+2309:0-2311:21
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 691f3755_b5fac0e0
+Bytes: 361
+LDR and CBNZ do not set flags. Assuming that reference unpoisoning doesn't modify flags, this could be replaced with CSET. This is especially helpful if we didn't do the null check - we can also avoid the branch below; though "success" would be a misnomer as the kAbstractClassCheck would need to branch to it (unless rewritten separately as suggested for arm).
+
+2319:19-2319:23
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 691f3755_95f7c4fa
+Bytes: 22
+Go straight to "done".
+
+2321:0-2323:21
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2900dfee_de432179
+Bytes: 95
+kPrimNot == 0, so there is the option of using CBZ. There's also the possibility of using CSEL.
+
+2335:6-2335:18
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44209a82_c7a9a0fa
+Bytes: 30
+Only if we did the null check.
+
+File: compiler/optimizing/code_generator_x86.cc
+
+5057:0-5058:51
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c93f43b4_b39f621e
+Bytes: 118
+Why not
+
+  __ cmpw(Address(out, primitive_offset), Immediate(Primitive::kPrimNot));
+
+? Same for check-cast and x86-64.
+
+File: compiler/optimizing/nodes.h
+
+4738
+Tue Sep 15 20:10:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 490513fd_7c0d39b1
+Bytes: 14
+Line too long.
+

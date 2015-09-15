@@ -48,6 +48,121 @@ UUID: 89fb8b33_9e3fdd79
 Bytes: 61
 Agreed; I've removed 22884995.  It will also reduce bug spam.
 
+File: compiler/optimizing/code_generator_x86.cc
+
+389:13-389:27
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c45e4afd_295a326b
+Bytes: 119
+Is the reason that we need to have this local variable "index" (copy of index_) that we need to avoid modifying index_?
+
+390:4-390:27
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 848ff2ac_25924d1a
+Bytes: 259
+Can you add a short comment on why we have this ArrayGet or Invoke (UnsafeGetObject) specific handling on index here?
+
+Is it because the index needs adjusting for the read barrier slow path code that we do not want to do at the GenerateReadBarrier call sites?
+
+392:35-392:53
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46156bd_c0d50f25
+Bytes: 47
+index_ -> index? We don't modify index_, right?
+
+397:8-397:10
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46156bd_205a4b6b
+Bytes: 43
+Why do we need a non-callee-saved register?
+
+405:31-405:38
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0465c2c3_d70a33ea
+Bytes: 83
+static_assert(1 << TIMES_4 == sizeof(mirror::CompressedReference<mirror::Object>) ?
+
+461:10-461:11
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 648afea0_5cf0145b
+Bytes: 68
+Can you remind me why this does not apply to a static/direct invoke?
+
+3723:8-3723:34
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e467cecb_884c1f61
+Bytes: 146
+I notice you inserted this read barrier for this dex cache resolved method array, which, as we discussed, can be omitted, but this works (thanks).
+
+4150:22-4150:36
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0465c2c3_41a9015e
+Bytes: 47
+Side question: what does "output overlap" mean?
+
+4280:77-4280:84
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8478d270_7d978836
+Bytes: 83
+static_assert(1 << TIMES_4 == sizeof(mirror::CompressedReference<mirror::Object>) ?
+
+5333:0-5334:69
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a9420f4a_7e81bded
+Bytes: 144
+I see that currently "ref" does not get unpoisoned, which is ok as the "ref" param is unused by ReadBarrierSlow. Correct? Maybe leave a comment?
+
+5338:4-5338:15
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c45e4afd_13b91b03
+Bytes: 62
+Side question: does this place the slow path code out-of-line?
+
+5374:0-5376:10
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a9420f4a_be6e05f3
+Bytes: 24
+I think this is correct.
+
+5396:5-5396:9
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0465c2c3_41458134
+Bytes: 679
+My understanding is that the reason to need to save parameter registers is that we call a read barrier in a middle of an invoke instruction where the parameters for the invoke instruction is already loaded. Correct?
+
+It's not surprising if the read barrier slow path code isn't currently touching the float registers. But as this assumption is hard to detect or enforce, it may cause a problem down the road. Is this a matter of writing the code to save/restore float parameter registers?
+
+In addition, I wonder if it's hard to find out what parameter registers are actually used for the call of the invoke instruction and save only those rather than all the parameter registers?
+
+File: compiler/optimizing/intrinsics_x86.cc
+
+66:52-67:24
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44725a92_66f1b0cf
+Bytes: 151
+Does this mean we won't intrinsify this invoke when read barriers are enabled? Does this mean we do no intrinsification when read barriers are enabled?
+
+1760:53-1762:66
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6473de94_de6ed4c9
+Bytes: 6
+Right.
+
 File: runtime/arch/stub_test.cc
 
 2427:3-2427:63
@@ -72,6 +187,14 @@ Parent: e467cecb_88197f84
 UUID: 691f3755_1554d4c4
 Bytes: 12
 Done in PS5.
+
+2427:3-2427:63
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 691f3755_1554d4c4
+UUID: e467cecb_6efd1332
+Bytes: 7
+Thanks.
 
 File: runtime/entrypoints/quick/quick_entrypoints_list.h
 
@@ -116,4 +239,12 @@ Bytes: 175
 Yes; done in PS5.
 
 I have added a check in compiler/optimizing/optimizing_compiler.cc to bail out when trying to compile with read barriers on arch others than x86 and x86-64.
+
+82:0-84:96
+Tue Sep 15 20:45:59 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c93f43b4_707a1052
+UUID: c45e4afd_e4121f63
+Bytes: 25
+That makes sense. thanks.
 

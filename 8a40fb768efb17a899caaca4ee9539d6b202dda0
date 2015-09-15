@@ -1,0 +1,70 @@
+Revision: 8a40fb768efb17a899caaca4ee9539d6b202dda0
+Patch-set: 10
+File: compiler/optimizing/bounds_check_elimination.cc
+
+1172:34-1172:48
+Tue Sep 15 22:07:03 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6473de94_8f96e9c7
+Bytes: 89
+if a_constant is 0, the first param should be nullptr? or is v1.instruction just nullptr?
+
+1421
+Tue Sep 15 22:07:03 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6473de94_1e904c80
+Bytes: 805
+index_range should be good to be used here for bounds check.
+However we need to be careful that this index_range isn't
+used further, such as:
+for (int i=0; i<array.length+2; i++) {
+  if (i < array.length) {
+    array[i] = 1;
+  } else {
+    b[i - array.length] = 1;
+  }
+}
+
+IVA will return [0, array.length+1] for i's range. And the if
+statement can narrow that range further to
+[0, array.length-1]. So bounds check for array[i] is
+eliminated, which is incorrect.
+
+To guard against such issue, maybe LookupInductionRange() can 
+add some overflow checking such that it returns a nullptr if
+the range got from IVA has overflow concern? So basically BCE deals with good ranges (no overflow/underflow issues). IVA uses full power to get the range symbolically (especially useful for deoptimization dynamically).
+
+File: compiler/optimizing/induction_var_range.cc
+
+146:27-146:59
+Tue Sep 15 22:07:03 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a46156bd_832b2145
+Bytes: 32
+what's the meaning of this test?
+
+File: compiler/optimizing/induction_var_range.h
+
+30:83-30:84
+Tue Sep 15 22:07:03 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0465c2c3_84e40715
+Bytes: 1
+x
+
+File: test/530-checker-loops/src/Main.java
+
+246:47-246:55
+Tue Sep 15 22:07:03 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 44725a92_c96b77e3
+Bytes: 68
+I was thinking about dx verifier, maybe you just mean this testcase?
+
+250:27-250:30
+Tue Sep 15 22:07:03 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 848ff2ac_c80540db
+Bytes: 4
+OOB?
+

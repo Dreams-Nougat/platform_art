@@ -9,6 +9,14 @@ UUID: 89fb8b33_613eb0a5
 Bytes: 12
 nit: parens?
 
+1260:32-1260:56
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 89fb8b33_613eb0a5
+UUID: c93f43b4_130ceeb1
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator.cc
 
 417:39-417:56
@@ -18,12 +26,30 @@ UUID: 64211e85_48b3ffce
 Bytes: 18
 calling_convention
 
+417:39-417:56
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64211e85_48b3ffce
+UUID: 64211e85_48a13f63
+Bytes: 4
+Done
+
 418:0-421:52
 Wed Sep 16 14:58:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e9ea475e_2491dc15
 Bytes: 60
 Looks like those could be passed as argument to this method?
+
+418:0-421:52
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9ea475e_2491dc15
+UUID: 490513fd_5f86ef07
+Bytes: 157
+I considered that, but I didn't see a clear benefit since I already had the calls in all the backends,
+
+If you don't feel strongly about it I'd keep it here.
 
 434:6-434:17
 Wed Sep 16 14:58:53 2015 +0000
@@ -32,6 +58,14 @@ UUID: 44209a82_6a027315
 Bytes: 23
 Do you still need this?
 
+434:6-434:17
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44209a82_6a027315
+UUID: 691f3755_d81fb166
+Bytes: 22
+I marked it as a note.
+
 438:68-438:71
 Wed Sep 16 14:58:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,12 +73,28 @@ UUID: a9f4cf41_82989c6c
 Bytes: 19
 register allocator?
 
+438:68-438:71
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a9f4cf41_82989c6c
+UUID: c93f43b4_f3004a78
+Bytes: 4
+Done
+
 469:0-472:52
 Wed Sep 16 14:58:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a9f4cf41_629d985a
 Bytes: 17
 ditto: arguments?
+
+469:0-472:52
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a9f4cf41_629d985a
+UUID: 490513fd_3f7b23bc
+Bytes: 4
+same
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -55,6 +105,20 @@ UUID: 2900dfee_fe1a5d37
 Bytes: 91
 How about just a generic MoveLocations(source, destination), which I think we already have?
 
+982:23-982:42
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_fe1a5d37
+UUID: 490513fd_ff749bca
+Bytes: 354
+Started with that, until I realized that it doesn't generalize well: arm/x86 use 2 temps (so 2 locations) and 64bit arches use 1 temp (1 location).
+
+Unless we introduce something like:
+
+Location CodeGenerator::GetLocationFromTemp(const LocationSummary& locations, int temp_index, Primitive::Type type) {
+ // 32bits arches will recompose a register pair
+}
+
 1002:23-1002:41
 Wed Sep 16 14:58:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -62,12 +126,28 @@ UUID: 2900dfee_de17a10f
 Bytes: 5
 ditto
 
+1002:23-1002:41
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_de17a10f
+UUID: 64211e85_c8636fdf
+Bytes: 6
+ditto.
+
 3593:0-3593:4
 Wed Sep 16 14:58:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c93f43b4_d34f86fc
 Bytes: 29
 2 more space (here and below)
+
+3593:0-3593:4
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c93f43b4_d34f86fc
+UUID: e9ea475e_245f9c0b
+Bytes: 26
+arh.... that's a pain...:P
 
 File: compiler/optimizing/reference_type_propagation.cc
 
@@ -78,10 +158,26 @@ UUID: 64211e85_a8e0f3b5
 Bytes: 44
 We should have the type from the descriptor.
 
+455:0-458:3
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64211e85_a8e0f3b5
+UUID: a9f4cf41_62147850
+Bytes: 43
+I will add a todo and do it in a follow up.
+
 462:0-465:3
 Wed Sep 16 14:58:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 691f3755_18f5298e
 Bytes: 5
 ditto
+
+462:0-465:3
+Wed Sep 16 16:02:53 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 691f3755_18f5298e
+UUID: c93f43b4_d3fd46dc
+Bytes: 6
+ditto.
 

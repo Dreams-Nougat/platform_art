@@ -29,3 +29,17 @@ UUID: 09e87b64_a56ba8e2
 Bytes: 37
 Why do we need to load image classes?
 
+494:0-496:3
+Wed Sep 16 15:40:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 09e87b64_a56ba8e2
+UUID: 44725a92_10c907e7
+Bytes: 505
+So that they (and their closure) are already there when you start the zygote.
+
+This shifts a little bit of work. And yes, even on JIT systems that saves overall work, as tools like am and pm (which is started on adb install etc) start a fresh runtime.
+
+(For full compilation there's obviously also attempted initialization.)
+
+That's the argument for it. Argument against is that all those classes will become dirty memory anyways, as none is initialized - the zygote will at least mutate the class status.
+

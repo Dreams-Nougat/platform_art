@@ -32,6 +32,25 @@ UUID: a9f4cf41_0247ec88
 Bytes: 184
 Nope, not merged yet. We shouldn't wait for each other here . I can have a cleanup CL and unify stuff. Just wanting to point out that we need to do a similar stuff in some other place.
 
+4722:4-4722:17
+Wed Sep 16 15:55:36 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a9f4cf41_0247ec88
+UUID: e467cecb_a5f749f8
+Bytes: 487
+What do you think about the new version that uses the parallel move resolver.
+
+I have also thought about a generic way to do the pairs: I could simply distinguish by asking the location whether it's a pair. So it would boil down to something like:
+
+ HParallelMove ...
+ if (target.IsPair()) {
+   move.addMove(src.low(),target.low(),To32Type(type),...)
+   move.addMove(src.high(),target.high(),To32Type(type),...)
+ } else {
+   move.addMove(src, target, type, ...)
+ }
+ resolver->emit(move);
+
 File: compiler/optimizing/intrinsics_utils.h
 
 70:15-70:37

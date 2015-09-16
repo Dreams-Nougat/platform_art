@@ -9,6 +9,14 @@ UUID: 44209a82_a76664af
 Bytes: 26
 check-cast and instance-of
 
+7:28-7:51
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44209a82_a76664af
+UUID: 44209a82_8afc0fae
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_arm.cc
 
 275:35-275:44
@@ -17,6 +25,14 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44725a92_c6536478
 Bytes: 52
 if you break initialization, it becomes one per line
+
+275:35-275:44
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44725a92_c6536478
+UUID: 691f3755_b840756d
+Bytes: 129
+One line for initialization is fine by me. It's when you need multiple lines for initialization that you'd switch to one by line.
 
 4422:6-4422:26
 Tue Sep 15 20:10:40 2015 +0000
@@ -27,12 +43,28 @@ This is wrong from code size perspective. We can emit a loop that goes back to t
 
 Same for check-cast and other architectures.
 
+4422:6-4422:26
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9ea475e_84ae68b9
+UUID: e9ea475e_840f883a
+Bytes: 143
+What LoadFromOffset above? The one line 4404 is for fetching the class of the object, not the super. If you meant jump to line 4430, then done.
+
 4432:6-4432:47
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 691f3755_55124cd5
 Bytes: 150
 This is backward branch, so it's never CBNZ. We could use "CBZ zero; B loop" which would make smaller code but it could negatively impact performance.
+
+4432:6-4432:47
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 691f3755_55124cd5
+UUID: 691f3755_983db9f3
+Bytes: 7
+Indeed.
 
 4433:6-4433:18
 Tue Sep 15 20:10:40 2015 +0000
@@ -41,12 +73,28 @@ UUID: 89fb8b33_9ecc7dc0
 Bytes: 58
 "out" is null i.e. 0, so we could jump straight to "done".
 
+4433:6-4433:18
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 89fb8b33_9ecc7dc0
+UUID: 691f3755_78989d6b
+Bytes: 17
+Good point. Done.
+
 4443:6-4443:44
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 490513fd_bccf41b4
 Bytes: 70
 Jump to "done". If out is null, i.e. 0, we don't need to reload the 0.
+
+4443:6-4443:44
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 490513fd_bccf41b4
+UUID: e9ea475e_240e7c3c
+Bytes: 4
+Done
 
 4445:0-4446:22
 Tue Sep 15 20:10:40 2015 +0000
@@ -58,12 +106,28 @@ What about
   static_assert(Primitive::kPrimNot == 0, "...");
   __ CompareAndBranchIfNotZero(out, &zero);
 
+4445:0-4446:22
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_7e33ed2d
+UUID: a9f4cf41_c212248f
+Bytes: 4
+Done
+
 4469:10-4469:26
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 691f3755_d5fd3cdc
 Bytes: 45
 Use zero.IsLinked() just as you do for arm64.
+
+4469:10-4469:26
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 691f3755_d5fd3cdc
+UUID: 09e87b64_4554dc3e
+Bytes: 4
+Done
 
 4476:6-4476:22
 Tue Sep 15 20:10:40 2015 +0000
@@ -72,12 +136,28 @@ UUID: 490513fd_9ccc85c0
 Bytes: 5
 ditto
 
+4476:6-4476:22
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 490513fd_9ccc85c0
+UUID: e9ea475e_042378b8
+Bytes: 4
+Done
+
 4481:6-4481:22
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e9ea475e_c4cb5087
 Bytes: 5
 ditto
+
+4481:6-4481:22
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9ea475e_c4cb5087
+UUID: c93f43b4_73b1fa63
+Bytes: 4
+Done
 
 4533:66-4533:69
 Tue Sep 15 21:46:46 2015 +0000
@@ -86,12 +166,28 @@ UUID: e467cecb_8e7c27f7
 Bytes: 25
 const on all these locals
 
+4533:66-4533:69
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e467cecb_8e7c27f7
+UUID: e9ea475e_e41f7466
+Bytes: 50
+Not a big fan of locally consts :-( too verbose...
+
 4596:0-4597:43
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2900dfee_5e383106
 Bytes: 23
 kPrimNot == 0 as above.
+
+4596:0-4597:43
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_5e383106
+UUID: a9f4cf41_624fd8aa
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm64.cc
 
@@ -109,12 +205,28 @@ UUID: 691f3755_b5fac0e0
 Bytes: 361
 LDR and CBNZ do not set flags. Assuming that reference unpoisoning doesn't modify flags, this could be replaced with CSET. This is especially helpful if we didn't do the null check - we can also avoid the branch below; though "success" would be a misnomer as the kAbstractClassCheck would need to branch to it (unless rewritten separately as suggested for arm).
 
+2309:0-2311:21
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 691f3755_b5fac0e0
+UUID: e9ea475e_c41c7074
+Bytes: 85
+There will be a read barrier, so we can't really rely on the flags not being touched.
+
 2319:19-2319:23
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 691f3755_95f7c4fa
 Bytes: 22
 Go straight to "done".
+
+2319:19-2319:23
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 691f3755_95f7c4fa
+UUID: 691f3755_589de159
+Bytes: 4
+Done
 
 2321:0-2323:21
 Tue Sep 15 20:10:40 2015 +0000
@@ -123,12 +235,28 @@ UUID: 2900dfee_de432179
 Bytes: 95
 kPrimNot == 0, so there is the option of using CBZ. There's also the possibility of using CSEL.
 
+2321:0-2323:21
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_de432179
+UUID: 89fb8b33_c11c6474
+Bytes: 34
+Will leave this as an exercise :-)
+
 2335:6-2335:18
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44209a82_c7a9a0fa
 Bytes: 30
 Only if we did the null check.
+
+2335:6-2335:18
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44209a82_c7a9a0fa
+UUID: 2900dfee_5e55d1ea
+Bytes: 4
+Done
 
 2410:66-2410:69
 Tue Sep 15 21:46:46 2015 +0000
@@ -164,6 +292,14 @@ Why not
 
 ? Same for check-cast and x86-64.
 
+5057:0-5058:51
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c93f43b4_b39f621e
+UUID: a9f4cf41_824adc98
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.h
 
 4695
@@ -173,12 +309,28 @@ UUID: c45e4afd_44758b0a
 Bytes: 44
 document the enum for the first time reader?
 
+4695
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c45e4afd_44758b0a
+UUID: 2900dfee_3e5a051b
+Bytes: 4
+Done
+
 4738
 Tue Sep 15 20:10:40 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 490513fd_7c0d39b1
 Bytes: 14
 Line too long.
+
+4738
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 490513fd_7c0d39b1
+UUID: 09e87b64_055ed45c
+Bytes: 4
+Done
 
 File: test/530-instanceof-checkcast/src/Main.java
 
@@ -188,4 +340,12 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8478d270_36c7ed9f
 Bytes: 4
 typo
+
+35:12-35:27
+Wed Sep 16 15:36:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8478d270_36c7ed9f
+UUID: 89fb8b33_61b910b2
+Bytes: 4
+Done
 

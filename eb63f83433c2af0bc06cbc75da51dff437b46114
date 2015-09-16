@@ -9,6 +9,14 @@ UUID: 2900dfee_9e191983
 Bytes: 10
 DCHECK_EQ?
 
+312:2-312:8
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_9e191983
+UUID: c93f43b4_b342c203
+Bytes: 123
+I prefer not to do that for pointers. It doesn't work with nullptr and it doesn't give you any valuable information anyway.
+
 File: compiler/optimizing/linearize_test.cc
 
 39:0-39:34
@@ -43,6 +51,14 @@ UUID: c93f43b4_d345460f
 Bytes: 178
 Hmm, we could override the operator in ArenaVector? Then we wouldn't have to reimplement it for every use case. There's also vector::at, but that would check in release mode too.
 
+128:23-128:42
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c93f43b4_d345460f
+UUID: 2900dfee_beca952a
+Bytes: 51
+I was thinking about that, maybe as a follow-up CL.
+
 File: compiler/optimizing/nodes.cc
 
 178:0-183:17
@@ -51,6 +67,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 89fb8b33_417bb4ba
 Bytes: 31
 Can't you do if (++visits[i]) ?
+
+178:0-183:17
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 89fb8b33_417bb4ba
+UUID: 44209a82_cab8c701
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -72,12 +96,28 @@ Replace with
 
 to call the default ctor?
 
+1517:14-1517:42
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44209a82_e78f7c5e
+UUID: c93f43b4_73633aa4
+Bytes: 95
+Removed the argument. The other std::vector<> constructor will default-initialize all elements.
+
 1519:35-1519:45
 Wed Sep 16 10:57:50 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2900dfee_7edd2dfb
 Bytes: 6
 Ditto?
+
+1519:35-1519:45
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_7edd2dfb
+UUID: a9f4cf41_220b1065
+Bytes: 4
+Done
 
 1613:40-1613:41
 Wed Sep 16 10:57:50 2015 +0000
@@ -86,12 +126,28 @@ UUID: 490513fd_9fc8f78b
 Bytes: 17
 Nit: extra space.
 
+1613:40-1613:41
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 490513fd_9fc8f78b
+UUID: 44209a82_4756906b
+Bytes: 4
+Done
+
 3033:14-3033:42
 Wed Sep 16 10:57:50 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 09e87b64_a5c8488b
 Bytes: 6
 Ditto?
+
+3033:14-3033:42
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 09e87b64_a5c8488b
+UUID: 44209a82_67538c7a
+Bytes: 4
+Done
 
 3053:40-3053:41
 Wed Sep 16 10:57:50 2015 +0000
@@ -100,12 +156,28 @@ UUID: 64211e85_c8060f5c
 Bytes: 9
 Likewise.
 
+3053:40-3053:41
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64211e85_c8060f5c
+UUID: 2900dfee_be9f351e
+Bytes: 4
+Done
+
 3985:16-3985:44
 Wed Sep 16 10:57:50 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e9ea475e_a43decf2
 Bytes: 6
 Ditto?
+
+3985:16-3985:44
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9ea475e_a43decf2
+UUID: c93f43b4_5368367c
+Bytes: 4
+Done
 
 File: compiler/optimizing/ssa_liveness_analysis.cc
 
@@ -115,4 +187,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2900dfee_9e9c792a
 Bytes: 153
 Why? The GetGraph->GetBlocks() contains dead blocks, so shouldn't be moved. If you want to reserve something, then you should use the reverse post order.
+
+87:2-87:60
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2900dfee_9e9c792a
+UUID: 89fb8b33_a16b98e2
+Bytes: 151
+This was an upper limit on the needed capacity to avoid reallocation. But if the reverse post order is already calculated, then it's a better estimate.
 

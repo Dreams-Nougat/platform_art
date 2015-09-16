@@ -9,6 +9,16 @@ UUID: 89fb8b33_8181bcf0
 Bytes: 18
 Why removing this?
 
+38:24-38:35
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 89fb8b33_8181bcf0
+UUID: 64211e85_884a579a
+Bytes: 449
+Because ValueObject prevents even placement new which is used to actually construct elements in containers. Previously we used objects that were never constructed, just relied on the memory being zeroed by the ArenaAllocator. Instead of constructing a Location object, we used to copy one to the uninitialized storage.
+
+I'm thinking about adding the placement operators new/delete to DISALOW_ALLOCATION to actually allow this use of the ValueObject.
+
 File: compiler/optimizing/nodes.h
 
 1245:27-1245:38
@@ -17,4 +27,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 89fb8b33_6186b008
 Bytes: 13
 Why removing?
+
+1245:27-1245:38
+Wed Sep 16 12:23:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 89fb8b33_6186b008
+UUID: 490513fd_ffeffbe8
+Bytes: 13
+See Location.
 

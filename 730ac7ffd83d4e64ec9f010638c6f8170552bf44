@@ -1,0 +1,27 @@
+Revision: 730ac7ffd83d4e64ec9f010638c6f8170552bf44
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm.h
+
+118:12-119:53
+Thu Sep 17 18:35:23 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 29a37f81_4398866b
+Bytes: 348
+There's an issue here since these pairs fail the ExpectedPairLayout() test.
+Having this exception is rather annoying and I can think of:
+a) adding a flag to not check that a pair has the expected layout
+b) requesting a proper pair and work around it with various moves.
+c) ?
+
+I would go with a) since b) implies a lot of working.
+What do you think?
+
+File: compiler/optimizing/code_generator_x86.h
+
+114:14-114:55
+Thu Sep 17 18:35:23 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e932471b_214f4eab
+Bytes: 149
+For x86, we actually block this pair from being use. We don't fail because baseline checks if the individual regs are blocked and not the whole pair.
+

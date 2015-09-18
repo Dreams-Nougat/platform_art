@@ -56,6 +56,16 @@ UUID: c91663dc_3b27237a
 Bytes: 309
 The map is strictly growing. So this uses, as vmarko says, some conclusions from internals, namely that on insert iterators aren't invalidated, so end() must always be the same. (It's still not explicitly race-free, as there are no guarantees given for that, but if there were, it would be somewhat insane...)
 
+707:4-707:46
+Fri Sep 18 20:32:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c91663dc_3b27237a
+UUID: 49c27358_c8a4df88
+Bytes: 192
+Seems like a brittle microoptimization that will break the moment we decide to mutate the map in some other part of the code.
+
+I would humbly prefer we consider vmarko's alternative code here.
+
 708:24-708:33
 Fri Sep 18 09:18:37 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,3 +9,46 @@ UUID: c9ef43fe_50bf8ce3
 Bytes: 13
 Line too long
 
+File: runtime/interpreter/interpreter_common.cc
+
+707:4-707:46
+Fri Sep 18 09:18:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c9ef43fe_90d5f423
+Bytes: 1023
+This should be done with the mutex held, otherwise you're relying on subtle properties of the container. I would prefer
+
+    SafeMap<uint32_t, std::set<uint32_t>>* string_init_map_ptr = nullptr;
+    {
+      MutexLock mu(self, *Locks::interpreter_string_init_map_lock_);
+      it = method_to_string_init_map.find(method_ref);
+      if (it != method_to_string_init_map.end()) {
+        string_init_map_ptr = &it->second;
+      }
+    }
+    if (string_init_map_ptr == nullptr) {
+      SafeMap<uint32_t, std::set<uint32_t>> string_init_map =
+          verifier::MethodVerifier::FindStringInitMap(method);
+      MutexLock mu(self, *Locks::interpreter_string_init_map_lock_);
+      // For efficiency you should add an overload of Overwrite() that takes
+      // the value as an rvalue reference and have both overloads return
+      // the iterator to the inserted/replaced entry.
+      auto it = method_to_string_init_map.Overwrite(
+          method_ref, std::move(string_init_map));
+      string_init_map_ptr = &it->second;
+    }
+
+708:24-708:33
+Fri Sep 18 09:18:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8902ab8b_86d5ca23
+Bytes: 24
+Unnecessary std::move().
+
+713:6-713:45
+Fri Sep 18 09:18:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 89762b11_86180ab1
+Bytes: 112
+This may be correct as it is but it looks odd, you're using a copy that's outside the method_to_string_init_map.
+

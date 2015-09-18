@@ -38,6 +38,16 @@ This should be done with the mutex held, otherwise you're relying on subtle prop
       string_init_map_ptr = &it->second;
     }
 
+707:4-707:46
+Fri Sep 18 20:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c9ef43fe_90d5f423
+UUID: 099a3b78_c673e26e
+Bytes: 282
+How can thee existing code in PS2 be thread-safe? It's reading from iterator without a lock, but it looks like that same value can be overwritten on line 711 from another thread.
+
+I don't know about SafeMap guarantees, but std::map the iterator will be invalid if the key is erased.
+
 708:24-708:33
 Fri Sep 18 09:18:37 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,12 +9,28 @@ UUID: 69c3b75a_6aabbbf0
 Bytes: 57
 Does this have performance implications I'm not aware of?
 
+19:0-19:40
+Fri Sep 18 21:08:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 69c3b75a_6aabbbf0
+UUID: e99c0776_8659d876
+Bytes: 79
+It increases Makefile parse time, but shouldn't be really significant, I think.
+
 71:3-71:23
 Fri Sep 18 20:49:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e9b7a7e1_6d367db5
 Bytes: 101
 Do I need to depend on all of the executables? Is this overkill? If not, which executables do I need?
+
+71:3-71:23
+Fri Sep 18 21:08:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9b7a7e1_6d367db5
+UUID: c91663dc_db9aa7ac
+Bytes: 83
+Guess you only need dex2oat and dalvikvm, but I think it's easier to just use this.
 
 76:24-76:71
 Fri Sep 18 20:49:39 2015 +0000
@@ -30,12 +46,36 @@ UUID: 29bd3fca_220f303c
 Bytes: 107
 Should I clear these AHAT_TEST_* variables at the end of the makefile? If so, how do I use them in recipes?
 
+76:0-76:20
+Fri Sep 18 21:08:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 29bd3fca_220f303c
+UUID: c91663dc_dbb1473e
+Bytes: 162
+By assigning them to local variables for the target. This is overall safer, as you can't know that nobody modified your values until the target is being executed.
+
+76:24-76:71
+Fri Sep 18 21:08:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 099a3b78_21ae58bb
+UUID: 69c3b75a_5eb32424
+Bytes: 65
+My guess is Ying won't like intermediate directories for tests...
+
 78:1-78:98
 Fri Sep 18 20:49:39 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 29bd3fca_c21f5c66
 Bytes: 123
 Using the 'art' script causes this to generate an image. Should I try to use core.art/core.oat instead? Does it not matter?
+
+78:1-78:98
+Fri Sep 18 21:08:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 29bd3fca_c21f5c66
+UUID: c91663dc_5bc697a4
+Bytes: 199
+I don't really think it matters. I also thought the script is set up to use the images from the host if they're set up. (Maybe it's because of your custom boot classpath, is there a reason for that?)
 
 File: tools/ahat/src/Main.java
 
@@ -54,6 +94,14 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e99c0776_66b874fe
 Bytes: 226
 Should I check that the result is an Instance? Should I check if it's null? Does it matter if I add extra checks, given that it's a test case, and it should be fairly obvious from the runtime exception that something is wrong?
+
+28:4-28:78
+Fri Sep 18 21:08:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e99c0776_66b874fe
+UUID: 49c27358_68010bcc
+Bytes: 187
+Your choice, I don't think we've been very consistent in that regard. The exception will have enough info. It will be an NPE or a ClassCastException, so it's pretty clear what went wrong.
 
 File: tools/ahat/test/TestDump.java
 

@@ -26,6 +26,16 @@ Isn't it cleaner to have two constructors?
 
 Though I guess your usage is targeted towards having a unified get-or-insert for both cases.
 
+27:2-31:3
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 24c9e69c_f006795b
+UUID: c91663dc_5b5d3786
+Bytes: 290
+The place where I call to construct HeapLocation already a shared method (UpdateHeapLocations()) so it's more convenient to call this directly.
+
+I can separate into two types of HeapLocations and build aliasing matrix separately, etc. It's just going to be more code. I can refine it later.
+
 57:11-57:24
 Fri Sep 11 04:47:02 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,12 +43,28 @@ UUID: e4c34e74_bbd46a25
 Bytes: 152
 Is that a standard term? I haven't heard it in this context, but I also haven't kept up with the field. To me, "direct_use_only" seems more descriptive.
 
+57:11-57:24
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c34e74_bbd46a25
+UUID: 89df0b23_fe7a41f8
+Bytes: 155
+It's not an academic term. I tried to find a good and succinct name for it and it's the best I can think of. It's basically a singleton name for the value.
+
 60:10-60:46
 Fri Sep 11 04:47:02 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 244c8613_f080e633
 Bytes: 86
 I assume that includes the constructor, so you only see that for inlined constructors?
+
+60:10-60:46
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 244c8613_f080e633
+UUID: 29bd3fca_e29e18ca
+Bytes: 52
+Yes. If constructor is called, it's not a singleton.
 
 108:45-108:51
 Fri Sep 11 04:47:02 2015 +0000
@@ -69,12 +95,38 @@ UUID: 244c8613_c493af95
 Bytes: 49
 Rename. This should be declaring_class_def_index.
 
+108:45-108:51
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 64cf5e9f_a6ba0643
+UUID: c9a3c3b1_64beb29c
+Bytes: 314
+I moved class_def_index_ to HeapLocation where it really belongs to.
+
+The field_index of the resolved field can work also. Still we need to change nodes.h/builder.cc to get that additional info. It's essentially serving as a (class_index, offset) pair so it's probably a better choice. I may make the change later.
+
+108:10-108:26
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 244c8613_c493af95
+UUID: c91663dc_5ec20571
+Bytes: 4
+Done
+
 111:28-111:29
 Fri Sep 11 04:47:02 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04c1426c_179a0bae
 Bytes: 6
 Space.
+
+111:28-111:29
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04c1426c_179a0bae
+UUID: c9a3c3b1_84c39623
+Bytes: 4
+Done
 
 180:6-180:20
 Fri Sep 11 04:47:02 2015 +0000
@@ -83,12 +135,28 @@ UUID: 244c8613_9072c222
 Bytes: 27
 DCHECK for the equals case.
 
+180:6-180:20
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 244c8613_9072c222
+UUID: c9a3c3b1_c4a4be88
+Bytes: 4
+Done
+
 201:2-209:3
 Fri Sep 11 04:47:02 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 84d4522f_d1aee3ff
 Bytes: 85
 You should profile this. I wonder if a map is an acceptable space-time tradeoff here.
+
+201:2-209:3
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 84d4522f_d1aee3ff
+UUID: 099a3b78_41551ceb
+Bytes: 212
+I cap the max number of locations to 32, which covers almost all cases. Number of refs are further smaller than the number of locations. So some linear search seems acceptable since the average length is not big.
 
 296:36-296:44
 Fri Sep 11 04:47:02 2015 +0000
@@ -97,12 +165,28 @@ UUID: c4ef2afe_ce971f80
 Bytes: 35
 Indentation, plus line-break style.
 
+296:36-296:44
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ef2afe_ce971f80
+UUID: c9a3c3b1_a4d09ae1
+Bytes: 4
+Done
+
 339:40-339:41
 Fri Sep 11 04:47:02 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 04c1426c_9a75220e
 Bytes: 99
 You could disambiguate this (if it's similar to "singleton"). Negative component type, for example.
+
+339:40-339:41
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 04c1426c_9a75220e
+UUID: 69c3b75a_1eafec60
+Bytes: 88
+I added some fixed constant for this and a TODO for more fine-grained array types later.
 
 370:4-370:10
 Fri Sep 11 04:47:02 2015 +0000
@@ -111,12 +195,28 @@ UUID: e4c34e74_9beac6e2
 Bytes: 24
 Prefer ATTRIBUTE_UNUSED.
 
+370:4-370:10
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4c34e74_9beac6e2
+UUID: 099a3b78_c1402c28
+Bytes: 4
+Done
+
 527:41-527:67
 Fri Sep 11 04:47:02 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c4ef2afe_6ea953c4
 Bytes: 172
 As in the in-person discussion, this needs to be investigated. I don't think this is true, you may only not eliminate over monitor-enter and monitor-exit, separately, IMHO.
+
+527:41-527:67
+Sat Sep 19 00:00:40 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c4ef2afe_6ea953c4
+UUID: 69c3b75a_3edd88fc
+Bytes: 106
+For now I give up load-store elimination if there is volatile or monitor ops. I'll add that support later.
 
 File: compiler/optimizing/load_store_elimination.h
 

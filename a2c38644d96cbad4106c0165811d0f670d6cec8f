@@ -66,6 +66,14 @@ Seems like a brittle microoptimization that will break the moment we decide to m
 
 I would humbly prefer we consider vmarko's alternative code here.
 
+707:4-707:46
+Mon Sep 21 09:36:11 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 49c27358_c8a4df88
+UUID: 89762b11_e63ffe77
+Bytes: 280
+Igor is right, the Overwrite() makes this unsafe no matter what's the iterator validity. We should not Overwrite() at all, we should instead try to find() once again and if that fails we should Put() the new element. (With a micro-optimization of using lower_bound()+PutBefore().)
+
 708:24-708:33
 Fri Sep 18 09:18:37 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

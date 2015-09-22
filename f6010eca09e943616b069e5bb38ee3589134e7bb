@@ -17,3 +17,13 @@ UUID: 29de1f5b_e000e843
 Bytes: 34
 These aren't linked in statically?
 
+104:0-104:46
+Tue Sep 22 05:00:20 2015 +0000
+Author: Stephen Hines <1010056@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 29de1f5b_e000e843
+UUID: e91fa7ee_53e2fc09
+Bytes: 464
+They are being linked in statically. This is exactly the missing puzzle piece from earlier. I kept thinking it was pulling in ncurses (for which the .so will pull in the appropriate tinfo/terminfo/etc. libraries), but the static designation here forces you to be explicit for the complete chain of deps.
+
+It is a bit terrible that we are polluting our build with more non-hermetic components, but I assume that the host librt is also not a checked-in thing either.
+

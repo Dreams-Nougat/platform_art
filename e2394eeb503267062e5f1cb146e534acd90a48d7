@@ -13,6 +13,16 @@ It looks like for this to really work going forward, SlowPathCode::GetEntryLabel
 
 Andreas/Roland, what's your take on these two?
 
+272:9-272:39
+Tue Sep 22 02:18:50 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 89470bec_0470baa6
+UUID: 29de1f5b_5a7209de
+Bytes: 415
+Check out arm64, which uses its own label class from vixl. They don't rely a lot on the generic facilities, though - I don't know how much you want to have in common with that.
+
+It's not an issue to make GetEntryLabel() and GetExitLabel() virtual. It just wasn't necessary before. And right now you only really benefit from it if you use the default intrinsics slow path. Don't know if you're going that way or not.
+
 275:12-275:42
 Tue Sep 22 02:06:00 2015 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>

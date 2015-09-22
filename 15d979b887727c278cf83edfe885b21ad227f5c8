@@ -108,6 +108,14 @@ UUID: 4970b318_64686a2b
 Bytes: 11
 What order?
 
+122:11-122:17
+Tue Sep 22 15:13:17 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e99a4788_042538ee
+UUID: 4970b318_272af4bd
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.cc
 
 1148:30-1148:43
@@ -116,6 +124,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 090f9bb2_ada1c99a
 Bytes: 42
 -> Support for moving .... not implemented
+
+1148:30-1148:43
+Tue Sep 22 15:13:17 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 090f9bb2_ada1c99a
+UUID: 89ab8b9d_61acf0d4
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -126,4 +142,14 @@ UUID: 8902ab8b_a689e65d
 Bytes: 44
 Top -> Entry?
 AtTop->BeforeFirstInstruction?
+
+839:22-839:25
+Tue Sep 22 15:13:17 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8902ab8b_a689e65d
+UUID: a97f6fe5_6a32f727
+Bytes: 589
+Didn't want to name it SplitBeforeFirstInstruction because that suggests it's equivalent to SplitBefore(FirstInstruction()) which GraphBuilder uses as well to split catch blocks. 
+
+The difference is quite subtle - SplitBefore creates the block that will come second, SplitAtTop the one that will come first. This preserves try/catch information in the respective use cases. When splitting a try+catch block, the first block should keep the catch info. When splitting a block to insert try entry, the second block should remain the try block... I could just make this a flag of SplitBefore.
 

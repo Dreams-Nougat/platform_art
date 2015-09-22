@@ -1,0 +1,22 @@
+Revision: e2394eeb503267062e5f1cb146e534acd90a48d7
+Patch-set: 10
+File: compiler/utils/mips/assembler_mips.h
+
+272:9-272:39
+Tue Sep 22 02:06:00 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 89470bec_0470baa6
+Bytes: 610
+I think, if this is correct at all (I don't quite like the exposure of class Label to outside of class Assembler, namely recent appearance of class Label in the generic class SlowPathCode), it should be down_cast<>() instead of static_cast<>().
+
+It looks like for this to really work going forward, SlowPathCode::GetEntryLabel() and SlowPathCode::GetExitLabel() need to be virtual, so their overriden versions in class SlowPathCodeMIPS can return pointers to instances of MipsLabel (derived from class Label), which MipsAssembler will be able to handle properly.
+
+Andreas/Roland, what's your take on these two?
+
+275:12-275:42
+Tue Sep 22 02:06:00 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e91fa7ee_7c5b556c
+Bytes: 6
+Ditto.
+

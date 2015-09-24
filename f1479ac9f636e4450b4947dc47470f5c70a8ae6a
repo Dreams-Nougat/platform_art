@@ -9,12 +9,28 @@ UUID: e9b08755_3120d062
 Bytes: 71
 This isn't C anymore, a cleanup should move the declaration to the use.
 
+322:2-322:20
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9b08755_3120d062
+UUID: ce582944_4e588721
+Bytes: 4
+Done
+
 323:2-324:70
 Thu Sep 24 03:41:35 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e9b08755_51275478
 Bytes: 67
 Same here, move below the early bailouts and separate them clearly.
+
+323:2-324:70
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9b08755_51275478
+UUID: ee86cdd4_445f20d1
+Bytes: 4
+Done
 
 384:6-419:12
 Thu Sep 24 03:41:35 2015 +0000
@@ -23,12 +39,28 @@ UUID: 2e2e2591_8e955b2d
 Bytes: 70
 Factor into a helper function, so that the switch is clean and simple.
 
+384:6-419:12
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_8e955b2d
+UUID: 2e2e2591_312a48b0
+Bytes: 22
+Reduced significantly.
+
 425:0-457:3
 Thu Sep 24 03:41:35 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ee86cdd4_01d82a8c
 Bytes: 159
 Factor into a helper, call from the second switch case and tail-call in the factored out helper of the third case. Simplifies the reading of the main decision.
+
+425:0-457:3
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee86cdd4_01d82a8c
+UUID: ee86cdd4_04ffd8d3
+Bytes: 4
+Done
 
 File: runtime/image_assistant.cc
 
@@ -38,6 +70,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4916f301_1446541a
 Bytes: 69
 DCHECKs for validity? These strings may be empty in case of failures.
+
+130:0-138:1
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4916f301_1446541a
+UUID: 2e2e2591_b1119819
+Bytes: 27
+Added in FindImageFilename.
 
 249:0-263:1
 Thu Sep 24 03:41:35 2015 +0000
@@ -74,6 +114,16 @@ With FindImageFilename taking location and isa explicitly, this can be refactore
 
 and you wouldn't need to store both names in ImageInfo...
 
+249:0-263:1
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a905afc4_f783e08b
+UUID: 4e4c398b_4a9d17a1
+Bytes: 310
+We do need both filenames for a few of the functions in ImageInfo. We either need to store both filenames or a reference to an ImageInfo or the location and isa. I can switch it to do one of these if you wish but I think the current way is cleaner.
+
+Also as I've said this is an internal implementation detail.
+
 File: runtime/image_assistant.h
 
 73:2-74:39
@@ -83,12 +133,28 @@ UUID: 4916f301_b454c0c9
 Bytes: 60
 These should be separated with at least a one-liner comment.
 
+73:2-74:39
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4916f301_b454c0c9
+UUID: 4e4c398b_ea4f2300
+Bytes: 4
+Done
+
 94:2-99:54
 Thu Sep 24 03:41:35 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 691737fc_9559c401
 Bytes: 121
 By passing in location and isa as in parameters you can move the declaration into the cc file, hiding the whole function.
+
+94:2-99:54
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 691737fc_9559c401
+UUID: ce582944_0e24cf47
+Bytes: 5
+Done.
 
 109:2-113:51
 Thu Sep 24 03:41:35 2015 +0000
@@ -97,10 +163,30 @@ UUID: e9b08755_f1bda89e
 Bytes: 31
 Seems redundant to have both...
 
+109:2-113:51
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e9b08755_f1bda89e
+UUID: ee616dea_32ced698
+Bytes: 27
+Done. Removed IsCacheImage.
+
 155:2-160:3
 Thu Sep 24 03:41:35 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4916f301_3477105f
 Bytes: 151
 Are we really only storing both strings because you want this private "mutator"? You can hide all of this in the .cc file by refactoring differently...
+
+155:2-160:3
+Thu Sep 24 19:04:33 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4916f301_3477105f
+UUID: 6e4d7d85_0ebccfee
+Bytes: 261
+I guess. We do need both for a few functions (GetImageState, IsRelocated, ...)
+
+This is just an implementation detail that is private.
+
+I can change it to not have this, though I think we will either still need both or to keep a reference to the ImageAssistant.
 

@@ -9,6 +9,14 @@ UUID: ee616dea_cfed9185
 Bytes: 76
 There are more than one FinishGC call sites. Should add the same code there?
 
+2591:75-2591:83
+Thu Sep 24 19:31:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_cfed9185
+UUID: ee86cdd4_8413e8d4
+Bytes: 115
+Hmm good point, if we don't add to other sites there may be a long delay until JNI_OnUnload is called. I'll add it.
+
 File: runtime/java_vm_ext.cc
 
 171:8-171:15
@@ -18,12 +26,28 @@ UUID: ee616dea_6f0465e0
 Bytes: 11
 nit: jweak?
 
+171:8-171:15
+Thu Sep 24 19:31:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_6f0465e0
+UUID: 4e4c398b_6d68edc0
+Bytes: 4
+Done
+
 196:34-196:44
 Thu Sep 24 17:11:31 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ee616dea_4f7e4144
 Bytes: 94
 Dumpable may call this without holding the lock? In that case, why would this assert not fail?
+
+196:34-196:44
+Thu Sep 24 19:31:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_4f7e4144
+UUID: ce582944_d1f5368a
+Bytes: 80
+No, dumpable holds the lock but can't be annotated properly due to the template.
 
 274:12-274:16
 Thu Sep 24 17:11:31 2015 +0000
@@ -32,10 +56,26 @@ UUID: ee616dea_af2c9d5f
 Bytes: 28
 nit: auto -> JNI_OnUnloadFn?
 
+274:12-274:16
+Thu Sep 24 19:31:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_af2c9d5f
+UUID: ae5bf53d_f65cae64
+Bytes: 4
+Done
+
 286:6-286:7
 Thu Sep 24 17:11:31 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2e2e2591_7149f0a7
 Bytes: 46
 Maybe add a VLOG(jni) line before calling one?
+
+286:6-286:7
+Thu Sep 24 19:31:59 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_7149f0a7
+UUID: ae5bf53d_b6663635
+Bytes: 4
+Done
 

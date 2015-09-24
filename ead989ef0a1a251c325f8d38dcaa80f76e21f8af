@@ -98,12 +98,34 @@ UUID: ee616dea_bd117719
 Bytes: 69
 Do you really want a Java string here? A ModifiedUTF8 one not enough?
 
+312:2-312:8
+Thu Sep 24 22:35:40 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_bd117719
+UUID: ce582944_fc4ff1ff
+Bytes: 177
+Hmm, yeah, I saw const-string using it but that's probably not right.
+
+  dex_file.StringDataAndUtf16LengthByIdx(string_idx, &utf16_length); 
+
+Is the one you want to use instead?
+
 313:30-313:75
 Thu Sep 24 20:58:22 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ee86cdd4_47b1625d
 Bytes: 6
 Twice?
+
+313:30-313:75
+Thu Sep 24 22:35:40 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee86cdd4_47b1625d
+UUID: ae5bf53d_c1ce86bb
+Bytes: 96
+Just in case the first time it didn't get resolved? :)
+
+(just kidding, thanks for catching this)
 
 417:2-417:8
 Thu Sep 24 20:58:22 2015 +0000
@@ -141,6 +163,18 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ce582944_310812a2
 Bytes: 15
 Remove, period.
+
+43:55-43:56
+Thu Sep 24 22:35:40 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce582944_310812a2
+UUID: ae5bf53d_619d9aa1
+Bytes: 460
+Well I did want this to be used only in the scope of a single case statement, in which case it should be ValueObject.
+
+Unfortunately the way the opcodes are now I had to put it into the entire interpreter Execute scope, but wrapped it into a pointer so that every other opcode doesnt have to pay the initialization cost of the vector/string [inside of the ClosureBuilder].
+
+Are you just objecting to this comment, or objecting to making it a ValueObject later?
 
 File: runtime/lambda/leaking_allocator.h
 

@@ -95,6 +95,16 @@ No. They are going to be optimized differently at the HIR level. See VisitInvoke
 
 That's the level at which we need to think for instructions. What would be the optimziations you do at a HIR level on a HSwitch?
 
+2406:3-2406:28
+Thu Sep 24 16:56:08 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e9a4178_d211e418
+UUID: 4e4c398b_aab48bb4
+Bytes: 405
+The only difference is the DCE handling of Switch.  I would be happy with HSwitch, and let the BE decide whether to generate jumping or successive tests based on the BE's needs.  For eaxmple, I would remove the arbitrary 'only do this if there are more than 5 items to test' and let each BE generate the code it wants
+
+Do we want to move this discussion to https://android-review.googlesource.com/172695 ?
+
 2411:16-2412:42
 Wed Sep 23 09:31:56 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

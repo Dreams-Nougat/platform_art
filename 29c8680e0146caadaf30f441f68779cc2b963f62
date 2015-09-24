@@ -21,6 +21,18 @@ Here that would mean matching ParameterValue and then finding a Goto which satis
 
 But yeah, even the current approach is much more expressive than before. :)
 
+25
+Thu Sep 24 18:52:38 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_8158fa70
+UUID: 0e5fa128_93c8e636
+Bytes: 632
+Yeah, the current solution is very effective (and better than the previous one) on a small test like this one. :-)
+
+If you plan to do something even smarter for such cases, an option could be to let a CHECK statement possibly match several lines (and remember them), and later have CHECK-EVAL try to solve its condition by exploring the various lines associated to Checker variables (such as `GotoLiv` here).
+* If the set of lines matched by a CHECK were empty, that would be an error.
+* If the condition contained in a CHECK-EVAL could not be met for at least one combination of matched lines/variables, that would be an error too.
+
 92:0-93:61
 Thu Sep 24 00:29:15 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -35,4 +47,14 @@ Parent: 8e52b121_265a16e2
 UUID: 6ec3bd5a_955cc464
 Bytes: 500
 It's the same reason as inserting invokes below - having some instructions before loop headers, so that a pre-headers are not created and back edges not split. That makes the block layout cleaner and easier to test. That said, I am a little worried what Jack will do with this. It's still not as clean as I'd want it to be. Was thinking for a while that instructions should print their block number and control-flow instructions also their targets. That would make verifying block layout much easier.
+
+92:0-93:61
+Thu Sep 24 18:52:38 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ec3bd5a_955cc464
+UUID: 2e470569_57d93c5c
+Bytes: 120
+Yes, printing more info seems a good idea, even if we do not use it yet.
+
+(Sorry for expanding Checker's TODO list!) :-)
 

@@ -9,10 +9,30 @@ UUID: 2e470569_03da6ea8
 Bytes: 30
 This is very elegant. Yay! :-)
 
+25:6-25:48
+Thu Sep 24 11:16:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e470569_03da6ea8
+UUID: eececd75_8158fa70
+Bytes: 546
+There's one thing I was thinking about though. The user needs to make sure they matched the right lines before verifying the property. A better approach would be to not match a line (and keep searching) if a certain condition is met.
+
+Here that would mean matching ParameterValue and then finding a Goto which satisfies the liveness relation. Because right now if the condition is not met, the algorithm will not attempt to find different lines that would make it meet.
+
+But yeah, even the current approach is much more expressive than before. :)
+
 92:0-93:61
 Thu Sep 24 00:29:15 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8e52b121_265a16e2
 Bytes: 47
 Out of curiosity, why did you change this part?
+
+92:0-93:61
+Thu Sep 24 11:16:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e52b121_265a16e2
+UUID: 6ec3bd5a_955cc464
+Bytes: 500
+It's the same reason as inserting invokes below - having some instructions before loop headers, so that a pre-headers are not created and back edges not split. That makes the block layout cleaner and easier to test. That said, I am a little worried what Jack will do with this. It's still not as clean as I'd want it to be. Was thinking for a while that instructions should print their block number and control-flow instructions also their targets. That would make verifying block layout much easier.
 

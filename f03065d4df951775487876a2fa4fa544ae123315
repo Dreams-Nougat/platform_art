@@ -1,0 +1,42 @@
+Revision: f03065d4df951775487876a2fa4fa544ae123315
+Patch-set: 2
+File: disassembler/disassembler_x86.cc
+
+282:21-282:23
+Thu Sep 24 18:58:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_c4c81038
+Bytes: 68
+Missing space. The linter should have told you about that, actually.
+
+248:2-288:3
+Thu Sep 24 18:58:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_2f62edde
+Bytes: 833
+How about using memcmp to make this more declarative? Something like:
+
+  static constexpr uint8_t kNops[][10] = {
+      { },
+      { 0x90 },
+      { 0x66, 0x90 },
+      { 0x0f, 0x1f, 0x00 },
+      { 0x0f, 0x1f, 0x40, 0x00 },
+      { 0x0f, 0x1f, 0x44, 0x00, 0x00 },
+      { 0x66, 0x0f, 0x1f, 0x44, 0x00, 0x00 },
+      { 0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00 },
+      { 0x0f, 0x1f, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00 },
+      { 0x66, 0x0f, 0x1f, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00 },
+      { 0x66, 0x2e, 0x0f, 0x1f, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00 }
+  };
+  
+  for (size_t i = 1; i < arraysize(kNops); ++i) {
+    if (memcmp(instr, kNops[i], i) == 0) {
+      os << FormatInstructionPointer(instr)
+         << StringPrintf(": %22s    \t       nop \n", DumpCodeHex(instr, instr + i).c_str());
+      return i;
+    }
+  }
+  
+  return 0;
+

@@ -41,6 +41,14 @@ UUID: 2e2e2591_542a5db0
 Bytes: 30
 Just moved to kTemp right now.
 
+35:29-35:32
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 09aebbf9_db0a3f5f
+UUID: ee616dea_6be330c4
+Bytes: 4
+Done
+
 276:10-276:31
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -72,6 +80,14 @@ UUID: ee616dea_8b2f8459
 Bytes: 4
 Done
 
+276:10-276:31
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_b813c58f
+UUID: 4e4c398b_8e3afcad
+Bytes: 4
+Done
+
 302:0-304:50
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,6 +100,14 @@ Fri Sep 25 22:53:25 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 Parent: a9ba0f35_529c72d0
 UUID: 6e4d7d85_e772b1d8
+Bytes: 4
+Done
+
+302:0-304:50
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a9ba0f35_529c72d0
+UUID: 2e2e2591_a554b25f
 Bytes: 4
 Done
 
@@ -104,6 +128,14 @@ Fri Sep 25 22:53:25 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 Parent: 2e470569_97cb34aa
 UUID: ee86cdd4_cae1f206
+Bytes: 4
+Done
+
+305:0-306:34
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e470569_97cb34aa
+UUID: 8e52b121_20f4368e
 Bytes: 4
 Done
 
@@ -128,6 +160,14 @@ UUID: ee86cdd4_8aff6a9f
 Bytes: 4
 Done
 
+341:0-343:34
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e4c398b_8d544960
+UUID: 4e4c398b_2e39c8b7
+Bytes: 4
+Done
+
 415:22-415:52
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -143,6 +183,14 @@ UUID: 0e5fa128_e7c1958b
 Bytes: 4
 Done
 
+415:22-415:52
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_f47b8e85
+UUID: 6e4d7d85_d1fbf7e3
+Bytes: 4
+Done
+
 417:0-419:34
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -155,6 +203,14 @@ Fri Sep 25 22:53:25 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 Parent: ce582944_d1253644
 UUID: 2e2e2591_94e565e2
+Bytes: 4
+Done
+
+417:0-419:34
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce582944_d1253644
+UUID: ce582944_8f3c365c
 Bytes: 4
 Done
 
@@ -181,6 +237,18 @@ UUID: 2e470569_b2199e82
 Bytes: 27
 Yes, this was my guess too.
 
+421:2-421:69
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e470569_b2199e82
+UUID: ae5bf53d_44f4df8e
+Bytes: 1363
+The short answer is "no, you can't drop one of the SELxxx instructions below". Or, at least if it's possible nobody here mentioned it to me when they reviewed the code. ;-)
+
+Some architectures (such as ARM and MIPS prior to r6) have a conditional move instruction which only changes the target (output) register if the condition is true (MIPS prior to r6 had MOVF, MOVT, and MOVZ). The SELEQZ and SELNEZ instructions always change the target (output) register.  If the condition is true the output register gets the contents of the "rs" register; otherwise, the output register is set to zero. One consequence of this is that to implement something like "rd = c==0 ? rs : rt" MIPS64r6 needs to use a pair of instructions SELEQZ/SELNEZ instructions. After executing this pair of instructions one of the output registers from the pair will necessarily contain zero. Then the code ORs the output registers from the SELEQZ/SELNEZ instructions to get the final result.
+
+The initial test to see if the output register is same as the first input register is needed to make sure that value in the first input register isn't clobbered before we've finished computing the output value. The logic in the corresponding else clause performs the same task but makes sure the second input register isn't clobbered in the event that it's the same register as the output register.
+
 541:18-541:23
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -195,6 +263,22 @@ Parent: 2e470569_32b7ee0e
 UUID: 8e52b121_fb949303
 Bytes: 229
 Chris, can you send us a PDF or so for the instruction set manual? It's really hard to find good literature on this. I was trying to fix up the CL, but I can't fix this without figuring out how the classify (?) instruction works.
+
+541:18-541:23
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e470569_32b7ee0e
+UUID: ae5bf53d_a4b71bbe
+Bytes: 4
+Done
+
+541:18-541:23
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e52b121_fb949303
+UUID: 2e470569_71ec3b3c
+Bytes: 12
+On it's way.
 
 546:23-546:34
 Thu Sep 24 21:13:25 2015 +0000
@@ -211,6 +295,14 @@ UUID: ee616dea_ebfe00d6
 Bytes: 4
 Done
 
+546:23-546:34
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8e52b121_0fd3ad3c
+UUID: 0e5fa128_74e315c4
+Bytes: 10
+Yes. Done.
+
 552:55-552:66
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -226,12 +318,28 @@ UUID: ee86cdd4_2a5ade66
 Bytes: 4
 Done
 
+552:55-552:66
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e4d7d85_3906b727
+UUID: ce582944_8f0e76b0
+Bytes: 4
+Done
+
 590:18-590:23
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4e4c398b_78e549df
 Bytes: 6
 Ditto.
+
+590:18-590:23
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e4c398b_78e549df
+UUID: 0e5fa128_546251df
+Bytes: 4
+Done
 
 595:23-595:34
 Thu Sep 24 21:13:25 2015 +0000
@@ -248,6 +356,14 @@ UUID: ce582944_6587e104
 Bytes: 4
 Done
 
+595:23-595:34
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e5fa128_1e62bdd5
+UUID: 2e2e2591_40205cdd
+Bytes: 4
+Done
+
 601:55-601:66
 Thu Sep 24 21:13:25 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -260,6 +376,14 @@ Fri Sep 25 22:53:25 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 Parent: 2e470569_b2e19e07
 UUID: ee86cdd4_ca66d236
+Bytes: 4
+Done
+
+601:55-601:66
+Fri Sep 25 23:04:31 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e470569_b2e19e07
+UUID: 2e2e2591_202550ed
 Bytes: 4
 Done
 

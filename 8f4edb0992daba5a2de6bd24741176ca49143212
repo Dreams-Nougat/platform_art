@@ -1,0 +1,1129 @@
+Revision: 8f4edb0992daba5a2de6bd24741176ca49143212
+Patch-set: 17
+File: /COMMIT_MSG
+
+7
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_aca5c7eb
+Bytes: 81
+Perhaps "Add initial default method support to Art" to be consistent with line 9?
+
+18
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_d14c160e
+Bytes: 102
+Consider adding "with invoke-static" (just to be consistent with your explanation of line 12 and 20) ?
+
+File: cmdline/cmdline_parser_test.cc
+
+552
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_b64996fc
+Bytes: 48
+Add a test for both lambdas and default-methods?
+
+File: cmdline/cmdline_types.h
+
+846
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_7ee539df
+Bytes: 41
+Don't need these static casts, redundant.
+
+File: runtime/art_method-inl.h
+
+214
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_39e7dba8
+Bytes: 217
+I think this is allowing for invoke-virtual on an interface, but perhaps leave a comment?
+
+Also why doesn't this have an experimental defaults guard? If it's because IsDefault is always false then leave a comment too.
+
+File: runtime/art_method.h
+
+136
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_b7cab285
+Bytes: 199
+Let's just add a comment saying that this is synthesized by another part of the runtime (the class linker? the verifier?)
+
+(to prevent cases of someone calling this before its set? is that possible?)
+
+164
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_3cefc5c1
+Bytes: 309
+Not sure if this is performant, it has to construct the value of PrettyMethod regardless of whether or not DCHECKs are enabled, then it throws the value away.
+
+The problem is it might be pretty hard to optimize it out. Have you checked assembly output to see if "PrettyMethod" call is there for release build?
+
+178
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_1cf4018e
+Bytes: 9
+Comments?
+
+File: runtime/class_linker.cc
+
+4614:11-4614:18
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_9c291150
+Bytes: 190
+What is the int?
+
+(I for one would prefer a using int alias in the header so we don't need to leave a comment every time, not sure if anyone else will agree. But it needs a comment at least)
+
+4617
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_8381b2c9
+Bytes: 39
+style nit: /*out*/&default_translations
+
+4618:47-4618:78
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_93290650
+Bytes: 26
+use const T& here instead?
+
+4746
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_9ff7c34f
+Bytes: 137
+Maybe misunderstanding here, why is this getting executed as part of LinkVirtualMethods instead of as part of SetupInterfaceLookupTable ?
+
+4749:74-4749:76
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_73b20a68
+Bytes: 2
+zu
+
+4757
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_1f0e3b77
+Bytes: 149
+Comment what this loop is doing?
+
+
+I would guess giving each interface method an IMT index (and caching the default flag), but maybe not? Maybe more?
+
+4761
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_1890910d
+Bytes: 117
+Perhaps this could probably be refactored further
+
+   LinkVirtualMethodsForInterface
+   LinkVirtualMethodsForClass
+
+?
+
+4777
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_5cb71956
+Bytes: 30
+Why? (Also please add comment)
+
+4784
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_c4fc52a7
+Bytes: 30
+Why? (Also please add comment)
+
+4805
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_bf2cbf5f
+Bytes: 48
+Magic numbers ? 
+
+Why? (Also please add comment)
+
+4853
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_5f5b9bf6
+Bytes: 41
+style nit: add /*out*/s, one arg per line
+
+4871
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_733c4a5b
+Bytes: 103
+I think I recall something about this being a phasing problem, can you elaborate some more in comments?
+
+4877
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_4334dabf
+Bytes: 12
+add a CHECK?
+
+4883:18-4883:19
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_2458ce6e
+Bytes: 1
+-
+
+4936
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_e3a2ae12
+Bytes: 51
+Does this function have any side effects? const it?
+
+4937:61-4937:77
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_f575c0c2
+Bytes: 172
+The name could probably be better, something like 'target_method', 'search_method', etc.
+
+interface_method too vague and its easy to get lost a few loops into this function
+
+4939:49-4939:50
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_9f9c63d1
+Bytes: 18
+style nit: /*out*/
+
+4940
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_c4021216
+Bytes: 18
+style nit: /*out*/
+
+4941
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_435a9ae2
+Bytes: 31
+DCHECK not null on the out args
+
+4945
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_23b1e65e
+Bytes: 244
+add somewhere that the order of unrelated interfaces doesn't matter (unless it does , in which case add that it uses implements order)
+
+IIRC implements order does matter for some things, but not sure if its relevant in this particular function.
+
+4949:9-4949:16
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_24620ed6
+Bytes: 89
+Nicolas nit: prefer more explicit names, iftable_count (maybe even interface_table_count)
+
+4952
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_fe5c8164
+Bytes: 127
+Ditto as the function name, how about renaming this to e.g. 'target_name_comparator' or just a 'target_method_comparator', etc.
+
+4953
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_7e2651fe
+Bytes: 43
+DCHECK for correct iftable order somewhere?
+
+4954:7-4954:14
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_4cce4e99
+Bytes: 180
+size_t and then do a "if k == 0 break" at the end
+
+(size_t is 64bit on 64bit so this truncates)
+.....
+
+also add something like..
+
+
+   // Iterate over the klass's iftable in reverse
+
+4956:11-4956:28
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_43361a7a
+Bytes: 58
+Why not num_virtual_methods or just num_instance_methods ?
+
+4957
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_ff46bf43
+Bytes: 80
+add a // Iterate through every instance method on the interface [in some order?]
+
+4959
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_8c832640
+Bytes: 248
+you can reduce # of indents by flipping this
+
+also add comments either way
+
+  // Skip abstract methods because they can't be default.
+  // Skip non-abstract methods with non-matching signatures.
+  if (current_method->IsAbstract || ...)
+    continue
+
+4962
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_b732b286
+Bytes: 45
+Why is this CHECK safe? Does it verify first?
+
+4964:21-4964:40
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_9e3a2df7
+Bytes: 49
+perhaps chosen_iface , to reduce the number of *s
+
+4989
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_f51f0066
+Bytes: 325
+I for one would've preferred these "new" functions go below the older methods, this would've made the diff easier to read (high level to low level).
+
+Doesn't really matter too much now (in fact, don't change it since it'll make successive reviews of this CL more difficult), but just something to keep in mind for the future.
+
+4990
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_70ea01b2
+Bytes: 109
+Should mention the conflicts up here too.
+
+What is a conflict anyway? Can you please elaborate (in comments)?
+
+4995:0-4995:22
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_300ec977
+Bytes: 18
+style nit: /*out*/
+
+5016
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_f7da6a86
+Bytes: 22
+DCHECK(val != nullptr)
+
+5031
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_f594e003
+Bytes: 47
+(be sure to add this notation <: means subtype)
+
+5039
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_fa7b7185
+Bytes: 100
+add a "Upon entry, .." or similar so that it's clear this is the precondition not the postcondition.
+
+5047:37-5047:41
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_8f9b1867
+Bytes: 82
+Based on comments in 5054 should this perhaps be called current_iface_list (set) ?
+
+5050
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_3e6219df
+Bytes: 55
+is it possible to DCHECK they were initialized already?
+
+5052:9-5052:12
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_3e5d7911
+Bytes: 78
+naming nit: too hard to follow what idx is, perhaps filled_ifcount or similar.
+
+5053:12-5053:26
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_82ad2ec3
+Bytes: 295
+style nit: _iter, _it, _iteterator, etc implies the variable name is an iterator (e.g. std::vector<T>::iterator or similar) so it's best not to use that naming convention for the name of the element. instead consider something simply like "current_interface" or really anything else without _it.
+
+5053:7-5053:11
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_2f2f84c0
+Bytes: 40
+nit: mirror::Class* instead of auto here
+
+5055:32-5055:33
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_22bc42ef
+Bytes: 55
+missing period? Also consider newlines for readability.
+
+5058
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_be75e991
+Bytes: 48
+unnecessary, interface_iter is already a pointer
+
+5078
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_af3a54f6
+Bytes: 73
+see performance note about DCHECK / PrettyClass made earlier in this file
+
+5084
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_fe46c143
+Bytes: 88
+else DCHECK that all of the super interfaces must already be in the current-iface-list ?
+
+5103
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_17c61e36
+Bytes: 130
+Can you explain somewhere why you split off this part of LinkInterfaceMethods into (2) parts and did it *before* linking virtuals?
+
+5134
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_1ac64d36
+Bytes: 20
+What does that mean?
+
+5150
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_c3fb2ae4
+Bytes: 29
+nit: period at end of comment
+
+5156
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_faaa5154
+Bytes: 29
+nit: period at end of comment
+
+5174
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_b03ab9f6
+Bytes: 61
+Can you explain why this was refactored? (And add a comment)?
+
+5251
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_23c0c687
+Bytes: 25
+Add comment for the skip?
+
+5272
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_f5d140e2
+Bytes: 132
+A bit hard to follow logic (I know this line is not your code), could you please add a comment explaining what this variable is for?
+
+5321
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_170dfeb1
+Bytes: 172
+Please no auto**, write full type out when it's not obvious without needing to scroll up/down
+
+(also calling a pointer a ref is misleading, use & with refs, or * with ptrs)
+
+5351
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_77b1da38
+Bytes: 49
+Where is the "next step" ? Please adjust comment.
+
+5367:77-5367:97
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_30f4898e
+Bytes: 190
+What does it mean for an interface to be new (please elaborate in comments)?
+
+Presumably it means it's the immediate implements child (i.e. it wasn't implemented by any of the superclasses)?
+
+5378:47-5379:62
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_7a81c1c6
+Bytes: 22
+style nit: add /*out*/
+
+5385
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_37924291
+Bytes: 34
+style nit: else if to save 1 line?
+
+5387:65-5387:71
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_5a8605e1
+Bytes: 33
+nit: add period to end of comment
+
+5399:55-5399:65
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_84609a98
+Bytes: 15
+nit: add period
+
+5460
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_ba9e1920
+Bytes: 38
+nit: indent 4 more spaces to the right
+
+5467:57-5467:59
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_64d00689
+Bytes: 38
+can't be default? must not be default?
+
+5471
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_a354b65f
+Bytes: 201
+I remember hearing something offline about these copies being necessary to avoid leaving vtable holes in classes that 'inherit' a default method.
+
+Can you please leave a comment here with more details?
+
+5474
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_5a6de5ce
+Bytes: 66
+style nit: var name = *out, move_table.emplace(def_method, &name);
+
+5505
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_7e81b1c6
+Bytes: 43
+What is this doing? (Add a comment please?)
+
+5518:81-5518:87
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_df730b24
+Bytes: 4
+Must
+
+5549
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_7f152fd1
+Bytes: 52
+Why is this doing the check? (Add a comment please?)
+
+File: runtime/class_linker.h
+
+20
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_83d41227
+Bytes: 57
+Almost always unordered_map (or even a HashMap) for speed
+
+722
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_63d91e5d
+Bytes: 8
+Comment?
+
+724:35-724:42
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_7fb777bf
+Bytes: 20
+What are these ints?
+
+727
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_3c06a527
+Bytes: 8
+Comment?
+
+734:47-734:49
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_cffeb5d6
+Bytes: 13
+Otherwise if?
+
+738
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_f7beea36
+Bytes: 51
+Does this have any side effects ? Can you const it?
+
+741
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_2f08a9a1
+Bytes: 11
+add /*out*/
+
+742
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_23d3263d
+Bytes: 11
+add /*out*/
+
+745
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_999c87d1
+Bytes: 8
+Comment?
+
+File: runtime/experimental.h
+
+0
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_5804cd56
+Bytes: 90
+File name should match type name whenever possible, experimental.h -> experimental_flags.h
+
+24
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_bd2ccf5f
+Bytes: 9
+Comments?
+
+39
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_fd49272d
+Bytes: 117
+style nit: don't rely on integer automatic conversion to bool (see "Coding Like Its Java")
+
+  return value_ != kNone;
+
+73
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_63047e57
+Bytes: 26
+if (started = false) kNone
+
+File: runtime/interpreter/interpreter.cc
+
+464
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_f201567c
+Bytes: 407
+This doesn't seem right. I think you want to load/link/verify/etc the interface class but *not* initialize it (if I'm understanding the old code here correctly?).
+
+I think you had an upcoming CL that fixes the initialization order, so you might just want to leave a comment here saying "this is wrong but I'm fixing it in the next CL"
+
+and add a DCHECK/CHECK/etc if possible to catch the incorrect behavior.
+
+File: runtime/mirror/class-inl.h
+
+395
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_ef73b16c
+Bytes: 41
+Add a comment to this DCHECK for clarity?
+
+File: runtime/mirror/class.cc
+
+725
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_bce4d94e
+Bytes: 39
+Why this change? Please leave a comment
+
+File: runtime/parsed_options.cc
+
+562
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_19dd37f8
+Bytes: 250
+Let's include the longer disclaimer from below too.
+
+(For example):
+
+"All existing invoke opcodes have an unstable updated specification and are nearly guaranteed to change over time. Do not attempt to write shipping code against the invoke opcodes."
+
+File: runtime/runtime.h
+
+535:0-541:3
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_1f58736e
+Bytes: 159
+Probably don't need both of these methods?
+
+
+  bool AreExperimentalFlagsEnabled(ExperimentalFlags flags) [
+    return experimental_flags_ & flags != kNone;
+  }
+
+File: runtime/runtime_options.def
+
+117:105-117:109
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_7cd41d26
+Bytes: 220
+Having "none" as an explicit option doesn't make sense (because it wouldn't change the result of the flags if it was on the command line, i.e. x or 0 = x), it can just be '-Xexperimental:' if they don't want any options.
+
+File: runtime/verifier/method_verifier.cc
+
+200
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_d38bfe12
+Bytes: 19
+Unnecessary change?
+
+633:44-633:56
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_ea8cfbbe
+Bytes: 14
+update comment
+
+638
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_328dae6b
+Bytes: 260
+I believe Andreas wrote a dex file test that munges around with the flags to check invalid combinations, perhaps we can update it to remove kAccAbstract from the list of "invalid" flags for interfaces (when this setting is enabled)?
+
++agampe@ for more thoughts
+
+667
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_5c883d5b
+Bytes: 196
+Not sure if this is right, the constraint might be too big.
+
+Can an interface class have methods that aren't public (accessibility level)? Final methods? Synthetic methods (this one probably yes)?
+
+File: test/960-default-smali/build
+
+16
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_b8fcdda5
+Bytes: 41
+Pretty complicated, some comments please?
+
+17:39-17:46
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_1c90810d
+Bytes: 74
+all of these exit 1s are redundant, just use "set -e" to do the same thing
+
+19:8-19:10
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_b9498bfc
+Bytes: 157
+Kind of a round about way of doing things
+
+  if [[ $@ == *"--jvm"*; ]] 
+
+which is not strictly right (it'll catch things like --jvmfoo) but its still better.
+
+20
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_f48ca6be
+Bytes: 18
+why not mkdir -p ?
+
+21
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_2af1830f
+Bytes: 18
+why not mkdir -p ?
+
+23:61-23:62
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_78ff85a0
+Bytes: 62
+use "$(...)" instead or it wont support file names with spaces
+
+26:46-26:48
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_53582e21
+Bytes: 129
+Can you refactor this out to something like EXPERIMENTAL_API_LEVEL=23 and fix the other scripts not to use the magical 23 either?
+
+26:70-26:72
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_572b76c4
+Bytes: 62
+use "$(...)" instead or it wont support file names with spaces
+
+27:4-27:18
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_d9d79f5c
+Bytes: 16
+"$TEST_NAME.jar"
+
+File: test/960-default-smali/expected.txt
+
+0
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_9710ce83
+Bytes: 23
+Is this auto generated?
+
+File: test/960-default-smali/info.txt
+
+3:38-3:44
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_9f46abe8
+Bytes: 15
+Java 8 Language
+
+File: test/960-default-smali/run
+
+17
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_d8167981
+Bytes: 16
+Same as in build
+
+File: test/960-default-smali/smali/classes.xml
+
+1
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_9e4d8d60
+Bytes: 47
+How about a corresponding XSD file for the win?
+
+File: test/960-default-smali/util-src/generate_smali.py
+
+35
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_a2f952b5
+Bytes: 11
+line length
+
+37
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_1abc01ef
+Bytes: 238
+google3 style guide kindly requests docstrings for any public (not prefixed with _) functions and classes
+-- only saying this once, but obviously every function should get some docstrings added.
+
+also style: functions are lower_with_under
+
+103
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_bfe4c74e
+Bytes: 6
+Why 4?
+
+150
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_c213268f
+Bytes: 17
+redundant newline
+
+159
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_ef8bac12
+Bytes: 16
+missing new line
+
+229
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_f52dc075
+Bytes: 17
+redundant newline
+
+237
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_8249aeaa
+Bytes: 15
+missing newline
+
+240
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_1f0d1bb2
+Bytes: 17
+redundant newline
+
+242
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_deed4585
+Bytes: 11
+line length
+
+253
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_44f1820e
+Bytes: 50
+style: functions are lower_with_under (same below)
+
+254
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_900455e1
+Bytes: 8
+while c?
+
+260:0-261:16
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_300369d7
+Bytes: 11
+yield from?
+
+300
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_a2639224
+Bytes: 86
+nit: modern python prefers list comprehensions over the using the functional functions
+
+302
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_1018653d
+Bytes: 11
+line length
+
+307
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_3e2a1db0
+Bytes: 11
+line length
+
+File: test/961-default-iface-resolution-generated/build
+
+19
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_de40a170
+Bytes: 4
+Why?
+
+23
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_9509d4f9
+Bytes: 14
+Same as before
+
+File: test/961-default-iface-resolution-generated/expected.txt
+
+0
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_7a0421e0
+Bytes: 179
+It might be good if this was generated by run-test on the fly instead of checking this in. It also makes this CL looks unnecessarily scarily large.
+
+What does everyone else think?
+
+File: test/961-default-iface-resolution-generated/util-src/generate_smali.py
+
+27
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_f517000d
+Bytes: 60
+Seems similar-ish to the other script, can it be refactored?
+
+45
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_1515c404
+Bytes: 33
+see style nits from previous file
+
+200
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_b04079fd
+Bytes: 32
+docstrings over regular comments
+
+202
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_d043ed08
+Bytes: 72
+google style guide prefers not to  make such complicated functional maps
+
+File: test/962-iface-static/build
+
+25
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_d759a672
+Bytes: 130
+This looks pretty similar to the other file, can we refactor?
+
+In fact, why not just add --jvm functionality to every single test?
+
+File: test/962-iface-static/run
+
+0
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_53e26e98
+Bytes: 16
+Same as in build
+
+File: test/963-default-range-smali/build
+
+25
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_533f0e9f
+Bytes: 61
+This looks pretty similar to the other file, can we refactor?
+
+File: test/963-default-range-smali/run
+
+17
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_33e7f2a8
+Bytes: 16
+Same as in build
+
+File: test/run-test
+
+159:0-160:33
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_78b1cd38
+Bytes: 74
+This is default already, why does it need to be repeated from line 43/44 ?
+
+File: tools/extract_embedded_java.sh
+
+0
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_bf983f65
+Bytes: 185
+bash filenames don't need '.sh' extension which implies sh[ell] scripts, not bash scripts
+
+
+also consider "extract-embedded-java" to be consistent with our other scripts (run-test, etc)
+
+21
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e470569_fde7e71a
+Bytes: 60
+Perhaps have a small description of what this actually does?
+
+22:46-22:88
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_98cb61aa
+Bytes: 47
+This is pretty magical, can this be simplified?
+
+23
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4e4c398b_730c4a49
+Bytes: 111
+Can you include some comments with sample strings that get matched, and also what happens before/after the sed?
+
+23:65-23:67
+Fri Sep 25 01:10:43 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6e4d7d85_1462a2d5
+Bytes: 93
+Isn't this introducing a data race? What's to prevent the output from happening concurrently?
+

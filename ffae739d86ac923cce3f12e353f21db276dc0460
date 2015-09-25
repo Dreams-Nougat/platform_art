@@ -1,0 +1,22 @@
+Revision: ffae739d86ac923cce3f12e353f21db276dc0460
+Patch-set: 1
+File: runtime/verifier/method_verifier.cc
+
+1333:2-1333:32
+Fri Sep 25 16:21:38 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ce582944_3dc1031e
+Bytes: 9
+constexpr
+
+1338:6-1339:34
+Fri Sep 25 16:21:38 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_ff4fe3ff
+Bytes: 189
+You can't do it that. This would incur signed-integer overflow, which is undefined behavior in C...
+
+Write it as
+
+  if (first_key > std::numeric_limits<int32_t>::max() - (switch_count - 1))
+

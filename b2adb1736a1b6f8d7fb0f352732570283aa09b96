@@ -1,5 +1,14 @@
 Revision: b2adb1736a1b6f8d7fb0f352732570283aa09b96
 Patch-set: 2
+File: compiler/optimizing/code_generator_mips64.cc
+
+2432:0-2433:68
+Fri Sep 25 00:19:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_7c6add2a
+Bytes: 26
+Nit: put on a single line.
+
 File: compiler/optimizing/intrinsics_mips64.cc
 
 28:0-28:30
@@ -16,6 +25,27 @@ Parent: e90b27d5_b954bfc9
 UUID: e9b08755_2550869f
 Bytes: 40
 Yes, that's our style, thanks, Vladimir.
+
+52:11-52:15
+Fri Sep 25 00:19:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee616dea_c349eafb
+Bytes: 161
+I'd replace this with `assembler` (and adjust other uses below).
+
+`masm` is used in ARM64, because of VIXL's MacroAssembler, but does not really make sense here.
+
+63:0-64:37
+Fri Sep 25 00:19:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_30bc89ef
+Bytes: 170
+Replace with
+
+  FpuRegister input = locations->InAt(0).AsFpuRegister<FpuRegister>();
+  GpuRegister output = locations->Out().AsRegister<GpuRegister>();
+
+(here and below).
 
 File: compiler/optimizing/intrinsics_mips64.h
 

@@ -38,6 +38,28 @@ Maybe for now we can keep a default to true and override it only in places where
 
 What do you think?
 
+305:26-305:40
+Mon Sep 28 18:58:55 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ebd45ca_566232df
+UUID: ae5bf53d_1f418972
+Bytes: 935
+Sounds good to me.
+
+Yeah, sometimes we call RecordPcInfo even when we do not really need to, e.g. for type conversions or compare operations. The intent was to be future-proof; see this comment at the beginning of the method in compiler/optimizing/code_generator.cc:
+
+    // The code generated for some type conversions and comparisons
+    // may call the runtime, thus normally requiring a subsequent
+    // call to this method. However, the method verifier does not
+    // produce PC information for certain instructions, which are
+    // considered "atomic" (they cannot join a GC).
+    // Therefore we do not currently record PC information for such
+    // instructions.  As this may change later, we added this special
+    // case so that code generators may nevertheless call
+    // CodeGenerator::RecordPcInfo without triggering an error in
+    // CodeGenerator::BuildNativeGCMap ("Missing ref for dex pc 0x")
+    // thereafter.
+
 File: compiler/optimizing/intrinsics_arm.cc
 
 921:26-921:53

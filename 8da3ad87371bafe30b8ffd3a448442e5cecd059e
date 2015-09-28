@@ -16,6 +16,14 @@ UUID: eececd75_0496b837
 Bytes: 6
 cannot
 
+61:36-61:39
+Mon Sep 28 15:26:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_0496b837
+UUID: 2e470569_af536705
+Bytes: 320
+Smashing caller-saves helps down the line if something goes wrong and somebody uses registers they shouldn't. However, some of the registers we must set are caller-saves - so we need to turn of smashing (or know exactly which ones we should smash). This is just to note *why* it's turned off, and that it has a downside.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 669:0-676:79
@@ -25,12 +33,28 @@ UUID: 4ec27958_b7bd42ec
 Bytes: 18
 if (kIsDebugBuild)
 
+669:0-676:79
+Mon Sep 28 15:26:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ec27958_b7bd42ec
+UUID: 6e4d7d85_3df69a08
+Bytes: 69
+You really feel that check isn't important enough to do it generally?
+
 688:7-689:39
 Mon Sep 28 08:28:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4ec27958_d7cabe86
 Bytes: 26
 Why is that not addressed?
+
+688:7-689:39
+Mon Sep 28 15:26:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ec27958_d7cabe86
+UUID: 2e2e2591_aa291a4f
+Bytes: 21
+It's a stale comment.
 
 File: runtime/quick_exception_handler.cc
 
@@ -41,12 +65,39 @@ UUID: 0e9a4178_55507ecf
 Bytes: 8
 why etc?
 
+519:87-519:90
+Mon Sep 28 15:26:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e9a4178_55507ecf
+UUID: 2e470569_8f58ab22
+Bytes: 108
+Stale, but future-proof.
+
+(This had cases for the arm and mips fixup, before they went into separate CLs...)
+
 617:22-617:23
 Mon Sep 28 08:28:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e9a4178_755582be
 Bytes: 96
 why this new terminology? What do you loose from printing "transition", "runtime", "quick" ... ?
+
+617:22-617:23
+Mon Sep 28 15:26:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e9a4178_755582be
+UUID: 2e2e2591_8a565ecd
+Bytes: 240
+I wanted a short and concise form. So it looks like this:
+
+ N
+ Qi Main.inlined()
+ Q  Main.foo()
+ N
+ S  Main.interpreted()
+ ...
+
+I felt it was better to keep the second column for actual names. It reads well enough this way, don't you think?
 
 File: runtime/thread.cc
 
@@ -56,4 +107,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ceae6993_1e0c4d48
 Bytes: 24
 Shound't those be CHECK?
+
+256:0-257:39
+Mon Sep 28 15:26:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ceae6993_1e0c4d48
+UUID: 8e52b121_90e579e2
+Bytes: 63
+They were DCHECKs before, and Seb and Mingyao agreed on that...
 

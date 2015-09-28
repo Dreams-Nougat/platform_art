@@ -9,6 +9,15 @@ UUID: 2ebd45ca_16043adf
 Bytes: 112
 So iiuc, this runs the constructor without allocating memory? Is there no other way of invoking the constructor?
 
+499
+Mon Sep 28 16:54:59 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ebd45ca_16043adf
+UUID: 6ec3bd5a_38bcc5a1
+Bytes: 93
+Yes, this placement-new constructs the object at the given address.
+No, there's no other way.
+
 File: compiler/optimizing/code_generator_arm.h
 
 338:28-338:80
@@ -18,6 +27,14 @@ UUID: 8ec8f176_b92a9b5a
 Bytes: 45
 Is this meant to be here? In other files too.
 
+338:28-338:80
+Mon Sep 28 16:54:59 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ec8f176_b92a9b5a
+UUID: 2ebd45ca_3634d6a8
+Bytes: 98
+Yes, that's a comment about the size of the array. I can try and rewrite it if it's too confusing.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 613:2-613:34
@@ -26,6 +43,14 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2ebd45ca_d6fac238
 Bytes: 128
 I still think you should override ArenaVector::operator[] and put this DCHECK there rather than scattering it all over the code.
+
+613:2-613:34
+Mon Sep 28 16:54:59 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ebd45ca_d6fac238
+UUID: 0eb5e1d9_3d659ba7
+Bytes: 158
+I started working on that but it's not trivial. Changing ArenaVector to actually not be std::vector breaks some template functions we use. I'll do that later.
 
 File: compiler/optimizing/stack_map_stream.h
 

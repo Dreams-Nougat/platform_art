@@ -9,6 +9,14 @@ UUID: 891c6b20_d924174a
 Bytes: 31
 equals is missing from the list
 
+9:0-15:42
+Mon Sep 28 18:40:20 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 891c6b20_d924174a
+UUID: a905afc4_dd24fb49
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_mips64.cc
 
 901:20-901:22
@@ -20,10 +28,31 @@ Why T9?
 
 For newer contributions it's now also "required" to put such things into a nicely named constant, kXXX, when it's local to the file like this is...
 
+901:20-901:22
+Mon Sep 28 18:40:20 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 699c97d8_ed62e54c
+UUID: 2e2e2591_ed785c8b
+Bytes: 102
+I can change this to TMP which was added to the enumeration in runtime/arch/mips64/registers_mips64.h.
+
 951:10-951:18
 Wed Sep 23 21:07:16 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4916f301_088c77fa
 Bytes: 110
 It actually happens that str == arg, which triggers a check. We'll have to implement a compile-time fast-path.
+
+951:10-951:18
+Mon Sep 28 18:40:20 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4916f301_088c77fa
+UUID: 4e4c398b_d0fc09a7
+Bytes: 407
+I pulled the logic directly from the ARM64 code (compiler/optimizing/intrinsics_arm64.cc, lines 1224-1226):
+  // Reference equality check, return true if same reference.
+  __ Cmp(str, arg);
+  __ B(&return_true, eq);
+Is that code wrong too, or did I misunderstand what the ARM code is doing?
+So if this triggers a check I should revert to "slow path" code here and let the slow path do the work in this case?
 

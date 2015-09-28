@@ -32,6 +32,14 @@ UUID: 6ec3bd5a_d802f115
 Bytes: 101
 Then maybe consider rephrasing the comment? I don't understand why there is a risk. Who's "somebody"?
 
+61:36-61:39
+Mon Sep 28 20:08:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ec3bd5a_d802f115
+UUID: 4e4c398b_b524df8d
+Bytes: 101
+Basically we don't poison registers anymore, and so incorrect use down the line wouldn't be detected.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 669:0-676:79
@@ -56,6 +64,14 @@ Parent: 6e4d7d85_3df69a08
 UUID: 4ec27958_97aa0654
 Bytes: 74
 You said it's a sanity check, why should we pay for it everytime we deopt?
+
+669:0-676:79
+Mon Sep 28 20:08:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ec27958_97aa0654
+UUID: ce582944_be9ba62f
+Bytes: 4
+Done
 
 688:7-689:39
 Mon Sep 28 08:28:53 2015 +0000
@@ -99,6 +115,14 @@ UUID: ce074951_53923688
 Bytes: 82
 Ah I see. Maybe then say. For example, this is to get the LR right on x86 and x64.
 
+519:87-519:90
+Mon Sep 28 20:08:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce074951_53923688
+UUID: ae5bf53d_fc75a390
+Bytes: 4
+Done
+
 617:22-617:23
 Mon Sep 28 08:28:53 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -131,6 +155,16 @@ UUID: 0e9a4178_b840c16f
 Bytes: 174
 I know it's just debug info, but it will still be obscure for developers doing -verbose:deopt. I would tend to say concise is probably not worth the confusion, but your call.
 
+617:22-617:23
+Mon Sep 28 20:08:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e9a4178_b840c16f
+UUID: 4e4c398b_f514970a
+Bytes: 151
+The way it is means it's easier to align and doesn't waste space (which helps keeping things on one line in the logs).
+
+I added "<transition>," though.
+
 File: runtime/thread.cc
 
 256:0-257:39
@@ -155,4 +189,12 @@ Parent: 8e52b121_90e579e2
 UUID: eececd75_c414d00b
 Bytes: 109
 Yeah, but we won't abort on error then in release builds. Unless abort_on_error is only true on debug builds?
+
+256:0-257:39
+Mon Sep 28 20:08:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_c414d00b
+UUID: 0e5fa128_c00e77fa
+Bytes: 51
+I see your issue. Should I call it dabort_on_error?
 

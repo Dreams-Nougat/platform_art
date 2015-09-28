@@ -56,3 +56,15 @@ I pulled the logic directly from the ARM64 code (compiler/optimizing/intrinsics_
 Is that code wrong too, or did I misunderstand what the ARM code is doing?
 So if this triggers a check I should revert to "slow path" code here and let the slow path do the work in this case?
 
+951:10-951:18
+Mon Sep 28 18:52:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e4c398b_d0fc09a7
+UUID: ee616dea_77d0b388
+Bytes: 350
+It means we're generating more code than we need to in the other architectures. We simply sometimes get the case where receiver and argument are the same (guess for inlining or so).
+
+The other architectures allow to compare two registers that are the same. Your assembler rejects that.
+
+This simply needs a pre-check and fast-bail (with result true).
+

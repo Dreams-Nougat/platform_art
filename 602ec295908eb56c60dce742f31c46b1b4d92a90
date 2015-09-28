@@ -24,6 +24,20 @@ UUID: e4d42ed5_b1650029
 Bytes: 26
 Maybe `do_record_pc_info`?
 
+305:26-305:40
+Mon Sep 28 13:48:53 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e4d42ed5_b1650029
+UUID: 2ebd45ca_566232df
+Bytes: 584
+Before this patch `InvokeRuntime()` was unconditionally recording the pc info, which is why I opted for a default argument.
+
+From what I understand we only need the pc info when the runtime may try to map dex_pc to native pc. But when is that exactly? It looks to me as if some existing code records the pc info when it doesn't need it.
+
+Maybe for now we can keep a default to true and override it only in places where the pc info was not recorded. Then in a later patch we can try to remove the default and reduce the number of places where we do record the info.
+
+What do you think?
+
 File: compiler/optimizing/intrinsics_arm.cc
 
 921:26-921:53

@@ -52,6 +52,14 @@ You essentially want
 
 However, I'd still prefer the remove_if() loop written explicitly to avoid the lambda.
 
+164:4-166:66
+Tue Sep 29 16:08:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ec3bd5a_d85031f6
+UUID: 2e2e2591_19a64629
+Bytes: 333
+Sorry, do I understand you correctly and you really want me to implement remove_if? I disagree with that. Either we should accept the lambda, or we should have a simple implementation. Something that is juggling elements around explicitly (and still needs the erase call to cut off the unused end) is IMHO neither simple nor elegant.
+
 File: runtime/jni_env_ext.h
 
 118:0-118:61
@@ -60,4 +68,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eececd75_44b7e055
 Bytes: 200
 Won't it simplify a lot of things if this was thread specific and created at JNI entry? The need to have a uintptr_t from the frame (?) also doesn't seem right when you know that the calls are scoped.
+
+118:0-118:61
+Tue Sep 29 16:08:00 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_44b7e055
+UUID: 2e2e2591_39b1025f
+Bytes: 469
+This *is* thread-specific, as JNIEnv is. That's why there's no lock around this.
+
+Mathieu and I derived this encoding to minimize the overhead in non-CheckJNI situations. The only thing you always pay is the CheckJNI-check on exit of a JNI function. And even if CheckJNI is on, only MonitorEnter and Exit operations pay any price. Any stack of vectors to scope things requires entry instrumentation that we wanted to avoid (as bdc really only wanted CheckJNI impacted).
 

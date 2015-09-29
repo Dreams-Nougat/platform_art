@@ -68,6 +68,14 @@ UUID: eeb7ade1_dc574163
 Bytes: 210
 After reading our style guide again, I'm actually OK with a lambda. I guess I should use a lambda at https://android-review.googlesource.com/#/c/172203/2/compiler/optimizing/register_allocator.cc@618 after all.
 
+164:4-166:66
+Tue Sep 29 16:39:52 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb7ade1_dc574163
+UUID: 0e5fa128_be04c3e0
+Bytes: 35
+I'm fine with the lambda version...
+
 File: runtime/jni_env_ext.h
 
 118:0-118:61
@@ -94,4 +102,16 @@ Parent: 2e2e2591_39b1025f
 UUID: 0e9a4178_3bb20b1e
 Bytes: 278
 Oh, didn't nee the vector wasn't locked. My question then is around the "sessions" you talk about in the implementation. Why do you need them when calls are scoped? Is that the stack of vectors you wanted to avoid? But if no check-jni, that stack of vector will always be empty.
+
+118:0-118:61
+Tue Sep 29 16:39:52 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e9a4178_3bb20b1e
+UUID: 0e5fa128_def7774e
+Bytes: 861
+"Sessions" or "segments" or "native frames," I don't have a good name. It's the native frames of the current JNI call.
+
+The issue is exactly that you try to simulate the stack without the overhead, saving something specific to the native Java method call. It's fine to lock in JNI, make a Java call, which goes into another JNI call, which locks and unlocks, ...
+
+JNI is slow enough and Mathieu yelled at me with the first design (the stack). So I'm trying to avoid all overhead where possible - which means *nothing* in the JNI entry and a simple check for "Is CheckJNI on" at JNI exit. (Also note that the stack design allocates and deletes in each JNI session, but this implementation only mutates the vector whenever there's a MonitorEnter or Exit, which is rare [a quick search only shows occurrences in android.view.Surface and android.media.MediaCodec]).
 

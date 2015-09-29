@@ -9,3 +9,11 @@ UUID: 8ec8f176_b9fe1bd5
 Bytes: 382
 I don't think it works. (a) it doesn't check the equivalent's type, and (b) it assumes dead => conflict but LoadLocal for a move-object can generate a non-conflicting dead ref equivalent. The same assumption is made on line 80 and will remove phis that should have been kept live. So if this CL is only meant to unblock you, i guess we can accept it, but i don't think it's correct.
 
+59
+Tue Sep 29 14:42:52 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ec8f176_b9fe1bd5
+UUID: eeb7ade1_5c925191
+Bytes: 84
+Good point. As discussed, I now check against the void type on the equivalent. PTAL.
+

@@ -123,3 +123,11 @@ UUID: ceae6993_81b1e060
 Bytes: 87
 If you could do a checkJni check at JNI entry, could you then scope the locked_objects?
 
+118:0-118:61
+Tue Sep 29 17:16:49 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ceae6993_81b1e060
+UUID: f86a1765_0a53fb07
+Bytes: 228
+Well, more or less. You'd pay for allocation, as there's no lexical scope to put a stack allocation in. But yeah, on entry if the check succeeds, you'd push a new vector onto the stack, which you remove (and deallocate) on exit.
+

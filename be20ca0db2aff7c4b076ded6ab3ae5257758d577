@@ -79,3 +79,11 @@ This *is* thread-specific, as JNIEnv is. That's why there's no lock around this.
 
 Mathieu and I derived this encoding to minimize the overhead in non-CheckJNI situations. The only thing you always pay is the CheckJNI-check on exit of a JNI function. And even if CheckJNI is on, only MonitorEnter and Exit operations pay any price. Any stack of vectors to scope things requires entry instrumentation that we wanted to avoid (as bdc really only wanted CheckJNI impacted).
 
+118:0-118:61
+Tue Sep 29 16:19:20 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_39b1025f
+UUID: 0e9a4178_3bb20b1e
+Bytes: 278
+Oh, didn't nee the vector wasn't locked. My question then is around the "sessions" you talk about in the implementation. Why do you need them when calls are scoped? Is that the stack of vectors you wanted to avoid? But if no check-jni, that stack of vector will always be empty.
+

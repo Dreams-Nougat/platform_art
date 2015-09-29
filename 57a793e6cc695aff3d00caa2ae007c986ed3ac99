@@ -19,6 +19,13 @@ Done
 
 File: compiler/optimizing/intrinsics_mips64.cc
 
+58:4-58:10
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f86a1765_10832c3e
+Bytes: 14
+Use DCHECK_EQ.
+
 901:20-901:22
 Wed Sep 23 04:48:12 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,4 +74,77 @@ It means we're generating more code than we need to in the other architectures. 
 The other architectures allow to compare two registers that are the same. Your assembler rejects that.
 
 This simply needs a pre-check and fast-bail (with result true).
+
+1011:8-1012:44
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f86a1765_53e68e1b
+Bytes: 78
+Replace with
+
+  IsUint<16>(invoke->InputAt(1)->AsIntConstant()->GetValue())
+
+?
+
+1063:2-1063:52
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f86a1765_d3359e0c
+Bytes: 208
+Replace with
+
+  Location outLocation = calling_convention.GetReturnLocation(Primitive::kPrimInt);
+  locations->SetOut(Location::RegisterLocation(outLocation.AsRegister<GpuRegister>()));
+
+(as in other places).
+
+1084:2-1084:52
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_c33a0caf
+Bytes: 6
+Ditto.
+
+File: runtime/arch/mips64/quick_entrypoints_mips64.S
+
+1641:26-1641:37
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e5fa128_a7def2f5
+Bytes: 135
+Two suggestions about this part of the comment:
+
+1. replace it with
+
+  if this[i] != anotherString[i]
+
+2. move it on the previous line.
+
+1642:35-1642:44
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ae5bf53d_d6ff539e
+Bytes: 18
+this.charAt(i++) ?
+
+1646:35-1646:53
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee86cdd4_2f774714
+Bytes: 27
+anotherString.charAt(i++) ?
+
+1664:26-1664:40
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e2e2591_c3568cce
+Bytes: 40
+Nit: move this comment on the next line?
+
+1671:26-1671:35
+Tue Sep 29 23:18:47 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8e52b121_74530a55
+Bytes: 18
+this.charAt(i++) ?
 

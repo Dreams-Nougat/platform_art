@@ -115,3 +115,11 @@ The issue is exactly that you try to simulate the stack without the overhead, sa
 
 JNI is slow enough and Mathieu yelled at me with the first design (the stack). So I'm trying to avoid all overhead where possible - which means *nothing* in the JNI entry and a simple check for "Is CheckJNI on" at JNI exit. (Also note that the stack design allocates and deletes in each JNI session, but this implementation only mutates the vector whenever there's a MonitorEnter or Exit, which is rare [a quick search only shows occurrences in android.view.Surface and android.media.MediaCodec]).
 
+118:0-118:61
+Tue Sep 29 17:04:28 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e5fa128_def7774e
+UUID: ceae6993_81b1e060
+Bytes: 87
+If you could do a checkJni check at JNI entry, could you then scope the locked_objects?
+

@@ -16,12 +16,41 @@ UUID: ae5bf53d_ce9b412f
 Bytes: 66
 Yuck, cruft, will remove tomorrow. Wonder why it didn't warn me...
 
+146:30-146:36
+Tue Sep 29 12:13:15 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ec27958_773baa60
+Bytes: 4
+typo
+
 164:4-166:66
 Tue Sep 29 05:05:54 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2e2e2591_998116ca
 Bytes: 110
 It's obviously not a great implementation, but then this is on abort, so I felt this was nicely declarative...
+
+164:4-166:66
+Tue Sep 29 12:13:15 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_998116ca
+UUID: 6ec3bd5a_d85031f6
+Bytes: 526
+You essentially want
+
+  auto kept_end = std::remove_if(locked_objects->begin(),
+                                 locked_objects->end(),
+                                 [self](const std::pair<uintptr_t, jobject>& pair) {
+    if (frame == pair.first) {
+      mirror::Object* o = self->DecodeJObject(jobj);
+      monitors->Remove(o);
+      return true;
+    }
+    return false;
+  });
+  locked_objects->erase(kept_end, locked_objects->end());
+
+However, I'd still prefer the remove_if() loop written explicitly to avoid the lambda.
 
 File: runtime/jni_env_ext.h
 

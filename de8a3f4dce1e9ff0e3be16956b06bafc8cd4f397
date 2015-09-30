@@ -17,3 +17,19 @@ UUID: 55712e1a_e571b662
 Bytes: 73
 I don't expect this to be significant. We may revisit it later if needed.
 
+1140:0-1147:36
+Wed Sep 30 19:13:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55712e1a_e571b662
+UUID: 75ab929e_9e019dd2
+Bytes: 402
+I measured this. For the boot image method for which we allocate over 27MiB on N5, using the extra indirection would save
+
+    8544B - // without indirection
+    (4272B /*safe maps*/ + 1712B /*pointers*/) // with indirection
+    = 2560B = 2.5KiB
+
+(Note: We allocated the map for 178 of 427 basic blocks; each individual allocation is rounded up to 8B. 427*20=8540, 178*24=4272, 427*4=1708)
+
+Do we care?
+

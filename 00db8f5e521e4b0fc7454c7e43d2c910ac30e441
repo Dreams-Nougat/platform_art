@@ -9,6 +9,14 @@ UUID: 2e2e2591_23a31019
 Bytes: 35
 Only run if env->check_jni is true?
 
+68:7-68:28
+Wed Sep 30 16:05:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_23a31019
+UUID: 0e5fa128_0747fe18
+Bytes: 130
+The implementation checks that (difference between this and the Impl). As it's in the .h file, I'd expect that to be inlined here.
+
 File: runtime/jni_env_ext.cc
 
 116:0-128:3
@@ -18,12 +26,28 @@ UUID: 55712e1a_c5e03aff
 Bytes: 29
 Why don't you use the height?
 
+116:0-128:3
+Wed Sep 30 16:05:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55712e1a_c5e03aff
+UUID: 9555663b_b7444818
+Bytes: 140
+This one's faster, I only need to find the immediate caller and not traverse the complete stack (you need to pass over all transitions etc).
+
 202:63-204:64
 Wed Sep 30 08:24:30 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b57c2af2_e8c4337e
 Bytes: 55
 Well wouldn't that also just optimize the failing case?
+
+202:63-204:64
+Wed Sep 30 16:05:34 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b57c2af2_e8c4337e
+UUID: b5398a03_e098c2fa
+Bytes: 199
+These are ordered. So the current frame entries are at the end, and you can detect when you go to the next frame. In the passing case, you'll immediately find something != current_frame and can stop.
 
 File: runtime/jni_env_ext.h
 

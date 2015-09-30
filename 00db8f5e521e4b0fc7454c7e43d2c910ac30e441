@@ -57,6 +57,20 @@ UUID: 55712e1a_45fd2a29
 Bytes: 43
 How do you detect you go to the next frame?
 
+202:63-204:64
+Wed Sep 30 16:44:16 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55712e1a_45fd2a29
+UUID: d55b5e6b_bca38d7a
+Bytes: 497
+The first time you find pair.first != current_frame.
+
+If things are locked according to the rules, the vector forms a stack wrt/ frames. You may freely lock and unlock in a frame, but you need to unlock all monitors in the current frame when unlocking. So you get something like:
+
+ [<0,mon1>,<0,mon2>,<#1,mon1>,<#1,mon3>,<#2,monX>,<#3,monY>,...]
+
+If you go backwards, you either have #X == current_frame and have some locked but not unlocked monitors, or it's different (and should be the parent).
+
 File: runtime/jni_env_ext.h
 
 115:78-117:30

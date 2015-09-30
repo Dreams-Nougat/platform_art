@@ -255,6 +255,16 @@ UUID: 2e2e2591_28c1b26b
 Bytes: 14
 If you want...
 
+4761
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_28c1b26b
+UUID: 9555663b_3de0173a
+Bytes: 365
+I was just suggesting this since it seemed like you were already refactoring a few of the other functions out into separate functions.
+
+It seems like it would be a purely mechanical refactor, it might make the function shorter and less readable. I realize this is already a mess prior to this CL, but it doesn't hurt to minimize how much larger we make the mess :).
+
 4777
 Fri Sep 25 01:10:43 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -346,6 +356,14 @@ Parent: ee616dea_4334dabf
 UUID: 4e4c398b_906a1128
 Bytes: 42
 the check would be the if statement above.
+
+4877
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4e4c398b_906a1128
+UUID: 75439281_8702ac4b
+Bytes: 105
+Perhaps there is some way to check the ArtMethod itself instead of relying [only] on the declaring class?
 
 4883:18-4883:19
 Fri Sep 25 01:10:43 2015 +0000
@@ -501,6 +519,14 @@ UUID: 2e2e2591_48f4fe8e
 Bytes: 83
 We do during construction. I could add one here to but getting good output is hard.
 
+4953
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e2e2591_48f4fe8e
+UUID: 75439281_e7f290cd
+Bytes: 55
+Where is that DCHECK currently? I don't think I saw it.
+
 4954:7-4954:14
 Fri Sep 25 01:10:43 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -526,6 +552,26 @@ Really I'd say that's far less clear.
 
 I will if you are sure.
 
+4954:7-4954:14
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e5fa128_161a99a7
+UUID: d55b5e6b_a2bc043c
+Bytes: 351
+This wasn't a "stylistic" comment, this loop could have undefined behavior because this assignment
+
+  int32_t k = iftable_count - 1
+
+is actually doing:
+
+  int32_t = size_t
+
+and size_t is uint64_t on 64-bit platforms (N9, x86, etc)
+
+  int32_t = uint64_t // OOPS.
+-----------
+the "if k == 0 break" is because "k>=0" is always true if you made k a size_t
+
 4956:11-4956:28
 Fri Sep 25 01:10:43 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -540,6 +586,14 @@ Parent: ee616dea_43361a7a
 UUID: ce582944_796f8839
 Bytes: 37
 Because they are interface methods...
+
+4956:11-4956:28
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce582944_796f8839
+UUID: 15a33681_69e56149
+Bytes: 125
+It's confusing because an interface can also have static methods, num_virtual_methods/num_instance_methods is less ambiguous.
 
 4957
 Fri Sep 25 01:10:43 2015 +0000
@@ -578,6 +632,14 @@ UUID: 0e5fa128_d6664136
 Bytes: 4
 Done
 
+4959
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e5fa128_d6664136
+UUID: b5398a03_260802f4
+Bytes: 14
+More comments?
+
 4962
 Fri Sep 25 01:10:43 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -592,6 +654,18 @@ Parent: ce582944_b732b286
 UUID: 0e5fa128_7635550c
 Bytes: 45
 Interface methods should never not be public.
+
+4962
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e5fa128_7635550c
+UUID: 1548969f_248bd8ea
+Bytes: 234
+It was more of a mechanical question. In other plces of the code I've seen comments written similar to this:
+
+  // The verifier should've caught non-public methods on interfaces.
+
+Please consider adding a comment here of some sort :).
 
 4964:21-4964:40
 Fri Sep 25 01:10:43 2015 +0000
@@ -689,6 +763,16 @@ Done
 
 It's a standard notation though...
 
+5031
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e5fa128_76a0b596
+UUID: 354d9aaf_c21e6670
+Bytes: 196
+Do we use it elsewhere in our code? I'm not quite sure.
+
+I am not against the standard notation either, we just need to be sure it's documented/referenced somewhere (*and* people are aware of it).
+
 5039
 Fri Sep 25 01:10:43 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -749,6 +833,16 @@ Parent: 4e4c398b_3e6219df
 UUID: 4e4c398b_16417a72
 Bytes: 74
 I don't know. I think they are just uninitialized memory if not filled in.
+
+5050
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee86cdd4_636251d7
+UUID: 9555663b_60b948fc
+Bytes: 203
+It's checking the post-condition at the end but it could also check the pre-condition (at the beginning).
+
+You could also just put the dcheck into a lambda and then you won't have to copy/paste it twice.
 
 5052:9-5052:12
 Fri Sep 25 01:10:43 2015 +0000
@@ -1133,6 +1227,16 @@ UUID: ee86cdd4_43f14d0e
 Bytes: 25
 That changes the meaning.
 
+5474
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee86cdd4_43f14d0e
+UUID: b5398a03_668deaba
+Bytes: 22
+var& name = *out
+
+then
+
 5505
 Fri Sep 25 01:10:43 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -1269,6 +1373,15 @@ Parent: ce582944_f7beea36
 UUID: ee616dea_b79bca66
 Bytes: 35
 Creating scopes requires non-const.
+
+738
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee616dea_b79bca66
+UUID: 9555663b_9d77a358
+Bytes: 100
+That's too bad, why don't we fix scopes to be mutable const?
+(more of a question to other reviewers)
 
 741
 Fri Sep 25 01:10:43 2015 +0000
@@ -1479,6 +1592,16 @@ UUID: 6e4d7d85_f3983266
 Bytes: 52
 We do want to support only one or the other I think.
 
+535:0-541:3
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e4d7d85_f3983266
+UUID: 75439281_67d8400d
+Bytes: 261
+With the above function it allows querying any combination of flags (only defaults, only lambdas, both defaults and lambdas) so it's just more general.
+
+We might also need to add experimental repeatable etc, and we shouldn't need to add a new method every time.
+
 File: runtime/runtime_options.def
 
 117:105-117:109
@@ -1679,6 +1802,22 @@ Parent: ce582944_572b76c4
 UUID: ce582944_59b7240d
 Bytes: 48
 doesn't work since the filenames have / in them.
+
+26:70-26:72
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce582944_59b7240d
+UUID: 1548969f_4451c4db
+Bytes: 44
+Why does the / matter? "" shouldn't escape /
+
+26:46-26:48
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e4d7d85_98159cd4
+UUID: 1548969f_245638d5
+Bytes: 30
+Yes changing run-test is fine.
 
 27:4-27:18
 Fri Sep 25 01:10:43 2015 +0000
@@ -1916,6 +2055,14 @@ Parent: ae5bf53d_900455e1
 UUID: 6e4d7d85_5390260e
 Bytes: 4
 Done
+
+254
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6e4d7d85_5390260e
+UUID: d55b5e6b_8dcdb19e
+Bytes: 28
+(still says while c != None)
 
 260:0-261:16
 Fri Sep 25 01:10:43 2015 +0000

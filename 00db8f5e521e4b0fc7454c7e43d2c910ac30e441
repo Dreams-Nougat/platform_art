@@ -87,6 +87,31 @@ UUID: 9555663b_1789b460
 Bytes: 123
 The change is in the foreach loop (which has to be replaced with an explicit iterator walk). Will implement in the next PS.
 
+202:63-204:64
+Wed Sep 30 17:05:39 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_1789b460
+UUID: 75ab929e_3e528904
+Bytes: 456
+Improve stl_util.h?
+
+template <typename Container>
+class ReverseImpl {
+  typedef typename Container::reverse_iterator iterator;
+  ...
+  ReverseImpl(Container& container) : container_(container) { }
+  ...
+  iterator begin() { return container_.rbegin(); }
+  iterator end() { return container_.rend(); }
+  ...
+  Container& container_;
+};
+
+template <typename Container>
+ReverseImpl<Container> Reverse(Container& container) {
+  return ReverseImpl(container);
+}
+
 File: runtime/jni_env_ext.h
 
 115:78-117:30

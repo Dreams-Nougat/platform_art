@@ -1,5 +1,50 @@
 Revision: b3035b4dacba9d8c3456cbcd9e22e410e39a6126
 Patch-set: 18
+File: runtime/class_linker.cc
+
+3681
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1548969f_61b4b24e
+Bytes: 357
+How is this supposed to work exactly (add comments?)?
+
+CanWeInitializeClass sounds like it should return true if there are interfaces with defaults, but it's returning false?
+
+However I'm guessing this is some kind of super-early eager initialization optimization scenario that can happen without breaking semantics (as implied by "can_init_statics=false")?
+
+3812
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_9f5ddb8d
+Bytes: 76
+Why can't this just call InitializeClass recursively?
+
+(needs more comments)
+
+3931
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_e2c43c7e
+Bytes: 174
+Consider adding more comments, something like:
+
+   // Walk the interface tree in pre-order. Exact child order is the implements order. Initialize the interface on each visit.
+
+3946:35-3946:42
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_42d36845
+Bytes: 7
+mustn't
+
+3957
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 953c86f3_05821639
+Bytes: 110
+Not sure I understand, don't you want to set the recursively initialized even if there aren't default methods?
+
 File: runtime/class_linker.h
 
 688
@@ -16,4 +61,45 @@ Parent: ee616dea_4b8d0c6a
 UUID: 2e470569_f40ecff9
 Bytes: 4
 Done
+
+File: runtime/mirror/class.h
+
+232:21-232:45
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5586271_c0c932b7
+Bytes: 27
+Initialized (its mispelled)
+
+234
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9555663b_1da1d395
+Bytes: 40
+Seems like this needs a lock held assert
+
+239
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_82cd809e
+Bytes: 40
+Seems like this needs a lock held assert
+
+File: runtime/modifiers.h
+
+55
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5586271_a0c6bea4
+Bytes: 31
+Interface
+
+(and missing period)
+
+57
+Wed Sep 30 20:27:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_c2e6581b
+Bytes: 19
+nit: missing period
 

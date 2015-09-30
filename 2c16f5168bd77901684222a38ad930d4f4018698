@@ -9,6 +9,16 @@ UUID: f597825c_02d9aa13
 Bytes: 71
 in a subinterface? Doesn't this method only applies to interfaces then?
 
+179:58-179:87
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f597825c_02d9aa13
+UUID: 9555663b_3d6777ad
+Bytes: 194
+The comment seems off "in a subinterface" , as per Nicolas.
+
+It still makes sense to call it for a non-interface Class though because a regular class could have its own copy of a default method.
+
 File: runtime/class_linker.cc
 
 3676:0-3676:69
@@ -39,12 +49,103 @@ UUID: 55712e1a_c574ba55
 Bytes: 117
 There's already initialization steps that wil ltell you whether a class is being initialized. Why can't you use that?
 
+3933:22-3933:51
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55712e1a_c574ba55
+UUID: 354d9aaf_223c6af6
+Bytes: 996
+This is a special kind of ghetto interface initialization.
+
+When a class is initialized, if its interfaces does not contain any default methods, the interface itself is not initialized, but the interfaces' superinterfaces could end up being initialized (if they have default methods).
+
+So basically a regular non-default-containing interface would never get marked as "initialized" here. OTOH, we don't want to repeat the recursive initialization step for the default-containing interfaces since it would initialize them twice otherwise.
+
+Alex has a section in his doc about the logic for this, "Interface Initialization with Default Methods".
+
+---------------------------
+So basically we probably want to rename this to something at least slightly more useful like "HasBeenDefaultMethodInitialized" and have a special term for "default method initialization" to mean the new kind of interface init.
+
+Also this can definitely use more comments since as I suspected the semantics weren't clear :).
+
+4823
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_fe0e996b
+Bytes: 16
+nit: add /*out*/
+
+4843
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 953c86f3_087d0b76
+Bytes: 22
+Why (leave a comment)?
+
+4863
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_69d1e192
+Bytes: 90
+Couldn't this also happen for non-0 num_virtual_methods, or is another case handling that?
+
+4868
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_89745d54
+Bytes: 106
+What does it mean for a super class to not have an embedded imt/vtable? That the vtable wasn't linked yet?
+
+4963:82-4963:97
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5398a03_2642c22e
+Bytes: 32
+non-default, default, or either?
+
+5063
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 953c86f3_c8168319
+Bytes: 31
+what about the order (comment)?
+
+5162:37-5162:41
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5398a03_06269e79
+Bytes: 185
+The comment helps a lot, I think I understand what this is for now , thanks :).
+
+Perhaps classes_in_iftable ?, seen_in_iftable?
+
+(just gets a bit easy to lose memory of what "seen" is).
+
+5275
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5586271_c37adc3f
+Bytes: 104
+This looks kinda weird, AllowThreadSuspension twice in a row (here and 5286). Where does it Disallow it?
+
 5277:2-5284:84
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 957f26e6_676312d5
 Bytes: 98
 I'd avoid classes (ie GC objects) in a std::vector. Especially if you now allow thread suspension.
+
+5277:2-5284:84
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 957f26e6_676312d5
+UUID: b5526a4f_fe185983
+Bytes: 354
+!! Great catch, thanks Nicolas :).
+
+Should this go to a vector of handles or similar instead? (Or the above logic could go into FillIfTable instead, though it probably makes more sense for it to be here)
+
+The obvious solution would be to mark FillIfTable requires uninterruptible, but of course we can't do that since we *just* allowed thread suspension.
 
 5467:0-5472:22
 Wed Sep 30 17:07:24 2015 +0000
@@ -53,6 +154,13 @@ UUID: 75ab929e_5e455538
 Bytes: 18
 indentation is off
 
+5486
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_c24e5806
+Bytes: 64
+and when the current class doesn't already implement the method?
+
 5595:55-5595:63
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,10 +168,345 @@ UUID: 957f26e6_87472643
 Bytes: 7
 virtual
 
+5595:55-5595:63
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 957f26e6_87472643
+UUID: 953c86f3_2883af93
+Bytes: 145
+perhaps "that every method on a classes vtable be in that respective classes virtuals table (e.g. a method cannot be shared across 2 vtables)"
+
+?
+
 5600:37-5600:40
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 957f26e6_a7442a3f
 Bytes: 13
 are verified?
+
+5602
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5398a03_e698dafa
+Bytes: 213
+I'm not sure if it's arbitrary (agampe to comment), it's just a cache mechanism to avoid probing every single method to see if it's preverified or not.
+
+   preverified(class) = all methods on class are preverified
+
+5603
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_7e69e9ba
+Bytes: 150
+I guess this is because there's a (D)CHECK somewhere that fails this? But I don't really understand the reason to waste time verifying again.
+
+agampe?
+
+5635:6-5635:10
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5586271_2340f8d4
+Bytes: 23
+style nit: ArtMethod* ?
+
+5637:6-5637:10
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_1e59cd2a
+Bytes: 100
+style nit: don't use auto for non-obvious code (it's not even on the same screen, its a pair maybe?)
+
+File: runtime/class_linker.h
+
+732
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9555663b_1d6c338c
+Bytes: 175
+Please consider leaving a comment what the ints are.
+
+It's also not super clear what the default_translations here are for, it would be great to expand on that with a comment.
+
+759
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_dedd954a
+Bytes: 175
+Please consider leaving a comment what the ints are.
+
+It's also not super clear what the default_translations here are for, it would be great to expand on that with a comment.
+
+File: runtime/modifiers.h
+
+56
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5398a03_06ca1ed8
+Bytes: 18
+as well as itself?
+
+57
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 953c86f3_28d1ef93
+Bytes: 214
+this implies it's not recursive (i.e. the interface has a direct method implementation that's default)
+
+I imagine this was meant to be recursive?
+
+  "Interface or a superinterface defines at least 1 default method"
+
+File: runtime/parsed_options.cc
+
+693
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9555663b_e00b9859
+Bytes: 30
+Forgot to update usage message
+
+File: runtime/verifier/method_verifier.cc
+
+666
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_8790ec17
+Bytes: 124
+Comment is off now, consider moving this to 679 and adding a new comment to 668 about what interfaces *are* allowed to have.
+
+File: test/960-default-smali/build
+
+28:37-28:63
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_8db49108
+Bytes: 116
+won't work if there's any spaces in file names
+
+  "$(find src...)"
+
+the double quotes there are needed, not just $()
+
+32
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1548969f_04269c79
+Bytes: 6
+see 28
+
+File: test/960-default-smali/expected.txt
+
+0
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_5e37c5aa
+Bytes: 49
+What happened here, is this still auto generated?
+
+File: test/960-default-smali/util-src/generate_smali.py
+
+262
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5398a03_06305e7d
+Bytes: 26
+recursively? transitively?
+
+291
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_e779f089
+Bytes: 34
+GLOBAL_CONSTANT_NAME
+->
+
+TEST_DATA
+
+292
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_2cd2173f
+Bytes: 4
+same
+
+293:0-293:5
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5586271_23bbd818
+Bytes: 4
+same
+
+File: test/961-default-iface-resolution-generated/build
+
+0
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 953c86f3_08deab7e
+Bytes: 47
+same comments as from previous build file apply
+
+24
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1548969f_2483d893
+Bytes: 190
+This needs to be restored even if one of the later commands fail, right?
+
+  restore_ulimit() {
+    ulimit -S "$OLD_ULIMIT"
+  }
+  trap 'restore_ulimit' ERR
+
+and just call restore_ulimit on 42
+
+File: test/961-default-iface-resolution-generated/util-src/generate_smali.py
+
+87
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d55b5e6b_6d077d5d
+Bytes: 18
+Missing docstrings
+
+92
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 953c86f3_e8f38708
+Bytes: 27
+style nit: () vs lambda map
+
+File: test/962-iface-static/build
+
+0
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5586271_c3b2dc30
+Bytes: 47
+same comments as from previous build file apply
+
+File: test/963-default-range-smali/build
+
+0
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_e74e105b
+Bytes: 166
+Yeah, this looks super copy-pasted. It can be refactored into a common build file that all these sources, or you could edit run-test itself for the new functionality.
+
+File: test/964-default-iface-init-generated/build
+
+0
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1548969f_e498d0fa
+Bytes: 47
+same comments as from previous build file apply
+
+22
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_c73034cb
+Bytes: 42
+See previous comment about trapping ulimit
+
+File: test/964-default-iface-init-generated/run
+
+20
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_6c26cff8
+Bytes: 151
+Probably would be good to refactor this entire file to just 
+
+ EXPERIMENTAL_RUNTIME_OPTIONS=default-methods ${RUN} "$@"
+
+(and same for other run files)
+
+File: test/964-default-iface-init-generated/smali/Displayer.smali
+
+22
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_0c1b9bb3
+Bytes: 4
+Why?
+
+File: test/964-default-iface-init-generated/util-src/generate_smali.py
+
+364
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_ac0b675a
+Bytes: 22
+style nit: docstrings?
+
+373
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_be91c1da
+Bytes: 20
+style nit: () vs map
+
+File: test/utils/python/utils.py
+
+16
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1548969f_c4bf942f
+Bytes: 72
+Might be good to have some comments explaining the purpose of this file?
+
+27:20-27:26
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f5586271_03821439
+Bytes: 44
+generates alphabetically? or something else?
+
+35
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_2708f8f3
+Bytes: 78
+Might want to mention that it yields a different result every time it's called
+
+40:5-40:10
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 354d9aaf_82fd7e2c
+Bytes: 66
+Takes a string, returns the same string with empty lines stripped.
+
+41
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_fe9b39f4
+Bytes: 27
+style nit: () vs lambda map
+
+File: tools/extract-embedded-java
+
+21
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9555663b_007dec75
+Bytes: 52
+Sanity check $1 is a dir?
+
+  [[ -d "$1" ]] || exit 1
+
+22:31-22:39
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_0ca63bae
+Bytes: 114
+nit: it's an extension not a filetype. file type is determined by the "file" command, which isn't being used here.
+
+27:7-27:9
+Wed Sep 30 22:49:56 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_07117c1e
+Bytes: 63
+Doesn't need ERE flag, it should work just the same without it.
 

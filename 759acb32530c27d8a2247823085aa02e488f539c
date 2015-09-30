@@ -126,6 +126,25 @@ I would phrase this the other way:
 
 Different indices do not alias
 
+365:8-365:31
+Wed Sep 30 23:50:49 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_21d8f45d
+Bytes: 194
+I don't think there's actually a reason to bail on volatile stores, if you just bail on loads.  It's perfectly OK to reuse a value that was stored or loaded before an intervening volatile store.
+
+432:4-432:28
+Wed Sep 30 23:50:49 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1548969f_4f3d5da3
+Bytes: 435
+Ditto here.  Monitor entry is a problem.  Reusing results from before monitor entry amounts to moving operations out of the critical section, which is bad.  Reusing results from before monitor exit amounts to moving them in, which is OK.
+
+This assumes you always eliminate the later load or store.
+It also assumes you don't optimize volatile operations themselves.
+
+And it ignores the Java memory model bugs that we customarily ignore.
+
 754:24-754:36
 Wed Sep 30 21:51:04 2015 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>

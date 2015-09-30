@@ -9,6 +9,14 @@ UUID: 0eb5e1d9_5d06cf27
 Bytes: 59
 I thought you were planing on moving this to CREATE_LAMBDA?
 
+394:17-394:34
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0eb5e1d9_5d06cf27
+UUID: f5586271_407ec241
+Bytes: 120
+As discussed offline, haven't had a chance to update smali yet so the encodings stay the way they do for the short term.
+
 File: runtime/dex_instruction-inl.h
 
 458:48-458:53
@@ -17,6 +25,28 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eececd75_a4750cc4
 Bytes: 16
 Why this change?
+
+458:48-458:53
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_a4750cc4
+UUID: 9555663b_ba60ad3f
+Bytes: 486
+Has to use a new constant now since the array sizes are different for 25x and non-25x version. 
+
+
+As for & vs non-&, the & version is much safer because this
+argument doesn't just decay to a pointer 
+(i.e. it's not possible to call this with an array of the wrong size).
+ 
+For example,
+
+     error: invalid initialization of reference of type
+     ‘uint32_t (&)[kMaxVarArgRegs25x]’
+     from expression of type ‘uint32_t [5]’
+
+     uint32_t arg[5];
+     inst.GetAllArgs25x(arg);
 
 File: runtime/dex_instruction.cc
 
@@ -71,6 +101,14 @@ UUID: 2ebd45ca_b68b8613
 Bytes: 12
 ShadowFrame*
 
+339:46-339:57
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ebd45ca_b68b8613
+UUID: d55b5e6b_bffc1fdd
+Bytes: 95
+I would prefer not to change this one since that's how the rest of the code is written already.
+
 342:2-342:32
 Mon Sep 28 09:21:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -78,12 +116,28 @@ UUID: ceae6993_9e1f7d67
 Bytes: 9
 Why this?
 
+342:2-342:32
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ceae6993_9e1f7d67
+UUID: 354d9aaf_1fd1c793
+Bytes: 52
+to avoid writing out the entire type name each time?
+
 362:90-362:123
 Mon Sep 28 09:21:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eececd75_e46f14f2
 Bytes: 4
 huh?
+
+362:90-362:123
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_e46f14f2
+UUID: 1548969f_2183ca93
+Bytes: 48
+lint doesn't like the /*out*/ , don't ask me why
 
 441:46-441:57
 Mon Sep 28 09:21:40 2015 +0000
@@ -113,6 +167,14 @@ UUID: 4ec27958_d7e1de06
 Bytes: 21
 with regards to what?
 
+488:43-488:47
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ec27958_d7e1de06
+UUID: 15a33681_6672701e
+Bytes: 116
+I'm not super sure, but the existing interpreter code would also clear out destination vregs when an error occurred.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 2422:0-2425:5
@@ -122,6 +184,16 @@ UUID: 8ec8f176_d9caf786
 Bytes: 56
 Sounds like this should be part of an interpreter state?
 
+2422:0-2425:5
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ec8f176_d9caf786
+UUID: d55b5e6b_dff3d308
+Bytes: 225
+You mean the shadow frame or?
+
+Once I kill off the capture-variable instruction, the ClosureBuilder will just be a temp used only for the scope of a single DoCreateLambda, so it will just disappear from the switch altogether.
+
 File: runtime/lambda/closure.cc
 
 128:9-128:19
@@ -130,4 +202,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ceae6993_1eb7edbf
 Bytes: 1
 ?
+
+128:9-128:19
+Wed Sep 30 20:04:05 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ceae6993_1eb7edbf
+UUID: 354d9aaf_9fbcb73c
+Bytes: 166
+Too many things on an ArtMethod require it to be non-const (don't ask me why, I didn't design it), better to have the const cast in one place than all over the place.
 

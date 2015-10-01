@@ -57,6 +57,14 @@ UUID: c45e4afd_295a326b
 Bytes: 119
 Is the reason that we need to have this local variable "index" (copy of index_) that we need to avoid modifying index_?
 
+389:13-389:27
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c45e4afd_295a326b
+UUID: 6e4d7d85_5697f47f
+Bytes: 191
+We have to use a copy of `index_` here, because we cannot modify it, as it is a const member. I think this safe to preserve this, especially debugging-wise. I have added a comment about this.
+
 390:4-390:27
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -66,12 +74,39 @@ Can you add a short comment on why we have this ArrayGet or Invoke (UnsafeGetObj
 
 Is it because the index needs adjusting for the read barrier slow path code that we do not want to do at the GenerateReadBarrier call sites?
 
+390:4-390:27
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 848ff2ac_25924d1a
+UUID: ce582944_9da0e597
+Bytes: 821
+Yes, this is because we have to handle the case of offset+index-based memory accesses using an entry point routine designed to only support offset-based accesses.
+
+We could introduce an additional entry point taking four arguments for this case instead:
+
+  mirror::Object* artReadBarrierWithIndexSlow(mirror::Object* ref,
+                                              mirror::Object* obj,
+                                              uint32_t offset,
+                                              uint32_t index);
+
+so that we could move these operations from the compiler to the runtime – meaning we'll save on generated code size here.
+
+I had a quick discussion with Andreas about the costs/cons of adding an entry point, and from what I understood, we could afford it. This seems like a good idea. What do you think?
+
 392:35-392:53
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a46156bd_c0d50f25
 Bytes: 47
 index_ -> index? We don't modify index_, right?
+
+392:35-392:53
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a46156bd_c0d50f25
+UUID: ee616dea_f8437d7a
+Bytes: 19
+Indeed, yes. Fixed.
 
 397:8-397:10
 Tue Sep 15 20:45:59 2015 +0000
@@ -80,12 +115,30 @@ UUID: a46156bd_205a4b6b
 Bytes: 43
 Why do we need a non-callee-saved register?
 
+397:8-397:10
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a46156bd_205a4b6b
+UUID: ee86cdd4_148dbdb8
+Bytes: 386
+Because callee-saved registers are saved later (in the called function, here artReadBarrierSlow), which is too late for us to preserve the initial value of the `index_` register before we modify it. I have improved the comments to make this clearer.
+
+Not that we could get rid of this step by introducing the artReadBarrierWithIndexSlow I mentioned before; I'll implement in another CL.
+
 405:31-405:38
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0465c2c3_d70a33ea
 Bytes: 83
 static_assert(1 << TIMES_4 == sizeof(mirror::CompressedReference<mirror::Object>) ?
+
+405:31-405:38
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0465c2c3_d70a33ea
+UUID: 15197672_96a0ea5c
+Bytes: 94
+Indeed, thanks. I have replaced mirror::CompressedReference with mirror::HeapReference though.
 
 461:10-461:11
 Tue Sep 15 20:45:59 2015 +0000
@@ -94,12 +147,30 @@ UUID: 648afea0_5cf0145b
 Bytes: 68
 Can you remind me why this does not apply to a static/direct invoke?
 
+461:10-461:11
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 648afea0_5cf0145b
+UUID: 8e52b121_141df66d
+Bytes: 327
+Static/direct invokes do not need a read barrier for a heap reference; they only use a read barrier for GC roots, hence we'll never end up in this slow path when visiting a HInvokeStaticOrDirect instruction.
+
+To make this more clear, I have renamed IsRunBeforeCall as ShouldSaveAndRestoreParameterRegisters and added a comment.
+
 3723:8-3723:34
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e467cecb_884c1f61
 Bytes: 146
 I notice you inserted this read barrier for this dex cache resolved method array, which, as we discussed, can be omitted, but this works (thanks).
+
+3723:8-3723:34
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e467cecb_884c1f61
+UUID: 354d9aaf_5fb98ffb
+Bytes: 197
+Yes; as discussed offline, we can disable this conditionally as an "optimization", enabled by default for the moment. I'll do that in another CL as I'd like to do more testing. I have added a TODO.
 
 4150:22-4150:36
 Tue Sep 15 20:45:59 2015 +0000
@@ -108,12 +179,32 @@ UUID: 0465c2c3_41a9015e
 Bytes: 47
 Side question: what does "output overlap" mean?
 
+4150:22-4150:36
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0465c2c3_41a9015e
+UUID: 953c86f3_62db18b2
+Bytes: 795
+It means the liveness of the instruction's output locations overlaps one of its inputs, meaning we cannot use reuse of the input register for the output during register allocation.
+
+Here, this tag was initially only required for ArrayGet operations on long arrays, as they requires two 32-bit loads on x86; without the kOutputOverlap tag, the first load could clutter the input register containing the array location, which is needed for the second load. Other types of ArrayGet operations do not have this constraint and can use kNoOutputOverlap (i.e., reuse the input register for the output of the ArrayGet operation).
+
+With the introduction of read barriers in ArrayGet, we also need to use kOutputOverlap, as we need to preserve the instructions' inputs for the call to GenerateReadBarrier.
+
 4280:77-4280:84
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8478d270_7d978836
 Bytes: 83
 static_assert(1 << TIMES_4 == sizeof(mirror::CompressedReference<mirror::Object>) ?
+
+4280:77-4280:84
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8478d270_7d978836
+UUID: d55b5e6b_7f31e71d
+Bytes: 4
+Done
 
 5333:0-5334:69
 Tue Sep 15 20:45:59 2015 +0000
@@ -122,6 +213,14 @@ UUID: a9420f4a_7e81bded
 Bytes: 144
 I see that currently "ref" does not get unpoisoned, which is ok as the "ref" param is unused by ReadBarrierSlow. Correct? Maybe leave a comment?
 
+5333:0-5334:69
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a9420f4a_7e81bded
+UUID: b5526a4f_db15a74b
+Bytes: 32
+Yes, indeed.  I added a comment.
+
 5338:4-5338:15
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -129,12 +228,37 @@ UUID: c45e4afd_13b91b03
 Bytes: 62
 Side question: does this place the slow path code out-of-line?
 
+5338:4-5338:15
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c45e4afd_13b91b03
+UUID: 9555663b_009a0c62
+Bytes: 369
+Yes; all the slow paths are generated at the end of the method by art::CodeGenerator::GenerateSlowPaths.
+
+Entering this slow path is done with a jump (line 5354) to the beginning of the slow path's code (line 378). Exiting the slow path is done with a jump at the end of the slow path's code (line 456) to the next instruction in the compiled method's flow (line 5355).
+
 5374:0-5376:10
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a9420f4a_be6e05f3
 Bytes: 24
 I think this is correct.
+
+5374:0-5376:10
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a9420f4a_be6e05f3
+UUID: 354d9aaf_e227228b
+Bytes: 34
+Thanks! I've adjusted the comment.
+
+5384:0-5384:55
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9555663b_00820c39
+Bytes: 35
+This was dead code; removed in PS7.
 
 5396:5-5396:9
 Tue Sep 15 20:45:59 2015 +0000
@@ -147,6 +271,18 @@ It's not surprising if the read barrier slow path code isn't currently touching 
 
 In addition, I wonder if it's hard to find out what parameter registers are actually used for the call of the invoke instruction and save only those rather than all the parameter registers?
 
+5396:5-5396:9
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0465c2c3_41458134
+UUID: 15a33681_2ce9b772
+Bytes: 638
+Your assumption about the need to save & restore parameter registers is correct.
+
+I believe we do not need to save & restore floating point parameter registers at the moment, as they do not seem to be touched by the slow path code (not by the runtime, called by the slow path). I agree, this assumption is hard to check and the current code is not future-proof.  So we should probably save those FP parameter registers. I have modified the TODO to make this more explicit.
+
+Your suggestion about saving the exact set of used registers is good, and could also be used to save FP parameter registers as well. I have added a TODO about this.
+
 File: compiler/optimizing/intrinsics_x86.cc
 
 66:52-67:24
@@ -155,6 +291,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 44725a92_66f1b0cf
 Bytes: 151
 Does this mean we won't intrinsify this invoke when read barriers are enabled? Does this mean we do no intrinsification when read barriers are enabled?
+
+66:52-67:24
+Thu Oct 01 01:33:53 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 44725a92_66f1b0cf
+UUID: 953c86f3_13525c03
+Bytes: 47
+Yes. :-( I have added a TODO to implement this.
 
 1760:53-1762:66
 Tue Sep 15 20:45:59 2015 +0000

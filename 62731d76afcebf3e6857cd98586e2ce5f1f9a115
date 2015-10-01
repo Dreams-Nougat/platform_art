@@ -93,6 +93,14 @@ so that we could move these operations from the compiler to the runtime – mean
 
 I had a quick discussion with Andreas about the costs/cons of adding an entry point, and from what I understood, we could afford it. This seems like a good idea. What do you think?
 
+390:4-390:27
+Thu Oct 01 17:32:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ce582944_9da0e597
+UUID: f5586271_14524c03
+Bytes: 24
+Either way works for me.
+
 392:35-392:53
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -172,6 +180,14 @@ UUID: 354d9aaf_5fb98ffb
 Bytes: 197
 Yes; as discussed offline, we can disable this conditionally as an "optimization", enabled by default for the moment. I'll do that in another CL as I'd like to do more testing. I have added a TODO.
 
+3723:8-3723:34
+Thu Oct 01 17:32:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 354d9aaf_5fb98ffb
+UUID: f5586271_94e49c9e
+Bytes: 75
+Right. I think it's not urgent to think about this optimization right away.
+
 4150:22-4150:36
 Tue Sep 15 20:45:59 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -190,6 +206,14 @@ It means the liveness of the instruction's output locations overlaps one of its 
 Here, this tag was initially only required for ArrayGet operations on long arrays, as they requires two 32-bit loads on x86; without the kOutputOverlap tag, the first load could clutter the input register containing the array location, which is needed for the second load. Other types of ArrayGet operations do not have this constraint and can use kNoOutputOverlap (i.e., reuse the input register for the output of the ArrayGet operation).
 
 With the introduction of read barriers in ArrayGet, we also need to use kOutputOverlap, as we need to preserve the instructions' inputs for the call to GenerateReadBarrier.
+
+4150:22-4150:36
+Thu Oct 01 17:32:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_62db18b2
+UUID: b5526a4f_ac8ebbb3
+Bytes: 27
+Thanks for the explanation.
 
 4280:77-4280:84
 Tue Sep 15 20:45:59 2015 +0000
@@ -237,6 +261,14 @@ Bytes: 369
 Yes; all the slow paths are generated at the end of the method by art::CodeGenerator::GenerateSlowPaths.
 
 Entering this slow path is done with a jump (line 5354) to the beginning of the slow path's code (line 378). Exiting the slow path is done with a jump at the end of the slow path's code (line 456) to the next instruction in the compiled method's flow (line 5355).
+
+5338:4-5338:15
+Thu Oct 01 17:32:56 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_009a0c62
+UUID: b5398a03_d4c9fcb6
+Bytes: 25
+Thanks, that makes sense.
 
 5374:0-5376:10
 Tue Sep 15 20:45:59 2015 +0000

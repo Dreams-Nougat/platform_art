@@ -68,12 +68,31 @@ So basically we probably want to rename this to something at least slightly more
 
 Also this can definitely use more comments since as I suspected the semantics weren't clear :).
 
+3933:22-3933:51
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 354d9aaf_223c6af6
+UUID: 9555663b_6bb929fc
+Bytes: 401
+But this implementation still doesn't seem to cut down on this recursive nature.
+
+If I have B extends A and C implements B, and B is regular, then B will never get "Recursively initialized set," so a class D implements B will walk from B again (and I thought that's what this was supposed to avoid).
+
+Agree with the naming, because it's state you want to set on all interfaces, including regular ones.
+
 4823
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5526a4f_fe0e996b
 Bytes: 16
 nit: add /*out*/
+
+4827:4-4830:5
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_67932093
+Bytes: 135
+If we want to enforce this, we should do it at the dex file level, not here. (And I believe irogers once said it is, but I have doubts)
 
 4843
 Wed Sep 30 22:49:56 2015 +0000
@@ -89,12 +108,27 @@ UUID: 15a33681_69d1e192
 Bytes: 90
 Couldn't this also happen for non-0 num_virtual_methods, or is another case handling that?
 
+4863
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_69d1e192
+UUID: 953c86f3_f3f4184c
+Bytes: 95
+The point is that if you declare virtual methods, you'll get explicit handling down the line...
+
 4868
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 15a33681_89745d54
 Bytes: 106
 What does it mean for a super class to not have an embedded imt/vtable? That the vtable wasn't linked yet?
+
+4957:61-4957:63
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1548969f_efc3891a
+Bytes: 1
+'
 
 4963:82-4963:97
 Wed Sep 30 22:49:56 2015 +0000
@@ -109,6 +143,41 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 953c86f3_c8168319
 Bytes: 31
 what about the order (comment)?
+
+5065:41-5065:57
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_524ea4b3
+Bytes: 10
+Unchecked.
+
+5068:30-5068:55
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 15a33681_4ce0b33a
+Bytes: 113
+Why is this necessary? This should be an interface, and not a proxy (else something's going terribly wrong, no?).
+
+5071:6-5072:62
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 354d9aaf_e56f2cea
+Bytes: 69
+Remove (or make it a DCHECK). The dex file verifier is checking that.
+
+5144:0-5144:47
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 75439281_b247288a
+Bytes: 162
+If you have to explain it, then the logical formula isn't more concise than your textual sentence and not really necessary. I don't see a point of adding it here.
+
+5161:24-5161:26
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5526a4f_c14ad891
+Bytes: 7
+Remove.
 
 5162:37-5162:41
 Wed Sep 30 22:49:56 2015 +0000
@@ -227,6 +296,21 @@ Bytes: 175
 Please consider leaving a comment what the ints are.
 
 It's also not super clear what the default_translations here are for, it would be great to expand on that with a comment.
+
+732
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_1d6c338c
+UUID: 9555663b_e0c6f8d3
+Bytes: 21
+Agree, naming is bad.
+
+747:25-747:30
+Thu Oct 01 00:34:47 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b5398a03_a674120d
+Bytes: 3
+the
 
 759
 Wed Sep 30 22:49:56 2015 +0000

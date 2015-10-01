@@ -9,12 +9,28 @@ UUID: f5586271_2152ad03
 Bytes: 26
 Just call it code cleanup.
 
+7:8-7:50
+Thu Oct 01 22:12:45 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5586271_2152ad03
+UUID: 1548969f_270f556a
+Bytes: 4
+Done
+
 13:50-13:56
 Thu Oct 01 20:34:57 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9555663b_2cbaa73b
 Bytes: 3
 ART
+
+13:50-13:56
+Thu Oct 01 22:12:45 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_2cbaa73b
+UUID: 354d9aaf_f64520e1
+Bytes: 4
+Done
 
 File: compiler/optimizing/intrinsics_mips64.cc
 
@@ -25,6 +41,16 @@ UUID: 75439281_f3f4124c
 Bytes: 116
 Please rename to something more expressive. This isn't a general mask, as you're not interested in some of the bits.
 
+538:25-538:37
+Thu Oct 01 22:12:45 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_f3f4124c
+UUID: 9555663b_c0f2cf9f
+Bytes: 187
+kFPLeaveUnchanged?
+
+That's how it's used. If the input value is one of these floating point types (+/- zero, +/- infinity, or a NaN), then the input value is returned as the output value.
+
 File: compiler/utils/mips64/assembler_mips64.h
 
 50:0-50:5
@@ -33,4 +59,15 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 354d9aaf_967f7ca2
 Bytes: 39
 Consider an enum class for cleanliness.
+
+50:0-50:5
+Thu Oct 01 22:12:45 2015 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 354d9aaf_967f7ca2
+UUID: 953c86f3_c88cbe2f
+Bytes: 306
+If I do this I get all kinds of breakage. The final straw was the following:
+art/compiler/optimizing/intrinsics_mips64.cc:538:74: error: no match for 'operator|' (operand types are 'art::mips64::FPClassMaskType' and 'art::mips64::FPClassMaskType')
+
+Do you want me to implement FPClassMaskType::operator|()?
 

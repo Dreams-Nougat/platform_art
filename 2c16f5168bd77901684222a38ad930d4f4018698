@@ -19,6 +19,53 @@ The comment seems off "in a subinterface" , as per Nicolas.
 
 It still makes sense to call it for a non-interface Class though because a regular class could have its own copy of a default method.
 
+179:58-179:87
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f597825c_02d9aa13
+UUID: f5586271_404ec2b3
+Bytes: 743
+Both actually.
+
+    interface IA {
+       public default String marker() {
+         return "IA";
+       }
+     }
+
+     class CA implements IA {}
+
+     interface IB extends IA {
+       public default String marker() {
+         return "IB";
+       }
+     }
+     // Needs to know that CA#marker can be overridden by
+     // IA#marker.
+     class CB extends CA implements IB {
+       public String superMarker() {
+         return super.marker();
+       }
+     }
+
+     class Main {
+       public static void main(String[] args) {
+         CA ca = new CA();
+         CB cb = new CB();
+         System.out.println(ca.marker()); // IA
+         System.out.println(cb.marker()); // IB
+         System.out.println(cb.superMarker()); // IA
+       }
+     }
+
+179:58-179:87
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_3d6777ad
+UUID: 1548969f_4484244b
+Bytes: 4
+Done
+
 File: runtime/class_linker.cc
 
 3676:0-3676:69
@@ -28,6 +75,14 @@ UUID: 55eccecd_ed742555
 Bytes: 34
 Isn't that what you're doing here?
 
+3676:0-3676:69
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55eccecd_ed742555
+UUID: 953c86f3_e5f3b208
+Bytes: 80
+Yeah. This also made me realize I should probably just do a recursive call here.
+
 3813:0-3813:67
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -35,12 +90,28 @@ UUID: f597825c_c2d2a2ef
 Bytes: 5
 ditto
 
+3813:0-3813:67
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f597825c_c2d2a2ef
+UUID: b5526a4f_7b88dbab
+Bytes: 4
+Done
+
 3827:41-3827:44
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f597825c_e2dda6ff
 Bytes: 4
 drop
+
+3827:41-3827:44
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f597825c_e2dda6ff
+UUID: f5586271_c07ad23f
+Bytes: 4
+Done
 
 3933:22-3933:51
 Wed Sep 30 17:07:24 2015 +0000
@@ -88,12 +159,62 @@ UUID: 75439281_b2bc483c
 Bytes: 117
 Yeah, I have a comment in PS18 asking if there should be an extra SetRecursivelyInitialized somewhere near line 3958.
 
+3933:22-3933:51
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 354d9aaf_223c6af6
+UUID: 15a33681_cc47c342
+Bytes: 545
+> OTOH, we don't want to repeat the recursive initialization step for the default-containing interfaces since it would initialize them twice otherwise
+
+Its actually more of a speed optimization so we don't need to traverse the entire interface hierarcy of every single class, even though most of them will already have all their interfaces initialized. (Think how many classes transitively implement List just in the standard library)
+
+The naming thing could be better but that's what I tried to do with DefaultInterfaceInitializedRecursively...
+
+3933:22-3933:51
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55712e1a_c574ba55
+UUID: f5586271_20af4eb3
+Bytes: 741
+When an interface is initialized it normally will not recursively initialize subinterfaces. This means we cannot use that information. For example
+
+    public interface A {
+        public static final int printer = PrintOnInit("A");
+        public default void marker() {}
+    }
+    public interface B extends A {
+        public static final int printer = PrintOnInit("B");
+    }
+    public class C implements B {}
+
+    public class Main {
+        public void main(String[] args) {
+            // initializes B
+            // Output: B
+            B.printer.touch();
+            // Output: init C
+            System.out.println("init C");
+            // initializes C and A
+            // Output: A
+            C m = new C();
+        }
+    }
+
 4823
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5526a4f_fe0e996b
 Bytes: 16
 nit: add /*out*/
+
+4823
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_fe0e996b
+UUID: 953c86f3_b37570c2
+Bytes: 4
+Done
 
 4827:4-4830:5
 Thu Oct 01 00:34:47 2015 +0000
@@ -112,12 +233,28 @@ I think the old code might have been doing this already?
 
 I don't see how this can happen anyway, we are restricted to a uint16_t method id limit in the dex file. Defensive programming?
 
+4827:4-4830:5
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_413d28a3
+UUID: 953c86f3_68aad2a3
+Bytes: 59
+This was in the original code. I can remove it if you want.
+
 4843
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 953c86f3_087d0b76
 Bytes: 22
 Why (leave a comment)?
+
+4843
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_087d0b76
+UUID: b5526a4f_1e170de2
+Bytes: 4
+Done
 
 4863
 Wed Sep 30 22:49:56 2015 +0000
@@ -134,12 +271,28 @@ UUID: 953c86f3_f3f4184c
 Bytes: 95
 The point is that if you declare virtual methods, you'll get explicit handling down the line...
 
+4863
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_69d1e192
+UUID: b5526a4f_3e3bf161
+Bytes: 23
+That's the fallthrough.
+
 4868
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 15a33681_89745d54
 Bytes: 106
 What does it mean for a super class to not have an embedded imt/vtable? That the vtable wasn't linked yet?
+
+4868
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_89745d54
+UUID: b5526a4f_1ee54d4a
+Bytes: 31
+It means its an abstract class.
 
 4957:61-4957:63
 Thu Oct 01 00:34:47 2015 +0000
@@ -148,12 +301,28 @@ UUID: 1548969f_efc3891a
 Bytes: 1
 '
 
+4957:61-4957:63
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1548969f_efc3891a
+UUID: 9555663b_c0bacfee
+Bytes: 4
+Done
+
 4963:82-4963:97
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5398a03_2642c22e
 Bytes: 32
 non-default, default, or either?
+
+4963:82-4963:97
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5398a03_2642c22e
+UUID: 15a33681_0ce4fb9b
+Bytes: 19
+default or miranda.
 
 5063
 Wed Sep 30 22:49:56 2015 +0000
@@ -162,12 +331,30 @@ UUID: 953c86f3_c8168319
 Bytes: 31
 what about the order (comment)?
 
+5063
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_c8168319
+UUID: 9555663b_603ae85a
+Bytes: 25
+It doesn't matter.
+
+Done.
+
 5065:41-5065:57
 Thu Oct 01 00:34:47 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75439281_524ea4b3
 Bytes: 10
 Unchecked.
+
+5065:41-5065:57
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_524ea4b3
+UUID: 354d9aaf_f60d2000
+Bytes: 4
+Done
 
 5068:30-5068:55
 Thu Oct 01 00:34:47 2015 +0000
@@ -176,12 +363,28 @@ UUID: 15a33681_4ce0b33a
 Bytes: 113
 Why is this necessary? This should be an interface, and not a proxy (else something's going terribly wrong, no?).
 
+5068:30-5068:55
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_4ce0b33a
+UUID: 15a33681_bd570f6a
+Bytes: 50
+I honestly don't quite know. It was already there.
+
 5071:6-5072:62
 Thu Oct 01 00:34:47 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 354d9aaf_e56f2cea
 Bytes: 69
 Remove (or make it a DCHECK). The dex file verifier is checking that.
+
+5071:6-5072:62
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 354d9aaf_e56f2cea
+UUID: b5398a03_1a454d81
+Bytes: 4
+Done
 
 5144:0-5144:47
 Thu Oct 01 00:34:47 2015 +0000
@@ -205,6 +408,14 @@ UUID: b5526a4f_c14ad891
 Bytes: 7
 Remove.
 
+5161:24-5161:26
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_c14ad891
+UUID: 15a33681_78af65b2
+Bytes: 4
+Done
+
 5162:37-5162:41
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -216,12 +427,28 @@ Perhaps classes_in_iftable ?, seen_in_iftable?
 
 (just gets a bit easy to lose memory of what "seen" is).
 
+5162:37-5162:41
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5398a03_06269e79
+UUID: 9555663b_c04e5406
+Bytes: 4
+Done
+
 5275
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5586271_c37adc3f
 Bytes: 104
 This looks kinda weird, AllowThreadSuspension twice in a row (here and 5286). Where does it Disallow it?
+
+5275
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5586271_c37adc3f
+UUID: 75439281_a7224834
+Bytes: 42
+Added comment explaining why this is fine.
 
 5277:2-5284:84
 Wed Sep 30 17:07:24 2015 +0000
@@ -242,6 +469,14 @@ Should this go to a vector of handles or similar instead? (Or the above logic co
 
 The obvious solution would be to mark FillIfTable requires uninterruptible, but of course we can't do that since we *just* allowed thread suspension.
 
+5277:2-5284:84
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 957f26e6_676312d5
+UUID: b5398a03_43e0983a
+Bytes: 203
+FillIfTable now requires Uninteruptible. That should be good enough I think. Anyway ATM none of this code does any java allocations (or any java stuff at all, really) so shouldn't hit any suspend checks.
+
 5467:0-5472:22
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -249,12 +484,28 @@ UUID: 75ab929e_5e455538
 Bytes: 18
 indentation is off
 
+5467:0-5472:22
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75ab929e_5e455538
+UUID: d55b5e6b_e2f27ccd
+Bytes: 4
+Done
+
 5486
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d55b5e6b_c24e5806
 Bytes: 64
 and when the current class doesn't already implement the method?
+
+5486
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d55b5e6b_c24e5806
+UUID: 1548969f_cf996d41
+Bytes: 4
+Done
 
 5595:55-5595:63
 Wed Sep 30 17:07:24 2015 +0000
@@ -273,12 +524,36 @@ perhaps "that every method on a classes vtable be in that respective classes vir
 
 ?
 
+5595:55-5595:63
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 957f26e6_87472643
+UUID: 953c86f3_08522b03
+Bytes: 4
+Done
+
+5595:55-5595:63
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_2883af93
+UUID: 15a33681_0c35db6a
+Bytes: 4
+Done
+
 5600:37-5600:40
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 957f26e6_a7442a3f
 Bytes: 13
 are verified?
+
+5600:37-5600:40
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 957f26e6_a7442a3f
+UUID: 9555663b_7dea8f19
+Bytes: 4
+Done
 
 5602
 Wed Sep 30 22:49:56 2015 +0000
@@ -288,6 +563,14 @@ Bytes: 213
 I'm not sure if it's arbitrary (agampe to comment), it's just a cache mechanism to avoid probing every single method to see if it's preverified or not.
 
    preverified(class) = all methods on class are preverified
+
+5602
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5398a03_e698dafa
+UUID: b5398a03_690add2c
+Bytes: 119
+I meant arbitrary because the only reason we do this is we currently fail if we try to mark a method preverified twice.
 
 5603
 Wed Sep 30 22:49:56 2015 +0000
@@ -305,12 +588,28 @@ UUID: f5586271_2340f8d4
 Bytes: 23
 style nit: ArtMethod* ?
 
+5635:6-5635:10
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5586271_2340f8d4
+UUID: 1548969f_8f5e4511
+Bytes: 4
+Done
+
 5637:6-5637:10
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5526a4f_1e59cd2a
 Bytes: 100
 style nit: don't use auto for non-obvious code (it's not even on the same screen, its a pair maybe?)
+
+5637:6-5637:10
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_1e59cd2a
+UUID: 354d9aaf_0500580f
+Bytes: 49
+std::unordered_map<int32_t, ArtMethod*>::iterator
 
 File: runtime/class_linker.h
 
@@ -331,6 +630,14 @@ UUID: 9555663b_e0c6f8d3
 Bytes: 21
 Agree, naming is bad.
 
+732
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_1d6c338c
+UUID: 15a33681_2cd8d70b
+Bytes: 4
+Done
+
 747:25-747:30
 Thu Oct 01 00:34:47 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -346,6 +653,14 @@ Bytes: 175
 Please consider leaving a comment what the ints are.
 
 It's also not super clear what the default_translations here are for, it would be great to expand on that with a comment.
+
+759
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_dedd954a
+UUID: 15a33681_cc990341
+Bytes: 4
+Done
 
 File: runtime/modifiers.h
 
@@ -372,6 +687,14 @@ UUID: 1548969f_0f823539
 Bytes: 62
 then it should say "but not itself"? It's currently ambiguous.
 
+56
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5398a03_06ca1ed8
+UUID: b5526a4f_21a11496
+Bytes: 52
+Yes it includes the interface it is placed on. Done.
+
 57
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -393,6 +716,14 @@ You don't really need that, if the above flag is correctly set. Yes, you'll do a
 
 (And you'd want these to be two separate ones, as you use the "*this* has a default method" as a fast flag)
 
+57
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_28d1ef93
+UUID: f5586271_ee71c762
+Bytes: 45
+Nope. This flag is NOT meant to be recursive.
+
 File: runtime/parsed_options.cc
 
 693
@@ -402,6 +733,14 @@ UUID: 9555663b_e00b9859
 Bytes: 30
 Forgot to update usage message
 
+693
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_e00b9859
+UUID: 1548969f_ef226963
+Bytes: 4
+Done
+
 File: runtime/verifier/method_verifier.cc
 
 666
@@ -410,6 +749,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75439281_8790ec17
 Bytes: 124
 Comment is off now, consider moving this to 679 and adding a new comment to 668 about what interfaces *are* allowed to have.
+
+666
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_8790ec17
+UUID: 75439281_3210385f
+Bytes: 4
+Done
 
 File: test/960-default-smali/build
 
@@ -424,10 +771,37 @@ won't work if there's any spaces in file names
 
 the double quotes there are needed, not just $()
 
+28:37-28:63
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d55b5e6b_8db49108
+UUID: 354d9aaf_856908be
+Bytes: 458
+No that won't work. 
+
+    allight@wenix:/tmp$ echo A > a.txt
+    allight@wenix:/tmp$ echo B > b.txt
+    allight@wenix:/tmp$ cat $(find . -maxdepth 1 -name "*.txt")
+    B
+    A
+    allight@wenix:/tmp$ cat "$(find . -maxdepth 1 -name '*.txt')"
+    cat: ./b.txt
+    ./a.txt: No such file or directory
+
+The quotes are placed around the whole expansion which means it is treated as a single filename. This works only for "$@" since that is a special case in bash.
+
 32
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1548969f_04269c79
+Bytes: 6
+see 28
+
+32
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1548969f_04269c79
+UUID: 953c86f3_533b4460
 Bytes: 6
 see 28
 
@@ -440,6 +814,14 @@ UUID: b5526a4f_5e37c5aa
 Bytes: 49
 What happened here, is this still auto generated?
 
+0
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_5e37c5aa
+UUID: b5526a4f_a17524c2
+Bytes: 110
+Yes. I just removed the multiple runs since that wasn't really necessary. That made the expected much smaller.
+
 File: test/960-default-smali/util-src/generate_smali.py
 
 262
@@ -448,6 +830,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5398a03_06305e7d
 Bytes: 26
 recursively? transitively?
+
+262
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5398a03_06305e7d
+UUID: 354d9aaf_c582f0c2
+Bytes: 4
+Done
 
 291
 Wed Sep 30 22:49:56 2015 +0000
@@ -459,6 +849,14 @@ GLOBAL_CONSTANT_NAME
 
 TEST_DATA
 
+291
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_e779f089
+UUID: b5526a4f_e16f1cea
+Bytes: 65
+This is actually a class definition. Changed to be more explicit.
+
 292
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -466,12 +864,28 @@ UUID: 15a33681_2cd2173f
 Bytes: 4
 same
 
+292
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_2cd2173f
+UUID: 953c86f3_1349bcfb
+Bytes: 9
+see above
+
 293:0-293:5
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5586271_23bbd818
 Bytes: 4
 same
+
+293:0-293:5
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5586271_23bbd818
+UUID: 9555663b_6b6e49c5
+Bytes: 9
+see above
 
 File: test/961-default-iface-resolution-generated/build
 
@@ -481,6 +895,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 953c86f3_08deab7e
 Bytes: 47
 same comments as from previous build file apply
+
+0
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_08deab7e
+UUID: b5398a03_e9270d8b
+Bytes: 22
+See my comments there.
 
 24
 Wed Sep 30 22:49:56 2015 +0000
@@ -496,6 +918,14 @@ This needs to be restored even if one of the later commands fail, right?
 
 and just call restore_ulimit on 42
 
+24
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1548969f_2483d893
+UUID: 15a33681_d7142c83
+Bytes: 4
+Done
+
 File: test/961-default-iface-resolution-generated/util-src/generate_smali.py
 
 87
@@ -505,12 +935,28 @@ UUID: d55b5e6b_6d077d5d
 Bytes: 18
 Missing docstrings
 
+87
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d55b5e6b_6d077d5d
+UUID: 354d9aaf_453d40a3
+Bytes: 4
+Done
+
 92
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 953c86f3_e8f38708
 Bytes: 27
 style nit: () vs lambda map
+
+92
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_e8f38708
+UUID: 75439281_726e40c5
+Bytes: 4
+Done
 
 File: test/962-iface-static/build
 
@@ -521,6 +967,14 @@ UUID: f5586271_c3b2dc30
 Bytes: 47
 same comments as from previous build file apply
 
+0
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5586271_c3b2dc30
+UUID: b5526a4f_d2bd84e9
+Bytes: 18
+see comments there
+
 File: test/963-default-range-smali/build
 
 0
@@ -529,6 +983,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75439281_e74e105b
 Bytes: 166
 Yeah, this looks super copy-pasted. It can be refactored into a common build file that all these sources, or you could edit run-test itself for the new functionality.
+
+0
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_e74e105b
+UUID: d55b5e6b_22262f7a
+Bytes: 62
+this would be rather annoying and doesn't seem very necessary.
 
 File: test/964-default-iface-init-generated/build
 
@@ -539,12 +1001,28 @@ UUID: 1548969f_e498d0fa
 Bytes: 47
 same comments as from previous build file apply
 
+0
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1548969f_e498d0fa
+UUID: 9555663b_a0587b76
+Bytes: 10
+see others
+
 22
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75439281_c73034cb
 Bytes: 42
 See previous comment about trapping ulimit
+
+22
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_c73034cb
+UUID: b5398a03_1a9a6d62
+Bytes: 4
+Done
 
 File: test/964-default-iface-init-generated/run
 
@@ -559,6 +1037,14 @@ Probably would be good to refactor this entire file to just
 
 (and same for other run files)
 
+20
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_6c26cff8
+UUID: 953c86f3_28f60ac4
+Bytes: 50
+could we do run-test refactorings some other time?
+
 File: test/964-default-iface-init-generated/smali/Displayer.smali
 
 22
@@ -567,6 +1053,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 15a33681_0c1b9bb3
 Bytes: 4
 Why?
+
+22
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_0c1b9bb3
+UUID: 1548969f_a48ec366
+Bytes: 83
+Just so there is something to do with the object once we get it from the interface.
 
 File: test/964-default-iface-init-generated/util-src/generate_smali.py
 
@@ -593,12 +1087,28 @@ UUID: 1548969f_c4bf942f
 Bytes: 72
 Might be good to have some comments explaining the purpose of this file?
 
+16
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1548969f_c4bf942f
+UUID: 1548969f_c7baf1ee
+Bytes: 4
+Done
+
 27:20-27:26
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f5586271_03821439
 Bytes: 44
 generates alphabetically? or something else?
+
+27:20-27:26
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f5586271_03821439
+UUID: 75439281_057051cc
+Bytes: 44
+alphabetically but it really doesn't matter.
 
 35
 Wed Sep 30 22:49:56 2015 +0000
@@ -607,6 +1117,14 @@ UUID: 75439281_2708f8f3
 Bytes: 78
 Might want to mention that it yields a different result every time it's called
 
+35
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_2708f8f3
+UUID: b5526a4f_32fde0a3
+Bytes: 4
+Done
+
 40:5-40:10
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -614,12 +1132,28 @@ UUID: 354d9aaf_82fd7e2c
 Bytes: 66
 Takes a string, returns the same string with empty lines stripped.
 
+40:5-40:10
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 354d9aaf_82fd7e2c
+UUID: d55b5e6b_82dbbbb0
+Bytes: 4
+Done
+
 41
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5526a4f_fe9b39f4
 Bytes: 27
 style nit: () vs lambda map
+
+41
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_fe9b39f4
+UUID: 953c86f3_c85e7e5f
+Bytes: 4
+Done
 
 File: tools/extract-embedded-java
 
@@ -632,6 +1166,14 @@ Sanity check $1 is a dir?
 
   [[ -d "$1" ]] || exit 1
 
+21
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9555663b_007dec75
+UUID: 9555663b_e030b3ca
+Bytes: 4
+Done
+
 22:31-22:39
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -639,10 +1181,26 @@ UUID: 15a33681_0ca63bae
 Bytes: 114
 nit: it's an extension not a filetype. file type is determined by the "file" command, which isn't being used here.
 
+22:31-22:39
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 15a33681_0ca63bae
+UUID: f5586271_64aaf3a3
+Bytes: 4
+Done
+
 27:7-27:9
 Wed Sep 30 22:49:56 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 75439281_07117c1e
 Bytes: 63
 Doesn't need ERE flag, it should work just the same without it.
+
+27:7-27:9
+Fri Oct 02 18:49:38 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75439281_07117c1e
+UUID: 1548969f_e7ebadd8
+Bytes: 4
+Done
 

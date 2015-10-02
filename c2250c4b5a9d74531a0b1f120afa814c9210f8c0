@@ -17,6 +17,16 @@ UUID: b57c2af2_ebdd0d4a
 Bytes: 6
 if->of
 
+1200:8-1200:27
+Fri Oct 02 16:50:59 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b57c2af2_ebdd0d4a
+UUID: 354d9aaf_836e1dc2
+Bytes: 176
+The meaning of this isCallerInterpreted() is "is the caller of isCallerInterpreted() == the call-site interpreted."
+
+If that's too confusing, I can rename the set of functions.
+
 File: test/common/runtime_state.cc
 
 70:0-70:54
@@ -26,10 +36,30 @@ UUID: 957f26e6_4aa613af
 Bytes: 114
 'This' is kind of unclear. It's more "is the optimizing compiler the default compiler for compiling the oat file"?
 
+70:0-70:54
+Fri Oct 02 16:50:59 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 957f26e6_4aa613af
+UUID: 953c86f3_4bbb8817
+Bytes: 68
+Which is the same as "the oat file is compiled with optimizing," no?
+
 79:0-79:75
 Fri Oct 02 08:56:58 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f597825c_42ad72ca
 Bytes: 64
 Check if the JIT is enabled then. It sucks to not have coverage.
+
+79:0-79:75
+Fri Oct 02 16:50:59 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f597825c_42ad72ca
+UUID: 354d9aaf_237d8976
+Bytes: 231
+The JIT may violate this anyways.
+
+E.g., single invocations of run-tests won't be compiled. So all the "is compiled" asserts would fail.
+
+For this to really be tested for JIT, we'd have to change the test setup in a *lot* of tests.
 

@@ -9,6 +9,14 @@ UUID: 953c86f3_01232169
 Bytes: 92
 Not sure I understand, what is the point of this if soa doesn't appear to get used anywhere?
 
+92
+Fri Oct 02 20:42:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 953c86f3_01232169
+UUID: d55b5e6b_366cb10f
+Bytes: 179
+You need the mutator lock for getting the class. SOA ensures that (except in the cases where the state doesn't make it clear that you maybe still have the lock, like PerformingGC.
+
 94
 Fri Oct 02 20:35:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,12 +28,28 @@ why not
 
 ?
 
+94
+Fri Oct 02 20:42:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d55b5e6b_b61ba1b1
+UUID: 15a33681_cfa0105e
+Bytes: 138
+Because this one can be correctly analyzed with annotalysis. The helper is only there because the Assert below doesn't work correctly. :-(
+
 97
 Fri Oct 02 20:35:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b5526a4f_02704bcc
 Bytes: 39
 Couldn't this check what state it's in?
+
+97
+Fri Oct 02 20:42:23 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5526a4f_02704bcc
+UUID: 953c86f3_01720166
+Bytes: 102
+It makes the SOA more complicated, and we haven't needed/done that before. That's why we check here...
 
 File: runtime/art_method.h
 

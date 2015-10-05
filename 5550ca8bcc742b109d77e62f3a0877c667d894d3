@@ -17,3 +17,15 @@ UUID: 55eccecd_9322e434
 Bytes: 226
 You mean disabled? The cache is a root (always visited through ArtMethod), so I was assuming you wouldn't need a read barrier. Class unloading probably invalidates that, but I think it was still a WIP when this CL was started.
 
+94:54-94:73
+Mon Oct 05 18:31:06 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55eccecd_9322e434
+UUID: 2b6d3ced_7dfaf3a9
+Bytes: 301
+Yes, I mean disabled.
+
+Generally, the GC roots that we visit concurrently need read barriers (particularly "GcRoot" ones, that's the primary reason that we invented the GcRoot type.)
+
+This one is no different than ArtMethod::declaring_class_. So, I think this one should have the read barrier enabled.
+

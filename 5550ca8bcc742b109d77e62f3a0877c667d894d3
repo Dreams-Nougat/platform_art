@@ -29,3 +29,20 @@ Generally, the GC roots that we visit concurrently need read barriers (particula
 
 This one is no different than ArtMethod::declaring_class_. So, I think this one should have the read barrier enabled.
 
+94:54-94:73
+Tue Oct 06 08:30:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6d3ced_7dfaf3a9
+UUID: 957f26e6_cd993d6f
+Bytes: 306
+So if this one needs a read barrier, how about the inline cache in compiled code? The compiled code will look like:
+
+r0 = load the cache
+r1 = load the class from r0
+r2 = load the class from receiver
+r3 = compare r1 and r2
+deopt if r3 is false
+... // continue
+
+Will we need a read barrier when executing r1?
+

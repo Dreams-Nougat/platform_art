@@ -53,3 +53,13 @@ Bytes: 402
 That does not work if the current visitor visits inlined frames (num_frames would include all inlined frames in the stack). So you really want the number of frames *without* inlined frames (because instrumentation ignores them). That's what Instrumentation::ComputeFrameId does.
 Unless your 'number_of_inlined_frames' is the total number of inlined frames in the stack? That would require a stack walk.
 
+966:0-968:96
+Tue Oct 06 16:16:53 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35703a18_6a3cb3a5
+UUID: 35703a18_8a300fca
+Bytes: 503
+Ok I see. Not the simplest thing in the world this code :-( I think what confuses me is that you pass some kind of current state (depth_without_inlined_frame) to a static method that will use that state. But now I understand what you're asking is "compute the frame id of that method at depth X".
+
+Still, you're implicitly encoding in this code that you expect instrumentation to not deal with inlined frames, right? So you could pass both information: cur_depth_ and current_number_of_inlined_frames_.?
+

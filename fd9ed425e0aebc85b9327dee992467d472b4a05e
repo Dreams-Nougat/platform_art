@@ -1,0 +1,27 @@
+Revision: fd9ed425e0aebc85b9327dee992467d472b4a05e
+Patch-set: 4
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+722
+Tue Oct 06 23:38:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30592d74_20dbced8
+Bytes: 188
+Ah, ok, this makes more sense now. This was pretty subtle earlier.
+
+Perhaps, add something like ... " as an optimization defer allocating lock counter until we know for a fact we need it"?
+
+723
+Tue Oct 06 23:38:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_7f9d6ba9
+Bytes: 270
+This can go inline if you want, there's no requirement to put it above the call.
+
+   function_call(
+                 nullptr,   // No last shadow coming from quick
+                 false,     // Disable lock counting 
+                 ...)
+
+Thanks for fixing it in PS#4.
+

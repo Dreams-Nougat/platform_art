@@ -9,6 +9,14 @@ UUID: 4b9c302a_c4d1efda
 Bytes: 17
 why not const? :(
 
+548
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b9c302a_c4d1efda
+UUID: 1001893d_91fe5c66
+Bytes: 106
+Because IsPreverified is not const, either. This would be a larger change, and deserves a follow-up, IMHO.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 723
@@ -17,6 +25,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ab976c01_3316da8f
 Bytes: 27
 style nit: what is nullptr?
+
+723
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab976c01_3316da8f
+UUID: d00a915c_4f160d60
+Bytes: 170
+I believe the last state was that it is not required to document all parameters. And this is just refactored into its own line (though this isn't even necessary anymore).
 
 725
 Tue Oct 06 19:14:42 2015 +0000
@@ -41,6 +57,16 @@ UUID: ab804cc5_c5ac84de
 Bytes: 85
 Wow this seems complicated, why can't the ShadowFrame just automatically clean it up?
 
+486
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab804cc5_c5ac84de
+UUID: d00a915c_efb9c1b6
+Bytes: 314
+You'd have to hook that somewhere, so it wouldn't be automatically (I prefer the DCHECK in the actual interpreters to make sure that the entry is correct instead of cleaning up there).
+
+There's only one call-site, and this isn't very general code. Do you have a good argument why this should move into ShadowFrame?
+
 File: runtime/interpreter/interpreter_common.cc
 
 592
@@ -59,12 +85,28 @@ UUID: 0b7078c2_33f82836
 Bytes: 97
 NO_THREAD_SAFETY_ANALYSIS makes me very very sad. Is there any lock held asserts we can add here?
 
+85
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b7078c2_33f82836
+UUID: 30592d74_ba855199
+Bytes: 307
+The problem is that the MonitorEnter is marked EXCLUSIVE_LOCK_FUNCTION, so that you get a warning if you don't unlock under normal circumstances. Even if you annotate this, you'll just pass it upwards. It's exactly the case that the interpreter can't guarantee there'll be an exit (much less so statically).
+
 87
 Tue Oct 06 19:14:42 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb66c411_3f2468e7
 Bytes: 70
 When would the get lock count map be null if kMonitorCounntig is true?
+
+87
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb66c411_3f2468e7
+UUID: 90673931_5567acdc
+Bytes: 184
+kMonitorCounting is currently aliased to do_access_checks, but we could try to separate this etc. You're right that the second check isn't required right now. I'll move it to a DCHECK.
 
 97
 Tue Oct 06 19:14:42 2015 +0000
@@ -80,12 +122,28 @@ UUID: 4b9c302a_44639fd0
 Bytes: 103
 nit: would be nice to have a comment explaining that it only removes the first occurrence of the object
 
+100
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b9c302a_44639fd0
+UUID: 504861a0_fb550fe0
+Bytes: 4
+Done
+
 111
 Tue Oct 06 19:14:42 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8b92a812_373a48b8
 Bytes: 43
 Is there a semantical requirement for this?
+
+111
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b92a812_373a48b8
+UUID: 30592d74_dae6454c
+Bytes: 144
+That's how I interpret enforcement of structured locking. Otherwise just throwing IllegalMonitorState won't help you avoid a following deadlock.
 
 113:22-113:27
 Tue Oct 06 19:14:42 2015 +0000
@@ -94,12 +152,30 @@ UUID: cb6900e6_6b89c965
 Bytes: 25
 style nit: what is false?
 
+113:22-113:27
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb6900e6_6b89c965
+UUID: 105c2963_39414f1f
+Bytes: 4
+Done
+
 118:44-118:74
 Tue Oct 06 19:14:42 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb6900e6_8b8e9d6d
 Bytes: 22
 seems like a bit much?
+
+118:44-118:74
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb6900e6_8b8e9d6d
+UUID: b0435d80_9e82fd8c
+Bytes: 136
+Could you be more precise?
+
+(The other IllegalMonitorStateException throws have a similar message, in fact this is derived from them...)
 
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
@@ -116,6 +192,14 @@ why isn't this just a single stmt
 
 ?
 
+168
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b92a812_d72a0460
+UUID: 5061411e_73cac0d1
+Bytes: 139
+Sure, that's equivalent (if you fix it up to be the reverse). Sometimes I like the extended form with the abort when the condition is true.
+
 285
 Tue Oct 06 19:14:42 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -127,6 +211,14 @@ imho seems like this could just be a macro in a file already full of macros
 
 or some such.
 
+285
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab804cc5_85752c01
+UUID: 704d65ae_bc5a61b6
+Bytes: 56
+Was trying to avoid it, especially macro in macro. Done.
+
 File: runtime/stack.h
 
 69
@@ -137,6 +229,14 @@ Bytes: 153
 IMHO a vector should never be called a map. That was very confusing until I hit this file.
 
 Why isn't this just a map of the objects to a counter anyway?
+
+69
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50478167_e6e7600a
+UUID: 5061411e_d3ff54c8
+Bytes: 182
+Cause it's more complicated to manage that, in this is slow-path code (it was a map, then I went with the lighter-weight vector). Admittedly naming sucks, I'll make it LockCountData.
 
 87
 Tue Oct 06 19:14:42 2015 +0000
@@ -151,6 +251,16 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8b92a812_d7f1a455
 Bytes: 101
 -1 this should be a std::unique_ptr<LockCountMap> to make it clear the ownership is being transferred
+
+282
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b92a812_d7f1a455
+UUID: 1001893d_5181948a
+Bytes: 276
+I disagree, there's no reason here to make this complicated and complicate all call-sites. It's more common to write a comment here for that.
+
+I would love to make this private and not have any callers except to few cases in the interpreter, and they are very well documented.
 
 311
 Tue Oct 06 19:14:42 2015 +0000
@@ -174,4 +284,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb6900e6_0b612d3c
 Bytes: 46
 style nit: can we not use array notation here?
+
+2801:18-2801:35
+Tue Oct 06 22:40:35 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb6900e6_0b612d3c
+UUID: 704d65ae_5c97dd82
+Bytes: 151
+This is taken from the RootVisitor interface, and at least for this CL I prefer to have this matching 1:1. A future cleanup may consider changing both.
 

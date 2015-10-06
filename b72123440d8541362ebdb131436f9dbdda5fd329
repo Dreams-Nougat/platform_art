@@ -57,6 +57,14 @@ UUID: eeb7ade1_fc632523
 Bytes: 14
 missing spaces
 
+336:27-336:28
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb7ade1_fc632523
+UUID: 704d65ae_bc4b8141
+Bytes: 4
+Done
+
 File: runtime/interpreter/interpreter_common.h
 
 143:61-143:68
@@ -66,12 +74,32 @@ UUID: eececd75_c47210d9
 Bytes: 37
 Closure& (otherwise, drop the const?)
 
+143:61-143:68
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_c47210d9
+UUID: d03c51f4_df2bdb61
+Bytes: 494
+Done.
+
+FWIW, I didn't do this originally because closure has flexible array elements in the end, it looks really weird to dereference it at the call site because it's impossible normally, EXCEPT when it immediately turns into a reference.
+
+Personally I think this just makes the call sites more confusing so we may want to revisit this later. We also use const pointers all the time, I don't remember there being a rule in google3 saying we *have* to use const references (it's just preferred).
+
 172:43-172:54
 Mon Sep 28 09:21:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eeb7ade1_1c30d91c
 Bytes: 82
 ShadowFrame* (I know it was & before, but maybe you can change it in the process).
+
+172:43-172:54
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb7ade1_1c30d91c
+UUID: d00a915c_2fbc69ab
+Bytes: 95
+I'd have to change the rest of the file too, or it won't be consistent. Not sure it's worth it.
 
 228:55-228:93
 Mon Sep 28 09:21:40 2015 +0000
@@ -80,6 +108,14 @@ UUID: eeb7ade1_3c359d0d
 Bytes: 54
 Huh? Explain why it's ok, and what do you plan to fix.
 
+228:55-228:93
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb7ade1_3c359d0d
+UUID: 704d65ae_7ce0d984
+Bytes: 29
+That's explained on line 229.
+
 239:9-239:36
 Mon Sep 28 09:21:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -87,12 +123,28 @@ UUID: 0e9a4178_f54092fe
 Bytes: 38
 Why did you need that one to be typed?
 
+239:9-239:36
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e9a4178_f54092fe
+UUID: d03c51f4_dff0fb53
+Bytes: 5
+Done.
+
 248:2-248:3
 Mon Sep 28 09:21:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8ec8f176_59b7c70c
 Bytes: 20
 why the extra block?
+
+248:2-248:3
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ec8f176_59b7c70c
+UUID: 1001893d_1178ac85
+Bytes: 4
+Done
 
 339:46-339:57
 Mon Sep 28 09:21:40 2015 +0000
@@ -146,6 +198,14 @@ UUID: eececd75_046dd8f9
 Bytes: 12
 ShadowFrame*
 
+441:46-441:57
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eececd75_046dd8f9
+UUID: 1001893d_517234a7
+Bytes: 9
+As above.
+
 442:0-442:32
 Mon Sep 28 09:21:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -153,12 +213,28 @@ UUID: 8ec8f176_79bc83f0
 Bytes: 5
 drop?
 
+442:0-442:32
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8ec8f176_79bc83f0
+UUID: 30592d74_ba9c31dd
+Bytes: 9
+As above.
+
 469:90-469:123
 Mon Sep 28 09:21:40 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eeb7ade1_7c2f15bf
 Bytes: 1
 ?
+
+469:90-469:123
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eeb7ade1_7c2f15bf
+UUID: 5061411e_334de832
+Bytes: 25
+Lint doesn't like /*out*/
 
 488:43-488:47
 Mon Sep 28 09:21:40 2015 +0000
@@ -210,4 +286,14 @@ Parent: ceae6993_1eb7edbf
 UUID: 354d9aaf_9fbcb73c
 Bytes: 166
 Too many things on an ArtMethod require it to be non-const (don't ask me why, I didn't design it), better to have the const cast in one place than all over the place.
+
+128:9-128:19
+Tue Oct 06 20:56:21 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 354d9aaf_9fbcb73c
+UUID: 5061411e_13770c62
+Bytes: 284
+I discussed this offline with Mathieu/Hiroshi and they mentioned that the ArtMethod being non-const most of the time is because back in the day it was a mirror object and required some sort of barriers.
+
+We may want to do a larger cleanup later to make ArtMethod itself const-correct.
 

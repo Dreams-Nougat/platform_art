@@ -9,6 +9,14 @@ UUID: b57c2af2_eb0d0d00
 Bytes: 74
 Maybe you should special case the HLoadClass and check if it's unresolved?
 
+505:0-506:71
+Tue Oct 06 11:47:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b57c2af2_eb0d0d00
+UUID: b57c2af2_6e368b18
+Bytes: 151
+A class can be resolved but still require access check. Right now we don't differentiate between them. I would avoid adding an extra bit just for that.
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 321:1-329:3
@@ -18,10 +26,28 @@ UUID: 156b3632_26baf83b
 Bytes: 76
 Cab't you just check somehow that the HLoadClass is for an unresolved class?
 
+321:1-329:3
+Tue Oct 06 11:47:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 156b3632_26baf83b
+UUID: 75763214_4c1c7302
+Bytes: 208
+This check is more refined. It targets only the unresolved classes but allows the ones we need to check for access.
+
+We could add another bool to HLoadClass if it's unresolved but I wouldn't bother with that.
+
 532:0-536:5
 Mon Oct 05 07:52:57 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 55eccecd_b3256041
 Bytes: 5
 ditto
+
+532:0-536:5
+Tue Oct 06 11:47:07 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 55eccecd_b3256041
+UUID: 75763214_4c35536a
+Bytes: 4
+same
 

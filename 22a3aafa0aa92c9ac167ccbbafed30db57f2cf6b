@@ -63,3 +63,15 @@ Ok I see. Not the simplest thing in the world this code :-( I think what confuse
 
 Still, you're implicitly encoding in this code that you expect instrumentation to not deal with inlined frames, right? So you could pass both information: cur_depth_ and current_number_of_inlined_frames_.?
 
+966:0-968:96
+Tue Oct 06 16:29:46 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 35703a18_8a300fca
+UUID: 35703a18_ea27c38a
+Bytes: 567
+Good point. I understand your confusion, I will change that.
+
+I'm actually thinking about the reverse situation where instrumentation would visit inlined frames but the current visitor does not. It's even more complicated because you don't know how many inlined frames were in the stack (especially up the current method) when you compute the instrumentation frame ID :(
+
+But yes, for instrumentation point of view, it is basically "give me the frame ID of the current method as if there was no inlined method in the stack". So I agree it's better to separate things.
+

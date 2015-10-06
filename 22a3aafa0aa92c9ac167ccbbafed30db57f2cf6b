@@ -44,3 +44,12 @@ size_t frame_id = ComputeFrameId(num_frames, cur_depth, number_of_inlined_frames
 
 ?
 
+966:0-968:96
+Tue Oct 06 16:04:52 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 75763214_0f37cd16
+UUID: 35703a18_6a3cb3a5
+Bytes: 402
+That does not work if the current visitor visits inlined frames (num_frames would include all inlined frames in the stack). So you really want the number of frames *without* inlined frames (because instrumentation ignores them). That's what Instrumentation::ComputeFrameId does.
+Unless your 'number_of_inlined_frames' is the total number of inlined frames in the stack? That would require a stack walk.
+

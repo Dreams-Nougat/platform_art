@@ -1,0 +1,177 @@
+Revision: 1527d5dc5a00f1157c7dd35b25e6720be1b631c1
+Patch-set: 3
+File: runtime/art_method.h
+
+548
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b9c302a_c4d1efda
+Bytes: 17
+why not const? :(
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+723
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab976c01_3316da8f
+Bytes: 27
+style nit: what is nullptr?
+
+725
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b6d3ced_c9efbddf
+Bytes: 21
+style nit: what is 0?
+
+File: runtime/interpreter/interpreter.cc
+
+338
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50478167_e6e2c002
+Bytes: 21
+style nit: what is 0?
+
+486
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab804cc5_c5ac84de
+Bytes: 85
+Wow this seems complicated, why can't the ShadowFrame just automatically clean it up?
+
+File: runtime/interpreter/interpreter_common.cc
+
+592
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb66c411_5f77dcc5
+Bytes: 21
+style nit: what is 0?
+
+File: runtime/interpreter/interpreter_common.h
+
+85
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b7078c2_33f82836
+Bytes: 97
+NO_THREAD_SAFETY_ANALYSIS makes me very very sad. Is there any lock held asserts we can add here?
+
+87
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb66c411_3f2468e7
+Bytes: 70
+When would the get lock count map be null if kMonitorCounntig is true?
+
+97
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb66c411_5f291cbe
+Bytes: 6
+See 85
+
+100
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b9c302a_44639fd0
+Bytes: 103
+nit: would be nice to have a comment explaining that it only removes the first occurrence of the object
+
+111
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b92a812_373a48b8
+Bytes: 43
+Is there a semantical requirement for this?
+
+113:22-113:27
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb6900e6_6b89c965
+Bytes: 25
+style nit: what is false?
+
+118:44-118:74
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb6900e6_8b8e9d6d
+Bytes: 22
+seems like a bit much?
+
+File: runtime/interpreter/interpreter_goto_table_impl.cc
+
+168
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b92a812_d72a0460
+Bytes: 268
+doesn't matter to me either way, but please tell me so I know how to write my own code correctly:
+
+why isn't this just a single stmt 
+
+   DCHECK(!do_access_check && shadow_frame.GetLockCountMap() != nullptr) << "Should not have lock counting without access checks";
+
+?
+
+285
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab804cc5_85752c01
+Bytes: 125
+imho seems like this could just be a macro in a file already full of macros
+
+   HANDLE_MONITOR_CHECKS_OR_THROW
+
+or some such.
+
+File: runtime/stack.h
+
+69
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50478167_e6e7600a
+Bytes: 153
+IMHO a vector should never be called a map. That was very confusing until I hit this file.
+
+Why isn't this just a map of the objects to a counter anyway?
+
+87
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab976c01_1354fe31
+Bytes: 27
+style nit: what is nullptr?
+
+282
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b92a812_d7f1a455
+Bytes: 101
+-1 this should be a std::unique_ptr<LockCountMap> to make it clear the ownership is being transferred
+
+311
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b9c302a_8440c71a
+Bytes: 7
+see 282
+
+318:45-318:59
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b7078c2_d3368cad
+Bytes: 7
+see 282
+
+File: runtime/thread.cc
+
+2801:18-2801:35
+Tue Oct 06 19:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb6900e6_0b612d3c
+Bytes: 46
+style nit: can we not use array notation here?
+

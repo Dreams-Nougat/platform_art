@@ -17,6 +17,14 @@ UUID: 1001893d_91fe5c66
 Bytes: 106
 Because IsPreverified is not const, either. This would be a larger change, and deserves a follow-up, IMHO.
 
+548
+Tue Oct 06 23:38:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_91fe5c66
+UUID: d00a915c_9552c446
+Bytes: 15
+Yeah, I know :(
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 723
@@ -33,6 +41,14 @@ Parent: ab976c01_3316da8f
 UUID: d00a915c_4f160d60
 Bytes: 170
 I believe the last state was that it is not required to document all parameters. And this is just refactored into its own line (though this isn't even necessary anymore).
+
+723
+Tue Oct 06 23:38:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d00a915c_4f160d60
+UUID: 105c2963_1c78b985
+Bytes: 140
+The latest draft says to document magic numbers for parameters with a comment, afaik it always stated that and nobody was ever against that.
 
 725
 Tue Oct 06 19:14:42 2015 +0000
@@ -66,6 +82,16 @@ Bytes: 314
 You'd have to hook that somewhere, so it wouldn't be automatically (I prefer the DCHECK in the actual interpreters to make sure that the entry is correct instead of cleaning up there).
 
 There's only one call-site, and this isn't very general code. Do you have a good argument why this should move into ShadowFrame?
+
+486
+Tue Oct 06 23:38:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d00a915c_efb9c1b6
+UUID: d00a915c_357958bc
+Bytes: 252
+I thought the whole point of having the macro was to always call the destructor. Therefore shouldn't the ShadowFrame destructor be responsible for cleaning this up?
+
+I'm not so much arguing for it, as trying to understand why/if it has to be like this.
 
 File: runtime/interpreter/interpreter_common.cc
 
@@ -177,6 +203,14 @@ Could you be more precise?
 
 (The other IllegalMonitorStateException throws have a similar message, in fact this is derived from them...)
 
+118:44-118:74
+Tue Oct 06 23:38:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_9e82fd8c
+UUID: b0435d80_41889461
+Bytes: 89
+The expression is just very complicated here, it might be nice to bring it out to a temp.
+
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
 168
@@ -261,6 +295,30 @@ Bytes: 276
 I disagree, there's no reason here to make this complicated and complicate all call-sites. It's more common to write a comment here for that.
 
 I would love to make this private and not have any callers except to few cases in the interpreter, and they are very well documented.
+
+282
+Tue Oct 06 23:38:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_5181948a
+UUID: 105c2963_fc2ea573
+Bytes: 490
+I would've just made this a separate class for maximal call-site simplicity, although it honestly doesn't bother me too much the way it is because ShadowFrame is already a mess.
+
+  class LockCountTracker {
+    std::unique_ptr<LockCountData> data_;
+
+   public:
+    void BeginTracking();
+    void EndTracking();
+    void TrackMonitorEnter();
+    void TrackMonitorExit();
+    bool CheckMonitorsUnheldOrThrow();
+  }
+
+  struct ShadowFrame {
+    ....
+    LockCountTracker lock_count_tracker_;
+  }
 
 311
 Tue Oct 06 19:14:42 2015 +0000

@@ -69,3 +69,15 @@ UUID: b06c3d16_f6c36067
 Bytes: 100
 Any ways to prevent this? We are special casing thread stacks, could we also special case the cache?
 
+94:54-94:73
+Wed Oct 07 19:40:47 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b06c3d16_f6c36067
+UUID: d03c51f4_734c8833
+Bytes: 525
+Not that I can think of.
+
+As inlined caches can be accessed by multiple threads concurrently (not owned by a single thread), they'd have to be handled in a pause, rather than an async per-thread checkpoint way, unlike stack slots. Also as there are a lot of inline caches which is roughly O(# of call sites) which is typically more than O(# of stack slots), it'd increase the pause time quite a bit, which I'd avoid. So I don't think it's realistic to special case them. 
+
+Note we need a read barrier when loading r2 as well.
+

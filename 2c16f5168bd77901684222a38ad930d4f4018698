@@ -505,6 +505,21 @@ Also we should be totally safe since there are no java allocations here.
 
 Furthermore to do this that way we would need to allocate a java array, which would be annoying and slow.
 
+5277:2-5284:84
+Wed Oct 07 21:32:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ba1f45d_bc2ac15e
+UUID: 105c2963_ed1eed28
+Bytes: 658
+Is it really an "optimization"? The guidance I got from Mathieu is that it's perfectly safe as long whenever the annotations are actually checked.
+
+(I do realize some places the annotations get ignored like constructor bodies, unfortunate...).
+
+Using GcRoots or Handle vectors on the other hand just adds more complexity (and of course performance overhead). 
+
+------
+Ideally I think we'd have better abstractions (perhaps some debug-only) that can both handle lists of roots and lists of uninterruptible roots in a fast, safe, non-complicated way. Something to think about for whoever has time to do code cleanup and actually understands how the roots work.
+
 5467:0-5472:22
 Wed Sep 30 17:07:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

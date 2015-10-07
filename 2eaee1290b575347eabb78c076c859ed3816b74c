@@ -1,0 +1,68 @@
+Revision: 2eaee1290b575347eabb78c076c859ed3816b74c
+Patch-set: 24
+File: runtime/art_method.h
+
+140:7-140:16
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90673931_0f86b951
+Bytes: 84
+How about IsDefaultMethod() to be clearer as just default could mean something else?
+
+File: runtime/class_linker.cc
+
+4867:4-4867:17
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d03c51f4_936b0c20
+Bytes: 46
+Can this be Handle instead of a MutableHandle?
+
+5660:17-5660:25
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0435d80_0d251dc1
+Bytes: 170
+In general, an important thing for GC around here is to always copy ArtMethod contents by using CopyFrom() as it contains the right read barriers. I think we do, correct?
+
+5666:6-5666:9
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30592d74_4f242d83
+Bytes: 106
+out == new_method, correct? Seems better write this as "new_method.SetAccessFlags(..)" here to be clearer?
+
+File: runtime/experimental_flags.h
+
+29:4-29:12
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_8bc91986
+Bytes: 132
+What happens if/when lambdas and default methods become non-experimental? Do we care to minimize code/flag change when that happens?
+
+File: runtime/modifiers.h
+
+52:26-52:37
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1001893d_050d0204
+Bytes: 98
+How about kAccDefaultMethod? Default could be confused with the default package-scoped visibility?
+
+File: runtime/runtime.h
+
+535:10-535:22
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 504861a0_0a39830d
+Bytes: 48
+Make sense to drop "Experimental" from the name?
+
+539:10-539:22
+Wed Oct 07 20:50:54 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_6bce4d8d
+Bytes: 48
+Make sense to drop "Experimental" from the name?
+

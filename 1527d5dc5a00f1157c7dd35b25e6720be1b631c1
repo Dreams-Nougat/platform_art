@@ -93,6 +93,16 @@ I thought the whole point of having the macro was to always call the destructor.
 
 I'm not so much arguing for it, as trying to understand why/if it has to be like this.
 
+486
+Wed Oct 07 00:44:27 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d00a915c_357958bc
+UUID: 30592d74_00b16a36
+Bytes: 460
+I don't want to delete it in the destructor. This is basically the reverse of the optimization in the quick_trampoline_entrypoints: line 339 allocates the structure, but the static initializer is here, in a separate function.
+
+My original intent was to have the lock counting visible in the signature of the "constructor," so that future users cannot forget it. But maybe it's better to always have it delayed. (Then it would be the AllocLockCountData here...)
+
 File: runtime/interpreter/interpreter_common.cc
 
 592
@@ -210,6 +220,14 @@ Parent: b0435d80_9e82fd8c
 UUID: b0435d80_41889461
 Bytes: 89
 The expression is just very complicated here, it might be nice to bring it out to a temp.
+
+118:44-118:74
+Wed Oct 07 00:44:27 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_41889461
+UUID: 1001893d_b45a6eb6
+Bytes: 13
+Ah, OK, sure.
 
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 

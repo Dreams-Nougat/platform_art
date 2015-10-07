@@ -9,10 +9,58 @@ UUID: f0079550_1046e436
 Bytes: 93
 At this level, this looks like black magic. Why isn't the allocator dealing with all of this?
 
+203:0-211:93
+Wed Oct 07 21:01:57 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0079550_1046e436
+UUID: d00a915c_29abc1b2
+Bytes: 1136
+Happy to change this to whatever you suggest.
+---
+
+Well, I can move it into AllocateMemory but then the return type is still 
+
+   std::aligned_storage<long expression, long expression>::type*
+
+which is perfectly fine if you want me to change this to
+
+   // Allocate well-aligned memory to store an ArtLambdaMethod.
+   auto* uninitialized_lambda_method = lambda::LeakingAllocator::AllocateMemory<ArtLambdaMethod>(self);
+
+or it could just use a void* but I find that loses the alignment and the size information which is problematic.
+
+I suppose even in this case it might not even matter too much that if it was "auto*" since it gets used only for in-place new which works on any non-const void* (unfortunately there's no easy way to say non-const auto).
+
+----
+The real simple answer is that AllocateMemory can over-allocate (for structs that have a [0]sized array element, "flexible arrays") so I just wanted to reuse that same mechanism for allocating non-flexible structs.
+
+In the end that whole class is going to go away so I didn't want to put too much thought into it, other than clearly marking every call site to be updated later.
+
 247:8-247:65
 Wed Oct 07 08:56:03 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 70664538_d4357c13
 Bytes: 66
 nit: this one the line above and the arguments each on their line?
+
+247:8-247:65
+Wed Oct 07 21:01:57 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 70664538_d4357c13
+UUID: b0435d80_0d0d1d04
+Bytes: 417
+This way is preferred because the arguments are aligned to the (
+
+It's always preferable to align to the (, {, etc over doing a "i give up, so just wrap and indent 4 spaces" type of alignment.
+
+----
+As for something like
+
+   var = foo(x,
+             y,
+             z)
+
+That doesn't actually fit because the "= ..." part of the expression is pretty long.
+
+I can update the guide if this was stated ambiguous earlier?
 

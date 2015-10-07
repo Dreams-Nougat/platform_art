@@ -41,6 +41,25 @@ UUID: 704d65ae_8bc91986
 Bytes: 132
 What happens if/when lambdas and default methods become non-experimental? Do we care to minimize code/flag change when that happens?
 
+29:4-29:12
+Wed Oct 07 21:32:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_8bc91986
+UUID: d03c51f4_4e1d5bab
+Bytes: 314
+We can always remove this particular value and the call checks for it after we ship the feature.
+
+It's preferred this way for now since it's only on in a few test cases, since turning on by default on causes a regression in compiler performance (quick has to scan all the opcodes to bail out when it sees lambdas).
+
+File: runtime/mirror/class.h
+
+234
+Wed Oct 07 21:32:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_0b222971
+Bytes: 69
+Is there a more obvious way to assert the lock held? Hiroshi/Mathieu?
+
 File: runtime/modifiers.h
 
 52:26-52:37
@@ -50,7 +69,35 @@ UUID: 1001893d_050d0204
 Bytes: 98
 How about kAccDefaultMethod? Default could be confused with the default package-scoped visibility?
 
+52:26-52:37
+Wed Oct 07 21:32:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_050d0204
+UUID: d00a915c_a90df176
+Bytes: 237
+Shouldn't we also change the other ones to be consistent then? 
+
+   kAccFastNativeMethod
+   kAccMirandaMethod
+
+etc
+
+(That being said, I personally didn't think it was confusing since 'default' wasn't a keyword previously, but it is now).
+
 File: runtime/runtime.h
+
+0
+Wed Oct 07 21:32:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5061411e_68e487c0
+Bytes: 266
+Alex, can we change this to just one function?
+
+   bool AreExperimentalFlagsEnabled(ExperimentalFlags flags) {
+     return (experimental_flags_ & flags) != kNone;
+   }
+
+This way we won't need to add or remove the methods later when new elements get added or removed.
 
 535:10-535:22
 Wed Oct 07 20:50:54 2015 +0000
@@ -59,10 +106,28 @@ UUID: 504861a0_0a39830d
 Bytes: 48
 Make sense to drop "Experimental" from the name?
 
+535:10-535:22
+Wed Oct 07 21:32:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_0a39830d
+UUID: 105c2963_cd120929
+Bytes: 222
+It has experimental in the name intentionally so that people don't try to ship out of AOSP with this feature enabled, since it's incomplete.
+
+IIRC, there's also giant warnings that get printed when enabling these flags :).
+
 539:10-539:22
 Wed Oct 07 20:50:54 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704d65ae_6bce4d8d
 Bytes: 48
 Make sense to drop "Experimental" from the name?
+
+539:10-539:22
+Wed Oct 07 21:32:12 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_6bce4d8d
+UUID: 105c2963_8df9313c
+Bytes: 8
+See 535.
 

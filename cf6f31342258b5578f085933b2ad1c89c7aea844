@@ -22,6 +22,17 @@ UUID: b0435d80_e5172510
 Bytes: 21
 1 character too long.
 
+File: runtime/class_linker.cc
+
+4970
+Thu Oct 08 18:36:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 105c2963_ceaf9f69
+Bytes: 155
+Add a TODO here, this should only throw during method invocation.
+
+(ditto for every other occurrence of ThrowIncompatibleClassChangeError due to conflicts)
+
 File: runtime/mirror/class.h
 
 234:14-234:34
@@ -32,4 +43,14 @@ Bytes: 208
 We don't take locks in GetAccessFlags() but we do take the object lock in these two set functions. But we don't take the object lock in HasDefaultMethods() and HasBeenRecursivelyInitialized().
 
 Is this sound?
+
+234:14-234:34
+Thu Oct 08 18:36:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90673931_37230b4c
+UUID: d00a915c_8ea3ce20
+Bytes: 334
+I think Andreas was mentioning something about the access flags being mutated by only one thread (which already holds a lock?) when the class is being cobbled together, but after the class is shared between multiple threads it's never mutated again.
+
+So yeah I definitely agree and think we should be both correct and consistent here.
 

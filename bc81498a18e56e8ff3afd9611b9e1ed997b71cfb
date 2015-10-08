@@ -9,3 +9,46 @@ UUID: d00a915c_db3476cb
 Bytes: 177
 It's confusing to me to have the comment say the opposite of the if condition. Can you change the polarity of the comment or the polarity of the if condition so that they match?
 
+File: runtime/oat_file_manager.cc
+
+96
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0435d80_e8affc68
+Bytes: 83
+IMHO ImageSpace::ReleaseOatFile should also be changed to return an std::unique_ptr
+
+File: runtime/oat_file_manager.h
+
+46:49-46:55
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 105c2963_ae0d0b77
+Bytes: 13
+std::aborts ?
+
+48
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 105c2963_0e60770f
+Bytes: 72
+This should be a std::unique_ptr<OatFile> since it takes over the object
+
+64
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30592d74_35d82775
+Bytes: 89
+This should mention that it takes over ownership of the imagespace's underlying oat file.
+
+82
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 105c2963_2e30db26
+Bytes: 95
+Out of curiosity, given this comment, why doesn't it say
+
+   REQUIRES(!Locks::mutator_lock_)
+
+?
+

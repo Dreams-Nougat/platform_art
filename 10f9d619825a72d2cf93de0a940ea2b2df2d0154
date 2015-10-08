@@ -64,6 +64,16 @@ UUID: 1001893d_4be559be
 Bytes: 96
 Most of these are just copied from class linker but I am fine with using the advanced STL stuff.
 
+51
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_4be559be
+UUID: d00a915c_bb61b23f
+Bytes: 171
+The better question is why does it needs to dcheck the oat_files_ as being not-null ???
+
+Can't we just move that check to only the place where we manipulate the container?
+
 67
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -86,6 +96,14 @@ auto it = std::find_if(oat_files_.begin(), oat_files_.end(), [&](const OatFile* 
 vs
 
 for (const OatFile* oat_file : oat_files_) {DCHECK(oat_file != nullptr);if (oat_file->GetLocation() == oat_location) {return oat_file;}}return nullptr;
+
+67
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_71ce3a8d
+UUID: 30592d74_95fbf3e8
+Bytes: 93
+Yeah that probably doesn't need to change, I was just pointing out it can be less statements.
 
 88
 Thu Oct 08 00:42:26 2015 +0000
@@ -119,6 +137,16 @@ UUID: 5061411e_3f4c8204
 Bytes: 18
 Perhaps, other CL?
 
+105
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_3f4c8204
+UUID: 30592d74_15e7e349
+Bytes: 196
+The only thing I really feel that warrants a change in this CL is changing to std::unique_ptr, using raw pointers is just asking for trouble :).
+
+It would be a minor change with the code you have.
+
 111
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -148,6 +176,14 @@ Parent: 1001893d_4b17195e
 UUID: d03c51f4_9947ab11
 Bytes: 26
 Leave that for another CL?
+
+113
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_9947ab11
+UUID: 704d65ae_4329b557
+Bytes: 63
+Sure if you like the code to be slower and use more memory, :).
 
 126:16-126:29
 Thu Oct 08 00:42:26 2015 +0000
@@ -375,6 +411,14 @@ Parent: d03c51f4_d912d328
 UUID: 704d65ae_71511a45
 Bytes: 65
 We compare against the pointer later, I don't think that is safe.
+
+355:22-355:37
+Thu Oct 08 18:05:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_71511a45
+UUID: 1001893d_c69ca0de
+Bytes: 174
+Oh, I didn't see that, can't you just move the register to happen later? Or fetch a non-owning pointer after it ? Or have a private function that doesn't take over ownership?
 
 375:54-375:55
 Thu Oct 08 00:42:26 2015 +0000

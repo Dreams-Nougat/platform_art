@@ -9,7 +9,23 @@ UUID: 3065adc4_9a71cd6f
 Bytes: 69
 I think it's time to use helper methods for the different intrinsics.
 
+1080:0-1088:5
+Thu Oct 08 18:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30fe8d70_f254088d
+Bytes: 365
+Split this to two separate checks for source and destination. Create a helper function IsArrayLengthOf(length, array) that also checks for array->IsNewArray() && array->InputAt(0) == length.
+
+There will be an extra call to the virtual IsArrayLength(). Should we annotate all As<X>() methods with the gcc attribute pure to let the compiler optimize away extra calls?
+
 File: compiler/optimizing/intrinsics_x86_64.cc
+
+802
+Thu Oct 08 18:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5307d7f_b67828b5
+Bytes: 16
+Bad indentation.
 
 925:7-925:14
 Thu Oct 08 17:13:50 2015 +0000
@@ -32,6 +48,34 @@ Parent: 704d65ae_63cf918b
 UUID: 30fe8d70_b25a80b6
 Bytes: 27
 You want "primitive array"?
+
+980:11-980:17
+Thu Oct 08 18:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 459c212a_db8313cb
+Bytes: 27
+naming conventions: src_pos
+
+982:11-982:18
+Thu Oct 08 18:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5307d7f_d6ecc4c6
+Bytes: 8
+dest_pos
+
+1001:12-1001:24
+Thu Oct 08 18:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0079550_b3df2270
+Bytes: 55
+src_pos_constant; this is derived from srcPos, not src.
+
+1100:0-1101:26
+Thu Oct 08 18:53:52 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70700519_c7c3e067
+Bytes: 42
+You may have unpoisoned one or both above.
 
 1159:0-1168:17
 Thu Oct 08 16:31:57 2015 +0000

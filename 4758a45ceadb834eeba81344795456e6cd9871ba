@@ -1,0 +1,95 @@
+Revision: 4758a45ceadb834eeba81344795456e6cd9871ba
+Patch-set: 2
+File: /COMMIT_MSG
+
+11:0-11:59
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_03368d1e
+Bytes: 119
+Are there memory implications of this? Will applications start using more memory because they aren't sharing oat files?
+
+File: runtime/oat_file_assistant.h
+
+286:1-289:3
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_a3feb998
+Bytes: 35
+What is this for? Where is it used?
+
+File: runtime/oat_file_assistant_test.cc
+
+986:11-986:22
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d03c51f4_142522c1
+Bytes: 58
+This doesn't seem to match the check below. Is this right?
+
+987:0-987:46
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0435d80_c53dc98c
+Bytes: 221
+Should we move this test to an oat file manager test?
+
+The original goal of the test was to check that the locking in the OatFileAssistant works. I'm not sure it still tests that in this form. I'll have to think about it.
+
+1007:26-1007:30
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1001893d_261c8c7e
+Bytes: 6
+remove
+
+File: runtime/oat_file_manager.cc
+
+35:37-35:60
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 504861a0_e49d6b31
+Bytes: 26
+make this std::unique_ptr.
+
+40:69-41:30
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90673931_74cf41e0
+Bytes: 109
+This comment isn't clear. Do you mean: "copies of the same oat file should be loaded at different addresses"?
+
+60:5-60:40
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_4347f58a
+Bytes: 142
+Will this function be called often? If so, consider saving a boolean in the oat file manager that is updated when you register a new oat file?
+
+75:0-75:35
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_e3556132
+Bytes: 53
+Is this safe if RegisterImageOatFile has been called?
+
+File: runtime/oat_file_manager.h
+
+54:12-54:13
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_e310c192
+Bytes: 14
+insert "true".
+
+File: runtime/runtime.h
+
+778:0-779:52
+Thu Oct 08 17:03:55 2015 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1001893d_66cb3434
+Bytes: 113
+Does this need to be a dynamically allocated OatFileManager? How about using:
+ 
+OatFileManager oat_file_manager_;
+

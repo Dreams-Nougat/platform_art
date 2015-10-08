@@ -9,6 +9,14 @@ UUID: 704d65ae_03368d1e
 Bytes: 119
 Are there memory implications of this? Will applications start using more memory because they aren't sharing oat files?
 
+11:0-11:59
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_03368d1e
+UUID: 504861a0_a447e310
+Bytes: 87
+Possibly, but only in rare scenarios. Its required for dex cache arrays in BSS anyways.
+
 File: runtime/oat_file_assistant.h
 
 286:1-289:3
@@ -17,6 +25,14 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704d65ae_a3feb998
 Bytes: 35
 What is this for? Where is it used?
+
+286:1-289:3
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_a3feb998
+UUID: 90673931_d7e29702
+Bytes: 15
+Stale, deleted.
 
 File: runtime/oat_file_assistant_test.cc
 
@@ -27,6 +43,14 @@ UUID: d03c51f4_142522c1
 Bytes: 58
 This doesn't seem to match the check below. Is this right?
 
+986:11-986:22
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_142522c1
+UUID: 504861a0_04385797
+Bytes: 68
+The check makes sure that each oat file found only once, is that OK?
+
 987:0-987:46
 Thu Oct 08 17:03:55 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,12 +60,28 @@ Should we move this test to an oat file manager test?
 
 The original goal of the test was to check that the locking in the OatFileAssistant works. I'm not sure it still tests that in this form. I'll have to think about it.
 
+987:0-987:46
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_c53dc98c
+UUID: b0435d80_48ab90b1
+Bytes: 18
+Maybe future work?
+
 1007:26-1007:30
 Thu Oct 08 17:03:55 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1001893d_261c8c7e
 Bytes: 6
 remove
+
+1007:26-1007:30
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_261c8c7e
+UUID: 105c2963_334cc804
+Bytes: 4
+Done
 
 File: runtime/oat_file_manager.cc
 
@@ -52,12 +92,28 @@ UUID: 504861a0_e49d6b31
 Bytes: 26
 make this std::unique_ptr.
 
+35:37-35:60
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_e49d6b31
+UUID: b0435d80_c8b68018
+Bytes: 4
+Done
+
 40:69-41:30
 Thu Oct 08 17:03:55 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 90673931_74cf41e0
 Bytes: 109
 This comment isn't clear. Do you mean: "copies of the same oat file should be loaded at different addresses"?
+
+40:69-41:30
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90673931_74cf41e0
+UUID: 105c2963_734640e6
+Bytes: 4
+Done
 
 60:5-60:40
 Thu Oct 08 17:03:55 2015 +0000
@@ -66,12 +122,28 @@ UUID: 704d65ae_4347f58a
 Bytes: 142
 Will this function be called often? If so, consider saving a boolean in the oat file manager that is updated when you register a new oat file?
 
+60:5-60:40
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_4347f58a
+UUID: d03c51f4_34294659
+Bytes: 47
+Good idea, it could be called moderately often.
+
 75:0-75:35
 Thu Oct 08 17:03:55 2015 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704d65ae_e3556132
 Bytes: 53
 Is this safe if RegisterImageOatFile has been called?
+
+75:0-75:35
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_e3556132
+UUID: 105c2963_33f1680c
+Bytes: 89
+That uses oat_file_non_owned_ isntead of oat_file_ in the image space. It should be safe.
 
 File: runtime/oat_file_manager.h
 
@@ -81,6 +153,14 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704d65ae_e310c192
 Bytes: 14
 insert "true".
+
+54:12-54:13
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_e310c192
+UUID: d03c51f4_3404a6e5
+Bytes: 4
+Done
 
 File: runtime/runtime.h
 
@@ -92,4 +172,12 @@ Bytes: 113
 Does this need to be a dynamically allocated OatFileManager? How about using:
  
 OatFileManager oat_file_manager_;
+
+778:0-779:52
+Thu Oct 08 17:42:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_66cb3434
+UUID: 1001893d_c64020f9
+Bytes: 80
+We need to pull in the other header file, but I suppose that is OK in this case.
 

@@ -24,6 +24,16 @@ I don't think we've seen this sort of failure cases. Maybe just decrease the par
 
 In any case, the test is inherently timing-dependent as there's no timing guarantee on when the phantom reference gets enqueued in this queue after the GC run.
 
+11:0-12:68
+Thu Oct 08 20:39:41 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 105c2963_8e9ac768
+UUID: d03c51f4_283baa97
+Bytes: 360
+I agree, but I think this CL is a small improvement.  It removes one unlikely source of nondeterminism.
+
+Clearly there's still no guarantee that references are enqueued when expected.  And there are other timing assumptions that may fail under heavy load. Perhaps add a comment to that effect, and we can deal with it if we actually see such spurious failures?
+
 9:1-18:74
 Thu Oct 08 10:53:45 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,4 +63,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0435d80_088b4818
 Bytes: 224
 I think if the watcher isn't blocking in remove when this interrupt is called, it may not get an InterruptedException, in which case the watcher could infinite-loop and never terminate. So, mQuit seems to be still necessary.
+
+150:8-150:17
+Thu Oct 08 20:39:41 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_088b4818
+UUID: 704d65ae_66e5dfbe
+Bytes: 346
+This looks OK to me.  If we interrupt while the thread is not waiting, we should get the interrupt the next time around.
+
+Hiroshi points out that the fixed failure scenario is unlikely unless we're seeing an overloaded machine. The test driver should ensure that we are in remove() when we are interrupted.  Thus it's not clear this really helps.
 

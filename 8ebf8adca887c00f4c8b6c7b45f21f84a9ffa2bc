@@ -74,3 +74,13 @@ This looks OK to me.  If we interrupt while the thread is not waiting, we should
 
 Hiroshi points out that the fixed failure scenario is unlikely unless we're seeing an overloaded machine. The test driver should ensure that we are in remove() when we are interrupted.  Thus it's not clear this really helps.
 
+150:8-150:17
+Thu Oct 08 21:54:54 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_66e5dfbe
+UUID: 8521b987_85a402e5
+Bytes: 254
+Agree with Hans. The spec is that the interrupted flag is set, and the next wait should react to that (again by spec):
+
+ InterruptedException - if any thread interrupted the current thread before or while the current thread was waiting for a notification
+

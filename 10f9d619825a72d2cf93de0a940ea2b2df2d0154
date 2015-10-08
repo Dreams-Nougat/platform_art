@@ -9,6 +9,14 @@ UUID: 30592d74_84fbc7e8
 Bytes: 48
 Seems your condition is a bit screwed up here...
 
+123:8-123:25
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30592d74_84fbc7e8
+UUID: 504861a0_100c124f
+Bytes: 33
+I think the condition is correct?
+
 File: runtime/oat_file_manager.cc
 
 0
@@ -28,6 +36,14 @@ two liner:
   auto it = std::find_if(oat_files_.begin(), oat_files_.end(), [&](const OatFile* oat_file) { DCHECK(oat_file != nullptr); return oat_file->GetLocation() == oat_location; });
   return (it == oat_files_.end()) ? nullptr : *it;
 
+51
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_b6b3983f
+UUID: 1001893d_4be559be
+Bytes: 96
+Most of these are just copied from class linker but I am fine with using the advanced STL stuff.
+
 67
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -37,12 +53,34 @@ one liner:
 
   return std::find_if_not(oat_files_.begin(), oat_files_.end(), [](const OatFile* oat_file) { return oat_file->IsPic(); }) != oat_files_.end();
 
+67
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_1fa8a64e
+UUID: 704d65ae_71ce3a8d
+Bytes: 442
+Is that really worth it? That is more characters than the for loop.
+
+auto it = std::find_if(oat_files_.begin(), oat_files_.end(), [&](const OatFile* oat_file) {DCHECK(oat_file != nullptr);return oat_file->GetLocation() == oat_location;});return (it == oat_files_.end()) ?nullptr : *it;
+
+vs
+
+for (const OatFile* oat_file : oat_files_) {DCHECK(oat_file != nullptr);if (oat_file->GetLocation() == oat_location) {return oat_file;}}return nullptr;
+
 88
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d03c51f4_39dbffd8
 Bytes: 6
 see 51
+
+88
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_39dbffd8
+UUID: 30592d74_f72197b4
+Bytes: 10
+Adds code.
 
 105
 Thu Oct 08 00:42:26 2015 +0000
@@ -53,12 +91,28 @@ This would be *much* better off using std::unique_ptr<DexFile> .
 
 It's completely non obvious that it owns the ownership IMHO until I saw the emplace a few lines later.
 
+105
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_d9e9336f
+UUID: 5061411e_3f4c8204
+Bytes: 18
+Perhaps, other CL?
+
 111
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d03c51f4_99e04b86
 Bytes: 24
 Why no move constructor?
+
+111
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_99e04b86
+UUID: d03c51f4_99ca0bcf
+Bytes: 4
+Same
 
 113
 Thu Oct 08 00:42:26 2015 +0000
@@ -67,12 +121,28 @@ UUID: 1001893d_4b17195e
 Bytes: 23
 Why no move assignment?
 
+113
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_4b17195e
+UUID: d03c51f4_9947ab11
+Bytes: 26
+Leave that for another CL?
+
 126:16-126:29
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5061411e_df862edb
 Bytes: 19
 nit: lhs_descriptor
+
+126:16-126:29
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_df862edb
+UUID: 1001893d_8b946110
+Bytes: 4
+Done
 
 127:16-127:29
 Thu Oct 08 00:42:26 2015 +0000
@@ -81,12 +151,28 @@ UUID: 90673931_3ec5a8c2
 Bytes: 19
 nit: rhs_descriptor
 
+127:16-127:29
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90673931_3ec5a8c2
+UUID: 5061411e_7fe55a93
+Bytes: 4
+Done
+
 164
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0435d80_933b0eba
 Bytes: 30
 dcheck the truncation is safe?
+
+164
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_933b0eba
+UUID: 105c2963_88f63f02
+Bytes: 4
+Done
 
 184:16-184:22
 Thu Oct 08 00:42:26 2015 +0000
@@ -95,12 +181,28 @@ UUID: b0435d80_f32b7261
 Bytes: 26
 nit: don't need the .get()
 
+184:16-184:22
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_f32b7261
+UUID: 5061411e_1f226671
+Bytes: 4
+Done
+
 188
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704d65ae_b661d83f
 Bytes: 78
 heap->emplace(std::move(dex_file), 0U /*current_class_index*/, already_loaded)
+
+188
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_b661d83f
+UUID: b0435d80_b32e0a2c
+Bytes: 4
+Done
 
 194
 Thu Oct 08 00:42:26 2015 +0000
@@ -109,12 +211,28 @@ UUID: 105c2963_484707e4
 Bytes: 39
 nit: mark inout parameters as /*inout*/
 
+194
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 105c2963_484707e4
+UUID: 90673931_dedf546f
+Bytes: 4
+Done
+
 204:30-204:31
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 504861a0_b0e43e07
 Bytes: 39
 nit: mark inout parameters as /*inout*/
+
+204:30-204:31
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_b0e43e07
+UUID: 105c2963_08ea2f10
+Bytes: 4
+Done
 
 218:59-218:60
 Thu Oct 08 00:42:26 2015 +0000
@@ -123,12 +241,28 @@ UUID: 90673931_3eae480a
 Bytes: 35
 nit: mark out parameters as /*out*/
 
+218:59-218:60
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90673931_3eae480a
+UUID: d00a915c_d89d9c31
+Bytes: 4
+Done
+
 219
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 504861a0_501dfaaa
 Bytes: 51
 DCHECK error msg is not null, oat file is not null?
+
+219
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_501dfaaa
+UUID: d00a915c_f808603c
+Bytes: 4
+Done
 
 246:31-246:36
 Thu Oct 08 00:42:26 2015 +0000
@@ -139,12 +273,28 @@ nit:
 
   /*already_loaded*/false
 
+246:31-246:36
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_f0eec6e2
+UUID: d00a915c_98115469
+Bytes: 4
+Done
+
 285
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704d65ae_71b59a0d
 Bytes: 25
 DCHECK args are not null?
+
+285
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_71b59a0d
+UUID: 5061411e_9f4156cf
+Bytes: 4
+Done
 
 300:30-300:31
 Thu Oct 08 00:42:26 2015 +0000
@@ -153,12 +303,28 @@ UUID: d00a915c_789f505a
 Bytes: 58
 nit: annotate with /*out*/ when parameters are written out
 
+300:30-300:31
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d00a915c_789f505a
+UUID: 90673931_feffb0c7
+Bytes: 4
+Done
+
 323:38-323:39
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d03c51f4_99f96b3c
 Bytes: 58
 nit: annotate with /*out*/ when parameters are written out
+
+323:38-323:39
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_99f96b3c
+UUID: 105c2963_a8050390
+Bytes: 4
+Done
 
 331:57-331:58
 Thu Oct 08 00:42:26 2015 +0000
@@ -167,6 +333,14 @@ UUID: 1001893d_0bba31aa
 Bytes: 58
 nit: annotate with /*out*/ when parameters are written out
 
+331:57-331:58
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_0bba31aa
+UUID: 504861a0_50797aba
+Bytes: 4
+Done
+
 355:22-355:37
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -174,12 +348,28 @@ UUID: d03c51f4_d912d328
 Bytes: 20
 std::move(oat_file);
 
+355:22-355:37
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_d912d328
+UUID: 704d65ae_71511a45
+Bytes: 65
+We compare against the pointer later, I don't think that is safe.
+
 375:54-375:55
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 704d65ae_b1b60217
 Bytes: 58
 nit: annotate with /*out*/ when parameters are written out
+
+375:54-375:55
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_b1b60217
+UUID: 704d65ae_b1528246
+Bytes: 4
+Done
 
 File: runtime/oat_file_manager.h
 
@@ -190,12 +380,28 @@ UUID: b0435d80_73992244
 Bytes: 48
 nit: comments for public member functions please
 
+46
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_73992244
+UUID: d00a915c_78cbd033
+Bytes: 4
+Done
+
 61
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0435d80_d39d9631
 Bytes: 22
 Why no const overload?
+
+61
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_d39d9631
+UUID: d00a915c_f8b6a0c5
+Bytes: 28
+Renamed RegisterImageOatFile
 
 63:45-63:46
 Thu Oct 08 00:42:26 2015 +0000
@@ -204,6 +410,14 @@ UUID: d03c51f4_b948af45
 Bytes: 35
 nit: mark out parameters as /*out*/
 
+63:45-63:46
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_b948af45
+UUID: 704d65ae_31303227
+Bytes: 4
+Done
+
 83
 Thu Oct 08 00:42:26 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -211,12 +425,28 @@ UUID: b0435d80_9394ae10
 Bytes: 68
 nit: REQUIRES go on a separate line here, mark error_msgs as /*out*/
 
+83
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_9394ae10
+UUID: 90673931_7e972083
+Bytes: 4
+Done
+
 86:14-86:28
 Thu Oct 08 00:17:39 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 105c2963_08698f73
 Bytes: 71
 Does it own the oat files (I assume so). Then it should be unique_ptrs.
+
+86:14-86:28
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 105c2963_08698f73
+UUID: 90673931_de7bd4f6
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -226,4 +456,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5061411e_5f417e1d
 Bytes: 57
 nit: don't need the argument here, it defaults to nullptr
+
+285:26-285:33
+Thu Oct 08 02:10:03 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_5f417e1d
+UUID: 90673931_01c16d5f
+Bytes: 4
+Done
 

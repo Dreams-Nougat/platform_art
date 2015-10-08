@@ -1,0 +1,119 @@
+Revision: 44627f4fd60ad3475faa90311e1b0c89e279a506
+Patch-set: 11
+File: runtime/interpreter/interpreter_goto_table_impl.cc
+
+2557
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 504861a0_24691374
+Bytes: 180
+What is it supposed to throw then?
+
+  throw OldException(MonitorException)
+
+or
+
+  throw MonitorException(OldException)
+
+or just 
+
+  throw MonitorException //discard OldException
+
+?
+
+File: runtime/stack.cc
+
+1088
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 90673931_375dcb0b
+Bytes: 190
+Agreed, this should wrap either as a suppressed exception so that we don't lose the original one.
+
+(looks like IllegalMonitorStateException doesn't have an (Exception) constructor, too bad).
+
+1099
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d00a915c_5b888661
+Bytes: 44
+DCHECK obj not null?
+
+Why does it need self?
+
+File: runtime/stack.h
+
+78
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30592d74_158d23bb
+Bytes: 56
+nit: public functions should have comments, as per style
+
+80
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 504861a0_64c03bb3
+Bytes: 45
+can obj be const?
+DCHECK for self being null?
+
+88
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5061411e_75cf3be0
+Bytes: 54
+nit: DCHECK arguments for not null?
+
+can obj be const?
+
+92
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 504861a0_84a8e7fb
+Bytes: 320
+So apparently this can throw but nothing mentions that, I was under the impression the existing interpreter convention was
+
+   bool FunctionNameOrThrow(args)
+
+and it would return false and set the exception, otherwise return true.
+
+Also Nicolas has remarked in the past that the name/comment should mention if it throws.
+
+104
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 704d65ae_037e8d6d
+Bytes: 25
+should probably be Args&&
+
+106
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5061411e_15bec73e
+Bytes: 27
+std::forward<Args>(args)...
+
+118
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d00a915c_fbe69a4b
+Bytes: 91
+IIRC Mathieu was asking for a comment earlier explaining why they weren't used with GcRoots
+
+328
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5061411e_d531ef91
+Bytes: 102
+nit: This could just be LockCountData& GetLockCountData(), so the call site doesn't have to null check
+
+File: test/088-monitor-verification/src/Main.java
+
+72
+Thu Oct 08 17:50:08 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1001893d_26c5acc2
+Bytes: 18
+What does that do?
+

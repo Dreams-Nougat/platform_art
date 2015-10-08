@@ -21,6 +21,14 @@ or just
 
 ?
 
+2557
+Thu Oct 08 18:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_24691374
+UUID: 90673931_b7b0bb6c
+Bytes: 13
+The last one.
+
 File: runtime/stack.cc
 
 1088
@@ -32,6 +40,18 @@ Agreed, this should wrap either as a suppressed exception so that we don't lose 
 
 (looks like IllegalMonitorStateException doesn't have an (Exception) constructor, too bad).
 
+1088
+Thu Oct 08 18:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90673931_375dcb0b
+UUID: 90673931_571e8701
+Bytes: 329
+1) The constructor would be the wrong way (that is the cause, not the suppressed exception).
+
+2) The definition isn't clear (it never is with suppressed exceptions).
+
+3) Suppressed exceptions are a lot of work to get right. I think for simplicity it's enough to tell people they screwed up with locks, as it should not be common.
+
 1099
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,6 +60,14 @@ Bytes: 44
 DCHECK obj not null?
 
 Why does it need self?
+
+1099
+Thu Oct 08 18:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d00a915c_5b888661
+UUID: 90673931_97281f25
+Bytes: 49
+Because I don't want to put in Thread::Current().
 
 File: runtime/stack.h
 
@@ -101,12 +129,28 @@ UUID: d00a915c_fbe69a4b
 Bytes: 91
 IIRC Mathieu was asking for a comment earlier explaining why they weren't used with GcRoots
 
+118
+Thu Oct 08 18:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d00a915c_fbe69a4b
+UUID: 105c2963_0eba37aa
+Bytes: 40
+The comment is in the class description.
+
 328
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5061411e_d531ef91
 Bytes: 102
 nit: This could just be LockCountData& GetLockCountData(), so the call site doesn't have to null check
+
+328
+Thu Oct 08 18:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_d531ef91
+UUID: 5061411e_300dd104
+Bytes: 92
+We modify the data, so it must be a non-const ref, and I thought we're still averse to that?
 
 File: test/088-monitor-verification/src/Main.java
 
@@ -116,4 +160,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1001893d_26c5acc2
 Bytes: 18
 What does that do?
+
+72
+Thu Oct 08 18:31:14 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1001893d_26c5acc2
+UUID: b0435d80_2890c4d5
+Bytes: 122
+What it states in the name. If asserts aren't disabled, it will check that the call-site is managed code, not interpreted.
 

@@ -9,10 +9,26 @@ UUID: b5398a03_89b48108
 Bytes: 101
 The native bridge handler is a managed_handler for which you block all signals. How come this passes?
 
+417:35-417:78
+Thu Oct 08 02:47:05 2015 +0000
+Author: Jinghui Gu <1051763@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b5398a03_89b48108
+UUID: 704d65ae_315dd20b
+Bytes: 141
+Only all unclaimed signals will be blocked before invoking this handler. And the signal mask will be restored immediately after this handler.
+
 424:51-424:86
 Wed Sep 30 23:07:47 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1548969f_c4603441
 Bytes: 43
 Why did you need to special case these two?
+
+424:51-424:86
+Thu Oct 08 02:47:05 2015 +0000
+Author: Jinghui Gu <1051763@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1548969f_c4603441
+UUID: d00a915c_784c7033
+Bytes: 94
+These two are used by glibc for NPTL. Linux kernel won't use them. And they cannot be blocked.
 

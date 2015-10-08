@@ -29,6 +29,18 @@ UUID: 90673931_b7b0bb6c
 Bytes: 13
 The last one.
 
+2557
+Thu Oct 08 18:46:55 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90673931_b7b0bb6c
+UUID: 5061411e_50ae8d0a
+Bytes: 291
+Ok, do you think it would make sense to add that in a comment somewhere?
+
+  // Potentially throws a MonitorStateException, clearing the previous exception
+
+Although it's pretty easy to get to now by just looking in the .cc file for LockCountData, so maybe people can just look at the source.
+
 File: runtime/stack.cc
 
 1088
@@ -137,6 +149,14 @@ UUID: 105c2963_0eba37aa
 Bytes: 40
 The comment is in the class description.
 
+118
+Thu Oct 08 18:46:55 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 105c2963_0eba37aa
+UUID: d03c51f4_48226eef
+Bytes: 81
+Oh, I see it now. Perhaps it might be slightly better if it was here instead :) ?
+
 328
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -151,6 +171,18 @@ Parent: 5061411e_d531ef91
 UUID: 5061411e_300dd104
 Bytes: 92
 We modify the data, so it must be a non-const ref, and I thought we're still averse to that?
+
+328
+Thu Oct 08 18:46:55 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_300dd104
+UUID: 30592d74_b0df25ea
+Bytes: 287
+No, we're not averse to that currently, and we never were because it's not a parameter.
+
+Some people might disagree, in which case it should at least say "// Returns a not-null pointer to..."
+
+but my personal philosophy is why repeat something in a comment obvious from the signature? :)
 
 File: test/088-monitor-verification/src/Main.java
 
@@ -168,4 +200,14 @@ Parent: 1001893d_26c5acc2
 UUID: b0435d80_2890c4d5
 Bytes: 122
 What it states in the name. If asserts aren't disabled, it will check that the call-site is managed code, not interpreted.
+
+72
+Thu Oct 08 18:46:55 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0435d80_2890c4d5
+UUID: 5061411e_10bb754e
+Bytes: 268
+Oh, that was confusing to me because "managed" just usually means anything not native (i.e. any executed java code is managed code). Perhaps there is a terminology in Art I'm not familiar with yet.
+
+Alternatively, this could be "assertIsCompiled" to be less ambiguous.
 

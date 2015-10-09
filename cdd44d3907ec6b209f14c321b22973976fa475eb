@@ -42,6 +42,16 @@ We may want to generally revisit these initialization checks, since they seem qu
 
 In the short term, we may want to just trengthen the barrier at the bottom to dmb ish.  If we need the finalizability check to be ordered, we can separately enforce that ordering with a "bogus" address dependence.  Xor r3 with itself producing zero, and add that to the address for the second load.  ARM enforces memory ordering for this kind of bogus address dependence.
 
+906:4-906:48
+Fri Oct 09 22:34:34 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eaf16251_496bd9b2
+UUID: 45426131_45692e77
+Bytes: 801
+There's obviously room for optimizations to remove these checks as this is the most conservative version. Since this is what the optimizing compiler is currently calling, in the short term, I hope we can make this work before doing work to remove the checks.
+
+We need to worry about the two fields loaded from the class here, the access flag and the object size. Like Hans suggested, if we insert "xor r3, r3, r3, add r2, r2, r3" between the status load and the access flag load, which makes a fake dependence from the second load to the first load, which also creates a dependence from the third (object size) load to the first load, it seems good as long as we change the fence at the end to "dmb ish" so that the code after this allocation site will see the right values in the fields of the class.
+
 911:4-911:50
 Fri Oct 09 02:07:32 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

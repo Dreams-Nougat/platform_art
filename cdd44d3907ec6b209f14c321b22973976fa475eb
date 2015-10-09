@@ -2,12 +2,38 @@ Revision: cdd44d3907ec6b209f14c321b22973976fa475eb
 Patch-set: 1
 File: runtime/arch/arm/quick_entrypoints_arm.S
 
+901:99-901:104
+Fri Oct 09 02:07:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 054dc959_94beeaa1
+Bytes: 47
+We try to stay in 100 characters when possible.
+
+911:4-911:50
+Fri Oct 09 02:07:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8538d9b1_d03b22b8
+Bytes: 412
+We have avoided this pseudo instruction in the past.
+
+Is it actually buying something? Are we lucky and our assembly code is small enough that this is in range of the end of the assembly code (we do not declare any areas where the assembler could put a literal pool)? I think this is simply representable as a single mov instruction, and as such that would maybe be more expressive?
+
+(But I'll defer to Vladimir)
+
 924:20-924:64
 Fri Oct 09 01:44:39 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45426131_116ccc87
 Bytes: 47
 Is this necessary if the shift will round down?
+
+924:20-924:64
+Fri Oct 09 02:07:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45426131_116ccc87
+UUID: 451b415b_86a96c07
+Bytes: 101
+Then there needs to be a "preprocessor check" here that the numbers are OK (see the SAVE_... macros).
 
 926:4-926:21
 Fri Oct 09 01:44:39 2015 +0000
@@ -19,10 +45,32 @@ sub    r3, r3, #1
 instead of
 add    r3, r3, #ROSALLOC_BRACKET_QUANTUM_SIZE_MASK
 
+926:4-926:21
+Fri Oct 09 02:07:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eaf16251_43f61893
+UUID: eaf16251_03b250d3
+Bytes: 116
+Sounds reasonable, though this code is obviously more intention-revealing, so it should stay in a comment, at least.
+
+932:4-933:54
+Fri Oct 09 02:07:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8521b987_289b23e4
+Bytes: 4
+cbz?
+
 938:65-938:91
 Fri Oct 09 01:44:39 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 451b415b_c6f5243d
 Bytes: 155
 Is this necessary if we are going to overwrite with the class anyways? Maybe you could check the offsets at compile time and avoid the store if they match.
+
+938:10-938:13
+Fri Oct 09 02:07:32 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45426131_119e8cd3
+Bytes: 98
+r0 to make this independent? And if you use it below, you could try to schedule the loads earlier.
 

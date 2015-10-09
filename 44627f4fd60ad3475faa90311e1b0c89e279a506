@@ -122,6 +122,16 @@ UUID: e55355fb_93e51ec2
 Bytes: 76
 Doesn't make sense. It goes into the vector, which is mutable because of GC.
 
+80
+Fri Oct 09 01:34:13 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e55355fb_93e51ec2
+UUID: 0536a9c7_4cf5cfae
+Bytes: 135
+I was suggesting changing it to a "pointer-to-const" and not "const-pointer-to-something"
+
+So the GC can still manipulate it just fine.
+
 88
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -161,6 +171,18 @@ Bytes: 349
 There are many functions in the interpreter that do *not* follow this, so I feel I haven't violated anything. Especially the call-site of this doesn't follow the convention.
 
 I'll change the name, but I don't think the return type is valuable if the call site is written in a different way (as are a lot of bytecode parts that may or may not throw).
+
+92
+Fri Oct 09 01:34:13 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8538d9b1_50dad246
+UUID: 054dc959_54bd629f
+Bytes: 397
+Would slightly prefer being consistent with the "bool" over the "void" because the void doesn't tell us anything.
+
+If anything the existing interpreter functions that *do* return void should be flipped to bool in a potential cleanup.
+
+Also just consider the performance point of view, it's faster to unwind by checking the return value of a function then to check if there was a pending exception.
 
 104
 Thu Oct 08 17:50:08 2015 +0000

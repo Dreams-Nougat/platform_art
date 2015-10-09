@@ -2,6 +2,13 @@ Revision: cdd44d3907ec6b209f14c321b22973976fa475eb
 Patch-set: 1
 File: runtime/arch/arm/quick_entrypoints_arm.S
 
+896:5-896:19
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a27faf5_6af65793
+Bytes: 13
+hand-written?
+
 901:99-901:104
 Fri Oct 09 02:07:32 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,6 +26,21 @@ We have avoided this pseudo instruction in the past.
 Is it actually buying something? Are we lucky and our assembly code is small enough that this is in range of the end of the assembly code (we do not declare any areas where the assembler could put a literal pool)? I think this is simply representable as a single mov instruction, and as such that would maybe be more expressive?
 
 (But I'll defer to Vladimir)
+
+911:4-911:50
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8538d9b1_d03b22b8
+UUID: 4a0fce78_639cc264
+Bytes: 132
+A single bit can always be encoded as modified immediate. Just embed the constant in a TST immediate, instead of using TST register.
+
+915:0-916:58
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca557e3a_776470db
+Bytes: 77
+Nit: LDRD is viable (with a test that they are consecutive and within range).
 
 924:20-924:64
 Fri Oct 09 01:44:39 2015 +0000
@@ -53,12 +75,48 @@ UUID: eaf16251_03b250d3
 Bytes: 116
 Sounds reasonable, though this code is obviously more intention-revealing, so it should stay in a comment, at least.
 
+926:4-926:21
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eaf16251_03b250d3
+UUID: 2a27faf5_8a258bc6
+Bytes: 184
+Yes, let's move the "intention revealing" part to the comments and simply
+
+    sub    r3, r3, #1
+    lsr    r3, r3, #ROSALLOC_BRACKET_QUANTUM_SIZE_SHIFT
+
+instead of the 4 instructions.
+
+927:0-931:91
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cad81e3d_5ff6cb92
+Bytes: 521
+This can be replaced with
+
+    add r12, r9, r3, lsl #POINTER_SIZE_SHIFT
+    ldr r12, [r12, #THREAD_ROSALLOC_RUNS_OFFSET]
+    ldr r3, [r12, #(ROSALLOC_RUN_FREE_LIST_OFFSET + ROSALLOC_RUN_FREE_LIST_HEAD_OFFSET)]
+
+swapping the r3 and r12 results. The code size should be the same here (2+2+4+4 -> 4+4+4) but it can help below.
+
+There is some tension though between using CBZ right below, or having 16-bit LDR/STR instructions with low-register base further down. But it's worth it if you also take the STRD suggestion below.
+
 932:4-933:54
 Fri Oct 09 02:07:32 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8521b987_289b23e4
 Bytes: 4
 cbz?
+
+932:4-933:54
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8521b987_289b23e4
+UUID: aa1a0ab2_866bcade
+Bytes: 67
+Not with a high register (r12). But it could be with r3, see above.
 
 938:65-938:91
 Fri Oct 09 01:44:39 2015 +0000
@@ -73,4 +131,26 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45426131_119e8cd3
 Bytes: 98
 r0 to make this independent? And if you use it below, you could try to schedule the loads earlier.
+
+938:10-938:13
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45426131_119e8cd3
+UUID: 2a27faf5_0ac35b21
+Bytes: 41
++1 for replacing with compile-time check.
+
+943:0-944:45
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6afbb286_eca54b7c
+Bytes: 41
+str r12, [r1], #COMPRESSED_REFERENCE_SIZE
+
+949:4-949:90
+Fri Oct 09 15:43:03 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a154685_c5065a32
+Bytes: 122
+With better register allocation, this could be merged with the head store to STRD. (Store the Class* early to free up r2.)
 

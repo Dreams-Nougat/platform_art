@@ -9,3 +9,21 @@ UUID: 2a27faf5_aae96fe1
 Bytes: 51
 I guess that's when the class is unresolved? Calin?
 
+51:0-57:7
+Fri Oct 09 11:52:44 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_aae96fe1
+UUID: 8a154685_c5093a6a
+Bytes: 525
+Yes, we will BoundType a NewInstance if it's unresolved and used in an instanceof statement
+  
+Example:
+
+UnresolvedClasss c = new UnresolvedClass();
+
+if (c instanceof Clazz) {
+  // Here we will insert a BoundType for c.
+}
+
+Note (as an optimization) that BoundType should not influence is_singleton_ or  is_singleton_and_not_returned_. It's a synthetic use that's added for convenience and ease of design. You can just consider the transitive chain and go to the uses of the BoundType to see if you need to reset is_singleton.
+

@@ -41,6 +41,14 @@ Ok, do you think it would make sense to add that in a comment somewhere?
 
 Although it's pretty easy to get to now by just looking in the .cc file for LockCountData, so maybe people can just look at the source.
 
+2557
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_50ae8d0a
+UUID: 451b415b_462214bc
+Bytes: 134
+I'd rather not repeat the comment on the declaration, if possible. The "Check" in the name hopefully tells enough about the exception.
+
 File: runtime/stack.cc
 
 1088
@@ -90,6 +98,14 @@ UUID: 30592d74_158d23bb
 Bytes: 56
 nit: public functions should have comments, as per style
 
+78
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30592d74_158d23bb
+UUID: eaf16251_60bd9214
+Bytes: 4
+Done
+
 80
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -97,6 +113,14 @@ UUID: 504861a0_64c03bb3
 Bytes: 45
 can obj be const?
 DCHECK for self being null?
+
+80
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_64c03bb3
+UUID: e55355fb_93e51ec2
+Bytes: 76
+Doesn't make sense. It goes into the vector, which is mutable because of GC.
 
 88
 Thu Oct 08 17:50:08 2015 +0000
@@ -106,6 +130,14 @@ Bytes: 54
 nit: DCHECK arguments for not null?
 
 can obj be const?
+
+88
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_75cf3be0
+UUID: 0536a9c7_89eed92b
+Bytes: 123
+obj can be const (with a const-cast for error printing, which I think is OK), we handle null internally. self shouldn't be.
 
 92
 Thu Oct 08 17:50:08 2015 +0000
@@ -120,6 +152,16 @@ and it would return false and set the exception, otherwise return true.
 
 Also Nicolas has remarked in the past that the name/comment should mention if it throws.
 
+92
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 504861a0_84a8e7fb
+UUID: 8538d9b1_50dad246
+Bytes: 349
+There are many functions in the interpreter that do *not* follow this, so I feel I haven't violated anything. Especially the call-site of this doesn't follow the convention.
+
+I'll change the name, but I don't think the return type is valuable if the call site is written in a different way (as are a lot of bytecode parts that may or may not throw).
+
 104
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -127,12 +169,28 @@ UUID: 704d65ae_037e8d6d
 Bytes: 25
 should probably be Args&&
 
+104
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 704d65ae_037e8d6d
+UUID: e55355fb_b3ea228f
+Bytes: 4
+Done
+
 106
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5061411e_15bec73e
 Bytes: 27
 std::forward<Args>(args)...
+
+106
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_15bec73e
+UUID: 054dc959_540c827a
+Bytes: 4
+Done
 
 118
 Thu Oct 08 17:50:08 2015 +0000
@@ -156,6 +214,14 @@ Parent: 105c2963_0eba37aa
 UUID: d03c51f4_48226eef
 Bytes: 81
 Oh, I see it now. Perhaps it might be slightly better if it was here instead :) ?
+
+118
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d03c51f4_48226eef
+UUID: 8538d9b1_b02216ee
+Bytes: 4
+Done
 
 328
 Thu Oct 08 17:50:08 2015 +0000
@@ -184,6 +250,14 @@ Some people might disagree, in which case it should at least say "// Returns a n
 
 but my personal philosophy is why repeat something in a comment obvious from the signature? :)
 
+328
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30592d74_b0df25ea
+UUID: eaf16251_80a1b6ee
+Bytes: 4
+Done
+
 File: test/088-monitor-verification/src/Main.java
 
 72
@@ -210,4 +284,12 @@ Bytes: 268
 Oh, that was confusing to me because "managed" just usually means anything not native (i.e. any executed java code is managed code). Perhaps there is a terminology in Art I'm not familiar with yet.
 
 Alternatively, this could be "assertIsCompiled" to be less ambiguous.
+
+72
+Fri Oct 09 01:21:04 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5061411e_10bb754e
+UUID: a526bd9a_c9dff5e7
+Bytes: 57
+A follow-up maybe, this is shared between multiple tests.
 

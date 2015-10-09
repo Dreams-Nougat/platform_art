@@ -1,0 +1,28 @@
+Revision: cdd44d3907ec6b209f14c321b22973976fa475eb
+Patch-set: 1
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+924:20-924:64
+Fri Oct 09 01:44:39 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45426131_116ccc87
+Bytes: 47
+Is this necessary if the shift will round down?
+
+926:4-926:21
+Fri Oct 09 01:44:39 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eaf16251_43f61893
+Bytes: 126
+Instead of subtracting by one here, can you do
+sub    r3, r3, #1
+instead of
+add    r3, r3, #ROSALLOC_BRACKET_QUANTUM_SIZE_MASK
+
+938:65-938:91
+Fri Oct 09 01:44:39 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 451b415b_c6f5243d
+Bytes: 155
+Is this necessary if we are going to overwrite with the class anyways? Maybe you could check the offsets at compile time and avoid the store if they match.
+

@@ -44,6 +44,24 @@ UUID: 8a154685_65c7a674
 Bytes: 111
 What bothers me really is the alignment concerns. Why should allocation sites care about allocation alignments?
 
+203:0-211:93
+Fri Oct 09 17:53:41 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a154685_65c7a674
+UUID: e55355fb_d9c8a73d
+Bytes: 241
+Well, I can move it to LeakingAllocator, not a problem.
+
+-----
+
+In general though doing a 
+
+  new (some_ptr) T(...)
+
+the alignof(*some_ptr) should be at least as much as alignof(T)
+
+otherwise the in-place new is unsound (undefined behavior).
+
 247:8-247:65
 Wed Oct 07 08:56:03 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -86,4 +104,16 @@ init_lm = new () ArtLambdaMethod(
   ...)
 
 Why is it always preferable to align to the '('?
+
+247:8-247:65
+Fri Oct 09 17:53:41 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aadf6a22_fed7a11a
+UUID: 45426131_bfa49ffb
+Bytes: 402
+That's just the rule we have in the style guide, always align to the ( of the expression you are in if possible. 
+
+The indent 4 spaces to the right thing is only when one of the args can't fit cause maybe the parameter name or the function name is too long.
+
+Andreas wanted a consistent set of guidelines for how to indent and this provides a simple clear-cut "priority A,B,C" set of indentation rules.
 

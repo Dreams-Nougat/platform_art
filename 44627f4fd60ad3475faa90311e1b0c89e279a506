@@ -140,6 +140,22 @@ UUID: 8521b987_2be87ddb
 Bytes: 103
 The visitors are also free to modify the content of the objects. So I don't think that's right, either.
 
+80
+Fri Oct 09 18:03:34 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8521b987_2be87ddb
+UUID: 2ae8da64_688d7702
+Bytes: 501
+What do the visitors do other than move the pointer?
+
+I know in read barrier you can one of the color bits to mark it as moved.
+
+If those are the only two ways it can "mutate", it's still "logically const".
+
+I can see how that might be a larger change though, it's better to use non-const then to use const-cast, so this is probably perfectly fine to leave it like this in this CL (no change needed).
+
+In the long run it would be better if the GC visitor interfaces were const and non-const separated.
+
 88
 Thu Oct 08 17:50:08 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,3 +9,22 @@ UUID: 2a27faf5_0afb5baa
 Bytes: 47
 If it's null, how can the is outermost succeed?
 
+1306:0-1307:68
+Fri Oct 09 11:38:24 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_0afb5baa
+UUID: cad81e3d_5f4a4b93
+Bytes: 644
+It can't. Null can happen when compile unresolved classes (e.g. if the super class is unresolved).
+
+We have a lacking design here because:
+- technically we can't assume anything if we get back a null here
+- but because we don't inline we still know that this should return true.
+
+This creates an implicit assumption about how things work... so I preferred to eliminate it and return false.
+
+IsOutermostCompilingClass is only used for optimizing invokes if we are the referrer. We don't use that info anyway when we need access checks since we go to the runtime. 
+
+
+We can continue the discussion offline, as it will be more efficient I think :)
+

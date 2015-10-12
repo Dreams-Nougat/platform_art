@@ -9,12 +9,28 @@ UUID: bfb7aeb4_6d4d7135
 Bytes: 184
 The runtime can live without a compiler, so the comment is a bit weird and connects things a bit tighter than I'd like. But maybe I just misunderstand what you mean by "direct invoke."
 
+2278:0-2284:1
+Mon Oct 12 21:41:30 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfb7aeb4_6d4d7135
+UUID: ff32061b_c7a2f26d
+Bytes: 429
+The problem is the compiler will just put asm calls to the entrypoints even if they are not invocable. This works with abstract methods since they will have this bridge as their entrypoint which will throw the appropriate exception. The problem we have is that we create the conflict method by copying an interface method. The interface method might have code though so we need to make sure that we don't get a call to this code.
+
 5726:6-5726:80
 Mon Oct 12 21:04:55 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bfb7aeb4_6d26d187
 Bytes: 160
 This doesn't really help you. Once the verifier gets run, the methods will be marked preverified (this only forms a tri-state with the class' preverified flag).
+
+5726:6-5726:80
+Mon Oct 12 21:41:30 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfb7aeb4_6d26d187
+UUID: 1f30ba11_c89fa3d4
+Bytes: 184
+No. See class.cc we will only mark invocable methods as preverified. We need this because this is copied from an interface method which might have already been (correctly) preverified.
 
 File: test/966-default-conflict/build-src/iface2.java
 

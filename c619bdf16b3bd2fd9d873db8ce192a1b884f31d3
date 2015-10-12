@@ -1,0 +1,38 @@
+Revision: c619bdf16b3bd2fd9d873db8ce192a1b884f31d3
+Patch-set: 4
+File: compiler/optimizing/code_generator_arm64.cc
+
+2364:26-2364:58
+Mon Oct 12 10:54:28 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f4d3685_454ceab1
+Bytes: 273
+CSEL does not support immediates on ARM. VIXL provides some minor optimization to handle `0`, `1`, and `-1` using other instructions, but otherwise will synthesize the constant in a register.
+
+I suggest simply using `Location::RequiresRegister()` for now and adding a TODO.
+
+2380
+Mon Oct 12 10:54:28 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cad81e3d_df981be6
+Bytes: 140
+Comment: "we don't expect this because of the simplifier but it might happen" ?
+Also handle the other unlikely case `loc_true == loc_false`?
+
+2402:45-2402:65
+Mon Oct 12 10:54:28 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a149288_44a0aee5
+Bytes: 44
+`select->GetType()` should work.
+Same below.
+
+File: compiler/optimizing/common_arm64.h
+
+207:61-207:69
+Mon Oct 12 10:54:28 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a154685_85e46299
+Bytes: 54
+See comment in `LocationsBuilderARM64::VisitSelect()`.
+

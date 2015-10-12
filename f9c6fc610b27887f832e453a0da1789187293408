@@ -1,0 +1,32 @@
+Revision: f9c6fc610b27887f832e453a0da1789187293408
+Patch-set: 11
+File: runtime/oat_file.cc
+
+130:11-130:73
+Mon Oct 12 13:29:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a154685_05751256
+Bytes: 29
+This check is prone to races.
+
+File: runtime/oat_file_manager.cc
+
+98:0-108:3
+Mon Oct 12 13:29:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a154685_c5077ae5
+Bytes: 314
+This should be
+
+    DexFileAndClassPair(DexFileAndClassPair&& src) = default;
+    DexFileAndClassPair& operator=(DexFileAndClassPair&& src) = default;
+
+Btw., when you need to use the non-default, I recommend implementing the move assignment using the move constructor (and swap()) rather than the other way around.
+
+128:0-130:3
+Mon Oct 12 13:29:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cad81e3d_5f26cb5c
+Bytes: 62
+This leaves cached_descriptor_ but we still use it afterwards.
+

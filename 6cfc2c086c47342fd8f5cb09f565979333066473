@@ -42,6 +42,14 @@ UUID: bf3c0ef3_8558e6e7
 Bytes: 134
 This is visited concurrently. Does this need a store fence here after clearing? What if some thread sees a stale from-space ref in it?
 
+1028:2-1028:25
+Mon Oct 12 23:44:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bf3c0ef3_8558e6e7
+UUID: 1f30ba11_8b0ab5a3
+Bytes: 147
+Then that would trigger the read barrier and get handled correctly wouldn't it? Otherwise we would need a fence everywhere we assigned to a GCRoot.
+
 File: runtime/native/java_lang_Class.cc
 
 525:4-528:5

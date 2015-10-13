@@ -27,12 +27,34 @@ if (c instanceof Clazz) {
 
 Note (as an optimization) that BoundType should not influence is_singleton_ or  is_singleton_and_not_returned_. It's a synthetic use that's added for convenience and ease of design. You can just consider the transitive chain and go to the uses of the BoundType to see if you need to reset is_singleton.
 
+51:0-57:7
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a154685_c5093a6a
+UUID: 5fa8725b_98f0254f
+Bytes: 407
+The one case I was seeing was this piece of code in android.icu.util.Calendar android.icu.util.Calendar.createInstance(android.icu.util.ULocale)
+        case ETHIOPIC_AMETE_ALEM:
+            cal = new EthiopicCalendar(zone, locale);
+            ((EthiopicCalendar)cal).setAmeteAlemEra(true);
+            break;
+
+It's very rare. So I just set is_singleton_ to false instead of tracing the transitive closure.
+
 98:22-98:26
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aa1a0ab2_c6f022c2
 Bytes: 11
 reference_?
+
+98:22-98:26
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1a0ab2_c6f022c2
+UUID: 1f30ba11_c5378cc7
+Bytes: 4
+Done
 
 99:9-99:13
 Fri Oct 09 14:46:37 2015 +0000
@@ -41,12 +63,28 @@ UUID: 2a6d3aed_5a1ff5a2
 Bytes: 10
 position_?
 
+99:9-99:13
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a6d3aed_5a1ff5a2
+UUID: 1f30ba11_a53408c4
+Bytes: 4
+Done
+
 102:0-102:2
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a0fce78_e3da7243
 Bytes: 59
 DISALLOW_COPY_AND_ASSIGN (here and all other classes below)
+
+102:0-102:2
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a0fce78_e3da7243
+UUID: 1f30ba11_053214d6
+Bytes: 4
+Done
 
 114:15-115:48
 Fri Oct 09 14:46:37 2015 +0000
@@ -55,12 +93,28 @@ UUID: 2a6d3aed_fae60910
 Bytes: 17
 Nit: one per line
 
+114:15-115:48
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a6d3aed_fae60910
+UUID: dfb462b2_8b0771e8
+Bytes: 4
+Done
+
 136:7-136:22
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6afbb286_cc5a0f5b
 Bytes: 35
 Isn't that IsInstanceOrStaticField?
+
+136:7-136:22
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6afbb286_cc5a0f5b
+UUID: dfb462b2_6b26bd87
+Bytes: 72
+Yes it should be. I also noticed this method isn't used so I deleted it.
 
 174:57-174:85
 Fri Oct 09 14:46:37 2015 +0000
@@ -69,12 +123,30 @@ UUID: cad81e3d_1ff603c4
 Bytes: 22
 Maybe explain why too?
 
+174:57-174:85
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cad81e3d_1ff603c4
+UUID: 1f30ba11_25263886
+Bytes: 141
+Changed it to:
+// A single uint32_t word. Good for aliasing matrix of 8 heap locations.
+static constexpr uint32_t kInitialBitVectorSize = 32;
+
 198:0-198:24
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a27faf5_4a1ef3a4
 Bytes: 43
 Add DCHECK_EQ(i, ref_info->GetPosition()) ?
+
+198:0-198:24
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_4a1ef3a4
+UUID: bfb7aeb4_2a9e7f33
+Bytes: 22
+Good suggestion. Done.
 
 218:5-218:11
 Fri Oct 09 14:46:37 2015 +0000
@@ -83,12 +155,29 @@ UUID: cad81e3d_3ffbc7aa
 Bytes: 18
 method -> a method
 
+218:5-218:11
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cad81e3d_3ffbc7aa
+UUID: dfb462b2_f134dac4
+Bytes: 4
+Done
+
 258:0-259:60
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a6d3aed_9af34dcd
 Bytes: 69
 Add a comment why i doesn't go to the last and why j started a i + 1.
+
+258:0-259:60
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a6d3aed_9af34dcd
+UUID: df39c202_e38f2c27
+Bytes: 92
+Added this commment:
+// Record aliasing info between every pair of different heap locations.
 
 295:0-295:69
 Fri Oct 09 14:46:37 2015 +0000
@@ -97,12 +186,31 @@ UUID: 2a27faf5_8a0f4b6f
 Bytes: 49
 Add a comment of what index2 and what index2 are.
 
+295:0-295:69
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_8a0f4b6f
+UUID: df39c202_e3660c0f
+Bytes: 203
+Added this comment:
+  // `index1` and `index2` are indices in the array of collected heap locations.
+  // Returns the position in the bit vector that tracks whether the two heap
+  // locations may alias.
+
 302:19-302:22
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca557e3a_577a0cac
 Bytes: 8
 position
+
+302:19-302:22
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca557e3a_577a0cac
+UUID: ff32061b_04ce983d
+Bytes: 4
+Done
 
 309:55-310:44
 Fri Oct 09 14:46:37 2015 +0000
@@ -111,12 +219,28 @@ UUID: 2a27faf5_2a1f3fa4
 Bytes: 61
 This comment belongs to where you actually update the matrix.
 
+309:55-310:44
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_2a1f3fa4
+UUID: 3fa3be81_26d47878
+Bytes: 35
+Moved this statement to the caller.
+
 341:17-341:23
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a149288_2492d253
 Bytes: 12
 GetOrCreate?
+
+341:17-341:23
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a149288_2492d253
+UUID: 3fa3be81_09f5cd81
+Bytes: 4
+Done
 
 351:16-351:22
 Fri Oct 09 14:46:37 2015 +0000
@@ -125,12 +249,28 @@ UUID: 6afbb286_ac3ce3fe
 Bytes: 12
 GetOrCreate?
 
+351:16-351:22
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6afbb286_ac3ce3fe
+UUID: df39c202_e6bd7aef
+Bytes: 4
+Done
+
 363:0-367:45
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8a154685_05fb52aa
 Bytes: 52
 Why is that not set in the HeapLocation constructor?
+
+363:0-367:45
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a154685_05fb52aa
+UUID: 5fa8725b_c771e05c
+Bytes: 28
+Ok. Moved it to constructor.
 
 390:49-391:51
 Fri Oct 09 14:46:37 2015 +0000
@@ -139,12 +279,33 @@ UUID: 8a154685_45054a59
 Bytes: 46
 This does not seem to describe the line below.
 
+390:49-391:51
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a154685_45054a59
+UUID: bfb7aeb4_4dc50dc5
+Bytes: 529
+Moved all comments before if statement and rephrased to:
+    // A store of a value may be eliminated if all future loads for that value can be eliminated.
+    // For a value that's stored into a singleton field, the value will not be killed due
+    // to aliasing. However if the value is set in a block that doesn't post dominate the definition,
+    // the value may be killed due to merging later. Before we have post dominating info, we check
+    // if the store is in the same block as the definition just to be conservative.
+
 420:14-420:17
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca557e3a_976b04df
 Bytes: 6
 cannot
+
+420:14-420:17
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca557e3a_976b04df
+UUID: ff32061b_24791cf8
+Bytes: 4
+Done
 
 450:7-450:23
 Fri Oct 09 14:46:37 2015 +0000
@@ -153,12 +314,28 @@ UUID: 2a27faf5_ea0c077c
 Bytes: 18
 ops -> operations.
 
+450:7-450:23
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_ea0c077c
+UUID: bf3c0ef3_02f16c51
+Bytes: 4
+Done
+
 530:0-530:47
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8a154685_a5e99ee1
 Bytes: 35
 Add DCHECK(!graph->IsDebuggable()).
+
+530:0-530:47
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a154685_a5e99ee1
+UUID: 1f30ba11_e81c2780
+Bytes: 4
+Done
 
 558:21-559:27
 Fri Oct 09 14:46:37 2015 +0000
@@ -176,12 +353,30 @@ if () {
 
 // use a[0] <---- going to be replaced with 2?
 
+558:21-559:27
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_0a451b84
+UUID: 7fa9b65d_cb55698d
+Bytes: 47
+Yes. Do you want the example to be in comments?
+
 611:0-611:64
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca557e3a_f76880e3
 Bytes: 122
 Mention that this is because of I/F and D/L array aliasing. Could you also mention the bug (I think there is one already).
+
+611:0-611:64
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca557e3a_f76880e3
+UUID: dfb462b2_f1229ab4
+Bytes: 119
+Changed it to:
+        // Keep the load due to possible I/F, J/D array aliasing.
+        // See b/22538329 for details.
 
 628:0-631:54
 Fri Oct 09 14:46:37 2015 +0000
@@ -196,12 +391,30 @@ if (heap_value == kDefaultHeapValue && GetDefaultValue(value->GetType()) == valu
 
 return false.
 
+628:0-631:54
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a0fce78_c3f016c2
+UUID: dfb462b2_51b926b7
+Bytes: 4
+Done
+
 669:0-674:7
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a149288_4470ae9b
 Bytes: 25
 This does not look right.
+
+669:0-674:7
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a149288_4470ae9b
+UUID: dfb462b2_d1ac3675
+Bytes: 225
+Strange, thought I corrected that already. Changed the second redundant_store to false.
+
+Also since this isn't array element, I/F or J/D aliasing cannot really happen anyway? Maybe I should just delete the type checking here?
 
 683:11-683:33
 Fri Oct 09 14:46:37 2015 +0000
@@ -210,12 +423,36 @@ UUID: 6a149288_a48402d6
 Bytes: 35
 Please add a comment for this case.
 
+683:11-683:33
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a149288_a48402d6
+UUID: 3fa3be81_8ccd4b43
+Bytes: 138
+Changed to:
+      if (heap_values[i] == value) { 
+        // Same value should be kept even if aliasing happens.
+        continue;
+      }
+
 684:0-684:48
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a27faf5_6ac8173a
 Bytes: 40
 I'd drop this and handle it in MayAlias?
+
+684:0-684:48
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_6ac8173a
+UUID: 5fa8725b_4aebb7a7
+Bytes: 303
+MayAlias() shouldn't be dependent on the value. I did the check here because the value is already unknown, so there is no need for aliasing check. Changed this to:
+      if (heap_values[i] == kUnknownHeapValue) {
+        // Value is already unknown, no need for aliasing check.
+        continue;
+      }
 
 727:21-728:69
 Fri Oct 09 14:46:37 2015 +0000
@@ -224,10 +461,26 @@ UUID: 6a149288_247bf2b3
 Bytes: 18
 Nit: one per line.
 
+727:21-728:69
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a149288_247bf2b3
+UUID: df39c202_e9eb8dce
+Bytes: 4
+Done
+
 735:21-736:74
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a0fce78_83e61e0f
 Bytes: 17
 Nit: one per line
+
+735:21-736:74
+Tue Oct 13 17:46:14 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a0fce78_83e61e0f
+UUID: bf3c0ef3_657b22af
+Bytes: 4
+Done
 

@@ -2,12 +2,33 @@ Revision: 18cd75c8415f2e98012cc7108129f8200e8854d8
 Patch-set: 3
 File: compiler/optimizing/code_generator_arm.cc
 
+3439:8-3439:51
+Tue Oct 13 15:08:52 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a27faf5_ad4d095a
+Bytes: 105
+I think an if will be easier to read.
+
+if (Primitive::Is64BiType(...)) {
+ return ..
+} else {
+ return...
+}
+
 4712:90-4712:95
 Tue Oct 13 09:03:48 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f4d3685_655da610
 Bytes: 142
 What about having a `InstructionKindToOpcode()` helper used within `HandleBitwiseOperation` to avoid having to pass an explicit argument here?
+
+4712:90-4712:95
+Tue Oct 13 15:08:52 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f4d3685_655da610
+UUID: ff13e649_fce4a503
+Bytes: 36
+This looks shorter and better to me.
 
 4721:2-4721:57
 Mon Oct 12 19:50:25 2015 +0000
@@ -25,12 +46,28 @@ Bytes: 160
 I think relying on GVN is good.
 You can also avoid the manual handling by locally calling `OrderInputsWithConstatOnTheRight()` if the instructon is commutative.
 
+4721:2-4721:57
+Tue Oct 13 15:08:52 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a27faf5_0dfb75aa
+UUID: cad81e3d_62f77846
+Bytes: 48
+sgtm as long as you add a comment about it here.
+
 4727
 Tue Oct 13 09:03:48 2015 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3fa65e28_8bcead90
 Bytes: 149
 If this type of optimization is going to be applied to other IRs you may want to consider a helper like arm64's `ARM64EncodableConstantOrRegister()`.
+
+4727
+Tue Oct 13 15:08:52 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3fa65e28_8bcead90
+UUID: ff13e649_1c007949
+Bytes: 56
+I'd defer this until we actually apply it for other IRs.
 
 File: compiler/optimizing/code_generator_arm.h
 
@@ -40,4 +77,12 @@ Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aadf6a22_9e7dbdec
 Bytes: 90
 Use the same name on arm32 and arm64? (see common_arm64.h:CanEncodeConstantAsImmediate()`)
+
+145
+Tue Oct 13 15:08:52 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aadf6a22_9e7dbdec
+UUID: 3fa65e28_eb0bf137
+Bytes: 50
+sounds like a good idea to have consistent naming.
 

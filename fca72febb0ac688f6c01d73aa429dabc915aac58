@@ -34,6 +34,18 @@ UUID: 9fae6a64_4f48a526
 Bytes: 159
 Loads of the immediate could be avoided if the immediate's value is in the right range (very similarly to the above cases for signed comparison). Otherwise OK.
 
+1859:0-1885:12
+Tue Oct 13 18:10:09 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fae6a64_4f48a526
+UUID: 3fa3be81_7d33d72f
+Bytes: 370
+Okay, I have added some optimization in that direction, while being careful with incorrect sign extension, as you suggested offline.
+
+Also, if I read all the code correctly, *all* conditions at this point for MIPS64 are assumed to be int (not long), correct? We may want to generalize that in the future.
+
+For now I propose to add a more explicit CHECK fail on the type.
+
 File: compiler/optimizing/instruction_simplifier.cc
 
 618:8-618:14

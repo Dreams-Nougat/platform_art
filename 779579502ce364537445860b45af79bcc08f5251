@@ -31,6 +31,14 @@ This is followed by a section on "Address dependencies and order", which clearly
 
 I believe this rule has been there since the beginning of time.  And it's required to make Java final fields work.
 
+909:0-918:21
+Tue Oct 13 20:05:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dfb462b2_4fd41e79
+UUID: 7fa9b65d_8ed8dae0
+Bytes: 449
+Another way to reason about this: The access flag had been set before the class status is set to initialized. The class status store is a store release (StoreSequentiallyConsistent) and there are multiple status stores as the status changes through loaded->resolved->initialized. If we see the status initialized in this status load here, we shouldn't see the stale access flags value in the second load that won't be reordered above the first load.
+
 960:65-960:73
 Tue Oct 13 18:00:49 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,4 +49,12 @@ I think the assertion should be right here:
     #if ROSALLOC_SLOT_NEXT_OFFSET != MIRROR_OBJECT_CLASS_OFFSET
     #error "Class pointer needs to overwrite next pointer."
     #endif
+
+960:65-960:73
+Tue Oct 13 20:05:38 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aadf6a22_a14df859
+UUID: df39c202_ba86e1db
+Bytes: 4
+Done
 

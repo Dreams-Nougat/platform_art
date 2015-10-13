@@ -1,6 +1,45 @@
 Revision: 18656fefc7e68e2549a8fa93455074d359d1efa8
 Patch-set: 5
+File: runtime/native/dalvik_system_DexFile.cc
+
+45:12-45:23
+Tue Oct 13 00:10:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfb7aeb4_1bf50b82
+Bytes: 121
+The old code checked if this was null at the call sites, but we don't do that there or here anymore. Is this as intended?
+
+77:63-77:65
+Tue Oct 13 00:10:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dfb462b2_bc05d928
+Bytes: 25
+1u -> kDexFileIndexStart?
+
+236:60-236:68
+Tue Oct 13 00:10:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3fa3be81_b78090bf
+Bytes: 30
+Does this deallocate oat_file?
+
+File: runtime/native/dalvik_system_DexFile.h
+
+25:0-26:40
+Tue Oct 13 00:10:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfb7aeb4_7bf687c1
+Bytes: 38
+Can you add comment on what these are?
+
 File: runtime/oat_file_manager.cc
+
+60:10-60:17
+Tue Oct 13 00:10:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff32061b_4a48a726
+Bytes: 20
+Why release it here?
 
 134:4-134:33
 Mon Oct 12 20:09:39 2015 +0000
@@ -8,4 +47,13 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f4d3685_c59fba2b
 Bytes: 201
 Aren't you getting segmentation faults with this when you try to push the pair to the priority queue in AddNext() and hit the operator<() above? Maybe you didn't test with kDuplicateClassesCheck==true?
+
+File: test/141-class-unload/src/Main.java
+
+57:78-57:81
+Tue Oct 13 00:10:23 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dfb462b2_3ca489aa
+Bytes: 60
+I think we could do /proc/self/maps without getting the pid.
 

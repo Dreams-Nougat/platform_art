@@ -2,10 +2,42 @@ Revision: 18cd75c8415f2e98012cc7108129f8200e8854d8
 Patch-set: 3
 File: compiler/optimizing/code_generator_arm.cc
 
+4712:90-4712:95
+Tue Oct 13 09:03:48 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f4d3685_655da610
+Bytes: 142
+What about having a `InstructionKindToOpcode()` helper used within `HandleBitwiseOperation` to avoid having to pass an explicit argument here?
+
 4721:2-4721:57
 Mon Oct 12 19:50:25 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff13e649_594de334
 Bytes: 136
 Should we rely on GVN calling HBinaryOperation::OrderInputs()? (And check only InputAt(1) and avoid the extra index calculations below.)
+
+4721:2-4721:57
+Tue Oct 13 09:03:48 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff13e649_594de334
+UUID: 2a27faf5_0dfb75aa
+Bytes: 160
+I think relying on GVN is good.
+You can also avoid the manual handling by locally calling `OrderInputsWithConstatOnTheRight()` if the instructon is commutative.
+
+4727
+Tue Oct 13 09:03:48 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3fa65e28_8bcead90
+Bytes: 149
+If this type of optimization is going to be applied to other IRs you may want to consider a helper like arm64's `ARM64EncodableConstantOrRegister()`.
+
+File: compiler/optimizing/code_generator_arm.h
+
+145
+Tue Oct 13 09:03:48 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aadf6a22_9e7dbdec
+Bytes: 90
+Use the same name on arm32 and arm64? (see common_arm64.h:CanEncodeConstantAsImmediate()`)
 

@@ -1,0 +1,22 @@
+Revision: 779579502ce364537445860b45af79bcc08f5251
+Patch-set: 3
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+909:0-918:21
+Tue Oct 13 18:00:49 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff13e649_1c7bd9af
+Bytes: 212
+This will prevent reordering of memory accesses from the current CPU. But is this really enough? Or, could the CPU still use stale flags from its own L1 data cache after fetching a new status from the actual RAM?
+
+960:65-960:73
+Tue Oct 13 18:00:49 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aadf6a22_a14df859
+Bytes: 179
+I think the assertion should be right here:
+
+    #if ROSALLOC_SLOT_NEXT_OFFSET != MIRROR_OBJECT_CLASS_OFFSET
+    #error "Class pointer needs to overwrite next pointer."
+    #endif
+

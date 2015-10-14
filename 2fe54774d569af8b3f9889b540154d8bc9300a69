@@ -141,6 +141,15 @@ UUID: ff8686d4_81799af9
 Bytes: 60
 But I'd like to see in the comment why 32 and 8 are related.
 
+174:57-174:85
+Wed Oct 14 13:29:08 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff8686d4_81799af9
+UUID: 7f2b7617_3ed5cd18
+Bytes: 122
+I changed the comment to:
+// A single uint32_t word. That's enough bits for pair-wise aliasing matrix of 8 heap locations.
+
 198:0-198:24
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -377,6 +386,14 @@ UUID: 7f4d3685_250a0ea6
 Bytes: 14
 Yes please :-)
 
+558:21-559:27
+Wed Oct 14 13:29:08 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f4d3685_250a0ea6
+UUID: 5fa8725b_de50c5f5
+Bytes: 4
+Done
+
 611:0-611:64
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -439,6 +456,30 @@ Parent: dfb462b2_d1ac3675
 UUID: 6a149288_4a971711
 Bytes: 66
 yeah i/F and J/D do not affect fields. So removing the check sgtm.
+
+669:0-674:7
+Wed Oct 14 13:29:08 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a149288_4a971711
+UUID: 9fae6a64_dbdd3746
+Bytes: 967
+I noticed there is also possibility that value is a constant int 1, but the field is a boolean. I changed to this code:
+      if (value->GetType() != type) {
+        // I/F, J/D aliasing should not happen for fields.
+        DCHECK(Primitive::IsIntegralType(value->GetType()));
+        DCHECK(!Primitive::Is64BitType(value->GetType()));
+        DCHECK(Primitive::IsIntegralType(type));
+        DCHECK(!Primitive::Is64BitType(type));
+        // Convert the type so that the future load will see the right type and can be eliminated.
+        HTypeConversion* type_conversion = new (GetGraph()->GetArena()) HTypeConversion(
+            type, value, instruction->GetDexPc());
+        instruction->GetBlock()->InsertInstructionBefore(type_conversion, instruction);
+        instruction->ReplaceInput(type_conversion, 1);
+        value = type_conversion;
+      }
+      redundant_store = true;
+
+Does it look ok? Is the added type conversion going to be eliminated by codegen?
 
 683:11-683:33
 Fri Oct 09 14:46:37 2015 +0000

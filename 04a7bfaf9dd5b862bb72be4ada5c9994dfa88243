@@ -27,6 +27,18 @@ I assumed so, but it was my only guess why there's still an AND with 0 or 0xFFFF
 
 (Or is this some lower opt mode thing for debuggability? In that case it still seems better to be explicit and replace the HIR with the HIntConstant or whatever)
 
+4984:2-4993:3
+Wed Oct 14 10:18:11 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f30ba11_091cea34
+UUID: 2a27faf5_2da119ed
+Bytes: 253
+Good point Andreas.
+
+Actually constant folding handles the 0 case. We should add 0xffffffff case as well and remove this.
+
+The only question is if other transformations between last fold and codegen can introduce this; which I don't think it's the case.
+
 5004:2-5013:3
 Tue Oct 13 21:38:50 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

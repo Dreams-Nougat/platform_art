@@ -20,6 +20,14 @@ Can we please const-ify the new methods in this file? Just make the artmethod mu
 
 Please, the non-constness is a scourge that needs to be stopped.
 
+0
+Wed Oct 14 08:50:01 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f30ba11_1cb70dc0
+UUID: 9cf118a5_ceea03cb
+Bytes: 41
+This CL basically just moved code around.
+
 29
 Tue Oct 13 17:17:39 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,12 +35,28 @@ UUID: 9fae6a64_da0d350c
 Bytes: 68
 Any ideas on how I might be able to use this new class with lambdas?
 
+29
+Wed Oct 14 08:50:01 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fae6a64_da0d350c
+UUID: 9f290a88_b1051a52
+Bytes: 127
+It's currently just a wrapper for better abstraction on code. Not sure how this interacts with lambdas but let's chat about it.
+
 41
 Tue Oct 13 17:17:39 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7f2b7617_98faf9a2
 Bytes: 53
 style nits: Public methods ought to have comments :).
+
+41
+Wed Oct 14 08:50:01 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f2b7617_98faf9a2
+UUID: 2a27faf5_8d55a588
+Bytes: 50
+Code was just moved. We can "decorate" it later :)
 
 File: runtime/art_method.h
 
@@ -61,6 +85,14 @@ UUID: cad81e3d_02a30c77
 Bytes: 58
 This is used only in the LOG(INFO). Can you move it there?
 
+961:8-961:40
+Wed Oct 14 08:50:01 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cad81e3d_02a30c77
+UUID: 9f290a88_91021e46
+Bytes: 26
+Will do in a follow-up cl.
+
 File: runtime/utils.h
 
 225:41-225:72
@@ -70,10 +102,26 @@ UUID: ca557e3a_ddbe3beb
 Bytes: 101
 Why do you need this? AFAICT, you always call this with the current_code derived from current_method.
 
+225:41-225:72
+Wed Oct 14 08:50:01 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca557e3a_ddbe3beb
+UUID: 9cf118a5_2e1907c4
+Bytes: 153
+The plan is to do it the other way around: use the ArtCode to derive the ArtMethod, but I agree my intentions got lost by needing both. I'll clean it up.
+
 314
 Tue Oct 13 17:17:39 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9fae6a64_fa11111f
 Bytes: 55
 nit: magic constants? comments, named constants please?
+
+314
+Wed Oct 14 08:50:01 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fae6a64_fa11111f
+UUID: 7f4d3685_e5b9961d
+Bytes: 50
+Code was moved. I agree that magic constants suck.
 

@@ -1,0 +1,46 @@
+Revision: f80a0175ce14fe35393314dc4da2687f979de597
+Patch-set: 14
+File: compiler/optimizing/code_generator_x86.cc
+
+5709:0-5714:62
+Wed Oct 14 10:54:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aadf6a22_e1238075
+Bytes: 468
+(Optional) If you change the table to contain offsets from the constant area (rather than the table itself), you can rewrite this as
+
+    __ movl(base_reg, Address(constant_area, value_reg, TIMES_4, kDummy32BitOffset, <fixup>);
+    __ add(base_reg, constant_area);
+
+and you will not have any overlap between temp_reg and base_reg, so you can use just a single temporary. This would require a new constructor for the Address, taking all the scaling info plus the fixup.
+
+5840:26-5840:28
+Wed Oct 14 10:54:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a149288_8ae46f99
+Bytes: 28
+Nit: static_cast<size_t>(-1)
+
+5912:0-5937:2
+Wed Oct 14 10:54:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aadf6a22_e18d40bf
+Bytes: 15
+Unused? Remove.
+
+5941
+Wed Oct 14 10:54:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ff8686d4_c4eb30cf
+Bytes: 14
+Line too long.
+
+File: compiler/utils/x86/assembler_x86.h
+
+266:51-267:50
+Wed Oct 14 10:54:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f4d3685_e8b60b14
+Bytes: 199
+You don't fully enforce this. Values added with AddUniqueInt32() are not combined with previous values but subsequent values added with AddInt32() afterwards could combine with the the unique values.
+

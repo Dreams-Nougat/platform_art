@@ -17,3 +17,13 @@ UUID: bfb7aeb4_3f3eb2a8
 Bytes: 165
 HasBeenRecursivelyInitialized just reads a bit from the class object. It cannot cause GC. As to why its here its because it was here previously and I didn't move it.
 
+3624:0-3624:47
+Wed Oct 14 22:07:38 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bfb7aeb4_3f3eb2a8
+UUID: f913064a_79a1c7ce
+Bytes: 428
+Sure, it reads a bit. But in those cases, I prefer better be safe than sorry and assign the handle anyway. Also, it feels odd to get this dangling mirror::Class line 2621 and then put it in a handler in a branch.
+
+I haven't authored any class linker code anyway, but a consistent story on when and why things are in a handle really helps. Igor, that's also something you could consider adding to the style (and semantic?) guide.
+

@@ -39,6 +39,14 @@ UUID: 7fa9b65d_8ed8dae0
 Bytes: 449
 Another way to reason about this: The access flag had been set before the class status is set to initialized. The class status store is a store release (StoreSequentiallyConsistent) and there are multiple status stores as the status changes through loaded->resolved->initialized. If we see the status initialized in this status load here, we shouldn't see the stale access flags value in the second load that won't be reordered above the first load.
 
+909:0-918:21
+Wed Oct 14 10:31:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7fa9b65d_8ed8dae0
+UUID: ff8686d4_44564043
+Bytes: 167
+I'll take the ARMv8 manual answer as satisfactory. (I'm not taking the reasoning about StoreSequentiallyConsistent because we're not doing LoadSequentiallyConsistent.)
+
 960:65-960:73
 Tue Oct 13 18:00:49 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

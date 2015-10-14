@@ -29,6 +29,22 @@ I mean this:
 
 That should work, right? IMHO that looks better than the static_cast.
 
+3493:29-3493:56
+Wed Oct 14 18:24:40 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f2b7617_84fcd06c
+UUID: 9fae6a64_70953d3f
+Bytes: 516
+Nope:
+    art/runtime/class_linker.cc:3493:20: error: no matching member function for call to 'NewHandle'
+              hs_iface.NewHandle(nullptr));
+              ~~~~~~~~~^~~~~~~~~
+    art/runtime/handle_scope.h:153:34: note: candidate template ignored: could not match 'T *' against 'nullptr_t'
+  ALWAYS_INLINE MutableHandle<T> NewHandle(T* object) SHARED_REQUIRES(Locks::mutator_lock_);
+                                     ^
+
+I think it has to do with the way that nullptr interacts with templates or something.
+
 3499:39-3499:43
 Wed Oct 14 18:16:04 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>

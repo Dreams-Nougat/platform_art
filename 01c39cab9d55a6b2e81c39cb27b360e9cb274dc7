@@ -1,0 +1,31 @@
+Revision: 01c39cab9d55a6b2e81c39cb27b360e9cb274dc7
+Patch-set: 4
+File: test/115-native-bridge/nativebridge.cc
+
+423:32-423:37
+Thu Oct 15 15:58:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39759eb9_9381fcc7
+Bytes: 16
+NSIG, not _NSIG.
+
+424:54-424:105
+Thu Oct 15 15:58:59 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b90d0e2e_b7ee4872
+Bytes: 332
+For the sigrt part I was thinking of:
+
+is_valid_rt_sig = (signum >= 32) && (signum >= SIGRTMIN) && (signum <= SIGRTMAX) 
+
+
+SIGRTMIN will already be adjusted to the first valid value.
+
+So the condition would be:
+
+bool can_be_block = ((signum != SIGKILL) && (signum != SIGSTOP)) || is_valid_rt_sig;
+
+if (!can_be_block) {
+  continue;
+}
+

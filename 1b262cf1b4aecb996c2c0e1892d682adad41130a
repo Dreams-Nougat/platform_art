@@ -1,0 +1,111 @@
+Revision: 1b262cf1b4aecb996c2c0e1892d682adad41130a
+Patch-set: 7
+File: runtime/class_linker.cc
+
+2791
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1959ba73_c3e65c0c
+Bytes: 22
+NULL dcheck arguments?
+
+2799
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ae8a64_40e152ab
+Bytes: 225
+It seems like it might be more readable and have less indentation if this was ?
+
+  if (supertype->IsCompileTimeVerified()) {
+    return true;
+  }
+
+and it could have a LIKELY/UNLIKELY in there to make it more clear.
+
+Thoughts?
+
+2800:25-2800:26
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f12aa5_f7699273
+Bytes: 21
+nit: prefer = over ()
+
+2807
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9943ea80_6d02e156
+Bytes: 22
+When does this happen?
+
+2811
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f12aa5_b7ba6a45
+Bytes: 83
+Doesn't this need to set the "suppressed" exception, instead of the cause?
+
++agampe
+
+2820
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 996cca16_1feeefb8
+Bytes: 60
+or at least the "else" could be dropped if 2799 stays as-is?
+
+2875
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39611e20_39a4a7f7
+Bytes: 91
+This seems like brand new code, perhaps we can move to a separate function for readability?
+
+2903
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d952c250_c13db888
+Bytes: 128
+I'm confused, can this assign multiple values, overwriting the previous supertype? In which case what is the correct-most thing?
+
+File: runtime/class_linker.h
+
+543:70-543:79
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d952c250_01217069
+Bytes: 53
+so it returns true if there's a soft failure as well?
+
+548
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f12aa5_976c8e85
+Bytes: 36
+nit: alphabetically sort annotations
+
+File: test/965-default-verify/build
+
+23
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ae8a64_c07ea268
+Bytes: 20
+mkdir -p src classes
+
+26
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ae8a64_407392a3
+Bytes: 126
+Be careful when using rm, it can delete things unintentionally..
+
+  [[ -f classes/Statics.class ]] && rm classes/Statics.class
+
+31
+Thu Oct 15 23:19:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9bdc694_15e2b787
+Bytes: 138
+Would you mind refactoring this? We are for sure going to have to change this to at least 24 in every file because 23 has already shipped.
+

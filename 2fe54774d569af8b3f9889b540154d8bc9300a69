@@ -489,6 +489,26 @@ UUID: 6a149288_ca95c7ad
 Bytes: 64
 Hmmm, maybe best to be conservative and follow-up in another CL?
 
+669:0-674:7
+Thu Oct 15 08:31:28 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a149288_ca95c7ad
+UUID: 99292a88_ce3c83fc
+Bytes: 632
+I'll do a follow-up. Added some DCHECK and a TODO.
+      if (value->GetType() != type) {
+        // I/F, J/D aliasing should not happen for fields.
+        DCHECK(Primitive::IsIntegralType(value->GetType()));
+        DCHECK(!Primitive::Is64BitType(value->GetType()));
+        DCHECK(Primitive::IsIntegralType(type));
+        DCHECK(!Primitive::Is64BitType(type));
+        // Keep the store since the corresponding load isn't eliminated due to different types.
+        // TODO: handle the different int types so that we can eliminate this store.
+        redundant_store = false;
+      } else {
+        redundant_store = true;
+      }
+
 683:11-683:33
 Fri Oct 09 14:46:37 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -1,0 +1,29 @@
+Revision: f171e8e2d9f1e4004683e8151f72ababcc39697b
+Patch-set: 4
+File: runtime/base/hash_set.h
+
+141
+Thu Oct 15 23:39:30 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39611e20_3cc81588
+Bytes: 166
+This needs to be marked explicit, otherwise a single double will make a HashSet 
+
+  HashSet<K,V> x = 5.0; 
+  // same as:
+  HashSet<K,V> x(5.0, kDefaultMaxLoadFactor);
+
+151
+Thu Oct 15 23:39:30 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99ae8a64_80618a90
+Bytes: 209
+That being said it's probably "cleaner" to add a second constructor with both arguments mandatory (why would anyone only want to set one of them?), and forward your original constructor to the new constructor.
+
+476
+Thu Oct 15 23:39:30 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f9bdc694_d5665fa1
+Bytes: 74
+Probably comparing against 0 and 1.0 from previous PS is better than this.
+

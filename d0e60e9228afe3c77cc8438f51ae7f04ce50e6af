@@ -1,0 +1,11 @@
+Revision: d0e60e9228afe3c77cc8438f51ae7f04ce50e6af
+Patch-set: 1
+File: runtime/base/hash_set.h
+
+476:8-476:38
+Thu Oct 15 19:32:57 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d90ac213_78ae610b
+Bytes: 284
+I don't want to shrink the HashSet. And it doesn't make any sense to expand the HashSet if it's empty because of low load factor since the load factor will remain 0. It would be absurd to repeatedly reallocate the storage if we call SetLoadFactor() repeatedly with the same arguments.
+

@@ -1,5 +1,14 @@
 Revision: 09d0943f5efe92c1f3a6b9dbdf255adb0f960a22
 Patch-set: 7
+File: compiler/oat_writer.h
+
+284
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39611e20_3923077a
+Bytes: 78
+Would it be possible to add a comment here, just like on 274, about ownership?
+
 File: runtime/class_linker.cc
 
 1209:4-1209:14
@@ -16,4 +25,62 @@ Parent: 99ae8a64_06705a06
 UUID: d90ac213_b89bd9e4
 Bytes: 4
 Yes.
+
+1209:4-1209:14
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90ac213_b89bd9e4
+UUID: 99ae8a64_f502828a
+Bytes: 223
+Why does it need a const_cast ?
+
+This seems gross, either the dex file is mutable or it's not. If it's mutable then DexFile could have a non-const getter for the dex file.
+
+If it's immutable then we shouldn't be writing it.
+
+File: runtime/oat.cc
+
+163:56-163:67
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9550e3b_ddae3bd2
+Bytes: 181
+Was it warning here? That shouldn't really be necessary because InstructionSet fits into a char and va_arg functions automatically promote anything smaller than an int, into an int.
+
+File: runtime/oat_file.cc
+
+524:72-524:75
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1927faf5_30769007
+Bytes: 25
+size_t is %zu and not %zd
+
+525
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9550e3b_dd891b67
+Bytes: 56
+style nit: 4 space indentation when the expression wraps
+
+526
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1927faf5_f08cf878
+Bytes: 56
+style nits: one arg per line if they don't fit in 1 line
+
+527
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1959ba73_80f57af2
+Bytes: 16
+nit: line length
+
+559:85-559:87
+Thu Oct 15 22:28:14 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9550e3b_3d765707
+Bytes: 2
+zu
 

@@ -1,0 +1,43 @@
+Revision: bd9454aaf16bd831fbae5b6ea4a55be0d4ac7ed4
+Patch-set: 5
+File: runtime/class_linker.cc
+
+2824:0-2828:1
+Thu Oct 15 04:20:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfb7aeb4_d58097c0
+Bytes: 385
+Personally I think this isn't worth a standalone function (especially for only two call-sites). Other opinions?
+
+If you do want to keep this abstraction, name it something more expressive for the intent: CountsAsVerified, or IsVerified, for example, and put a descriptive comment on. I can read the code fine, thank you very much :-), but why do you factor out a simple disjunction...?
+
+2880:2-2880:79
+Thu Oct 15 04:20:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7f2b7617_ea0f8bb5
+Bytes: 63
+Put a description here that describes the quad-state this is...
+
+2886:35-2886:56
+Thu Oct 15 04:20:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5fa8725b_04e4cb8f
+Bytes: 183
+Please add a comment here describing why you chose not to make this symmetric to superclasses.
+
+(To be clear, I think it's a perfectly valid choice from my understanding of the spec.)
+
+2896:27-2896:48
+Thu Oct 15 04:20:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9fae6a64_c1eea1e1
+Bytes: 69
+iface cannot be null here, so please just do the verified check here.
+
+2897:14-2897:20
+Thu Oct 15 04:20:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9fae6a64_e1eb9dce
+Bytes: 37
+Be explicit that this is a soft-fail.
+

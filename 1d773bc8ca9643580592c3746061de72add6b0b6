@@ -44,6 +44,16 @@ Doesn't the elf file have knowledge of what regions are writable or not (is it d
 
 We could then have a const and non-const version, the non-const version can DCHECK that the region is writable.
 
+391
+Fri Oct 16 18:16:30 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99020a8c_666ace1b
+UUID: 79d47637_ad6f7d2a
+Bytes: 330
+It's the segment that says which (mapped or created) part is writable, so you'll have to find the segment the symbol is in.
+
+I don't think we should add additional complexity that a normal linker doesn't provide. This is the fallback path, and we already have to trust the linker in the mainline path (where we have to use dlsym).
+
 397
 Fri Oct 16 17:42:31 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

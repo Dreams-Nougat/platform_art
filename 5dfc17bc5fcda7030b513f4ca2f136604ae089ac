@@ -17,6 +17,16 @@ UUID: 1959ba73_c3b77c25
 Bytes: 51
 no reason, other than that I never see us use that?
 
+78:52-78:64
+Fri Oct 16 17:30:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1959ba73_c3b77c25
+UUID: 99d92a72_0e1e8b2c
+Bytes: 227
+Const-correctness should be followed, https://google-styleguide.googlecode.com/svn/trunk/cppguide.html#Use_of_const
+
+   If a function does not modify an argument passed by reference or by pointer, that argument should be const.
+
 106
 Thu Oct 15 23:44:22 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -50,6 +60,24 @@ Bytes: 229
 well, the reason for this wrapper method is that i can reuse code without exposing all the internals to the public API
 
 adding tons of /**/ on this line does not really add much value I feel, since you can read below what it does
+
+107
+Fri Oct 16 17:30:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f12aa5_a26ce684
+UUID: 79d47637_0dec5178
+Bytes: 791
+Well that's just the style that google has always recommended (we're just more strict about the word 'consider').
+
+https://google-styleguide.googlecode.com/svn/trunk/cppguide.html#Implementation_Comments
+
+> When you pass in a null pointer, boolean, or literal integer values to functions, you should consider adding a comment about what they are, or make your code self-documenting by using constants
+
+-----
+
+In terms of readability, this function is forwarding the call from line 107 to another function on line 353, that's a few page scrolls on even a 30" monitor.
+
+What's worse is that "GenerateCode" right under this one looks like it's *almost* the right thing except the parameter count is off (it has 1 less than the actual 1 you are calling here), which makes it even more confusing.
 
 114
 Thu Oct 15 23:44:22 2015 +0000

@@ -1,0 +1,62 @@
+Revision: 7b33884287fefc7648419b7f049cbadf082bb3ee
+Patch-set: 2
+File: runtime/class_linker.cc
+
+1211
+Fri Oct 16 17:42:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99d92a72_ceb2c369
+Bytes: 2
+:)
+
+File: runtime/oat_file.cc
+
+411
+Fri Oct 16 17:42:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_eb8c510e
+Bytes: 176
+Might be good to mention that 
+
+a) reads sizeof(T) bytes
+b) updates 'oat' by the number of bytes read.
+
+It was fairly un-intuitive to me until I read the entire implementation.
+
+413
+Fri Oct 16 17:42:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_cbe635c7
+Bytes: 96
+minor: is it normal to stick in statics in a random place in the file (instead of near the top)?
+
+416
+Fri Oct 16 17:42:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99020a8c_66540e8e
+Bytes: 25
+DCHECK for non-null args?
+
+420
+Fri Oct 16 17:42:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99d92a72_eec69fd3
+Bytes: 182
+Perhaps 
+
+  static_assert(std::is_trivial<T>::value,
+                "T must be a trivial type");
+
+To make it clear people shouldn't be doing this with something like a std::string ?
+
+421
+Fri Oct 16 17:42:31 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59e3321f_2c383394
+Bytes: 202
+Doesn't really matter to me, but the standards-compliant way to do this is with memcpy
+
+   memcpy(value, oat, sizeof(T));
+
+which is also shorter by 1 line of code and doesn't have ugly reinterpret casts
+

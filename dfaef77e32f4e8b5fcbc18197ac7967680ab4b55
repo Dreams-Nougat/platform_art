@@ -1,5 +1,43 @@
 Revision: dfaef77e32f4e8b5fcbc18197ac7967680ab4b55
 Patch-set: 1
+File: runtime/base/scoped_arena_containers.h
+
+68
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f3ea1a_47d14455
+Bytes: 271
+This needs to actually delete somehow in a DCHECK mode. Otherwise there's nothing stopping someone from double destructing the same thing again.
+
+and asan (probably) wouldn't help since from their point of view the arena is one giant blob that's allocated perfectly fine.
+
+File: runtime/dex_file.cc
+
+525
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_0512e6de
+Bytes: 75
+Where is this owned?
+
+  std::unique_ptr<Index> index = MakeUnique<Index>();
+
+534
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f3ea1a_e73e9053
+Bytes: 49
+needs to have an overload that takes a unique_ptr
+
+File: runtime/dex_file_verifier.cc
+
+1419:26-1419:33
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_8506d69e
+Bytes: 98
+please insert over emplace for new code, it's the same speed because it does a move under the hood
+
 File: runtime/dex_file_verifier.h
 
 179:2-179:61
@@ -17,6 +55,21 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b90b4ea8_1f746e8c
 Bytes: 126
 Comment here that these are in the arena. There's also an argument to make that you could allocate them as a simple array now.
+
+127:2-127:33
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b90b4ea8_1f746e8c
+UUID: f91146d4_0b46743c
+Bytes: 88
+I liked the unique_ptr here better before. Why do we need complicated memory management?
+
+280:22-280:23
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_d60b75aa
+Bytes: 56
+nit: return a reference here so it's clear it's not-null
 
 731:2-731:32
 Mon Oct 19 23:16:25 2015 +0000
@@ -50,7 +103,39 @@ UUID: 79fd56bf_1a612939
 Bytes: 69
 This may not be zero-terminated, so you may be reading out of bounds.
 
+199
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b90b4ea8_dfd01686
+Bytes: 231
+How is this safe? I don't see any requirements that "descriptor" is not freed after the call to From.
+
+StringPiece doesn't make a copy of the string so it could quickly end up storing a bunch of dangling pointers into the verifier.
+
+257
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f26ee4_441eac76
+Bytes: 111
+Nothing says safe like taking the address of an expression, how about if InsertClass returns a pointer instead?
+
+File: runtime/verifier/register_line-inl.h
+
+185
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_96b84d18
+Bytes: 22
+return std::unique_ptr
+
 File: runtime/verifier/register_line.h
+
+320
+Mon Oct 19 23:47:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_45db4e76
+Bytes: 42
+nit: using instead of typedef for new code
 
 379:2-383:76
 Mon Oct 19 23:16:25 2015 +0000

@@ -11,6 +11,14 @@ const OatQuickMethodHeader*
 
 (Maybe also make the function const along with all other getters?)
 
+440:2-440:23
+Mon Oct 19 14:08:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59fc12c5_c414de5a
+UUID: b940aed4_dfba9bab
+Bytes: 128
+done for the OatQuickMethodHeader. Making the function const is another large refactoring that should be done in another change.
+
 File: runtime/oat_quick_method_header.cc
 
 2:17-2:21
@@ -19,6 +27,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f936a66e_2107ee33
 Bytes: 5
 ditto
+
+2:17-2:21
+Mon Oct 19 14:08:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f936a66e_2107ee33
+UUID: 595892e5_e491fa21
+Bytes: 61
+Code was copied from old code, so AFAIK we can keep the date.
 
 File: runtime/oat_quick_method_header.h
 
@@ -29,6 +45,14 @@ UUID: 39f75ee3_c34a9640
 Bytes: 4
 2015
 
+2:17-2:21
+Mon Oct 19 14:08:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39f75ee3_c34a9640
+UUID: 99476aec_7e2111b2
+Bytes: 5
+ditto
+
 File: runtime/stack.h
 
 727:2-727:23
@@ -38,12 +62,28 @@ UUID: d93d624e_20b92ab1
 Bytes: 27
 const OatQuickMethodHeader*
 
+727:2-727:23
+Mon Oct 19 14:08:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d93d624e_20b92ab1
+UUID: d93d624e_60a1726b
+Bytes: 4
+Done
+
 809:2-809:23
 Mon Oct 19 13:36:21 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d91642dc_b86d79bb
 Bytes: 27
 const OatQuickMethodHeader*
+
+809:2-809:23
+Mon Oct 19 14:08:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91642dc_b86d79bb
+UUID: f936a66e_01150a54
+Bytes: 4
+Done
 
 File: runtime/utils.cc
 
@@ -53,4 +93,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d91642dc_5853fdfe
 Bytes: 87
 This is doing less checks than stack::AssertPcIsWithinQuickCode. What's the difference?
+
+1095:12-1095:31
+Mon Oct 19 14:08:59 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91642dc_5853fdfe
+UUID: 595172a7_3c1e312d
+Bytes: 260
+Don't know, it was like this before.
+
+I guess it has to do with the code here is for stack dumping after a crash/ANR. So we are less careful about which code is being executed. Note that if we return false from this method, then we're just going to emit "???".
 

@@ -1,5 +1,21 @@
 Revision: 9f33eb551afb60971e51ae194375d5733e373738
 Patch-set: 5
+File: runtime/arch/context.h
+
+44:46-44:72
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_ff7527fa
+Bytes: 27
+Safe for cross-compilation?
+
+45
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d90802ae_82a24e17
+Bytes: 31
+Why isn't this in the x86 arch?
+
 File: runtime/art_method.cc
 
 403:42-403:70
@@ -25,4 +41,216 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39de7e5b_3f6a8f68
 Bytes: 40
 What happened to all the validations? :(
+
+File: runtime/exception_test.cc
+
+190
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f3ea1a_c1c6e4d3
+Bytes: 359
+nit: this indentation is misleading because it looks like the function call expression starting with "method_g_...." is being wrapped, instead of the args to NativeQuickPc
+
+   fake_stack.push_back(
+       method_g_->GetOatQuickMethodHeader(0)->ToNativeQuickPc(
+           method_g_,
+           dex_pcp,
+           false /* is_catch_handler */));  // return pc
+
+197
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79fd56bf_54677a4f
+Bytes: 7
+see 190
+
+File: runtime/instrumentation.cc
+
+255:24-255:25
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9ec2e3d_a563eace
+Bytes: 154
+nit: misleading indentation
+
+   dex_pcs_.push_back(
+       (GetCurrentOatQuickMethodHeader() == nullptr)
+       ? DexFile::kDexNoIndex
+       : Get....));
+
+File: runtime/oat_quick_method_header.cc
+
+47
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_9fcbc3aa
+Bytes: 6
+see 95
+
+55
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d90802ae_626d1a7f
+Bytes: 31
+nit: prefer = over construction
+
+64
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f26ee4_fef2cdc9
+Bytes: 121
+nit: using over typedef
+
+(I would also think you would want a more specific name, such as PcToDexIt instead of just "It")
+
+71
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_dfc14b8c
+Bytes: 23
+nit: using over typedef
+
+95
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f26ee4_befc459d
+Bytes: 27
+Why not "HasMappingTable" ?
+
+107
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9ec2e3d_45e5be8e
+Bytes: 92
+Can this have an extra DCHECK for code_size_ , or is it pointing to outside of this struct ?
+
+110
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b90b4ea8_09d1e0b9
+Bytes: 31
+nit: prefer = over construction
+
+116
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91146d4_f24439e4
+Bytes: 6
+see 64
+
+123
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f3ea1a_212a2819
+Bytes: 6
+see 64
+
+136
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99020a8c_7a54a18d
+Bytes: 31
+Is this a special return value?
+
+File: runtime/oat_quick_method_header.h
+
+44
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99020a8c_3a4e2900
+Bytes: 56
+nit: Please include comments for public member functions
+
+58
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_df16ebd0
+Bytes: 128
+Why isn't there an actual type for this (or all the other functions returning uint8_t*)? not that I hate uint8_t or anything :).
+
+76
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91146d4_b2836199
+Bytes: 71
+Consider a DCHECK code_size_ is at least as large as sizeof(uintptr_t)?
+
+80
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b90b4ea8_a972d49d
+Bytes: 71
+Consider a DCHECK code_size_ is at least as large as sizeof(uintptr_t)?
+
+82
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_c7f1824d
+Bytes: 4
+Why?
+
+117
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91146d4_329091d6
+Bytes: 190
+It looks like code_ is often being cast to uintptr_t, what is that supposed to be, some kind of special entry value?
+
+If that's the case, why isn't it just exposed as a field in this struct?
+
+File: runtime/quick/quick_method_frame_info.h
+
+54:32-54:45
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79fd56bf_dff703b8
+Bytes: 43
+Is that going to work with cross-compiling?
+
+File: runtime/stack.cc
+
+864:23-865:35
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9ec2e3d_45177e12
+Bytes: 216
+nit: misleading indentation
+
+
+   uint32_t code_size = 
+       reinterpret_cast<const OatQuickMethodHeader*>(
+           EntryPointToCodePointer(code))
+       [-1].code_size;
+
+(or better yet introduce a temp variable)
+
+992:30-993:78
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f3ea1a_01f56cef
+Bytes: 313
+nit: misleading indentation
+
+  size_t frame_size = RoundUp(
+      callee_info.FrameSizeInBytes() - sizeof(void*) +
+          sizeof(ArtMethod*) + scope_size,
+      kStackAlignment);
+
+that being said this super complicated expression probably meets calin's requirements to have its own name as a temporary variable
+
+File: runtime/utils.cc
+
+1095
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91146d4_f2a8b9cd
+Bytes: 89
+NO_THREAD_SAFETY_ANALYSIS => where are the runtime asserts that the right locks are held?
+
+1096
+Mon Oct 19 19:00:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b90b4ea8_c92ce868
+Bytes: 27
+nit: misleading indentation
 

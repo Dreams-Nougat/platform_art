@@ -9,6 +9,14 @@ UUID: 39de7e5b_ff7527fa
 Bytes: 27
 Safe for cross-compilation?
 
+44:46-44:72
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_ff7527fa
+UUID: d91642dc_58a21d1a
+Bytes: 50
+Code was moved from stack.h to context.h. So yeah.
+
 45
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,6 +31,22 @@ Parent: d90802ae_82a24e17
 UUID: 19345a65_c5a5eca9
 Bytes: 44
 Also, doesn't this hinder cross-compilation?
+
+45
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19345a65_c5a5eca9
+UUID: 19345a65_05ee74b8
+Bytes: 70
+Code was just moved. And no this is not run through cross-compilation.
+
+45
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90802ae_82a24e17
+UUID: 59fc12c5_041e762c
+Bytes: 37
+Code moved from stack.h to context.h.
 
 File: runtime/art_method.cc
 
@@ -43,12 +67,30 @@ Bytes: 173
 
 It's not standards-legal but gcc/clang support it, I do agree it should use MEMBER_OFFSET for readability (since I didn't even realize this is what it was doing before).
 
+403:42-403:70
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90802ae_6214fa0c
+UUID: d91642dc_b8ac990e
+Bytes: 216
+We're using zero-length array quite heavily in the code base.
+
+Note that this is getting the method header from the code. Code was using [-1] before, which isn't great either. But I'll add a helper in a follow-up cl.
+
 406
 Mon Oct 19 18:17:37 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39de7e5b_3f6a8f68
 Bytes: 40
 What happened to all the validations? :(
+
+406
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_3f6a8f68
+UUID: 59fc12c5_2421726a
+Bytes: 95
+Wasn't there before. Unit testing make them annoying. The TODO is here to say I'll clean it up.
 
 File: runtime/exception_test.cc
 
@@ -65,12 +107,28 @@ nit: this indentation is misleading because it looks like the function call expr
            dex_pcp,
            false /* is_catch_handler */));  // return pc
 
+190
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f3ea1a_c1c6e4d3
+UUID: b940aed4_7f090fff
+Bytes: 213
+Do we all agree on this? I thought some prefered the fewer line options. And I'd say we should avoid double indentations as much as we can. I think we should discuss about it, as it has been the style for a while.
+
 197
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79fd56bf_54677a4f
 Bytes: 7
 see 190
+
+197
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79fd56bf_54677a4f
+UUID: d91642dc_789fe1d2
+Bytes: 5
+ditto
 
 File: runtime/instrumentation.cc
 
@@ -86,6 +144,14 @@ nit: misleading indentation
        ? DexFile::kDexNoIndex
        : Get....));
 
+255:24-255:25
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec2e3d_a563eace
+UUID: 595172a7_9fc17764
+Bytes: 6
+ditto.
+
 File: runtime/oat_quick_method_header.cc
 
 47
@@ -95,12 +161,28 @@ UUID: 39de7e5b_9fcbc3aa
 Bytes: 6
 see 95
 
+47
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_9fcbc3aa
+UUID: 595892e5_442d6e2f
+Bytes: 15
+Code was moved.
+
 55
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d90802ae_626d1a7f
 Bytes: 31
 nit: prefer = over construction
+
+55
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90802ae_626d1a7f
+UUID: 39f75ee3_a6968816
+Bytes: 5
+ditto
 
 64
 Mon Oct 19 19:00:23 2015 +0000
@@ -111,12 +193,28 @@ nit: using over typedef
 
 (I would also think you would want a more specific name, such as PcToDexIt instead of just "It")
 
+64
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_fef2cdc9
+UUID: b940aed4_3f0387df
+Bytes: 5
+ditto
+
 71
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39de7e5b_dfc14b8c
 Bytes: 23
 nit: using over typedef
+
+71
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_dfc14b8c
+UUID: b940aed4_df229b74
+Bytes: 5
+ditto
 
 95
 Mon Oct 19 19:00:23 2015 +0000
@@ -125,12 +223,28 @@ UUID: b9f26ee4_befc459d
 Bytes: 27
 Why not "HasMappingTable" ?
 
+95
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_befc459d
+UUID: d91642dc_d8186d19
+Bytes: 179
+Being compiled with optimizing just ends up not requiring a mapping table. You may be confused by the comment, but Quick required a mapping table for implementing ToNativeQuickPc.
+
 107
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9ec2e3d_45e5be8e
 Bytes: 92
 Can this have an extra DCHECK for code_size_ , or is it pointing to outside of this struct ?
+
+107
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec2e3d_45e5be8e
+UUID: b940aed4_9f2c1368
+Bytes: 89
+What struct? OatQuickMethodHeader? The return value is just pointing in the inlined code.
 
 110
 Mon Oct 19 19:00:23 2015 +0000
@@ -139,12 +253,28 @@ UUID: b90b4ea8_09d1e0b9
 Bytes: 31
 nit: prefer = over construction
 
+110
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b90b4ea8_09d1e0b9
+UUID: f936a66e_2134cebe
+Bytes: 15
+code was moved.
+
 116
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f91146d4_f24439e4
 Bytes: 6
 see 64
+
+116
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_f24439e4
+UUID: f936a66e_e1d026b8
+Bytes: 5
+ditto
 
 123
 Mon Oct 19 19:00:23 2015 +0000
@@ -153,12 +283,28 @@ UUID: 99f3ea1a_212a2819
 Bytes: 6
 see 64
 
+123
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f3ea1a_212a2819
+UUID: d91642dc_f81d3106
+Bytes: 5
+ditto
+
 136
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99020a8c_7a54a18d
 Bytes: 31
 Is this a special return value?
+
+136
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99020a8c_7a54a18d
+UUID: 19345a65_4569dce0
+Bytes: 125
+Looks like the -1 for returning an error. But all users apparently pass the 'abort_on_failure' flag. May be worth revisiting.
 
 File: runtime/oat_quick_method_header.h
 
@@ -169,12 +315,30 @@ UUID: 99020a8c_3a4e2900
 Bytes: 56
 nit: Please include comments for public member functions
 
+44
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99020a8c_3a4e2900
+UUID: b940aed4_1f06c3ee
+Bytes: 152
+Code was moved. I started adding comment, but methods are so short that the names already describe what's happening.
+
+What would you suggest on putting?
+
 58
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39de7e5b_df16ebd0
 Bytes: 128
 Why isn't there an actual type for this (or all the other functions returning uint8_t*)? not that I hate uint8_t or anything :).
+
+58
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_df16ebd0
+UUID: f936a66e_613ad6b1
+Bytes: 48
+How would you type code? const void*? uintptr_t?
 
 76
 Mon Oct 19 19:00:23 2015 +0000
@@ -183,12 +347,28 @@ UUID: f91146d4_b2836199
 Bytes: 71
 Consider a DCHECK code_size_ is at least as large as sizeof(uintptr_t)?
 
+76
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_b2836199
+UUID: 19345a65_6572e0d0
+Bytes: 32
+why? we may emit 1 byte methods.
+
 80
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b90b4ea8_a972d49d
 Bytes: 71
 Consider a DCHECK code_size_ is at least as large as sizeof(uintptr_t)?
+
+80
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b90b4ea8_a972d49d
+UUID: 595892e5_a4278250
+Bytes: 5
+ditto
 
 82
 Mon Oct 19 19:00:23 2015 +0000
@@ -215,6 +395,22 @@ UUID: 59fc12c5_84482627
 Bytes: 91
 We have a mess with kArm and kThumb2. We use kArm in some places but we always mean Thumb2.
 
+82
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595172a7_dfc7ff76
+UUID: d91642dc_9822f541
+Bytes: 75
+kRuntimeISA is always Arm, but we generate code for thumb. Added a comment.
+
+82
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_c7f1824d
+UUID: d93d624e_80b8364f
+Bytes: 16
+Added a comment.
+
 117
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -223,6 +419,14 @@ Bytes: 190
 It looks like code_ is often being cast to uintptr_t, what is that supposed to be, some kind of special entry value?
 
 If that's the case, why isn't it just exposed as a field in this struct?
+
+117
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_329091d6
+UUID: f936a66e_8137dac4
+Bytes: 57
+the code is inlined in the struct, it's not an uintptr_t.
 
 File: runtime/quick/quick_method_frame_info.h
 
@@ -233,6 +437,14 @@ UUID: 79fd56bf_dff703b8
 Bytes: 43
 Is that going to work with cross-compiling?
 
+54:32-54:45
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79fd56bf_dff703b8
+UUID: d93d624e_40c22ebb
+Bytes: 73
+Code was moved. And OatQuickMethodHeader is not used for cross compiling.
+
 File: runtime/quick_exception_handler.cc
 
 39:0-39:2
@@ -241,6 +453,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f936a66e_a13f7ea0
 Bytes: 24
 Nit: indentation is off.
+
+39:0-39:2
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f936a66e_a13f7ea0
+UUID: b940aed4_7f14af0c
+Bytes: 4
+Done
 
 File: runtime/stack.cc
 
@@ -259,12 +479,30 @@ nit: misleading indentation
 
 (or better yet introduce a temp variable)
 
+864:23-865:35
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec2e3d_45177e12
+UUID: 595172a7_fff75bb7
+Bytes: 92
+i disagree on the misleading (let's take this offline).
+
+(Also, the [-1] doesn't scare you?)
+
 870:6-870:8
 Tue Oct 20 10:01:16 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99476aec_7e37d1c5
 Bytes: 82
 Use `std::dec` here, so that `code` and `code_size` are printed as decimal values?
+
+870:6-870:8
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99476aec_7e37d1c5
+UUID: f936a66e_01d66ab1
+Bytes: 62
+Code was moved. "code" being hexa makes sense. code_size, meh?
 
 937:2-942:3
 Tue Oct 20 10:01:16 2015 +0000
@@ -276,6 +514,14 @@ What about:
   uint32_t refs = std::count(shorty + 1, shorty + shorty_len, 'L');
 
 ?
+
+937:2-942:3
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f936a66e_4131d2cd
+UUID: f936a66e_c1df22c3
+Bytes: 43
+Code was moved. Probably worth considering.
 
 992:30-993:78
 Mon Oct 19 19:00:23 2015 +0000
@@ -291,6 +537,14 @@ nit: misleading indentation
 
 that being said this super complicated expression probably meets calin's requirements to have its own name as a temporary variable
 
+992:30-993:78
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f3ea1a_01f56cef
+UUID: b940aed4_5f176b12
+Bytes: 50
+Code was moved. But I agree it's misleading. Done.
+
 1094
 Tue Oct 20 10:01:16 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -298,12 +552,28 @@ UUID: 59fc12c5_a443220a
 Bytes: 17
 << std::boolalpha
 
+1094
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59fc12c5_a443220a
+UUID: 595892e5_8439266f
+Bytes: 17
+good catch. done.
+
 1097
 Tue Oct 20 10:01:16 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 595892e5_642aea1a
 Bytes: 19
 << std::noboolalpha
+
+1097
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595892e5_642aea1a
+UUID: d91642dc_782a811a
+Bytes: 4
+Done
 
 File: runtime/utils.cc
 
@@ -314,10 +584,26 @@ UUID: f91146d4_f2a8b9cd
 Bytes: 89
 NO_THREAD_SAFETY_ANALYSIS => where are the runtime asserts that the right locks are held?
 
+1095
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_f2a8b9cd
+UUID: 19345a65_e5e830af
+Bytes: 112
+Code was moved. This is for handling ANRs and crash. I guess at this point those runtime asserts are not needed.
+
 1096
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b90b4ea8_c92ce868
 Bytes: 27
 nit: misleading indentation
+
+1096
+Tue Oct 20 10:07:24 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b90b4ea8_c92ce868
+UUID: 99476aec_1e348dbe
+Bytes: 22
+ditto on not agreeing.
 

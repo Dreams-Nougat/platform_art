@@ -175,6 +175,42 @@ UUID: 19345a65_2537f87d
 Bytes: 102
 Not if you want to actually destroy elements of an array held by ArenaUniquePtr<T[]> in release build.
 
+732
+Tue Oct 20 22:21:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19345a65_2537f87d
+UUID: 39111e0a_88c523c4
+Bytes: 1095
+Well, the size has to be stored somewhere right if we actually wanted to call the destructor on each element in T, in which case it might as well be in the arena.
+
+That being said we only need to call the destructor on elements that are non-trivial, and hence only need the overhead for non-trivial types.
+
+  // Slow path, user-defined destructor in self or in a field
+  // This can also be used for debugging
+  template <typename T, typename=void>
+  T* AllocateArray(size_t count) {
+    size_t actual_size = sizeof(T) * count;
+    actual_size += sizeof(size_t);
+
+    uint8_t* ptr = actual_allocator(actual_size);
+
+    *(size_t*)ptr = count;
+    return (T*)(ptr + sizeof(size_t));
+  }
+
+  // Fast path, no user-defined destructors anywhere
+  template <typename T, typename = 
+                        typename std::enable_if<std::is_trivial<T>>::type>::type>
+  T* AllocateArray(size_t count) {
+    size_t actual_size = sizeof(T) * count;
+
+    uint8_t* ptr = actual_allocator(actual_size);
+
+    return (T*)ptr;
+  }
+
+(except implemented with proper style, and the deleters could be done analogously)
+
 File: runtime/verifier/reg_type-inl.h
 
 187

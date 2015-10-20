@@ -233,6 +233,18 @@ UUID: d90802ae_e527d181
 Bytes: 4
 Done
 
+196:2-196:30
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595892e5_44d1ee54
+UUID: f91146d4_fc4ac83f
+Bytes: 343
+This is mildly wasteful, what if we have a ScopedArenaZeroedAllocator or similar?
+
+The first time the pages are mmapped we can often get zeroed out pages from kernel (which zeroes out pages for security reasons), why are we being forced to zero it out again?
+
+If memory is reused then the allocator can zero it out itself then (and only then).
+
 File: runtime/verifier/register_line.h
 
 396:2-396:20
@@ -249,4 +261,12 @@ Parent: 595892e5_e4c1fa8b
 UUID: f91146d4_61f191bf
 Bytes: 4
 Done
+
+396:2-396:20
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595892e5_e4c1fa8b
+UUID: 791716fc_7564e849
+Bytes: 115
+Why? If it's flexible then it needs to stay as [0], otherwise it looks (incorrectly) like the struct is fixed-size.
 

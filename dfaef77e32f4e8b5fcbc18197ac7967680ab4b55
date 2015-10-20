@@ -19,6 +19,20 @@ UUID: 99020a8c_40db3276
 Bytes: 134
 Can you clarify? This is used for arenas which do not support deleting. We could write some magic values into the object debug builds?
 
+68
+Tue Oct 20 18:36:06 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99020a8c_40db3276
+UUID: 99f3ea1a_98abad4b
+Bytes: 362
+Yes please.
+
+Arenas should check that every allocated unique ptr was also deleted (when the arena goes out of scope).
+
+On the flip side, the deleter should check that an object isn't deleted more than once.
+
+Andreas mentioned that there's already some kind of red zones support in arenas for running with asan/valgrind so it could also extend that functionality.
+
 File: runtime/dex_file.cc
 
 525

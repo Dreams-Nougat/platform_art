@@ -1,0 +1,27 @@
+Revision: 73f14b2ea7c38eaecdc7f8054a88732b3fef7732
+Patch-set: 5
+File: runtime/base/stl_util.h
+
+149:8-149:21
+Tue Oct 20 19:09:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_3f67039f
+Bytes: 286
+Putting this behind kIsDebugBuild is making it less useful as we may want to validate release builds as well. On the other hand, the performance impact of checking RUNNING_ON_MEMORY_TOOL in release builds while valgrind support is the default would have severe performance implications.
+
+150:6-150:49
+Tue Oct 20 19:09:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f75ee3_c6ef4423
+Bytes: 327
+The correct thing would be NOACCESS, otherwise it's unpoisoned for ASAN and can be written for valgrind.
+
+I don't think that this belongs to the stl_util.h anymore. With the memory tool, it's getting more arena-oriented and maybe we should move it back and rename from DeleteOnly- to Arena- (both deleter and unique_ptr alias).
+
+156:28-159:1
+Tue Oct 20 19:09:22 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595892e5_2704f42b
+Bytes: 67
+Please remove the definition. Declaration-only is what I asked for.
+

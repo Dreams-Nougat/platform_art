@@ -1,5 +1,14 @@
 Revision: 5e0990073c6bf07e862d4b0d5a5ec5a1fe63cc06
 Patch-set: 4
+File: runtime/base/scoped_arena_containers.h
+
+64
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_2a1a46b8
+Bytes: 1
+?
+
 File: runtime/base/stl_util.h
 
 142:0-148:2
@@ -16,6 +25,50 @@ Parent: f936a66e_41e6b24a
 UUID: d90802ae_28eca078
 Bytes: 4
 Done
+
+151
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_ea779ebe
+Bytes: 973
+IMHO DestroyOnlyUniquePtr is an anti-pattern because this isn't Java and freeing memory is actually important to maintain sanity.
+
+There should be an ArenaUniquePtr or UniquePtrArena (whatever you want to call it) which works *only* by deleting within the arena.
+
+Debug/valgrind modes could store the arena as an extra field (2x pointers instead of 1) so it can deallocate on the arena.
+
+(the arena pointer can be stored by allocating +sizeof(void*) more and storing it in the pre-header, which wastes space in debug mode in return for better safety. maybe there's an even better way to get back to the arena pointer from the address, vmarko might know).
+
+  debug memory layout of a debug arena object:
+
+  |-------------------------------------|
+  | arena ptr |  allocated memory  .... |
+  |-------------------------------------|
+              ^
+              |
+             unique ptr points here
+
+Double deletes should be checked, not actually deleting should be checked.
+
+File: runtime/dex_instruction.h
+
+251
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9ec2e3d_489f8ed2
+Bytes: 14
+Why only this?
+
+File: runtime/verifier/method_verifier.cc
+
+705
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39de7e5b_77d95b55
+Bytes: 117
+This isn't very clean, this should be brought out to a helper
+
+   unique_ptr<T> MakeArenaArrayZeroed<T>(arena, size);
 
 File: runtime/verifier/method_verifier.h
 
@@ -34,7 +87,46 @@ UUID: b9ec2e3d_48866ea8
 Bytes: 4
 Done
 
+732
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9ec2e3d_28232a48
+Bytes: 36
+This needs to be an arena unique ptr
+
+File: runtime/verifier/reg_type-inl.h
+
+187
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d90802ae_48211469
+Bytes: 50
+Where is the delete operator that takes the arena?
+
+File: runtime/verifier/reg_type.h
+
+287
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 791716fc_78633d1b
+Bytes: 29
+Delete operator taking arena?
+
 File: runtime/verifier/reg_type_cache.cc
+
+169
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39111e0a_6731dace
+Bytes: 51
+Who is responsible for cleaning up the string then?
+
+274:25-274:27
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f3ea1a_b8278982
+Bytes: 69
+nit: magic numbers deserve a constant, or at the very least a comment
 
 342:23-342:24
 Tue Oct 20 18:34:48 2015 +0000
@@ -50,4 +142,62 @@ Parent: b940aed4_5fb8cb16
 UUID: b9ec2e3d_085bc6e1
 Bytes: 4
 Done
+
+342:23-342:24
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b940aed4_5fb8cb16
+UUID: 39de7e5b_7480393b
+Bytes: 105
+nit: please no magic numbers in our code base, put the 2 into scoped arena as a constexpr with a comment.
+
+389:9-389:17
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 791716fc_786cddf2
+Bytes: 74
+AddEntry should take a unique_ptr so it's clear it's taking over ownership
+
+File: runtime/verifier/reg_type_cache.h
+
+61
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 791716fc_783a1dff
+Bytes: 14
+nit: comments?
+
+File: runtime/verifier/reg_type_test.cc
+
+657
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_6a95ee36
+Bytes: 85
+Can't these 2 lines just go into the RegTypeTest struct to avoid this copy-and-paste?
+
+File: runtime/verifier/register_line-inl.h
+
+187:43-187:44
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f26ee4_9b53cefe
+Bytes: 36
+nit: indentation needs 4 more spaces
+
+File: runtime/verifier/register_line.h
+
+62:48-62:56
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91146d4_9cbbcc4b
+Bytes: 41
+nit: please comment on what the uints are
+
+64
+Tue Oct 20 19:05:17 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9ec2e3d_48b5ce1b
+Bytes: 36
+nit: public method missing comments?
 

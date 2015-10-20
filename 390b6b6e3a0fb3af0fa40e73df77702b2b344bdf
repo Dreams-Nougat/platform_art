@@ -1,5 +1,45 @@
 Revision: 390b6b6e3a0fb3af0fa40e73df77702b2b344bdf
 Patch-set: 3
+File: runtime/base/scoped_arena_containers.h
+
+64:0-73:68
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39f75ee3_e6e120b1
+Bytes: 203
+Looks like something that should be in stl_util.h.
+Rename deleter to DestroyOnlyDelete, for naming precedent see std::default_delete, art::FreeDelete.
+Maybe rename ArenaUniquePtr to DestroyOnlyUniquePtr?
+
+File: runtime/dex_file.cc
+
+422:0-425:3
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91642dc_d8adcd0d
+Bytes: 169
+Should the AOT compiler explicitly request CreateFindClassDefIndex()? I don't like adding another dependency on Runtime. DexFile should not know that there is a Runtime.
+
+File: runtime/verifier/method_verifier.cc
+
+65
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19345a65_e57d90a3
+Bytes: 320
+You're allocating on a scoped arena which doesn't guarantee zero-initialization, so std::uninitialized_fill_n().
+
+You can get away with it because you're using a single ScopedArenaAllocator with the ArenaStack and you never Reset() it. However, this is not something that the ScopedArenaAllocator intentionally supports.
+
+709:0-710:60
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_5fb52f04
+Bytes: 89
+Why the cast? AllocArray<>() returns correctly typed pointer.
+
+std::unitialized_fill_n().
+
 File: runtime/verifier/method_verifier.h
 
 732:37-732:52
@@ -8,4 +48,75 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59fc12c5_443b4e93
 Bytes: 12
 insn_flags_?
+
+File: runtime/verifier/reg_type.h
+
+283:11-283:17
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19345a65_c5c96c43
+Bytes: 14
+::operator new
+
+File: runtime/verifier/reg_type_cache.cc
+
+167:2-167:50
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b940aed4_bf831799
+Bytes: 55
+AllocArray<char>() to avoid the reinterpret_cast below.
+
+225
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91642dc_98f435f5
+Bytes: 34
+Keep the DCHECK(klass != nullptr).
+
+341:23-341:24
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f936a66e_610c1611
+Bytes: 101
+Nit: Arena allocations are rounded up to 8 bytes, so we may as well start with 64 bits instead of 32.
+
+581:37-581:43
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_9f4e57aa
+Bytes: 74
+I still prefer c_str() even though C++11 defines the data() just the same.
+
+File: runtime/verifier/register_line-inl.h
+
+186:44-186:64
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b940aed4_3f9067d6
+Bytes: 34
+MEMBER_OFFSET(RegisterLine, line_)
+
+194:70-194:79
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_3f60630c
+Bytes: 40
+Can you add a new arena allocation type?
+
+196:2-196:30
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595892e5_44d1ee54
+Bytes: 106
+This is not guaranteed by the ScopedArenaAllocator. Reinstate the memset() or std::uninitialized_fill_n().
+
+File: runtime/verifier/register_line.h
+
+396:2-396:20
+Tue Oct 20 11:26:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595892e5_e4c1fa8b
+Bytes: 32
+Please, change this to line_[1].
 

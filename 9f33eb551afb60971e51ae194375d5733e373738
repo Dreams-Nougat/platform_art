@@ -411,6 +411,30 @@ UUID: d93d624e_80b8364f
 Bytes: 16
 Added a comment.
 
+82
+Tue Oct 20 10:36:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d93d624e_80b8364f
+UUID: 595172a7_9f13b7a0
+Bytes: 750
+Shouldn't we test for both instruction sets then?  Something like:
+
+  // When the runtime architecture is ARM, `kRuntime` is set to `kArm`
+  // (not `kThumb2`), *but* we always generate code for the Thumb-2
+  // instruction set anyway.  Thumb-2 code addresses have the bottom
+  // bit set to 1.
+  return (kRuntimeISA == kARM || kRuntimeISA == kThumb2)
+      ? /* ... */ : /* ... */;
+
+Or maybe ensure we do not use `kThumb2` at all?
+
+  // When the runtime architecture is ARM, `kRuntime` is set to `kArm`
+  // (not `kThumb2`), *but* we always generate code for the Thumb-2
+  // instruction set anyway.  Thumb-2 code addresses have the bottom
+  // bit set to 1.
+  DCHECK_NE(kRuntimeISA, kThumb2);
+  return (kRuntimeISA == kARM) ? /* ... */ : /* ... */;
+
 117
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -503,6 +527,14 @@ Parent: 99476aec_7e37d1c5
 UUID: f936a66e_01d66ab1
 Bytes: 62
 Code was moved. "code" being hexa makes sense. code_size, meh?
+
+870:6-870:8
+Tue Oct 20 10:36:46 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f936a66e_01d66ab1
+UUID: 99476aec_7ee27189
+Bytes: 104
+Yes, I meant `code_size` only, sorry.  I think a decimal value is easier to grasp, but that's your call.
 
 937:2-942:3
 Tue Oct 20 10:01:16 2015 +0000

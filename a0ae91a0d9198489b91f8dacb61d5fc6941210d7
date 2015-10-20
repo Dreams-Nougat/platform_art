@@ -11,12 +11,30 @@ Why does this need to instantiate a new one for each of those template parameter
 
 Can we reduce the # of template parameters further?
 
+44
+Tue Oct 20 22:22:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_8e0cae11
+UUID: d91642dc_bbf7b386
+Bytes: 169
+I prefer the encapsulation, keeping implementation details as private members.
+
+I could move this out of DedupeSet<> into a namespace "detail", if you think it's better.
+
 53
 Tue Oct 20 21:36:36 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f91146d4_b710ebd3
 Bytes: 6
 See 44
+
+53
+Tue Oct 20 22:22:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_b710ebd3
+UUID: d93d624e_6372dcd0
+Bytes: 189
+This one actually uses InKey, StoreKey and Alloc (and there is a discrepancy between DedupeSet<> taking a HashType and HashSet<> always using size_t), so I'd like to keep it in DedupeSet<>.
 
 112
 Tue Oct 20 21:36:36 2015 +0000
@@ -25,12 +43,28 @@ UUID: 79d47637_65bf61e6
 Bytes: 176
 This will be instantiated multiple times for the same T since it's dependent on DedupeSet. That's unlikely the desired behavior, consider pulling this out to a separate struct.
 
+112
+Tue Oct 20 22:22:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_65bf61e6
+UUID: d91642dc_5bfd3765
+Bytes: 152
+What is the overhead of that instantiation (besides debug symbols and compile time), assuming all member functions will be inlined? I would expect none.
+
 138
 Tue Oct 20 21:36:36 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9f26ee4_4e212669
 Bytes: 7
 See 112
+
+138
+Tue Oct 20 22:22:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_4e212669
+UUID: b940aed4_42bc74ef
+Bytes: 5
+ditto
 
 149
 Tue Oct 20 21:36:36 2015 +0000
@@ -39,12 +73,28 @@ UUID: f91146d4_77039390
 Bytes: 7
 See 112
 
+149
+Tue Oct 20 22:22:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_77039390
+UUID: 59fc12c5_04d8b676
+Bytes: 5
+ditto
+
 156
 Tue Oct 20 21:36:36 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 791716fc_3b3edf83
 Bytes: 7
 See 112
+
+156
+Tue Oct 20 22:22:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 791716fc_3b3edf83
+UUID: 595892e5_c7bac0ab
+Bytes: 78
+I'll actually use the InKey and StoreKey in ShardPred with the next patch set.
 
 File: compiler/utils/dedupe_set.h
 
@@ -54,4 +104,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79d47637_05f89da8
 Bytes: 52
 nit: public member functions ought to have a comment
+
+41
+Tue Oct 20 22:22:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_05f89da8
+UUID: 595892e5_e7bfbc98
+Bytes: 4
+Done
 

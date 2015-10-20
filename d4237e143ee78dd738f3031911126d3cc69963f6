@@ -1,0 +1,101 @@
+Revision: d4237e143ee78dd738f3031911126d3cc69963f6
+Patch-set: 1
+File: compiler/optimizing/code_generator_arm.cc
+
+5407:6-5407:62
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_5f720fd0
+Bytes: 108
+ShifterOperand may not be able to hold lower_bound. Use
+
+  __ AddConstant(key_reg, value_reg, -lower_bound);
+
+5413:4-5413:53
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99476aec_9e43bd0a
+Bytes: 143
+ShifterOperand may not be able to hold num_entries-1. Use
+
+  __ CmpConstant(key_reg, num_entries - 1);
+
+and implement the CmpConstant() helper.
+
+5417:4-5417:70
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f936a66e_613e5685
+Bytes: 207
+You don't need table_base_reg anymore, so you should reuse that register instead of temp_reg here. Then you should allocate one less temporary in LocationsBuilderARM::VisitPackedSwitch() if lower_bound == 0.
+
+File: compiler/utils/arm/assembler_arm.h
+
+83:86-83:92
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b940aed4_df5b7be2
+Bytes: 66
+If you're getting "labels" by value, you should std::move(labels).
+
+File: compiler/utils/arm/assembler_thumb2.cc
+
+416:55-416:57
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f936a66e_411eb22d
+Bytes: 124
+I followed the ARMv7-A/ARMv7-R manual for naming in the other functions. If we want to continue doing so, this should be rd.
+
+423:55-423:57
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b940aed4_bf5a37db
+Bytes: 2
+rd
+
+2012:10-2012:30
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595892e5_e4a81ace
+Bytes: 24
+Unnecessary restriction.
+
+3606:28-3606:34
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_3f92a350
+Bytes: 17
+std::move(labels)
+
+File: compiler/utils/arm/assembler_thumb2.h
+
+440:37-440:42
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d91642dc_38e6494a
+Bytes: 157
+Unnecessary restriction: ADD register, encoding T2, allows m==15 if n!=15.
+(Note that kLiteral64KiB has this restriction because of the 16-bit LDR rX, [rX].)
+
+473:76-473:91
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99476aec_9e2c1d68
+Bytes: 90
+I don't think the default argument makes sense, given it's unavailable for high registers.
+
+509:77-509:96
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595172a7_7f882b24
+Bytes: 90
+I don't think the default argument makes sense, given it's unavailable for high registers.
+
+512:65-512:90
+Tue Oct 20 13:18:55 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59fc12c5_64708a56
+Bytes: 24
+Unnecessary restriction.
+

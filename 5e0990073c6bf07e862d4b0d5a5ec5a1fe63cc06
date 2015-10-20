@@ -66,6 +66,16 @@ UUID: 79d47637_aa3e3681
 Bytes: 73
 Needing to remember to use ~T() everywhere is more of an antipattern IMO.
 
+151
+Tue Oct 20 23:22:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_aa3e3681
+UUID: b9ec2e3d_e1f2fdc9
+Bytes: 160
+I think I may have been unclear, I apologize for that.
+
+Of course it needs to call ~T(). However it's insufficient, as it also needs to do the delete operation.
+
 File: runtime/dex_instruction.h
 
 251
@@ -296,6 +306,19 @@ Parent: d90802ae_48211469
 UUID: d90802ae_6363d91b
 Bytes: 61
 I don't think that is required, after looking at ArenaObject.
+
+187
+Tue Oct 20 23:22:20 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90802ae_6363d91b
+UUID: b9f26ee4_3131a3cf
+Bytes: 365
+Then there needs to be a check here
+
+  static_assert(std::is_trivial<RegType>::value,
+                "Non-trivial types must be deleted");
+
+And anyway that only works because the string was changed to a StringPiece, what if someone comes in and adds another field later? It would shift the complexity to someone else to figure out what happened to all the deletes.
 
 File: runtime/verifier/reg_type.h
 

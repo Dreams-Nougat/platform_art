@@ -112,6 +112,43 @@ Not sure what you mean, can you elaborate?
 
 My original thought (comments in stl_util.h) was that we only introduce extra overhead for either debug or memory checking modes (i.e. no overhead for release / no memory check).
 
+732
+Tue Oct 20 20:30:25 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 791716fc_1851699d
+UUID: f91146d4_776f13e9
+Bytes: 854
+Ah, I think it's because the size is untracked right?
+
+The type being allocated knows the size though, so we can ask for it.
+
+  template <typename T>
+  void delete(T* ptr) {
+    size_t array_size = ptr->GetSizeOf();
+    // made up deleter function
+    // that can mark the bits as unallocated
+    ArenaDeleteArray(ptr, array_size);
+  }
+
+  struct InstructionFlags {
+    size_t GetSizeOf() const {
+      return sizeof(*this) + instruction_length_;
+    }
+  }
+
+That would work for release modes.
+
+If it's debug/memcheck only then we don't even need to do this, just store the size in the preheader.
+
+   ---------------------------------
+   | arena ptr | array size | data |
+   ---------------------------------
+                            ^
+                            |
+                          unique_ptr.get()
+
+(and of course it can use a custom deleter)
+
 File: runtime/verifier/reg_type-inl.h
 
 187

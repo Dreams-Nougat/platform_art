@@ -11,6 +11,14 @@ This needs to actually delete somehow in a DCHECK mode. Otherwise there's nothin
 
 and asan (probably) wouldn't help since from their point of view the arena is one giant blob that's allocated perfectly fine.
 
+68
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f3ea1a_47d14455
+UUID: 99020a8c_40db3276
+Bytes: 134
+Can you clarify? This is used for arenas which do not support deleting. We could write some magic values into the object debug builds?
+
 File: runtime/dex_file.cc
 
 525
@@ -22,12 +30,28 @@ Where is this owned?
 
   std::unique_ptr<Index> index = MakeUnique<Index>();
 
+525
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_0512e6de
+UUID: 79fd56bf_ce0bd2aa
+Bytes: 11
+Another CL.
+
 534
 Mon Oct 19 23:47:25 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99f3ea1a_e73e9053
 Bytes: 49
 needs to have an overload that takes a unique_ptr
+
+534
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f3ea1a_e73e9053
+UUID: 99f3ea1a_5259046e
+Bytes: 11
+Another CL.
 
 File: runtime/dex_file_verifier.cc
 
@@ -38,6 +62,14 @@ UUID: 39de7e5b_8506d69e
 Bytes: 98
 please insert over emplace for new code, it's the same speed because it does a move under the hood
 
+1419:26-1419:33
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_8506d69e
+UUID: b90b4ea8_ba18d0bc
+Bytes: 4
+Done
+
 File: runtime/dex_file_verifier.h
 
 179:2-179:61
@@ -46,6 +78,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d90802ae_af3e5a52
 Bytes: 63
 Why? This removes both tracking as well as duplicates checking.
+
+179:2-179:61
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90802ae_af3e5a52
+UUID: 79fd56bf_8e0efa77
+Bytes: 102
+It was showing up in the profile, unordered_set is 25% faster. I'll add AllocationTracingUnorderedSet.
 
 File: runtime/verifier/method_verifier.h
 
@@ -64,6 +104,22 @@ UUID: f91146d4_0b46743c
 Bytes: 88
 I liked the unique_ptr here better before. Why do we need complicated memory management?
 
+127:2-127:33
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b90b4ea8_1f746e8c
+UUID: 99f3ea1a_12265cee
+Bytes: 129
+Currently we allocate only the interesting lines, doing all the lines might increase RAM usage. Worth investigating later though.
+
+127:2-127:33
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_0b46743c
+UUID: b90b4ea8_9a0e2c78
+Bytes: 19
+malloc is expensive
+
 280:22-280:23
 Mon Oct 19 23:47:25 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -71,12 +127,28 @@ UUID: 79d47637_d60b75aa
 Bytes: 56
 nit: return a reference here so it's clear it's not-null
 
+280:22-280:23
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_d60b75aa
+UUID: d90802ae_f278b583
+Bytes: 4
+Done
+
 731:2-731:32
 Mon Oct 19 23:16:25 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79d47637_d6da55d5
 Bytes: 28
 Comment about ownership etc.
+
+731:2-731:32
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_d6da55d5
+UUID: 99020a8c_40645249
+Bytes: 4
+Done
 
 File: runtime/verifier/reg_type.cc
 
@@ -86,6 +158,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39de7e5b_055c26d9
 Bytes: 32
 Potentially not zero-terminated.
+
+338:79-338:85
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_055c26d9
+UUID: b9f26ee4_44210c69
+Bytes: 4
+Done
 
 File: runtime/verifier/reg_type_cache.cc
 
@@ -103,6 +183,14 @@ UUID: 79fd56bf_1a612939
 Bytes: 69
 This may not be zero-terminated, so you may be reading out of bounds.
 
+167:57-167:60
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_c413bc9f
+UUID: 79d47637_796f12e9
+Bytes: 36
+You're right, I just deleted the +1.
+
 199
 Mon Oct 19 23:47:25 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -112,12 +200,28 @@ How is this safe? I don't see any requirements that "descriptor" is not freed af
 
 StringPiece doesn't make a copy of the string so it could quickly end up storing a bunch of dangling pointers into the verifier.
 
+199
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b90b4ea8_dfd01686
+UUID: 39de7e5b_c0a04c9c
+Bytes: 121
+Should I add a comment? The other idea is pass the arena allcoator to every RegType constructor but that seemed invasive.
+
 257
 Mon Oct 19 23:47:25 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9f26ee4_441eac76
 Bytes: 111
 Nothing says safe like taking the address of an expression, how about if InsertClass returns a pointer instead?
+
+257
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_441eac76
+UUID: 99f3ea1a_72924051
+Bytes: 4
+Done
 
 File: runtime/verifier/register_line-inl.h
 
@@ -128,6 +232,14 @@ UUID: 79d47637_96b84d18
 Bytes: 22
 return std::unique_ptr
 
+185
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_96b84d18
+UUID: 39de7e5b_a07c20a4
+Bytes: 54
+That doesn't work, I could maybe use a ArenaUniquePtr.
+
 File: runtime/verifier/register_line.h
 
 320
@@ -137,10 +249,26 @@ UUID: 39de7e5b_45db4e76
 Bytes: 42
 nit: using instead of typedef for new code
 
+320
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_45db4e76
+UUID: 99f3ea1a_326f18ea
+Bytes: 4
+Done
+
 379:2-383:76
 Mon Oct 19 23:16:25 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99020a8c_e078de83
 Bytes: 102
 Why? This was intentionally hidden. Just make the typedef public (and prefer the C++11 style "using").
+
+379:2-383:76
+Tue Oct 20 02:49:04 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99020a8c_e078de83
+UUID: d90802ae_725045f1
+Bytes: 4
+Done
 

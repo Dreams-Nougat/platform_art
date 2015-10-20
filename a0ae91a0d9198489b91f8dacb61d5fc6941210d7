@@ -21,6 +21,16 @@ I prefer the encapsulation, keeping implementation details as private members.
 
 I could move this out of DedupeSet<> into a namespace "detail", if you think it's better.
 
+44
+Tue Oct 20 22:37:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91642dc_bbf7b386
+UUID: 79d47637_a5a2e916
+Bytes: 195
+Completely agreed it should be encapsulated as a private member.
+
+A detail namespace would be a bit cleaner and faster too, but I'm not feeling strongly about this, just thought I'd point it out.
+
 53
 Tue Oct 20 21:36:36 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -36,6 +46,16 @@ UUID: d93d624e_6372dcd0
 Bytes: 189
 This one actually uses InKey, StoreKey and Alloc (and there is a discrepancy between DedupeSet<> taking a HashType and HashSet<> always using size_t), so I'd like to keep it in DedupeSet<>.
 
+53
+Tue Oct 20 22:37:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d93d624e_6372dcd0
+UUID: 39de7e5b_2ac24aba
+Bytes: 133
+Hmm, maybe we can fix HashSet at some point in the future.
+
+Anyway just thought I'd point it out, not feeling strongly about this :).
+
 112
 Tue Oct 20 21:36:36 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -50,6 +70,26 @@ Parent: 79d47637_65bf61e6
 UUID: d91642dc_5bfd3765
 Bytes: 152
 What is the overhead of that instantiation (besides debug symbols and compile time), assuming all member functions will be inlined? I would expect none.
+
+112
+Tue Oct 20 22:37:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d91642dc_5bfd3765
+UUID: 791716fc_9ee601c6
+Bytes: 515
+I'm not feeling strongly about this, just thought I'd point it out.
+
+----
+
+Well, no runtime overhead, if it's all inlined. Even if it's not inlined we can get lucky with ICF (identical code folding).
+
+It's basically down to the compile time though, it's best practices for extensive template code.
+
+https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Rt-scary  T.61
+
+----
+
+Anyway it could add up quickly for any kind of moderate template metaprogramming (which I can see this is not doing).
 
 138
 Tue Oct 20 21:36:36 2015 +0000

@@ -211,6 +211,19 @@ That being said we only need to call the destructor on elements that are non-tri
 
 (except implemented with proper style, and the deleters could be done analogously)
 
+732
+Tue Oct 20 22:36:28 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39111e0a_88c523c4
+UUID: 79d47637_2575d951
+Bytes: 495
+minor: strictly speaking it would be 'void* operator new[](std::size_t count, Arena& arena)' and not actually 'AllocateArray.'
+
+To make things clean we'd still want a separate "ArenaUniquePtr<T> MakeUniqueArenaPtr(Arena&, Args&&...)" function which calls the new(arena) operator under the hood and is specialized to avoid storing 'arena'.
+
+-----
+In other words it's the special new/delete operators which should know about whether or not the extra bytes are allocated, not the unique ptr itself.
+
 File: runtime/verifier/reg_type-inl.h
 
 187

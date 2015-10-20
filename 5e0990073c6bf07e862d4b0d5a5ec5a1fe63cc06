@@ -9,6 +9,14 @@ UUID: 79d47637_2a1a46b8
 Bytes: 1
 ?
 
+64
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_2a1a46b8
+UUID: b9f26ee4_9be50e92
+Bytes: 4
+Done
+
 File: runtime/base/stl_util.h
 
 142:0-148:2
@@ -50,6 +58,14 @@ Debug/valgrind modes could store the arena as an extra field (2x pointers instea
 
 Double deletes should be checked, not actually deleting should be checked.
 
+151
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_ea779ebe
+UUID: 79d47637_aa3e3681
+Bytes: 73
+Needing to remember to use ~T() everywhere is more of an antipattern IMO.
+
 File: runtime/dex_instruction.h
 
 251
@@ -58,6 +74,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9ec2e3d_489f8ed2
 Bytes: 14
 Why only this?
+
+251
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec2e3d_489f8ed2
+UUID: 99020a8c_2daf0ed0
+Bytes: 57
+Showed up in profile, the other ones are already inlined.
 
 File: runtime/verifier/method_verifier.cc
 
@@ -69,6 +93,14 @@ Bytes: 117
 This isn't very clean, this should be brought out to a helper
 
    unique_ptr<T> MakeArenaArrayZeroed<T>(arena, size);
+
+705
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_77d95b55
+UUID: f91146d4_d74ebfaa
+Bytes: 20
+Seems like overkill.
 
 File: runtime/verifier/method_verifier.h
 
@@ -224,6 +256,30 @@ To make things clean we'd still want a separate "ArenaUniquePtr<T> MakeUniqueAre
 -----
 In other words it's the special new/delete operators which should know about whether or not the extra bytes are allocated, not the unique ptr itself.
 
+732
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39111e0a_88c523c4
+UUID: 791716fc_3efd2d67
+Bytes: 99
+If you want to call the destructor on each element, its probably better to use a ScopedArenaVector?
+
+732
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595172a7_7fb82b4e
+UUID: 39111e0a_8d37f57b
+Bytes: 19
+Seems not worth it.
+
+732
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec2e3d_28232a48
+UUID: 99f3ea1a_13abfeb0
+Bytes: 4
+Done
+
 File: runtime/verifier/reg_type-inl.h
 
 187
@@ -232,6 +288,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d90802ae_48211469
 Bytes: 50
 Where is the delete operator that takes the arena?
+
+187
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90802ae_48211469
+UUID: d90802ae_6363d91b
+Bytes: 61
+I don't think that is required, after looking at ArenaObject.
 
 File: runtime/verifier/reg_type.h
 
@@ -242,6 +306,14 @@ UUID: 791716fc_78633d1b
 Bytes: 29
 Delete operator taking arena?
 
+287
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 791716fc_78633d1b
+UUID: b9ec2e3d_6b3a4cb1
+Bytes: 4
+Done
+
 File: runtime/verifier/reg_type_cache.cc
 
 169
@@ -251,12 +323,28 @@ UUID: 39111e0a_6731dace
 Bytes: 51
 Who is responsible for cleaning up the string then?
 
+169
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39111e0a_6731dace
+UUID: 79d47637_8a6dba81
+Bytes: 70
+Its in the arena, when the arena goes out of scope it gets cleaned up.
+
 274:25-274:27
 Tue Oct 20 19:05:17 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99f3ea1a_b8278982
 Bytes: 69
 nit: magic numbers deserve a constant, or at the very least a comment
+
+274:25-274:27
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f3ea1a_b8278982
+UUID: 791716fc_9893b999
+Bytes: 4
+Done
 
 342:23-342:24
 Tue Oct 20 18:34:48 2015 +0000
@@ -281,12 +369,28 @@ UUID: 39de7e5b_7480393b
 Bytes: 105
 nit: please no magic numbers in our code base, put the 2 into scoped arena as a constexpr with a comment.
 
+342:23-342:24
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39de7e5b_7480393b
+UUID: 79d47637_ca274250
+Bytes: 4
+Done
+
 389:9-389:17
 Tue Oct 20 19:05:17 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 791716fc_786cddf2
 Bytes: 74
 AddEntry should take a unique_ptr so it's clear it's taking over ownership
+
+389:9-389:17
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 791716fc_786cddf2
+UUID: b9ec2e3d_8b35109d
+Bytes: 8
+Overkill
 
 File: runtime/verifier/reg_type_cache.h
 
@@ -297,6 +401,14 @@ UUID: 791716fc_783a1dff
 Bytes: 14
 nit: comments?
 
+61
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 791716fc_783a1dff
+UUID: 79d47637_4a90f2d6
+Bytes: 4
+Done
+
 File: runtime/verifier/reg_type_test.cc
 
 657
@@ -305,6 +417,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79d47637_6a95ee36
 Bytes: 85
 Can't these 2 lines just go into the RegTypeTest struct to avoid this copy-and-paste?
+
+657
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_6a95ee36
+UUID: 39111e0a_0df5a5ef
+Bytes: 4
+Done
 
 File: runtime/verifier/register_line-inl.h
 
@@ -315,6 +435,14 @@ UUID: b9f26ee4_9b53cefe
 Bytes: 36
 nit: indentation needs 4 more spaces
 
+187:43-187:44
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_9b53cefe
+UUID: 39111e0a_ed1029d5
+Bytes: 4
+Done
+
 File: runtime/verifier/register_line.h
 
 62:48-62:56
@@ -324,10 +452,26 @@ UUID: f91146d4_9cbbcc4b
 Bytes: 41
 nit: please comment on what the uints are
 
+62:48-62:56
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f91146d4_9cbbcc4b
+UUID: 39de7e5b_97a28717
+Bytes: 4
+Done
+
 64
 Tue Oct 20 19:05:17 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9ec2e3d_48b5ce1b
 Bytes: 36
 nit: public method missing comments?
+
+64
+Tue Oct 20 23:02:22 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec2e3d_48b5ce1b
+UUID: 39111e0a_2d034191
+Bytes: 4
+Done
 

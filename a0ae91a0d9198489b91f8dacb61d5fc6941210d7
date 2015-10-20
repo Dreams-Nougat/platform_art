@@ -1,0 +1,57 @@
+Revision: a0ae91a0d9198489b91f8dacb61d5fc6941210d7
+Patch-set: 16
+File: compiler/utils/dedupe_set-inl.h
+
+44
+Tue Oct 20 21:36:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f26ee4_8e0cae11
+Bytes: 225
+Why does this need to instantiate a new one for each of those template parameters? This just leads to slower compile times, and is considered suboptimal C++ best practices.
+
+Can we reduce the # of template parameters further?
+
+53
+Tue Oct 20 21:36:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91146d4_b710ebd3
+Bytes: 6
+See 44
+
+112
+Tue Oct 20 21:36:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_65bf61e6
+Bytes: 176
+This will be instantiated multiple times for the same T since it's dependent on DedupeSet. That's unlikely the desired behavior, consider pulling this out to a separate struct.
+
+138
+Tue Oct 20 21:36:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9f26ee4_4e212669
+Bytes: 7
+See 112
+
+149
+Tue Oct 20 21:36:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f91146d4_77039390
+Bytes: 7
+See 112
+
+156
+Tue Oct 20 21:36:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 791716fc_3b3edf83
+Bytes: 7
+See 112
+
+File: compiler/utils/dedupe_set.h
+
+41
+Tue Oct 20 21:36:36 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79d47637_05f89da8
+Bytes: 52
+nit: public member functions ought to have a comment
+

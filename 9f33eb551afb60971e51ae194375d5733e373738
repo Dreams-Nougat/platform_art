@@ -340,6 +340,31 @@ UUID: f936a66e_613ad6b1
 Bytes: 48
 How would you type code? const void*? uintptr_t?
 
+58
+Tue Oct 20 20:41:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f936a66e_613ad6b1
+UUID: b9ec2e3d_cb271882
+Bytes: 375
+Like thus:
+
+   struct CompiledCode alignas(uint8_t) {
+     OatQuickMethodHeader* GetHeader() {
+       return this - MEMBER_OFFSET(OatQuickMethodHeader, code_);
+     }
+     // ... other helpers here that make sense
+
+     ....
+     ....
+     uint8_t code_[0];
+
+     DISALLOW_COPY_AND_ASSIGN(CompiledCode);
+   }
+
+   const CompiledCode* GetCode() const { 
+     return code_;
+   }
+
 76
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -354,6 +379,14 @@ Parent: f91146d4_b2836199
 UUID: 19345a65_6572e0d0
 Bytes: 32
 why? we may emit 1 byte methods.
+
+76
+Tue Oct 20 20:41:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19345a65_6572e0d0
+UUID: 99f3ea1a_f37c92a5
+Bytes: 115
+Never mind, I was very tired yesterday and I thought this was doing a dereference (I thought it was using code_[0])
 
 80
 Mon Oct 19 19:00:23 2015 +0000
@@ -443,6 +476,14 @@ UUID: 99476aec_def70541
 Bytes: 4
 Done
 
+82
+Tue Oct 20 20:41:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99476aec_def70541
+UUID: 99020a8c_501e6176
+Bytes: 61
+This seems like it needs to be in an arch specific directory.
+
 117
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -520,6 +561,14 @@ Bytes: 92
 i disagree on the misleading (let's take this offline).
 
 (Also, the [-1] doesn't scare you?)
+
+864:23-865:35
+Tue Oct 20 20:41:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 595172a7_fff75bb7
+UUID: b9ec2e3d_ab38d495
+Bytes: 94
+The -1 probably shouldn't be there either if it's playing a trick on a flexible array element.
 
 870:6-870:8
 Tue Oct 20 10:01:16 2015 +0000

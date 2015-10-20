@@ -16,6 +16,14 @@ UUID: d90802ae_82a24e17
 Bytes: 31
 Why isn't this in the x86 arch?
 
+45
+Tue Oct 20 10:01:16 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d90802ae_82a24e17
+UUID: 19345a65_c5a5eca9
+Bytes: 44
+Also, doesn't this hinder cross-compilation?
+
 File: runtime/art_method.cc
 
 403:42-403:70
@@ -189,6 +197,16 @@ UUID: 79d47637_c7f1824d
 Bytes: 4
 Why?
 
+82
+Tue Oct 20 10:01:16 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79d47637_c7f1824d
+UUID: 595172a7_dfc7ff76
+Bytes: 403
+This is odd.  In the ARM instruction set, the bottom bit of an address is 0, while in Thumb instruction set, this bit is 1.  This is used by branching instructions to select the instruction set.  Should the condition check for `kThumb2` instead of `kArm`?  I believe we do not use the ARM32 instruction set (at least in Optimizing), so this code might never be used.
+
+We should document this anyway IMO.
+
 117
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -207,6 +225,15 @@ UUID: 79fd56bf_dff703b8
 Bytes: 43
 Is that going to work with cross-compiling?
 
+File: runtime/quick_exception_handler.cc
+
+39:0-39:2
+Tue Oct 20 10:01:16 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f936a66e_a13f7ea0
+Bytes: 24
+Nit: indentation is off.
+
 File: runtime/stack.cc
 
 864:23-865:35
@@ -224,6 +251,24 @@ nit: misleading indentation
 
 (or better yet introduce a temp variable)
 
+870:6-870:8
+Tue Oct 20 10:01:16 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99476aec_7e37d1c5
+Bytes: 82
+Use `std::dec` here, so that `code` and `code_size` are printed as decimal values?
+
+937:2-942:3
+Tue Oct 20 10:01:16 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f936a66e_4131d2cd
+Bytes: 83
+What about:
+
+  uint32_t refs = std::count(shorty + 1, shorty + shorty_len, 'L');
+
+?
+
 992:30-993:78
 Mon Oct 19 19:00:23 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -237,6 +282,20 @@ nit: misleading indentation
       kStackAlignment);
 
 that being said this super complicated expression probably meets calin's requirements to have its own name as a temporary variable
+
+1094
+Tue Oct 20 10:01:16 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59fc12c5_a443220a
+Bytes: 17
+<< std::boolalpha
+
+1097
+Tue Oct 20 10:01:16 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 595892e5_642aea1a
+Bytes: 19
+<< std::noboolalpha
 
 File: runtime/utils.cc
 

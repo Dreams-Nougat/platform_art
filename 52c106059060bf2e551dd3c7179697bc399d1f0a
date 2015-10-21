@@ -1,0 +1,33 @@
+Revision: 52c106059060bf2e551dd3c7179697bc399d1f0a
+Patch-set: 2
+File: compiler/optimizing/intrinsics_x86.cc
+
+1855:4-1855:13
+Wed Oct 21 19:19:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d953a2fb_d34ec6aa
+Bytes: 550
+I assume that there's no way to tell the register allocator to force base != expected and base != value or that it's not necessarily a good idea.
+
+Do we assume that expected != value because we specify expected == EAX and value = some (other) register? If so, we won't need to worry about the expected == value case. Leave a comment on this?
+
+It seems possible and legit to have expected == base, if we try to cas a field held by base from base to some other value? As in CAS(base, offset, base, foo). Should we handle this case rather than crashing?
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+1923:2-1923:11
+Wed Oct 21 19:19:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59725292_7767aa9d
+Bytes: 17
+Similar comments.
+
+1957:19-1957:22
+Wed Oct 21 19:19:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99784a71_99755ffc
+Bytes: 372
+Since we don't specify out == RAX for the x86_64 case, could we have out ==  value? If so, should we also check (or handle) the out == value case (or else the UnpoisonHeapReference below may overwrite out)?
+
+If we could happen to have out == RAX, should we also check (or handle) the expected == out == RAX case (or else the UnpoisonHeapReference below may overwrite out)?
+

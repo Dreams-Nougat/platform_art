@@ -34,3 +34,15 @@ UUID: 99784a71_f6df40c2
 Bytes: 98
 The destructor is more likely to crash on the second free, but I suppose it doesn't really matter.
 
+156:6-156:66
+Wed Oct 21 21:44:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99784a71_f6df40c2
+UUID: b9618ebd_a0d020b7
+Bytes: 383
+It should just set a destructed bit=true in the underlying arena memory (meaning it should've allocated extra memory from the arena).
+
+Then this destroyer can DCHECK(destructed bit = false) to prevent double frees.
+
+Use after free (not in a memory tool) would have to be done by overloading the operator-> or operator* which is probably not worth the effort for the scope of this CL.
+

@@ -16,6 +16,32 @@ UUID: 16e8a964_62f7d6bb
 Bytes: 22
 Why did you move this?
 
+517:0-517:6
+Wed Oct 21 10:29:16 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b60d1d2e_b7bd28ee
+UUID: 561ea15a_945ea452
+Bytes: 4
+Done
+
+515:0-517:92
+Wed Oct 21 10:29:16 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16e8a964_62f7d6bb
+UUID: 16e8a964_822d3ace
+Bytes: 345
+Leftover from a bigger change.
+
+I had more changes initially but I restricted the scope of the CL.
+
+It's easy to go to object for the return type if:
+
+Super foo(bool cond) { return cond ? new SubclassA() : new SubclassB(); }
+
+and we should still bound the type to Super.
+
+However NullConstants require workarounds and I opted  not to do it here.
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 118:0-118:41
@@ -24,6 +50,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b60d1d2e_77c9d08a
 Bytes: 49
 How about just checking if the worklist is empty?
+
+118:0-118:41
+Wed Oct 21 10:29:16 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b60d1d2e_77c9d08a
+UUID: 5947b23e_2c0b336a
+Bytes: 156
+We wouldn't be able to differentiate between a normal pass and a limited pass where the root has no reference dependents (the worklist will still be empty).
 
 File: compiler/optimizing/reference_type_propagation.h
 
@@ -34,10 +68,26 @@ UUID: 5947b23e_0cdcb745
 Bytes: 9
 propagate
 
+38:59-38:69
+Wed Oct 21 10:29:16 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5947b23e_0cdcb745
+UUID: 391bde5c_63054250
+Bytes: 4
+Done
+
 39:32-39:45
 Wed Oct 21 08:29:24 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 79739694_b5cce09c
 Bytes: 11
 start_from?
+
+39:32-39:45
+Wed Oct 21 10:29:16 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79739694_b5cce09c
+UUID: f97ea64f_81607a0e
+Bytes: 4
+Done
 

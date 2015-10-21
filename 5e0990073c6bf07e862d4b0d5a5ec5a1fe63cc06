@@ -76,6 +76,14 @@ I think I may have been unclear, I apologize for that.
 
 Of course it needs to call ~T(). However it's insufficient, as it also needs to do the delete operation.
 
+151
+Wed Oct 21 01:06:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9ec2e3d_e1f2fdc9
+UUID: 99f3ea1a_c5a8a9ce
+Bytes: 72
+I added a memset that should cause valgrind / address sanitizer to fail.
+
 File: runtime/dex_instruction.h
 
 251
@@ -319,6 +327,14 @@ Then there needs to be a check here
                 "Non-trivial types must be deleted");
 
 And anyway that only works because the string was changed to a StringPiece, what if someone comes in and adds another field later? It would shift the complexity to someone else to figure out what happened to all the deletes.
+
+187
+Wed Oct 21 01:06:01 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9f26ee4_3131a3cf
+UUID: 79d47637_e0da1fd5
+Bytes: 48
+That doesn't work to virtual methods. Any ideas?
 
 File: runtime/verifier/reg_type.h
 

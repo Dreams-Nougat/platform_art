@@ -1,0 +1,58 @@
+Revision: fcb6d2c149fc063ef964b559f22eef1de83de57d
+Patch-set: 13
+File: dex2oat/dex2oat.cc
+
+540
+Thu Oct 22 18:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 194a9a42_277268cf
+Bytes: 52
+Why? This seems to introduce unnecessary complexity.
+
+File: runtime/base/scoped_arena_allocator.h
+
+35:5-35:17
+Thu Oct 22 18:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d953a2fb_4485aed1
+Bytes: 94
+nit: enum class for new code
+
+it probably wouldn't hurt to specify the exact type size either.
+
+File: runtime/base/scoped_arena_containers.h
+
+216
+Thu Oct 22 18:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3942fe30_7f67979d
+Bytes: 160
+Would you mind explaining how this will help? There's nothing here that checks for kMagicFill, are we just hoping this will corrupt the data leading to a crash?
+
+224
+Thu Oct 22 18:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 369ccd29_5bc9438a
+Bytes: 85
+.
+
+  void operator()(T* ptr) const = delete
+
+would likely have a better error message
+
+File: runtime/verifier/reg_type_cache.cc
+
+166
+Thu Oct 22 18:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56a1415d_9cd6e524
+Bytes: 39
+Can you wrap this with ArenaUniquePtr ?
+
+346
+Thu Oct 22 18:07:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d953a2fb_44e20e89
+Bytes: 19
+nit: magic number 8
+

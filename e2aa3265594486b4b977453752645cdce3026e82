@@ -1,0 +1,28 @@
+Revision: e2aa3265594486b4b977453752645cdce3026e82
+Patch-set: 2
+File: runtime/base/stringpiece.h
+
+152
+Thu Oct 22 17:48:53 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19337ad8_c4cb52db
+Bytes: 139
+Why not just 
+
+   return strncmp(data(), rhs.data(), std::min(size(), rhs.size())
+
+(which is very similar to what operator== already does).
+
+File: runtime/mirror/class.cc
+
+580
+Thu Oct 22 17:48:53 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3942fe30_df2c0b69
+Bytes: 158
+This can overflow, please fix
+
+   size_t mid = low + ((high - low) / 2);
+
+http://googleresearch.blogspot.com/2006/06/extra-extra-read-all-about-it-nearly.html
+

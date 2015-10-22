@@ -44,6 +44,14 @@ Let's make both of them consistent, why don't we?
 ----
 I would weakly vote for using the operator== behavior because a) it's what we were already doing and what the rest of the code relies on, b) it's a string which means 0-terminated in C++ land, c) we would want to call it a vectorpiece or similar if it was just arbitrary byte array slice.
 
+152
+Thu Oct 22 19:58:01 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16d269e7_92b79cbd
+UUID: 16e8a964_459f3ca5
+Bytes: 263
+I would vote for implementing the operator==(const StringPiece&, const char*) by forwarding to operator==(const StringPiece&, const StringPiece&). Or, given the conversion constructor StringPiece(const char*), I would just delete the operators taking const char*.
+
 File: runtime/mirror/class.cc
 
 580

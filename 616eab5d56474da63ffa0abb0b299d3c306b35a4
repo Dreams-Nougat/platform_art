@@ -1,0 +1,29 @@
+Revision: 616eab5d56474da63ffa0abb0b299d3c306b35a4
+Patch-set: 11
+File: runtime/base/stl_util.h
+
+157:6-157:97
+Thu Oct 22 09:59:14 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16e8a964_25c8b883
+Bytes: 109
+And you have tied this closely to the Arena. Now it really needs to be renamed and moved to the arena header.
+
+168:28-168:31
+Thu Oct 22 09:59:14 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f97ea64f_e1a78628
+Bytes: 44
+The definition is still here, please remove.
+
+File: runtime/verifier/method_verifier.h
+
+732:2-732:53
+Thu Oct 22 09:59:14 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16e8a964_65cec095
+Bytes: 385
+This is also wrong. This will destroy the first flags but not the rest. I know the destructor is trivial but it's conceptually very wrong.
+
+Let's use a raw pointer for this CL and we can change this later if we come up with an acceptable wrapper. DestroyOnlyUniquePtr<InstructionFlags> is not acceptable and DestroyOnlyUniquePtr<InstructionFlags[]> is unimplementable without overhead.
+

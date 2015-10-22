@@ -29,6 +29,21 @@ UUID: 79739694_f8180dbe
 Bytes: 91
 That looks like ignoring the tail and stopping on embedded zeros (we want "x\0y" < "x\0z").
 
+152
+Thu Oct 22 19:50:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79739694_f8180dbe
+UUID: 16d269e7_92b79cbd
+Bytes: 476
+I'm glad you brought this up. I think this needs to be fixed.
+
+Right now operator== uses strncmp so it will treat "x\0y" == "x\0z"
+
+Let's make both of them consistent, why don't we?
+
+----
+I would weakly vote for using the operator== behavior because a) it's what we were already doing and what the rest of the code relies on, b) it's a string which means 0-terminated in C++ land, c) we would want to call it a vectorpiece or similar if it was just arbitrary byte array slice.
+
 File: runtime/mirror/class.cc
 
 580

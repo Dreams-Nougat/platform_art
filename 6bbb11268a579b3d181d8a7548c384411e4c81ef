@@ -1,0 +1,24 @@
+Revision: 6bbb11268a579b3d181d8a7548c384411e4c81ef
+Patch-set: 1
+File: compiler/utils/arm/assembler_thumb2.cc
+
+391:0-391:32
+Thu Oct 22 23:41:40 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 369ccd29_81b43e57
+Bytes: 469
+MIPS32 optimizing compiler has just been accepted, so this pair of calls (DelayEmittingAdvancePCs() and EmitDelayedAdvancePCs()) needs to be added into the MIPS32 version as well.
+
+In order to test this on MIPS32 you should go to MipsAssembler::PromoteBranches() and change branch.PromoteIfNeeded() to branch.PromoteIfNeeded(128). This change will cause many branches to become long and therefore require CFI record updates. This is how I hit a failure in test 137-cfi.
+
+File: compiler/utils/assembler.h
+
+319:0-326:3
+Thu Oct 22 23:41:40 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3675adb9_f9b60f62
+Bytes: 366
+I'm not sure it's a very good idea to move it here, because it ties the generic assembler to a particular type of labels. MIPS uses a different type for label and does not need label position adjustments of this kind.
+
+If you want to keep this method here, there should be a [D]CHECK() and/or a comment on the applicability of this method to different architectures.
+

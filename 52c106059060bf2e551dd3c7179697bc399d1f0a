@@ -23,6 +23,22 @@ I don't think we need to say to the register allocator that base should be diffe
 
 And because we ask expected to be in EAX, the current guarantees given by the register allocator is that base and value will be in a different one.
 
+1855:4-1855:13
+Thu Oct 22 10:40:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d953a2fb_d34ec6aa
+UUID: 16e8a964_627c76e5
+Bytes: 282
+As Nicolas said, because we're assigning EAX to `expected` (line 1817), other automatically assigned locations should not use it.
+
+I have added comments to document these assertions.
+
+I also added the following assertion:
+
+  DCHECK_NE(value, expected);
+
+(as well as an explanation).
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 1923:2-1923:11
@@ -31,6 +47,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59725292_7767aa9d
 Bytes: 17
 Similar comments.
+
+1923:2-1923:11
+Thu Oct 22 10:40:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59725292_7767aa9d
+UUID: 962499a5_96310cd2
+Bytes: 56
+I added comments here as well to explain the assertions.
 
 1957:19-1957:22
 Wed Oct 21 19:19:29 2015 +0000
@@ -48,4 +72,12 @@ Parent: 99784a71_99755ffc
 UUID: 5947b23e_8cf7c741
 Bytes: 111
 Right now, out != value because the default is that out and value may overlap so cannot have the same register.
+
+1957:19-1957:22
+Thu Oct 22 10:40:18 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99784a71_99755ffc
+UUID: f97ea64f_c11d2207
+Bytes: 70
+I have added more assertions (with explanations) to cover these cases.
 

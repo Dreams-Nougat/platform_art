@@ -17,6 +17,27 @@ UUID: 19337ad8_e44e96aa
 Bytes: 158
 Maybe it would be OK if we put a fence at the end of object scanning? Every read goes through slow path until we set the read barrier flag from grey -> white.
 
+1652:18-1652:61
+Thu Oct 22 18:07:04 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19337ad8_e44e96aa
+UUID: 56a1415d_fcd92955
+Bytes: 417
+I think this is okay.
+
+We update each field of an object with a relaxed CAS (what we do in this function) and then use a release CAS (see object-inl.h) to switch the object from gray to black/white.
+
+This release CAS will make the updated fields visible. If a mutator sees a stale field value before this release CAS, it will take the read barrier slow path and get the correct value (since the object is still gray.)
+
+File: runtime/mirror/object-inl.h
+
+187:12-187:34
+Thu Oct 22 18:07:04 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19337ad8_e46f7629
+Bytes: 24
+This is the release CAS.
+
 File: runtime/read_barrier-inl.h
 
 66:13-66:67

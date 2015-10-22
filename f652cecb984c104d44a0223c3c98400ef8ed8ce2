@@ -2,6 +2,24 @@ Revision: f652cecb984c104d44a0223c3c98400ef8ed8ce2
 Patch-set: 6
 File: compiler/optimizing/code_generator_mips.cc
 
+2160:0-2162:85
+Thu Oct 22 23:15:38 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6661112_5b5db7d4
+Bytes: 75
+Overly complicated.
+
+  if (use_imm && IsInt<16>(rhs_imm)) {
+
+is sufficient.
+
+2168:37-2168:84
+Thu Oct 22 23:15:38 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6661112_3b4a431e
+Bytes: 126
+Unnecessary subtraction as it does not modify the 16 least significant bits, which sltiu uses. IOW, we don't need the if/else.
+
 2160:6-2169:9
 Thu Oct 22 17:18:11 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,4 +42,18 @@ Parent: 7938f6b0_300b866a
 UUID: 16e8a964_651800fd
 Bytes: 127
 I would prefer a Java or Smali-based run-test, making use of arch-specific Checker assertions, if possible.  Thanks in advance!
+
+2190:10-2191:86
+Thu Oct 22 23:15:38 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3675adb9_b9589717
+Bytes: 36
+IsInt<16>(rhs_imm + 1) is sufficient
+
+2199:40-2199:88
+Thu Oct 22 23:15:38 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56a1415d_bf32b38a
+Bytes: 6
+Ditto.
 

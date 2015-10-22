@@ -27,6 +27,14 @@ If you looked at diff PS8 PS13 and see this as changed, it's because PS9 was reb
 
 (This is the reason why I recommend rebasing only when necessary. It makes incremental reviews easier. I often rebase onto the parent of the previous PS before upload if there are no conflicts.)
 
+540
+Thu Oct 22 20:05:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b60d1d2e_9761043c
+UUID: 56a1415d_bc67219e
+Bytes: 23
+Ah, yeah, rebase.. fun.
+
 File: runtime/base/scoped_arena_allocator.h
 
 35:5-35:17
@@ -98,6 +106,30 @@ Parent: 56a1415d_9cd6e524
 UUID: f66f95e4_7920c7e3
 Bytes: 114
 You mean return ArenaUniquePtr? That doesnt help much since we don't have a StringPiece that holds ArenaUniquePtr.
+
+166
+Thu Oct 22 20:05:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66f95e4_7920c7e3
+UUID: 56a1415d_5cc61dd7
+Bytes: 548
+This is just very scary because the "ptr" on 167 is never freed explicitly so I'm worried about dangling pointers to the arena's memory pool later.
+
+------
+
+What if we had an ArenaStringPiece that e.g. held an ArenaUniquePtr?
+
+For example
+
+   struct ArenaStringPiece : public StringPiece {
+       ArenaStringPiece() {
+           StringPiece::ptr_ = string_data_.get();
+           StringPiece::length_ = strlen(StringPiece::ptr_);
+       }
+       // + move and assign-move operators
+     private:
+       ArenaUniquePtr<const char> string_data_;
+   }
 
 346
 Thu Oct 22 18:07:10 2015 +0000

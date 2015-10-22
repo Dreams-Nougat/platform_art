@@ -13,6 +13,14 @@ Why not just
 
 (which is very similar to what operator== already does).
 
+152
+Thu Oct 22 18:06:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19337ad8_c4cb52db
+UUID: 3942fe30_9f18c318
+Bytes: 62
+strncmp has to check for null characters, its probably slower.
+
 File: runtime/mirror/class.cc
 
 580
@@ -25,4 +33,12 @@ This can overflow, please fix
    size_t mid = low + ((high - low) / 2);
 
 http://googleresearch.blogspot.com/2006/06/extra-extra-read-all-about-it-nearly.html
+
+580
+Thu Oct 22 18:06:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3942fe30_df2c0b69
+UUID: 369ccd29_9bd6eb24
+Bytes: 140
+It actually cant, consider that sizeof(ArtField) > 4 bytes. Therefore on 4GB ram, you can have at most 1B of them which wont cause overflow.
 

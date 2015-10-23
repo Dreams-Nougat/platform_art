@@ -44,6 +44,14 @@ UUID: 76dac536_038072c0
 Bytes: 116
 You can lose writes if two threads are marking bits to the same word in the bitmap if you dont use AtomicTestAndSet.
 
+297:15-297:18
+Fri Oct 23 22:16:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76dac536_038072c0
+UUID: f69a3588_e1cda697
+Bytes: 62
+Ah good to know, will change to AtomicTestAndSet then, thanks!
+
 312:7-312:10
 Fri Oct 23 19:25:01 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,6 +77,14 @@ UUID: 36e4cdf6_417a767a
 Bytes: 134
 Do you want to clear the live bitmap? If this is not done, the things which end up marked will be held live permanantly in future GCs.
 
+332
+Fri Oct 23 22:16:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36e4cdf6_417a767a
+UUID: 56b5c1f6_7cb4990a
+Bytes: 125
+Yeah that was the intent of the Clear call below on the individual bit. Should I use Bitmap::Clear() for clearing everything?
+
 357
 Fri Oct 23 22:08:17 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -76,12 +92,30 @@ UUID: 36e4cdf6_6196921b
 Bytes: 151
 Is there a race here with multiple JIT compiler threads where a thread could compile a method, set the entry point, but not have the live/mark bit set?
 
+357
+Fri Oct 23 22:16:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36e4cdf6_6196921b
+UUID: 1683491e_8ab3ab22
+Bytes: 143
+Good catch. Adding a WaitForPotentialGCToComplete or maybe just marking the bit if we see a GC when setting an entry point should fix it. WDYT?
+
 363:19-363:35
 Fri Oct 23 21:55:21 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 36e4cdf6_2111ea6a
 Bytes: 227
 Iterating over this is probably not safe since the ArtMethod pointers may have been class unloaded, any idea how to deal with this? Maybe I should add a sweeping phase that removes ArtMethods that have an unmarked class loader.
+
+363:19-363:35
+Fri Oct 23 22:16:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36e4cdf6_2111ea6a
+UUID: 7671e51a_85b3a222
+Bytes: 375
+Two options I think:
+1) We don't do much with the ArtMethod if the bit is not set: we clear the counter of the method and we dcheck the entrypoint. We could decide on not doing anything by removing the dcheck and have a different strategy for counting again in the interpreter.
+2) We could have a hook when the class loader is being deleted to clear the methods in the cache.
 
 372:25-372:30
 Fri Oct 23 19:25:01 2015 +0000
@@ -105,6 +139,14 @@ Parent: 7671e51a_25a58edc
 UUID: 96df3923_21af2806
 Bytes: 106
 Hiroshi means that you alrady know the live bit is not set since that is what is checked in the condition.
+
+372:25-372:30
+Fri Oct 23 22:16:42 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96df3923_21af2806
+UUID: d67c51f3_a8d95b56
+Bytes: 64
+Yup got things mixed up, this should have been in the if branch.
 
 File: runtime/jit/jit_code_cache.h
 

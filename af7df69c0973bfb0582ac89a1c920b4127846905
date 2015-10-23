@@ -1,0 +1,106 @@
+Revision: af7df69c0973bfb0582ac89a1c920b4127846905
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm.cc
+
+5402:4-5402:16
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76c00516_4d75198a
+Bytes: 17
+Obsolete comment?
+
+File: compiler/utils/arm/assembler_arm.h
+
+83:88-83:94
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76c00516_6d7a557b
+Bytes: 96
+Still needs a std::move(), named parameter "labels" is considered an lvalue here despite the &&.
+
+File: compiler/utils/arm/assembler_arm32.cc
+
+1397:4-1397:58
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6db7104_502dacca
+Bytes: 44
+This should precede the current else branch.
+
+1398:10-1398:12
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6b7ddb4_a705ca53
+Bytes: 2
+rn
+
+File: compiler/utils/arm/assembler_thumb2.cc
+
+259:29-259:43
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56cf8147_6c325b2c
+Bytes: 9
+orig_size
+
+1921
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6defdf4_0f4e25ab
+Bytes: 55
+LOG(FATAL) + UNREACHABLE()? Or do we actually get here?
+
+3435:28-3435:30
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96c57926_0ea06b99
+Bytes: 95
+This should be kNoRegister. Or we could use the ShifterOperandCanAlwaysHold() added by Nicolas.
+
+3439:4-3439:66
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6b451b2_e89cf336
+Bytes: 44
+This should precede the current else branch.
+
+3440:10-3440:12
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6b451b2_88a9b753
+Bytes: 2
+rn
+
+3669:28-3669:69
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6defdf4_cf57bd3a
+Bytes: 17
+std::move(labels)
+
+3688
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96c57926_ae903748
+Bytes: 149
+The 32-bit ADD does not permit PC as input, only as output, so this would have to use
+
+    SUB ip, pc, #0  # special case of ADR
+    ADD pc, ip, reg.
+
+3696
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96ae5964_0627faec
+Bytes: 32
+and another Emit32(), see above.
+
+File: compiler/utils/arm/assembler_thumb2.h
+
+653:20-653:61
+Fri Oct 23 12:35:54 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6b451b2_28c9ab40
+Bytes: 200
+This is creating an extra temporary. You could add the && as in std::forward<std::vector<Label*>&&>(labels) but I'd prefer simply std::move(labels). (And that will take care of the line length limit.)
+

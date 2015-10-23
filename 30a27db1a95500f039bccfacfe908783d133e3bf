@@ -117,6 +117,14 @@ Two options I think:
 1) We don't do much with the ArtMethod if the bit is not set: we clear the counter of the method and we dcheck the entrypoint. We could decide on not doing anything by removing the dcheck and have a different strategy for counting again in the interpreter.
 2) We could have a hook when the class loader is being deleted to clear the methods in the cache.
 
+363:19-363:35
+Fri Oct 23 23:00:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7671e51a_85b3a222
+UUID: 96df3923_84f80a30
+Bytes: 197
+If the ArtMethod's linear alloc has been freed then it could cause corruption to clear the counter. I think clearing ArtMethods as we perform unloading might be OK. I'll try to implement that soon.
+
 372:25-372:30
 Fri Oct 23 19:25:01 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -147,6 +155,14 @@ Parent: 96df3923_21af2806
 UUID: d67c51f3_a8d95b56
 Bytes: 64
 Yup got things mixed up, this should have been in the if branch.
+
+372:25-372:30
+Fri Oct 23 23:00:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d67c51f3_a8d95b56
+UUID: f6ceb575_2aa0e3cb
+Bytes: 116
+I think its better to clear the whole bitmap at the end of the GC since that will madvise dirty pages in the bitmap.
 
 File: runtime/jit/jit_code_cache.h
 

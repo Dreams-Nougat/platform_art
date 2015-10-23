@@ -11,6 +11,14 @@ Would it make sense to have this line in jit_code_cache.cc rather than here beca
 
 (If you feel like it, I think it's an option to try to move this class to a more generic location, outside of gc/. Mathieu? No problem not to do that in this CL though.)
 
+95:15-95:32
+Fri Oct 23 21:00:25 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16b509da_1a229d75
+UUID: 16c1896c_fa9f898c
+Bytes: 175
+I think I need it here because that's where the template methods of MemoryRangeBitmap are (to avoid stl template instantiation errors). I agree having it elsewhere is cleaner.
+
 File: runtime/jit/jit_code_cache.cc
 
 297:15-297:18
@@ -19,6 +27,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76dac536_5d717b0b
 Bytes: 129
 I think this should use the parallel version AtomicTestAndSetBit() as multiple runnable threads could try to set in a checkpoint.
+
+297:15-297:18
+Fri Oct 23 21:00:25 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76dac536_5d717b0b
+UUID: 56b5c1f6_bca901b8
+Bytes: 65
+Why could it be a problem that multiple threads set the same bit?
 
 312:7-312:10
 Fri Oct 23 19:25:01 2015 +0000
@@ -44,6 +60,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56e941ce_bce0c180
 Bytes: 47
 Is this necessary? We just checked if it's set?
+
+372:25-372:30
+Fri Oct 23 21:00:25 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56e941ce_bce0c180
+UUID: 7671e51a_25a58edc
+Bytes: 41
+Isn't it necessary for the next GC round?
 
 File: runtime/jit/profiling_info.cc
 

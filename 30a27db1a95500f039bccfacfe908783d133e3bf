@@ -1,0 +1,56 @@
+Revision: 30a27db1a95500f039bccfacfe908783d133e3bf
+Patch-set: 3
+File: runtime/gc/accounting/bitmap.cc
+
+95:15-95:32
+Fri Oct 23 19:25:01 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16b509da_1a229d75
+Bytes: 314
+Would it make sense to have this line in jit_code_cache.cc rather than here because jit_code_cache depends on bitmap, not the other way around?
+
+(If you feel like it, I think it's an option to try to move this class to a more generic location, outside of gc/. Mathieu? No problem not to do that in this CL though.)
+
+File: runtime/jit/jit_code_cache.cc
+
+297:15-297:18
+Fri Oct 23 19:25:01 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76dac536_5d717b0b
+Bytes: 129
+I think this should use the parallel version AtomicTestAndSetBit() as multiple runnable threads could try to set in a checkpoint.
+
+312:7-312:10
+Fri Oct 23 19:25:01 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16b509da_fa8ec9bc
+Bytes: 109
+How about adding
+
+CHECK(thread == self || thread->IsSuspended());
+
+like the other checkpoint closure classes?
+
+326:2-326:6
+Fri Oct 23 19:25:01 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6b795e1_b94e1f56
+Bytes: 214
+Would we want to LOG instead VLOG if a non-debug build? This should happen rarely in production but if it happens, it may be worth warning as performance could degrade noticeably and someone may want to know about?
+
+372:25-372:30
+Fri Oct 23 19:25:01 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56e941ce_bce0c180
+Bytes: 47
+Is this necessary? We just checked if it's set?
+
+File: runtime/jit/profiling_info.cc
+
+89:53-89:74
+Fri Oct 23 19:25:01 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6d53101_20d00ab6
+Bytes: 103
+Do you mind changing this to "Read()" (enabling the read barrier)? Or I'll make this change separately.
+

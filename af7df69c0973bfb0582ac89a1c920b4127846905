@@ -210,3 +210,28 @@ UUID: 36e4cdf6_db359376
 Bytes: 58
 +iam. I thought this was the correct usage for forwarding.
 
+653:20-653:61
+Sat Oct 24 01:12:18 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36e4cdf6_db359376
+UUID: d6ae1193_217f349c
+Bytes: 707
+std::forward should only be used with forwarding references (templated references that "look like" T&&)
+
+when it's not templated like this, std::move is strongly preferred
+
+   JumpTable(std::move(labels), ...
+
+the reason we don't need the && for forward inside of templated code is because the T already has it
+
+   foo( 0 + 1 );
+
+   template<typename T>
+   void foo(T&& bar) {
+     // T == int&& already
+     // but bar is an lvalue to an rvalue reference
+     // int&& && bar == int&& bar
+   }
+
+In fact using std::forward should only be necessary when we know for sure the function being forwarded to can take a multitude of lvalue and rvalue references overloads, otherwise it's just obscuring the intent.
+

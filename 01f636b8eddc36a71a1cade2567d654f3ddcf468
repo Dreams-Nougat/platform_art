@@ -1,0 +1,29 @@
+Revision: 01f636b8eddc36a71a1cade2567d654f3ddcf468
+Patch-set: 1
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+1452:0-1464:21
+Mon Oct 26 13:58:15 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6b19df3_b73b8890
+Bytes: 97
+Load aquire seems a better solution to me. Alternatively DMB ISHLD after the ldr would also work.
+
+1470
+Mon Oct 26 13:58:15 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36920d67_6b7e819d
+Bytes: 251
+#if THREAD_LOCAL_ALLOC_STACK_END_OFFSET != (THREAD_LOCAL_ALLOC_STACK_TOP_OFFSET + __SIZEOF_POINTER__)
+#error "The assumption below that we can use ldrd from the STACK_TOP is invalid."
+#endif
+
+ldrd, x3, x4, [xSELF, #THREAD_LOCAL_ALLOC_STACK_TOP_OFFSET]
+
+1531
+Mon Oct 26 13:58:15 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36b04d09_5b3e83f2
+Bytes: 47
+And with the above dmb this can be an dmb ishst
+

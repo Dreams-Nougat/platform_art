@@ -52,6 +52,14 @@ UUID: f69a3588_e1cda697
 Bytes: 62
 Ah good to know, will change to AtomicTestAndSet then, thanks!
 
+297:15-297:18
+Mon Oct 26 14:27:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f69a3588_e1cda697
+UUID: 36b04d09_1bed9be4
+Bytes: 4
+Done
+
 312:7-312:10
 Fri Oct 23 19:25:01 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,12 +71,28 @@ CHECK(thread == self || thread->IsSuspended());
 
 like the other checkpoint closure classes?
 
+312:7-312:10
+Mon Oct 26 14:27:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16b509da_fa8ec9bc
+UUID: 36b04d09_fb1aefb5
+Bytes: 4
+Done
+
 326:2-326:6
 Fri Oct 23 19:25:01 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f6b795e1_b94e1f56
 Bytes: 214
 Would we want to LOG instead VLOG if a non-debug build? This should happen rarely in production but if it happens, it may be worth warning as performance could degrade noticeably and someone may want to know about?
+
+326:2-326:6
+Mon Oct 26 14:27:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6b795e1_b94e1f56
+UUID: 36b04d09_db1f33a4
+Bytes: 4
+Done
 
 332
 Fri Oct 23 22:08:17 2015 +0000
@@ -85,6 +109,14 @@ UUID: 56b5c1f6_7cb4990a
 Bytes: 125
 Yeah that was the intent of the Clear call below on the individual bit. Should I use Bitmap::Clear() for clearing everything?
 
+332
+Mon Oct 26 14:27:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56b5c1f6_7cb4990a
+UUID: 36b04d09_bb146789
+Bytes: 4
+Done
+
 357
 Fri Oct 23 22:08:17 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -99,6 +131,14 @@ Parent: 36e4cdf6_6196921b
 UUID: 1683491e_8ab3ab22
 Bytes: 143
 Good catch. Adding a WaitForPotentialGCToComplete or maybe just marking the bit if we see a GC when setting an entry point should fix it. WDYT?
+
+357
+Mon Oct 26 14:27:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1683491e_8ab3ab22
+UUID: 1698a98e_e2312627
+Bytes: 190
+Actually, I don't think we have a problem. We only set the entry point when we have the lock. And we only have the lock if there is no collection in progress. I added a DCHECK in CommitCode.
 
 363:19-363:35
 Fri Oct 23 21:55:21 2015 +0000
@@ -124,6 +164,14 @@ Parent: 7671e51a_85b3a222
 UUID: 96df3923_84f80a30
 Bytes: 197
 If the ArtMethod's linear alloc has been freed then it could cause corruption to clear the counter. I think clearing ArtMethods as we perform unloading might be OK. I'll try to implement that soon.
+
+363:19-363:35
+Mon Oct 26 14:27:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96df3923_84f80a30
+UUID: 16c1896c_da1f25a4
+Bytes: 147
+Turns out it's more the changing of all entry points to interpreter that will be problematic. I've added the hook form the class loader destructor.
 
 372:25-372:30
 Fri Oct 23 19:25:01 2015 +0000
@@ -188,4 +236,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6d53101_20d00ab6
 Bytes: 103
 Do you mind changing this to "Read()" (enabling the read barrier)? Or I'll make this change separately.
+
+89:53-89:74
+Mon Oct 26 14:27:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6d53101_20d00ab6
+UUID: 36b04d09_9b19abc1
+Bytes: 4
+Done
 

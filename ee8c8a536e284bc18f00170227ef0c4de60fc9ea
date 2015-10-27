@@ -1,0 +1,41 @@
+Revision: ee8c8a536e284bc18f00170227ef0c4de60fc9ea
+Patch-set: 2
+File: compiler/optimizing/code_generator_mips64.cc
+
+747:6-747:20
+Tue Oct 27 10:01:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c1896c_faf8a933
+Bytes: 339
+What about using a strategy similar to the one you used in lines 1765–1774, that is:
+* introducing `GpuRegister value = ZERO;` instead;
+* if the source constant is non-null, set `value` to TMP and load the constant in that register;
+* replace `value ? TMP : ZERO` with `value` on line 759?
+
+(This can also be done on other places below.)
+
+753
+Tue Oct 27 10:01:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f69a3588_c10ce2c3
+Bytes: 47
+Add
+
+  DCHECK(destination.IsDoubleStackSlot());
+
+804:45-804:53
+Tue Oct 27 10:01:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1683491e_ea3187d0
+Bytes: 11
+Not needed.
+
+872
+Tue Oct 27 10:01:37 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f69a3588_6104f697
+Bytes: 44
+Add
+
+  DCHECK(location.IsDoubleStackSlot());
+

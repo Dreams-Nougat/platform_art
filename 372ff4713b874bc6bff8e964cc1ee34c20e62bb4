@@ -1,0 +1,26 @@
+Revision: 372ff4713b874bc6bff8e964cc1ee34c20e62bb4
+Patch-set: 2
+File: dexdump/dexdump.cc
+
+821:4-821:27
+Tue Oct 27 09:41:35 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c1896c_bad911e2
+Bytes: 132
+Any particular reason for placing this case here, instead of placing it e.g. after the `k22c` case (i.e. between lines 750 and 751)?
+
+827:0-831:11
+Tue Oct 27 09:41:35 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c1896c_9ade4dc6
+Bytes: 247
+What about something like:
+
+  fprintf(gOutFile, (i == 0 ? "v%d" : ", v%d"), arg[Instruction::kLambdaVirtualRegisterWidth + i]);
+
+?  Or even:
+
+  fprintf(gOutFile, "%sv%d", (i == 0 ? "" : ", "), arg[Instruction::kLambdaVirtualRegisterWidth + i]);
+
+?
+

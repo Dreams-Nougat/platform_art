@@ -9,3 +9,16 @@ UUID: b688bda5_fff63f8b
 Bytes: 14
 otherwise... ?
 
+9:0-9:50
+Wed Oct 28 21:54:53 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b688bda5_fff63f8b
+UUID: 56c4e1d1_ea976383
+Bytes: 670
+Otherwise, as soon as things are re-ordered a bit, this can actually break. You should not force alignment of pointer-sized values to 4, ever. The right value is 8 on 64-bit. For C code it wouldn't matter - the compiler will put in an unaligned load, if necessary. But we assume in managed code that entrypoints can be loaded with a simple load.
+
+It works right now because the 64-bit tls before-hand always aligns large enough. But for example for my read-only entrypoints prototype, things had to be reordered, and lo and behold, things were broken.
+
+
+I don't think either of these paragraphs should be in the commit message, though. Maybe you can help to condense it?
+

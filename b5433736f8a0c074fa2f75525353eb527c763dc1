@@ -9,6 +9,16 @@ UUID: 16826951_92787cb1
 Bytes: 22
 was that a bug before?
 
+28:57-28:81
+Wed Oct 28 17:42:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16826951_92787cb1
+UUID: d6d0d18a_88fd1723
+Bytes: 380
+Good question. No bug, but the old code was too conservative. I found a few test cases where a definition went from one loop to another, but neither loop was nested in the other. The new implementation detects that too.
+
+I even have a unit test for that, but without the BCE part that is a bit harder to test exactly. So if you are okay, I will add that unit test to the other CL.
+
 File: compiler/optimizing/induction_var_range.cc
 
 155:59-155:63
@@ -17,4 +27,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16826951_b27d80a0
 Bytes: 16
 why this change?
+
+155:59-155:63
+Wed Oct 28 17:42:49 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16826951_b27d80a0
+UUID: 7621e584_45068a38
+Bytes: 182
+See the other file. When we just had the TC expression, it made sense to just use b (just like neg). Now that we have top test and TC, I thought the a/b order was a bit more logical.
 

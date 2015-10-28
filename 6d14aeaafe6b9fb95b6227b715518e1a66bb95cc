@@ -9,12 +9,28 @@ UUID: f636b56e_27aa9e47
 Bytes: 102
 Wouldn't this mean reading out of bounds? The check should be before you read the lookup_table_offset.
 
+553:4-558:5
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f636b56e_27aa9e47
+UUID: 36a68d28_eb9f715a
+Bytes: 17
+Addressed in PS6.
+
 559:4-561:18
 Wed Oct 28 03:02:28 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 964739ec_04a51adb
 Bytes: 121
 Where's the check that this isn't out of bounds? And where do we ensure that the complete table isn't running over End()?
+
+559:4-561:18
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 964739ec_04a51adb
+UUID: 769c85d8_ad957d40
+Bytes: 17
+Addressed in PS6.
 
 File: runtime/type_lookup_table.cc
 
@@ -34,4 +50,12 @@ UUID: 76fd65bf_0b3201d5
 Bytes: 125
 Why would not inline this method?
 It used only in DexFile::FindClassDef(const char*) and called very often during app launch.
+
+44:11-44:17
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76fd65bf_0b3201d5
+UUID: 76c565cc_e54dd6ae
+Bytes: 109
+I just remeasured the speed up, FindClassDef is around 20% faster if Lookup is inlined. Probably worth doing.
 

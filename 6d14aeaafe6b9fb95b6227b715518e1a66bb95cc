@@ -1,0 +1,27 @@
+Revision: 6d14aeaafe6b9fb95b6227b715518e1a66bb95cc
+Patch-set: 5
+File: runtime/oat_file.cc
+
+553:4-558:5
+Wed Oct 28 03:02:28 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f636b56e_27aa9e47
+Bytes: 102
+Wouldn't this mean reading out of bounds? The check should be before you read the lookup_table_offset.
+
+559:4-561:18
+Wed Oct 28 03:02:28 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 964739ec_04a51adb
+Bytes: 121
+Where's the check that this isn't out of bounds? And where do we ensure that the complete table isn't running over End()?
+
+File: runtime/type_lookup_table.cc
+
+52:2-52:49
+Wed Oct 28 03:02:28 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56fce1c4_8dc8493e
+Bytes: 202
+This needs to change. This can potentially read out of bounds (see the comment in oat_file). (I think it's fine to check here, where you can have logic for the size, and then return nullptr on failure.)
+

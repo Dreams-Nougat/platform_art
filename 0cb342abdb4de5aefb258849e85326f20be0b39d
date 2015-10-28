@@ -11,6 +11,14 @@ Line too long.
 
 We usually stick to just 60 characters in commit message but I'm OK with 76 for reading git log on an 80-column terminal. This one is over 100.
 
+14
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d685318b_20ddea41
+UUID: 36a68d28_2b8a191d
+Bytes: 4
+Done
+
 File: compiler/oat_writer.h
 
 71
@@ -20,6 +28,14 @@ UUID: b688bda5_bf1f57a4
 Bytes: 51
 Please update the layout comment with the new data.
 
+71
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b688bda5_bf1f57a4
+UUID: 76c565cc_6594463d
+Bytes: 4
+Done
+
 File: runtime/dex_file.cc
 
 423
@@ -28,6 +44,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3694cdc0_fb000f50
 Bytes: 14
 Line too long.
+
+423
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3694cdc0_fb000f50
+UUID: 769c85d8_cda449b0
+Bytes: 4
+Done
 
 497:0-502:3
 Wed Oct 28 16:01:35 2015 +0000
@@ -54,6 +78,14 @@ Sorry, I don't understand what do you mean: "for runtime cases, use the index, o
 There are no reasons to build lookup table only for speedup compilation.
 Also I notice that lookup table uses less memory then Index and this memory is read only.
 
+497:0-502:3
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96cad9dc_66b8ceac
+UUID: f6d955b5_a9745d8f
+Bytes: 163
+It doesn't really use more memory, especially on 64bit. On 32 bit it is probably similar space usage depending on load factor vs rounding up to nearest power of 2.
+
 508:0-511:72
 Wed Oct 28 16:01:35 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -62,4 +94,12 @@ Bytes: 460
 This is really sub-optimal. The number of strings is usually an order of magnitude higher than the number of types, so the first binary search is doing about 3 more string comparisons than needed if we provide a "FindTypeId(const char* descriptor)", and it's also bringing non-type strings into cache.
 
 Maybe we should start by improving this slow path and then benchmark against that to assess whether the lookup table (and/or the "Index") is actually needed.
+
+508:0-511:72
+Wed Oct 28 16:56:25 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66795cb_59be63e9
+UUID: 769c85d8_4d033927
+Bytes: 264
+Nice catch, I just implemented the FindTypeId that binary searches on the string contents. However, based on my measurements this regresses FindClassDef by around 20x (10% total perf time vs 0.5%) compared to the hash table (compile 100k APKs with interpret-only).
 

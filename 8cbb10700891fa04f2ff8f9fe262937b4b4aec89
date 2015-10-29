@@ -1,0 +1,57 @@
+Revision: 8cbb10700891fa04f2ff8f9fe262937b4b4aec89
+Patch-set: 6
+File: test/960-default-smali/build
+
+29:6-29:10
+Thu Oct 29 22:32:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 760e462a_d7b09c4c
+Bytes: 15
+s/$JACK/"$JACK"
+
+29:43-29:44
+Thu Oct 29 22:32:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7643a650_ef84e133
+Bytes: 62
+>& /dev/null
+
+in case they decided to print extra stuff later.
+
+41
+Thu Oct 29 22:32:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 562a227b_0ea04bc1
+Bytes: 703
+I'm not a big fan of this approach, $@ starts out as a proper array and now it gets newtered into a string (which can insert extra spaces we don't want).
+
+If we used ARGS_EXTRA="--no-smali" here
+
+then 44 can look like
+
+  ./default_build "$@" "$ARGS_EXTRA" --experimental --default-methods
+
+This is the simplest fix.
+
+.........
+
+If you like the current approach of extra variables, it should look more like
+
+
+   ARGS=("$@")  ## Maintains array-ness
+   ...
+   ARGS+=('--no-smali') ## Append without losing array-ness
+   ...
+   ## Properly forward array flags to default-build without 
+   ## injecting extra spaces where there were none before
+   ./default_build "${ARGS[@]}" --experimental default-methods
+
+File: test/964-default-iface-init-generated/build
+
+20
+Thu Oct 29 22:32:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 760e462a_57c5acaf
+Bytes: 9
+ARGS="$@"
+

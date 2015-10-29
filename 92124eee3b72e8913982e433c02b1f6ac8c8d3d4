@@ -25,3 +25,20 @@ UUID: 96cad9dc_3ae42994
 Bytes: 233
 I'm tempted to side with Mingyao because it can be called on instructions defined after the loop, or as he says independently of the loop. Perhaps a different name would be better - IsIndependentOfLoop or something along those lines.
 
+579
+Thu Oct 29 01:38:10 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96cad9dc_3ae42994
+UUID: 56ab01f0_f5d90ae1
+Bytes: 732
+Well, arguably it is strange to test invariance of an instruction that does not reach the loop at all.
+
+So we have several choices.
+(1) return true in those case [this is what I picked; anything defined outside my loop is invariant]
+(2) return false in those cases [this would require an additional test, basically the DCHECK that I moved out would become part of the test
+(3) document/rename method
+
+Option 3 is dangerous, since it implies all readers agree on the terms used in the name or doc (invariance to me clearly means (1), but now we already have to people that vote for (2) :-) likewise, is-independent of means something very different to me.
+
+I am okay with either solution though, perhaps let's see what others say....
+

@@ -1,0 +1,24 @@
+Revision: 701566aaae098d5aab9d912e2003a18d44fb850d
+Patch-set: 2
+File: compiler/optimizing/code_generator_mips.cc
+
+27:0-27:28
+Fri Oct 30 03:12:06 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5625c29e_1c219dde
+Bytes: 12
+Just sorted.
+
+File: compiler/optimizing/intrinsics.cc
+
+92:0-95:3
+Fri Oct 30 03:12:06 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7643a650_55693ca0
+Bytes: 550
+This shall remain for now.
+
+The follow-up code uses the intrinsic type to state whether an invoke needs an environment. This is important for inlining and the case of String.equals - in which case not having the intrinsic may produce broken code (e.g., if a GC happens in String.equals).  (The CL will be merged either this week or next week.)
+
+Right now this is obviously not very granular, but this is the easiest part for now. Please consider String.equals as one of the first intrinsics to implement (or we can make the check here more granular).
+

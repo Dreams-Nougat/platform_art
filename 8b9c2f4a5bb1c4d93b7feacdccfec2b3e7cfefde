@@ -1,0 +1,30 @@
+Revision: 8b9c2f4a5bb1c4d93b7feacdccfec2b3e7cfefde
+Patch-set: 3
+File: compiler/jit/jit_compiler.cc
+
+67:28-67:48
+Fri Oct 30 10:26:26 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f66795cb_f9ad7709
+Bytes: 356
+Could we refactor this to use a type-safer alternative (maybe later in another CL), such as using an std::vector<char*> (or std::vector<string>); or better, a variadic function template, e.g:
+
+  template<typename... Params>
+  NO_RETURN static void Usage(const std::string &str_format,
+                              Params... parameters) {
+    // ...
+  }
+
+?
+
+File: runtime/utils.h
+
+25:0-25:17
+Fri Oct 30 10:26:26 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 968f39ad_decfc5e4
+Bytes: 51
+Duplicate #include.
+
+Also, this list is not sorted.
+

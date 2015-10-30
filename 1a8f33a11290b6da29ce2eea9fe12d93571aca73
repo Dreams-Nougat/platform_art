@@ -1,5 +1,21 @@
 Revision: 1a8f33a11290b6da29ce2eea9fe12d93571aca73
 Patch-set: 6
+File: runtime/jit/jit.cc
+
+148:0-155:16
+Fri Oct 30 14:22:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569941f8_9fc8d789
+Bytes: 140
+Would it be so bad to not do this when we compile, but just visit the list of compiled/profiled methods from the code cache when we need to?
+
+176:0-176:46
+Fri Oct 30 14:22:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569941f8_bfcd9398
+Bytes: 21
+Why do you need this?
+
 File: runtime/jit/jit.h
 
 76:7-76:24
@@ -8,4 +24,36 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f67eb54f_213fae7f
 Bytes: 233
 I'm thinking to move this and the related data to the code_cache and maybe save some space and lock acquiring. However that will require syncing with the GC and adds complexity to an already complex class. Let me know what you think.
+
+File: runtime/native/dalvik_system_VMRuntime.cc
+
+564:25-565:15
+Fri Oct 30 14:22:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d685318b_005c66d5
+Bytes: 74
+Is that always called? I doubt we used to start the profiler all the time.
+
+565:76-565:79
+Fri Oct 30 14:22:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b688bda5_623b7801
+Bytes: 6
+remove
+
+575:18-575:40
+Fri Oct 30 14:22:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 166509c4_3d551b32
+Bytes: 12
+what's this?
+
+File: runtime/runtime.cc
+
+221:2-221:21
+Fri Oct 30 14:22:58 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b688bda5_a2958040
+Bytes: 21
+That's a hack, right?
 

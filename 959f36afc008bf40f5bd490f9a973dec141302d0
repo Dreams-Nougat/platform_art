@@ -2,6 +2,13 @@ Revision: 959f36afc008bf40f5bd490f9a973dec141302d0
 Patch-set: 1
 File: runtime/gc/collector/concurrent_copying-inl.h
 
+73:18-73:45
+Fri Oct 30 18:55:00 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5625c29e_3f9b2b99
+Bytes: 137
+Is it safe to maybe read the read barrier pointer before to avoid the CAS if it is non white? Not sure if this would be a speedup though.
+
 78:25-79:9
 Fri Oct 30 18:44:28 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +29,15 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 161fca56_c35d8058
 Bytes: 34
 Maybe OK to change this to DCHECK?
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+1984:18-1984:24
+Fri Oct 30 18:55:00 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 161fca56_23fd545e
+Bytes: 114
+For MarkNonMoving, to_ref is always from_ref right? Can't you just return from_ref and remove the to_ref variable.
 
 File: runtime/mirror/object_array-inl.h
 

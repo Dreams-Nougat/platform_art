@@ -20,6 +20,26 @@ No it is not a compiler issues. It is a fake dependency between x3 and x2 that p
 
 As mentioned in the comments a load-acquire would be cleaner.
 
+1458:65-1461:72
+Mon Nov 02 10:27:43 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 167c2956_85ede4e6
+UUID: b688bda5_02ae2c05
+Bytes: 864
+So for my understanding, we worry about the situation:
+
+Thread1 (executing this stub): load the access flags
+Thread2 (executing the clinit): set the flags and initialize the class.
+Thread1: load the status flags
+
+Right?
+
+But by loading the access flags, we have loaded into our CPU cache the page where the class is. So the read of the status flag will go through the cache. Still correct?
+
+So I understand that if the threads have run on the same CPU, it is definitely a CPU reordering problem.
+
+I'm also curious what happens if we do this dependency trick, but Thread1 and Thread2 run on two different cpus. Say Thread1 loads the status flag, but the access flags is not on the same page (is that possible?), but has been loaded somehow before in our cpu cache. Could it be that even after reading the status flag, reading the access flag could still be garbage?
+
 1452:0-1464:21
 Mon Oct 26 13:58:15 2015 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>

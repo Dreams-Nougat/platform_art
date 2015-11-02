@@ -1,0 +1,47 @@
+Revision: dac5c19ec9a9382cc72a337f1ed3722815903c4d
+Patch-set: 1
+File: tools/ahat/src/DominatedList.java
+
+34
+Mon Nov 02 21:42:59 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7643a650_11997f3c
+Bytes: 54
+Add @param for snapshot, doc, query, id and instances?
+
+File: tools/ahat/src/HeapTable.java
+
+42:4-42:10
+Mon Nov 02 21:42:59 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5625c29e_1d1cf453
+Bytes: 104
+I think the convention is to not use public modifier for interface methods (they are public by default).
+
+File: tools/ahat/src/LimitSelector.java
+
+30
+Mon Nov 02 21:42:59 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5625c29e_bd098009
+Bytes: 31
+deliberately package protected?
+
+File: tools/ahat/src/ObjectHandler.java
+
+92
+Mon Nov 02 21:42:59 2015 +0000
+Author: Gary Frost <1047883@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d63612de_add936aa
+Bytes: 620
+This is just a suggestion/option - feel free to ignore.
+
+Looks like you always use a LimitSelector to throttle the data extracted from an Iterable (array or collection).  You might consider passing the iterable to the LimitSelector and then implementing the appropriate delegating iterator code (in LimitSelector) to let you iterate over the subset.  This would decrease the boiler-plate code you need to write each time you use it. 
+
+So usage would be...
+
+LimitSelector<ClassInstance.FieldValue) selector = new LimitSelector(query, INSTANCE_FIELD_IDS, fields);
+for (ClassInstance.FieldValue field:selector()){
+   ....
+}
+

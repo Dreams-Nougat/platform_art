@@ -9,12 +9,30 @@ UUID: 167c2956_e5c23067
 Bytes: 22
 only useful for target
 
+55:19-55:49
+Mon Nov 02 19:08:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 167c2956_e5c23067
+UUID: 562a227b_682c5f42
+Bytes: 105
+Also true. I wanted to illustrate that PULL_SYMBOLS is a no-op when running with --host. 
+
+How to reword?
+
 261:2-261:11
 Mon Nov 02 09:03:15 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 166509c4_5d356fbb
 Bytes: 6
 Fully?
+
+261:2-261:11
+Mon Nov 02 19:08:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 166509c4_5d356fbb
+UUID: 5625c29e_ebb0514c
+Bytes: 166
+Forgot to add comments here (will do in next PS) but basically without the ulimit it would just error (didn't check if it actually wrote out the file even partially).
 
 274:39-274:47
 Mon Nov 02 09:03:15 2015 +0000
@@ -43,4 +61,22 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f66795cb_bc1f6da4
 Bytes: 116
 Why do we need this? If we were to only use the Main invocation, it would be too late/annoying to pull the oat file?
+
+566:0-578:9
+Mon Nov 02 19:08:58 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66795cb_bc1f6da4
+UUID: 7643a650_aeb6d2a3
+Bytes: 963
+The way the gdb magic works is that we start out immediately in the gdb prompt , before it even runs dex2oat.
+
+So basically we don't have the relocated core.oat file yet by the time we are in gdb, so later on if the program crashes we don't have the core.oat symbols and it just prints ??? for the stack trace.
+
+Running dex2oat with bogus Main function arg was suggested by Andreas, it will relocate core.oat/core.art but then fail to invoke main and exit out.
+
+Then when we run it again with almost the same args it would already have that same exact core.oat/core.art file which our gdb can load.
+
+(This seemed much cleaner than trying to detect when gdb halts execution, pulling the file only then which might not exist yet, and then injecting the file into gdb).
+
+Of course this does have the downside that we could crash before the relocation happens, but then hopefully it just crashes in the same exact way when we run it for real (without the bogus args).
 

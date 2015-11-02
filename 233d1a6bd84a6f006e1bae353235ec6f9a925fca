@@ -69,6 +69,24 @@ I can see how the first RUNNINGs might be redundant, but the rest is a clear sig
 ------
 Nothing is stopping anyone from having their own individual defaults in a bashrc (or increasing their scrollback which is the first thing we recommend to newcomers), the question is does it make sense to have this on for everyone.
 
+44
+Mon Nov 02 22:20:54 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96401a44_0a85cf2d
+UUID: 5625c29e_bdef4018
+Bytes: 1265
+Now it will only print the first line.
+
+    [ 96% 5715/5906] build test-art-host-run-test-debug-prebuild-interpreter-relocate-ntrace-cms-checkjni-image-npictest-ndebuggable-461-get-reference-vreg32
+
+I don't believe that the other lines give much useful information in general since they just say that the test passes. The only case where that would be useful is if a test deadlocks during building or running but even today we have a timeout and would need `ps` anyway since we do things with high -js. Furthermore unless you are actually modifying the tests all you likely care about is which ones pass/fail. Knowing that one goes back to run them individually to figure out errors.
+
+I think it makes sense because all of this information is generally superfluous and distracting. There are so many tests and they go by so fast that there is no way to tell what failed until the whole run is done anyway and right now, even with a large scrollback (mine is 5x the default) it is very possible that any errors would be too far back to see.
+
+Also by making the log smaller it makes it much easier to jump directly to the error message in the buildbots.
+
+Remember this only is a major change when the test passes. If it fails we still get the failure message printed.
+
 File: test/run-test
 
 358:19-358:30

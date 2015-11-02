@@ -45,3 +45,11 @@ Oh, yeah, I forgot about the extra parameter you need to add. Now I understand a
 
 But then why not creating the constant area as soon as an intrinsic requests one?
 
+55:7-55:25
+Mon Nov 02 16:34:53 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 768ac5a0_400cb07e
+UUID: 161fca56_11e17bed
+Bytes: 394
+The constant area has to be created before register allocation is done, in order to pass the address needed to access the constant area to the instructions that need it.  This is done in constant_area_fixups_x86.cc.  All this boolean flag does is let the intrinsic location generator know that there is a constant area, and it will need to add a RequiresRegister() for the method address input.
+

@@ -31,6 +31,22 @@ I'm not sure why this is desirable (by default), doesn't it look like nothing is
 
 What if a test is truly not running, we have to wait until the summary to notice this?
 
+44
+Mon Nov 02 21:18:15 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760e462a_11b3bc11
+UUID: f6195673_52f7f5b6
+Bytes: 766
+The tests are still noted as being run by the normal make output. IMO this is no different with this than what we get for normal build rules. For example we see: 
+
+    [ 12% 505/4186] build test-art-host-run-test-debug-prebuild-default-relocate-ntrace-cms-checkjni-image-npictest-ndebuggable-123-compiler-regressions-mt64
+
+instead of the RUNNING...PASSED for 6 lines.
+
+If a test is being skipped it will be noted at the end. I don't feel that these notes give any real useful information. It is easy to check if a test is skipped at the end or by looking in Android.run-test.mk.
+
+I think this is desirable because right now if I run a clean test-art-host I cannot even see a full listing of all passed/skipped tests because it went past my scrollback (of 5000 lines)
+
 File: test/run-test
 
 358:19-358:30

@@ -98,6 +98,18 @@ UUID: 968f39ad_613b7001
 Bytes: 65
 Where exactly do you do this (the producer side CPU cache flush)?
 
+1458:65-1461:72
+Mon Nov 02 17:35:58 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 968f39ad_613b7001
+UUID: 760e462a_2671e878
+Bytes: 957
+Class::SetStatus does a SetField32Volatile, which should do either a release store or a dmb ish before actually setting the status.
+
+That should suffice. On a CPU, there should never be a reason to actually flush the cache for memory consistency between CPUs. To zeroth order approximation, the cache coherence protocol (MESI or the like) should basically ensure sufficient ordering for actual memory system (CPU data caches and DRAM) accesses.  The role of fences/barriers is usually primarily to prevent reordering due to out-of-order execution and store buffers.
+
+My impression is that the above is a good mental model, though I've been told by hardware architects that it is not 100% correct.  But a full flush on a CPU cache is way too expensive to be practical for this kind of use.  (Although GPUs apparently do something along those lines.  And actual cache flushes become much more of an issue on systems with non-volatile byte-addressable memory.)
+
 1452:0-1464:21
 Mon Oct 26 13:58:15 2015 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>

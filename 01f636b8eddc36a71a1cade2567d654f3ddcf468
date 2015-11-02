@@ -9,6 +9,17 @@ UUID: 569941f8_bffd9322
 Bytes: 93
 So this is a compiler issue, not a processor cache in the presence of multicore issue, right?
 
+1458:65-1461:72
+Mon Nov 02 10:17:52 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569941f8_bffd9322
+UUID: 167c2956_85ede4e6
+Bytes: 320
+No it is not a compiler issues. It is a fake dependency between x3 and x2 that prevents the CPU from reordering the
+#MIRROR_CLASS_STATUS_OFFSET and #MIRROR_CLASS_ACCESS_FLAGS_OFFSET loads to #MIRROR_CLASS_ACCESS_FLAGS_OFFSET and #MIRROR_CLASS_STATUS_OFFSET.
+
+As mentioned in the comments a load-acquire would be cleaner.
+
 1452:0-1464:21
 Mon Oct 26 13:58:15 2015 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>

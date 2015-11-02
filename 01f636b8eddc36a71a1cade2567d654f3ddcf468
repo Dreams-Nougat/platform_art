@@ -80,6 +80,16 @@ Nicolas, to add to Vladimir's answer - page/ cache line locality does not really
 Here is my favourite presentation on memory ordering:
 http://events.linuxfoundation.org/sites/events/files/slides/weak-to-weedy.pdf
 
+1458:65-1461:72
+Mon Nov 02 12:58:56 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569941f8_7f36aba9
+UUID: f66795cb_9c7e299d
+Bytes: 423
+Yes, it prevents memory system reordering. We basically make sure that the CPU always executes the 2nd load (CLASS_ACCESS_FLAGS) after the first one (CLASS_STATUS) which for a weak memory model, such as ARM might be possible.
+
+In the same time, on the producer side (clinit) we make sure that at the end of the clinit procedure all the memory operations are visible in the inner-sharable domain, by flushing the CPU caches.
+
 1452:0-1464:21
 Mon Oct 26 13:58:15 2015 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>

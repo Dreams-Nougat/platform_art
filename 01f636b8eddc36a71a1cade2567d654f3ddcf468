@@ -110,6 +110,36 @@ That should suffice. On a CPU, there should never be a reason to actually flush 
 
 My impression is that the above is a good mental model, though I've been told by hardware architects that it is not 100% correct.  But a full flush on a CPU cache is way too expensive to be practical for this kind of use.  (Although GPUs apparently do something along those lines.  And actual cache flushes become much more of an issue on systems with non-volatile byte-addressable memory.)
 
+1458:65-1461:72
+Mon Nov 02 18:13:19 2015 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760e462a_2671e878
+UUID: 3694cdc0_619d32d7
+Bytes: 623
+The code above should, at least in theory be sufficient for creating the fake data dependency.
+
+However I wonder what do CPUs such as Denver do (or allowed to do).
+
+E.g:
+Can the sequence:
+eor x3, x3, x3
+add x2, x2, x3
+
+be transformed into:
+add x2, x2, 0 (probably even nop).
+
+and thus the sequence:
+lrd w3, [x2, #offset_1]
+eor x3, x3, x3
+add x2, x2, x3
+ldr w3, [x2, #offset_2]
+
+become:
+ldr w3, [x2, offset_2]   (ooo execution)
+ldr w3, [x2, offset_1]
+
+I need to go ask the right people if this is permitted or not. To my understanding since there is an expected side-effect for each instruction (like pc++) it should not be.
+
 1452:0-1464:21
 Mon Oct 26 13:58:15 2015 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>

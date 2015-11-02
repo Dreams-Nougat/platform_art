@@ -9,12 +9,32 @@ UUID: 569941f8_9fc8d789
 Bytes: 140
 Would it be so bad to not do this when we compile, but just visit the list of compiled/profiled methods from the code cache when we need to?
 
+148:0-155:16
+Mon Nov 02 15:53:31 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569941f8_9fc8d789
+UUID: 968f39ad_616d30ed
+Bytes: 406
+It makes the flow more complicated as I'll need to keep track of potential updates in the code cache. I'd rather keep related things together and not spread the concerns.
+
+The other alternative I consider is to keep last profiling data around. That trades speed for space.
+
+But given the amount of locks that we request when compiling I don't think that will make a big difference, but I didn't benchmark..
+
 176:0-176:46
 Fri Oct 30 14:22:58 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 569941f8_bfcd9398
 Bytes: 21
 Why do you need this?
+
+176:0-176:46
+Mon Nov 02 15:53:31 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569941f8_bfcd9398
+UUID: 968f39ad_a1e738dc
+Bytes: 76
+AddMethodInfo asks for the ArtMethod's DexFile which needs the mutator lock.
 
 File: runtime/jit/jit.h
 
@@ -41,12 +61,36 @@ UUID: b688bda5_623b7801
 Bytes: 6
 remove
 
+565:76-565:79
+Mon Nov 02 15:53:31 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b688bda5_623b7801
+UUID: b688bda5_45b11e19
+Bytes: 82
+I assume you refer to the second phrase. Done. If not, why do you want it removed?
+
+564:25-565:15
+Mon Nov 02 15:53:31 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d685318b_005c66d5
+UUID: 968f39ad_c1ec44c1
+Bytes: 125
+Yes. It is not obvious but StartProfiler eventually checks if the profiler flag is enabled. If it's not it doesn't start one.
+
 575:18-575:40
 Fri Oct 30 14:22:58 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 166509c4_3d551b32
 Bytes: 12
 what's this?
+
+575:18-575:40
+Mon Nov 02 15:53:31 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 166509c4_3d551b32
+UUID: b688bda5_25b41a0a
+Bytes: 24
+I rephrased the comment.
 
 File: runtime/runtime.cc
 
@@ -56,4 +100,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b688bda5_a2958040
 Bytes: 21
 That's a hack, right?
+
+221:2-221:21
+Mon Nov 02 15:53:31 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b688bda5_a2958040
+UUID: 166509c4_1d55b78a
+Bytes: 11
+Yes. Fixed.
 

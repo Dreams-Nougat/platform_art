@@ -9,6 +9,16 @@ UUID: b688bda5_2255f08a
 Bytes: 26
 also IsInvokeUnresolved().
 
+513:10-513:17
+Mon Nov 02 12:44:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b688bda5_2255f08a
+UUID: 166509c4_5d92cfe2
+Bytes: 122
+No, this one handles inlined frames. See test:
+InP1.$inline$StaticCallOtherInP1(i);
+InP1.$inline$InstanceCallOtherInP1(i);
+
 File: compiler/optimizing/load_store_elimination.cc
 
 62:76-62:77
@@ -17,6 +27,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 968f39ad_41559430
 Bytes: 11
 good catch.
+
+62:76-62:77
+Mon Nov 02 12:44:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 968f39ad_41559430
+UUID: d685318b_c3cd2898
+Bytes: 40
+the test hit a DCHECK, that was easy ;-)
 
 File: test/542-unresolved-access-check/src/Main.java
 
@@ -27,6 +45,16 @@ UUID: b6627eec_69c0e5a1
 Bytes: 42
 :( but without ideas how we can do better.
 
+87:6-88:25
+Mon Nov 02 12:44:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6627eec_69c0e5a1
+UUID: 3694cdc0_21d7aad4
+Bytes: 184
+I don't think we strictly have to, but it makes the error happen all the time rather than often. Moving to a jit at first use strategy will fix it.
+
+I'd rather get rid of it now, WDYT?
+
 File: test/542-unresolved-access-check/src/p1/PlaceHolder.java
 
 19:52-20:11
@@ -35,4 +63,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 968f39ad_a12c98d0
 Bytes: 126
 I see the need for the 'entered' marker, but don't really understand the rest of the comment.  What problems are you avoiding?
+
+19:52-20:11
+Mon Nov 02 12:44:19 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 968f39ad_a12c98d0
+UUID: f66795cb_1c8a191d
+Bytes: 256
+If we put the marker in InP1 or OtherInP1, and the code in MyClassLoader uses that marker, then InP1 or OtherInP1 will be loaded by the main classloader, and not SystemClassLoader.
+
+Does this help better? If it does, I can include that comment in the file.
 

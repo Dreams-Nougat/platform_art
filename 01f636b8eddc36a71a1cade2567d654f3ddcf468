@@ -40,6 +40,25 @@ So I understand that if the threads have run on the same CPU, it is definitely a
 
 I'm also curious what happens if we do this dependency trick, but Thread1 and Thread2 run on two different cpus. Say Thread1 loads the status flag, but the access flags is not on the same page (is that possible?), but has been loaded somehow before in our cpu cache. Could it be that even after reading the status flag, reading the access flag could still be garbage?
 
+1458:65-1461:72
+Mon Nov 02 11:57:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b688bda5_02ae2c05
+UUID: 167c2956_c548cca1
+Bytes: 845
+This situation we're concerned about is this:
+
+  Thread 1 executing <clinit>():
+    - [11] replace old access flags with new access flags,
+    - [12] replace old status with new status,
+  Thread 2 executing this stub:
+    - [21] read status: reads new status,
+    - [22] read access flags: may read old access flags!
+
+Without proper synchronization the writes by one thread may become visible to another thread (executing on another core) in a different order. To prevent this memory visibility reordering we would normally give [12] release semantics (which we do) and give [21] acquire semantics. The CPU-specific hack here is a fake dependency between [21] and [22] that makes up for the absence of the acquire semantics on [21].
+
+(Note that the status and access flags are not necessarily in the same page, much less in the same cache line.)
+
 1452:0-1464:21
 Mon Oct 26 13:58:15 2015 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>

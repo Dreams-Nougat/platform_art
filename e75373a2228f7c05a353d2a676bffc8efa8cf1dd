@@ -13,6 +13,14 @@ I only wanted to raise this issue because I'm not sure what our buildbot servers
 
 As far as I know nobody is trying to support running art on mac os x anymore..
 
+359
+Mon Nov 02 22:20:54 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5625c29e_fdfff81a
+UUID: f6195673_526c95a0
+Bytes: 4
+Done
+
 372
 Mon Nov 02 21:32:58 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -21,6 +29,44 @@ Bytes: 198
 Usually people just hardcode the FD on older bashes, e.g. 9 and 10.
 
 Anyway my point is the {fd} syntax doesn't work period on <4.1 versions, so for example line 382 is still broken on older bashes.
+
+372
+Mon Nov 02 22:20:54 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 161fca56_943d79a3
+UUID: 760e462a_11d73c42
+Bytes: 1246
+It seems to work fine for me.
+
+    allight@wenix:~/aosp/art$ echo ${BASH_VERSINFO[@]}
+    3 2 0 2 release x86_64-unknown-linux-gnu
+    allight@wenix:~/aosp/art$ ./test/run-test --host --quiet --stream 000
+    Cannot use --stream without --trace.
+    allight@wenix:~/aosp/art$ ./test/run-test --host 000
+    /home/allight/aosp/art/test/000-nop:  building...
+    /home/allight/aosp/art/test/000-nop: running...
+    /home/allight/aosp/art/test/000-nop: succeeded!
+    allight@wenix:~/aosp/art$ ./test/run-test --host --quiet 000
+    allight@wenix:~/aosp/art$ echo $?
+    0
+    allight@wenix:~/aosp/art$ echo abc >> test/000-nop/expected.txt 
+    allight@wenix:~/aosp/art$ ./test/run-test --host --quiet 000
+    /home/allight/aosp/art/test/000-nop: FAILED!
+     
+    #################### info
+    # This is a sample no-op test, which does at least serve to verify that the
+    # test harness is working.
+    #################### diffs
+    --- expected.txt	2015-11-02 14:06:44.671607633 -0800
+    +++ output.txt	2015-11-02 14:06:48.195596452 -0800
+    @@ -1,2 +1 @@
+     Blort.
+    -abc
+    ####################
+ 
+    000-nop files left in /tmp/allight/test-40515 on host
+
+I built bash 3.2.0 from source I pulled off the gnu ftp server. It is from 06.
 
 File: tools/cpplint.py
 
@@ -31,10 +77,26 @@ UUID: 760e462a_f182886c
 Bytes: 56
 I don't suppose we can glue the docstrings here somehow?
 
+120
+Mon Nov 02 22:20:54 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760e462a_f182886c
+UUID: 765c8636_7c91bd76
+Bytes: 19
+Not that I know of.
+
 3973
 Mon Nov 02 21:32:58 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f6195673_f2bcc189
 Bytes: 30
 copy and pasted of line above?
+
+3973
+Mon Nov 02 22:20:54 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6195673_f2bcc189
+UUID: 562a227b_a38b883f
+Bytes: 67
+No its at 1 less indent (the '# ' makes it line up coincidentally).
 

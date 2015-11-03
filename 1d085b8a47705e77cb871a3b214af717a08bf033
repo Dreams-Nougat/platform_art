@@ -34,6 +34,14 @@ UUID: f6195673_4b4ce053
 Bytes: 38
 As we don't follow *that* spec, can't.
 
+165:63-165:70
+Tue Nov 03 17:17:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6195673_4b4ce053
+UUID: d685318b_e3cf8ce4
+Bytes: 57
+I don't understand, you're mentioning that spec line 129.
+
 173:0-173:65
 Tue Nov 03 08:51:43 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -57,4 +65,12 @@ Bytes: 445
 Because in 151 the exception instance/class doesn't need to survive - we only get its name. It's also still stored in the heap and we could recover it from the class. (And that's the way it was before.)
 
 Down here we wont to wrap the cause in a NoClassDefFoundError. As we can't do NewWrappedException (NoClassDefFoundError doesn't have the constructor for it, and we're not sure cause is OK), we need to store it. Thus this branch needs an SHS.
+
+177:6-177:35
+Tue Nov 03 17:17:04 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36204e91_4813c2a5
+UUID: 167b4aaf_b4b660a4
+Bytes: 237
+That's the kind of things I personally don't want to think about when reviewing/writing code, especially when this is about throwing an exception. To me, it looks like this is favoring a micro-optimization, in the expense of readability.
 

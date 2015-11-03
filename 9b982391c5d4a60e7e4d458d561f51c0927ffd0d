@@ -1,0 +1,17 @@
+Revision: 9b982391c5d4a60e7e4d458d561f51c0927ffd0d
+Patch-set: 14
+File: compiler/optimizing/code_generator_x86.cc
+
+2102:12-2102:16
+Tue Nov 03 22:22:48 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36c12e1a_6d5335c0
+Bytes: 639
+Ritz EAAC seems to crash on x86 for me.
+
+It seems that the XMM7 gets clobbered occasionally in the read barrier slow path below and this hidden arg value won't be preserved for the subsequent call, because XMM7 isn't in the fp param register list. If I locally move this hidden arg loading code (lines 2101-2104) conditionally for the (kForceReadBarrier || kUseReadBarrier) case (and using temp3) to line 2125, it seems to go away.
+
+The crash does not occur on x86_64 probably because the hidden arg RAX gets loaded after the read barrier slow path.
+
+As this read barrier code here is planned to be removed, it may not matter now, however.
+

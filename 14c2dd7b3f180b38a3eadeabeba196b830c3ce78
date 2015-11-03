@@ -27,6 +27,15 @@ UUID: 765c8636_73a44bc9
 Bytes: 23
 same suggestion on name
 
+File: compiler/optimizing/load_store_elimination.cc
+
+547:0-547:34
+Tue Nov 03 09:08:51 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 367ccea3_950b2439
+Bytes: 261
+This doesn't look right. It's a global flag so applies to all stores, even if they are not in a loop. Also, you're doing this in RemoveInstructions, meaning the logic of lse decided we could remove them. We should fix lse to just know it should not remove them.
+
 File: test/530-checker-lse/src/Main.java
 
 520:28-520:31

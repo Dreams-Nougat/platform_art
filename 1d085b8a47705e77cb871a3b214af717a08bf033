@@ -9,12 +9,30 @@ UUID: 569941f8_a2c81a89
 Bytes: 144
 There's a lot of these checks, wouldn't it be cleaner to have two different methods? One where the VerifyError is not null, and one where it is?
 
+134:8-134:38
+Tue Nov 03 17:12:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569941f8_a2c81a89
+UUID: 562a227b_0eeba0a0
+Bytes: 159
+Would mean a lot of duplication for the surrounding code. Are you sure that's better?
+
+I'd rather put the error != null code in static functions, if that's OK?
+
 165:63-165:70
 Tue Nov 03 08:51:43 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d685318b_c3152857
 Bytes: 34
 Maybe mention again spec v2 5.4.1?
+
+165:63-165:70
+Tue Nov 03 17:12:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d685318b_c3152857
+UUID: f6195673_4b4ce053
+Bytes: 38
+As we don't follow *that* spec, can't.
 
 173:0-173:65
 Tue Nov 03 08:51:43 2015 +0000
@@ -29,4 +47,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f66795cb_dc95010e
 Bytes: 186
 Why does this branch use a StackHandleScope but not the one line 151? I'd make ut consistent and create the stack handle scope at the beginning of the method and use it in both branches.
+
+177:6-177:35
+Tue Nov 03 17:12:26 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66795cb_dc95010e
+UUID: 36204e91_4813c2a5
+Bytes: 445
+Because in 151 the exception instance/class doesn't need to survive - we only get its name. It's also still stored in the heap and we could recover it from the class. (And that's the way it was before.)
+
+Down here we wont to wrap the cause in a NoClassDefFoundError. As we can't do NewWrappedException (NoClassDefFoundError doesn't have the constructor for it, and we're not sure cause is OK), we need to store it. Thus this branch needs an SHS.
 

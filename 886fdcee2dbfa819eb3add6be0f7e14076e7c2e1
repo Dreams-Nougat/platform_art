@@ -9,12 +9,28 @@ UUID: f66795cb_7ca7957e
 Bytes: 28
 give an example (int/long?).
 
+45:32-45:37
+Tue Nov 03 23:52:19 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66795cb_7ca7957e
+UUID: 7643a650_5dcdd6af
+Bytes: 4
+Done
+
 71:2-71:90
 Tue Nov 03 09:46:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 568142c7_b6e748ff
 Bytes: 81
 How about reversing the condition and returning true with a comment why it is ok?
+
+71:2-71:90
+Tue Nov 03 23:52:19 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 568142c7_b6e748ff
+UUID: d63612de_63211ade
+Bytes: 4
+Done
 
 95:2-95:13
 Tue Nov 03 09:46:05 2015 +0000
@@ -23,6 +39,14 @@ UUID: 166509c4_e04db6ae
 Bytes: 137
 What does this "return true" mean at this level? That we haven't seen any conflicts between the phi and its inputs? Please add a comment.
 
+95:2-95:13
+Tue Nov 03 23:52:19 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 166509c4_e04db6ae
+UUID: 7643a650_01592c82
+Bytes: 4
+Done
+
 102:6-102:55
 Tue Nov 03 09:46:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +54,28 @@ UUID: f66795cb_5caad147
 Bytes: 47
 Explain why you don't need both methods to run.
 
+102:6-102:55
+Tue Nov 03 23:52:19 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f66795cb_5caad147
+UUID: f6195673_067a5fcc
+Bytes: 4
+Done
+
 160:72-162:25
 Tue Nov 03 09:46:05 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 367ccea3_35b490a8
 Bytes: 162
 Should you add "and transitively users of those users"? Then it's easier to understand why you need to add to the worklist instead of just marking them dead here.
+
+160:72-162:25
+Tue Nov 03 23:52:19 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 367ccea3_35b490a8
+UUID: 7643a650_c12204e6
+Bytes: 4
+Done
 
 File: compiler/optimizing/ssa_builder.cc
 
@@ -45,4 +85,18 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d685318b_631ffc70
 Bytes: 35
 Can't this just be run at line 117?
+
+160:0-165:32
+Tue Nov 03 23:52:19 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d685318b_631ffc70
+UUID: 36204e91_0305ad54
+Bytes: 987
+That's an interesting point. Let's see.... Steps 6 and 7 don't consider/change phi liveness at all. So the question is whether step 8, replacement of phis in environments, is independent of the order or whether it is redundant after this CL.
+
+I think the answer is no, however. 
+
+Imagine having two phi equivalents - int & float. Float has an instruction use, int is used in the environment of a BoundsCheck dominating the float use (sounds like that shouldn't be too difficult to construct). If we run EliminateDeadPhis before step 8, the int equivalent will be removed and the BoundsCheck's environment will contain null in the respective vreg. If the BoundsCheck causes a deopt, the interpreter will be initialized with the don't care value. That doesn't matter since we'll throw anyway, but imagine wrapping that in try/catch.
+
+I've added a test case that does something like that. When I run EliminateDeadPhis before step 8, I can get the runtime to crash during exception delivery.
 

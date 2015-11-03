@@ -9,6 +9,14 @@ UUID: 161fca56_7453fdbf
 Bytes: 68
 'this method' -> 'in the HInvokeVirtual and HInvokeInterface calls'?
 
+357:60-358:13
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 161fca56_7453fdbf
+UUID: 367ccea3_554eec18
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_x86.cc
 
 5825:4-5825:5
@@ -17,6 +25,19 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 562a227b_b52cdfd4
 Bytes: 44
 Do we want to have "default: UNREACHABLE()"?
+
+5825:4-5825:5
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 562a227b_b52cdfd4
+UUID: 968f39ad_c14fe42d
+Bytes: 519
+I think we got rid of most of these checks (at least in Optimizing) as our C++ compiler settings forbid `switch` statements not covering all the values of an enumeration type.  For instance, if I remove the `TypeCheckKind::kUnresolvedCheck` case, the compiler will stop with this error message:
+
+  art/compiler/optimizing/code_generator_x86.cc:5670:11: error: enumeration value 'kUnresolvedCheck' not handled in switch [-Werror,-Wswitch]
+    switch (instruction->GetTypeCheckKind()) {
+            ^
+  1 error generated.
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -27,12 +48,28 @@ UUID: 7643a650_8ccb1676
 Bytes: 51
 This is CanCall() in the x86 code gen. As intended?
 
+4512:31-4512:61
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7643a650_8ccb1676
+UUID: 568142c7_b6098809
+Bytes: 85
+Thanks for catching this.  The x86 implementation was incorrect.  I fixed it in PS13.
+
 5210:0-5212:3
 Mon Nov 02 23:28:09 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 161fca56_8f90c6c3
 Bytes: 57
 We don't have this code in the x86 code gen. As intended?
+
+5210:0-5212:3
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 161fca56_8f90c6c3
+UUID: 768ac5a0_208964f0
+Bytes: 66
+Good catch!  This code is indeed no longer used.  Removed in PS13.
 
 File: compiler/optimizing/nodes.h
 
@@ -43,12 +80,30 @@ UUID: 765c8636_7cf53def
 Bytes: 142
 Is this true? I didn't think this was the case. Calling the read barrier slow path won't trigger a GC or a read barrier isn't a suspend point.
 
+1370:0-1371:24
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765c8636_7cf53def
+UUID: 768ac5a0_60836cd0
+Bytes: 258
+Right.  I made a mistake here: I mixed up marking (which might happen within a read barrier) and collection (which does not happen during a read barrier).  Thanks for spotting this!
+
+Fixed in PS13, along with compiler/optimizing/side_effects_test.cc as well.
+
 1380:0-1381:45
 Mon Nov 02 23:28:09 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 760e462a_d1f2e401
 Bytes: 5
 Same.
+
+1380:0-1381:45
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760e462a_d1f2e401
+UUID: 167b4aaf_d463dc1c
+Bytes: 4
+Done
 
 4497:0-4498:51
 Mon Nov 02 23:28:09 2015 +0000
@@ -57,12 +112,28 @@ UUID: 765c8636_3cffc5d1
 Bytes: 5
 Same.
 
+4497:0-4498:51
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765c8636_3cffc5d1
+UUID: 568142c7_96232c84
+Bytes: 4
+Done
+
 5181:0-5181:69
 Mon Nov 02 23:28:09 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d63612de_2dd78642
 Bytes: 5
 Same.
+
+5181:0-5181:69
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d63612de_2dd78642
+UUID: 768ac5a0_e0677cd9
+Bytes: 4
+Done
 
 File: runtime/runtime_options.def
 
@@ -72,4 +143,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 161fca56_d423f182
 Bytes: 206
 The reason we don't need to set this to true for arm/arm64 is that we now disable the optimizing compiler for non-x86, non-x86-64 cases and the optimizing run-tests still work as if -Xint is given. Correct?
+
+83:74-83:79
+Tue Nov 03 17:34:09 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 161fca56_d423f182
+UUID: 568142c7_b620a877
+Bytes: 4
+Yes.
 

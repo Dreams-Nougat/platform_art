@@ -15,3 +15,13 @@ The crash does not occur on x86_64 probably because the hidden arg RAX gets load
 
 As this read barrier code here is planned to be removed, it may not matter now, however.
 
+2102:12-2102:16
+Wed Nov 04 15:00:57 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36c12e1a_6d5335c0
+UUID: 763d66ed_9f3153e9
+Bytes: 374
+Thanks for reporting this!  Indeed, I had moved this code (loading the hidden argument) in PS4 on x86-64 after the read barrier because the register where the hidden argument was loaded (RAX on x86-64) was clobbered by the read barrier slow path.
+
+I did not think this issue could happen with XMM7 on x86, so I did not move that code for this target.  This is fixed in PS15.
+

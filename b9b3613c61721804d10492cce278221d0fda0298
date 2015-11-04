@@ -9,6 +9,14 @@ UUID: 76b806a7_e7266295
 Bytes: 44
 Add a comment why you special case volatile.
 
+3764:8-3764:19
+Wed Nov 04 17:42:04 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76b806a7_e7266295
+UUID: 56c6a231_1795deb1
+Bytes: 333
+Volatile must be done in one move.  This optimization may do a long or double assignment of a constant in 2 moves.  That isn't legal.  I could further check the value to see if it fits in int32, which would help a bit more, but volatile is quite rare in any case.  I could use RegisterOrInt32LongConstant, but that doesn't handle FP.
+
 3770:8-3770:19
 Wed Nov 04 17:35:31 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,4 +30,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d630d214_4241b23c
 Bytes: 46
 Why can't you use RegisterOrInt32LongConstant?
+
+3771:37-3771:54
+Wed Nov 04 17:42:04 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d630d214_4241b23c
+UUID: 16a98a5f_18ff55d1
+Bytes: 15
+I will do that.
 

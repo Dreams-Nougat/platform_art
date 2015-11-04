@@ -1,0 +1,33 @@
+Revision: 5a0aa0bb7c7fee9db9063d31395a1c22967ded62
+Patch-set: 6
+File: compiler/utils/mips/assembler_mips.cc
+
+68:20-68:21
+Wed Nov 04 01:59:00 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36c12e1a_10c08a4e
+Bytes: 73
+<= ? Or are we guaranteed to never issue more than one CFI record per PC?
+
+77:0-77:62
+Wed Nov 04 01:59:00 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36c12e1a_b05896d6
+Bytes: 351
+This line assumes that the minimum PC comes from the vector part that was filled prior to EmitBranches(), which is probably always true right now.
+
+Perhaps add something like
+
+if (number_of_delayed_adjust_pcs < size) {
+  CHECK_LE(advances[0].stream_pos, advances[number_of_delayed_adjust_pcs].stream_pos);
+}
+
+around here? Or maybe even do it properly?
+
+97:73-97:83
+Wed Nov 04 01:59:00 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16d0aae3_8040a689
+Bytes: 341
+This assumes that the selected entry should be followed by the entry immediately adjacent to it in the vector. Shouldn't we also calculate the next entry using the same (somewhat complicated) logic as in the above to calculate entry? Essentially, the next iteration of the loop will calculate this next entry for us, but it will be too late.
+

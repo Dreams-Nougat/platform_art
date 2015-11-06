@@ -26,6 +26,16 @@ UUID: 56030291_a6b9e63c
 Bytes: 75
 No, this is exactly as intended even if it's not yet fully used in this CL.
 
+34:2-34:10
+Fri Nov 06 17:59:56 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56030291_a6b9e63c
+UUID: 1698aa84_fdbce8e0
+Bytes: 565
+I'm not a fan of future use claims. I'd prefer if you kept it simple (the algorithm can be written as FindCommonDominator and DominatorChainLength helper functions) and later modified it, or used straight away.
+
+I take it that means you want to keep a CommonDominatorFinder instance per block in the ComputeDominanceInformation function to save one ChainLength call and some equalize iterations. But then you're trading back speed for space. It would be good to get some numbers on that, perhaps focusing mainly on the pathological cases, to find the right balance.
+
 40:7-40:13
 Fri Nov 06 11:57:18 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>

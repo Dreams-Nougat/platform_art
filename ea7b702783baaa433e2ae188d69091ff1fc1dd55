@@ -11,6 +11,17 @@ Thanks :-).
 
 File: compiler/optimizing/common_dominator_finder.h
 
+24:6-24:27
+Fri Nov 06 18:28:35 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d69a9277_921bd1fd
+Bytes: 285
+Nit: May I suggest a change of naming that would emphasize that this computes a common dominator for an arbitrary-sized set of blocks:
+ - class: CommonDominator
+ - static CommonDominator: ForPair
+ - instance CommonDominator: just Get, or GetCommonDominator
+ - instance Update: AddBlock
+
 34:2-34:10
 Fri Nov 06 11:57:18 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,6 +57,14 @@ This CL was split out of https://android-review.googlesource.com/180842 . There 
 
 Trading speed for space? What space? 8B/16B on the stack is absolutely irrelevant; assuming it's even stored on the stack and not scalarized and promoted.
 
+34:2-34:10
+Fri Nov 06 18:28:35 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b637de6a_644f44b8
+UUID: 1698aa84_5d75fcd5
+Bytes: 123
+Okay, I see your motivation now. I thought you were gonna keep blocks.size() array of these in ComputeDominatorInformation.
+
 40:7-40:13
 Fri Nov 06 11:57:18 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,6 +79,14 @@ Parent: b6127ed6_69b4e53f
 UUID: d60ff2af_eabfa71f
 Bytes: 85
 We're working with two interchangeable blocks here, so what else would you name them?
+
+40:7-40:13
+Fri Nov 06 18:28:35 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d60ff2af_eabfa71f
+UUID: b686fe2b_55c5cfaf
+Bytes: 82
++1. How about 'new_block' for the parameter and 'old_dominator' for the other one.
 
 44:1-46:5
 Fri Nov 06 11:57:18 2015 +0000

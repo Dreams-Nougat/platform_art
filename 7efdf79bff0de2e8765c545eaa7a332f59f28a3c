@@ -1,0 +1,100 @@
+Revision: 7efdf79bff0de2e8765c545eaa7a332f59f28a3c
+Patch-set: 17
+File: /COMMIT_MSG
+
+9:20-9:36
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_69c83ea2
+Bytes: 8
+Grammar.
+
+File: runtime/art_method-inl.h
+
+53:0-63:1
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b686fe2b_555f8f24
+Bytes: 147
+Don't see a reason why this should be inlined. It's rare, and not performance-critical (the exception costs will eclipse the call overhead easily).
+
+File: runtime/class_linker.cc
+
+4746:3-4746:100
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d69a9277_72f90d3a
+Bytes: 198
+Missing period. Please also extend to be more precise. This is not generically looking whether "iface has any subinterface with the specific method." There's at least an "in the given list" missing.
+
+4787:44-4787:53
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_09e17a1b
+Bytes: 85
+Description says it's a subtype, and that's what you're checking (and want to check).
+
+5263:70-5263:80
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d683721b_9fb2070b
+Bytes: 190
+It's either correct or not. If it's correct but dirty, mark this as "cleanup needed." If it's incorrect, clearly state it and note a bug number here.
+
+(Looks like it is correct, just dirty.)
+
+5350:66-5350:69
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36892e3b_d604755b
+Bytes: 11
+Lower case.
+
+5417:0-5422:38
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_a236bf8f
+Bytes: 153
+Maybe refactor all these duplicates? If you had an ArtMethod variable you could store the result in, you could check for found_impl after the if-else-if.
+
+5426:8-5426:46
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96a49abb_1ab7faa2
+Bytes: 213
+Can't that be nested one more, i.e., go into the preceding conditional?
+
+Also a lot of people prefer early bail. So consider rewriting this with continues in the middle, maybe, instead of all the if (!found_impl)?
+
+5523:6-5525:77
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_24badbe2
+Bytes: 58
+The repeated setter looks ugly. Consider one masking step.
+
+File: runtime/class_linker.h
+
+720:2-721:41
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_e9d34e51
+Bytes: 30
+Please describe the tri-state.
+
+817:47-817:54
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d69a9277_7254ad06
+Bytes: 36
+Style for comments is mostly "null."
+
+File: runtime/common_throws.cc
+
+249:30-249:77
+Fri Nov 06 17:14:41 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_c4d9174e
+Bytes: 248
+Please make the method name more precise (or change the parameter name) so it's intuitive what it does. Otherwise one must look at the implementation to see what message it will put. There are more reasons for ICCE caused by methods, as you know...
+

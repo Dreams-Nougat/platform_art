@@ -1,0 +1,34 @@
+Revision: 3ee00a65b1eb3a692f92243baace55044ec158fc
+Patch-set: 3
+File: compiler/optimizing/intrinsics_mips.cc
+
+298:0-305:33
+Fri Nov 06 03:19:44 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76a726c0_3bc6826f
+Bytes: 225
+Move(out_hi, TMP) can be avoided:
+
+      __ LoadConst32(AT, 0x00FF00FF);
+      __ And(out_hi, TMP, AT);
+      __ Sll(out_hi, out_hi, 8);
+      __ Srl(TMP, TMP, 8);
+      __ And(TMP, TMP, AT);
+      __ Or(out_hi, out_hi, TMP);
+
+File: compiler/utils/mips/assembler_mips.h
+
+136:0-136:38
+Fri Nov 06 03:19:44 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96a49abb_776adff6
+Bytes: 6
+// R2+
+
+140:0-140:49
+Fri Nov 06 03:19:44 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d69a9277_dc0c92c4
+Bytes: 6
+// R2+
+

@@ -61,3 +61,11 @@ UUID: 760c86c0_a7156acb
 Bytes: 86
 But wait, why aren't the constants just replaced with the X86LoadConstant instruction?
 
+55:7-55:25
+Fri Nov 06 12:39:26 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760c86c0_a7156acb
+UUID: b686fe2b_158437ee
+Bytes: 514
+The problem is that the constants that are needed are NOT arguments to the intrinsic invoke.  They are needed for the code generation.  This allows the intrinsics to generate any code they want, and just ensure that the method base is available, so that they can generate all the literals that they want :-).  I don't want to hardcore WHICH literals each intrinsic needs in the code generator.  That logic belongs in the instrinsic generator.  THE CG only needs to know which intrinsic needs some sort of constant.
+

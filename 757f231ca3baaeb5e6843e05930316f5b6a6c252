@@ -1,0 +1,82 @@
+Revision: 757f231ca3baaeb5e6843e05930316f5b6a6c252
+Patch-set: 2
+File: compiler/optimizing/code_generator_x86.cc
+
+3801:0-3801:81
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d61d32f8_daece5ec
+Bytes: 114
+This looks brittle, and conflicting with the current RA design, what if something else in the middle overwrote it?
+
+File: compiler/optimizing/code_generator_x86.h
+
+426:47-426:49
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d61d32f8_3ad16121
+Bytes: 13
+rel->relative
+
+File: compiler/optimizing/common_dominator_finder.h
+
+24:6-24:27
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6127ed6_a96bfd88
+Bytes: 43
+Please move this refactoring to its own CL.
+
+34:0-34:57
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36fe8ebd_c51a9a4c
+Bytes: 23
+What memory allocation?
+
+File: compiler/optimizing/nodes.h
+
+3416:0-3418:60
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d61d32f8_1ad49d10
+Bytes: 46
+This dance looks odd. See my suggestion below.
+
+3453:6-3453:10
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36fe8ebd_050af2fc
+Bytes: 134
+Needs. On the other hand, why don't you just put this method into MethodLoadKind or DispatchInfo? It feels more like it belongs there.
+
+File: compiler/optimizing/pc_relative_fixups_x86.cc
+
+31:0-82:3
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d60ff2af_ea6327c1
+Bytes: 33
+I'd do this in a separate change.
+
+File: compiler/optimizing/prepare_for_register_allocation.cc
+
+53:6-53:42
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9609fab1_2b302529
+Bytes: 10
+thank you.
+
+103:9-103:51
+Fri Nov 06 10:21:26 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 760c86c0_a730ca96
+Bytes: 207
+Looks like we could have a regression test for this?
+
+Class e = Foo.class;
+Foo.bar()
+
+If Foo cannot be resolved, the dex pc will be wrong, as it will be attributed to the Foo.bar call, and not the Foo.class.
+

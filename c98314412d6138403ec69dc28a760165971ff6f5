@@ -1,6 +1,24 @@
 Revision: c98314412d6138403ec69dc28a760165971ff6f5
 Patch-set: 1
+File: /COMMIT_MSG
+
+22:28-22:34
+Fri Nov 06 19:53:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6127ed6_8976f91f
+Bytes: 12
+What device?
+
 File: runtime/utf.cc
+
+58:23-58:74
+Fri Nov 06 19:53:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b637de6a_6436642a
+Bytes: 352
+Is it? Malformed input consisting of one ascii character and a lot of continuation characters would yield size 1 and then subsequent conversion would have buffer overflow. This is a serious security issue.
+
+Previously, the code that determines the length was in sync with "GetUtf16FromUtf8(const char** utf8_data_in)" so we would have allocated enough.
 
 61:18-61:25
 Fri Nov 06 19:16:04 2015 +0000
@@ -8,6 +26,15 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b686fe2b_4840d288
 Bytes: 5
 Typo.
+
+73:2-73:19
+Fri Nov 06 19:53:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b637de6a_042758f6
+Bytes: 30
+We prefer
+
+  const char* first
 
 72:2-74:38
 Fri Nov 06 19:16:04 2015 +0000
@@ -22,4 +49,22 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d683721b_9f0207e5
 Bytes: 67
 Comment style is: start capitalized, and with a period. Same below.
+
+File: runtime/utf.h
+
+55:32-55:107
+Fri Nov 06 19:53:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9609fab1_6b585d09
+Bytes: 88
+I'd prefer this ordering: utf16_out, out_chars, utf8_in, in_bytes.
+
+Also, line too long.
+
+76:32-77:68
+Fri Nov 06 19:53:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96173ad8_9892f539
+Bytes: 50
+Order: utf8_out, byte_count, utf16_in, char_count.
 

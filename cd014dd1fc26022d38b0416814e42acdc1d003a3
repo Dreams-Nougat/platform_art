@@ -39,6 +39,13 @@ UUID: 760c86c0_673bf27a
 Bytes: 40
 Explain why there are such restrictions.
 
+1123
+Sat Nov 07 00:18:46 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d69a9277_a8a944b9
+Bytes: 68
+Is it done by licm? Maybe try bce before licm and get this for free?
+
 1206:27-1206:39
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,6 +59,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 760c86c0_2745faf3
 Bytes: 76
 isn't that the reverse? "Use analysis for static bce only if loop is finite"
+
+1226
+Sat Nov 07 00:18:46 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b620be2e_e2d81ca7
+Bytes: 107
+Should we always set try_dynamic_bce's value? If it's not an induction variable, it should be set to false?
 
 1231:66-1231:84
 Fri Nov 06 10:56:26 2015 +0000
@@ -88,12 +102,26 @@ UUID: b637de6a_613bb67a
 Bytes: 13
 line too long
 
+1250
+Sat Nov 07 00:18:46 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6923665_e3ba8dfb
+Bytes: 48
+Can you make it clear it's unsigned comparisons?
+
 1251:12-1251:28
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d60ff2af_aa5d2ffc
 Bytes: 96
 this sounds too generic. Maybe be more precise: "or ... if we know the the lower bound of upper.
+
+1253
+Sat Nov 07 00:18:46 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_e18602ca
+Bytes: 97
+I think combining is still nice. Maybe we can find a way to combine the HDeoptimize instructions?
 
 1257:0-1260:90
 Fri Nov 06 10:56:26 2015 +0000
@@ -110,6 +138,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6127ed6_49836172
 Bytes: 39
 How about doing this in a follow-up cl?
+
+1287
+Sat Nov 07 00:18:46 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6923665_3ec6686f
+Bytes: 106
+Loop header can have successor outside the loop. Can deopt approach still benefit accesses in loop header?
 
 1317:0-1317:48
 Fri Nov 06 10:56:26 2015 +0000
@@ -173,6 +208,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6345268_42d47268
 Bytes: 52
 I think it always has. Did you see cases it did not?
+
+1425
+Sat Nov 07 00:18:46 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b69d1e72_fd65d260
+Bytes: 312
+The old code has an example of the transformation of some source code which is still helpful so it's better to be kept, including phi insertion and explanation of the strong guarantee that no deoptimization is triggered if the loop body itself doesn't throw AIOOBE.
+The combining part can be modified/done later.
 
 1465:0-1466:72
 Fri Nov 06 10:56:26 2015 +0000

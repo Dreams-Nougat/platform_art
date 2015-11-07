@@ -1,5 +1,18 @@
 Revision: 900c71f8576fc62fa5ed95741cfa2158167055db
 Patch-set: 10
+File: /COMMIT_MSG
+
+8
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b686fe2b_eb4420fa
+Bytes: 495
+Based on offline discussion this should mention that:
+
+* There was an assumption in our code that nothing is initialized before it is verified (as per spec).
+* The old code wasn't properly maintaining this invariant for interfaces with default methods (since previously interfaces would not get always initialized when their subclass was initialized).
+* We fix this by ensuring that all superinterfaces with default methods get verified (recursively) before any class is recursively initialized.
+
 File: runtime/class_linker.cc
 
 2813:17-2813:38
@@ -16,6 +29,104 @@ Parent: 760c86c0_c7c4deb6
 UUID: d683721b_91fe7b21
 Bytes: 85
 Its already mentioned near the definition. I don't think we really need to repeat it.
+
+2813:17-2813:38
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d683721b_91fe7b21
+UUID: d683721b_94c58961
+Bytes: 104
+Should we add comment here for "Either we are verified or we soft failed and need to retry at runtime" ?
+
+2816
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5676a24b_0eeb0bcf
+Bytes: 77
+Lets add a comment here?
+
+  // If we got this far then we have a hard failure
+
+2892
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96a49abb_10def95a
+Bytes: 57
+Consider an assert here that we have a pending exception?
+
+2896
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d683721b_d1d39351
+Bytes: 39
+Maybe add some kind of subscript ("A")?
+
+2898:5-2899:43
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_61edb2e6
+Bytes: 301
+Let's clarify this:
+
+* When an interface is initialized directly (because of accessing a static on it), it must not initialize its superinterfaces directly.
+
+* We are allowed to recursively verify this regardless, but we choose not to do it for optimization (especially since they may never get used).
+
+2901:5-2901:10
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_1cd45711
+Bytes: 56
+trigger the recursive verification.
+
+Also subscript "B"?
+
+2902:6-2902:59
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_41f27692
+Bytes: 118
+.
+
+   if ((supertype.Get() == nullptr || supertype->IsVerified() // See (A)
+       && !klass-Interface()) { // See (B)
+
+2914
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b686fe2b_26baefe2
+Bytes: 20
+CHECK for exception?
+
+2923
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_a1af9a54
+Bytes: 329
+Add?
+
+  // At this point if verification then supertype is the "first" supertype that failed verification (without a specific order).
+  // If verification succeeded, then supertype is either null or the original superclass of klass and is verified.
+
+This can have a DCHECK for if it's verified it must be the original superclass.
+
+File: runtime/class_linker.h
+
+555:70-556:20
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_a154fa06
+Bytes: 45
+for successful verification or soft-failures.
+
+File: test/965-default-verify/smali/Iface.smali
+
+36:15-36:31
+Sat Nov 07 00:10:50 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_9c7da799
+Bytes: 20
+verificationSoftFail
 
 File: test/965-default-verify/smali/Main.smali
 

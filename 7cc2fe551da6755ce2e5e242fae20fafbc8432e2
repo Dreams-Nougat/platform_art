@@ -1,6 +1,111 @@
 Revision: 7cc2fe551da6755ce2e5e242fae20fafbc8432e2
 Patch-set: 18
+File: runtime/art_method.h
+
+149:54-149:56
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 568ea242_dc348fda
+Bytes: 7
+nit: 0u
+
 File: runtime/class_linker.cc
+
+4664
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b69d1e72_307301ce
+Bytes: 164
+Can we omit this (and just go from one conflict method to another) logically?
+
+   // Don't generate another conflict method to reduce memory use as an optimization.
+
+4670
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36712e54_0df55179
+Bytes: 41
+add 
+
+    // go to the next vtable method
+
+4671
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_2402d84c
+Bytes: 38
+// No conflict, but method is abstract
+
+4672
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_a4c08850
+Bytes: 178
+What if it was already abstract?
+
+It seems like it could be just like the above case, we can skip it if it was already abstract (as an optimization to avoid making more methods).
+
+4674
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6923665_1ef0ccf7
+Bytes: 40
+// Found a default method implementation
+
+4746:76-4746:85
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b620be2e_6d6e3dd9
+Bytes: 229
+Using "declares" here makes it more straight forward when reading the implementation.
+
+(alternatively this whole sentence could just say "Determine if the given target method is overridden by any other methods in the given list")
+
+4780
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_a4f8886f
+Bytes: 75
+// Skip ifstart since our current interface obviously can't override itself
+
+4786:26-4786:49
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d683721b_f47fa541
+Bytes: 105
+Can you change this to be const? It seems like that should be ok.
+
+(Also 4764 can then also become const)
+
+4856
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_a4a408e1
+Bytes: 163
+This could mention that we have a potential default conflict, but then if another method overrides it (e.g. an abstract method), then it's not actually a conflict.
+
+4871
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6923665_99fdb660
+Bytes: 27
+Add // chosen_iface == null
+
+4876
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b620be2e_8dcab1c5
+Bytes: 298
+Don't set this as the chosen interface if something else is overriding it (because that other interface would be potentially chosen instead if it was default). If the other interface had the abstract method then we wouldn't select this interface as chosen anyway since the abstract method masks it.
+
+4881
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36892e3b_0ff25c91
+Bytes: 100
+Add // chosen_iface == null
+
+This could be in the same level as the previous else if (by nesting it)
 
 5522:25-5522:34
 Fri Nov 06 22:51:25 2015 +0000
@@ -8,4 +113,54 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 568ea242_ba3426d9
 Bytes: 35
 Use kX for constants naming scheme.
+
+File: runtime/class_linker.h
+
+725
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5676a24b_6e0f2f47
+Bytes: 100
+Add:
+
+ or the default method implementation remains the same, or an abstract method stayed abstract.
+
+728:25-728:34
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b69d1e72_d0dd5531
+Bytes: 135
+Consider replacing with:
+
+  When a non-default method becomes a default method, or a default method becomes a different default method.
+
+726:69-728:34
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6923665_9e82fcb5
+Bytes: 160
+This sentence as-is could be removed entirely since it's overly specific (for example missing a default method implementing an abstract directly or indirectly).
+
+736
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d683721b_547871a7
+Bytes: 172
+Add:
+
+   When a method translation is unnecessary (case #1), we don't put it into the default_translation maps. So an instance of MethodTranslation must be in one of #2-#4.
+
+740:48-740:55
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b686fe2b_86f8fb6f
+Bytes: 24
+nit: add /*translation*/
+
+745:48-745:55
+Sat Nov 07 02:32:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36712e54_ad20bddb
+Bytes: 24
+nit: add /*translation*/
 

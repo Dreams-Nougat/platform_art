@@ -1,0 +1,46 @@
+Revision: c04e93be89f77abeac0d2e4ee8eb2d515b1360bf
+Patch-set: 1
+File: compiler/optimizing/instruction_simplifier_arm64.cc
+
+90:6-90:33
+Mon Nov 09 20:15:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d60ff2af_0de8d5ce
+Bytes: 97
+((ldist + rdist) & (reg_bits - 1)) == 0
+
+and drop the & (reg_bits - 1) on the previous two lines.
+
+116:2-116:46
+Mon Nov 09 20:15:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16e42a25_92c4dc63
+Bytes: 194
+Can you rewrite this so that we do two separate checks if both shl and ushr are the result of a sub? This currently misses this case:
+
+    int a = x - y;
+    int b = (z << a) | (z >>> (32 - a));
+
+223:0-225:1
+Mon Nov 09 20:15:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6345268_051bd451
+Bytes: 200
+Given that + and ^ are equivalent to | in this particular context, we could do the same for them. And I think it's not far fetched to expect the +, though I really wouldn't expect anyone to use the ^.
+
+File: compiler/optimizing/nodes_arm64.h
+
+59:10-59:13
+Mon Nov 09 20:15:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16e42a25_d21824c6
+Bytes: 2
+V?
+
+72:0-75:3
+Mon Nov 09 20:15:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16e42a25_72da9043
+Bytes: 112
+Is the second input really allowed to be long? It looks odd. And kMaxLongShiftValue being 64-bit also looks odd.
+

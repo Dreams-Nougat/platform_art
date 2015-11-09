@@ -112,6 +112,15 @@ UUID: 16e42a25_cf5e4128
 Bytes: 96
 The moment I start equalizing the chain lengths (line 50), those names don't make sense anymore.
 
+40:7-40:13
+Mon Nov 09 13:59:34 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16e42a25_cf5e4128
+UUID: 56030291_c902b521
+Bytes: 133
+assuming that's not design for multi-threaded then:
+you could use `new_dominator` for block, and just `dominator_` instead of block2?
+
 44:1-46:5
 Fri Nov 06 11:57:18 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -130,6 +139,16 @@ Parent: d6345268_c235e285
 UUID: 96173ad8_f8ca1172
 Bytes: 168
 That's purely a matter of style. Note that the != nullptr is enforced throughout this function, so I find an extra DCHECK(dominator_ != nullptr) at the end unnecessary.
+
+44:1-46:5
+Mon Nov 09 13:59:34 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96173ad8_f8ca1172
+UUID: d61d32f8_1a525de7
+Bytes: 201
+somehow it's style, but my view is that
+ - you don't have to think about "can the dominator_ really be null?" 
+ - I don't have transitively to see what this tests actually do (i.e. block == dominator_)
 
 File: compiler/optimizing/nodes.cc
 

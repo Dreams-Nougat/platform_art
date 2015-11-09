@@ -27,3 +27,11 @@ Perhaps the scheme "suspend all + SetStateUnsafe(kRunnable)" is just wrong?
 
 The debugger uses that to execute some code (like instrumentation update) when all others threads are suspended. But I think some of the executed code asserts the current thread is in the kRunnable state.
 
+952:0-953:83
+Mon Nov 09 17:37:51 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760c86c0_aae08fbc
+UUID: b69d1e72_d3b0ff4c
+Bytes: 240
+Yes, I would be nice to get rid of the SetStateUnsafe pattern. The issue is that if you have SuspendAll in a suspended thread state and use a ScopedObjectAccess, it will deadlock. The SetStateUnsafe to runnable is a hack to get around this.
+

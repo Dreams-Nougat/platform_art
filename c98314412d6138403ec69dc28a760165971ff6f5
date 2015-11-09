@@ -9,6 +9,14 @@ UUID: b6127ed6_8976f91f
 Bytes: 12
 What device?
 
+22:28-22:34
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6127ed6_8976f91f
+UUID: b6851e5b_f18d481a
+Bytes: 17
+Sorry ..  Nexus 5
+
 File: runtime/utf.cc
 
 58:23-58:74
@@ -20,12 +28,34 @@ Is it? Malformed input consisting of one ascii character and a lot of continuati
 
 Previously, the code that determines the length was in sync with "GetUtf16FromUtf8(const char** utf8_data_in)" so we would have allocated enough.
 
+58:23-58:74
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b637de6a_6436642a
+UUID: 565f82cb_467d72c3
+Bytes: 1014
+Darn, you're right. Thanks. I have reasons (for a future patch) to want the processing of each byte to be independent of the others.
+
+Altering GetUtf16FromUtf8 to match would fix the security issue, but for now I'll revert that part of CountModifiedUtf8Chars. The speedup on the 99%+ case of all ASCII input will remain identical, as that's purely due to the loop being counted.
+
+Note that the existing handling of malformed utf8 input is non-existant. Continuation bytes are assumed to be continuation bytes, but not checked (just blindly grab the lower 6 bits). There is no check for input buffer overflow when reading continuation bytes (my code can't overflow the input buffer). A continuation byte found in the initial position will be randomly decoded as a 2, 3, or 4 byte sequence depending on the 3rd and 4th bits (the 2nd bit is not checked).
+
+If this code needs to be robust against malformed OAT files (it's used for class names and string literals, not user input) then it needs a total rewrite anyway.
+
 61:18-61:25
 Fri Nov 06 19:16:04 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b686fe2b_4840d288
 Bytes: 5
 Typo.
+
+61:18-61:25
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b686fe2b_4840d288
+UUID: d6829250_52d77440
+Bytes: 6
+thanks
 
 73:2-73:19
 Fri Nov 06 19:53:58 2015 +0000
@@ -36,6 +66,16 @@ We prefer
 
   const char* first
 
+73:2-73:19
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b637de6a_042758f6
+UUID: 56314281_b69fc881
+Bytes: 134
+ok. Does this mean you never declare two variables on the same line?
+
+char* first = foo, second = bar; // second is a char not a point
+
 72:2-74:38
 Fri Nov 06 19:16:04 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,12 +83,28 @@ UUID: 36892e3b_f6adf1f1
 Bytes: 38
 Add a DCHECK that byte_count < strlen.
 
+72:2-74:38
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36892e3b_f6adf1f1
+UUID: 968c9a88_700f1047
+Bytes: 109
+OK, but given the changed API, there might one day be calls without any terminating null. (it's ok right now)
+
 78:9-78:26
 Fri Nov 06 19:16:04 2015 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d683721b_9f0207e5
 Bytes: 67
 Comment style is: start capitalized, and with a period. Same below.
+
+78:9-78:26
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d683721b_9f0207e5
+UUID: 56314281_76829027
+Bytes: 2
+ok
 
 File: runtime/utf.h
 
@@ -61,10 +117,26 @@ I'd prefer this ordering: utf16_out, out_chars, utf8_in, in_bytes.
 
 Also, line too long.
 
+55:32-55:107
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9609fab1_6b585d09
+UUID: d6e0d23e_e26e8607
+Bytes: 72
+I would too. I guess I didn't want to change the existing call too much.
+
 76:32-77:68
 Fri Nov 06 19:53:58 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96173ad8_9892f539
 Bytes: 50
 Order: utf8_out, byte_count, utf16_in, char_count.
+
+76:32-77:68
+Mon Nov 09 11:52:19 2015 +0000
+Author: Bruce Hoult <1085148@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96173ad8_9892f539
+UUID: 565f82cb_a6978628
+Bytes: 2
+ok
 

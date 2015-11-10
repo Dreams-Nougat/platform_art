@@ -34,3 +34,17 @@ UUID: 760646d1_f77c809c
 Bytes: 67
 Not sure I understand the thing with RecordPcInfo. Can you clarify?
 
+559:4-562:37
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 760646d1_f77c809c
+UUID: db11db43_7ac7796c
+Bytes: 730
+InvokeRuntime always calls RecordPcInfo, which records the Dex PC, the native PC, stack maps, etc. for this code location.
+
+However, I think we may actually not need to record this information, as that read barrier runtime entry point call shall never fail or be interrupted IIUC (meaning we may never use that information).
+
+In this regard, I thought calling the ReadBarrierSlow or ReadBarrierForRootSlow entry points should be no different than calling the runtime to perform, say, a type conversion (e.g. calling the F2l entry point to perform a float-to-long conversion on x86), as this operation should not fail nor be interrupted, and for which RecordPCInfo is special-cased not to record any information.
+
+I'll investigate.
+

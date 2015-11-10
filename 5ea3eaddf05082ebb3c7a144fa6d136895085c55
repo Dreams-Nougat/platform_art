@@ -17,12 +17,30 @@ UUID: b60c3eef_790a27a7
 Bytes: 56
 Or not as we aren't going to add the read barrier calls.
 
+1961:0-1964:28
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b60c3eef_790a27a7
+UUID: b67fde4b_e192263a
+Bytes: 419
+I agree, but moving this code just before the call (line 1986) would require an extra temporary register for the first move (as `temp` is already used below), so I'd rather keep it here for now.  I added a comment.
+
+Note that this code is properly moved to the right location in the CL containing the additional read barriers for HInvokeVirtual and HInvokeInterface (https://android-review.googlesource.com/#/c/180754).
+
 1980:59-1981:22
 Mon Nov 09 20:49:05 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f611560a_d39994ef
 Bytes: 212
 This is subtle, but can you change this to "the concurrent copying collector may not in the future." as we don't rule doing this in the same concurrent copying collector without introducing a different collector?
+
+1980:59-1981:22
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f611560a_d39994ef
+UUID: 96865a95_20088a6e
+Bytes: 44
+Done, here and in the x86-64 code generator.
 
 4092:59-4093:22
 Mon Nov 09 20:49:05 2015 +0000
@@ -31,12 +49,28 @@ UUID: 1617cafd_d4d17c4e
 Bytes: 10
 Same here.
 
+4092:59-4093:22
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1617cafd_d4d17c4e
+UUID: 169a6aee_bc3f6107
+Bytes: 4
+Done
+
 4146:2-4146:6
 Mon Nov 09 20:49:05 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b60c3eef_790d0714
 Bytes: 6
 const?
+
+4146:2-4146:6
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b60c3eef_790d0714
+UUID: 56278298_c60d2282
+Bytes: 252
+`const`-qualifying local non-pointer variables is not really part of the style we use in code generators.  If the initializer of this declaration were statically know, I would of course turn it into a `constexpr` one, but `const` only adds little IMHO.
 
 4548:2-4548:6
 Mon Nov 09 20:49:05 2015 +0000
@@ -45,12 +79,28 @@ UUID: 76bba63b_4f096d3f
 Bytes: 6
 const?
 
+4548:2-4548:6
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76bba63b_4f096d3f
+UUID: d67c5259_02138aa6
+Bytes: 6
+Ditto.
+
 4720:2-4720:6
 Mon Nov 09 20:49:05 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96b81a3f_f04760f6
 Bytes: 6
 const?
+
+4720:2-4720:6
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96b81a3f_f04760f6
+UUID: 96865a95_c03fde06
+Bytes: 6
+Ditto.
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -60,4 +110,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76bba63b_ef53011d
 Bytes: 134
 How about moving this code below the would-be read barrier call locations to avoid RAX getting clobbered like we did in a previous PS?
+
+2125:0-2127:68
+Tue Nov 10 11:44:40 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76bba63b_ef53011d
+UUID: b67fde4b_6187f6f4
+Bytes: 216
+I was thinking about this, but I kept it here to make this code similar to the one in InstructionCodeGeneratorX86::VisitInvokeInterface (see comments in compiler/optimizing/code_generator_x86.cc).  I added a comment.
 

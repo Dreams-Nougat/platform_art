@@ -1,0 +1,17 @@
+Revision: 495f4d65a51a78543f9b1a9c8f2022553c6f8896
+Patch-set: 1
+File: runtime/base/arena_allocator.cc
+
+329:2-329:75
+Tue Nov 10 21:32:33 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c50ace_785ea954
+Bytes: 357
+I don't think we should or need to do that, though one may argue that a memset is faster than the CHECK_EQ (which we maybe want to move to DCHECK_EQ).
+
+The smaller fix is to move the MAKE_DEFINED before the check, something like this:
+
+ MEMORY_TOOL_MAKE_DEFINED(ret, rounded_bytes);
+ for (...)
+ MEMORY_TOOL_MAKE_NOACCESS(ret + bytes, rounded_bytes - bytes);
+

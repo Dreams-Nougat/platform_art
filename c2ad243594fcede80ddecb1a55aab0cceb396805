@@ -1,0 +1,157 @@
+Revision: c2ad243594fcede80ddecb1a55aab0cceb396805
+Patch-set: 19
+File: runtime/class_linker.cc
+
+4781
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c50ace_e46b1a88
+Bytes: 37
+DCHECK that the iface is an interface
+
+4808
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c50ace_6480ca64
+Bytes: 543
+Not sure if having this return a bool makes sense anymore, it's more of a tri-state.
+
+  a) default method was found, returned in *out-default
+  b) the method is actually abstract
+  c) default conflict
+
+and should probably look as such, for example:
+
+  enum DefaultMethodSearchResult {
+    kDefaultFound,
+    kDefaultMaskedByAbstract,
+    kDefaultConflict
+  }
+
+We can then mention that out_default_method is only set for kDefaultFound.
+
+Currently it's very subtle because we have to switch on both the bool and then again on out_default_method.
+
+4860:68-4860:77
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_279ffad2
+Bytes: 16
+interface method
+
+5140:43-5140:75
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_c8354f86
+Bytes: 5
+const
+
+5141:80-5141:84
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6d7f27c_4a3833aa
+Bytes: 150
+Is the list of same name and signatures always unique here? If it's not unique, then this finds the *first* samename
+
+-> FindFirstSameNameAndSignature
+
+5186:19-5186:34
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6a6b626_2e7d07c5
+Bytes: 77
+rename to imt_conflict_method so we don't confuse this with default conflicts
+
+5353
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_070d96bd
+Bytes: 125
+// Don't look for a default implementation when the supermethod is implemented directly by a class
+//
+// See if we can use...
+
+5380
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6d7f27c_4a42f3ec
+Bytes: 26
+// Default method conflict
+
+5384:22-5384:25
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6d7f27c_0ae63b45
+Bytes: 5
+reuse
+
+5402
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 369daed4_0dbbf101
+Bytes: 25
+// Found a default method
+
+5419
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7689e6a7_5f872bf4
+Bytes: 202
+else /*current_method == nullptr*/ { // Abstract method masks all defaults
+  if (vtable_impl->IsAbstract() &&
+      !vtable_impl->IsDefaultConflicting()) {
+    ...
+  }
+  // else don't need do anything
+}
+
+5598:12-5601:11
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_0ade3b2c
+Bytes: 74
+Why do we need this? Why did we even put it into default_conflict_methods?
+
+5602
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6a6b626_ee213f91
+Bytes: 94
+// Normal default method (changed from an older default or an older abstract interface method)
+
+File: runtime/common_throws.cc
+
+248
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_cbfb89a1
+Bytes: 16
+nit: /*referer*/
+
+File: runtime/modifiers.h
+
+54
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d6d7f27c_2a6cdf4d
+Bytes: 95
+Used to figure out at runtime if invoking this method will throw an exception (e.g. NME or AME)
+
+File: test/968-default-partial-compilation-generated/util-src/generate_java.py
+
+46
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6da7ea7_4c65efed
+Bytes: 33
+nit: public method need a comment
+
+File: test/968-default-partial-compilation-generated/util-src/generate_smali.py
+
+543:39-543:41
+Tue Nov 10 00:53:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 369daed4_50ff5282
+Bytes: 15
+nit: two spaces
+

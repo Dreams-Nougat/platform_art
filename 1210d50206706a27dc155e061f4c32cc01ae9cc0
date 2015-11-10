@@ -17,6 +17,14 @@ UUID: 169a6aee_bc74c1db
 Bytes: 133
 I think SplitCriticalEdge() can resize the underlying container and thus invalidate the ArrayRef<>, so this needs to remain as it is.
 
+384:29-384:57
+Tue Nov 10 13:14:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_bc74c1db
+UUID: 569062ca_be74b9db
+Bytes: 172
+then could you please add a comment. The usual assumption around for loops like this is that the data doesn't change under your feet ( or at least that's what I assume :) )
+
 File: compiler/optimizing/nodes.h
 
 665:54-665:56
@@ -42,4 +50,14 @@ Bytes: 335
 That's just lack of trust in the compiler. That ArrayRef<> should be optimized away (inlining+scalarization), only the size will actually need to be calculated.
 
 The real effect here is the EndsWithTryBoundary(), including a virtual function call but there are so many other places where we don't care about that particular overhead...
+
+2439:46-2439:70
+Tue Nov 10 13:14:13 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d67c5259_8256ba4f
+UUID: 368beea4_dd0d0b82
+Bytes: 178
+If it doesn't matter because it's fast and not used in hot loops  then it's fine.
+
+But relying that the compiler will do or not do something for you it's not a good practice imo.
 

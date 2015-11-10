@@ -1,0 +1,11 @@
+Revision: 7386e9098934a36d61abb0686be76905fafca5e9
+Patch-set: 6
+File: compiler/optimizing/nodes.cc
+
+398:10-398:46
+Tue Nov 10 15:59:35 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_00b466a7
+Bytes: 284
+Please get back to PS4. This SplitCriticalEdge() can cause the successor vector to resize and move its storage, leaving the normal_successors above point to deallocated memory (though holding the same data under normal circumstances, we catch that when running with valgring or ASAN).
+

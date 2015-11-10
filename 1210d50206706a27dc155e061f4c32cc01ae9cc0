@@ -9,6 +9,14 @@ UUID: 569062ca_7e56b152
 Bytes: 236
 hmm, extract the use of block->GetNormalSuccessors() outside the loop. Now you create a new RefArray with every invocation and even if it's not a copy of the array you still handle do some work because of the size and the array pointer.
 
+384:29-384:57
+Tue Nov 10 13:05:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_7e56b152
+UUID: 169a6aee_bc74c1db
+Bytes: 133
+I think SplitCriticalEdge() can resize the underlying container and thus invalidate the ArrayRef<>, so this needs to remain as it is.
+
 File: compiler/optimizing/nodes.h
 
 665:54-665:56
@@ -24,4 +32,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56278298_064f3ab8
 Bytes: 74
 do you need to worry that now you create a RefArray with every invocation?
+
+2439:46-2439:70
+Tue Nov 10 13:05:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_064f3ab8
+UUID: d67c5259_8256ba4f
+Bytes: 335
+That's just lack of trust in the compiler. That ArrayRef<> should be optimized away (inlining+scalarization), only the size will actually need to be calculated.
+
+The real effect here is the EndsWithTryBoundary(), including a virtual function call but there are so many other places where we don't care about that particular overhead...
 

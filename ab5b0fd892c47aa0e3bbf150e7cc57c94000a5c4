@@ -1,0 +1,90 @@
+Revision: ab5b0fd892c47aa0e3bbf150e7cc57c94000a5c4
+Patch-set: 1
+File: compiler/optimizing/intrinsics_mips.cc
+
+676:28-676:29
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b0e2f2a_f71cc055
+Bytes: 18
+Add spaces around.
+
+696:32-696:33
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16ac2a06_db97df27
+Bytes: 6
+Ditto.
+
+699:32-699:33
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 369daed4_96f9b2ee
+Bytes: 6
+Ditto.
+
+702:28-702:29
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7689e6a7_e87cc79c
+Bytes: 6
+Ditto.
+
+703:35-703:36
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56cb02e2_20bd1684
+Bytes: 6
+Ditto.
+
+705:28-705:29
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6da7ea7_b83ca5a5
+Bytes: 6
+Ditto.
+
+706:35-706:36
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_3c7d49c5
+Bytes: 6
+Ditto.
+
+706:23-706:28
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_fc53b11c
+Bytes: 5
+in_lo
+
+720:0-721:33
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b0e2f2a_174e1414
+Bytes: 31
+Shorter:
+
+subu TMP, ZERO, shamt
+
+736:0-774:21
+Tue Nov 10 23:17:48 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6a6b626_dac4f964
+Bytes: 597
+Too much code (overall and in the longest path) and branching. I suggest something like this instead (similar to what we do in InstructionCodeGeneratorMIPS::HandleShift()):
+
+        __ Subu(TMP, ZERO, shamt);
+        __ Srl(AT, in_lo, shamt);
+        __ Sll(out_lo, in_hi, TMP);
+        __ Or(out_lo, out_lo, AT);
+        __ Srl(AT, in_hi, shamt);
+        __ Sll(out_hi, in_lo, TMP);
+        __ Or(out_hi, out_hi, AT);
+        __ Andi(TMP, shamt, 32);
+        __ Beqz(TMP, &done);
+        __ Move(TMP, out_hi);
+        __ Move(out_hi, out_lo);
+        __ Move(out_lo, TMP);
+        __ Bind(&done);
+

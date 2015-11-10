@@ -103,6 +103,14 @@ UUID: d6d7f27c_8d26c5f7
 Bytes: 146
 licm can still hoist non-throwing instruction after the first exception throwing instruction. HArrayGet is non-throwing (HBoundsCheck is instead).
 
+1123
+Tue Nov 10 18:13:54 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6d7f27c_8d26c5f7
+UUID: 16ac2a06_f5f74a7c
+Bytes: 222
+But the array get may be hoisted after the null check has been hoisted into the yes-block of the if-taken-structure. Pure LICM would hoist the instruction into the pre-header which is always executed, which would be wrong.
+
 1206:27-1206:39
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -155,6 +163,14 @@ Parent: 36ef6e34_5dd47b68
 UUID: 76d4867d_aa156f1d
 Bytes: 90
 The caller seems to always set it to true if we don't set it here, if I read it correctly.
+
+1226
+Tue Nov 10 18:13:54 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76d4867d_aa156f1d
+UUID: f6a6b626_74d4fe11
+Bytes: 178
+Yes, because we may not know the exact range in terms of instruction +/- constant, but may be able to generate code for more complex cases (e.g. instruction + other_instruction).
 
 1231:66-1231:84
 Fri Nov 06 10:56:26 2015 +0000

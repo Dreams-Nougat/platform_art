@@ -1,0 +1,27 @@
+Revision: 1210d50206706a27dc155e061f4c32cc01ae9cc0
+Patch-set: 3
+File: compiler/optimizing/nodes.cc
+
+384:29-384:57
+Tue Nov 10 12:10:51 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_7e56b152
+Bytes: 236
+hmm, extract the use of block->GetNormalSuccessors() outside the loop. Now you create a new RefArray with every invocation and even if it's not a copy of the array you still handle do some work because of the size and the array pointer.
+
+File: compiler/optimizing/nodes.h
+
+665:54-665:56
+Tue Nov 10 12:10:51 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 169a6aee_1c369528
+Bytes: 85
+Document here and below that for tryblocks you can have at most one normal successor.
+
+2439:46-2439:70
+Tue Nov 10 12:10:51 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_064f3ab8
+Bytes: 74
+do you need to worry that now you create a RefArray with every invocation?
+

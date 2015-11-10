@@ -9,3 +9,11 @@ UUID: d67c5259_a213bea7
 Bytes: 122
 So it's boolean sumplifier that tripped it? The commit message is confusing, as we seem to already run dce with try/catch.
 
+534:6-534:22
+Tue Nov 10 11:16:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d67c5259_a213bea7
+UUID: 36220e8b_85d6c2e6
+Bytes: 373
+No, it's not. I've added this because the tests rely on if-simplification (swap successors when condition is BooleanNot) to trigger the DCE. This CL was originally based on top of the reverted one which enabled all passes for try/catch so it was running boolean_simplifier then. As soon as Aart's Dynamic BCE gets in, I'll remove this. Sorry, should have made this clearer.
+

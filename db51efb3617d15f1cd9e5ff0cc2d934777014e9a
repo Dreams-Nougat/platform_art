@@ -11,3 +11,15 @@ sorry, late to the game but saw this;
 can you explain why this return had to be removed?
 (here and in the other tests)
 
+72:20-72:30
+Tue Nov 10 08:09:43 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9603babe_7bd4db11
+UUID: d67c5259_22b32e12
+Bytes: 449
+I'm not sure I understand. The return was added, not removed.
+
+The reason why I had to add it is because these tests were previously jumping to HExit with an HIf which is not allowed. It did not use to crash because gtests don't run GraphChecker (maybe they should) but in this CL I've added a DCHECK into SsaBuilder that will fail. 
+
+Functionality should remain the same, it just makes the tests compliant with an invariant we enforce on the graph.
+

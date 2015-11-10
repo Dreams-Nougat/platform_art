@@ -111,6 +111,18 @@ UUID: 16ac2a06_f5f74a7c
 Bytes: 222
 But the array get may be hoisted after the null check has been hoisted into the yes-block of the if-taken-structure. Pure LICM would hoist the instruction into the pre-header which is always executed, which would be wrong.
 
+1123
+Tue Nov 10 20:45:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16ac2a06_f5f74a7c
+UUID: 56cb02e2_d51206a1
+Bytes: 756
+Ok, so it's not the normal hoisting. Maybe can make it more explicit in the comment/naming.
+
+There two cases I think should be considered here:
+1) If the HArrayGet is in a branch (doesn't dominate all back edges), should we still always hoist it?
+2) If the bounds check isn't eliminated due to the deopt inserted by loop, instead by the deopt-for-constant-index case, like straightline a[1], a[2], a[3] inside a loop, then it's not correct to hoist the HArrayGet out of loop (even if it's hoisted, it should be hoisted to the loop pre-header). I'm worried about this case since even if it's not done by bce here, if there is another licm phase after bce, this can happen since I don't see any dependency between the HArrayGet and the HDeoptimize currently.
+
 1206:27-1206:39
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -171,6 +183,14 @@ Parent: 76d4867d_aa156f1d
 UUID: f6a6b626_74d4fe11
 Bytes: 178
 Yes, because we may not know the exact range in terms of instruction +/- constant, but may be able to generate code for more complex cases (e.g. instruction + other_instruction).
+
+1226
+Tue Nov 10 20:45:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6a6b626_74d4fe11
+UUID: 369daed4_167ae2cc
+Bytes: 161
+My point is if it's not even an induction variable, the caller shouldn't even try to call TryDynamicBCE(). So it's better if we can return that information back.
 
 1231:66-1231:84
 Fri Nov 06 10:56:26 2015 +0000
@@ -300,6 +320,17 @@ Parent: 36fe8ebd_8514a21d
 UUID: d66b7268_cd72ddc8
 Bytes: 4
 Done
+
+1268
+Tue Nov 10 20:45:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16ac2a06_40993e3c
+Bytes: 687
+The reason in the old code about early-exit, dominate-all-back-edges, etc. is more about the co-relation between deoptimization and AIOOBE instead of profitability. We want to guarantee deoptimization happens if and only if AIOOBE is thrown. So those is done on the whole loop instead of each bounds check instruction.
+
+If it's only done case by case for each bounds check instruction, that co-relation can be broken. deopt can be inserted before an early exit is detected later, for example.
+
+In a jit world, we can definitely relax that restriction and profile the deopt at runtime and recompile if necessary. But for static compile, I think we still want to maintain that co-relation.
 
 1283:0-1284:88
 Fri Nov 06 10:56:26 2015 +0000
@@ -474,6 +505,14 @@ Parent: b69d1e72_fd65d260
 UUID: 1617cafd_3499d03d
 Bytes: 4
 Done
+
+1425
+Tue Nov 10 20:45:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1617cafd_3499d03d
+UUID: 56cb02e2_7587d2f4
+Bytes: 319
+I don't see it yet. The source level example makes the transformation clear, and the explanation of the co-relation between deoptimization and throwing AIOOBE would still be nice. It makes it clear why we do early-exit detection, dominate-all-back-edges, etc. to make sure the loop really covers every index at runtime.
 
 1465:0-1466:72
 Fri Nov 06 10:56:26 2015 +0000

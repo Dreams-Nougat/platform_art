@@ -123,6 +123,15 @@ There two cases I think should be considered here:
 1) If the HArrayGet is in a branch (doesn't dominate all back edges), should we still always hoist it?
 2) If the bounds check isn't eliminated due to the deopt inserted by loop, instead by the deopt-for-constant-index case, like straightline a[1], a[2], a[3] inside a loop, then it's not correct to hoist the HArrayGet out of loop (even if it's hoisted, it should be hoisted to the loop pre-header). I'm worried about this case since even if it's not done by bce here, if there is another licm phase after bce, this can happen since I don't see any dependency between the HArrayGet and the HDeoptimize currently.
 
+1123
+Wed Nov 11 21:15:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56cb02e2_d51206a1
+UUID: b6da7ea7_1572d72e
+Bytes: 810
+(1) I am not worried about this, since we can only hoist after null check has been eliminated, and we currently only do that statically if it is already executed, or dynamically if the null check and thus this load dominates all back edges
+(2) this is a good observation, and something that worried me too; but not for the reasons you sketched; if we generate the taken structure, than we hoist it to the true path; this is okay since we won't execute the loop otherwise; so hoisting to preheader would be wrong! but what worries me is that we have gets in the loop-body without a null check, but no way to tell later phases that they cannot be hoisted to pure preheader, but must be hoisted to true block in taken structure; currently that does not happen, but I have no good solution on preventing it. Ideas?
+
 1206:27-1206:39
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -191,6 +200,16 @@ Parent: f6a6b626_74d4fe11
 UUID: 369daed4_167ae2cc
 Bytes: 161
 My point is if it's not even an induction variable, the caller shouldn't even try to call TryDynamicBCE(). So it's better if we can return that information back.
+
+1226
+Wed Nov 11 21:15:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 369daed4_167ae2cc
+UUID: b6da7ea7_b83ae517
+Bytes: 345
+Yes, I understand, but GetInductionRange() tries to get a range back in very simple terms only. So something can still be an induction but fail here. We don't have a good way to set this to false here. That's what is done by CanGenerateCode() later.
+
+I see what you want to do here, but it seems a lot of work to avoid just a bit of tests later.
 
 1231:66-1231:84
 Fri Nov 06 10:56:26 2015 +0000
@@ -332,6 +351,14 @@ If it's only done case by case for each bounds check instruction, that co-relati
 
 In a jit world, we can definitely relax that restriction and profile the deopt at runtime and recompile if necessary. But for static compile, I think we still want to maintain that co-relation.
 
+1268
+Wed Nov 11 21:15:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16ac2a06_40993e3c
+UUID: 7b0e2f2a_6ba9e94f
+Bytes: 284
+Well I think we mean the same thing. I call it "profitable" because using dynamic bce too aggressively would fall back to interpreter, and thus be slow. Correctness is never an issue. So I think we mean the same thing, just call it differently. If not, we can discuss offline perhaps.
+
 1283:0-1284:88
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -355,6 +382,14 @@ Parent: 365a0ede_eb7465dc
 UUID: 56278298_263276ec
 Bytes: 72
 It sort of woke up my "premature optimizations" senses :) But your call.
+
+1283:0-1284:88
+Wed Nov 11 21:15:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_263276ec
+UUID: 7b0e2f2a_2bfe515a
+Bytes: 46
+Donald Knuth would probably agree with you :-)
 
 1287
 Sat Nov 07 00:18:46 2015 +0000
@@ -521,6 +556,14 @@ Parent: 1617cafd_3499d03d
 UUID: 56cb02e2_7587d2f4
 Bytes: 319
 I don't see it yet. The source level example makes the transformation clear, and the explanation of the co-relation between deoptimization and throwing AIOOBE would still be nice. It makes it clear why we do early-exit detection, dominate-all-back-edges, etc. to make sure the loop really covers every index at runtime.
+
+1425
+Wed Nov 11 21:15:44 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56cb02e2_7587d2f4
+UUID: 56cb02e2_754512f3
+Bytes: 47
+Oh, it should be there now. Let me repo upload.
 
 1465:0-1466:72
 Fri Nov 06 10:56:26 2015 +0000

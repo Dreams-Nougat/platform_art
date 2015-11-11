@@ -27,6 +27,14 @@ UUID: d67c5259_e246a633
 Bytes: 230
 Then we should document Location::RegisterOrConstant or choose a better name. All the other code in generators assume the semantic "if it's a constant you get a constant, otherwise you get a register". I much prefer consistency :)
 
+3006:8-3006:40
+Wed Nov 11 12:33:47 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d67c5259_e246a633
+UUID: 368beea4_5d0d7b13
+Bytes: 369
+I've gone through all RegisterOrConstant() calls and the only place where my reading would be problematic is ARM div/rem where we check that the input is constant and then ask for RegisterOrConstant() instead of ConstantLocation(). And that's just silly. I'll fix that and check that everything works even if I rewrite RegisterOrConstant() to return RequiresRegister().
+
 3035:0-3035:72
 Tue Nov 10 22:15:32 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,6 +9,14 @@ UUID: 569062ca_bedd9995
 Bytes: 46
 Already true (`HInvokeStaticOrDirect* invoke`)
 
+1709:14-1709:38
+Wed Nov 11 13:58:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_bedd9995
+UUID: d67c5259_22588e08
+Bytes: 48
+Done. (I previously had this in HandleInvoke().)
+
 3808:27-3808:64
 Wed Nov 11 12:08:18 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,6 +28,16 @@ How about HandleCurrentMethod() ? or anything similar.
 
 Also, please document at top level what this supposed to do.
 
+3808:27-3808:64
+Wed Nov 11 13:58:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_bd2cbf8a
+UUID: 96865a95_c07c3e06
+Bytes: 114
+Any proposal for a better name?
+
+This is _not_ about the current method (though we could use it for that as well).
+
 3824:28-3824:46
 Wed Nov 11 12:08:18 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,12 +45,28 @@ UUID: 368beea4_bdf3df5a
 Bytes: 149
 I think I miss something. This suggests that we GenerateStaticOrDirectCall only on slow paths which is not true. Do you need to test against nullptr?
 
+3824:28-3824:46
+Wed Nov 11 13:58:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_bdf3df5a
+UUID: f6bf9630_83ae9ec0
+Bytes: 42
+You missed the Intrinsified() check above.
+
 3953:86-3953:88
 Wed Nov 11 12:08:18 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: db11db43_7a6539c6
 Bytes: 128
 I know this is just a propagation of what it was before, bug could you please const-ify the magic number with a suggestive name?
+
+3953:86-3953:88
+Wed Nov 11 13:58:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_7a6539c6
+UUID: 169a6aee_dc30ad98
+Bytes: 4
+Done
 
 File: compiler/optimizing/pc_relative_fixups_x86.cc
 
@@ -42,4 +76,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 368beea4_7d131742
 Bytes: 136
 How about we specialize this to SetCurrentMethod() ? I find InsertInputAt too generic and it's not something that we should normally do.
+
+118:31-118:44
+Wed Nov 11 13:58:37 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_7d131742
+UUID: 56278298_06865a82
+Bytes: 150
+I'd rather rename GetCurrentMethodInputIndex() to GetExtraArgumentsStartIndex() but that's quite invasive, so I would do it in a standalone rename CL.
 

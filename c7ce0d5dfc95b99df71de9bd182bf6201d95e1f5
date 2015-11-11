@@ -35,6 +35,18 @@ It's run with ART_TEST_QUIET by default isn't it?
 
 If anything, I can only see that disabling ART_TEST_QUIET must happen explicitly.
 
+46
+Wed Nov 11 23:51:19 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b25eb9e_d9d21750
+UUID: 16c50ace_ae2618f7
+Bytes: 350
+> It's run with ART_TEST_QUIET by default isn't it?
+
+yeah. 
+
+As I said I feel that if you are adding or changing a test you will likely run it directly which will cause everything to be printed anyway and if you aren't writing a test you likely only care that all tests pass (or knowing which ones fail) and all the passing tests would be just noise.
+
 File: runtime/common_runtime_test.cc
 
 70:1-75:3
@@ -55,10 +67,28 @@ IIRC for run-test didn't you buffer the output so we could replay it on a test f
 
 Why not do the same thing here? Otherwise if it prints anything else out (that's not as a result of EXPECT/ASSERT) we will miss it [in the build logs].
 
+1438
+Wed Nov 11 23:51:19 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6da7ea7_2b333839
+UUID: f6a6b626_6aa0925f
+Bytes: 204
+We would need to create a whole new file to write things to temporarily in order to do this.
+
+I could add this if you want but I really don't feel that it is too necessary. Only a few test cases set this.
+
 1444
 Wed Nov 11 23:32:00 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76d4867d_44de5f2d
 Bytes: 85
 Did you check it on the target too? Some tests might send data to logcat and spam it.
+
+1444
+Wed Nov 11 23:51:19 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76d4867d_44de5f2d
+UUID: 7b0e2f2a_262208e5
+Bytes: 49
+I honestly don't really care about logcat spam...
 

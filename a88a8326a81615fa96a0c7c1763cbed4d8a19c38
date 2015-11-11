@@ -1,0 +1,45 @@
+Revision: a88a8326a81615fa96a0c7c1763cbed4d8a19c38
+Patch-set: 4
+File: compiler/optimizing/code_generator_x86.cc
+
+1709:14-1709:38
+Wed Nov 11 12:08:18 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_bedd9995
+Bytes: 46
+Already true (`HInvokeStaticOrDirect* invoke`)
+
+3808:27-3808:64
+Wed Nov 11 12:08:18 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_bd2cbf8a
+Bytes: 185
+this is misleading name as you don't imply the usual "Get" meaning.
+
+How about HandleCurrentMethod() ? or anything similar.
+
+Also, please document at top level what this supposed to do.
+
+3824:28-3824:46
+Wed Nov 11 12:08:18 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_bdf3df5a
+Bytes: 149
+I think I miss something. This suggests that we GenerateStaticOrDirectCall only on slow paths which is not true. Do you need to test against nullptr?
+
+3953:86-3953:88
+Wed Nov 11 12:08:18 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db11db43_7a6539c6
+Bytes: 128
+I know this is just a propagation of what it was before, bug could you please const-ify the magic number with a suggestive name?
+
+File: compiler/optimizing/pc_relative_fixups_x86.cc
+
+118:31-118:44
+Wed Nov 11 12:08:18 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_7d131742
+Bytes: 136
+How about we specialize this to SetCurrentMethod() ? I find InsertInputAt too generic and it's not something that we should normally do.
+

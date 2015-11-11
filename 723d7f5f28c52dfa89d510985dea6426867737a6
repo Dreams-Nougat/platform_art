@@ -9,6 +9,14 @@ UUID: db11db43_9a8c8de8
 Bytes: 51
 How about making this kCompilerGenerateReadBarrier?
 
+557:52-557:88
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_9a8c8de8
+UUID: 169a6aee_fc4c891d
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_x86.cc
 
 478:0-494:39
@@ -18,12 +26,28 @@ UUID: 569062ca_be41191f
 Bytes: 163
 Maybe add that we don't want to request a temp to the register allocator, as this is a slow path, and we know we can find a caller-save register that is available.
 
+478:0-494:39
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_be41191f
+UUID: 96865a95_e344ec9d
+Bytes: 4
+Done
+
 495:30-495:55
 Tue Nov 10 22:59:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56278298_e64f7e66
 Bytes: 32
 FindAvailableCallerSaveRegister?
+
+495:30-495:55
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_e64f7e66
+UUID: 96865a95_c33fe806
+Bytes: 4
+Done
 
 573:0-573:51
 Tue Nov 10 22:59:33 2015 +0000
@@ -32,12 +56,28 @@ UUID: 96865a95_2086ca82
 Bytes: 35
 Explain why this should not happen.
 
+573:0-573:51
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_2086ca82
+UUID: b67fde4b_a4a4ac7a
+Bytes: 4
+Done
+
 1988:0-1988:53
 Tue Nov 10 22:59:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96865a95_4083ce71
 Bytes: 134
 I'd drop, and put the comment lines 1995-2001 at the top of this method. I feel this code as a comment can easily confuse new readers.
+
+1988:0-1988:53
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_4083ce71
+UUID: f6bf9630_c6ad44ad
+Bytes: 191
+I prefer to keep this as-is for the sake of consistency (all heap reference loads are preceded by that type of comment; and all the heap unpoisoning instrumentation also comes with comments).
 
 4104:0-4104:55
 Tue Nov 10 22:59:33 2015 +0000
@@ -46,12 +86,28 @@ UUID: 569062ca_de46e533
 Bytes: 5
 ditto
 
+4104:0-4104:55
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_de46e533
+UUID: 36220e8b_c80d2f82
+Bytes: 6
+Ditto.
+
 4179:44-4180:55
 Tue Nov 10 22:59:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f6bf9630_434f863c
 Bytes: 67
 Not really likewise as there is no "low move" for object field get.
+
+4179:44-4180:55
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6bf9630_434f863c
+UUID: 368beea4_dd942bb8
+Bytes: 4
+Done
 
 4618:30-4618:67
 Tue Nov 10 22:59:33 2015 +0000
@@ -60,12 +116,30 @@ UUID: 169a6aee_fcfd6926
 Bytes: 5
 ditto
 
+4618:30-4618:67
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_fcfd6926
+UUID: d67c5259_22b40e3f
+Bytes: 4
+Done
+
 5814:0-5821:41
 Tue Nov 10 22:59:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 368beea4_3d842fc0
 Bytes: 24
 Why did you change this?
+
+5814:0-5821:41
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_3d842fc0
+UUID: 56278298_2638b67b
+Bytes: 513
+Because we would be in the same pattern as in HInvoke{Virtual,Interface} when read barriers are on (before I removed them): a call to the read barrier slow path (line 5669) which would trash EAX (which contains the class to be checked against) – because the register allocator does not consider fixed register inputs to be "live registers" at that point – followed by an out-of-slow-path call to the InstanceofNonTrivial runtime entry point, which relies on EAX containing that very class.
+
+I added a comment.
 
 6070:0-6072:52
 Tue Nov 10 22:59:33 2015 +0000
@@ -74,6 +148,14 @@ UUID: 169a6aee_3c00b1dc
 Bytes: 35
 ditto, why not keeping like before?
 
+6070:0-6072:52
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_3c00b1dc
+UUID: 169a6aee_7cb5d907
+Bytes: 6
+Ditto.
+
 6276:4-6276:23
 Tue Nov 10 22:59:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -81,12 +163,28 @@ UUID: 368beea4_1d8773c7
 Bytes: 34
 How about just inlining this here?
 
+6276:4-6276:23
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_1d8773c7
+UUID: d67c5259_a2f49ef4
+Bytes: 69
+Why?  That would be code duplication + more lines of code altogether.
+
 6290:0-6290:4
 Tue Nov 10 22:59:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96865a95_0071c678
 Bytes: 14
 2 spaces more.
+
+6290:0-6290:4
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_0071c678
+UUID: 368beea4_1d869382
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -97,6 +195,14 @@ UUID: 569062ca_fe4ba13a
 Bytes: 37
 Comments on x86 also apply to x86_64.
 
+1
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_fe4ba13a
+UUID: 96865a95_23125471
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 52:0-69:29
@@ -105,4 +211,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b67fde4b_81ab1adc
 Bytes: 254
 Does that really work? the invoke->GetLocations will request locations to the inputs that may not match the calling convention. We might get lucky and that's what we're doing in our intrinsics code today, but it doesn't have to be the case in the future.
+
+52:0-69:29
+Wed Nov 11 17:54:32 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67fde4b_81ab1adc
+UUID: 368beea4_bddd9f95
+Bytes: 59
+Right; I've rewritten this to avoid this potential pitfall.
 

@@ -25,6 +25,16 @@ This is only if we specifically pass --quiet or run with ART_TEST_QUIET=true. If
 
 Honestly I didn't put it in since its annoying doing coloring in a terminal and the fact that there is much less output makes it less necessary IMO.
 
+46
+Wed Nov 11 23:32:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6a6b626_eac48264
+UUID: 5b25eb9e_d9d21750
+Bytes: 132
+It's run with ART_TEST_QUIET by default isn't it?
+
+If anything, I can only see that disabling ART_TEST_QUIET must happen explicitly.
+
 File: runtime/common_runtime_test.cc
 
 70:1-75:3
@@ -33,4 +43,22 @@ Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6da7ea7_c8a9c2bc
 Bytes: 27
 I actually don't need this.
+
+File: runtime/utils.cc
+
+1438
+Wed Nov 11 23:32:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b6da7ea7_2b333839
+Bytes: 240
+IIRC for run-test didn't you buffer the output so we could replay it on a test failure?
+
+Why not do the same thing here? Otherwise if it prints anything else out (that's not as a result of EXPECT/ASSERT) we will miss it [in the build logs].
+
+1444
+Wed Nov 11 23:32:00 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_44de5f2d
+Bytes: 85
+Did you check it on the target too? Some tests might send data to logcat and spam it.
 

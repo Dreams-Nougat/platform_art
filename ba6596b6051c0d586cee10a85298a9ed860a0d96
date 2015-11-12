@@ -39,6 +39,14 @@ UUID: 1b3453db_4f953163
 Bytes: 12
 Not required
 
+3271:2-3271:3
+Thu Nov 12 21:47:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b3453db_4f953163
+UUID: bb3987d2_60a91c50
+Bytes: 69
+It scopes 'hash' to just 2 lines because it's not used anywhere else.
+
 3289:33-3289:59
 Thu Nov 12 19:47:10 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -81,6 +89,14 @@ UUID: 5b25eb9e_2a288771
 Bytes: 77
 Should this be first_arg_reg * sizeof(uint32_t) since vregs are 4 bytes each?
 
+1008:33-1008:46
+Thu Nov 12 21:47:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b25eb9e_2a288771
+UUID: 16c50ace_bf2640f7
+Bytes: 125
+shadow_frame_vregs is a uint32_t so when adding first_arg_reg to it, the underlying address advances by first_arg_reg*4 bytes
+
 1010:38-1010:51
 Thu Nov 12 19:47:10 2015 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -94,6 +110,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1b3453db_b257584f
 Bytes: 8
 And here
+
+1017:40-1017:53
+Thu Nov 12 21:47:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b3453db_b257584f
+UUID: 76d4867d_f959f541
+Bytes: 69
+Looks like 1014 should be uint32_t instead, thanks for catching this.
 
 1019:45-1019:58
 Thu Nov 12 19:47:10 2015 +0000
@@ -251,6 +275,14 @@ UUID: 1698aa84_9b11376e
 Bytes: 59
 Doesn't this erase possibly invalidate the reference above?
 
+292:26-292:31
+Thu Nov 12 21:47:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1698aa84_9b11376e
+UUID: b6da7ea7_7708726f
+Bytes: 42
+Yeah not sure how that slipped in, thanks.
+
 File: runtime/lambda/box_table.h
 
 145:19-145:61
@@ -286,6 +318,16 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5b25eb9e_2afd2725
 Bytes: 117
 Is this safe? Can lambdas escape to other class loaders? In that case the lambda would to keep the class loader live.
+
+89:11-89:30
+Thu Nov 12 21:47:23 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b25eb9e_2afd2725
+UUID: 3b2597a9_f3584809
+Bytes: 119
+I suppose they could escape to other class loaders if the parent is shared.
+
+This could probably use some more thought.
 
 File: runtime/modifiers.h
 

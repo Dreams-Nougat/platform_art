@@ -9,3 +9,13 @@ UUID: 368beea4_9df463f5
 Bytes: 68
 LoadClass is always going to be a PrimNot, why would it have failed?
 
+2980:43-2980:57
+Thu Nov 12 09:01:28 2015 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_9df463f5
+UUID: 5b2a4b7b_2e466736
+Bytes: 351
+Here it should be V0, not A0 (as in MIPS32).
+
+But the actual failure was caused by the bug in the other part of this change, 64-bit field set was failing because the 64-bit value input wasn't in the right registers (for the purpose of alignment on 32-bit architectures, the 64-bit set has a different order of parameters compared to 8/16/32-bit sets).
+

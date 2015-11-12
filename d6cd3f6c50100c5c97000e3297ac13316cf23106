@@ -1,0 +1,38 @@
+Revision: d6cd3f6c50100c5c97000e3297ac13316cf23106
+Patch-set: 2
+File: runtime/utf.cc
+
+100:6-100:22
+Thu Nov 12 20:55:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_495ea554
+Bytes: 227
+Can you add dchecked_integral_cast<uint16_t>(), please? And perhaps a comment that for ASCII characters, the high bit is 0 so this is OK even on platforms where char is signed. (Oh, the joys of implementation-defined behavior!)
+
+124:20-124:24
+Thu Nov 12 20:55:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67fde4b_e7a8769f
+Bytes: 30
+dchecked_integral_cast<char>()
+
+236:8-236:19
+Thu Nov 12 20:55:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6bf9630_c69f0481
+Bytes: 192
+Where did the "ch >= 0xd800" go?
+
+Please add also some invalid sequences to the test when testing that the behavior is the same as for old code. I think {0x800, 0xdc00} would show differences.
+
+File: runtime/utf_test.cc
+
+289:6-289:30
+Thu Nov 12 20:55:53 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_69b7e1a1
+Bytes: 457
+Please add comments that this is also testing some invalid sequences, namely if codePoint is the leading character of a surrogate pair. In that case, you should also test the conversion of its correct 2-character representation.
+
+You should also test that the conversion is the same for {some_ascii_character, codePoint} and {codePoint, some_ascii_character}. Other invalid sequences also need to be tested. (I already mentioned {0x800, 0xdc00} elsewehere.)
+

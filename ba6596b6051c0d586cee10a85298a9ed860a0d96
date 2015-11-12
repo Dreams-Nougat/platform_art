@@ -329,6 +329,16 @@ I suppose they could escape to other class loaders if the parent is shared.
 
 This could probably use some more thought.
 
+89:11-89:30
+Thu Nov 12 23:31:41 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b2597a9_f3584809
+UUID: 5b25eb9e_05593c0b
+Bytes: 419
+After some offline discussion, we have determined that this is sound and boxed lambdas will keep the classloader alive (since they are instances of classes belonging to the classloader).
+
+On the other hand, unboxed lambdas need to get supported added to keep their classloader alive (through visiting Closure::GetTargetMethod()::GetDeclaringClass()) in a future CL when we add GC visitation support for lambda closures.
+
 File: runtime/modifiers.h
 
 53:66-53:67

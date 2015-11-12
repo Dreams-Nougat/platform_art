@@ -132,6 +132,16 @@ Bytes: 810
 (1) I am not worried about this, since we can only hoist after null check has been eliminated, and we currently only do that statically if it is already executed, or dynamically if the null check and thus this load dominates all back edges
 (2) this is a good observation, and something that worried me too; but not for the reasons you sketched; if we generate the taken structure, than we hoist it to the true path; this is okay since we won't execute the loop otherwise; so hoisting to preheader would be wrong! but what worries me is that we have gets in the loop-body without a null check, but no way to tell later phases that they cannot be hoisted to pure preheader, but must be hoisted to true block in taken structure; currently that does not happen, but I have no good solution on preventing it. Ideas?
 
+1123
+Thu Nov 12 00:25:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6da7ea7_1572d72e
+UUID: f6a6b626_aa1a7a4a
+Bytes: 544
+(1) it can still happen. e.g. we execute a arr[5] in the dominator, and later do arr[4] in a branch. The bounds check will be eliminated since the first arr[5] will prove a range. Then arr[4] will be attempted to be hoisted from the branch.
+
+(2) One solution is licm after bce shouldn't try to move ArrayGet/Set. licm can take such a boolean parameter. It's too complicated for later phases to be aware of that ArrayGet/Set cannot be hoisted to pre-header. Even if it's hoisted to the taken branch, phi's need to be created. Just too much work.
+
 1206:27-1206:39
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -358,6 +368,21 @@ Parent: 16ac2a06_40993e3c
 UUID: 7b0e2f2a_6ba9e94f
 Bytes: 284
 Well I think we mean the same thing. I call it "profitable" because using dynamic bce too aggressively would fall back to interpreter, and thus be slow. Correctness is never an issue. So I think we mean the same thing, just call it differently. If not, we can discuss offline perhaps.
+
+1268
+Thu Nov 12 00:25:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7b0e2f2a_6ba9e94f
+UUID: 96d1fa8e_12102929
+Bytes: 89
+Ok, I misunderstood the code below. After reading it more carefully I think it's correct.
+
+1276
+Thu Nov 12 00:25:37 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f6a6b626_2a27aa92
+Bytes: 219
+Can you put the early exit detection in its own method? And add some comments why it's necessary. Basically to make sure low and upper are really covered by the loop at runtime so as not to generate deopt unnecessarily.
 
 1283:0-1284:88
 Fri Nov 06 10:56:26 2015 +0000

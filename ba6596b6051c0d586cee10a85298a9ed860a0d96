@@ -2,6 +2,20 @@ Revision: ba6596b6051c0d586cee10a85298a9ed860a0d96
 Patch-set: 2
 File: runtime/art_method-inl.h
 
+241
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c50ace_440303eb
+Bytes: 55
+? this may be resolution methods, IMT conflict, etc....
+
+375:0-375:60
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c50ace_640a7ffe
+Bytes: 108
+Same behavior for both sides, can we only do the IsProxyMethod check for debug builds to avoid the overhead?
+
 478:2-491:3
 Wed Nov 11 01:29:11 2015 +0000
 Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,6 +31,20 @@ Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7b0e2f2a_ba0ced50
 Bytes: 46
 Is anything other then kJavaLangClass allowed?
+
+3271:2-3271:3
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_4f953163
+Bytes: 12
+Not required
+
+3289:33-3289:59
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb2e9f8f_0e5a8b31
+Bytes: 52
+GetOrCreateAllocatorForClassLoader is probably safer
 
 File: runtime/common_runtime_test.cc
 
@@ -44,6 +72,36 @@ UUID: 16c50ace_53abcedc
 Bytes: 1
 ?
 
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+1008:33-1008:46
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_2a288771
+Bytes: 77
+Should this be first_arg_reg * sizeof(uint32_t) since vregs are 4 bytes each?
+
+1010:38-1010:51
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16c50ace_c4d893a7
+Bytes: 8
+And here
+
+1017:40-1017:53
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_b257584f
+Bytes: 8
+And here
+
+1019:45-1019:58
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_03fc5d98
+Bytes: 8
+And here
+
 File: runtime/interpreter/interpreter_common.h
 
 890:24-890:30
@@ -60,6 +118,14 @@ Parent: d69a9277_389051c2
 UUID: d69a9277_fb8de3e4
 Bytes: 81
 That is using the constructor, it's pretty much the same thing as doing hs(self).
+
+890:24-890:30
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d69a9277_fb8de3e4
+UUID: d683721b_70710878
+Bytes: 41
+But this way requires the annoying NOLINT
 
 911:10-911:38
 Thu Nov 05 00:27:01 2015 +0000
@@ -178,6 +244,13 @@ UUID: 36892e3b_93e84414
 Bytes: 36
 Ok, I'll move this to under line 127
 
+292:26-292:31
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1698aa84_9b11376e
+Bytes: 59
+Doesn't this erase possibly invalidate the reference above?
+
 File: runtime/lambda/box_table.h
 
 145:19-145:61
@@ -204,6 +277,15 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1698aa84_db581f81
 Bytes: 34
 What is the point of these parens?
+
+File: runtime/mirror/class_loader.h
+
+89:11-89:30
+Thu Nov 12 19:47:10 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_2afd2725
+Bytes: 117
+Is this safe? Can lambdas escape to other class loaders? In that case the lambda would to keep the class loader live.
 
 File: runtime/modifiers.h
 

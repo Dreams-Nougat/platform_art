@@ -9,3 +9,39 @@ UUID: db11db43_5a41551c
 Bytes: 95
 Add a comment that edx is caller-save (the equivalent arm64 comment says registers are "free").
 
+796:0-796:4
+Thu Nov 12 00:26:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bb3987d2_51d274dd
+Bytes: 124
+Also ebx is a caller save. So we can add a comment that edx and ebx are free and avoid "pushl %ebx" "popl %ebx" in the code.
+
+801:23-801:57
+Thu Nov 12 00:26:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_52c0e1fd
+Bytes: 63
+MIRROR_OBJECT_ARRAY_COMPONENT_SIZE -> COMPRESSED_REFERENCE_SIZE
+
+819:53-819:56
+Thu Nov 12 00:26:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_326badc8
+Bytes: 215
+If
+
+esi -> edi in lines 819 and 820,
+esi -> ebx in lines 837, 840, 848 and 850,
+and reload the thread in ebx before line 864,
+
+it seems we could avoid saving/reloading esi (drop pushl/popl %esi) around this routine.
+
+842:52-843:4
+Thu Nov 12 00:26:09 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_1cad1dab
+Bytes: 112
+Insert comment:
+
+// "Point of no slow path". Won't go to the slow path from here on. OK to clobber eax and ecx."
+

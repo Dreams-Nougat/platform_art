@@ -157,6 +157,14 @@ UUID: b67fde4b_a4590c43
 Bytes: 93
 Is that with the new entry point we discussed about? Or did you find another better solution?
 
+5814:0-5821:41
+Thu Nov 12 15:15:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67fde4b_a4590c43
+UUID: 36220e8b_480cdf50
+Bytes: 113
+No, something different (and only when read barriers are disabled).  I'll give it a try, maybe in a follow-up CL.
+
 6070:0-6072:52
 Tue Nov 10 22:59:33 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -194,6 +202,16 @@ Parent: d67c5259_a2f49ef4
 UUID: 169a6aee_ffc47b64
 Bytes: 66
 Why code duplication? It seems you're using this method only here.
+
+6276:4-6276:23
+Thu Nov 12 15:15:20 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_ffc47b64
+UUID: b67fde4b_844fa83b
+Bytes: 490
+Right, I didn't get that by "inlining" you also meant "remove the inlined method".  It's true that it now has a single use, but it used to have more uses, and this is also reflected in some comments (on purpose).
+
+I'd like to keep this code as-is, as GenerateReadBarrier will later contain the fast path read barrier implementation and I prefer to keep the read barrier generation and the selection logic ("shoud we generate a read barrier and/or unpoison the loaded reference?") separated.
 
 6290:0-6290:4
 Tue Nov 10 22:59:33 2015 +0000

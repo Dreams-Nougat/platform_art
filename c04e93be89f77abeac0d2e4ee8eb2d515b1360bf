@@ -11,6 +11,14 @@ Bytes: 97
 
 and drop the & (reg_bits - 1) on the previous two lines.
 
+90:6-90:33
+Fri Nov 13 16:08:22 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d60ff2af_0de8d5ce
+UUID: b67fde4b_214faeb8
+Bytes: 4
+Done
+
 116:2-116:46
 Mon Nov 09 20:15:56 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -21,12 +29,28 @@ Can you rewrite this so that we do two separate checks if both shl and ushr are 
     int a = x - y;
     int b = (z << a) | (z >>> (32 - a));
 
+116:2-116:46
+Fri Nov 13 16:08:22 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16e42a25_92c4dc63
+UUID: f61b1659_49bdc5d9
+Bytes: 4
+Done
+
 223:0-225:1
 Mon Nov 09 20:15:56 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d6345268_051bd451
 Bytes: 200
 Given that + and ^ are equivalent to | in this particular context, we could do the same for them. And I think it's not far fetched to expect the +, though I really wouldn't expect anyone to use the ^.
+
+223:0-225:1
+Fri Nov 13 16:08:22 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d6345268_051bd451
+UUID: 5bfc0b2b_7e177126
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes_arm64.h
 
@@ -37,10 +61,30 @@ UUID: 16e42a25_d21824c6
 Bytes: 2
 V?
 
+59:10-59:13
+Fri Nov 13 16:08:22 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16e42a25_d21824c6
+UUID: 9bf20354_e0e40240
+Bytes: 4
+Done
+
 72:0-75:3
 Mon Nov 09 20:15:56 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 16e42a25_72da9043
 Bytes: 112
 Is the second input really allowed to be long? It looks odd. And kMaxLongShiftValue being 64-bit also looks odd.
+
+72:0-75:3
+Fri Nov 13 16:08:22 2015 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16e42a25_72da9043
+UUID: fb005ff1_3b7c5799
+Bytes: 354
+A long distance doesn't hurt, see my comment in code_generator_arm64.cc.
+
+In practice, for rotate patterns (e.g. (8L >>> 2L) | (8L << 62L)), one of the shifts (Shl in this case) will be eliminated long before HRor simplification could take place.
+
+I implemented it because it's pure in HBinaryOperation. Make it non-pure? return nullptr;? something else?
 

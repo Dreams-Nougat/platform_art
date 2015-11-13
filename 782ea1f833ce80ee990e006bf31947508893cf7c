@@ -18,3 +18,23 @@ and then we could call GenerateCompareTestAndBranch() with true_target == nullpt
 
 This discrepancy seems to be at the API level, GenerateTestAndBranch() taking the true_fallthrough argument and GenerateCompareTestAndBranch() not having such parameter.
 
+1331:6-1331:92
+Fri Nov 13 11:06:55 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_219fa8d2
+UUID: 569062ca_61a9b0fc
+Bytes: 779
+Well spotted, you have a keen eye for details, sir. This comes down to how HIf and HDeoptimize call the function and what conditions they might have. Hence the DCHECKs at the top of GenerateTestAndBranch and GenerateCompareTestAndBranch.
+
+HIf will always provide non-null targets. So no problem there. HSelect will be the same story.
+
+HDeoptimize always calls this with:
+- true_branch != nullptr
+- false_branch == nullptr
+- true_fallthrough == false
+- false_fallthrough == true
+
+That passes the DCHECKs at the top of GenerateTestAndBranch but would fail it entered GenerateCompareTestAndBranch. However, it will never do that because the condition on HDeoptimize is either an integer comparison or a constant.
+
+Do you have an API change in mind that would make this more obvious?
+

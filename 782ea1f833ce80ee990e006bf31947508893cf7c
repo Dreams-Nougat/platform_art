@@ -58,3 +58,16 @@ We cannot do that because CompareGenerateTestAndBranch generates a decision tree
 
 I agree that that code could be refactored in the same manner, but that's a more complicated job beyond the scope of this CL.
 
+1331:6-1331:92
+Fri Nov 13 12:32:38 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36220e8b_081027d7
+UUID: 569062ca_61d7f06e
+Bytes: 231
+As I said, if you need to branch to the fallthrough, create a local Label.
+
+    Label fallthrough;
+    if (false_target == nullptr) { false_target = &fallthrough; }
+    ...
+    if (fallthrough.IsLinked()) { __ Bind(&fallthrough); }
+

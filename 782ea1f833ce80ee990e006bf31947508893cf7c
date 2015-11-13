@@ -38,3 +38,13 @@ That passes the DCHECKs at the top of GenerateTestAndBranch but would fail it en
 
 Do you have an API change in mind that would make this more obvious?
 
+1331:6-1331:92
+Fri Nov 13 11:42:31 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_61a9b0fc
+UUID: 36220e8b_48f3ff06
+Bytes: 380
+What about dropping the true_fallthrough and false_fallthrough parameters and just declaring that nullptr means fallthrough? If the function needs to branch to the fallthrough target, it can use a local Label.
+
+And we should actually handle the "true fallthrough" case in GenerateCompareTestAndBranch(). That would make it future-proof and consistent with other cases around here.
+

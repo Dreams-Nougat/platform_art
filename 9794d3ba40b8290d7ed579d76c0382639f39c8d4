@@ -1,5 +1,14 @@
 Revision: 9794d3ba40b8290d7ed579d76c0382639f39c8d4
 Patch-set: 1
+File: compiler/image_writer.cc
+
+1433:0-1446:1
+Fri Nov 13 22:48:47 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_c0d1ef22
+Bytes: 241
+You really need to comment on why these are different. Namely that image_begin_ is the 'logical' address where the image will be loaded at runtime. but image_->Begin() is the address where the image is loaded as it is being written (ie now).
+
 File: compiler/image_writer.h
 
 352:2-353:32
@@ -8,4 +17,35 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b6da7ea7_71b35a11
 Bytes: 49
 Name isn't immediately intuitive, comment please.
+
+File: patchoat/patchoat.cc
+
+690:4-690:9
+Fri Nov 13 22:48:47 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b2a4b7b_e35f50be
+Bytes: 88
+Why the new else? Previously we would always do this check even if above check succeeds.
+
+File: runtime/mirror/array.h
+
+193:0-196:44
+Fri Nov 13 22:48:47 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b532b27_8f8c3de8
+Bytes: 55
+You should comment on what this does/what its used for.
+
+File: runtime/mirror/dex_cache.h
+
+63:0-69:44
+Fri Nov 13 22:48:47 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_d3ca0a72
+Bytes: 191
+comment on what it does.
+
+Also why even have this here? It uses nothing from dex_cache and is only used in patchoat (i think). Why not put it there?
+
+Alternatively why not put it with GcRoot?
 

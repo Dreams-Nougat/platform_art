@@ -48,3 +48,13 @@ What about dropping the true_fallthrough and false_fallthrough parameters and ju
 
 And we should actually handle the "true fallthrough" case in GenerateCompareTestAndBranch(). That would make it future-proof and consistent with other cases around here.
 
+1331:6-1331:92
+Fri Nov 13 12:03:26 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 36220e8b_48f3ff06
+UUID: 36220e8b_081027d7
+Bytes: 345
+We cannot do that because CompareGenerateTestAndBranch generates a decision tree where it branches into the fallthrough branch (early exit). The false_fallthrough bool is there to prevent generating the very last jump.
+
+I agree that that code could be refactored in the same manner, but that's a more complicated job beyond the scope of this CL.
+

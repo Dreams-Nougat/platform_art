@@ -158,6 +158,14 @@ UUID: 3b2597a9_ea0cbe51
 Bytes: 336
 I actually tried to make a unit test that would break by doing the scalar de-optimization followed by illegal hoisting, but then realize this would never happen. You leave the deopt inside the loop body, which makes the scalar load loop variant, so it is never hoisted. So your "barrier" as we discussed offline, will never be violated.
 
+1123
+Mon Nov 16 21:38:59 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b2597a9_ea0cbe51
+UUID: 3b2597a9_45cce53a
+Bytes: 275
+Played some more with unit tests. If, in the future, we would remove the env uses test (as we should), it is possible to trigger your situation with a somewhat contrived, but nevertheless valid unit test I just wrote. So we should guard against that. Test and code coming up!
+
 1206:27-1206:39
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -150,6 +150,14 @@ UUID: 16c50ace_01161dd6
 Bytes: 169
 Ah okay, in combination with the scalar based version. But even then we may preload something to eagerly, but it will never have side-effects that are unforeseen, right?
 
+1123
+Mon Nov 16 19:34:15 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6a6b626_aa1a7a4a
+UUID: 3b2597a9_ea0cbe51
+Bytes: 336
+I actually tried to make a unit test that would break by doing the scalar de-optimization followed by illegal hoisting, but then realize this would never happen. You leave the deopt inside the loop body, which makes the scalar load loop variant, so it is never hoisted. So your "barrier" as we discussed offline, will never be violated.
+
 1206:27-1206:39
 Fri Nov 06 10:56:26 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

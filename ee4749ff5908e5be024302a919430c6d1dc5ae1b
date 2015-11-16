@@ -2,6 +2,18 @@ Revision: ee4749ff5908e5be024302a919430c6d1dc5ae1b
 Patch-set: 6
 File: compiler/optimizing/code_generator_arm.cc
 
+1246:2-1252:3
+Mon Nov 16 16:41:08 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b8e83ee_837680e3
+Bytes: 281
+I find this code pattern weird:
+ - what type of parameters are true/false_target? in/out/both?
+ - they can't be out since you assign a local address to them. That's a bit fishy.
+ - not clear who owns the pointers.
+
+Maybe docs will help but I would try to refactor the code as well.
+
 1321:4-1321:6
 Mon Nov 16 14:08:30 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,4 +52,13 @@ Bytes: 202
 These variables are not needed for the the "both fall-through" and "constand condition" cases, so move them further down.
 
 You can also avoid the bool if you check whether fallthrough_target.IsLinked().
+
+File: compiler/optimizing/code_generator_utils.cc
+
+98:5-98:7
+Mon Nov 16 16:41:08 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 169a6aee_426bd6c6
+Bytes: 53
+nit: I'd call this `Needs` to mirror the actual test.
 

@@ -9,6 +9,16 @@ UUID: db11db43_fd0143e3
 Bytes: 52
 What's the rationale for doing it during collection?
 
+494:0-494:38
+Mon Nov 16 14:45:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_fd0143e3
+UUID: db11db43_fdbee3ef
+Bytes: 263
+None, we shouldn't for the purpose of collecting profiles. It's here cause I added the update everywhere where the code_cache is modified.
+
+If we ever introduce a code chache expansion strategy based on how many GCs recently we might want to re-introduce it then.
+
 File: runtime/jit/offline_profiling_info.cc
 
 34:61-34:74
@@ -18,12 +28,30 @@ UUID: 96865a95_c641b61e
 Bytes: 72
 If those don't exist already, maybe create constexprt int kSeconds = ...
 
+34:61-34:74
+Mon Nov 16 14:45:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_c641b61e
+UUID: 9b8e83ee_e010a2da
+Bytes: 4
+Done
+
 82:5-82:62
 Fri Nov 13 11:16:42 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 569062ca_81a6bc29
 Bytes: 100
 This might be a problem. Could we avoid creating it here, and have the testing infrastructure do it?
+
+82:5-82:62
+Mon Nov 16 14:45:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_81a6bc29
+UUID: db11db43_ddbb1ffe
+Bytes: 273
+I updated the TODO and restricted the access to the app's user.
+
+The goal is to create it here, as we need it. There's no point to complicate the workflow and have the file ready at this stage. I updated the document as well on who's responsible to create the profile file.
 
 File: runtime/jit/offline_profiling_info.h
 
@@ -34,6 +62,14 @@ UUID: 56278298_8915fd1d
 Bytes: 8
 private?
 
+37:7-37:18
+Mon Nov 16 14:45:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_8915fd1d
+UUID: db11db43_00092a71
+Bytes: 135
+I use this in Jit::SaveProfilingInfo. It's a small optimizations that avoid 2 locks and the copying of art methods from the code cache.
+
 File: runtime/runtime.cc
 
 221:2-221:27
@@ -43,10 +79,28 @@ UUID: 169a6aee_dfb97f3c
 Bytes: 133
 Is that the only place it's being saved? Why is there timing considerations in OfflineProfileInfo if we're only doing it at shutdown?
 
+221:2-221:27
+Mon Nov 16 14:45:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_dfb97f3c
+UUID: 56278298_49b86503
+Bytes: 24
+See UpdateProfilerState.
+
 1763:14-1763:33
 Fri Nov 13 11:16:42 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 368beea4_00fd485d
 Bytes: 76
 how about we get rid of this? I don't see how it fits in the current design.
+
+1763:14-1763:33
+Mon Nov 16 14:45:37 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_00fd485d
+UUID: 3b4e7783_65d806a4
+Bytes: 315
+This needs to stay. It's our hook with the framework. Arguably could have a better name but it was not the purpose of this CL to refactor this path.
+
+It is trigger when the app goes into background (or to be more precise when the jank is considered to be imperceptible to the user). See VMRuntime_registerAppInfo().
 

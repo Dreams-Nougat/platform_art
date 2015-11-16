@@ -14,6 +14,18 @@ I find this code pattern weird:
 
 Maybe docs will help but I would try to refactor the code as well.
 
+1246:2-1252:3
+Mon Nov 16 16:47:19 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b8e83ee_837680e3
+UUID: 9b8e83ee_63d6dceb
+Bytes: 569
+I don't find it that confusing. If they were out params, they'd be stored into with "*ptr=".
+
+Would you prefer me to better document that providing nullptr signals that the corresponding target is fallthrough? 
+
+That's all there is to it. For example, if the caller says true_target should be fallthrough (calls with true_target==nullptr), the function internally creates one (because the generated code needs one) but does not export it. Is it that confusing that it reuses the same local variable? I don't want to pollute the code with "internal_true_target" stuff...
+
 1321:4-1321:6
 Mon Nov 16 14:08:30 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

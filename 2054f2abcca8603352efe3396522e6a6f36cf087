@@ -1,0 +1,36 @@
+Revision: 2054f2abcca8603352efe3396522e6a6f36cf087
+Patch-set: 6
+File: compiler/optimizing/instruction_simplifier.cc
+
+375:54-375:74
+Tue Nov 17 21:24:28 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_87ae6657
+Bytes: 101
+I believe this may crash when we have hit the integer case in this method (see my public API comment)
+
+400:58-400:78
+Tue Nov 17 21:24:28 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_8155dbd0
+Bytes: 4
+same
+
+File: compiler/optimizing/nodes.h
+
+5747:14-5747:34
+Tue Nov 17 21:24:28 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb75bfb9_998d9b56
+Bytes: 410
+You will have to document this API very carefully, since the returned instruction may or may NOT have been inserted in the HIR.
+
+So typical clients will have to do:
+
+replacement = GetOppositeCondition(if_condition);
+if (replacement->GetBlock() == nullptr) {
+   block->InsertInstructionBefore(replacement, ....);
+}
+
+We would perhaps improve this by always inserting the instruction (when it did not call GetInt)
+

@@ -1,0 +1,144 @@
+Revision: 7a7b65eddd85f70a684a2579d84eceb9a6046130
+Patch-set: 2
+File: /COMMIT_MSG
+
+9:0-12:19
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_e1801766
+Bytes: 112
+Can you explain how you intend to lay out app image spaces and why this definition of immune region makes sense?
+
+13
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_a361fe16
+Bytes: 63
+What's the issue with the gaps that appending oat files solves?
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+1521:20-1521:82
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b2597a9_01312c2e
+Bytes: 66
+How about "holder is in a non-immune, non-moving (or main) space"?
+
+File: runtime/gc/collector/immune_region.h
+
+39:6-39:18
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_4c7c209a
+Bytes: 169
+It seems that we can consolidate ImmuneRegion and ImmuneSpaces and remove some code.
+
+For example, could ImmuneRegion be reduced to a pair of pointers begin and end now?
+
+43:7-43:25
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_21b2ea54
+Bytes: 17
+Is this dead now?
+
+45:7-45:20
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_6c81e4b2
+Bytes: 17
+Is this dead now?
+
+File: runtime/gc/collector/immune_spaces.cc
+
+31:19-31:44
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_2c067c63
+Bytes: 265
+Can we do this as we call AddSpace() without exposing this to the outside to be less error-prone?
+
+Or, at least maintain a flag that indicates immune_region_ and the spaces_ are in sync, and update immune_region_ lazily in GetImmuneRegion() if they are out of sync?
+
+42:22-42:29
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b2597a9_4165f421
+Bytes: 72
+Not sure when this holds and when this does not hold. Can you elaborate?
+
+44:0-48:84
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_8194feb7
+Bytes: 105
+Could most of this code be factored out into a new function in ImageSpace that returns the oat begin/end?
+
+File: runtime/gc/collector/immune_spaces.h
+
+46:2-46:69
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_c7e19f1d
+Bytes: 407
+Can you clarify this more? This seems to take the largest contiguous sequence of spaces at the beginning?
+
+Also, why is this logic appropriate for the definition of what ImmuneSpaces is (a set of spaces which are not going to have any objects become marked during the GC)?
+
+What happens if all the spaces aren't all contiguous?
+
+What does it mean for a space to be ImmuneSpaces but not part of ImmuneRegion?
+
+64
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_c179e614
+Bytes: 98
+Would it make sense to add ContainsObject() here and avoid exposing immune_region_ to the outside?
+
+File: runtime/gc/collector/mark_compact.cc
+
+180:2-180:45
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b816bc7_fc5fe1bd
+Bytes: 47
+How about if we call this inside BindBitmaps()?
+
+File: runtime/gc/collector/mark_sweep.cc
+
+260:0-261:45
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_616c27a1
+Bytes: 47
+How about if we call this inside BindBitmaps()?
+
+303:11-303:12
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_2160aa80
+Bytes: 149
+What space does not have a mod union table?
+
+Add a comment?
+
+Can you assert about the existence of a mod union table based on their space type, etc.?
+
+File: runtime/gc/collector/semi_space.cc
+
+228:2-228:45
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_41e85611
+Bytes: 47
+How about if we call this inside BindBitmaps()?
+
+396:0-398:9
+Tue Nov 17 21:49:22 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_8ceea871
+Bytes: 69
+This doesn't seem to retain the same conditions as the old code. Why?
+

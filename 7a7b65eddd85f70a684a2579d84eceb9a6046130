@@ -9,12 +9,28 @@ UUID: 96d1fa8e_e1801766
 Bytes: 112
 Can you explain how you intend to lay out app image spaces and why this definition of immune region makes sense?
 
+9:0-12:19
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96d1fa8e_e1801766
+UUID: fb75bfb9_7c2e6d83
+Bytes: 139
+The app image is currently mapped at any arbitrary address if it can not be mapped directly after the boot oat (probably should be zygote).
+
 13
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76d4867d_a361fe16
 Bytes: 63
 What's the issue with the gaps that appending oat files solves?
+
+13
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76d4867d_a361fe16
+UUID: 96d1fa8e_211ceff7
+Bytes: 191
+That deals with the boot image so that we don't have to make assumptions about there being no between the app image and the zygote space. Looking at the image header generalizes the behavior.
 
 File: runtime/gc/collector/concurrent_copying.cc
 
@@ -36,6 +52,14 @@ It seems that we can consolidate ImmuneRegion and ImmuneSpaces and remove some c
 
 For example, could ImmuneRegion be reduced to a pair of pointers begin and end now?
 
+39:6-39:18
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db847bce_4c7c209a
+UUID: 5b25eb9e_875f86f2
+Bytes: 4
+Done
+
 43:7-43:25
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,12 +67,28 @@ UUID: 1b3453db_21b2ea54
 Bytes: 17
 Is this dead now?
 
+43:7-43:25
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b3453db_21b2ea54
+UUID: db847bce_ecdc1463
+Bytes: 4
+Done
+
 45:7-45:20
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: db847bce_6c81e4b2
 Bytes: 17
 Is this dead now?
+
+45:7-45:20
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db847bce_6c81e4b2
+UUID: db847bce_ccdfd055
+Bytes: 4
+Done
 
 File: runtime/gc/collector/immune_spaces.cc
 
@@ -61,6 +101,14 @@ Can we do this as we call AddSpace() without exposing this to the outside to be 
 
 Or, at least maintain a flag that indicates immune_region_ and the spaces_ are in sync, and update immune_region_ lazily in GetImmuneRegion() if they are out of sync?
 
+31:19-31:44
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db847bce_2c067c63
+UUID: 1b3453db_64280073
+Bytes: 145
+I'll just call CreateLargestImmuneRegion in AddSpace, it is complicated otherwise if the callers don't call AddSpace in address increasing order.
+
 42:22-42:29
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -68,12 +116,28 @@ UUID: 3b2597a9_4165f421
 Bytes: 72
 Not sure when this holds and when this does not hold. Can you elaborate?
 
+42:22-42:29
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b2597a9_4165f421
+UUID: db847bce_bf85d0ee
+Bytes: 76
+For the boot image, it always holds. For the app image case it may not hold.
+
 44:0-48:84
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1b3453db_8194feb7
 Bytes: 105
 Could most of this code be factored out into a new function in ImageSpace that returns the oat begin/end?
+
+44:0-48:84
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b3453db_8194feb7
+UUID: fb75bfb9_3caa35ac
+Bytes: 4
+Done
 
 File: runtime/gc/collector/immune_spaces.h
 
@@ -90,12 +154,30 @@ What happens if all the spaces aren't all contiguous?
 
 What does it mean for a space to be ImmuneSpaces but not part of ImmuneRegion?
 
+46:2-46:69
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76d4867d_c7e19f1d
+UUID: 96d1fa8e_44ae51a9
+Bytes: 326
+The immune region is just the fast path lookup, if a space is not in here, then we just go through and see that it is already marked in the the bitmap.
+
+If the spaces aren't all continuous, then the immune region is the largest set of continuous spaces. The immune space not in the immune region is handled by the mark bitmap.
+
 64
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1b3453db_c179e614
 Bytes: 98
 Would it make sense to add ContainsObject() here and avoid exposing immune_region_ to the outside?
+
+64
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b3453db_c179e614
+UUID: 76d4867d_83e31a58
+Bytes: 4
+Done
 
 File: runtime/gc/collector/mark_compact.cc
 
@@ -106,6 +188,14 @@ UUID: 5b816bc7_fc5fe1bd
 Bytes: 47
 How about if we call this inside BindBitmaps()?
 
+180:2-180:45
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b816bc7_fc5fe1bd
+UUID: db847bce_dfb774a1
+Bytes: 13
+Removed this.
+
 File: runtime/gc/collector/mark_sweep.cc
 
 260:0-261:45
@@ -114,6 +204,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96d1fa8e_616c27a1
 Bytes: 47
 How about if we call this inside BindBitmaps()?
+
+260:0-261:45
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96d1fa8e_616c27a1
+UUID: db847bce_3f7c6099
+Bytes: 7
+Removed
 
 303:11-303:12
 Tue Nov 17 21:49:22 2015 +0000
@@ -126,6 +224,14 @@ Add a comment?
 
 Can you assert about the existence of a mod union table based on their space type, etc.?
 
+303:11-303:12
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b3453db_2160aa80
+UUID: 7b6aafda_069b64e4
+Bytes: 54
+Currently, the app image won't have a mod union table.
+
 File: runtime/gc/collector/semi_space.cc
 
 228:2-228:45
@@ -135,10 +241,26 @@ UUID: 1b3453db_41e85611
 Bytes: 47
 How about if we call this inside BindBitmaps()?
 
+228:2-228:45
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b3453db_41e85611
+UUID: 5b25eb9e_eab841ea
+Bytes: 7
+Removed
+
 396:0-398:9
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: db847bce_8ceea871
 Bytes: 69
 This doesn't seem to retain the same conditions as the old code. Why?
+
+396:0-398:9
+Tue Nov 17 23:17:27 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db847bce_8ceea871
+UUID: 5b816bc7_df33f7ef
+Bytes: 80
+App images currently don't remembered sets or mod-union tables. Fixed the check.
 

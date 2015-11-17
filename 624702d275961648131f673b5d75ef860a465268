@@ -1,0 +1,34 @@
+Revision: 624702d275961648131f673b5d75ef860a465268
+Patch-set: 2
+File: compiler/optimizing/code_generator_arm64.cc
+
+553:2-553:25
+Tue Nov 17 13:06:49 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_44e68246
+Bytes: 32
+This should be inside the scope.
+
+3854:0-3857:49
+Tue Nov 17 13:06:49 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_b4ecd8eb
+Bytes: 329
+Without vixl support, this is OK.
+
+Long term, I think you should add support for arbitrary length placeholder literals to vixl. Then this could be handled with such a literal (with kDeletedOnPoolDestruction) and the assembler would place it in a veneer if needed. Offsets would be written to the placeholder after FinalizeCode().
+
+3890:4-3890:51
+Tue Nov 17 13:06:49 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_c3028a21
+Bytes: 29
+Avoid this if lower_bound==0.
+
+3906:0-3907:59
+Tue Nov 17 13:06:49 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_0c03dbeb
+Bytes: 113
+Drop the "jump base" and calculate offsets in EmitTable() relative to the table_start_ (held in table_base here).
+

@@ -50,6 +50,14 @@ Bytes: 140
 
 (imo re-assigning to the function parameters always makes the reading harder as you need to pay special attention)
 
+1246:2-1252:3
+Tue Nov 17 13:12:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_0250ee07
+UUID: d67c5259_e8f84739
+Bytes: 4
+Done
+
 1321:4-1321:6
 Mon Nov 16 14:08:30 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -57,12 +65,28 @@ UUID: 169a6aee_a2fd7a62
 Bytes: 20
 Remove extra spaces.
 
+1321:4-1321:6
+Tue Nov 17 13:12:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_a2fd7a62
+UUID: 3b4e7783_688a1b94
+Bytes: 4
+Done
+
 1331:14-1331:15
 Mon Nov 16 14:08:30 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96865a95_09cbb125
 Bytes: 4
 "is"
+
+1331:14-1331:15
+Tue Nov 17 13:12:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_09cbb125
+UUID: 9b8e83ee_23fe94d3
+Bytes: 4
+Done
 
 1349:4-1349:6
 Mon Nov 16 14:08:30 2015 +0000
@@ -78,6 +102,14 @@ UUID: 169a6aee_c2028621
 Bytes: 16
 Helper function?
 
+1373:23-1374:52
+Tue Nov 17 13:12:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_c2028621
+UUID: 368beea4_23124e71
+Bytes: 205
+I'd love to but it's tricky - GetLabelOf is defined in each individual CodeGen class because different codegens use different Label types. Could be refactored too but it seems outside the scope of this CL.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 2289:0-2290:39
@@ -89,6 +121,14 @@ These variables are not needed for the the "both fall-through" and "constand con
 
 You can also avoid the bool if you check whether fallthrough_target.IsLinked().
 
+2289:0-2290:39
+Tue Nov 17 13:12:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b8e83ee_c0631e5b
+UUID: 3b4e7783_488f5fa2
+Bytes: 26
+Done. Thanks, much neater.
+
 File: compiler/optimizing/code_generator_utils.cc
 
 98:5-98:7
@@ -97,4 +137,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 169a6aee_426bd6c6
 Bytes: 53
 nit: I'd call this `Needs` to mirror the actual test.
+
+98:5-98:7
+Tue Nov 17 13:12:07 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_426bd6c6
+UUID: b67fde4b_55846cc0
+Bytes: 380
+I would not. NeedsMaterialization makes sense when called from InsnCodeGen::VisitCondition to check whether to bail. This is used from places where you want to know if a condition has been materialized by some third party. So the query "is materialized" (or rather "has been materialized") makes more sense than "needs to be materialized" because that would have happened earlier.
 

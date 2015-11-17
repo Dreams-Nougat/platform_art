@@ -1,0 +1,129 @@
+Revision: 230e49a3ecb043c258a0af083916010ae047291a
+Patch-set: 10
+File: compiler/optimizing/code_generator_arm64.cc
+
+1635
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67fde4b_353528d4
+Bytes: 14
+UNREACHABLE();
+
+File: compiler/optimizing/common_arm64.h
+
+266:6-266:27
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b4e7783_c8834f71
+Bytes: 13
+UNREACHABLE()
+
+280:6-280:28
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_64b8de03
+Bytes: 13
+UNREACHABLE()
+
+300
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_ac2ba729
+Bytes: 169
+You should also add HNeg, which is a simplified HSub with lhs==0.
+
+Idea for future improvement: Introduce HArm64Bic and HArm64Eon and allow them to use shifter operands.
+
+308:33-308:53
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 169a6aee_620a92a7
+Bytes: 81
+I don't see any "AND (extended register)" in the manual, only ADD, SUB, CMP, CMN.
+
+File: compiler/optimizing/instruction_simplifier_arm64.cc
+
+174:0-178:1
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_e3214691
+Bytes: 234
+This is running after the arch-independent instruction simplifier and so SHL by 1 has already been replaced with ADD. You may want to work around that by adding extra logic in VisitAdd(), treating ADD with both inputs the same as SHL.
+
+File: compiler/optimizing/nodes_arm64.cc
+
+46:17-46:22
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_4332faec
+Bytes: 408
+This byte-to-char conversion is wrong. The code in InstructionCodeGeneratorARM64::VisitTypeConversion() uses "UBFX Wd, Wn, #0, #16" and I guess it assumes that the register that holds the byte has been sign-extended (otherwise, bits 8-15 would be wrong). Under the same assumption, this should be kUXTH.
+
+Please add a test where you pass negative "byte b" to a non-inlined function calculating "a + (char)b".
+
+55:0-60:7
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b4e7783_684fbb13
+Bytes: 222
+DCHECK_EQ(min_size, 2u); *op_kind = kUXTH;
+
+This branch should be merged with the "(result_type == Primitive::kPrimChar) && (input_size < result_size)" branch above.
+
+And you can also refactor the code gen type conversion.
+
+85:41-85:53
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db11db43_605466a8
+Bytes: 83
+static_cast<>()
+
+And we usually cast to int but if you want unsigned, I don't mind.
+
+File: compiler/optimizing/nodes_arm64.h
+
+74:0-75:58
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db11db43_804f7a12
+Bytes: 25
+Tag these with "/*out*/".
+
+File: test/549-checker-shifter-operand/src/Main.java
+
+48
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_94099442
+Bytes: 58
+Add another section with CHECK-NOT TypeConversion and Sub.
+
+106
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_b4a4d87a
+Bytes: 14
+Add CHECK-NOT.
+
+122:17-122:23
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_4caeb3ee
+Bytes: 4
+typo
+
+157:51-157:64
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b4e7783_c85fcfbe
+Bytes: 60
+Currently not optimized because "b << 1" is replaced by ADD.
+
+232:50-232:63
+Tue Nov 17 17:40:02 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db11db43_60b0e61f
+Bytes: 5
+ditto
+

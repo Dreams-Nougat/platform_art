@@ -42,3 +42,15 @@ UUID: fb75bfb9_7cf18dc2
 Bytes: 163
 I didn't understand the problem with GetIntConstant before.  I'm not sure of the best way to handle this.  Perhaps we should wait for Nicolas or Andreas to comment
 
+5747:14-5747:34
+Tue Nov 17 21:38:50 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb75bfb9_7cf18dc2
+UUID: db847bce_cc24b08f
+Bytes: 477
+Calling graph->GetIntConstant() returns an instruction that is *already* in the HIR. This can either be an already existing instruction (after consulting a cache), or otherwise an instruction inserted in the entry block.
+
+By contrast, all other branches in GetOppositeCondition simply return a newly allocated HInstruction that still needs to be inserted in the HIR.
+
+This is no longer a clean public API (it was still acceptable in boolean_simplifier since its use was local).
+

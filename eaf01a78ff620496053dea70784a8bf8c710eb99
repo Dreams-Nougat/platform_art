@@ -1,0 +1,24 @@
+Revision: eaf01a78ff620496053dea70784a8bf8c710eb99
+Patch-set: 2
+File: runtime/jit/jit_code_cache.cc
+
+482:45-482:66
+Wed Nov 18 12:02:24 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_b463f8c1
+Bytes: 294
+If current_capacity_ is not even you'll have an off by 1 difference here compared to when the code cache is created.
+
+Not an issue in practice but consistency is nice (i.e. current_capacity_ - current_capacity_/2).
+
+I'd write some helpers and constify `2` when accessing the data/code capacity.
+
+File: runtime/jit/jit_code_cache.h
+
+214:9-214:22
+Wed Nov 18 12:02:24 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67fde4b_f571002b
+Bytes: 45
+I'd be explicit and add `_bytes_` at the end.
+

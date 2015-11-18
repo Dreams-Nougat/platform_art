@@ -24,6 +24,16 @@ UUID: b67fde4b_b5f4d8f4
 Bytes: 6
 else {
 
+2113:2-2113:3
+Wed Nov 18 20:16:42 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67fde4b_b5f4d8f4
+UUID: 7b6aafda_4349490a
+Bytes: 194
+Actually, this is meant to fall through, as then HBooleanNot is generated.  Otherwise, any bogus Int value would be a problem.
+
+Or do you want me to DCHECK(false) because the value isn't 0 or 1?
+
 File: compiler/optimizing/nodes.h
 
 5749:14-5749:37
@@ -40,6 +50,14 @@ UUID: 169a6aee_257df4c4
 Bytes: 43
 Please put this method on the HGraph class.
 
+5749:14-5749:37
+Wed Nov 18 20:16:42 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_257df4c4
+UUID: 5b2a4b7b_f1026c4c
+Bytes: 4
+Done
+
 File: test/458-checker-instruction-simplification/src/Main.java
 
 1250
@@ -50,4 +68,14 @@ Bytes: 464
 I understand you're trying to test the same test case you saw in the benchmark but I'd much rather see simple unit tests here which exercise both NotEquals[x,0] and Equals[x,1] and the individual execution paths through InsertOppositeCondition.
 
 My main rationale is that code like this heavily depends on the DEX code generated from Java which will be different when we switch to Jack, in which case we might end up exercising even less of the code you're adding.
+
+1250
+Wed Nov 18 20:16:42 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b4e7783_cb610917
+UUID: fb75bfb9_fc64b828
+Bytes: 276
+No, I actually wanted to test this with a simpler test case, but I was unable to create the necessary input HIR.  Note that this is the 'after_bce' version of the simplifier.  We don't get the matching HIR until well into the optimization.
+
+I will work on a smaller test case.
 

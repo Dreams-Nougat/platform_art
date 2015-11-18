@@ -9,12 +9,30 @@ UUID: 3b4e7783_cb4a29a5
 Bytes: 103
 Shouldn't that be ref_info->IsSingleton instead? We could potentially support arrays as singletons too.
 
+651:43-651:75
+Wed Nov 18 21:28:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b4e7783_cb4a29a5
+UUID: 1648aa4e_6624728c
+Bytes: 520
+Here we are checking if it's a store, the real heap value should be unwrapped. Right now it's InstanceFieldSet only. Array singleton elements can still be aliased due to uncertainty of the index (instead of fixed offset). It must be a singleton so I have a DCHECK at below.
+
+A singleton ref also doesn't guarantee a store is in the heap value since we do the GVN-kind of thing at line 659 below. So the logic here is just as long as it's a store (even if late we add ArraySet), we just unwrap to get the real heap value.
+
 709:15-710:53
 Wed Nov 18 09:35:20 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b67fde4b_154d8417
 Bytes: 9
 one line?
+
+709:15-710:53
+Wed Nov 18 21:28:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67fde4b_154d8417
+UUID: 5b816bc7_d021a47c
+Bytes: 62
+One line is exactly 100 chars. I'll just keep it as two lines.
 
 727:10-727:64
 Wed Nov 18 09:35:20 2015 +0000
@@ -23,10 +41,40 @@ UUID: d67c5259_680a77a7
 Bytes: 141
 Instead of calling "Dominates" which is expensive, could you check if original_ref's block is in the loop? That should be a single bit check.
 
+727:10-727:64
+Wed Nov 18 21:28:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d67c5259_680a77a7
+UUID: 7b6aafda_83176125
+Bytes: 190
+I changed it to call HLoopInformation::IsLoopInvariant() instead. I noticed the implementation of that function can be more efficient (no inner loop test). However I'll put that in a new CL.
+
 888:0-888:44
 Wed Nov 18 09:35:20 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 169a6aee_4533e037
 Bytes: 76
 I'd drop that comment, or put a TODO. We're not eliminating allocations yet.
+
+888:0-888:44
+Wed Nov 18 21:28:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_4533e037
+UUID: 3b2597a9_755f8af3
+Bytes: 136
+I changed the comment to:
+// TODO: add new_instance to singleton_new_instances_ and enable allocation elimination.
+and deleted line 889.
+
+File: compiler/optimizing/nodes.h
+
+3660
+Wed Nov 18 21:28:35 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_350425a2
+Bytes: 283
+I also changed this to always return true (same as old behavior) and added this comment:
+  // It may throw when called on type that's not instantiable/accessible.
+  // It can throw OOME.
+  // TODO: distinguish between the two cases so we can for example allow allocation elimination.
 

@@ -1,0 +1,35 @@
+Revision: 78100bf6eb27eddae52c8377bce8cf5696c13f18
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm64.cc
+
+71:49-71:70
+Wed Nov 18 10:54:20 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 169a6aee_a56f4406
+Bytes: 507
+Btw., this could be improved (on all architectures) with about 3 instructions per 2 entries:
+
+    subs tmp, value, lower_bound
+    blt fallthrough
+    beq successor[0]
+  last_index = 0
+  for (; num_entries - last_index > 2; last_index += 2) {
+    subs tmp, 2
+    blt successor[last_index + 1]
+    beq successor[last_index + 2]
+  }
+  if (num_entries - last_index == 2) {
+    cmp tmp, 1
+    beq successor[last_index + 1]
+  }
+    b fallthrough  // if needed
+
+(If you choose to do that, do it in a separate CL.)
+
+3924:39-3924:40
+Wed Nov 18 10:54:20 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_4ce1531b
+Bytes: 21
+Remove the extra ";".
+

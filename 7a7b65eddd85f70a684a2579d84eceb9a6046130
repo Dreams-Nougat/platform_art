@@ -17,6 +17,20 @@ UUID: fb75bfb9_7c2e6d83
 Bytes: 139
 The app image is currently mapped at any arbitrary address if it can not be mapped directly after the boot oat (probably should be zygote).
 
+9:0-12:19
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb75bfb9_7c2e6d83
+UUID: db847bce_4e23b099
+Bytes: 235
+So, in the address order something like
+
+...|boot art|boot oat|zygote|app art|app oat|...
+
+if it's possible to put the app image right after zygote, and otherwise, the app image could be anywhere?
+
+And there can be multiple app images?
+
 13
 Tue Nov 17 21:49:22 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,6 +54,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3b2597a9_01312c2e
 Bytes: 66
 How about "holder is in a non-immune, non-moving (or main) space"?
+
+1521:20-1521:82
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b2597a9_01312c2e
+UUID: 5b2a4b7b_169baee4
+Bytes: 1
+?
 
 File: runtime/gc/collector/immune_region.h
 
@@ -163,6 +185,14 @@ Bytes: 326
 The immune region is just the fast path lookup, if a space is not in here, then we just go through and see that it is already marked in the the bitmap.
 
 If the spaces aren't all continuous, then the immune region is the largest set of continuous spaces. The immune space not in the immune region is handled by the mark bitmap.
+
+46:2-46:69
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96d1fa8e_44ae51a9
+UUID: 5b2a4b7b_561c96f4
+Bytes: 470
+The "immune" region used to (and still does) mean the largest continuous range that allows the fast path lookup. Now, the "immune" space set is the spaces we don't collect. I guess calling both immune) didn't seem somewhat very straightforward to me. If the immune region was renamed to something like a "largest continuous part/region" of the immune space set (and even dropping immune_region.h), it'd be more intuitive to me. Anyhow I think I understand the intention.
 
 64
 Tue Nov 17 21:49:22 2015 +0000

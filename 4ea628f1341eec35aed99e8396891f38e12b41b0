@@ -1,6 +1,57 @@
 Revision: 4ea628f1341eec35aed99e8396891f38e12b41b0
 Patch-set: 3
+File: runtime/gc/collector/concurrent_copying.cc
+
+180:0-181:63
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_534ed014
+Bytes: 145
+The intention is to print the ranges of immune spaces, not just the immune region. Can we print out the ranges of all the spaces in ImmuneSpaces?
+
+1508:8-1508:44
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_d0767ee4
+Bytes: 245
+I think this should be immune_spaces_.ContainsObject(obj) rather than just checking if the object is in the immune region. We allocate a bitmap for each immune space in BindBitmaps(). Note the CC collector doesn't currently use mod union tables.
+
+1548:6-1548:42
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_55a439df
+Bytes: 5
+Same.
+
+1933:8-1933:49
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb75bfb9_7c4f4813
+Bytes: 5
+Same.
+
+1987:6-1987:42
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_95beb1ef
+Bytes: 5
+Same.
+
 File: runtime/gc/collector/immune_spaces.cc
+
+31:19-31:44
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_f2ba9ae1
+Bytes: 416
+Do we assume the boot image and the zygote space will *always* be part of the immune region (which I think we do)? If so, can we assert that somehow and have a comment saying that, unless we do already so? If not, my comments in concurrent_copying.cc about immune_spaces_.ContainsObject(obj) are fairly important to be addressed because heap_bitmap doesn't have a mutable mark bitmap for the boot image, for example.
+
+32
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_10b8668f
+Bytes: 215
+Also, could the app image be below (at a lower address than) the boot image? If so, does CreateLargestImmuneRegion() does the right thing (that is, compute an immune region that always covers the boot image/zygote)?
 
 36:0-37:89
 Wed Nov 18 10:33:14 2015 +0000
@@ -17,4 +68,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 569062ca_07b47ca7
 Bytes: 4
 does
+
+File: runtime/gc/space/image_space.h
+
+137:1-137:10
+Wed Nov 18 22:11:13 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b816bc7_2b92e93b
+Bytes: 41
+I guess there's a subclass to ImageSpace?
 

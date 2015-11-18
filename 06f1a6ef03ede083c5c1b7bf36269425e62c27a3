@@ -1,0 +1,80 @@
+Revision: 06f1a6ef03ede083c5c1b7bf36269425e62c27a3
+Patch-set: 19
+File: compiler/optimizing/bounds_check_elimination.cc
+
+1489:16-1489:41
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_47bda482
+Bytes: 218
+Are we using this function anywhere else? The reason why I'm asking is that it internally refers to the branches in the opposite manner - deopt is the false block and vice versa. Could you rename it to stay consistent?
+
+1504:97-1504:103
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_07cb9c25
+Bytes: 93
+There are at least twenty long lines in this file, please stick to 100 characters everywhere.
+
+1530:19-1530:24
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b8e83ee_a6a71229
+Bytes: 159
+Please keep the names consistent throughout your code, it is incredibly confusing if you don't. This is `true_block` in TransformLoopForDeoptimizationIfNeeded.
+
+1531:32-1531:58
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d67c5259_a8771f1f
+Bytes: 172
+Replace with block->GetSingleSuccessor(). It contains a DCHECK that there's only one successor and makes it more obvious that you're not selecting from multiple successors.
+
+1531:19-1531:29
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_0c859b2d
+Bytes: 24
+This is `new_preheader`.
+
+1534:0-1534:89
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_e36b0688
+Bytes: 676
+Okay, so this iterates over instructions the true branch and inserts a phi in the new preheader if they're used outside.
+
+I haven't really delved into InductionRange::GenerateCode too much, so please correct me if I'm making wrong assumptions here, but could you explain this to me in more detail?
+
+What kind of instructions can you expect here? I gather from your diagrams that this is used purely for ArrayLength and setting it to zero if the false branch is taken. So then why do you need MakePhi to handle all primitive types? Could you just DCHECK that it's an int?
+
+Also, how did the ArrayLength get there so it has uses in the loop? Was it moved from the old preheader?
+
+1553:59-1553:65
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_67a3806d
+Bytes: 165
+I don't think we enforce (non-catch) phis having different vreg numbers. You should be able to give kNoRegNumber to all of them. Or did you find a problem with that?
+
+1555:12-1557:62
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b8e83ee_e6867a83
+Bytes: 79
+Looks like a good candidate for a ReplaceInput helper function on HEnvironment.
+
+1569:29-1569:39
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_d4687ca0
+Bytes: 13
+new_preheader
+
+1578:70-1578:71
+Wed Nov 18 12:03:38 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_8c77cb1f
+Bytes: 86
+Prepend with /* number_of_inputs */ so readers don't need to refer to the constructor.
+

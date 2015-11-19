@@ -1,0 +1,54 @@
+Revision: 0a6969648429862981387a986887e7902cbe5864
+Patch-set: 3
+File: compiler/dwarf/debug_info_entry_writer.h
+
+177:17-177:48
+Thu Nov 19 13:53:45 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_8f0a61fb
+Bytes: 125
+I think this should be some deduplication structure instead. Currently, you write a separate "java" for each class in java.*.
+
+File: compiler/elf_writer_debug.cc
+
+301:10-301:76
+Thu Nov 19 13:53:45 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_4f24e58b
+Bytes: 197
+Split into two lines; do not directly CHECK() the result of a modifying code. (Even if it's CHECK() and not DCHECK() and even if it's modifying just a member intended exclusively for that CHECK().)
+
+390:32-390:51
+Thu Nov 19 13:53:45 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67fde4b_5069da3c
+Bytes: 26
+Why not DW_TAG_array_type?
+
+415:6-415:65
+Thu Nov 19 13:53:45 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_6659c482
+Bytes: 191
+Please do. I'd recommend adding a comparator to stl_util.h:
+
+  struct CStringLess {
+    bool operator()(const char* lhs, const char* rhs) const {
+      return strcmp(lhs, rhs) < 0;
+    }
+  };
+
+455:0-456:86
+Thu Nov 19 13:53:45 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96865a95_0f157118
+Bytes: 118
+Does this need to be at the compilation unit level? Wouldn't we deduplicate much better if this was at a higher level?
+
+458:16-458:48
+Thu Nov 19 13:53:45 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_e61b14ae
+Bytes: 42
+Create a simple struct with named members.
+

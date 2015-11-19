@@ -1,0 +1,168 @@
+Revision: 871679169aa56eb0bae30f097b3f996db26a7a61
+Patch-set: 4
+File: compiler/optimizing/builder.cc
+
+1964
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb75bfb9_5ffefe5a
+Bytes: 23
+Thanks for clean up :).
+
+2835
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_b007839a
+Bytes: 353
+Do we want to gate this behind -Xexperimental:lambdas? It would just be a runtime call to see is the flag was enabled. That's what the interpreter does today.
+
+(Also I would think in the future we likely don't want older dex versions to try to use the new opcodes, so having a gate here is a good placeholder to replace with later with a version check).
+
+2836:31-2836:33
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb75bfb9_9fd256db
+Bytes: 60
+It's actually vC, not vA. I'm going to fix it to be vA soon.
+
+2837:49-2837:51
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db847bce_138390e9
+Bytes: 2
+vC
+
+2852
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b6aafda_799e7a7a
+Bytes: 157
+If this is a shorty, it's fine. If it's a long type descriptor then line 2860 won't work anymore in the future because it's going to need to scan until the ;
+
+2853
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b816bc7_5dadaca9
+Bytes: 8
+See 2856
+
+2856:56-2856:60
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 76d4867d_bd00f3dd
+Bytes: 248
+Actually this exists as a constant in interpreter_common.cc, can you bring it out to a header file and use it here?
+
+// All lambda closures have to be a consecutive pair of virtual registers.
+static constexpr size_t kLambdaVirtualRegisterWidth = 2;
+
+2860
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b2a4b7b_c38d631a
+Bytes: 125
+It would probably be helpful to add a DCHECK(*descriptor == 'J') here since its using that assumption which will soon change.
+
+2862
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_f0957b63
+Bytes: 25
+nit: out, inout, just in?
+
+File: compiler/optimizing/builder.h
+
+363
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_5372647f
+Bytes: 114
+nit: maybe mention this is for lambdas?
+
+// Record of variable captures for the upcoming create-lambda instruction
+
+367
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b25eb9e_1e561fdd
+Bytes: 133
+I think this means the full type descriptor type list right?
+
+Maybe just add a comment example to be sure?
+
+   // e.g. "LFoo;ZJLBar;"
+
+File: compiler/optimizing/nodes.h
+
+3646
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b6aafda_b9d41214
+Bytes: 98
+nit: Judging on some other nodes like HInvokeStaticOrDirect this could probably use more comments.
+
+3652:44-3652:46
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_13605c80
+Bytes: 46
+nit: document parameter name, also line length
+
+3666:21-3666:40
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_d08f974b
+Bytes: 371
+What is considered a "side effect"? This doesn't seem like it can be considered to not have any side effects because it could trigger class loading of the method ID specified, which in turn can cause a GC.
+
+(and also more generally it shouldn't be reordered since we want to maintain class load ordering, although this didn't seem to be mentioned by the SideEffects docs)
+
+3677
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b816bc7_bdd40014
+Bytes: 92
+nit: Please comments for public methods (assuming this is dex method ID but could be wrong).
+
+3683
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b2597a9_a449410d
+Bytes: 28
+No bounds check, is that ok?
+
+3687
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_10780f10
+Bytes: 8
+See 3683
+
+3691
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b2597a9_8403e59b
+Bytes: 22
+nit: dex method index?
+
+3693
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b2597a9_24f2f103
+Bytes: 134
+(Since I don't understand the compiler too well), why can't it just have a list of inputs? Why does it need to go through HUserRecord?
+
+3700
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b2597a9_a41701d3
+Bytes: 166
+(Another stupid compiler question) Is  this always in SSA form? If vreg can have different value from different incoming edges, is this always set to Phi instruction?
+
+3708
+Thu Nov 19 02:09:10 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b6aafda_991a6eba
+Bytes: 22
+nit: Dex method index?
+

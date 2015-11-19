@@ -9,3 +9,18 @@ UUID: b67fde4b_90d4426a
 Bytes: 49
 Sorry, but what's a constant array reference? :-(
 
+File: compiler/optimizing/graph_checker.cc
+
+740:0-740:44
+Thu Nov 19 10:17:49 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b4e7783_6e3a231a
+Bytes: 521
+Oh, okay. So it's the vreg equivalent test that you're hitting. 
+
+This is meant to verify that it is safe to use environments for try/catch and deopt. If two/three phis were generated for the same vreg, we test that their raw value is the same. Hence it does not matter which one was put in the one vreg slot of the environment.
+
+Disabling this for kNoRegNumber is one way of approaching this, but I'd suggest moving the for loop into SsaBuilder as a DCHECK instead. It does not need to be enforced later.
+
+WDYT, Nicolas?
+

@@ -1,0 +1,57 @@
+Revision: fd2411984b557751727adf90dc4405c4400a20ef
+Patch-set: 1
+File: compiler/optimizing/builder.cc
+
+885:35-885:63
+Thu Nov 19 17:16:03 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d67c5259_2be94917
+Bytes: 179
+This is not a "safe" value for the entry point. As you mentioned in prepare_for_register_allocator it does not handle finalizable.
+
+It feels wrong to be optimistic in the builder.
+
+893:0-893:2
+Thu Nov 19 17:16:03 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_2f38897b
+Bytes: 15
+trailing spaces
+
+File: compiler/optimizing/prepare_for_register_allocation.cc
+
+51:38-51:41
+Thu Nov 19 17:16:03 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_f2ae7058
+Bytes: 12
+new-instance
+
+61:40-61:71
+Thu Nov 19 17:16:03 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 368beea4_06b480a7
+Bytes: 85
+nit: not the most expensive function but you could refactor it to be called just once
+
+105:77-105:78
+Thu Nov 19 17:16:03 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db11db43_439a8c93
+Bytes: 16
+trailing spaces.
+
+106:72-106:88
+Thu Nov 19 17:16:03 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b8e83ee_e9cbadc8
+Bytes: 81
+why does this matter? LoadClass should throw an exception if anything goes wrong.
+
+106:19-106:32
+Thu Nov 19 17:16:03 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 56278298_6f59a1d9
+Bytes: 150
+I think we should handle IsFinalizable in the builder. It's a constant and I don't see any reason to postpone setting the right entrypoint until here.
+

@@ -9,6 +9,14 @@ UUID: 96865a95_8f0a61fb
 Bytes: 125
 I think this should be some deduplication structure instead. Currently, you write a separate "java" for each class in java.*.
 
+177:17-177:48
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_8f0a61fb
+UUID: 56278298_afae39c0
+Bytes: 56
+Done (the de-duplication is done at higher level though)
+
 File: compiler/elf_writer_debug.cc
 
 279
@@ -18,6 +26,14 @@ UUID: 9b8e83ee_2923d59a
 Bytes: 95
 Can you use RAII instead of manually writing out the StartTag/EndTag entries at every location?
 
+279
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b8e83ee_2923d59a
+UUID: 96865a95_efa3edd6
+Bytes: 42
+I am not sure.  What would be the benefit?
+
 301:10-301:76
 Thu Nov 19 13:53:45 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +41,28 @@ UUID: 56278298_4f24e58b
 Bytes: 197
 Split into two lines; do not directly CHECK() the result of a modifying code. (Even if it's CHECK() and not DCHECK() and even if it's modifying just a member intended exclusively for that CHECK().)
 
+301:10-301:76
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_4f24e58b
+UUID: 368beea4_6668e4c9
+Bytes: 4
+Done
+
 384
 Thu Nov 19 14:19:41 2015 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: db11db43_234e7814
 Bytes: 28
 We don't need pointers here.
+
+384
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_234e7814
+UUID: 368beea4_8665f0f0
+Bytes: 4
+Done
 
 390:32-390:51
 Thu Nov 19 13:53:45 2015 +0000
@@ -47,6 +79,14 @@ UUID: 56278298_2f9c09db
 Bytes: 2
 +1
 
+390:32-390:51
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_2f9c09db
+UUID: db11db43_2ec65f6d
+Bytes: 4
+Done
+
 415:6-415:65
 Thu Nov 19 13:53:45 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,12 +100,36 @@ Please do. I'd recommend adding a comparator to stl_util.h:
     }
   };
 
+415:6-415:65
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_6659c482
+UUID: 9b8e83ee_895461a9
+Bytes: 4
+Done
+
+427:14-427:22
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67fde4b_fb4acf58
+Bytes: 198
+Tamas: This is one place where doing the EndTag at the end of scope would not work.
+On the other hand, one could argue the code could be redesigned to make that work, but my initial attempts failed.
+
 455:0-456:86
 Thu Nov 19 13:53:45 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96865a95_0f157118
 Bytes: 118
 Does this need to be at the compilation unit level? Wouldn't we deduplicate much better if this was at a higher level?
+
+455:0-456:86
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_0f157118
+UUID: 169a6aee_b07220c7
+Bytes: 52
+The references are internal to the compilation unit.
 
 458:16-458:48
 Thu Nov 19 13:53:45 2015 +0000
@@ -74,10 +138,26 @@ UUID: 368beea4_e61b14ae
 Bytes: 42
 Create a simple struct with named members.
 
+458:16-458:48
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_e61b14ae
+UUID: 169a6aee_d077acb5
+Bytes: 22
+Done (switched to map)
+
 539
 Thu Nov 19 14:19:41 2015 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56278298_6fa6012d
 Bytes: 105
 It is true that it will confuse the debugger but the bigger issue is that it is violating the dwarf spec.
+
+539
+Thu Nov 19 19:54:20 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_6fa6012d
+UUID: 569062ca_12503c08
+Bytes: 4
+Done
 

@@ -1,0 +1,47 @@
+Revision: 5046fc54980db4b3998718acd555d16ddae2ecb4
+Patch-set: 3
+File: runtime/utils.cc
+
+65:0-73:1
+Fri Nov 20 00:03:17 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b3453db_b92ba628
+Bytes: 680
+Does this work?
+
+ struct SpecialUniformRandomNumberGenerator {
+   typedef uint32_t result_type;
+   uint32_t min() {
+     return std::numeric_limits<uint32_t>::min();
+   }
+   uint32_t max() {
+     return std::numeric_limits<uint32_t>::max();
+   }
+   uint32_t operator()() {
+ #if defined(__BIONIC__)
+     return arc4random();
+ #else
+     std::random_device rd;
+     return rd();
+ #endif
+   }
+ }
+
+ template <typename T>
+ T GetRandomNumber(T min, T max) {
+   std::uniform_int_distribution<T> dist(min, max);
+   SpecialUniformRandomNumberGenerator rd;
+   return dist(rd);
+ }
+
+It would mean a smaller change in ImageSpace, avoiding the overflow-prone math there (pushing it to the STL).
+
+File: runtime/utils.h
+
+353:40-353:50
+Fri Nov 20 00:03:17 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96d1fa8e_6a151718
+Bytes: 49
+Use std::numeric_limits<uint32_t>::max() instead.
+

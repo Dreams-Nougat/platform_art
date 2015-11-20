@@ -17,6 +17,14 @@ UUID: 368beea4_0663a0c0
 Bytes: 80
 There is 64-bit overload of PushUint32 which will DCHECK the number is in range.
 
+172
+Fri Nov 20 12:48:31 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_302a905c
+UUID: b67fde4b_9b59c3dc
+Bytes: 50
+dchecked_integral_cast<uint32_t>(debug_str_offset)
+
 File: compiler/dwarf/dedup_vector.h
 
 25
@@ -60,4 +68,25 @@ Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d67c5259_b62140e4
 Bytes: 45
 This is another case where RAII is difficult.
+
+349:23-349:95
+Fri Nov 20 12:48:31 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b67fde4b_fb9acf92
+Bytes: 71
+Pull this out of the WriteDebugInfoCU() call to a named local variable.
+
+358:10-358:36
+Fri Nov 20 12:48:31 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db11db43_6ea9f74f
+Bytes: 89
+Can we really get a null here? Should we instead have DCHECK(type_descriptor != nullptr)?
+
+430:18-430:55
+Fri Nov 20 12:48:31 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 569062ca_3258d808
+Bytes: 193
+This really calls for an overload of WriteName() that takes the length as well. But further down the line that would require the DedupVector to know whether to add the terminating zeros or not.
 

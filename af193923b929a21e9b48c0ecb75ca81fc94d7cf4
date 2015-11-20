@@ -2,6 +2,13 @@ Revision: af193923b929a21e9b48c0ecb75ca81fc94d7cf4
 Patch-set: 3
 File: compiler/optimizing/builder.cc
 
+881:7-881:16
+Fri Nov 20 11:15:25 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b4e7783_4eb0871f
+Bytes: 62
+needs_access_check (also rename the variables in HNewInstance)
+
 936
 Thu Nov 19 23:18:07 2015 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -12,6 +19,25 @@ if (GetOutermostCompilingClass().IsSubClass(cls.Get())) {
   return true;
 }
 since all super classes must be initialized before a class is initialized.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+3194:2-3194:89
+Fri Nov 20 11:15:25 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b4e7783_ee83b329
+Bytes: 113
+Why are you no longer loading the type index and instead passing the class?
+(Same for mips, mips64, x86, x86-64.)
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+3375:2-3375:75
+Fri Nov 20 11:15:25 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db11db43_8e88cb0a
+Bytes: 82
+Why do you need to pass the class when it's immediately overwritten by type index?
 
 File: compiler/optimizing/prepare_for_register_allocation.cc
 

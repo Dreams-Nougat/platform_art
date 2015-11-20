@@ -9,6 +9,14 @@ UUID: 169a6aee_302a905c
 Bytes: 85
 (nit) You use size_t with PushUint32 what will have different sizes on 64bit systems.
 
+172
+Fri Nov 20 11:40:16 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_302a905c
+UUID: 368beea4_0663a0c0
+Bytes: 80
+There is 64-bit overload of PushUint32 which will DCHECK the number is in range.
+
 File: compiler/dwarf/dedup_vector.h
 
 25
@@ -18,10 +26,29 @@ UUID: 368beea4_c668d8a0
 Bytes: 146
 Don't inherit from an std::vector as it don't have a virtual destructor. Doing it might be fine at the moment but will easily break in the future.
 
+25
+Fri Nov 20 11:40:16 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_c668d8a0
+UUID: 368beea4_26589c08
+Bytes: 132
+Good point.  I will encapsulate the vector and provide const accessor to it.  As bonus point, it will ensure it can not be modified.
+
 58
 Fri Nov 20 11:30:23 2015 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 169a6aee_b03ce0a5
 Bytes: 146
 I would suggest to use an std::unordered_map<const char*, size_t, HashFunction, EqualityFunction> instead of the half hand written implementation.
+
+58
+Fri Nov 20 11:40:16 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_b03ce0a5
+UUID: 169a6aee_9038c4ab
+Bytes: 322
+That would not work for non-string data blocks (we need length).
+Storing pointer the vector would be bad (invalid after vector growth).
+It would also mean we would have to rehash all data every time we grow the hash table.
+I know I am using the hashtable in a bit non-standard way, but it seems like the simplest solution.
 

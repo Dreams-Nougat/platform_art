@@ -42,6 +42,16 @@ UUID: 169a6aee_10159418
 Bytes: 73
 Possibly a less error prone code, but I don't feel too strongly about it.
 
+279
+Fri Nov 20 11:58:28 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_10159418
+UUID: 9b8e83ee_e96c0d50
+Bytes: 570
+So my understanding of RAII (I have not heard the name before) is that it is to ensure resources are freed in presence of exceptions.  This is not what EndTag does - it does further non-trivial processing and buffer writes.
+
+Having said that, I have seriously considered abusing the scoping rules anyway and doing meaningful work in the destructor (here, and in the ElfBuilder which has similar Start/End pairs).  I have eventually decided against it for the sake of clarity (explicit over implicit).  I might be yet persuaded otherwise if others feel strongly about it.
+
 301:10-301:76
 Thu Nov 19 13:53:45 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -131,6 +141,15 @@ Parent: b67fde4b_fb4acf58
 UUID: db11db43_0e7cbbc6
 Bytes: 262
 If I understand your code correctly, then currently you emit the full namespace hierarchy for each class separately. I would expect that the restructuring what will be needed to remove the duplicated namespace tags will create a structure where RAII can be used.
+
+427:14-427:22
+Fri Nov 20 11:58:28 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_0e7cbbc6
+UUID: 96865a95_da7425dd
+Bytes: 192
+True - for the declarations.  The definitions are more tricky.
+I tried to restructure the code to avoid the extra nesting and I failed.  I will give it another try at some point in the future.
 
 455:0-456:86
 Thu Nov 19 13:53:45 2015 +0000

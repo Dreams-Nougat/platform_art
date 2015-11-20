@@ -23,6 +23,16 @@ UUID: b6da7ea7_232ec666
 Bytes: 16
 Why change this?
 
+478:2-491:3
+Fri Nov 20 22:18:09 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b6da7ea7_232ec666
+UUID: 5b1b2bb8_09f36d5d
+Bytes: 144
+Looks like I only need to change line 451.
+
+I originally thought I might need to have a different version for lambda proxies, but I suppose not.
+
 File: runtime/art_method.h
 
 187:4-187:28
@@ -31,6 +41,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: db847bce_e457404e
 Bytes: 27
 What about runtime methods?
+
+187:4-187:28
+Fri Nov 20 22:18:09 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db847bce_e457404e
+UUID: 1b153384_8778e8d3
+Bytes: 195
+Want me to remove these 2? They aren't used anywhere right now.
+
+The thought was to replace most of the "IsProxy" calls with "HasDexMetadata" (or HasDexCodeItem), so I could also do that instead.
 
 File: runtime/asm_support.h
 
@@ -47,6 +67,16 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fb75bfb9_35300396
 Bytes: 40
 ? If you want to keep it, put a note on.
+
+347:12-347:60
+Fri Nov 20 22:18:09 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb75bfb9_35300396
+UUID: 3bed97ca_50fb52a1
+Bytes: 142
+It's one and the same. But closure_ is private (IIRC) so we can't access it directly.
+
+What note do you want here, can you put it in verbatim?
 
 File: runtime/class_linker.cc
 
@@ -244,6 +274,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76d4867d_0c2d9285
 Bytes: 71
 That's not gonna work. You can't have constexpr in assembly code... :-)
+
+94:31-94:39
+Fri Nov 20 22:18:09 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76d4867d_0c2d9285
+UUID: 7b246ff3_0adb5b10
+Bytes: 96
+It's for the TEST_EQ statements in the support asm file, how can I reword to make it more clear?
 
 File: runtime/lambda/box_class_table.cc
 

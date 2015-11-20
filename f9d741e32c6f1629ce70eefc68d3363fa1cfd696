@@ -52,3 +52,11 @@ I'm just saying that I'm not aware of any place where it would help.
 
 Btw., I see code size increase (Nexus 5: boot.oat +4KiB) but I believe it's due to register allocation as add-long declares kNoOutputOverlap while shl-long conservatively says kOutputOverlap even for constant shifts. Since the current register allocator never generates partial overlap, we could use kNoOutputOverlap instead.
 
+171
+Fri Nov 20 17:38:32 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d67c5259_968efcde
+UUID: b67fde4b_16b4aaa7
+Bytes: 150
+Yes, flipping that returns the boot.oat to the original size. That means there are not enough Shr(x,1) and UShr(x,1) to improve the code size by 4KiB.
+

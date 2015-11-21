@@ -1,0 +1,38 @@
+Revision: 1340096c9cd76ec8f32c4f51e1b67a28a575c202
+Patch-set: 1
+File: runtime/debugger.cc
+
+78:11-78:12
+Sat Nov 21 00:04:22 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b167790_4bad59aa
+Bytes: 230
+Should this maybe be m->GetInterfaceMethodIfProxy ?
+
+Not sure what would happen if you tried to return an interface method, maybe it would just break everything else.
+
+But that's probably better than returning a proxy method here.
+
+80
+Sat Nov 21 00:04:22 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1bfc537c_f26880c9
+Bytes: 175
+nit: This just seems like the usual path taken, despite the LIKELY on 77
+
+IMHO it should be more like
+
+  if (UNLIKELY(m->IsDefault()) { 
+     ....
+     return
+  }
+
+  return m;
+
+3301
+Sat Nov 21 00:04:22 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b153384_aa084b6e
+Bytes: 4
+Why?
+

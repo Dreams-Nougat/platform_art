@@ -9,6 +9,16 @@ UUID: 9baf638f_78b3a1c2
 Bytes: 90
 Does this initial value matters at all? It feels like it should not. Please add a comment.
 
+4306:17-4306:21
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9baf638f_78b3a1c2
+UUID: 5b77ab0e_a6942605
+Bytes: 268
+It does. What I'm trying to do here is make sure that phis are constructed live, marked dead if undefined/conflicting and never revived. That's not achievable with the current implementation (viz my DeadPhiHandling CL), hence TODOs and comments.
+
+I've added a comment.
+
 4310:0-4312:75
 Mon Nov 23 11:30:16 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +26,30 @@ UUID: 5bc96b78_96e92ca8
 Bytes: 67
 Add a comment why you just don't type it with the first input type.
 
+4310:0-4312:75
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5bc96b78_96e92ca8
+UUID: 7bb2aff7_f7f0a08b
+Bytes: 62
+Removed, typing with ToPhiType(first_input_type) as discussed.
+
 4313:58-4313:74
 Mon Nov 23 12:06:20 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7b80ef13_a7334a37
 Bytes: 34
 what if this is object? (kPrimNot)
+
+4313:58-4313:74
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7b80ef13_a7334a37
+UUID: 5bc96b78_f63a60c0
+Bytes: 272
+Then it's typed kPrimInt. MergeTypes in PrimitiveTypePropagation allows the int->ref transition.
+
+Nicolas suggested removing this altogether, though. I was being extra cautious but it's worth typing it with ToPhiType(first_input_type) for the algorithm to converge faster.
 
 File: compiler/optimizing/ssa_builder.cc
 
@@ -32,6 +60,14 @@ UUID: 9baf638f_d8858dee
 Bytes: 113
 Add a comment that this is a temporary state for a loop phi, and the loop phi will be removed in phi elimination.
 
+25:0-27:1
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9baf638f_d8858dee
+UUID: 7b80ef13_47928e3c
+Bytes: 4
+Done
+
 233:45-233:55
 Mon Nov 23 11:30:16 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,12 +75,30 @@ UUID: 7bb2aff7_d7571c4e
 Bytes: 150
 How about graph visualizer? We do not run it between the different passes of the SsaBuilder, but I sometimed had to, and it'd be nice to not break it.
 
+233:45-233:55
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7bb2aff7_d7571c4e
+UUID: 3bc4b760_b54aa0a3
+Bytes: 434
+GraphVisualizer should never-ever-ever have to deal with that. This comment is meant to say that we do not need to remove the phi here (we'd need to remove it's phi users/inputs too). It will be removed by SsaPhiElimination, assuming it wasn't revived, and SsaChecker works as a DCHECK that all the components worked together as expected.
+
+If the phi is marked dead here and not removed, then GraphVisualizer has every right to crash.
+
 678:0-679:65
 Mon Nov 23 11:30:16 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5bc96b78_16a43c7a
 Bytes: 140
 I think this should only be for even reg_number, but then better be safe, and you actually test for 64bit below, so let's keep it like this.
+
+678:0-679:65
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5bc96b78_16a43c7a
+UUID: bbb8a7d5_d90cb352
+Bytes: 73
+I think that is allowed. Either way, no reason why we couldn't handle it.
 
 684:25-684:39
 Mon Nov 23 12:06:20 2015 +0000
@@ -59,6 +113,18 @@ but we should never set all 3 of them at the same time.
 
 So it would be nice and more readable to document in the beginning what you expect them to hold (depending on the case) and when you'll (over)write them.
 
+684:25-684:39
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fbbdbfca_93977c09
+UUID: 7b80ef13_c7859eee
+Bytes: 177
+Why not all three? Imagine:
+
+  long-to-double v3, v2
+
+Initially, v2|3 is a long value. Writing into v3 invalidates v2, and because we're writing a double, v4 is invalidated too.
+
 File: compiler/optimizing/ssa_phi_elimination.cc
 
 29:0-31:53
@@ -68,12 +134,28 @@ UUID: fbbdbfca_d330142d
 Bytes: 67
 Why don't you use the same IsUndefinedLoopHeaderPhi method instead?
 
+29:0-31:53
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fbbdbfca_d330142d
+UUID: fbbdbfca_53aec459
+Bytes: 227
+Because I intend to do away with IsUndefinedLoopHeaderPhi (there's a TODO in GetWhateverPhiEquivalent, and DeadPhiHandling will be replaced). This is meant to be permanent and also a more general assurance about this algorithm.
+
 43:11-43:25
 Mon Nov 23 11:30:16 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bbb8a7d5_590fc378
 Bytes: 16
 has_non_phi_use?
+
+43:11-43:25
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bbb8a7d5_590fc378
+UUID: fbbdbfca_73b3c0c2
+Bytes: 4
+Done
 
 File: test/550-checker-regression-wide-store/smali/TestCase.smali
 
@@ -83,4 +165,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5b77ab0e_26a91651
 Bytes: 98
 What's the use of checker here? Would any of these checker tests actually fail without this patch?
+
+28:3-28:14
+Mon Nov 23 12:46:14 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b77ab0e_26a91651
+UUID: 3bc4b760_1588b408
+Bytes: 437
+Q1: This test would fail at runtime even without Checker (unlike the bottom one). Nicolas had a good point that that, however, relies on the strategy we use for try/catch (reading vregs from dex reg map) and could stop testing the right thing if we changed the strategy.
+
+Q2: Yes, both of these Checker tests will fail on AOSP master (hence the reported bug). invalidateLow will have <<Arg>> at v0 and invalidateHigh will have 0x0 at v1.
 

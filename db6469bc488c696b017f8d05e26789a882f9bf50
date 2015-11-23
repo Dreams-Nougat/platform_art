@@ -2,12 +2,26 @@ Revision: db6469bc488c696b017f8d05e26789a882f9bf50
 Patch-set: 2
 File: compiler/optimizing/nodes.h
 
+4306:17-4306:21
+Mon Nov 23 12:06:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9baf638f_78b3a1c2
+Bytes: 90
+Does this initial value matters at all? It feels like it should not. Please add a comment.
+
 4310:0-4312:75
 Mon Nov 23 11:30:16 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5bc96b78_96e92ca8
 Bytes: 67
 Add a comment why you just don't type it with the first input type.
+
+4313:58-4313:74
+Mon Nov 23 12:06:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b80ef13_a7334a37
+Bytes: 34
+what if this is object? (kPrimNot)
 
 File: compiler/optimizing/ssa_builder.cc
 
@@ -32,6 +46,19 @@ UUID: 5bc96b78_16a43c7a
 Bytes: 140
 I think this should only be for even reg_number, but then better be safe, and you actually test for 64bit below, so let's keep it like this.
 
+684:25-684:39
+Mon Nov 23 12:06:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fbbdbfca_93977c09
+Bytes: 295
+you work with 3 locations in this function:
+reg_number - 1
+reg_number
+reg_number + 1
+but we should never set all 3 of them at the same time.
+
+So it would be nice and more readable to document in the beginning what you expect them to hold (depending on the case) and when you'll (over)write them.
+
 File: compiler/optimizing/ssa_phi_elimination.cc
 
 29:0-31:53
@@ -47,4 +74,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bbb8a7d5_590fc378
 Bytes: 16
 has_non_phi_use?
+
+File: test/550-checker-regression-wide-store/smali/TestCase.smali
+
+28:3-28:14
+Mon Nov 23 12:06:20 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b77ab0e_26a91651
+Bytes: 98
+What's the use of checker here? Would any of these checker tests actually fail without this patch?
 

@@ -1,0 +1,16 @@
+Revision: 5f9730a8ee5a8cc50d2921a0bba16042d30813eb
+Patch-set: 5
+File: compiler/image_writer.cc
+
+606:2-606:3
+Mon Nov 23 08:19:18 2015 +0000
+Author: Hyangseok Chae <1061696@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bb9b478c_e18c861e
+Bytes: 273
+I think,
+You should check ComponentType of array. (ContainsBootClassLoaderNonImageClass)
+Because element of array could have reference to non image classes.
+if (klass->IsArrayClass()) {
+  result = result || ContainsBootClassLoaderNonImageClass(klass->GetComponentType());
+}
+

@@ -1,0 +1,25 @@
+Revision: d1c6cab26642c31848402af379ee716f1b783427
+Patch-set: 3
+File: compiler/optimizing/inliner.cc
+
+312:63-312:86
+Mon Nov 23 20:18:18 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b167790_99b16b52
+Bytes: 119
+I think this work is missing some cost modeling. The class loading in case of non-referrer class is pretty heavyweight.
+
+317:13-317:20
+Mon Nov 23 20:18:18 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1bfc537c_a60fda44
+Bytes: 147
+Can you also do reference type propagation after you've done the guard? You might be able to elide the guard for other calls dominated by this one.
+
+318:0-319:47
+Mon Nov 23 20:18:18 2015 +0000
+Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fbb05f0b_fe3bfdaa
+Bytes: 259
+Instead of deopt, are you also considering keeping the original virtual invoke in a diamond shape after the guard? I just worry about path length increase of having to punt to interpreter including not resuming in compiled code after the return from the call.
+

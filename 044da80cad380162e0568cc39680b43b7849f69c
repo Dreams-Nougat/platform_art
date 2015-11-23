@@ -1,5 +1,21 @@
 Revision: 044da80cad380162e0568cc39680b43b7849f69c
 Patch-set: 1
+File: compiler/optimizing/code_generator_arm.cc
+
+2472
+Mon Nov 23 13:08:30 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db98fb91_223b8ec7
+Bytes: 78
+Most of the logic should be shared between archs, and maybe between functions.
+
+2515:6-2515:66
+Mon Nov 23 13:08:30 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b72f720_65cce63b
+Bytes: 71
+The helper `HasOnlyOneNonEnvironmentUse()` was created to replace this.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 3507:9-3508:38
@@ -8,4 +24,30 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9b8e83ee_54e58cca
 Bytes: 16
 Why this change?
+
+File: compiler/optimizing/nodes.h
+
+1093
+Mon Nov 23 13:08:30 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9ba203be_a059da3e
+Bytes: 516
+We are free to select the correct level of abstraction for IRs.
+
+Can't we achieve the same results by introducing only one new IR `MultiplyAccumulate`?
+That IR can switch on a condition to decide whether we deal with an addition or a subtraction.
+And as in the ISA, `MNEG` can simply be handled by passing a constant 0 as input.
+
+We can share that new IR between ARM and ARM64 immediately (maybe requiring new macros). Other archs (MIPS at least) that want to implement it in the future can simply modify the macros.
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+565
+Mon Nov 23 13:08:30 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b71b31c_a40fc244
+Bytes: 114
+This should be done in pass. Likely in `instruction_simplifier_arm64`.
+
+That will help implementing checker tests.
 

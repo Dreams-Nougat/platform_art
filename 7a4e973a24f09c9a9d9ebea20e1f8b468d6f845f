@@ -9,6 +9,16 @@ UUID: 5b77ab0e_a93079e4
 Bytes: 55
 Rename to outer_dex_file in line with naming the above?
 
+1669:17-1669:25
+Tue Nov 24 17:59:22 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b77ab0e_a93079e4
+UUID: 9b7da3ef_eb36edbd
+Bytes: 371
+This method was already using the current dex compilation unit, so I did not want to change it. I changed the other one above as it wasn't consistent with the type index.
+
+All in all, this is a problem around inlining that will stop inlining as soon as it sees a HLoadClass from a different dex file (because HLoadClass requires the dex cache). I plan on cleanup this up.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 5192:6-5192:73
@@ -19,6 +29,14 @@ Bytes: 124
 Did you mean to add this in other backends?
 
 The message seems a bit off :) It's just something that we should not generate.
+
+5192:6-5192:73
+Tue Nov 24 17:59:22 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bbb8a7d5_5ce091bc
+UUID: 9baf638f_5ba5f7db
+Bytes: 55
+Yeah, and it was wrong for read barriers. I removed it.
 
 File: compiler/optimizing/nodes.h
 

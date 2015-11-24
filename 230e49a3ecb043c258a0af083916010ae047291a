@@ -9,6 +9,14 @@ UUID: b67fde4b_353528d4
 Bytes: 14
 UNREACHABLE();
 
+1635
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b67fde4b_353528d4
+UUID: dbe8fb67_6bd211de
+Bytes: 4
+Done
+
 File: compiler/optimizing/common_arm64.h
 
 266:6-266:27
@@ -18,12 +26,28 @@ UUID: 3b4e7783_c8834f71
 Bytes: 13
 UNREACHABLE()
 
+266:6-266:27
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b4e7783_c8834f71
+UUID: dbe8fb67_4bc74d1a
+Bytes: 4
+Done
+
 280:6-280:28
 Tue Nov 17 17:40:02 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 569062ca_64b8de03
 Bytes: 13
 UNREACHABLE()
+
+280:6-280:28
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 569062ca_64b8de03
+UUID: bbeb4762_67b00620
+Bytes: 4
+Done
 
 300
 Tue Nov 17 17:40:02 2015 +0000
@@ -34,12 +58,33 @@ You should also add HNeg, which is a simplified HSub with lhs==0.
 
 Idea for future improvement: Introduce HArm64Bic and HArm64Eon and allow them to use shifter operands.
 
+300
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_ac2ba729
+UUID: 1b06130b_62b0f21f
+Bytes: 319
+Yes good point, other arm binary operations will be able to benefit from it. CMP is an other example.
+
+I have started work on it, but if that's ok I prefer doing `HNeg` in a separate patch. The current logic has small assumptions about merging into a `HBinaryOperation`. So I'd rather first get in something that works.
+
 308:33-308:53
 Tue Nov 17 17:40:02 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 169a6aee_620a92a7
 Bytes: 81
 I don't see any "AND (extended register)" in the manual, only ADD, SUB, CMP, CMN.
+
+308:33-308:53
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 169a6aee_620a92a7
+UUID: fb005ff1_21e54acc
+Bytes: 223
+Indeed, that was an error.
+It was not failing because VIXL would still handle the operand nicely, generating two instructions instead of one.
+
+I fixed it here, added more checker tests, and a DCHECK at code generation time.
 
 File: compiler/optimizing/instruction_simplifier_arm64.cc
 
@@ -49,6 +94,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 368beea4_e3214691
 Bytes: 234
 This is running after the arch-independent instruction simplifier and so SHL by 1 has already been replaced with ADD. You may want to work around that by adding extra logic in VisitAdd(), treating ADD with both inputs the same as SHL.
+
+174:0-178:1
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_e3214691
+UUID: bb9b478c_21414ee8
+Bytes: 76
+Your patch fixed that (https://android-review.googlesource.com/#/c/182478/).
 
 File: compiler/optimizing/nodes_arm64.cc
 
@@ -61,6 +114,16 @@ This byte-to-char conversion is wrong. The code in InstructionCodeGeneratorARM64
 
 Please add a test where you pass negative "byte b" to a non-inlined function calculating "a + (char)b".
 
+46:17-46:22
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 368beea4_4332faec
+UUID: bbeb4762_8a9e6f77
+Bytes: 286
+You are right. Fixed it here, and added more comprehensive tests.
+
+I also raised a task internally to have a detailed look at type conversions again. We need to clarify the assumptions around extensions for types smaller than `int`, and optimize away conversions that are not necessary.
+
 55:0-60:7
 Tue Nov 17 17:40:02 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -72,6 +135,14 @@ This branch should be merged with the "(result_type == Primitive::kPrimChar) && 
 
 And you can also refactor the code gen type conversion.
 
+55:0-60:7
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b4e7783_684fbb13
+UUID: 1bb61305_7c59390b
+Bytes: 56
+Thanks for spotting that. Fixed here and in the codegen.
+
 85:41-85:53
 Tue Nov 17 17:40:02 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -80,6 +151,14 @@ Bytes: 83
 static_cast<>()
 
 And we usually cast to int but if you want unsigned, I don't mind.
+
+85:41-85:53
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_605466a8
+UUID: 5bfc0b2b_e42c0e6f
+Bytes: 6
+Fixed.
 
 File: compiler/optimizing/nodes_arm64.h
 
@@ -90,6 +169,14 @@ UUID: db11db43_804f7a12
 Bytes: 25
 Tag these with "/*out*/".
 
+74:0-75:58
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_804f7a12
+UUID: 3bf75749_0359320b
+Bytes: 4
+Done
+
 File: test/549-checker-shifter-operand/src/Main.java
 
 48
@@ -99,12 +186,28 @@ UUID: 96865a95_94099442
 Bytes: 58
 Add another section with CHECK-NOT TypeConversion and Sub.
 
+48
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_94099442
+UUID: 7bf54f3c_8ba9d052
+Bytes: 4
+Done
+
 106
 Tue Nov 17 17:40:02 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96865a95_b4a4d87a
 Bytes: 14
 Add CHECK-NOT.
+
+106
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96865a95_b4a4d87a
+UUID: 3bf75749_e35526d1
+Bytes: 4
+Done
 
 122:17-122:23
 Tue Nov 17 17:40:02 2015 +0000
@@ -113,6 +216,14 @@ UUID: 56278298_4caeb3ee
 Bytes: 4
 typo
 
+122:17-122:23
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56278298_4caeb3ee
+UUID: 9bf20354_49e2b956
+Bytes: 6
+Fixed.
+
 157:51-157:64
 Tue Nov 17 17:40:02 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -120,10 +231,26 @@ UUID: 3b4e7783_c85fcfbe
 Bytes: 60
 Currently not optimized because "b << 1" is replaced by ADD.
 
+157:51-157:64
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b4e7783_c85fcfbe
+UUID: fb6bff2e_03732e86
+Bytes: 20
+Fixed by your patch.
+
 232:50-232:63
 Tue Nov 17 17:40:02 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: db11db43_60b0e61f
 Bytes: 5
 ditto
+
+232:50-232:63
+Tue Nov 24 10:40:23 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db11db43_60b0e61f
+UUID: 3ba757d3_9d9e4384
+Bytes: 20
+Fixed by your patch.
 

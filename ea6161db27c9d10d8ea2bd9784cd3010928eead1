@@ -86,3 +86,18 @@ UUID: 5b77ab0e_665a2e33
 Bytes: 276
 I don't know about any difference. I thought using DW_OP_implicit_value will be more compact but after checking the spec I think the size difference is so small we shouldn't care (DW_OP_implicit_value will be always smaller or the same size as DW_OP_consts+DW_OP_stack_value).
 
+501
+Tue Nov 24 02:31:08 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5b77ab0e_665a2e33
+UUID: 9b7da3ef_2ba3a5c3
+Bytes: 506
+Wouldn't it be expected for implicit_value to store the full 4 bytes of the constant?
+
+Even if not, they both require 3 bytes minimum.  Nonetheless, the size is not really of concern.
+
+The main reason I prefer stack_value is because it does not assume any endian.  (can we also assume little endian on host, for example?)
+
+By the way, is this going to work for floats?  For example double constant is encoded as:
+OP_consts 0x11223344 OP_stack_value OP_piece 4 OP_consts 0x55667788 OP_stack_value OP_piece 4
+

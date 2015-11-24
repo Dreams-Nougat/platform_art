@@ -1,0 +1,47 @@
+Revision: cb02063ee012f2ef13aaf92317b493d0b73a16f4
+Patch-set: 4
+File: compiler/optimizing/inliner.cc
+
+240:6-240:24
+Tue Nov 24 14:48:00 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb921f65_cb5cd5cc
+Bytes: 64
+In a JIT context this should never be the case. Maybe DCHECK it?
+
+241:19-241:33
+Tue Nov 24 14:48:00 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbb8a7d5_3c1afdbb
+Bytes: 361
+I think we can improve the design here and it's worth a discussion.
+
+Getting the profiling_info from the ArtMethod will only work for JIT. Whereas this codepath is also used for AOT.
+
+I don't have a strong suggestion right now but we could consider passing down this info from the top level.
+
+Short term, we could also guard this around a more explicit IsJit().
+
+296:2-297:61
+Tue Nov 24 14:48:00 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b7da3ef_4bf9b970
+Bytes: 120
+rather cryptic. Can we add a helper with a relevant name/documentation to the linker, or the mirror class to fetch this?
+
+File: runtime/jit/profiling_info.h
+
+68:2-70:7
+Tue Nov 24 14:48:00 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7bb2aff7_3795b864
+Bytes: 33
+private and friend ProfilingInfo.
+
+134:7-134:32
+Tue Nov 24 14:48:00 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b77ab0e_89365d28
+Bytes: 145
+This class is becoming a container for the jit states rather than just a storage for the profiling info. We should rename it (a later CL is fine)
+

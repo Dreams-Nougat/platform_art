@@ -101,3 +101,15 @@ The main reason I prefer stack_value is because it does not assume any endian.  
 By the way, is this going to work for floats?  For example double constant is encoded as:
 OP_consts 0x11223344 OP_stack_value OP_piece 4 OP_consts 0x55667788 OP_stack_value OP_piece 4
 
+501
+Tue Nov 24 12:06:07 2015 +0000
+Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b7da3ef_2ba3a5c3
+UUID: bbb8a7d5_f963375a
+Bytes: 598
+I don't know what is expected for implicit_value, but if you prefer the current implementation (because of clarity and endianness) I am fine with it. Most likely it will be cleaner.
+
+For floats I think your example should work but I don't know if anybody ever tested it.
+
+For endianness I think the dwarf should be emitted in target byte order (have to check the spec) and then the consumer should deal with the byte swapping if needed. If you want to be endian independent then you also have to be careful about the case when a 64 bit value is split into 2 register (which one is the lower/higher)
+

@@ -9,3 +9,17 @@ UUID: fb921f65_eba43126
 Bytes: 206
 Odd that you're using reflection. I can see it does defeat inlining, but we used to do other tricks instead (like throwing an exception in the test method). Are there aother reasons you're using reflection?
 
+26:0-54:3
+Tue Nov 24 09:53:19 2015 +0000
+Author: Goran Jakovljevic <1067943@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb921f65_eba43126
+UUID: bbb8a7d5_f9b5f70a
+Bytes: 578
+To show this bug, we have to generate NullPointerException outside of try-catch block, otherwise implicit null checks are not recorded anyway. I can do it without reflection, but then we will have 2 separate tests since we can see just one unhandled exception per test. And expected output should be something like this:
+
+java.lang.NullPointerException: Attempt to read from field 'long TestCase$Inner.i1' on a null object reference
+	at TestCase$Inner.access$000(TestCase.java:18)
+	at TestCase.get(TestCase.java:25)
+	at Main.testGetLong(Main.java:29)
+	at Main.main(Main.java:23)
+

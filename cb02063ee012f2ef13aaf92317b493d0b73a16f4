@@ -9,6 +9,14 @@ UUID: fb921f65_cb5cd5cc
 Bytes: 64
 In a JIT context this should never be the case. Maybe DCHECK it?
 
+240:6-240:24
+Tue Nov 24 15:17:27 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb921f65_cb5cd5cc
+UUID: 7bb2aff7_377e98fc
+Bytes: 4
+Done
+
 241:19-241:33
 Tue Nov 24 14:48:00 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,12 +30,28 @@ I don't have a strong suggestion right now but we could consider passing down th
 
 Short term, we could also guard this around a more explicit IsJit().
 
+241:19-241:33
+Tue Nov 24 15:17:27 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bbb8a7d5_3c1afdbb
+UUID: 5b77ab0e_89649d28
+Bytes: 54
+As discussed, let's take care of this once we need it.
+
 296:2-297:61
 Tue Nov 24 14:48:00 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9b7da3ef_4bf9b970
 Bytes: 120
 rather cryptic. Can we add a helper with a relevant name/documentation to the linker, or the mirror class to fetch this?
+
+296:2-297:61
+Tue Nov 24 15:17:27 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b7da3ef_4bf9b970
+UUID: 7b80ef13_c70afea3
+Bytes: 205
+I actually don't think it's too bad, as the DCHECK acts as comment. I'd rather not pollute the class linker, and not sure the mirror classes need to bother with this. We'll hit the DCHECK if things change.
 
 File: runtime/jit/profiling_info.h
 
@@ -37,6 +61,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7bb2aff7_3795b864
 Bytes: 33
 private and friend ProfilingInfo.
+
+68:2-70:7
+Tue Nov 24 15:17:27 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7bb2aff7_3795b864
+UUID: 7bb2aff7_d7663c6d
+Bytes: 99
+InlineCache is a struct, where fields don't have to be private. Do you prefer for it to be a class?
 
 134:7-134:32
 Tue Nov 24 14:48:00 2015 +0000

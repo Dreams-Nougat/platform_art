@@ -9,6 +9,14 @@ UUID: 3b167790_99b16b52
 Bytes: 119
 I think this work is missing some cost modeling. The class loading in case of non-referrer class is pretty heavyweight.
 
+312:63-312:86
+Tue Nov 24 09:30:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3b167790_99b16b52
+UUID: 7b80ef13_278f5aa3
+Bytes: 25
+this is likely to change.
+
 317:13-317:20
 Mon Nov 23 20:18:18 2015 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,26 @@ UUID: 1bfc537c_a60fda44
 Bytes: 147
 Can you also do reference type propagation after you've done the guard? You might be able to elide the guard for other calls dominated by this one.
 
+317:13-317:20
+Tue Nov 24 09:30:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1bfc537c_a60fda44
+UUID: bbb8a7d5_b9bb7ffe
+Bytes: 18
+It's done already.
+
 318:0-319:47
 Mon Nov 23 20:18:18 2015 +0000
 Author: Razvan A Lupusoru <1013855@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fbb05f0b_fe3bfdaa
 Bytes: 259
 Instead of deopt, are you also considering keeping the original virtual invoke in a diamond shape after the guard? I just worry about path length increase of having to punt to interpreter including not resuming in compiled code after the return from the call.
+
+318:0-319:47
+Tue Nov 24 09:30:03 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fbb05f0b_fe3bfdaa
+UUID: 9baf638f_db0ca752
+Bytes: 145
+Yes we thought about it, but the deopt will take care of knowing which receivers are now seen, and if the method remaines hot, will be re-jitted.
 

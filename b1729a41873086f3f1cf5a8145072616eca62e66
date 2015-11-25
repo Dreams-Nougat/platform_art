@@ -18,12 +18,35 @@ UUID: 5bc96b78_fcb7a1a0
 Bytes: 156
 Based on the tests below, I'd guess there would be no environment use if the parameter was "long a", right? And that's probably what we really want to test.
 
+261:0-262:64
+Wed Nov 25 16:22:53 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5bc96b78_fcb7a1a0
+UUID: fb6bff2e_46a8d49b
+Bytes: 717
+Testing for `int` is *very* important.
+In `int_a + (char)byte_b`, because the conversion to `int` is optimized away, we end up with a type conversion from byte to *char* followed by the add. This leads to the error you spotted about UXTH vs UXTB.
+
+On the other hand for `long_b + (char)byte_b`, we have *two* type conversions byte->char and char->long followed by the add. That means that the type transition merged into the binop is always toward `long`.
+
+That is why I kept the `int` tests and was alternating between `int` and `long`. Instead I now have both `int` and `long` versions.
+
+Note that this also illustrates why there are still TypeConversion IRs in the `long` tests. I added better checker tests there.
+
 274
 Wed Nov 25 15:21:37 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9baf638f_5ea5e5db
 Bytes: 94
 I guess there are no environment uses if everything gets merged, so CHECK-NOT: TypeConversion.
+
+274
+Wed Nov 25 16:22:53 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9baf638f_5ea5e5db
+UUID: 9ba203be_23b83490
+Bytes: 48
+See previous comment. Improved the checker test.
 
 314
 Wed Nov 25 15:21:37 2015 +0000
@@ -32,10 +55,26 @@ UUID: 7b80ef13_0a297b79
 Bytes: 25
 CHECK-NOT: TypeConversion
 
+314
+Wed Nov 25 16:22:53 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7b80ef13_0a297b79
+UUID: 7bbe2fe4_9759843f
+Bytes: 48
+See previous comment. Improved the checker test.
+
 327
 Wed Nov 25 15:21:37 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3bc4b760_1872a9c9
 Bytes: 25
 CHECK-NOT: TypeConversion
+
+327
+Wed Nov 25 16:22:53 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3bc4b760_1872a9c9
+UUID: 1bb61305_1f00e742
+Bytes: 48
+See previous comment. Improved the checker test.
 

@@ -9,12 +9,28 @@ UUID: bbb8a7d5_dc0bc1fe
 Bytes: 89
 Make this "int a" to reduce the number of implicit conversions - we're not testing those.
 
+253:52-253:58
+Wed Nov 25 14:59:09 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bbb8a7d5_dc0bc1fe
+UUID: 7ba54fc6_28836fea
+Bytes: 5
+Done.
+
 263:4-263:64
 Wed Nov 25 12:31:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9baf638f_fe4079e5
 Bytes: 141
 What are you actually testing here? That the byte-to-int conversion is implicit and as such doesn't contribute to Arm64DataProcWithShifterOp?
+
+263:4-263:64
+Wed Nov 25 14:59:09 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9baf638f_fe4079e5
+UUID: 3ba757d3_c0498065
+Bytes: 23
+Yes. I added a comment.
 
 264:63-264:75
 Wed Nov 25 12:31:46 2015 +0000
@@ -25,6 +41,18 @@ Why doesn't this generate a Arm64DataProcWithShifterOp? I would expect one of th
 
 Also, I would expect that you actually want to test the folding of int-to-long into the add-long and it would remove unnecessary clutter if the parameter "a" was "long a" and the assertion was assertLongEquals(), allowing CHECK-NOT: TypeConversion.
 
+264:63-264:75
+Wed Nov 25 14:59:09 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7bb2aff7_1aee1973
+UUID: 3b72f720_39221737
+Bytes: 330
+I was also expecting it, but it has an environment use even though we are not compiling with `--no-optimize`.
+Added a comment.
+
+The folding of int-to-long into add-long is tested as part of `validateExtendLong()`. I have switched to `assertLongEquals()` here.
+I also now alternate between `int` and `long` for the left parameters.
+
 564:21-564:30
 Wed Nov 25 12:31:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,10 +60,26 @@ UUID: 9baf638f_9e393d82
 Bytes: 1
 L
 
+564:21-564:30
+Wed Nov 25 14:59:09 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9baf638f_9e393d82
+UUID: bb9b478c_84138875
+Bytes: 4
+Done
+
 565:21-565:32
 Wed Nov 25 12:31:46 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7bb2aff7_3a2e7d82
 Bytes: 1
 L
+
+565:21-565:32
+Wed Nov 25 14:59:09 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7bb2aff7_3a2e7d82
+UUID: bb9b478c_64108468
+Bytes: 4
+Done
 

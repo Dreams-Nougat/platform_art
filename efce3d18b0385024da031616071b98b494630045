@@ -1,0 +1,41 @@
+Revision: efce3d18b0385024da031616071b98b494630045
+Patch-set: 12
+File: test/551-checker-shifter-operand/src/Main.java
+
+253:52-253:58
+Wed Nov 25 12:31:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbb8a7d5_dc0bc1fe
+Bytes: 89
+Make this "int a" to reduce the number of implicit conversions - we're not testing those.
+
+263:4-263:64
+Wed Nov 25 12:31:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9baf638f_fe4079e5
+Bytes: 141
+What are you actually testing here? That the byte-to-int conversion is implicit and as such doesn't contribute to Arm64DataProcWithShifterOp?
+
+264:63-264:75
+Wed Nov 25 12:31:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7bb2aff7_1aee1973
+Bytes: 387
+Why doesn't this generate a Arm64DataProcWithShifterOp? I would expect one of the int-to-long conversions to be folded into the add-long.
+
+Also, I would expect that you actually want to test the folding of int-to-long into the add-long and it would remove unnecessary clutter if the parameter "a" was "long a" and the assertion was assertLongEquals(), allowing CHECK-NOT: TypeConversion.
+
+564:21-564:30
+Wed Nov 25 12:31:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9baf638f_9e393d82
+Bytes: 1
+L
+
+565:21-565:32
+Wed Nov 25 12:31:46 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7bb2aff7_3a2e7d82
+Bytes: 1
+L
+

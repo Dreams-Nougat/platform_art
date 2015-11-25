@@ -42,6 +42,18 @@ UUID: 9baf638f_c1ae78a5
 Bytes: 316
 I don't understand how we get here for the new test, I would expect the code above to take the early return branch for resolved_method==nullptr, or does it point to the resolution trampoline? In that case, should we check for the trampoline instead, or is the trampoline actually going to the the right thing anyway?
 
+601:0-606:89
+Wed Nov 25 17:10:30 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9baf638f_c1ae78a5
+UUID: 9baf638f_01d23026
+Bytes: 609
+The resolved method is found, as the invoke-super is pointing to the subclass's method.
+
+The verifier detects the problem but makes it a soft failure, which the optimizing compiler decides to not compile, but Quick does the compilation. Because there's a failure, Quick will use the invokeSuperTrampoline, and ends up there.
+
+So when arriving here, the trampoline resolves the method the invoke-super points to, and finds it. It's only used to know the index in the vtable though, as the specification says so. But because there's no such method in the vtable, we would crash here with an array out of bounds.
+
 File: test/551-invoke-super/smali/invokesuper.smali
 
 22:0-22:7

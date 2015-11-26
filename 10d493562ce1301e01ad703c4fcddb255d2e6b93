@@ -1,0 +1,14 @@
+Revision: 10d493562ce1301e01ad703c4fcddb255d2e6b93
+Patch-set: 5
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+702:11-702:37
+Thu Nov 26 08:01:59 2015 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b7da3ef_6e4f6b68
+Bytes: 232
+It seems to me that this is not correct optimization you do.
+What if callee save register is dead in you method but live in caller and will be used by intrinsic?
+
+You should store and restore all callee save registers always here :(
+

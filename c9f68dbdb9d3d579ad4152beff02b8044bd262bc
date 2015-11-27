@@ -9,6 +9,14 @@ UUID: fb921f65_d152c4e6
 Bytes: 53
 Give that out is a pointer, what's the benefit of &&?
 
+23:71-23:74
+Fri Nov 27 18:36:50 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb921f65_d152c4e6
+UUID: 9b7da3ef_d124768f
+Bytes: 59
+It doesn't really matter. Do you want this passed by value?
+
 File: compiler/elf_writer.h
 
 54:2-63:25
@@ -17,4 +25,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3bc4b760_fb21677c
 Bytes: 218
 Do you plan to use this independently as well? (i.e. not in a flow like Start/StarRoData/.../End). Otherwise why bother make them distinct and public?. For the user of this class as single Write() method seems cleaner.
+
+54:2-63:25
+Fri Nov 27 18:36:50 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3bc4b760_fb21677c
+UUID: 5b77ab0e_8fc01d00
+Bytes: 430
+Yes, using them independently is the plan. Well, at least for the .rodata at the moment, but if I put the rest of it (.text, .bss, etc.) together it will look very inconsistent.
+
+And, if we were somehow running out of memory when writing the debug info, we could move the method_infos and patch_locations out of the OatWriter and destroy the OatWriter to reclaim some memory before calling WriteDebugInfo(), WritePatchLocations().
 

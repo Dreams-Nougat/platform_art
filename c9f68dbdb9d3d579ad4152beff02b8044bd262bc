@@ -1,5 +1,14 @@
 Revision: c9f68dbdb9d3d579ad4152beff02b8044bd262bc
 Patch-set: 3
+File: compiler/Android.mk
+
+61:1-61:28
+Sat Nov 28 08:02:12 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbb8a7d5_e25e1c52
+Bytes: 290
+Nit: Would you mind not moving the file so we do not have merge conflicts on existing CLs? :-)  However, I agree the code belongs there.  I want to move it there at some point.  I would like to chop it to smaller pieces at the same time as well.  We can bikeshed about naming at some point.
+
 File: compiler/buffered_output_stream.cc
 
 23:71-23:74
@@ -35,4 +44,20 @@ Bytes: 430
 Yes, using them independently is the plan. Well, at least for the .rodata at the moment, but if I put the rest of it (.text, .bss, etc.) together it will look very inconsistent.
 
 And, if we were somehow running out of memory when writing the debug info, we could move the method_infos and patch_locations out of the OatWriter and destroy the OatWriter to reclaim some memory before calling WriteDebugInfo(), WritePatchLocations().
+
+File: compiler/elf_writer_quick.cc
+
+96:2-96:14
+Sat Nov 28 08:02:12 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7bb2aff7_c033d436
+Bytes: 51
+Is there a reason to put it to temp variable first?
+
+102:41-102:61
+Sat Nov 28 08:02:12 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b7da3ef_3178725e
+Bytes: 39
+Is the parameter just for verification?
 

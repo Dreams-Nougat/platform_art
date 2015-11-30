@@ -1,0 +1,80 @@
+Revision: d348861116aeb89932c2c5d40858a77fb118e3dc
+Patch-set: 3
+File: compiler/optimizing/dex_cache_array_fixups_arm.cc
+
+69:52-69:56
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b77ab0e_cff13500
+Bytes: 15
+ditto (see x86)
+
+File: compiler/optimizing/nodes.cc
+
+1183:0-1183:32
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb921f65_94daea3e
+Bytes: 104
+I don't see a reason why you would need to enforce this since you're only moving up the dominator chain.
+
+1186
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5bc96b78_aa3317f0
+Bytes: 79
+I would DCHECK InputCount==0 to make sure we're not breaking the def-use chain.
+
+1189:0-1189:26
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7bb2aff7_c09af4de
+Bytes: 55
+Implied by 1184, also DCHECKed inside uses_it.Current()
+
+1204:5-1204:39
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5bc96b78_ca3053e6
+Bytes: 44
+"Move to the first dominator not in a loop."
+
+1211:5-1212:78
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b77ab0e_af5f99be
+Bytes: 218
+Do you actually rely on that? Looks like your code will work no matter the order of uses. I think not relying on the order is a good thing, so wouldn't mention this at all. It "only" affects the speed of the algorithm.
+
+1215:8-1215:37
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b7da3ef_3c220937
+Bytes: 39
+Make a variable for better readability?
+
+1228:9-1228:33
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9baf638f_671dbca1
+Bytes: 112
+I'd drop this and only leave the second part (are next to each other). You're not helping reg alloc in any case.
+
+1235:1-1239:3
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fbbdbfca_472efe82
+Bytes: 31
+GraphChecker does this for you.
+
+File: compiler/optimizing/pc_relative_fixups_x86.cc
+
+100:53-100:57
+Mon Nov 30 16:15:28 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bc4b760_ded49915
+Bytes: 430
+Hmm, could we insert the instruction in the entry block by default and then move it closer to the users later? I understand that you're not hitting any problems with this, but some code might DCHECK that this instruction dominates all its users before the MoveBaseIfNeeded fix-up is performed.
+
+By inserting at the top of the entry block, the graph would be correct all the time and even if MoveBaseIfNeeded was not called at all.
+

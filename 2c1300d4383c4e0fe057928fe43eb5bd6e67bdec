@@ -41,6 +41,16 @@ UUID: 1b5293ad_bc9801ea
 Bytes: 74
 So are you saying we shouldn't bother implementing a literal pool for ARM?
 
+376:69-377:35
+Tue Dec 01 15:19:40 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b5293ad_bc9801ea
+UUID: 3b43d7e3_9df74347
+Bytes: 535
+No, I'm saying that there's a trade-off and in this case I don't think it's worth it. One thing to remember is that we must not deduplicate the constant here. (And we would need to reimplement the Thumb2 relative patcher and Quick's PC-relative base load, so I'd rather wait at least until we really ditch Quick.)
+
+In general, I'd like to use the constant pool for long/double literals and probably also float to avoid going through core registers but I'm not extra keen on putting arbitrary ints there. That would need to be measured.
+
 376:2-380:76
 Mon Nov 30 18:48:06 2015 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -11,6 +11,14 @@ Why not just add "| kDefaultMethods" here for a smaller diff?
 
 At any rate, having to scan is the rare case so it should be near the bottom.
 
+532
+Tue Dec 01 01:45:28 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9bf043de_b9ad835d
+UUID: 7bf38fea_b59908a0
+Bytes: 152
+We always need to scan opcodes if we have default methods since invoke-super is never supported. It needs to be first and not here to get that behavior.
+
 548
 Tue Dec 01 01:08:15 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -45,12 +53,28 @@ UUID: 9b0923b2_ce8e37a5
 Bytes: 35
 Isn't this part of the debugger CL?
 
+109
+Tue Dec 01 01:45:28 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b0923b2_ce8e37a5
+UUID: 7bf38fea_158b3441
+Bytes: 67
+Yes I needed it in both. This will go away with a rebase I'm doing.
+
 152
 Tue Dec 01 01:08:15 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bbe987fc_f7f3180c
 Bytes: 49
 Isn't this part of the CL that reverses ordering?
+
+152
+Tue Dec 01 01:45:28 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bbe987fc_f7f3180c
+UUID: 3bd59733_b3a480e1
+Bytes: 13
+No it is not.
 
 File: runtime/class_linker.cc
 
@@ -63,12 +87,32 @@ How is this supposed to work? I thought GetVirtualMethodUnchecked looks at the d
 
 Is this CL changing an invariant?
 
+5251
+Tue Dec 01 01:45:28 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db0f1bb0_3ed5010f
+UUID: 9bf043de_b99343cf
+Bytes: 727
+No it looks through the virtuals table, which includes copied default methods.
+
+It might be worth it to add another length-prefixed array to mirror::Class that is the methods that are copied from interfaces. That or rename virtual_methods_ to make it clearer that virtual methods are not all that is on this field.
+
+Maybe we could combine direct_methods_ and virtual_methods_ into one length-prefixed-array and use the freed up pointer to hold indexes into the array for where each of the tables starts. (This would also simplify searching for declared methods since we wouldn't need to do any filtering (now we filter miranda and default).) It doesn't seem like we would even need any compiler changes to this if we are smart.
+
 5312
 Tue Dec 01 01:08:15 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7bf38fea_35d63874
 Bytes: 8
 See 5251
+
+5312
+Tue Dec 01 01:45:28 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7bf38fea_35d63874
+UUID: 1be45325_35a2b26a
+Bytes: 9
+See above
 
 6562
 Tue Dec 01 01:08:15 2015 +0000

@@ -75,3 +75,33 @@ Looks a bit difficult. Do we want to rely on specific instruction ordering, such
 
 as a pre-header for a range-based loop?
 
+106
+Tue Dec 01 16:47:15 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: db347b68_654e60bc
+UUID: fb4cdf15_1b81fb68
+Bytes: 585
+I'd suggest using a simple loop where you know that the body is just one block and showing that the base is not in it.
+
+  xyz; // put something here to make B1 the pre-header
+  while (true) {
+    foo();
+  }
+
+and then you can check for:
+
+  CHECK: Base
+  CHECK: begin_block
+  CHECK: Invoke
+
+or even verify all the blocks:
+
+  CHECK: begin_block  // entry block
+  CHECK: begin_block  // pre-header
+  CHECK: Base
+  CHECK: begin_block  // loop body
+  CHECK: Invoke
+  CHECK-NOT: begin_block
+
+We should just start printing the block number with each instruction. Would make things much easier.
+

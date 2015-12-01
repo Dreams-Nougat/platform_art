@@ -1,0 +1,220 @@
+Revision: aa7212dbf7cc8079980adf6598f186a838203531
+Patch-set: 19
+File: compiler/dex/quick/quick_compiler.cc
+
+532
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9bf043de_b9ad835d
+Bytes: 140
+Why not just add "| kDefaultMethods" here for a smaller diff?
+
+At any rate, having to scan is the rare case so it should be near the bottom.
+
+548
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9bf043de_39a2b36a
+Bytes: 162
+Probably could be more detailed to avoid having to read code
+
+  // Quick compiler won't support new instruction semantics to invoke-super into an interface method
+
+607:41-607:42
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1be45325_f5142a92
+Bytes: 6
+dalvik
+
+File: runtime/art_method-inl.h
+
+229
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fbde9f59_340cf616
+Bytes: 56
+It won't work for an array class either as far as I know
+
+File: runtime/art_method.cc
+
+109
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b0923b2_ce8e37a5
+Bytes: 35
+Isn't this part of the debugger CL?
+
+152
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbe987fc_f7f3180c
+Bytes: 49
+Isn't this part of the CL that reverses ordering?
+
+File: runtime/class_linker.cc
+
+5251
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db0f1bb0_3ed5010f
+Bytes: 157
+How is this supposed to work? I thought GetVirtualMethodUnchecked looks at the direct methods, so why would this be false?
+
+Is this CL changing an invariant?
+
+5312
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7bf38fea_35d63874
+Bytes: 8
+See 5251
+
+6562
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db0f1bb0_7ee019eb
+Bytes: 1
+?
+
+File: runtime/common_throws.cc
+
+88:52-88:59
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd59733_1350f4dc
+Bytes: 28
+nit: document parameter name
+
+90:65-90:69
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9bf043de_399073fe
+Bytes: 28
+nit: document parameter name
+
+222
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9bf043de_f95aeb33
+Bytes: 59
+Perhaps this useful comment should go into the header file?
+
+File: runtime/entrypoints/entrypoint_utils-inl.h
+
+461:11-461:34
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b1763d8_7ee7c9d2
+Bytes: 37
+nit: Regular class (not an interface)
+
+477
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1be45325_b51c62a6
+Bytes: 18
+// Interface class
+
+480
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbe987fc_576ae432
+Bytes: 265
+Could use a comment, I think this is saying that the invoke-super target method must be on a class that's a supertype of this one.
+
+Also the class version of invoke-super did not allow invoke-super to degrade into invoke-virtual, does this follow the same behavior?
+
+485
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9bf043de_393e33b7
+Bytes: 39
+What about throwing NoSuchMethodError ?
+
+639
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b1763d8_5e13e575
+Bytes: 96
+nit: indentation
+
+  return ..........foo(resolved_method,
+                       sizeof(void*));
+
+File: runtime/mirror/class-inl.h
+
+535:18-535:19
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b0923b2_4e37e78c
+Bytes: 34
+nit: other logs don't have a space
+
+File: runtime/mirror/class.cc
+
+540
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd59733_d3c5ccb2
+Bytes: 107
+nit: indentation
+
+   void ............foo(ArtMethod* method,
+                        size_t pointer_size) {
+
+542
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bb1267d6_32bc16dd
+Bytes: 117
+Should there be some kind of DCHECK that the class and the method class are related somehow through a type hierarchy?
+
+File: runtime/mirror/class.h
+
+828
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fbde9f59_34819669
+Bytes: 203
+Not really sure what the input/output is supposed to be here?
+
+I do realize that the implementation just matches by name/signature but the documentation makes it unclear what the desirable semantics are.
+
+File: runtime/verifier/method_verifier.cc
+
+3704
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b0923b2_ee1c5bf9
+Bytes: 4
+Why?
+
+3926
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd59733_335d30c6
+Bytes: 133
+This doesn't seem right, optimizing should deopt instead.
+
+I thought it was already deopting for invoke-super, so what's the problem?
+
+File: runtime/verifier/method_verifier.h
+
+626:86-626:99
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7bf38fea_75e84012
+Bytes: 1
+?
+
+File: test/969-iface-super/smali/classes.xml
+
+23
+Tue Dec 01 01:08:15 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd59733_73e85812
+Bytes: 21
+Why not <methods />
+?
+

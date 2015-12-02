@@ -11,6 +11,24 @@ Style: One line main commit message, followed by a blank line and then the detai
 
 Why not split this to two changes, arm64 and arm?
 
+File: compiler/optimizing/code_generator_arm64.cc
+
+1988
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b868395_2365f422
+Bytes: 124
+I think this situation can occur with `add` and we would crash. This should be part of the `if` instead.
+
+Add a test for it.
+
+2030
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b62afc1_9771a4c7
+Bytes: 10
+Long line.
+
 File: compiler/optimizing/graph_visualizer.cc
 
 425:0-427:3
@@ -19,6 +37,86 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7b80ef13_70b3c6c2
 Bytes: 29
 #ifdef ART_ENABLE_CODEGEN_arm
+
+438
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb94dfc2_fbfd6f5d
+Bytes: 10
+Long line.
+
+441
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bb68a79f_19c14b03
+Bytes: 54
+Same as in the codegen, it should be part of the `if`.
+
+442
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bb68a79f_39be0f80
+Bytes: 426
+Why do we have two `kind` fields?
+
+Is `kNeg` appropriate? In the other cases `GetOpKind()` indicates the type of operation between the acc and the mul, as in `acc <op> mul`. Now this is something different.
+
+The `mneg` case is a special case of code generation. Nothing has changed at the IR level. So hat about leaving things as they are here and checking for the codegen optimization in the disassembly in the checker tests?
+
+File: compiler/optimizing/instruction_simplifier_arm.cc
+
+24
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b62afc1_b776a8ba
+Bytes: 57
+By sharing the IR, we should be able to share this logic.
+
+File: compiler/optimizing/multiply_accumulate_test.cc
+
+0
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b908bca_7e7eb146
+Bytes: 187
+Does that bring more value than a checker test?
+
+Adding arm support to test/550-checker-multiply-accumulate and extending the tests with mneg would be more in line with the usual testing.
+
+File: compiler/optimizing/nodes.h
+
+1098
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb94dfc2_bb03e725
+Bytes: 52
+#ifdef ART_ENABLE_CODEGEN_arm
+
+Same in other places.
+
+1099
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db655bc5_5a58157e
+Bytes: 757
+It looks like most of the logic is the same between ARM and ARM64. Also, MIPS and MIPS64 have similar instructions.
+
+So finally we've reached the point where we have:
+- IRs that are implemented by all archs
+- IRs that are implemented by only one arch
+- IRs that are can be shared by multiple (but not all) archs
+
+I don't think we want to handle the various IR combinations with different macros and files.
+I suggest making `MultiplyAccumulate` and arch-independent IR. To distinguish the IRs that are not created by the graph builder, maybe we can create a new macro `FOR_EACH_CONCRETE_SIMPLIFIED_INSTRUCTION` (can someone suggest a better name?) that contains those shared IRs, each having a comment indicating what architectures support it.
+
+Any opinions?
+
+5570
+Wed Dec 02 12:47:34 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7b89cfa7_df1c1ba8
+Bytes: 10
+#ifdef ...
 
 File: compiler/optimizing/optimizing_compiler.cc
 

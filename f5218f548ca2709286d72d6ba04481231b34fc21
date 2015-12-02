@@ -1,0 +1,71 @@
+Revision: f5218f548ca2709286d72d6ba04481231b34fc21
+Patch-set: 1
+File: compiler/optimizing/code_generator_x86.cc
+
+4419:0-4433:5
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b1deb19_b9895ba0
+Bytes: 104
+I wonder if it's possible and cleaner to move this code up into the switch kPrimNot case. It may not be.
+
+4945:0-4970:5
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbb18759_37656023
+Bytes: 82
+Similarly, would it make sense to move this code up into the kPrimNot switch case?
+
+5672:4-5672:27
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbb18759_17e77cd3
+Bytes: 19
+Nice factoring out.
+
+6551:67-6552:70
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5b1deb19_5922c781
+Bytes: 274
+Side note for arm: we can use a "fake dependence" approach similar to CL 177010. Something like:
+
+    ldr  r1, [obj, #monitor_offset]
+    eor  r2, r1, r1   // r2 == zero
+    add  src, src, r2
+    ldr  ref, [src, #0]
+
+(which is likely to be faster than a load acquire fence.)
+
+6573:2-6573:50
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbb18759_748ec651
+Bytes: 46
+Note that this is a nop in x86 in the comment?
+
+6578:2-6578:30
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b17f3fd_3a137977
+Bytes: 136
+Not sure if the exact location matters or not, but should this be right before the monitor word load (where we may trap if obj is null)?
+
+File: runtime/entrypoints/quick/quick_entrypoints.h
+
+83:66-84:17
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bbb18759_948ecaa3
+Bytes: 86
+To be more precise, "to mark an object that's referenced by a field of a gray object"?
+
+File: runtime/entrypoints/quick/quick_field_entrypoints.cc
+
+564:22-564:26
+Wed Dec 02 00:27:11 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb113f0a_991bbb4f
+Bytes: 88
+Can you add ALWAYS_INLINE to Mark() in read_barrier.h to be sure that it's inlined here?
+

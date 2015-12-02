@@ -11,3 +11,12 @@ Why do we even open these dex files here? Doesn't the Runtime open their copies 
 
 (If we expect some extra class path dex files in addition to those in the boot image, we should still try and use those we can find in the boot image.)
 
+1598:0-1600:7
+Wed Dec 02 13:09:30 2015 +0000
+Author: Artem Udovichenko <1083288@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1b21b386_645c6a59
+UUID: 7b62afc1_f78020b2
+Bytes: 388
+When dex2oat compiles app it always opens oat files from bootclasspath. This code opens additional dex files passed through --runtime-arg -cp --runtime-arg file1.dex:....
+But opened dex files will have incorrect dex_location if application compiled on the host. My change fix this. But, as Andreas mentioned, we need to track these additional dex files at runtime. I work on this problem.
+

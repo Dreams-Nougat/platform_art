@@ -1,0 +1,264 @@
+Revision: d16e7bb8f5e35ed9a97338e126de37e3c783520d
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm.cc
+
+3240:19-3240:65
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bb36e7c5_696605fe
+Bytes: 49
+CodeGenerator::GetInt32ValueOf(rhs.GetConstant())
+
+3242:11-3242:15
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c0eba861_81ed3a7b
+Bytes: 18
+kMaxLongShiftValue
+
+3246:15-3246:19
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e8ac67_c25342e7
+Bytes: 22
+Maybe kArmBitsPerWord?
+
+3270:4-3270:39
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e8ac67_e26886cd
+Bytes: 55
+Please rename the variables above to avoid this swap().
+
+File: compiler/optimizing/instruction_simplifier.cc
+
+198:63-198:67
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c0eba861_81ce5a38
+Bytes: 35
+HInstruction for better code reuse.
+
+201:72-201:73
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1b21b386_64d38a83
+Bytes: 21
+Add space before "1".
+
+204:0-221:1
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb421f2f_2b56b9dc
+Bytes: 23
+Unnecessary, see below.
+
+224:56-224:61
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e8ac67_e22f6663
+Bytes: 12
+Indentation.
+
+226:61-226:79
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb1bff58_23d34a56
+Bytes: 54
+This is always ushr->GetRight(), so it can be removed.
+
+229:54-229:58
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb421f2f_4b5305ec
+Bytes: 12
+Indentation.
+
+232:2-232:44
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e8ac67_626b569d
+Bytes: 145
+Either assert that there are no other uses, or do this only conditionally (if you choose to relax the HasOnlyOneNonEnvironmentUse() check below).
+
+236:2-236:42
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb421f2f_eb9831eb
+Bytes: 5
+ditto
+
+261:8-262:42
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db339bd5_cdf53db0
+Bytes: 29
+Should we perhaps relax this?
+
+320:74-320:79
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db339bd5_4dbceddd
+Bytes: 12
+Indentation.
+
+332:42-332:45
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a0f23453_00280663
+Bytes: 83
+This is also ushr->GetRight(), so you don't need to differentiate the two branches.
+
+356:74-356:79
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c0eba861_e11ac655
+Bytes: 12
+Indentation.
+
+363:0-386:3
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a0f23453_2080aaaf
+Bytes: 546
+What about
+
+    HInstruction* shl_shift = shl->GetRight();
+    HInstruction* ushr_shift = ushr->GetRight();
+    if ((shl_shift->IsSub() && IsSubRegBitsMinusOther(shl_shift->AsSub(), reg_bits, shr_shift)) ||
+        (ushr_shift->IsSub() && IsSubRegBitsMinusOther(ushr_shift->AsSub(), reg_bits, shl_shift)) {
+      ReplaceRotateWithRor(op, ushr, shl, ushr_shift);
+    }
+
+The extra replacement of Sub(k*reg_bits,x) with Neg(x) that you are doing with ReplaceRotateWithNegRor() should be done only if there are no other uses of the Sub(k*reg_bits,x).
+
+1349:0-1359:1
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb1bff58_a3949a68
+Bytes: 271
+This is a really unnecessary indirection. If it's an intrinsic, you should not check any further that it IsInvokeStaticOrDirect(). If you want, you can DCHECK() that and also DCHECK() that it's actually static. But those DCHECK()s should be in the SimplifyRotate() above.
+
+1431:0-1436:36
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb421f2f_4b814568
+Bytes: 101
+We should aim at not having these intrinsics at all and rely on inlining and the pattern recognition.
+
+File: compiler/optimizing/nodes.h
+
+4156:6-4156:13
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db339bd5_8dc6e56d
+Bytes: 45
+I'm wondering if HRor would be a better name.
+
+4169:61-4169:101
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e8ac67_a2627ee7
+Bytes: 96
+If (y & max_shift_value) == 0, you're shifting T by reg_bits which is undefined behavior in C++.
+
+File: test/541-checker-instruction-simplifier-rotate-arm/src/Main.java
+
+34:44-34:64
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b2da379_68ac43f3
+Bytes: 60
+At the moment you should add intrinsic:IntegerRotateRight...
+
+36:61-36:91
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e8ac67_426a9288
+Bytes: 115
+... but the aim is to get rid of the intrinsic and then this test will need to be rewritten with "inliner (after)".
+
+54:44-54:64
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb1bff58_e39e9284
+Bytes: 27
+intrinsic:IntegerRotateLeft
+
+75:44-75:64
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db339bd5_ad19e9c8
+Bytes: 25
+intrinsic:LongRotateRight
+
+95:44-95:64
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a0f23453_40604eb5
+Bytes: 24
+intrinsic:LongRotateLeft
+
+141
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb421f2f_ebe67167
+Bytes: 46
+Add the CHECK-NOTs as for ror_int_constant_c_c
+
+193
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb1bff58_a37d7a00
+Bytes: 15
+Add CHECK-NOTs.
+
+214
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb421f2f_0bcc9de0
+Bytes: 15
+Add CHECK-NOTs.
+
+283
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e8ac67_a27a7e4e
+Bytes: 13
+CHECK: Rotate
+
+347
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 80f5303f_1fa2a3cd
+Bytes: 15
+Add CHECK-NOTs.
+
+405
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db339bd5_ad3e4909
+Bytes: 15
+Add CHECK-NOTs.
+
+444
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c0eba861_813f7a97
+Bytes: 12
+CHECK:Rotate
+
+493
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb1bff58_c372762f
+Bytes: 15
+Add CHECK-NOTs.
+
+515
+Thu Dec 03 16:10:10 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: db339bd5_cd437d94
+Bytes: 15
+Add CHECK-NOTs.
+

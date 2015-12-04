@@ -11,6 +11,18 @@ Why? It's not using forwarding references here, so I thought decay was unnecessa
 
 I tried a few test cases with and without decay and it doesn't seem any different. Can you please share why this was causing a problem?
 
+274
+Fri Dec 04 19:17:57 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20a9e45f_e71adc55
+UUID: e030ac14_42fc1263
+Bytes: 370
+As noted above, this is really about avoiding type deduction from this argument.
+
+The use case is when TValue is a Base* and you want to pass a Derived* and you'd have to explicitly cast it to Base* (or create a named variable to force the implicit conversion in a different context).
+
+But it seems I'm not actually going to use this after all. Should I revert this bit?
+
 File: runtime/runtime.cc
 
 440:14-440:21
@@ -20,12 +32,28 @@ UUID: e0842cce_f63628de
 Bytes: 28
 nit: document parameter name
 
+440:14-440:21
+Fri Dec 04 19:17:57 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e0842cce_f63628de
+UUID: e0598c74_3a72e1ee
+Bytes: 4
+Done
+
 449:21-449:39
 Fri Dec 04 18:57:11 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 204d6487_786669d6
 Bytes: 14
 Why not const?
+
+449:21-449:39
+Fri Dec 04 19:17:57 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 204d6487_786669d6
+UUID: 204e44ac_fc5fc94b
+Bytes: 87
+Runtime::Init() is calling ReleaseOrDefault() which is not const (and that's intended).
 
 849:19-849:37
 Fri Dec 04 18:57:11 2015 +0000
@@ -36,6 +64,14 @@ Seeing as how it clobbers a ton of stuff with releases, this could be a regular 
 
 (It'll also make the diff smaller by not needing to change the -> to a .)
 
+849:19-849:37
+Fri Dec 04 19:17:57 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20a9e45f_a762a4e7
+UUID: 004940a4_db85b3ee
+Bytes: 107
+Or maybe rvalue-reference? That would make it clear that the caller should not use the old options anymore.
+
 File: runtime/runtime.h
 
 122
@@ -44,4 +80,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 00486077_379da089
 Bytes: 62
 Is anything calling this, e.g. in a test or in a real program?
+
+122
+Fri Dec 04 19:17:57 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 00486077_379da089
+UUID: 004940a4_1b90bb2f
+Bytes: 107
+Will be, see TODO comment at https://android-review.googlesource.com/#/c/184410/3/dex2oat/dex2oat.cc@1037 .
 

@@ -63,6 +63,49 @@ That completely misses the point. I want the TValue to be deduced from the "key"
 
 After TValue is deduced from the "key" argument, the type of the "value" parameter is known and the "value" argument can be implicitly converted to that type if needed.
 
+274
+Fri Dec 04 21:24:26 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 00a4e085_c3e8f6a6
+UUID: 80561044_b733a835
+Bytes: 1485
+Oh, I think I understand what this intended now, you likely wanted to use std::identity here (which they removed in the final C++11 draft).
+
+By getting the type to the right of :: it will inhibit type deduction, so just std::remove_reference<TValue>::type is less invasive than decay and be enough.
+
+   template <typename TValue>
+   void Set(const TKey<TValue>& key,
+            const std::remove_reference<TValue>::type& value)
+   {
+     ...
+   }
+
+
+The template-template approach I suggested would allow implicit conversions using the explicit constructor, so perhaps it's undesirable.
+
+That being said we're most better off just putting an identity type trait into the detail namespace because remove_reference is still confusing since it does extra work. This way we can also document the intent better.
+
+  namespace detail {
+    // Use to suppress type deduction in a function argument
+    // See std::identity for more background: 
+    // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html#20.2.2 - move/forward helpers
+    //
+    // e.g. "template <typename X> void bar(identity<X>::type foo);
+    // -> bar(5); // compilation error
+    // ->  bar<int>(5); // ok
+    template <typename T>
+    struct identity {
+      using type = T;
+    };
+  }
+
+   template <typename TValue>
+   void Set(const TKey<TValue>& key,
+            const detail::identity<TValue>::type& value)  // never deduce TValue from typeof(value), deduce from typeof(key) instead
+   {
+     ...
+   }
+
 File: runtime/runtime.cc
 
 440:14-440:21

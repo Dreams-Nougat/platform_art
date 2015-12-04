@@ -51,6 +51,18 @@ Happy to support it like that, we'd just want extra comments here not to scare p
 -----
 So we should probably either properly support Base/Derived (no decay) or just remove this decay only.
 
+274
+Fri Dec 04 19:55:42 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 009dc025_0fb37556
+UUID: 00a4e085_c3e8f6a6
+Bytes: 535
+That completely misses the point. I want the TValue to be deduced from the "key" argument, never from the "value" argument. Deducing from each can lead to different TValue and thus to deduction failure. The std::decay<> serves purely to create a non-deduced context. That's why the
+
+    // NOTE: In the absence of std::omit_from_type_deduction<T> use std::decay<T>.
+
+After TValue is deduced from the "key" argument, the type of the "value" parameter is known and the "value" argument can be implicitly converted to that type if needed.
+
 File: runtime/runtime.cc
 
 440:14-440:21

@@ -1,0 +1,33 @@
+Revision: 982d032a7ebbc72cd2a260d20e01a88cfcf3cdf7
+Patch-set: 1
+File: compiler/optimizing/builder.h
+
+95:28-95:53
+Fri Dec 04 11:32:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb1bff58_864ecc14
+Bytes: 631
+The most significant impact of reducing this from 5 to 3 will be in how the x86-64 generates packed-switch for 4 or 5 values - using jump table instead of compare/branch - and I'm fine with that; anyway, it should be the codegen's responsibility to generate the compare/branch series if it's deemed better. You preserved the behavior for x86.
+
+(I find it odd that the graph builder assumes responsibility for deciding when to generate a series of compare/jump. Reducing this should reduce the compile time and memory usage but it may in rare circumstances lead to missed optimizations - all of that should be insignificant though.)
+
+File: compiler/optimizing/code_generator_arm.cc
+
+6129:0-6132:50
+Fri Dec 04 11:32:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9b2da379_2b8325bc
+Bytes: 82
+I think you can drop this if you replace the signed LT with the unsigned LO below.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+4568:0-4571:50
+Fri Dec 04 11:32:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb1bff58_c6ba842e
+Bytes: 117
+Same as ARM: use "lo" below and remove this branch.
+
+(But not really applicable to mips/mips64 as far as I can tell.)
+

@@ -1,0 +1,47 @@
+Revision: b77410c08bdcd76251d537ad286b74768d206314
+Patch-set: 1
+File: runtime/base/variant_map.h
+
+274
+Fri Dec 04 18:57:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20a9e45f_e71adc55
+Bytes: 220
+Why? It's not using forwarding references here, so I thought decay was unnecessary?
+
+I tried a few test cases with and without decay and it doesn't seem any different. Can you please share why this was causing a problem?
+
+File: runtime/runtime.cc
+
+440:14-440:21
+Fri Dec 04 18:57:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0842cce_f63628de
+Bytes: 28
+nit: document parameter name
+
+449:21-449:39
+Fri Dec 04 18:57:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 204d6487_786669d6
+Bytes: 14
+Why not const?
+
+849:19-849:37
+Fri Dec 04 18:57:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20a9e45f_a762a4e7
+Bytes: 232
+Seeing as how it clobbers a ton of stuff with releases, this could be a regular lvalue reference. For speed we can use std::move to pass it to each downcall.
+
+(It'll also make the diff smaller by not needing to change the -> to a .)
+
+File: runtime/runtime.h
+
+122
+Fri Dec 04 18:57:11 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 00486077_379da089
+Bytes: 62
+Is anything calling this, e.g. in a test or in a real program?
+

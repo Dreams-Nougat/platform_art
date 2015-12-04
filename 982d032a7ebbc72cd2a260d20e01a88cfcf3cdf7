@@ -21,12 +21,27 @@ I agree that this decision should be made in the code generator.  This was a car
 
 File: compiler/optimizing/code_generator_arm.cc
 
+6126:4-6126:40
+Fri Dec 04 18:10:39 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20a9e45f_8467666a
+Bytes: 110
+Using temp_reg as signed requires that kPackedSwitchCompareJumpThreshold is small. Please add a static_assert.
+
 6129:0-6132:50
 Fri Dec 04 11:32:23 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9b2da379_2b8325bc
 Bytes: 82
 I think you can drop this if you replace the signed LT with the unsigned LO below.
+
+6129:0-6132:50
+Fri Dec 04 18:10:39 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9b2da379_2b8325bc
+UUID: e0842cce_b62d00d5
+Bytes: 73
+Are you sure? What about lower_bound == MIN_VALUE and value == MAX_VALUE?
 
 File: compiler/optimizing/code_generator_arm64.cc
 

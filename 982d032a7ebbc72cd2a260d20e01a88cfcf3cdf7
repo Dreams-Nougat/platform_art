@@ -28,6 +28,14 @@ UUID: 20a9e45f_8467666a
 Bytes: 110
 Using temp_reg as signed requires that kPackedSwitchCompareJumpThreshold is small. Please add a static_assert.
 
+6126:4-6126:40
+Fri Dec 04 18:29:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20a9e45f_8467666a
+UUID: 004940a4_7b1a9faa
+Bytes: 310
+For this to be a problem, the number of values would have to be >= 2^31, so that a valid value would be negative after the subtraction, but the size in the packed-switch-payload is only 16-bit. (This concern will evaporate for arm when we switch to LO but maybe we should add a comment and/or DCHECK for mips.)
+
 6129:0-6132:50
 Fri Dec 04 11:32:23 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -42,6 +50,14 @@ Parent: 9b2da379_2b8325bc
 UUID: e0842cce_b62d00d5
 Bytes: 73
 Are you sure? What about lower_bound == MIN_VALUE and value == MAX_VALUE?
+
+6129:0-6132:50
+Fri Dec 04 18:29:58 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e0842cce_b62d00d5
+UUID: c05c8866_39ce6f3a
+Bytes: 156
+Yes, I'm sure. We're simply going through the specified number of values, starting from lower_bound. The MIN/MAX_VALUE cases are working just like the rest.
 
 File: compiler/optimizing/code_generator_arm64.cc
 

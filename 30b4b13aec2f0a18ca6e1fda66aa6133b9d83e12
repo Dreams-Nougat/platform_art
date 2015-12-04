@@ -11,3 +11,11 @@ Weird, don't really need this extra local, but leave it if it makes you feel mor
 
 Do you think this will help with readability? I can suggest using this pattern more often in other CLs.
 
+850
+Fri Dec 04 20:08:27 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e0842cce_1684ec31
+UUID: c05c8866_b91d5f51
+Bytes: 410
+There are two small benefits from allowing the internal std::map<> storage to be taken away from the old options instance. First, the storage of any unused or "unreleased" option will be freed at the end of this function instead of waiting for the caller to free it. Second, it will quickly stop anyone from erroneously using the old options instance again - without this, some values could still appear valid.
+

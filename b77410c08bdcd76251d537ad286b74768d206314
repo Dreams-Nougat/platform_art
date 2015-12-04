@@ -23,6 +23,34 @@ The use case is when TValue is a Base* and you want to pass a Derived* and you'd
 
 But it seems I'm not actually going to use this after all. Should I revert this bit?
 
+274
+Fri Dec 04 19:36:48 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e030ac14_42fc1263
+UUID: 009dc025_0fb37556
+Bytes: 1082
+How would std::decay help?
+
+As far as I know, std::decay doesn't make it decay into the base type, it just turns arrays/fp into pointers, removes the references and cv.
+
+I suppose we could support that requested use-case, it would just mean more template parameters, probably something like:
+
+  template <template <typename TValue> TKeyActual>, typename TValue>
+  void Set(const TKeyActual<TValue>& key,
+           const TValue& value,
+           std::enable_if<std::is_same<TKeyActual<TValue>, TKey<TValue>>::type* = nullptr) {
+     // unchanged implementation
+  }
+
+Or something like that (probably missing a few typenames), it would to enforce at compile-time that the key type belongs to this map and not some other key.
+
+The reason I just didn't do that in the first place is because it makes the signature way more scary looking than it needs to be for most of the use-cases.
+
+Happy to support it like that, we'd just want extra comments here not to scare people away.
+
+-----
+So we should probably either properly support Base/Derived (no decay) or just remove this decay only.
+
 File: runtime/runtime.cc
 
 440:14-440:21
@@ -72,6 +100,18 @@ UUID: 004940a4_db85b3ee
 Bytes: 107
 Or maybe rvalue-reference? That would make it clear that the caller should not use the old options anymore.
 
+849:19-849:37
+Fri Dec 04 19:36:48 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 004940a4_db85b3ee
+UUID: 009dc025_ef5f29be
+Bytes: 277
+Well I don't think it matters too much if they use the old options anymore, with std::move it would be exactly the same performance.
+
+If you want to force them to move then using only rvalue references is acceptable too.
+
+Either way it would be more descriptive than a pointer.
+
 File: runtime/runtime.h
 
 122
@@ -88,4 +128,12 @@ Parent: 00486077_379da089
 UUID: 004940a4_1b90bb2f
 Bytes: 107
 Will be, see TODO comment at https://android-review.googlesource.com/#/c/184410/3/dex2oat/dex2oat.cc@1037 .
+
+122
+Fri Dec 04 19:36:48 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 004940a4_1b90bb2f
+UUID: e0842cce_7693f87e
+Bytes: 62
+Sounds good, anything we need to touch in parsed_options_test?
 

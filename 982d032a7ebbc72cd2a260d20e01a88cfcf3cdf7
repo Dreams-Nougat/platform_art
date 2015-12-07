@@ -19,6 +19,16 @@ UUID: 20a9e45f_64acaa64
 Bytes: 98
 I agree that this decision should be made in the code generator.  This was a carry-over from Quick
 
+95:28-95:53
+Mon Dec 07 09:41:21 2015 +0000
+Author: Zheng Xu <1074104@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20a9e45f_64acaa64
+UUID: a0087464_906ad432
+Bytes: 401
+Currently, for the number from 5 to 3 will be generated as HPackedSwitch which is compare/jump implementation. For the numbers large than 6, HPackedSwitch will be replaced by H86PackedSwitch, which generates the jump tables. The graph will be look a bit different on X86, but the result should still be the same.
+
+But it would be better for X86 to implement the compact version of compare/jump series.
+
 File: compiler/optimizing/code_generator_arm.cc
 
 6126:4-6126:40
@@ -43,6 +53,14 @@ Parent: 004940a4_7b1a9faa
 UUID: 404ed883_9906cb30
 Bytes: 235
 I never said it's a practical concern. I just think this should be documented, and a static_assert with a comment is cheap documentation + enforcement (especially since HPackedSwitch for whatever reason stores num_entries as uint32_t).
+
+6126:4-6126:40
+Mon Dec 07 09:41:21 2015 +0000
+Author: Zheng Xu <1074104@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 404ed883_9906cb30
+UUID: 20156484_64b16ab7
+Bytes: 309
+I think it will be fine for the below AddConstantSetFlags() to use the IP register to store the immediate, because IP is used as the destination register. For the other AddConstantSetFlags() and GenerateCompareWithImmediate(), the immediate value is constant, so we are sure the IP register won't be polluted.
 
 6129:0-6132:50
 Fri Dec 04 11:32:23 2015 +0000
@@ -75,6 +93,14 @@ UUID: 204d6487_784c2921
 Bytes: 39
 Yeah, sorry, I messed up with the adds.
 
+6129:0-6132:50
+Mon Dec 07 09:41:21 2015 +0000
+Author: Zheng Xu <1074104@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 204d6487_784c2921
+UUID: 00f7809a_ab9a092d
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 4568:0-4571:50
@@ -86,6 +112,14 @@ Same as ARM: use "lo" below and remove this branch.
 
 (But not really applicable to mips/mips64 as far as I can tell.)
 
+4568:0-4571:50
+Mon Dec 07 09:41:21 2015 +0000
+Author: Zheng Xu <1074104@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb1bff58_c6ba842e
+UUID: e027ccf2_4ab6f3b0
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_mips.cc
 
 4263:12-4263:14
@@ -95,10 +129,26 @@ UUID: 20a2c463_7989a09f
 Bytes: 23
 Please drop the suffix.
 
+4263:12-4263:14
+Mon Dec 07 09:41:21 2015 +0000
+Author: Zheng Xu <1074104@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20a2c463_7989a09f
+UUID: a02154e4_88be377d
+Bytes: 4
+Done
+
 4271:12-4271:14
 Sat Dec 05 02:57:25 2015 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e0842cce_9701d620
 Bytes: 6
 Ditto.
+
+4271:12-4271:14
+Mon Dec 07 09:41:21 2015 +0000
+Author: Zheng Xu <1074104@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e0842cce_9701d620
+UUID: 20156484_44b6eeb0
+Bytes: 4
+Done
 

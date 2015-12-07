@@ -34,6 +34,20 @@ UUID: 40933818_c0648067
 Bytes: 101
 We don't even go through the verifier if this flag is not set; do we really want to be this pedantic?
 
+2835
+Mon Dec 07 21:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 40933818_c0648067
+UUID: 60e03ce1_018cece8
+Bytes: 300
+Sounds like it should be a DCHECK then?
+
+  DCHECK(IsExperimentalLambdasEnabled) or similar.
+
+To make sure the verifier is indeed catching unsupported opcodes.
+
+The lambda verifier support is TBD so it really could help in the future not to accidentally end up in the compiler when it's inappropriate.
+
 2836:31-2836:33
 Thu Nov 19 02:09:10 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -111,6 +125,16 @@ Parent: 76d4867d_bd00f3dd
 UUID: 20a2c463_c22a46ba
 Bytes: 30
 Is this really the same thing?
+
+2856:56-2856:60
+Mon Dec 07 21:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20a2c463_c22a46ba
+UUID: 80b290f4_9a278994
+Bytes: 228
+More or less, "2" represents here the register width of the receiver in the method and it's always a lambda (always 2) for invoke-lambda.
+
+Perhaps it can have a different name that's more representative of what's happening here?
 
 2860
 Thu Nov 19 02:09:10 2015 +0000
@@ -688,6 +712,16 @@ UUID: 8091b00f_a217002c
 Bytes: 47
 I just followed the convention of this file :-)
 
+3646
+Mon Dec 07 21:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8091b00f_a217002c
+UUID: a0af948e_7b4b9b06
+Bytes: 251
+Right, so there's classes more and less documented residing  in this the same file.
+
+Is there any reason not to follow the convention of the more documented classes so we can continue to set a good example for the rest of the optimizing [lambda] code?
+
 3652:44-3652:46
 Thu Nov 19 02:09:10 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -719,6 +753,14 @@ Parent: 96d1fa8e_d08f974b
 UUID: e06d0cee_7d2af329
 Bytes: 71
 Side effects in this context is very specific to field read/write or GC
+
+3666:21-3666:40
+Mon Dec 07 21:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e06d0cee_7d2af329
+UUID: 00e5c0f2_de42e1ed
+Bytes: 102
+Maybe someone familiar with the analysis can explain to me how that's sufficient to retain correctness
 
 3677
 Thu Nov 19 02:09:10 2015 +0000
@@ -809,6 +851,22 @@ Parent: 3b2597a9_a41701d3
 UUID: 009dc025_fe627d1a
 Bytes: 36
 not sure I understand this question?
+
+3700
+Mon Dec 07 21:14:42 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 009dc025_fe627d1a
+UUID: c0b808d7_5f95e31e
+Bytes: 187
+Using this as an example
+
+   if (foo)
+      v1 = 1
+   else
+      v1 = 2
+   capture-variable v1
+
+Presumably "variable" here is something like phi(..evaluates to 1, ..evaluates to 2) right?
 
 3708
 Thu Nov 19 02:09:10 2015 +0000

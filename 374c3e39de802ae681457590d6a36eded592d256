@@ -9,3 +9,17 @@ UUID: c0b808d7_1989cba0
 Bytes: 91
 just for my own education, are we generally moving to this set up for unit tests (and why)?
 
+30:40-30:58
+Mon Dec 07 18:15:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c0b808d7_1989cba0
+UUID: 40edf8c8_6d6af588
+Bytes: 465
+This is an unpleasant side-effect of the solution to properly type array gets.
+
+We decided to run ReferenceTypePropagation as part of the SSABuilder. It has it's advantages but the fact that we need to resolve types and thus acquire the mutator lock, complicates the tests.
+
+So if you need to run SSA as part of a gtest, you'll need to create a runtime now.
+
+We discussed the alternative to conditionally disable the pass for tests but IMO that's a wrong direction.
+

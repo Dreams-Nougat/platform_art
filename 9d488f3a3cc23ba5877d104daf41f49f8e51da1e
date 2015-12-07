@@ -1,0 +1,31 @@
+Revision: 9d488f3a3cc23ba5877d104daf41f49f8e51da1e
+Patch-set: 1
+File: /COMMIT_MSG
+
+10:12-10:57
+Mon Dec 07 23:57:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 60e03ce1_87b64cae
+Bytes: 182
+Would you mind sharing the performance data for this? I would've expected (given a good load balance factor) that open addressing has 1 less cache miss on average than with chaining.
+
+13
+Mon Dec 07 23:57:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 60c91c79_1c937d7f
+Bytes: 292
+This would seem to indicate a lot of collisions today. Is there more detailed data?
+
+Why not just fix the the string hash function to be produce more distributed results, resulting in less collisions?
+
+(or in fact, since this is prezygote strings why not make this into a perfect hash table?)
+
+14
+Mon Dec 07 23:57:44 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a0af948e_e1d1bc20
+Bytes: 238
+In total or just the # of components? I see the default load factor is 1.0 which could account for the smaller size.
+
+Given equivalent load factors I would expect the chained version to be larger given the need to store edge pointer data.
+

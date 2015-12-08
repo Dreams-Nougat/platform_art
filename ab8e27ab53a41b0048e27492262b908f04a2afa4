@@ -9,12 +9,28 @@ UUID: c0b808d7_931db4f2
 Bytes: 111
 Why remove the TEST_DISABLED_FOR_NON_PIC_COMPILING_WITH_OPTIMIZING and hardcode to Quick? Is this future proof?
 
+50:0-51:54
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c0b808d7_931db4f2
+UUID: e0098cde_5ab8f5e7
+Bytes: 112
+It is easier to get coverage if we just hardcode quick, otherwise the test wont run by default without cleaning.
+
 250:18-250:32
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a0af948e_e72d4cd4
 Bytes: 32
 How about WriteReadUncompressed?
+
+250:18-250:32
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a0af948e_e72d4cd4
+UUID: e0098cde_bac31160
+Bytes: 4
+Done
 
 File: compiler/image_writer.cc
 
@@ -25,6 +41,14 @@ UUID: 8041b0d9_1fed63e2
 Bytes: 34
 Error-check the result of the new?
 
+241:28-241:57
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8041b0d9_1fed63e2
+UUID: 0054e0af_83f83ea6
+Bytes: 95
+new throws std::bad_alloc even with exceptions disabled and is guaranteed to never return null.
+
 282:0-285:3
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +56,28 @@ UUID: 00f860d1_4307c65f
 Bytes: 46
 Any check we could do for the compressed case?
 
+282:0-285:3
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 00f860d1_4307c65f
+UUID: 80ed303a_9f8f1314
+Bytes: 194
+I can't think of any in this case, but I added one more after. Should I assume that image compressed to a smaller size? That may not be true in the case where the image only contains once class.
+
 294:0-296:3
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8041b0d9_3f014749
 Bytes: 46
 Any check we could do for the compressed case?
+
+294:0-296:3
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8041b0d9_3f014749
+UUID: 20fe44e6_5c011d48
+Bytes: 4
+Done
 
 File: dex2oat/dex2oat.cc
 
@@ -48,6 +88,14 @@ UUID: 00f860d1_a3bd5ad6
 Bytes: 28
 Maybe store -> uncompressed?
 
+211:32-211:37
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 00f860d1_a3bd5ad6
+UUID: 605f5ccc_66318e2c
+Bytes: 4
+Done
+
 636:21-636:37
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -55,12 +103,28 @@ UUID: e0342c68_4201d247
 Bytes: 21
 unknown image format?
 
+636:21-636:37
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e0342c68_4201d247
+UUID: c0e3a848_011a8aa9
+Bytes: 4
+Done
+
 1840:49-1840:82
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8041b0d9_7fd58f0b
 Bytes: 78
 Set this in the constructor init list to be consistent with the other members?
+
+1840:49-1840:82
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8041b0d9_7fd58f0b
+UUID: e0098cde_1ad5dd0c
+Bytes: 38
+Done, I'll try to clean this up later.
 
 File: runtime/gc/space/image_space.cc
 
@@ -71,12 +135,28 @@ UUID: 40fed8bd_c5a17abc
 Bytes: 12
 or equal to?
 
+680:28-680:39
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 40fed8bd_c5a17abc
+UUID: 0054e0af_43280665
+Bytes: 4
+Done
+
 701:85-701:95
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 60c91c79_a5834873
 Bytes: 41
 This isn't necessarily compressed, is it?
+
+701:85-701:95
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60c91c79_a5834873
+UUID: c0e3a848_21d22e4e
+Bytes: 4
+Done
 
 701:0-706:42
 Tue Dec 08 19:04:58 2015 +0000
@@ -87,12 +167,28 @@ Do really we need this extra alignment code here?
 
 Any reason the bitmap ImageSection object can't have the exact range?
 
+701:0-706:42
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c012c8d7_694d05c0
+UUID: c0e3a848_c1a702e7
+Bytes: 257
+All of the other ranges still correspond to the uncompressed image, it is possible to change the bitmap section as we are writing the image file, would you prefer that? Also the rounding is required since the stored size needs to be exact for decompression.
+
 715:2-715:26
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a00954b1_c88f4f13
 Bytes: 7
 Remove?
+
+715:2-715:26
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a00954b1_c88f4f13
+UUID: 20fe44e6_5c3e3db5
+Bytes: 4
+Done
 
 736:34-737:44
 Tue Dec 08 19:04:58 2015 +0000
@@ -101,12 +197,28 @@ UUID: 80b290f4_8b1d7df2
 Bytes: 51
 Are the indentations of these two lines off by one?
 
+736:34-737:44
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 80b290f4_8b1d7df2
+UUID: 80ed303a_9f439327
+Bytes: 4
+Done
+
 740:19-740:30
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 60dafc65_ee71ffea
 Bytes: 13
 write_offset?
+
+740:19-740:30
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60dafc65_ee71ffea
+UUID: c0e3a848_e1a686e8
+Bytes: 4
+Done
 
 743:35-743:83
 Tue Dec 08 19:04:58 2015 +0000
@@ -115,6 +227,14 @@ UUID: c012c8d7_a9941d24
 Bytes: 28
 Add 'image' in this message?
 
+743:35-743:83
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c012c8d7_a9941d24
+UUID: 605f5ccc_c6c162a9
+Bytes: 4
+Done
+
 750:19-750:37
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -122,12 +242,28 @@ UUID: e0342c68_22bb6ee7
 Bytes: 51
 decompressed_size to match the error message below?
 
+750:19-750:37
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e0342c68_22bb6ee7
+UUID: 405a58de_a54d3e53
+Bytes: 4
+Done
+
 755:6-755:15
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 60dafc65_ae6bf7fa
 Bytes: 22
 Should this be a VLOG?
+
+755:6-755:15
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60dafc65_ae6bf7fa
+UUID: e0e0ac3e_e212062f
+Bytes: 4
+Done
 
 File: runtime/image.h
 
@@ -138,10 +274,26 @@ UUID: 40d5f831_ed15858a
 Bytes: 71
 Consider renaming "store" to "uncompressed" as in kStorageUncompressed?
 
+82:4-82:21
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 40d5f831_ed15858a
+UUID: 40efb832_60cf0c7f
+Bytes: 4
+Done
+
 274:5-274:16
 Tue Dec 08 19:04:58 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c012c8d7_09cfa97f
 Bytes: 139
 "Stored size" isn't the most intuitive name to me. Consider any alternative? It includes the managed heap space, fields and methods, right?
+
+274:5-274:16
+Tue Dec 08 23:42:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c012c8d7_09cfa97f
+UUID: e0098cde_3aeb8113
+Bytes: 4
+Done
 

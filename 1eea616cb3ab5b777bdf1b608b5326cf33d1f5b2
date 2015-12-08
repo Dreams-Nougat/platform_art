@@ -1,6 +1,45 @@
 Revision: 1eea616cb3ab5b777bdf1b608b5326cf33d1f5b2
 Patch-set: 1
+File: compiler/image_writer.cc
+
+993:13-993:28
+Tue Dec 08 17:52:51 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 60c91c79_9fce9fdc
+Bytes: 29
+Get rid of the temp variable?
+
+File: runtime/base/array_slice.h
+
+29:6-29:16
+Tue Dec 08 17:52:51 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c0b808d7_d3800c69
+Bytes: 90
+Not sure I would have added this class, but since is already done, might as well merge it.
+
+31:17-31:32
+Tue Dec 08 17:52:51 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a0af948e_c7068863
+Bytes: 119
+Is it preferred to use a real constructor or provide default values for the member variables? I.e. T* array_ = nullptr;
+
+42:2-42:12
+Tue Dec 08 17:52:51 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20eac4c4_30ce903a
+Bytes: 118
+This constructor seems strange, I'd assume it would use start_offset for something other than just length calculation.
+
 File: runtime/mirror/class-inl.h
+
+199:2-199:15
+Tue Dec 08 17:52:51 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 60c91c79_654db072
+Bytes: 91
+I think we want to use 32 bits for these since there can be more 64k methods theoretically.
 
 197:0-202:69
 Tue Dec 08 13:56:43 2015 +0000
@@ -8,4 +47,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c001e83e_548062b0
 Bytes: 81
 Mathieu, didn't we have some concerns about the atomicity of setting the methods?
+
+197:0-202:69
+Tue Dec 08 17:52:51 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c001e83e_548062b0
+UUID: c0b808d7_7393c0cc
+Bytes: 300
+Good catch, the main issue was that Class::VisitReferences roots happens concurrently and could happen when SetMethodsPtrUnchecked is being called. In this case, it seems like it should be OK since the Class::VisitReferences logic does not depend on copied_methods_offset_ or virtual_methods_offset_.
 

@@ -36,6 +36,16 @@ Here you can see that there are very long collision chains (up to 255 elements) 
 
 To measure it I added a counter inside the FindIndex() method initialized by zero and was incrementing it each time we needed to compare strings (each time the control reaches 'if (pred_(slot, element))' statement inside the while loop). Then I was collecting all the counter values for each FindIndex() invocation.
 
+10:12-10:57
+Tue Dec 08 17:58:32 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a02154e4_c8b2ef1e
+UUID: 80b290f4_2b89d1a0
+Bytes: 213
+Is that including this CL? The load factors we were using were too high, I adjusted them down and it provided a large reduction in time spent in the hash table:
+
+https://android-review.googlesource.com/#/c/176895/
+
 13
 Mon Dec 07 23:57:44 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -73,4 +83,13 @@ Bytes: 404
 I compared the value returned by the WriteToMemory(nullptr) method. Actually it's relevant with the num_buckets_ property.
 
 You're totally right about the table size: if the load factors are the same the size is bigger. But I investigated that we can increase the load factor of our implementation to 1 without increasing of the average amount of string comparisons. And as the result - the size is less.
+
+File: runtime/base/chain_hash_set.h
+
+43:6-43:18
+Tue Dec 08 17:58:32 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a0af948e_07016048
+Bytes: 153
+I wonder if it would be less code duplication to add a kChain template boolean to the normal hash set and just handle the places where the logic differs.
 

@@ -64,6 +64,16 @@ I can't see how to do this without breaking something.
 
 A swap is needed somewhere here - when distance > kArmBitsPerWord, we flip direction and invert distance to simplify things on ARM32.
 
+3270:4-3270:39
+Tue Dec 08 15:36:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60c67c32_ee339feb
+UUID: 00106094_0677dcde
+Bytes: 243
+The swap() was needed when we had to distinguish rotateLeft() and rotateRight() and we did the swap() only in one branch of an if-block.
+
+Now you can rename shift_left<->shift_right above and keep the names below and the swap() will disappear.
+
 File: compiler/optimizing/instruction_simplifier.cc
 
 198:63-198:67
@@ -363,6 +373,14 @@ Parent: e0e8ac67_426a9288
 UUID: 00f7809a_ebbb718b
 Bytes: 105
 The invoke is currently removed by instruction_simplifier. Do you want them marked "inliner (after)" now?
+
+36:61-36:91
+Tue Dec 08 15:36:16 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 00f7809a_ebbb718b
+UUID: 601bdcb8_093ecd0a
+Bytes: 85
+No, not yet. This was just a remark about getting rid of the intrinsic in the future.
 
 54:44-54:64
 Thu Dec 03 16:10:10 2015 +0000

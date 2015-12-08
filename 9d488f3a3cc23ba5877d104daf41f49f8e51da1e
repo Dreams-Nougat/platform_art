@@ -9,6 +9,33 @@ UUID: 60e03ce1_87b64cae
 Bytes: 182
 Would you mind sharing the performance data for this? I would've expected (given a good load balance factor) that open addressing has 1 less cache miss on average than with chaining.
 
+10:12-10:57
+Tue Dec 08 16:40:02 2015 +0000
+Author: Nikita Lazarev <1085353@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60e03ce1_87b64cae
+UUID: a02154e4_c8b2ef1e
+Bytes: 1366
+The performance data for the Google Maps application (if you need I can provide the same data for other applications).
+The legend:
+TOTAL - total amount of string comparisons for ALL FindIndex() invocations during the application launching.
+AVG - average amount of string comparisons for ONE FindIndex() invocation during the application launching.
+MAX - maximum amount of string comparisons for ONE FindIndex() invocations (the case of looking for a string which are located somewhere in the end of the chain and the chain is too long).
+
+The results:
+the Original solution:
+TOTAL = 120683
+AVG = 2.40462
+MAX = 255 - there are several "very" long chains.
+
+our solution (with the load_factor = 1):
+TOTAL: 545
+AVG: 0.06058
+max = 1
+
+Here you can see that there are very long collision chains (up to 255 elements) in the Original solution sometimes and we need to call the string comparison method each time. Meanwhile the longest chain in our table contains less amount of elements and only 1-2 of them are compared using the string comparison operation.
+
+To measure it I added a counter inside the FindIndex() method initialized by zero and was incrementing it each time we needed to compare strings (each time the control reaches 'if (pred_(slot, element))' statement inside the while loop). Then I was collecting all the counter values for each FindIndex() invocation.
+
 13
 Mon Dec 07 23:57:44 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,6 +47,14 @@ Why not just fix the the string hash function to be produce more distributed res
 
 (or in fact, since this is prezygote strings why not make this into a perfect hash table?)
 
+13
+Tue Dec 08 16:40:02 2015 +0000
+Author: Nikita Lazarev <1085353@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60c91c79_1c937d7f
+UUID: 80be10e1_774dd0bf
+Bytes: 768
+Actually as I understand the hash function is good enough: the average amount of string comparisons for the Original version is about 2.4. It means the chains aren't long in general. But there are several long chains, appearing quite seldom. And the main issue here (in my opinion) is not the has function used, but the approach of collision resolving. I mean there can be (and there are in practice) a lot of already busy slots between the appropriate slot (the slot corresponding the hash) and the slot we are actually placing the element. And during looking up we need to visit all of these slots (because there aren't empty ones between them). This issue also appears when we are looking for an absent element: we need to pass all slots until we meet an empty one.
+
 14
 Mon Dec 07 23:57:44 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -28,4 +63,14 @@ Bytes: 238
 In total or just the # of components? I see the default load factor is 1.0 which could account for the smaller size.
 
 Given equivalent load factors I would expect the chained version to be larger given the need to store edge pointer data.
+
+14
+Tue Dec 08 16:40:02 2015 +0000
+Author: Nikita Lazarev <1085353@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a0af948e_e1d1bc20
+UUID: 606d9c10_b909db76
+Bytes: 404
+I compared the value returned by the WriteToMemory(nullptr) method. Actually it's relevant with the num_buckets_ property.
+
+You're totally right about the table size: if the load factors are the same the size is bigger. But I investigated that we can increase the load factor of our implementation to 1 without increasing of the average amount of string comparisons. And as the result - the size is less.
 

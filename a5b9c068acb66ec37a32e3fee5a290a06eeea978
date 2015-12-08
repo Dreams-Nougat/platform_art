@@ -1,0 +1,115 @@
+Revision: a5b9c068acb66ec37a32e3fee5a290a06eeea978
+Patch-set: 3
+File: runtime/base/array_slice.h
+
+29
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 80ed303a_1fbf837b
+Bytes: 42
+nit: comments to describe class and usage?
+
+31
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c0e3a848_81a7ba29
+Bytes: 40
+nit: public methods should have comments
+
+83
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e0e0ac3e_c2cd423e
+Bytes: 19
+Why no operator[] ?
+
+119
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 00f940fe_fbb0efb5
+Bytes: 139
+Aren't ArraySlices written to the image? size_t is not safe because it's either 32-bit or 64-bit. All fields should be of the form uintXY_t
+
+124
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0054e0af_a3569a09
+Bytes: 103
+Why isn't this just on the class
+
+  IterationRange<StrideIterator<T>> AsRange() const {
+     ...
+  }
+
+?
+
+File: runtime/class_linker.cc
+
+5324
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 405a58de_a551be0c
+Bytes: 208
+Any reason why not to just make these virtual member functions?
+
+   ArrayLike<T> {
+     virtual T* At(int32_t index) = 0;
+   }
+   ArrayLikeSlice<T> : ArrayLike<T>
+   ArrayLikePointerArray : ArrayLike<T>
+
+etc?
+
+5344:40-5344:50
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 80ed303a_df519b0c
+Bytes: 15
+initialization?
+
+5369
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0054e0af_83235e9a
+Bytes: 175
+nit: just initialize the fields here with = or {}, then you can remove all of the constructor crud which just calls the default constructor (when the parameter is unspecified)
+
+5374
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 605f5ccc_e6749e6a
+Bytes: 24
+nit: no auto here please
+
+5375:2-5375:6
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 605f5ccc_86692a95
+Bytes: 24
+nit: no auto here please
+
+5381:4-5381:8
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 80ed303a_5f158b21
+Bytes: 24
+nit: no auto here please
+
+5382:4-5382:8
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 40efb832_5d091bb1
+Bytes: 34
+(this is a reasonable use of auto)
+
+File: runtime/mirror/class.h
+
+773:25-773:42
+Tue Dec 08 22:43:03 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c0e3a848_41d5b234
+Bytes: 303
+So is it including declared+copied now? The comment should probably be updated. And honestly the name could be different too if that's the case, perhaps NumNewVirtualMethods or some such.
+
+(don't much have a preference for it, as long as we make it clear it has other methods in there besides declared).
+

@@ -2,10 +2,66 @@ Revision: b0f6f5f7cb4112b3d5b76c22191d0755e0226764
 Patch-set: 3
 File: compiler/optimizing/code_generator_x86.cc
 
+45:49-45:70
+Tue Dec 08 12:23:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4016d890_68be5bd3
+Bytes: 50
+This is out-dated, it's about 1.5*num_entries+few.
+
 6447
 Mon Dec 07 15:55:50 2015 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 60e03ce1_3ea2e9bf
 Bytes: 80
 Is there any way to tell that the value goes dead and we don't need a temporary?
+
+6447
+Tue Dec 08 12:23:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60e03ce1_3ea2e9bf
+UUID: 4016d890_88d47712
+Bytes: 698
+You do need the temporary with this approach.
+
+If you want to avoid the temporary, you could instead do
+
+    cmp value_reg, lower_bound
+    jl fallthrough
+    je successor[0]
+    cmp value_reg, lower_bound + 2
+    jl successor[1]
+    je successor[2]
+    cmp value_reg, lower_bound + 4
+    jl successor[3]
+    je successor[4]
+    ...
+
+You could also optimize lower_bound == 0 as
+
+    cmp value_reg, 1    // == lower_bound + 1
+    jb successor[0]
+    je successor[1]
+    cmp value_reg, 3    // == lower_bound + 3
+    jb successor[2]
+    je successor[3]
+    ...
+
+(Store the kLess/kBelow in a local variable and initialize `index` to correct value and you can keep the main loop shared for both cases.)
+
+6456:9-6456:28
+Tue Dec 08 12:23:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4016d890_a8d7b315
+Bytes: 24
+index + 2 <= num_entries
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+6055:11-6055:30
+Tue Dec 08 12:23:21 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 800b7060_4f4bad06
+Bytes: 79
+This should be "index + 2 <= num_entries". As it is, odd num_entries is broken.
 

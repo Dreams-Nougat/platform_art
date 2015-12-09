@@ -2,12 +2,40 @@ Revision: 22754585d145767a7d76af87a4b9eb02d09961ff
 Patch-set: 3
 File: compiler/elf_writer_debug.cc
 
+293:7-293:22
+Wed Dec 09 14:07:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 40edf8c8_50d07246
+Bytes: 185
+Please move this to an anonymous namespace. We have another CompilationUnit in ::art and while this one is in ::art::dwarf, it would be better if it was invisible outside this .cc file.
+
+348:15-348:28
+Wed Dec 09 14:07:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 00622024_d95653a7
+Bytes: 108
+This function is getting a bit long. Move the LocalVariable and DebugInfoCallback to an anonymous namespace.
+
 364:28-364:44
 Wed Dec 09 12:11:20 2015 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 00c060be_c31ed69b
 Bytes: 35
 (nit): You can use static cast here
+
+370:8-370:29
+Wed Dec 09 14:07:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 601bdcb8_69c8212b
+Bytes: 84
+I'm not extra fond of defining a variable together with the definition of its class.
+
+379:0-387:11
+Wed Dec 09 14:07:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c07f284b_815dda55
+Bytes: 80
+Helper function in an anonymous namespace? (Doesn't use the template parameter.)
 
 400:12-400:49
 Wed Dec 09 12:11:20 2015 +0000
@@ -22,4 +50,11 @@ Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c0dac8a8_692ee5d0
 Bytes: 161
 I think you don't need this data structure. Based on my understanding you can write the debug ranges section based on the content of the debug_loc_entries vector
+
+501:6-501:83
+Wed Dec 09 14:07:51 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 408b38a3_ddc7cb18
+Bytes: 125
+Move the extraction of debug_loc_entries to a helper function in an anonymous namespace (doesn't use the template parameter).
 

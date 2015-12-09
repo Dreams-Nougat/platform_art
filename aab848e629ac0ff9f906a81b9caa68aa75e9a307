@@ -1,5 +1,16 @@
 Revision: aab848e629ac0ff9f906a81b9caa68aa75e9a307
 Patch-set: 1
+File: Android.mk
+
+0
+Wed Dec 09 15:32:09 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4520aa91_d5ac1cb1
+Bytes: 270
+When I look at this file before the second one, I was wondering why you needed to change the dep order here.
+
+Now that I looked at the other file, I understand why but I find this error-prone. If someone reorders differently without seeing the '|', it will break things.
+
 File: test/Android.run-test.mk
 
 46
@@ -16,4 +27,14 @@ I'm not so sure of this one. I'm hesitant between:
 - Defining
   TEST_ART_RUN_TEST_DEPENDENCIES := setup-jack-server
   and add "| $(TEST_ART_RUN_TEST_DEPENDENCIES)" to targets
+
+46
+Wed Dec 09 15:32:09 2015 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60cbdce2_2666d630
+UUID: 4022588b_05b1f205
+Bytes: 148
+I find it weird to add an order-only dep in a variable.
+
+Can we instead call a function that will setup the jack-server (only when Jack is enabled)?
 

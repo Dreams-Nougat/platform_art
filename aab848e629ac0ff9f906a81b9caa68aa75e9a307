@@ -66,3 +66,18 @@ UUID: a5f24653_603d920c
 Bytes: 162
 I'm not a build expert but I think I also prefer the 2nd solution. At least, you are sure to append you order-only dependency at the end of the dependencies list.
 
+46
+Wed Dec 09 18:55:00 2015 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5f24653_603d920c
+UUID: 05487277_63c0027d
+Bytes: 288
+You can define a new variable:
+TEST_ART_RUN_TEST_ORDERONLY_DEPENDENCIES :=
+ifeq ($(ANDROID_COMPILE_WITH_JACK),true)
+TEST_ART_RUN_TEST_ORDERONLY_DEPENDENCIES := \
+  setup-jack-server
+endif
+
+then add "| $(TEST_ART_RUN_TEST_ORDERONLY_DEPENDENCIES)" to the end of each dependency declaration.
+

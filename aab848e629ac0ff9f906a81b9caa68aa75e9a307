@@ -38,3 +38,23 @@ I find it weird to add an order-only dep in a variable.
 
 Can we instead call a function that will setup the jack-server (only when Jack is enabled)?
 
+46
+Wed Dec 09 15:57:46 2015 +0000
+Author: Yohann Roussel <1023201@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4022588b_05b1f205
+UUID: 251f3657_d4d53c0f
+Bytes: 485
+I could do something like
+
+  define art-tests-order-dependency 
+    $(if $(ANDROID_COMPILE_WITH_JACK),$(if $(filter-out true,,$(ANDROID_COMPILE_WITH_JACK)),,setup-jack-server),)
+  endef
+
+and then add "| $(art-tests-order-dependency)"
+I'm not so fan of this.
+
+The more of think of it the more I dislike current solution. If none of you express a preference I think I'm going to the second solution ie:
+  ifeq ($(ANDROID_COMPILE_WITH_JACK),true)
+    <target>: | setup-jack-server
+  endif
+

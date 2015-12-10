@@ -21,6 +21,14 @@ We need the latter, at least in some cases, for Java code with final fields to e
 
 I previously suggested an in-person meeting to resolve this and related issues.  I'm still open to that.
 
+1345:0-1349:23
+Thu Dec 10 02:18:46 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 454eea83_ee4bb3aa
+UUID: a567a60d_21bf74ce
+Bytes: 386
+My understanding (indicated in an internal review of this patch) is that we likely need SYNC here (just as we have one at the end of this routine). Clearly, the XOR/ADDU won't have any reliable effect on memory accesses or ordering. However, I don't know the perf impact of inserting SYNC here. But above all, we need to remain correct, fast alone is worhtless if the code is incorrect.
+
 1358:4-1358:7
 Wed Dec 09 19:58:15 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

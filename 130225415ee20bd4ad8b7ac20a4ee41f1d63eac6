@@ -34,6 +34,17 @@ UUID: c539fad1_71d458df
 Bytes: 299
 When I reviewed it I didn't see places where this patch didn't delete what it could. For now transformations in the simplifier would remove what they could. That's an interesting question though. I don't have a strong opinion on this. It would be nice to have a general rule to follow. Any opinions?
 
+207
+Thu Dec 10 10:22:48 2015 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c539fad1_71d458df
+UUID: 457c2aa4_b55d0055
+Bytes: 645
+Some thoughts on this
+- By leaving the work to DCE, transformations may be lazy and wrongly assume that an IR will be removed, potentially leaving extra IRs in the graph or applying transformations when they should not.
+- If we leave the work to DCE, then it may be harder to check an IR has been removed with checker, as it must be checked after other passes have run. (It would be a little annoying to have an additional checker section, but it should be fine.)
+- So maybe a good rule would be: if an IR should be removed as part of the transformation, do it manually (forcing manual checks). If it is optional, as it is here, leave it to DCE.
+
 File: compiler/optimizing/nodes.h
 
 4170

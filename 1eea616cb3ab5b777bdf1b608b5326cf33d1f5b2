@@ -9,6 +9,14 @@ UUID: 60c91c79_9fce9fdc
 Bytes: 29
 Get rid of the temp variable?
 
+993:13-993:28
+Thu Dec 10 17:57:57 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60c91c79_9fce9fdc
+UUID: e0342c68_42547246
+Bytes: 4
+Done
+
 File: runtime/base/array_slice.h
 
 29:6-29:16
@@ -17,6 +25,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c0b808d7_d3800c69
 Bytes: 90
 Not sure I would have added this class, but since is already done, might as well merge it.
+
+29:6-29:16
+Thu Dec 10 17:57:57 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c0b808d7_d3800c69
+UUID: 40fed8bd_454a2aaa
+Bytes: 8
+Why not?
 
 31:17-31:32
 Tue Dec 08 17:52:51 2015 +0000
@@ -32,6 +48,16 @@ UUID: 20eac4c4_30ce903a
 Bytes: 118
 This constructor seems strange, I'd assume it would use start_offset for something other than just length calculation.
 
+42:2-42:12
+Thu Dec 10 17:57:57 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20eac4c4_30ce903a
+UUID: a03eb447_c0ab9e99
+Bytes: 70
+Good catch. I ended up not using this and just forgot about it.
+
+Done.
+
 File: runtime/mirror/class-inl.h
 
 199:2-199:15
@@ -40,6 +66,22 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 60c91c79_654db072
 Bytes: 91
 I think we want to use 32 bits for these since there can be more 64k methods theoretically.
+
+199:2-199:15
+Thu Dec 10 17:57:57 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 60c91c79_654db072
+UUID: 40d5f831_ad7add9b
+Bytes: 701
+> I think we want to use 32 bits for these since there can be more 64k methods theoretically.
+
+Sure but I really don't think its necessary.
+
+This limit only applies to declared methods. Inherited methods will be in their declaring class's methods_ array and methods taken from interfaces are appended after copied_methods_offset_ and so are not limited to 64k.
+
+Furthermore, a 64k limit on the number of methods in a single class is well established in the wider Java language world (due to JVMS 4.1 & JVMS 4.11).
+
+Finally, the difficult part of using more methods than that would be adding support to the dex files. Once/if that is done it would be fairly simple to increase the size of these fields.
 
 197:0-202:69
 Tue Dec 08 13:56:43 2015 +0000

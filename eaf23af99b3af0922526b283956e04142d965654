@@ -29,6 +29,16 @@ UUID: a567a60d_21bf74ce
 Bytes: 386
 My understanding (indicated in an internal review of this patch) is that we likely need SYNC here (just as we have one at the end of this routine). Clearly, the XOR/ADDU won't have any reliable effect on memory accesses or ordering. However, I don't know the perf impact of inserting SYNC here. But above all, we need to remain correct, fast alone is worhtless if the code is incorrect.
 
+1345:0-1349:23
+Thu Dec 10 05:40:40 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a567a60d_21bf74ce
+UUID: 6553ee27_f51ee249
+Bytes: 483
+This really needs to get straightened out for more basic reasons.  If data dependencies like this are never guaranteed to enforce ordering, then there is no guarantee that reading a Java reference field, and the using that to access a final field ensures ordering of those two loads.  Those are required to be ordered by the Java language specification.  If we have to insert SYNCs there, I suspect the performance impact would be disastrous.
+
+We really need to understand the rules.
+
 1358:4-1358:7
 Wed Dec 09 19:58:15 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

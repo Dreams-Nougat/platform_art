@@ -9,6 +9,18 @@ UUID: 251f3657_34b0f0b3
 Bytes: 45
 Does mips provide the same guarantees as arm?
 
+1345:0-1349:23
+Thu Dec 10 02:08:28 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 251f3657_34b0f0b3
+UUID: 454eea83_ee4bb3aa
+Bytes: 746
+Looking back at the MIPS memory model document, and prior discussions with David Lau, the answer remains unclear to me.  I'm not sure whether dependencies enforce visibility ordering.  What does "uniprocessor data dependencies are maintained" mean?  Does it just mean that a single thread executes correctly.  Or does it mean that if there is an address dependency from load a to load b, then a is visible to other cores before b?
+
+We need the latter, at least in some cases, for Java code with final fields to execute correctly at better than glacial speed.  We need a very strong version of the latter property for this to work correctly.
+
+I previously suggested an in-person meeting to resolve this and related issues.  I'm still open to that.
+
 1358:4-1358:7
 Wed Dec 09 19:58:15 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

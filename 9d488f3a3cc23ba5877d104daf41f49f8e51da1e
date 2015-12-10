@@ -46,6 +46,14 @@ Is that including this CL? The load factors we were using were too high, I adjus
 
 https://android-review.googlesource.com/#/c/176895/
 
+10:12-10:57
+Thu Dec 10 11:40:34 2015 +0000
+Author: Nikita Lazarev <1085353@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 80b290f4_2b89d1a0
+UUID: 00430035_eb7031e5
+Bytes: 3
+Yes
+
 13
 Mon Dec 07 23:57:44 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -92,4 +100,18 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a0af948e_07016048
 Bytes: 153
 I wonder if it would be less code duplication to add a kChain template boolean to the normal hash set and just handle the places where the logic differs.
+
+43:6-43:18
+Thu Dec 10 11:40:34 2015 +0000
+Author: Nikita Lazarev <1085353@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a0af948e_07016048
+UUID: a054f4e4_93651eca
+Bytes: 615
+I'm also not happy with the code duplication here. It can be several solutions.
+
+1) Add a kChain template. There are two disadvantages here: first, the data structures are different (different class members, different data_ field structure) and second, we need to forbid using of some methods (like Insert()) for the Chain version.
+
+2) To inherit the ChainHashSet (or it's better to rename it to ReadOnlyHashSet) class from the HashSet, changing some methods logic, deleting unnecessary ones. Also we can hide unnecessary class members under a private modifier.
+
+I think it's better to implement the second variant.
 

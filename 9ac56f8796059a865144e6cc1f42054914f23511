@@ -9,3 +9,16 @@ UUID: 2506560b_9cda4562
 Bytes: 27
 what's a classpath user id?
 
+163:7-163:26
+Thu Dec 10 16:05:39 2015 +0000
+Author: Artem Udovichenko <1083288@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2506560b_9cda4562
+UUID: 403978b3_add2bdd7
+Bytes: 401
+This list contins indexes of classes that uses another classes from classpath.
+
+For example class Main from A.dex uses class Helper from B.dex
+If you run dex2oat with parameters --dex-file=A.dex --runtime-arg -cp --runtime-arg B.dex then classpath_user_ids_ will contains index of class Main in A.dex.
+
+This list need at runtime to revert status "Verified" for these classes if B.dex is being updated.
+

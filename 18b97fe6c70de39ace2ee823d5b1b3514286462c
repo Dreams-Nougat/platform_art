@@ -1,0 +1,25 @@
+Revision: 18b97fe6c70de39ace2ee823d5b1b3514286462c
+Patch-set: 2
+File: compiler/optimizing/builder.cc
+
+791:6-793:90
+Thu Dec 10 00:20:50 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e55fde25_1ee3ddcb
+Bytes: 458
+That's wrong if the setup is:
+
+ Boot classpath:
+  A -> foo
+ ---------------
+ App classpath:
+    B extends A
+     C extends B
+
+As resolution of B might change at runtime.
+
+Overall, please tag this changed code with the bug number, and maybe keep the old simple code in a comment. The reason: once we get around to classpath tracking, the incorrect code will be rejected by rejecting the oat file.
+
+
+(If you want to work on that instead of this change... :-) )
+

@@ -39,6 +39,16 @@ This really needs to get straightened out for more basic reasons.  If data depen
 
 We really need to understand the rules.
 
+1345:0-1349:23
+Fri Dec 11 02:13:48 2015 +0000
+Author: Raghu Gandham <1064548@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6553ee27_f51ee249
+UUID: 05487277_cc3fdeaf
+Bytes: 551
+The two instructions xor and addu ensure that loading of status is visible before flags. Infact addu $t0, $t0, $zero is sufficient to create the dependency. This is the most efficient way of ensuring that status gets loaded before flags and size.
+
+Alternatively SYNC(19)/SYNC_RMB could also be used. The architecture defines this as optional but is implemented on all latest processors IMG releases. On processors where SYNC(19) is not implemented, SYNC gets used in its place. However using SYNC/SYNC(19) is less efficient than creating a dependency.
+
 1358:4-1358:7
 Wed Dec 09 19:58:15 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,6 +9,14 @@ UUID: 251f3657_d71bfe57
 Bytes: 19
 indentation is off.
 
+701:8-703:91
+Fri Dec 11 13:56:53 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 251f3657_d71bfe57
+UUID: 251f3657_971fc633
+Bytes: 4
+Done
+
 File: compiler/optimizing/licm_test.cc
 
 171:40-171:51
@@ -17,6 +25,15 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 65c68e32_ae01174b
 Bytes: 16
 why this change?
+
+171:40-171:51
+Fri Dec 11 13:56:53 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65c68e32_ae01174b
+UUID: 0576b2c5_731a204b
+Bytes: 333
+Frankly, to get around the typing... :/ 
+`parameter_` has an invalid type, therefore ArrayGet on it would fail. By constructing it as float/double, SsaBuilder will not consider it an ambiguous aget. Maybe I should use byte and short here instead and DCHECK in SsaBuilder that float/double is not in the original bytecode (done that).
 
 File: compiler/optimizing/nodes.h
 
@@ -27,12 +44,28 @@ UUID: 0576b2c5_f31b9057
 Bytes: 15
 Update comment.
 
+219:46-221:15
+Fri Dec 11 13:56:53 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0576b2c5_f31b9057
+UUID: 2506560b_1f72a7ec
+Bytes: 43
+Done. And renamed the constants a little...
+
 4629:0-4630:59
 Fri Dec 11 11:22:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 65c68e32_4e38b31d
 Bytes: 130
 This is weird, a->IsEquivalentOf(b) would say yes and pass this check, but b->IsEquivalentOf(a) would say yes and fail this check?
+
+4629:0-4630:59
+Fri Dec 11 13:56:53 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65c68e32_4e38b31d
+UUID: 0576b2c5_f325d08c
+Bytes: 25
+Made it pass both ways...
 
 File: compiler/optimizing/reference_type_propagation.cc
 
@@ -43,12 +76,30 @@ UUID: c03648c7_6cea93cc
 Bytes: 48
 Add a comment why checking if live is important.
 
+173:10-173:23
+Fri Dec 11 13:56:53 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c03648c7_6cea93cc
+UUID: 65c68e32_0e94eb23
+Bytes: 4
+Done
+
 604:0-620:3
 Fri Dec 11 11:22:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e5d27ee6_b207402e
 Bytes: 32
 Why did you have to change this?
+
+604:0-620:3
+Fri Dec 11 13:56:53 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5d27ee6_b207402e
+UUID: 0576b2c5_5367e4d1
+Bytes: 636
+Gtests use this kUnknownFieldIndex constant to prevent typing (actually haven't seen a gtest run RTP, so not sure why it was here in the first place). With RTP inside SsaBuilder, this method would leave the FieldGet untyped and SetUntypedInstructionsToObject would later try to type it to Object.
+
+No problem with that, only Calin and I tried to make sure that SetUntypedInstructionsToObject only fixes up instructions left untyped because of a loop phi with first input null (b/25899441). So this change explicitly types these gtest FieldGets to Object and allows us to keep that DCHECK in SetUntypedInstructionsToObject for real code.
 
 File: compiler/optimizing/ssa_builder.cc
 
@@ -58,4 +109,16 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 251f3657_77154a1a
 Bytes: 57
 Why is that not being done in GetFloatOrDoubleEquivalent?
+
+808:0-814:37
+Fri Dec 11 13:56:53 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 251f3657_77154a1a
+UUID: 0576b2c5_d3cd34e1
+Bytes: 459
+Great question. And you are right that this is pretty eager. The code is pretty complex as it is, so I went for simplicity...
+
+If this is a float array access, there should be a float use (perhaps through a phi) which calls GetFloatOrDoubleEquivalent. Unfortunately that's not true if the only use is ArraySet so we could end up missing some.
+
+I've changed this in the latest PS, have a look. I still put them in the vector here but create equivalents lazily.
 

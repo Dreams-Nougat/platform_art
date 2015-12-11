@@ -9,3 +9,18 @@ UUID: a5f24653_e082c227
 Bytes: 93
 How about moving this to GetOrCreateReferenceInfo (since you're replicating the check below)?
 
+381:4-381:53
+Fri Dec 11 00:39:00 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5f24653_e082c227
+UUID: 05487277_6cca2a75
+Bytes: 321
+I added another method and changed this to just calling that method.
+  void CreateReferenceInfoForReferenceType(HInstruction* instruction) {
+    if (instruction->GetType() != Primitive::kPrimNot) {
+      return;
+    }
+    DCHECK(FindReferenceInfoOf(instruction) == nullptr);
+    GetOrCreateReferenceInfo(instruction);
+  }
+

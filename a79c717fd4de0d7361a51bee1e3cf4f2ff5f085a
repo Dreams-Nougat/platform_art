@@ -9,3 +9,18 @@ UUID: a567a60d_ada3756e
 Bytes: 127
 shouldn't we keep the test to see if right behavior occurs? at the very least, it breaks the testing numbering when removed :-)
 
+465
+Fri Dec 11 16:26:50 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a567a60d_ada3756e
+UUID: 4520aa91_5b3ddb0b
+Bytes: 432
+The skipped number tickles my OCD too, I wish the tests had names :) Ok, I've changed it to test that the second load gets removed.
+
+Btw, this CL does not fully solve b/22538329 (as referenced in the LSE source) because ArraySets can still have the wrong input type if the value is a constant:
+
+  float[] array = foo();
+  array[0] = 42.0
+
+That's why I haven't removed the b/22538329 workaround yet... Will do that in a follow-up CL.
+

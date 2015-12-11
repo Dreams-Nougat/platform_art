@@ -11,3 +11,40 @@ This is a no-op, not a fake dependency.  We need a fake dependency on the load o
 
 As it stands, this is clearly wrong.  Unless we get more clarification on the architecture, we need a SYNC_ACQUIRE here.
 
+1348:4-1348:25
+Fri Dec 11 22:17:37 2015 +0000
+Author: Raghu Gandham <1064548@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 253496db_29141a1b
+UUID: 6553ee27_7ccad674
+Bytes: 1857
+As per the spec below - section 4.2 Execution order behavior states the following 
+"Uniprocessor Data Dependencies are always maintained. These include read-after-write, write-after-write and
+write-after-read hazards". Using these dependencies for two instructions, we can build a larger dependency tree. The dependency tree is mostly derived information and is not documented for MIPS AFAIK if that is what you are asking.
+
+MIPS Coherence Protocol specification
+https://imagination-technologies-cloudfront-assets.s3.amazonaws.com/documentation/MD00605-2B-CMPCOHERE-AFP-01.01.pdf
+
+Although addu instruction below appears as a nop, it will need to be executed by any MIPS processor to maintain the following dependencies.I have simplified the instruction sequence for discussion.
+
+1. lw    $t5, STATUS($t0) 
+2. addu  $t0, $t0, $zero  #WAR dependency on $t0
+3. lw    $t5, FLAGS($t0) #RAW dependency on $t0 
+
+While maintaining both the above dependencies, through 
+register renaming, I can see a possibility of a CPU 
+reading flags before status.
+                           addu TMP1, $t0, $zero
+                           lw   TMP2, FLAGS(TMP1)
+ lw $t5, STATUS($t0)
+                           move t0, TMP1
+                           move t5, TMP2
+
+Hence my earlier suggestion of introducing only addu dependency instead of "xor and addu" may not work on CPUs where aggressive speculative loads are enabled. However"xor and addu" will introduces a series of RAW dependencies which would serialize the execution.
+
+1. lw    $t5, STATUS($t0) 
+2. xor   $t5, $t5, $t5   # RAW on $t5
+3. addu  $t0, $t0, $t5   # RAW on $t5
+4. lw    $t5, FLAGS($t0) #RAW on $t0
+
+@Hans, If you agree that this information is sufficient, we would upload another patch with "xor and addu" to maintain the load dependencies.If you need more information on any specific topic, let me know.
+

@@ -48,3 +48,23 @@ Hence my earlier suggestion of introducing only addu dependency instead of "xor 
 
 @Hans, If you agree that this information is sufficient, we would upload another patch with "xor and addu" to maintain the load dependencies.If you need more information on any specific topic, let me know.
 
+1348:4-1348:25
+Fri Dec 11 23:48:34 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6553ee27_7ccad674
+UUID: e5cc3e7f_6275b614
+Bytes: 1281
+You identified the place where I also got stuck.  The questions is what that statement in 4.2 really means.  Does it mean that cross-processor ordering is enforced?  Or does it essentially only mean that a single core sees its own writes in the correct order, i.e. uniprocessor semantics are correctly maintained?
+
+I asked David Lau that question in a previous exchange, and his answer was:
+
+"It just means that for the CPU executing the code, the RAW, WAR, WAW dependencies are always honored."
+
+I'm inclined to read that as the latter, especially since, as you point out, you can't really do register renaming and maintain WAR dependencies.  Thus my best guess now is that the SYNC_ACQUIRE is needed, and dependencies do not affect visibility across cores.  Initially I read 4.2 roughly the way you did. In retrospect, the mention of write-after-read hazards should have dissuaded me from that.
+
+My sense is that hardware architects are very unlikely to reflect anything but RAW dependencies in cross-core memory ordering, and they're unenthusiastic about that, because even that inhibits some optimizations.
+
+My current interpretation scares me because of implications on final field accesses.  The added fence here seems comparatively minor.
+
+We really do need a clarification.
+

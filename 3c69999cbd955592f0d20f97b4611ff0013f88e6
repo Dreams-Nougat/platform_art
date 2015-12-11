@@ -17,6 +17,13 @@ UUID: 251f3657_971fc633
 Bytes: 4
 Done
 
+716:35-716:47
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5701ac6_d96eb348
+Bytes: 4
+test
+
 File: compiler/optimizing/licm_test.cc
 
 171:40-171:51
@@ -84,6 +91,27 @@ UUID: 65c68e32_0e94eb23
 Bytes: 4
 Done
 
+379:20-379:37
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2506560b_7fd40bdf
+Bytes: 54
+document the HInstruction* sequences that are matched.
+
+385:44-385:64
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5f24653_c33b48a3
+Bytes: 78
+not related to your change: ...what a terrible name. This is not a constant...
+
+408:20-408:40
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c03648c7_ac248bf3
+Bytes: 57
+a lot of redundant code. Can you merge with the previous?
+
 604:0-620:3
 Fri Dec 11 11:22:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -103,6 +131,38 @@ No problem with that, only Calin and I tried to make sure that SetUntypedInstruc
 
 File: compiler/optimizing/ssa_builder.cc
 
+153:4-153:6
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 251f3657_5776ce73
+Bytes: 157
+nit: I'd separate the false branches and the true branches to make it easier to read.
+
+i.e.
+
+if (not the same size || combine wrong types) {return false} ...
+
+290:6-290:40
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5701ac6_b9097fb2
+Bytes: 103
+why do you test for dead phis in AddDependentInstructionsToWorklist if you only call it with live phis?
+
+298:2-298:23
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5f24653_e3576cd5
+Bytes: 55
+ReferenceTypeInfo::TypeHandle (and in the other places)
+
+303:28-303:89
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5701ac6_59c0637c
+Bytes: 88
+this test and the one bellow seem wrong. What if the array is object of byte/char etc...
+
 808:0-814:37
 Fri Dec 11 11:22:54 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -121,4 +181,20 @@ Great question. And you are right that this is pretty eager. The code is pretty 
 If this is a float array access, there should be a float use (perhaps through a phi) which calls GetFloatOrDoubleEquivalent. Unfortunately that's not true if the only use is ArraySet so we could end up missing some.
 
 I've changed this in the latest PS, have a look. I still put them in the vector here but create equivalents lazily.
+
+File: compiler/optimizing/ssa_builder.h
+
+86:7-86:28
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c03648c7_ecfa0364
+Bytes: 20
+document the return.
+
+89:1-90:68
+Fri Dec 11 14:36:29 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c03648c7_ec1e839b
+Bytes: 8
+Document
 

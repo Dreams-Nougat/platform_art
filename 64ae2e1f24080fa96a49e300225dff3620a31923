@@ -68,3 +68,20 @@ My current interpretation scares me because of implications on final field acces
 
 We really do need a clarification.
 
+1348:4-1348:25
+Sat Dec 12 17:17:17 2015 +0000
+Author: Raghu Gandham <1064548@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5cc3e7f_6275b614
+UUID: 45db4a39_c6bf7878
+Bytes: 1101
+The statement in section 4.2 only means that uniprocessor semantics are correctly maintained. It does not guarantee cross-processor ordering of the resulting memory transactions. 
+
+In my opinion, the visibility of loads to other processors does not matter in this situation since we are talking about a cached access. It only matters that the first load completes before the second load is initiated on the current processor. We achieve it successfully through a series of RAWs. However if we have non-dependent loads or loads which are dependent through Write-after-Reads, then SYNC_ACQUIRE is mandatory to ensure that loading of status is complete before loading of flags and size is initiated.
+
+For sake of completeness, I will mention how stores are expected to complete on MIPS where ever the status is being updated. On the store side of the story, visibility of the stores is mandatory. Hence a sync_wmb/sync_mb/sync is required.
+
+1. sw    $t1, FLAGS($t4)
+2. sw    $t2, SIZE($t4) 
+3. sync_wmb      # Required for rest of the loads to be globally visible before status.
+4. sw    $t3, STATUS($t4)
+

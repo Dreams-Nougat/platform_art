@@ -1,0 +1,11 @@
+Revision: 97e0b80c04329cda56fe980da3b2023a09d6f90c
+Patch-set: 7
+File: runtime/jit/profile_saver.cc
+
+102
+Sat Dec 12 13:31:39 2015 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25ead6c4_e28d42e7
+Bytes: 367
+I'm playing with something similar to this (a separate task).  Under heavy load, for a small enough program, it is possible for shutdown to have started before RunProfileSaverThread executes.  In this case AttachThread will give an error message and return nullptr, which fails this CHECK.  I have a workaround that I can provide, but I would appreciate any comments.
+

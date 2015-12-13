@@ -85,3 +85,13 @@ For sake of completeness, I will mention how stores are expected to complete on 
 3. sync_wmb      # Required for rest of the loads to be globally visible before status.
 4. sw    $t3, STATUS($t4)
 
+1348:4-1348:25
+Sun Dec 13 04:12:25 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db4a39_c6bf7878
+UUID: 25157684_4aa1d7c8
+Bytes: 628
+Can you point me at the spec that states that if two loads, such that the address of the second is dependent on the result of the first, i.e. there is a RAW dependency, then the first load must complete before the second is initiated?
+
+Although this sounds like a vacuous requirement, it is not.  It prevents data speculation.  DEC Alpha violated this rule for a different reason, related to cache architecture.  I would also like to see it pinned down, since it may help to answer my next question, which is how such a RAW dependency is defined, and whether it includes the kind of "fake" dependencies we're trying to use here.
+

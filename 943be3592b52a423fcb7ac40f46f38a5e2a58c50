@@ -1,0 +1,204 @@
+Revision: 943be3592b52a423fcb7ac40f46f38a5e2a58c50
+Patch-set: 1
+File: compiler/optimizing/intrinsics_mips.cc
+
+892:0-894:33
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45db4a39_00530861
+Bytes: 129
+Change to shorter:
+
+    __ Sltu(TMP, out_lo, TMP);
+    __ Addu(out_hi, out_hi, TMP);
+
+and update (or remove?) the comments above.
+
+896:15-896:16
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65e04ee1_e15aa0cb
+Bytes: 5
+space
+
+935:0-943:27
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5cf3a71_273e5e9b
+Bytes: 398
+Unless I'm missing something...
+
+Java spec says "If either value is NaN, then the result is NaN."
+
+MIPS documentation says about Min/Max "Numbers are preferred to NaNs: if one input is a NaN, but not both, the value of the numeric input is returned. If both are NaNs, the NaN in fs is returned."
+
+Right?
+
+If so, MIPS64 needs a fix as well and we're missing a few tests for Java Min/Max w.r.t. NaNs.
+
+1158:16-1158:22
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_2c175795
+Bytes: 54
+Rename to something less confusing, e.g. compare_done.
+
+1161:0-1172:39
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_8ad0ef46
+Bytes: 34
+Shorten as suggested for R2 below.
+
+1186:0-1197:39
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5b81ad7_1f736bf4
+Bytes: 6
+Ditto.
+
+1224:0-1225:31
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5cc3e7f_e8a52724
+Bytes: 886
+In the rare event that out, a and b are in the same register, we have AT=0 here, which causes Selnez to set out to 0 and thus overwrite b before Seleqz has a chance to look at it.
+
+We could adjust these Seleqz and Selnez to write to TMP and AT (never out) and change the final Or to take TMP and AT and "or" them together into out. This also eliminates the need for differentiation between out == a and out != a.
+
+There's a similar problem with 64-bit longs above.
+
+OTOH, I think we should just start this function with something like
+
+    if (locations->InAt(0).Equals(locations->InAt(1))) {
+        if (!locations->Out().Equals(locations->InAt(0))) {
+            move InAt(0) to Out(); // for both 32-bit & 64-bit
+        }
+        return;
+    }
+
+to ensure that writing to the output can't ever clobber both inputs.
+
+MIPS64 intrinsic should be fixed as well as it has identical logic.
+
+1248:16-1248:22
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_aa604b85
+Bytes: 54
+Rename to something less confusing, e.g. compare_done.
+
+1250:0-1261:38
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25ead6c4_e218e25d
+Bytes: 146
+Change to shorter
+
+    __ Slt(TMP, a_hi, b_hi);
+    __ Bne(a_hi, b_hi, &compare_done);
+
+    __ Sltu(TMP, a_lo, b_lo);
+
+    __ Bind(&compare_done);
+
+1304:14-1304:22
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85d9c240_e58712f6
+Bytes: 19
+Always true by now.
+
+1307:14-1307:22
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25ead6c4_1f67e7d2
+Bytes: 6
+Ditto.
+
+1311:14-1311:22
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_e90a5135
+Bytes: 6
+Ditto.
+
+1314:14-1314:22
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5cc3e7f_45dfdc89
+Bytes: 6
+Ditto.
+
+1407:0-1410:26
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05e5d2f2_c11be657
+Bytes: 149
+This doesn't seem to be any better than the R2 implementation. Use the following instead:
+
+    __ CmpEqS(FTMP, in, in);
+    __ Bc1nez(FTMP, &notNan);
+
+1423:0-1426:10
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85d9c240_2888ef9a
+Bytes: 7
+Remove.
+
+1428:0-1429:43
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5cc3e7f_c881436d
+Bytes: 735
+And what happens when the intput is not -inf, but still less than -0x80000000 - 0.5?
+
+The doc says on Floor.W.S:
+On cores with FCSR NAN2008=0, the default result is
+2**63-1. On cores with FCSR NAN2008=1, the default result is:
+• 0 when the input value is NaN
+• 2**63-1 when the input value is +inf or rounds to a number larger than 2**63-1
+• -2**63-1 when the input value is -inf or rounds to a number smaller than -2**63-1
+
+This text probably isn't correct for single-precision (in my understanding the result should be 32-bit (because of both .W and .S) and thus can't reach ~2**63 of any sign), but clearly, if the doc is right about FCSR NAN2008, we won't handle negative values correctly when FCSR NAN2008=0 (R2 or earlier).
+
+File: compiler/utils/mips/assembler_mips.cc
+
+859:58-859:59
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5cc3e7f_02206a78
+Bytes: 2
+cc
+
+860:0-860:30
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5b81ad7_19cf0b36
+Bytes: 18
+Why commented out?
+
+864:0-877:1
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_84346687
+Bytes: 6
+Ditto.
+
+File: compiler/utils/mips/assembler_mips.h
+
+249:0-252:52
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_83b9fe06
+Bytes: 43
+Rename N to cc, add trailing comment // R2.
+
+308:0-312:54
+Sun Dec 13 04:52:17 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_c4d49e6a
+Bytes: 8
+;  // R6
+

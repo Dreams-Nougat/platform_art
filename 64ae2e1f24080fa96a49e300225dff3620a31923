@@ -95,3 +95,20 @@ Can you point me at the spec that states that if two loads, such that the addres
 
 Although this sounds like a vacuous requirement, it is not.  It prevents data speculation.  DEC Alpha violated this rule for a different reason, related to cache architecture.  I would also like to see it pinned down, since it may help to answer my next question, which is how such a RAW dependency is defined, and whether it includes the kind of "fake" dependencies we're trying to use here.
 
+1348:4-1348:25
+Mon Dec 14 23:31:27 2015 +0000
+Author: Raghu Gandham <1064548@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25157684_4aa1d7c8
+UUID: 25157684_78de29fe
+Bytes: 1256
+The second load can only be initiated after the address of the load instruction is known. But the address of the second load is dependent on the result of the previous instruction. As section 4.2 states that all RAW, WAR, WAW dependencies should be satisfied, each instruction after the first load will need to be executed until the address of the 2nd load is calculated. Only after the address gets calculated, the second load can be initiated. Data speculation is allowed as long as execution order rules (section 4.2) are satisfied. In our example there is no scope for a speculative 2nd load due to the RAW dependency on the address of the load.
+
+I had run this example by both architecture and hardware teams and both confirmed that these semantically fake dependencies are real dependencies for a MIPS processor and are sufficient to ensure that the second load gets initiated after the address dependency is satisfied.
+
+Unfortunately, there is no MIPS specific documentation about the dependencies. The Wikipedia definition matches the assumptions on MIPS.
+read after write (RAW), a true dependency
+write after read (WAR), an anti-dependency
+write after write (WAW), an output dependency
+
+https://en.wikipedia.org/wiki/Hazard_(computer_architecture)
+

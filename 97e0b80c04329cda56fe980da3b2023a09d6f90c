@@ -9,3 +9,13 @@ UUID: 25ead6c4_e28d42e7
 Bytes: 367
 I'm playing with something similar to this (a separate task).  Under heavy load, for a small enough program, it is possible for shutdown to have started before RunProfileSaverThread executes.  In this case AttachThread will give an error message and return nullptr, which fails this CHECK.  I have a workaround that I can provide, but I would appreciate any comments.
 
+102
+Mon Dec 14 10:30:02 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25ead6c4_e28d42e7
+UUID: e5599e74_7af7397e
+Bytes: 122
+I guess there is a small window in which this can fail. Maybe a CHECK is unnecessary here. 
+
+Thanks for pointing this out.
+

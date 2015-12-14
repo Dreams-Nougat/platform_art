@@ -35,3 +35,13 @@ UUID: 45db4a39_11527ce4
 Bytes: 141
 I am okay with doing that in a follow up CL, but I agree with Nicolas that ToPhiType is a bit of a misnomer if we are using this generically.
 
+689:15-689:24
+Mon Dec 14 19:35:13 2015 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db4a39_11527ce4
+UUID: 0593126b_8e4bbbab
+Bytes: 583
+I used to have a similar check on the store side so if there is possible type aliasing, I didn't eliminate the store. That check was removed due to the fact that I/F, J/D aliasing only happen for arrays. However as this bug showed there can still be int type aliasing, like between boolean and int (I was actually aware of this but somehow still removed the check).
+
+The question is are we sure it's always safe to load as one integer type which is stored as a different integer type? To be on the safe side, we can always keep the store by calling KeepIfIsStore() if types mismatch.
+

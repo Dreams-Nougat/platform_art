@@ -73,6 +73,24 @@ UUID: 80be10e1_774dd0bf
 Bytes: 768
 Actually as I understand the hash function is good enough: the average amount of string comparisons for the Original version is about 2.4. It means the chains aren't long in general. But there are several long chains, appearing quite seldom. And the main issue here (in my opinion) is not the has function used, but the approach of collision resolving. I mean there can be (and there are in practice) a lot of already busy slots between the appropriate slot (the slot corresponding the hash) and the slot we are actually placing the element. And during looking up we need to visit all of these slots (because there aren't empty ones between them). This issue also appears when we are looking for an absent element: we need to pass all slots until we meet an empty one.
 
+13
+Mon Dec 14 22:16:49 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 80be10e1_774dd0bf
+UUID: 65f20ea9_94980ce6
+Bytes: 921
+It just seems like there's plenty of low hanging fruit in the current implementation of hash_set:
+
+1) Resizing should adjust the requested # of slots to the next nearest prime number, this will make it less likely that slot lookup (hashcode%slotindex) will collide for 2 distinct hashcodes.
+
+-- This would potentially help when hash codes are different but the slots end up being the same, should help average case.
+
+2) Linear probing might be inferior to quadratic probing or secondary hash function for giving back different buckets.
+
+-- This would potentially help when the hash codes are the same, it's less likely to steal slots from another adjacent entry and reduce worst cases.
+
+It would be interesting to explore these types of enhancements which would have much less complexity and also have a larger impact potential since we actually use the existing hash_set in much more places than just pre_zygote strings.
+
 14
 Mon Dec 07 23:57:44 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -114,4 +132,27 @@ I'm also not happy with the code duplication here. It can be several solutions.
 2) To inherit the ChainHashSet (or it's better to rename it to ReadOnlyHashSet) class from the HashSet, changing some methods logic, deleting unnecessary ones. Also we can hide unnecessary class members under a private modifier.
 
 I think it's better to implement the second variant.
+
+43:6-43:18
+Mon Dec 14 22:16:49 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a054f4e4_93651eca
+UUID: 852462f4_aacdefe1
+Bytes: 978
+I'm not entirely convinced yet we actually need a chain hash set at all. For that reason alone I wouldn't necessarily jump into cleaning this up right away.
+
+If we did however need it, here's some ways we could clean it up:
+
+----------
+
+Two interfaces seems like they should be interchangeable (same public member functions), and anywhere the implementation is different it could simply be refactored into 2 separate classes (think of it as the strategy pattern):
+
+  namespace detail {
+   class OpenAddressingHashSetImpl <...> {...};
+   class ChainHashSetImpl <...> { ... };
+  }
+
+Put them into the art::detail namespace (and into a separate detail\hash_set.h file, 2 files for each impl is also fine as you prefer) as per our convention when a templated class needs to have implementation-specific non-nested classes/functions.
+
+Simply adding a new class that's a copy or just adding some 'if/else' cases to hash_set.h (to handle chaining) would lead to too much of a mess IMHO.
 

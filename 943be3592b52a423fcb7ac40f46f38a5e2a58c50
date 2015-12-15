@@ -36,6 +36,55 @@ Right?
 
 If so, MIPS64 needs a fix as well and we're missing a few tests for Java Min/Max w.r.t. NaNs.
 
+1017:0-1026:32
+Tue Dec 15 00:17:12 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45db4a39_ac4b2bab
+Bytes: 804
+This can't be right. We need to look at both a and b as each one of them can be either -0.0 or +0.0.
+
+I recommend changing the whole thing for R2 to the following (adjust accordingly for the doubles):
+
+	c.un.s	a, b
+	bc1f	lordered
+
+	# a or b (or both) is a NaN. Return one, which is a NaN.
+	c.eq.s	b, b
+	b	lselect
+
+lordered:
+	# Neither is a NaN.
+	# a == b? (-0.0 compares equal with +0.0)
+	# If equal, handle zeroes, else compare further.
+	c.eq.s	a, b
+	bc1f	lcompare
+
+	# a == b either bit for bit or one is -0.0 and the other is +0.0.
+	mfc1	TMP, a
+	mfc1	AT, b
+
+	# if min (-0.0 prevails over +0.0):
+	or	TMP, TMP, AT
+
+	# if max (+0.0 prevails over -0.0):
+	#and	TMP, TMP, AT
+
+	mtc1	TMP, out
+	b	ldone
+
+lcompare:
+	# if min:
+	c.lt.s	a, b
+
+	# if max:
+	#c.lt.s	b, a
+
+lselect:
+	movt.s	out, a
+	movf.s	out, b
+
+ldone:
+
 1158:16-1158:22
 Sun Dec 13 04:52:17 2015 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>

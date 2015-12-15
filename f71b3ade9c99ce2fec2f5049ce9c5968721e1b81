@@ -11,3 +11,16 @@ Why this change? I'm especially asking for the debugger.
 
 Before, we would ignore parameters that have no name (kDexNoIndex). Now we no longer ignore them and local_in_reg[arg_reg].name_ == nullptr in this case.
 
+839:23-839:40
+Tue Dec 15 11:10:13 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65acceb5_de8cc5b0
+UUID: c55c9a66_bcc26d07
+Bytes: 503
+It is to make it consistent with variables emitted below.
+The dex spec say that any of name/type/signature can be kDexNoIndex.  We filter out no name here, but not below.
+
+Furthermore, having this conditional only removes the initialization.  The debug stream could still emit the (uninitialized) variable if the scoping is non-trivial.
+
+I would prefer if the Decode method did just the decoding, and did not mangle or filter the data on the way.  Should we add filter out null name/type in debugger.cc?
+

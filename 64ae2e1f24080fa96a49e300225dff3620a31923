@@ -149,3 +149,13 @@ Agree with you that only RAW can ensure ordered loads. I only brought up other d
 
 I now understand your concern through the second example. Thanks for sharing the paper on Memory Address Prediction(MAP). Implementation of MAP is possible on MIPS in theory and that would violate the fake dependency we are trying to put. There is no such implementation available now or is planned in the near future on MIPS. I cannot predict the future direction though. If we are protecting the code against such a case, sync_acquire will be required. Wouldn't there be a similar issue on ARM?
 
+1348:4-1348:25
+Tue Dec 15 06:22:02 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b81ad7_08208f78
+UUID: 85d9c240_d481da6c
+Bytes: 749
+ARM, Power, and Itanium have semi-careful definitions specifying what kind of dependencies enforce ordering, particularly between loads.
+
+In my opinion, your hardware architects need to do something similar, since this will constrain future implementations.  It needs to at least cover the final field reference case.  Otherwise SYNC_ACQUIRE needs to be very  fast, because it will end up all over the place.  For example, if I write p.f() and the compiler can't statically resolve f not show that the object referenced by p was allocated by the same thread, we would need a SYNC_ACQUIRE after loading p to make sure the class pointer is visible.  I believe no Java implementation currently does this on any architecture.  (Alpha died just in time.)
+

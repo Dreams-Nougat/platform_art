@@ -91,6 +91,25 @@ It just seems like there's plenty of low hanging fruit in the current implementa
 
 It would be interesting to explore these types of enhancements which would have much less complexity and also have a larger impact potential since we actually use the existing hash_set in much more places than just pre_zygote strings.
 
+13
+Tue Dec 15 12:35:51 2015 +0000
+Author: Nikita Lazarev <1085353@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65f20ea9_94980ce6
+UUID: c501fa3e_5451820a
+Bytes: 1365
+Both of the suggestions can help us with reducing the average amount of worst cases (when we are meeting a wrong slot), but probability of considering an element from a wrong chain still exists. Also the first approach increases the table size due to empty slots existence.
+
+Any way, I can check the benefit of the suggestions on practice, if you want.
+
+Actually our implementation is based in three ideas:
+1) chains to resolve collisions (we don't consider elements from other chains);
+2) filling with no collision elements first (allows to make as less as possible wrong placements and also makes the collision chains approach serializable using read-only memory (because our chains are embedded into the table));
+3) comparison of the hash value before the content.
+
+And the main item we are promoting is that the table can be faster and less if it's read only one. The first and the second approaches are applicable for read-only tables only. The third enhancement just uses extra free space of the next slot pointer (index) which isn't fulfilled in general. Meanwhile your suggestions are about improving the table in general (will influence for all types of hash tables (not read only ones)). I mean your and our ideas don't correlate with each other.
+
+The main question here is do you recognise the benefit of read-only tables and their impact to the project?
+
 14
 Mon Dec 07 23:57:44 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -155,4 +174,14 @@ Two interfaces seems like they should be interchangeable (same public member fun
 Put them into the art::detail namespace (and into a separate detail\hash_set.h file, 2 files for each impl is also fine as you prefer) as per our convention when a templated class needs to have implementation-specific non-nested classes/functions.
 
 Simply adding a new class that's a copy or just adding some 'if/else' cases to hash_set.h (to handle chaining) would lead to too much of a mess IMHO.
+
+43:6-43:18
+Tue Dec 15 12:35:51 2015 +0000
+Author: Nikita Lazarev <1085353@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 852462f4_aacdefe1
+UUID: 658e8e43_d409d40a
+Bytes: 365
+The main idea of our hash set is faster operation and lower memory usage in case of the table is read-only. That's why I think it's better to name it ReadOnlyHashSet. Any way, the approach looks nice.
+
+Could you, please, decide do you actually need read-only hash tables support (considering all their benefits) and if you do we will implement and embed it cleanly.
 

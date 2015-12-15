@@ -1,0 +1,98 @@
+Revision: 3487e69a73f8c72402d6306b6798418cee940644
+Patch-set: 24
+File: compiler/dex/quick/quick_compiler.cc
+
+525
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25ead6c4_f18d0ae7
+Bytes: 191
+Make it more clear, like you said yourself in an earlier reply:
+
+
+  // Always need to scan opcodes if we have default methods
+  // since invoke-super for interface methods is never supported.
+
+File: compiler/image_writer.cc
+
+1228
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05e5d2f2_30c5ae65
+Bytes: 4
+Why?
+
+File: runtime/art_method.cc
+
+151
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5b81ad7_2e247b5c
+Bytes: 52
+Why is it from the end now? Add explanatory comment.
+
+File: runtime/class_linker.cc
+
+5411
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e598be91_31075af8
+Bytes: 8
+Comment?
+
+5526
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05e5d2f2_10d0b21a
+Bytes: 22
+Comment needs updating
+
+5717:34-5717:36
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_4cd44edf
+Bytes: 327
+This is misleading, I would say it's more like it's 'accessible through the iftable' since IIUC this may actually require crawling each iftable's interface to get at the methods, as opposed to accessing the method directly.
+
+See your comment on line 5700 which is less misleading and also uses "accessible through the iftable".
+
+File: runtime/common_throws.cc
+
+88:52-88:59
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5b81ad7_ee41a3eb
+Bytes: 25
+nit: /* parameter name */
+
+90:65-90:69
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45db4a39_fc2ec0cd
+Bytes: 25
+nit: /* parameter name */
+
+File: runtime/entrypoints/entrypoint_utils-inl.h
+
+477
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5b81ad7_4e528fbb
+Bytes: 43
+Consider adding:
+
+   // It is an interface.
+
+File: runtime/mirror/class.cc
+
+551
+Tue Dec 15 23:07:33 2015 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_6cfcaa5f
+Bytes: 303
+I think I'm misunderstanding FindVirtualMethodForInterface, but since it filters to methods based on declaring class  while this one filters using name and signature..
+
+Isn't it different lookup semantics?
+
+I thought you would've just wanted to apply this FindVirtualMethodForInterfaceSuper recursively?
+

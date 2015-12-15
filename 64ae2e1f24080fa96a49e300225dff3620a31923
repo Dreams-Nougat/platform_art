@@ -112,3 +112,30 @@ write after write (WAW), an output dependency
 
 https://en.wikipedia.org/wiki/Hazard_(computer_architecture)
 
+1348:4-1348:25
+Tue Dec 15 00:08:51 2015 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25157684_78de29fe
+UUID: 65e04ee1_e7f1d08d
+Bytes: 1629
+The fact that the hardware teams believe fake dependencies are enforced is encouraging.
+
+The fact that we're still talking about RAW, WAR, WAW dependencies at once seems very strange to me.  It seems entirely unreasonable to me to have hardware memory ordering be influenced by anything other than a RAW dependency, since WAR and WAW dependencies are removed by register renaming, as Ragu pointed out.  If the source code says:
+
+lw $t1, x
+copy $t1 to $t2
+lw $t1, y
+
+I would be really surprised if that caused the loads to be ordered. That's certainly not true on any of the other weakly ordered architectures I've encountered (ARM, Power, Itanium (and Alpha)).
+
+If I have, with no unexpected aliasing
+
+lw $t1, x
+lw $t2, 0($t1)
+
+the loads could in theory be performed by caching the previous address used by the second load (from the last time that instruction was executed), and then using that to run both loads in parallel, aborting the second one if the first one returns a different result.  In that case the data dependency would not force the first load to complete before the second.  I do not know of real architectures that do this, but I believe it has been seriously proposed in computer architecture papers (cf. http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.46.3036&rep=rep1&type=pdf from Europar '97).
+
+As I mentioned, Alpha had a different cache-related reason for not enforcing ordering here, which I can't immediately reconstruct.
+
+Thus I don't believe we can implicitly assume that an address dependency orders accesses; you really need a commitment by the architects not to violate such dependencies.
+

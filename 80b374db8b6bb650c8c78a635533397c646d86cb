@@ -50,6 +50,57 @@ UUID: 25157684_212639fd
 Bytes: 100
 This looks like the default value of a runtime option. Should this query the runtime option instead?
 
+File: runtime/class_linker.cc
+
+866:18-866:31
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05a79224_2bb7b944
+Bytes: 124
+Does it make sense to rename this to InitFromBootImage now that we have app images as well? Same for InitWithoutImage() etc.
+
+891:45-891:55
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 459d0ad3_2d9cedd8
+Bytes: 15
+typo: compiling
+
+899:2-899:3
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 459d0ad3_6d7f1541
+Bytes: 101
+Are there assertions that we could make for the AOT case like the things that the above comment says?
+
+937:55-937:62
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0512320e_5366246f
+Bytes: 46
+Is there already a type check on element here?
+
+1108:26-1108:35
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05a79224_cba715e5
+Bytes: 24
+This can be just "self"?
+
+1254:4-1254:8
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4518aa2c_55dbac67
+Bytes: 16
+auto -> uint64_t
+
+1350:24-1350:41
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05a79224_8ef23bc5
+Bytes: 164
+The following code seems to have side effects (updating the class loader pointers), that is, not just debug check code. Why not always do this if a non-debug build?
+
 File: runtime/class_table.cc
 
 43:27-43:33
@@ -126,6 +177,50 @@ Bytes: 176
 This seems to imply that the space is page aligned.
 
 Is there a cleaner way? For example, is it possible to always make the space end page aligned and DCHECK that instead here?
+
+File: runtime/gc/space/image_space.cc
+
+576:9-576:36
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5dadaa8_8923593c
+Bytes: 81
+I'm not very familiar with the code here, but what ensures we are the boot image?
+
+827:4-827:78
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 850622ce_3ac37d0f
+Bytes: 36
+Why exclude the class pointer field?
+
+877:0-901:3
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4518aa2c_d8153189
+Bytes: 190
+As this code lists the fields in ArtMethod, can this code be in ArtMethod instead? Or it could easy to forget to keep this code and ArtMethod consistent if we change ArtMethod in the future?
+
+912:0-915:3
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5b8863e_90c41491
+Bytes: 5
+Same.
+
+918:12-918:27
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5b8863e_f0c920a7
+Bytes: 56
+What does relocate in place mean exactly? Add a comment?
+
+1314:27-1315:4
+Wed Dec 16 23:42:10 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5b8863e_1083042e
+Bytes: 113
+Does oat_file == nullptr means a boot image? Add a comment and/or use a bool variable with more descriptive name?
 
 File: runtime/image.h
 

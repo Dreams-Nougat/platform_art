@@ -9,12 +9,28 @@ UUID: 056cf246_6616b096
 Bytes: 28
 Nit: enclose in parentheses.
 
+199:73-199:85
+Wed Dec 16 00:02:38 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 056cf246_6616b096
+UUID: 05e5d2f2_a416e392
+Bytes: 4
+Done
+
 349:4-349:8
 Tue Dec 15 18:33:48 2015 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e5599e74_3dcf7b36
 Bytes: 53
 Nit: indentation is off (see other similar routines).
+
+349:4-349:8
+Wed Dec 16 00:02:38 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5599e74_3dcf7b36
+UUID: 45db4a39_ff223282
+Bytes: 4
+Done
 
 File: compiler/utils/mips/assembler_mips_test.cc
 
@@ -31,4 +47,16 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a5532654_de5115e1
 Bytes: 75
 Shouldn't this be lower case (beq)?  (Likewise for other test cases below.)
+
+1138:54-1138:57
+Wed Dec 16 00:02:38 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5532654_de5115e1
+UUID: e5cc3e7f_4915321a
+Bytes: 617
+We pass test name strings to DriverStr() in "Pascal case" everywhere, including here, and it doesn't have effect on anything that matters.
+
+In these two helper functions for branches with one/two reg(s), the string is passed to both DriverStr() and the GNU assembler. The GNU assembler doesn't care about the case used for instruction spelling. We could change the case (just here or everywhere) or convert the string to lower case when passing it to the GNU assembler or even have two strings for these two different purposes.
+
+But really is there a compelling case for changing this as nothing appears to be broken?
 

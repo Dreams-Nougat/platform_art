@@ -9,3 +9,40 @@ UUID: e5599e74_7df6134b
 Bytes: 51
 When does that happen? Is that the current default?
 
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+896:5-896:19
+Wed Dec 16 11:56:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c55c9a66_fff1778d
+Bytes: 12
+hand-written
+
+935:4-935:23
+Wed Dec 16 11:56:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e59a7e77_1571967a
+Bytes: 291
+Potential overflow. I would prefer `end - pos <= size` instead of `pos + size <= end`. Note that, assuming correct alignment of `end - pos`, you can do that comparison before rounding up the `size`. (And due to register pressure, you need to calculate `end - pos` before loading the `size`.)
+
+936:4-936:45
+Wed Dec 16 11:56:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4568aa02_58708173
+Bytes: 94
+Are the THREAD_LOCAL_END_OFFSET+THREAD_LOCAL_POS_OFFSET consecutive and within the LDRD range?
+
+942:11-942:13
+Wed Dec 16 11:56:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85a702bf_124d2a1c
+Bytes: 24
+Load straight to the r0.
+
+945:4-945:23
+Wed Dec 16 11:56:56 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 056cf246_46c9b42c
+Bytes: 49
+Make this 16-bit by using a low register, say r1.
+

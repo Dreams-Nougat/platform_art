@@ -1,0 +1,218 @@
+Revision: 80b374db8b6bb650c8c78a635533397c646d86cb
+Patch-set: 13
+File: /COMMIT_MSG
+
+10:31-10:50
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05e5d2f2_4738c11d
+Bytes: 37
+Does this refer to the art run tests?
+
+21:0-21:61
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e598be91_e9410690
+Bytes: 20
+What does this mean?
+
+File: compiler/image_writer.cc
+
+671:0-672:15
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_a131892f
+Bytes: 152
+Does this apply to the boot image as well? Is this code path specific to an app image case? If no and no, is it okay to do this for the boot image case?
+
+File: compiler/oat_writer.cc
+
+735:7-735:56
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e598be91_c9fc0299
+Bytes: 72
+Not sure I follow the change here, but can we assert that it's resolved?
+
+File: dex2oat/dex2oat.cc
+
+1296:11-1296:16
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65e04ee1_d39816e7
+Bytes: 94
+This refers to right after the non-moving space rather than right after the oat file? Clarify?
+
+1299:22-1299:52
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_212639fd
+Bytes: 100
+This looks like the default value of a runtime option. Should this query the runtime option instead?
+
+File: runtime/class_table.cc
+
+43:27-43:33
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_05a4e975
+Bytes: 419
+Does this looks up a class that matches the descriptor of the given class? It's not obvious when we need this.
+
+Also, maybe give it a more descriptive name? Otherwise, the code looks like it's looking up the given class and returns it, which looks as if it's not very useful.
+
+Note that calling this may cause potentially many classes to be marked due to read barriers and may prevent timely unloading, if that matters.
+
+183:0-183:30
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25ead6c4_86f64b48
+Bytes: 79
+Can this code be outside of this function? It may not belong to ReadFromMemory?
+
+185:17-185:36
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5b81ad7_18537c61
+Bytes: 62
+Why is this read barrier disabled? What goes wrong if enabled?
+
+File: runtime/dex_file.cc
+
+254:36-254:47
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_45fd415d
+Bytes: 157
+I assume that the name "classes.dex" came from the fact that it contains classes (or dex bytecode). Is it intuitive to call the app image file "classes.art"?
+
+File: runtime/gc/accounting/space_bitmap-inl.h
+
+171:6-171:45
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_6572fded
+Bytes: 137
+Isn't it the case that if the bit is already set, the page is already dirty? Do we have a clean page with some bits set that we write to?
+
+File: runtime/gc/heap.cc
+
+453:77-454:29
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45db4a39_1ab7ec12
+Bytes: 69
+This seems okay, but do you see any impact on the card scanning time?
+
+455:2-455:24
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c5b81ad7_b8d8d046
+Bytes: 43
+Is heap_capacity worth retaining if unused?
+
+456:21-456:35
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_8111ed9e
+Bytes: 4
+Why?
+
+3171:52-3171:84
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25ead6c4_864c8b77
+Bytes: 176
+This seems to imply that the space is page aligned.
+
+Is there a cleaner way? For example, is it possible to always make the space end page aligned and DCHECK that instead here?
+
+File: runtime/image.h
+
+307:35-307:78
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45db4a39_7aae30c5
+Bytes: 57
+Does this refer to both the .art and .oat files? Clarify?
+
+308:22-308:31
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25157684_e1e8a1d2
+Bytes: 103
+Does this mean that app oat files do not hardcode addresses/pointers into the app image files? Clarify?
+
+File: runtime/mirror/class.h
+
+1166:55-1167:11
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_a5deb527
+Bytes: 127
+This seems correct. What motivated this additional comment? This function for native pointers, not GC roots in the first place?
+
+File: runtime/mirror/object-inl.h
+
+1109:15-1109:32
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05107294_85a619d2
+Bytes: 23
+When can this be false?
+
+File: runtime/oat_file_assistant.cc
+
+334:0-336:3
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65e04ee1_1316fe30
+Bytes: 59
+Can this happen legitimately or is this a clear error case?
+
+1016:41-1016:54
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e598be91_d746defe
+Bytes: 95
+Since this seems to create a new image space at each call, how about naming "CreateImageSpace"?
+
+File: runtime/utils/dex_cache_arrays_layout-inl.h
+
+63:0-64:31
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 65e04ee1_b3354ad5
+Bytes: 138
+I looked at FixupArtMethodArrayVisitor but not sure what this means. Can you clarify this comment or point me to the code explaining this?
+
+65:9-65:16
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 45db4a39_5ada549b
+Bytes: 46
+Could this be std::min() instead of RoundUp()?
+
+78:9-78:16
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05e5d2f2_e40f0bb6
+Bytes: 5
+Same.
+
+File: test/506-verify-aput/src/Main.java
+
+26:43-27:4
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5cc3e7f_2cbabc87
+Bytes: 95
+How about moving the closing brace to the beginning of the next line (before the second catch)?
+
+32:4-32:5
+Wed Dec 16 02:51:29 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 05e5d2f2_e7070d5f
+Bytes: 5
+Same.
+

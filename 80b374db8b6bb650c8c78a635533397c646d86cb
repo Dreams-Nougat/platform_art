@@ -9,12 +9,28 @@ UUID: 05e5d2f2_4738c11d
 Bytes: 37
 Does this refer to the art run tests?
 
+10:31-10:50
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05e5d2f2_4738c11d
+UUID: e598be91_09d9ca14
+Bytes: 3
+Yes
+
 21:0-21:61
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e598be91_e9410690
 Bytes: 20
 What does this mean?
+
+21:0-21:61
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e598be91_e9410690
+UUID: 05107294_85bd7926
+Bytes: 137
+Doing object reads from the image space before it is added to the heap, this could mean the heap can't handle the read barrier slow path.
 
 File: compiler/image_writer.cc
 
@@ -25,6 +41,14 @@ UUID: 25157684_a131892f
 Bytes: 152
 Does this apply to the boot image as well? Is this code path specific to an app image case? If no and no, is it okay to do this for the boot image case?
 
+671:0-672:15
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25157684_a131892f
+UUID: 655f6ecc_a679c610
+Bytes: 43
+This is only tested for the app image case.
+
 File: compiler/oat_writer.cc
 
 735:7-735:56
@@ -33,6 +57,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e598be91_c9fc0299
 Bytes: 72
 Not sure I follow the change here, but can we assert that it's resolved?
+
+735:7-735:56
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e598be91_c9fc0299
+UUID: 45718a52_d0a5a279
+Bytes: 178
+Previously it would try to resolve methods for classes that failed to verify for some of the tests. What do you mean by assert that it is resolved? Assert the declaring class is?
 
 File: dex2oat/dex2oat.cc
 
@@ -43,12 +75,28 @@ UUID: 65e04ee1_d39816e7
 Bytes: 94
 This refers to right after the non-moving space rather than right after the oat file? Clarify?
 
+1296:11-1296:16
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65e04ee1_d39816e7
+UUID: 8568e271_8af60b80
+Bytes: 4
+Done
+
 1299:22-1299:52
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25157684_212639fd
 Bytes: 100
 This looks like the default value of a runtime option. Should this query the runtime option instead?
+
+1299:22-1299:52
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25157684_212639fd
+UUID: a565e697_eb96ad6d
+Bytes: 51
+Good idea, or we could add another compiler option.
 
 File: runtime/class_linker.cc
 
@@ -114,6 +162,14 @@ Also, maybe give it a more descriptive name? Otherwise, the code looks like it's
 
 Note that calling this may cause potentially many classes to be marked due to read barriers and may prevent timely unloading, if that matters.
 
+43:27-43:33
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_05a4e975
+UUID: 455a6ade_c8fc0f64
+Bytes: 82
+It is only used in the uncommon case and for checks currently, I'll add a comment.
+
 183:0-183:30
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -121,12 +177,28 @@ UUID: 25ead6c4_86f64b48
 Bytes: 79
 Can this code be outside of this function? It may not belong to ReadFromMemory?
 
+183:0-183:30
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25ead6c4_86f64b48
+UUID: c56e5a7a_4cb7cf43
+Bytes: 4
+Done
+
 185:17-185:36
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c5b81ad7_18537c61
 Bytes: 62
 Why is this read barrier disabled? What goes wrong if enabled?
+
+185:17-185:36
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b81ad7_18537c61
+UUID: c56e5a7a_2cd5bb63
+Bytes: 211
+If the space containing the class is not added to the heap, the read barrier will not be able to mark the object and also probably would fail some DCHECKs. It may be worth thinking about what we want to do here.
 
 File: runtime/dex_file.cc
 
@@ -137,6 +209,14 @@ UUID: 05107294_45fd415d
 Bytes: 157
 I assume that the name "classes.dex" came from the fact that it contains classes (or dex bytecode). Is it intuitive to call the app image file "classes.art"?
 
+254:36-254:47
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_45fd415d
+UUID: 4518aa2c_55160c31
+Bytes: 33
+Actually, this is no longer used.
+
 File: runtime/gc/accounting/space_bitmap-inl.h
 
 171:6-171:45
@@ -145,6 +225,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05107294_6572fded
 Bytes: 137
 Isn't it the case that if the bit is already set, the page is already dirty? Do we have a clean page with some bits set that we write to?
+
+171:6-171:45
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_6572fded
+UUID: 8568e271_a7a0eac6
+Bytes: 157
+Modify is used for test and set, so if we try to mark something in an app image not in the immune region it will dirty the page even if it is already marked.
 
 File: runtime/gc/heap.cc
 
@@ -155,6 +243,14 @@ UUID: 45db4a39_1ab7ec12
 Bytes: 69
 This seems okay, but do you see any impact on the card scanning time?
 
+453:77-454:29
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db4a39_1ab7ec12
+UUID: a5b8863e_f0c8002c
+Bytes: 92
+No, the card scanning always uses the space sizes to visit ranges, so it should be the same.
+
 455:2-455:24
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -162,12 +258,28 @@ UUID: c5b81ad7_b8d8d046
 Bytes: 43
 Is heap_capacity worth retaining if unused?
 
+455:2-455:24
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b81ad7_b8d8d046
+UUID: c5dadaa8_e94bf55c
+Bytes: 132
+I plan on adding logic to expand the card table when spaces are added, it is possible to suspend all the threads briefly to do this.
+
 456:21-456:35
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25157684_8111ed9e
 Bytes: 4
 Why?
+
+456:21-456:35
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25157684_8111ed9e
+UUID: 459d0ad3_8d46c156
+Bytes: 90
+Reserved by kernel, I can probably make it lower, but I don't think we want to start at 0.
 
 3171:52-3171:84
 Wed Dec 16 02:51:29 2015 +0000
@@ -177,6 +289,14 @@ Bytes: 176
 This seems to imply that the space is page aligned.
 
 Is there a cleaner way? For example, is it possible to always make the space end page aligned and DCHECK that instead here?
+
+3171:52-3171:84
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25ead6c4_864c8b77
+UUID: c5dadaa8_092f6964
+Bytes: 108
+Possibly, the current logic is that you can iterate over objects by using SizeOf for VerifyImageAllocations.
 
 File: runtime/gc/space/image_space.cc
 
@@ -231,12 +351,28 @@ UUID: 45db4a39_7aae30c5
 Bytes: 57
 Does this refer to both the .art and .oat files? Clarify?
 
+307:35-307:78
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db4a39_7aae30c5
+UUID: a5d1668e_6819c35f
+Bytes: 4
+Done
+
 308:22-308:31
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25157684_e1e8a1d2
 Bytes: 103
 Does this mean that app oat files do not hardcode addresses/pointers into the app image files? Clarify?
+
+308:22-308:31
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25157684_e1e8a1d2
+UUID: c5b1fa58_f16008b9
+Bytes: 3
+Yes
 
 File: runtime/mirror/class.h
 
@@ -247,6 +383,14 @@ UUID: 05107294_a5deb527
 Bytes: 127
 This seems correct. What motivated this additional comment? This function for native pointers, not GC roots in the first place?
 
+1166:55-1167:11
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_a5deb527
+UUID: 0512320e_93c43c91
+Bytes: 92
+I just did not remember since VisitReferences visits the ArtMethod roots but Fixup does not.
+
 File: runtime/mirror/object-inl.h
 
 1109:15-1109:32
@@ -255,6 +399,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05107294_85a619d2
 Bytes: 23
 When can this be false?
+
+1109:15-1109:32
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_85a619d2
+UUID: 0512320e_d3ceb4ac
+Bytes: 65
+It is false for in-place image relocation to improve performance.
 
 File: runtime/oat_file_assistant.cc
 
@@ -265,12 +417,28 @@ UUID: 65e04ee1_1316fe30
 Bytes: 59
 Can this happen legitimately or is this a clear error case?
 
+334:0-336:3
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65e04ee1_1316fe30
+UUID: 459d0ad3_ed9145c6
+Bytes: 37
+It is an error case, added a comment.
+
 1016:41-1016:54
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e598be91_d746defe
 Bytes: 95
 Since this seems to create a new image space at each call, how about naming "CreateImageSpace"?
+
+1016:41-1016:54
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e598be91_d746defe
+UUID: 4518aa2c_15581404
+Bytes: 77
+Renamed to OpenImageSpace since create might be ambiguous with image writing.
 
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 
@@ -281,6 +449,14 @@ UUID: 65e04ee1_b3354ad5
 Bytes: 138
 I looked at FixupArtMethodArrayVisitor but not sure what this means. Can you clarify this comment or point me to the code explaining this?
 
+63:0-64:31
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65e04ee1_b3354ad5
+UUID: 05a79224_0bcbddcc
+Bytes: 149
+The fixup logic stores a forward pointer which requires 2 words on 64 bits, this avoids a map lookup in the case where there are multiple dex caches.
+
 65:9-65:16
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -288,12 +464,28 @@ UUID: 45db4a39_5ada549b
 Bytes: 46
 Could this be std::min() instead of RoundUp()?
 
+65:9-65:16
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db4a39_5ada549b
+UUID: a5d1668e_e80e530d
+Bytes: 43
+Actually yes, not sure what I was thinking.
+
 78:9-78:16
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05e5d2f2_e40f0bb6
 Bytes: 5
 Same.
+
+78:9-78:16
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05e5d2f2_e40f0bb6
+UUID: c5dadaa8_c996f1bb
+Bytes: 4
+Done
 
 File: test/506-verify-aput/src/Main.java
 
@@ -304,10 +496,26 @@ UUID: e5cc3e7f_2cbabc87
 Bytes: 95
 How about moving the closing brace to the beginning of the next line (before the second catch)?
 
+26:43-27:4
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5cc3e7f_2cbabc87
+UUID: 850622ce_57b44c0b
+Bytes: 4
+Done
+
 32:4-32:5
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05e5d2f2_e7070d5f
 Bytes: 5
 Same.
+
+32:4-32:5
+Thu Dec 17 01:22:49 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05e5d2f2_e7070d5f
+UUID: 850622ce_b7916879
+Bytes: 4
+Done
 

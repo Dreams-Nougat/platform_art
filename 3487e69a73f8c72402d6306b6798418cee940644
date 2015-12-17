@@ -30,6 +30,20 @@ I am talking about the dispatch, not how we can make it a direct call in a compi
 
 How is "invoke-super ThisInterfaceMethod" different than "invoke-super ThisSuperClassMethod"
 
+18:0-18:41
+Thu Dec 17 22:16:24 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 651dae1a_968c2cb0
+UUID: 8a5c6f37_a733aa31
+Bytes: 901
+First in interface super the class part does make a difference. The invoke is 'invoke-super {...}, LInterfaceClass;->methodName(...)LReturnValue;'
+
+Two reasons:
+
+1) We need to lookup the interface class. It is not simply the declaring class of the method like it is with normal invoke-super.
+
+2) with normal invoke super we simply index into the vtable of the super class but with interface invoke-super we need to do a more complicated lookup procedure. Right now (in this ps) we do that by giving each interface an iftable which we perform lookup on. This is rather slow (we could also give interfaces an imt so it would be the same speed as an invoke-interface). Also we are actually going to not even do this since it adds too much memory overhead for what is (at the moment) a basically unused feature, especially given the compiler can often just turn it into a direct call or inline the method.
+
 File: compiler/dex/quick/quick_compiler.cc
 
 525

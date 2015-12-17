@@ -12,6 +12,14 @@ invoke-super MyInterface.myDefaultMethod
 
 And that method exists, why can't you just use it directly?
 
+18:0-18:41
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25673634_772e2a3c
+UUID: 850622ce_ba3dcd9f
+Bytes: 136
+No but we don't do that at the moment. We will add to the optimizing compiler support to compile them to a direct call (where possible).
+
 File: compiler/dex/quick/quick_compiler.cc
 
 525
@@ -25,6 +33,14 @@ Make it more clear, like you said yourself in an earlier reply:
   // Always need to scan opcodes if we have default methods
   // since invoke-super for interface methods is never supported.
 
+525
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25ead6c4_f18d0ae7
+UUID: a5d1668e_eb100d9b
+Bytes: 4
+Done
+
 File: compiler/image_writer.cc
 
 1228
@@ -33,6 +49,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05e5d2f2_30c5ae65
 Bytes: 4
 Why?
+
+1228
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05e5d2f2_30c5ae65
+UUID: 850622ce_7a3cd59b
+Bytes: 44
+It should be there. Moved to a different cl.
 
 File: runtime/art_method.cc
 
@@ -43,6 +67,14 @@ UUID: c5b81ad7_2e247b5c
 Bytes: 52
 Why is it from the end now? Add explanatory comment.
 
+151
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b81ad7_2e247b5c
+UUID: c5dadaa8_4f66816f
+Bytes: 24
+I have no idea. Removed.
+
 File: runtime/class_linker.cc
 
 5411
@@ -52,12 +84,35 @@ UUID: e598be91_31075af8
 Bytes: 8
 Comment?
 
+5411
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e598be91_31075af8
+UUID: c5dadaa8_ec52e318
+Bytes: 4
+Done
+
+5410:0-5413:3
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4518aa2c_f860edb8
+Bytes: 219
+Maybe add another experimental flag to control if we do this. It might in the future be worth it to give interfaces iftables (if this is really widely used) but for now we probably just want to do it an even slower way.
+
 5526
 Tue Dec 15 23:07:33 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05e5d2f2_10d0b21a
 Bytes: 22
 Comment needs updating
+
+5526
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05e5d2f2_10d0b21a
+UUID: c5dadaa8_acebcb63
+Bytes: 4
+Done
 
 5717:34-5717:36
 Tue Dec 15 23:07:33 2015 +0000
@@ -68,6 +123,14 @@ This is misleading, I would say it's more like it's 'accessible through the ifta
 
 See your comment on line 5700 which is less misleading and also uses "accessible through the iftable".
 
+5717:34-5717:36
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_4cd44edf
+UUID: a5b8863e_f3792aa9
+Bytes: 4
+Done
+
 File: runtime/common_throws.cc
 
 88:52-88:59
@@ -77,12 +140,28 @@ UUID: c5b81ad7_ee41a3eb
 Bytes: 25
 nit: /* parameter name */
 
+88:52-88:59
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b81ad7_ee41a3eb
+UUID: 4518aa2c_78a69d30
+Bytes: 4
+Done
+
 90:65-90:69
 Tue Dec 15 23:07:33 2015 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45db4a39_fc2ec0cd
 Bytes: 25
 nit: /* parameter name */
+
+90:65-90:69
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45db4a39_fc2ec0cd
+UUID: 0512320e_9901fb22
+Bytes: 4
+Done
 
 File: runtime/entrypoints/entrypoint_utils-inl.h
 
@@ -94,6 +173,14 @@ Bytes: 43
 Consider adding:
 
    // It is an interface.
+
+477
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b81ad7_4e528fbb
+UUID: a5b8863e_d357c606
+Bytes: 4
+Done
 
 File: runtime/mirror/class.cc
 
@@ -107,4 +194,12 @@ I think I'm misunderstanding FindVirtualMethodForInterface, but since it filters
 Isn't it different lookup semantics?
 
 I thought you would've just wanted to apply this FindVirtualMethodForInterfaceSuper recursively?
+
+551
+Thu Dec 17 21:03:25 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_6cfcaa5f
+UUID: 850622ce_fda57fc7
+Bytes: 144
+I did it this way since it works if we have a full iftable. If we don't we need to do it recursively (with some additional trickiness actually).
 

@@ -44,6 +44,14 @@ Two reasons:
 
 2) with normal invoke super we simply index into the vtable of the super class but with interface invoke-super we need to do a more complicated lookup procedure. Right now (in this ps) we do that by giving each interface an iftable which we perform lookup on. This is rather slow (we could also give interfaces an imt so it would be the same speed as an invoke-interface). Also we are actually going to not even do this since it adds too much memory overhead for what is (at the moment) a basically unused feature, especially given the compiler can often just turn it into a direct call or inline the method.
 
+18:0-18:41
+Thu Dec 17 23:21:09 2015 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a5c6f37_a733aa31
+UUID: 05f952fe_9b960b6d
+Bytes: 172
+Could we make it like invokedirect (or actually use invokedirect)? So the method linked by the instruction is the actual method to call and we do not need to do any lookup?
+
 File: compiler/dex/quick/quick_compiler.cc
 
 525

@@ -9,6 +9,14 @@ UUID: 45398ab3_ad1b9dbc
 Bytes: 11
 Why except?
 
+2104:57-2104:75
+Thu Dec 17 17:25:42 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45398ab3_ad1b9dbc
+UUID: c5b1fa58_d7a054c8
+Bytes: 109
+This is the same as the default for any method. It means it may generate a GC, but it may not depend on a GC.
+
 File: compiler/optimizing/nodes.h
 
 3302:11-3302:34
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 65f4ce02_1e082d6e
 Bytes: 35
 This is guaranteed from the caller.
+
+3302:11-3302:34
+Thu Dec 17 17:25:42 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 65f4ce02_1e082d6e
+UUID: 05a79224_d4985259
+Bytes: 13
+Okay, removed
 
 File: test/449-checker-bce/src/Main.java
 
@@ -36,4 +52,14 @@ The "(after)" test is even weirder. What it will do is:
 4) check that there isn't an ArrayGet between the line matched in 1) and the earliest line matched in 3)
 
 Again, I'm not saying that it's wrong but I don't see what it's testing either. Would it help if GraphVisualizer printed more info, e.g. loop headers like it does for LICM? If so, then by all means add that into the graph dump. I would even suggest we print the block number with every single instructions and put name of the block and its predecessors/successors on one line. That would help us0 better argue about the layout of blocks.
+
+621
+Thu Dec 17 17:25:42 2015 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85ed423a_1fdf8326
+UUID: 0512320e_67e9dad4
+Bytes: 223
+So, are you saying I should use CHECK, not CHECK-DAG?
+
+In any case, not all is weird. What you describe in the after test as weird is exactly what I want, for example. An ArrayGet with no precedding Null/Length/BoundsCheck.
 

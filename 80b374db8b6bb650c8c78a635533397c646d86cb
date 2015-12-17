@@ -32,6 +32,16 @@ UUID: 05107294_85bd7926
 Bytes: 137
 Doing object reads from the image space before it is added to the heap, this could mean the heap can't handle the read barrier slow path.
 
+21:0-21:61
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05107294_85bd7926
+UUID: 850622ce_cb16f596
+Bytes: 104
+Reads during image relocation aren't normal mutator accesses?
+
+Is it handled by disabling read barriers?
+
 File: compiler/image_writer.cc
 
 671:0-672:15
@@ -49,6 +59,14 @@ UUID: 655f6ecc_a679c610
 Bytes: 43
 This is only tested for the app image case.
 
+671:0-672:15
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 655f6ecc_a679c610
+UUID: c5dadaa8_12583204
+Bytes: 88
+Does it make sense to add an assert that fails if this code is run against a boot image?
+
 File: compiler/oat_writer.cc
 
 735:7-735:56
@@ -65,6 +83,16 @@ Parent: e598be91_c9fc0299
 UUID: 45718a52_d0a5a279
 Bytes: 178
 Previously it would try to resolve methods for classes that failed to verify for some of the tests. What do you mean by assert that it is resolved? Assert the declaring class is?
+
+735:7-735:56
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45718a52_d0a5a279
+UUID: c5b1fa58_c59b7a85
+Bytes: 207
+I mean that the method is resolved as in the sense of ResolveMethod or GetResolvedMethod.
+
+Maybe add a comment on when it may not be resolved (the "method == nullptr" case) which isn't a fatal case any more?
 
 File: dex2oat/dex2oat.cc
 
@@ -200,6 +228,16 @@ UUID: c56e5a7a_2cd5bb63
 Bytes: 211
 If the space containing the class is not added to the heap, the read barrier will not be able to mark the object and also probably would fail some DCHECKs. It may be worth thinking about what we want to do here.
 
+185:17-185:36
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c56e5a7a_2cd5bb63
+UUID: 850622ce_2b7b31cf
+Bytes: 132
+I assume this is related to the read barrier comment in the commit message.
+
+Add a comment on why the read barrier is disabled here?
+
 File: runtime/dex_file.cc
 
 254:36-254:47
@@ -233,6 +271,14 @@ Parent: 05107294_6572fded
 UUID: 8568e271_a7a0eac6
 Bytes: 157
 Modify is used for test and set, so if we try to mark something in an app image not in the immune region it will dirty the page even if it is already marked.
+
+171:6-171:45
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8568e271_a7a0eac6
+UUID: 653e8e9d_11384e79
+Bytes: 459
+I guess you are saying that an app image space's mark bitmap resides in the app image file, is memory-mapped, initially clean, but isn't read-only. The collector tries to mark (write to) the mark bitmap because the app image space may not be in the immune region and the collector code unconditionally tries to write to the mark bitmap if the space isn't in the immune region? And this change avoids that marking to unnecessarily dirty the memory-mapped page?
 
 File: runtime/gc/heap.cc
 
@@ -281,6 +327,14 @@ UUID: 459d0ad3_8d46c156
 Bytes: 90
 Reserved by kernel, I can probably make it lower, but I don't think we want to start at 0.
 
+456:21-456:35
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 459d0ad3_8d46c156
+UUID: c5b1fa58_c5ed3ae9
+Bytes: 40
+Add "reserved by kernel" to the comment?
+
 3171:52-3171:84
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -297,6 +351,16 @@ Parent: 25ead6c4_864c8b77
 UUID: c5dadaa8_092f6964
 Bytes: 108
 Possibly, the current logic is that you can iterate over objects by using SizeOf for VerifyImageAllocations.
+
+3171:52-3171:84
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5dadaa8_092f6964
+UUID: a5b8863e_595817d3
+Bytes: 206
+(I meant to say "not page aligned" in the first sentence.)
+
+How about asserting that the space end may be not page-aligned if the space is an app image space and limiting the AlignUp code only to that case?
 
 File: runtime/gc/space/image_space.cc
 
@@ -424,6 +488,14 @@ Parent: 65e04ee1_1316fe30
 UUID: 459d0ad3_ed9145c6
 Bytes: 37
 It is an error case, added a comment.
+
+334:0-336:3
+Thu Dec 17 21:20:03 2015 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 459d0ad3_ed9145c6
+UUID: 850622ce_ebb499a9
+Bytes: 44
+If an error case, how about making it fatal?
 
 1016:41-1016:54
 Wed Dec 16 02:51:29 2015 +0000

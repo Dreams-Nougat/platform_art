@@ -52,6 +52,14 @@ UUID: 05f952fe_9b960b6d
 Bytes: 172
 Could we make it like invokedirect (or actually use invokedirect)? So the method linked by the instruction is the actual method to call and we do not need to do any lookup?
 
+18:0-18:41
+Thu Dec 17 23:43:08 2015 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05f952fe_9b960b6d
+UUID: ca62e7ed_8902f98d
+Bytes: 369
+No (or at least probably not) b/c we need to throw ICCEs when the invoke has conflicting possible implementations. This means that sometimes there is no method in the dex file that can be said to be the target of the invoke. Note this is only possible when there are source-level incompatibilities in the dex, but needed for binary-compat/partial compilation/multi-dex.
+
 File: compiler/dex/quick/quick_compiler.cc
 
 525

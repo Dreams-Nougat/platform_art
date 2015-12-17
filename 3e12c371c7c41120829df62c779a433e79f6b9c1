@@ -9,6 +9,14 @@ UUID: a50326be_588bddd1
 Bytes: 26
 Why do we need this check?
 
+484:10-484:35
+Thu Dec 17 15:28:14 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a50326be_588bddd1
+UUID: 45398ab3_6d6455f6
+Bytes: 37
+I think it can be null for dead code.
+
 546:0-547:76
 Thu Dec 17 15:10:07 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 05f952fe_9b8c4bb0
 Bytes: 84
 Use instruction->Next() to avoid pointing to the middle of a multi-unit instruction.
 
+546:0-547:76
+Thu Dec 17 15:28:14 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05f952fe_9b8c4bb0
+UUID: a50326be_f84bd15c
+Bytes: 14
+Done.  Thanks.
+
 556:28-556:32
 Thu Dec 17 15:10:07 2015 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e5099ede_dafa452b
 Bytes: 48
 instruction->Next()->GetDexPc(code_item.insns_).
+
+556:28-556:32
+Thu Dec 17 15:28:14 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5099ede_dafa452b
+UUID: 651dae1a_965d4c2b
+Bytes: 4
+Done
 
 File: dex2oat/dex2oat.cc
 
@@ -32,10 +56,33 @@ UUID: 45398ab3_4d8eb9e3
 Bytes: 44
 How about only adding a --generate-symbols ?
 
+313:57-313:68
+Thu Dec 17 15:28:14 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45398ab3_4d8eb9e3
+UUID: a50326be_386d49dc
+Bytes: 912
+So after a bit of thought, I had different reason to add the --native-debuggable flag.  The mere presence of HNativeDebugInfo can affect codegen and it definitely affect stackmaps.  I did not want --generate-debug-info to affect codegen in any way.   Thus the new flag.
+
+Note that all four combinations of the flags makes sense.  In particular, it still makes some sense to generate best-effort debug information for non-debugable optimized code.
+
+This mirrors clang/gcc where optimization level and generation of debug info are orthogonal concepts.
+
+
+To answer your question.  Adding --generate-symbols to pick just a subset of data to generate is possible.  However is there a harm in generating all debug data in that case?  I would like to avoid adding extra compiler options unless we have good reason.(on other topic, I try to avoid the term "debug symbol" as it means different things to different people)
+
 322:66-322:70
 Thu Dec 17 14:55:19 2015 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45398ab3_2d816db4
 Bytes: 127
 Do we want to name the debugger here? In theory any dwarf compatible native debugger should be able to debug the generated code
+
+322:66-322:70
+Thu Dec 17 15:28:14 2015 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45398ab3_2d816db4
+UUID: e5099ede_9af0cd4f
+Bytes: 4
+Done
 

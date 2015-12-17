@@ -63,3 +63,13 @@ So, are you saying I should use CHECK, not CHECK-DAG?
 
 In any case, not all is weird. What you describe in the after test as weird is exactly what I want, for example. An ArrayGet with no precedding Null/Length/BoundsCheck.
 
+621
+Thu Dec 17 18:16:52 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0512320e_67e9dad4
+UUID: a5ea461e_a0de3a8b
+Bytes: 511
+I'm saying that relying on the order of lines in the CFG file makes the tests difficult to maintain. Look at what BCE is doing: it creates a bunch of new blocks (that will appear at the end of the CFG file) and hoists instructions into them, i.e. moves them to the end of the CFG file. If a pass which runs after BCE depends on the order of blocks, it will break and somebody will need to go and update it.
+
+I believe that you wrote the tests carefully, but this way they are very fragile to orthogonal changes.
+

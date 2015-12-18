@@ -9,6 +9,14 @@ UUID: 4a7c37a4_959484f7
 Bytes: 41
 This doesn't feel related to this change.
 
+247:0-248:40
+Fri Dec 18 17:01:39 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a7c37a4_959484f7
+UUID: 0a76bfc5_130c0c18
+Bytes: 166
+indeed. I was hopping to make the JitCodeCache in the saver constant. Didn't really work, but I think it's better having it atomic than locking everytime we query it.
+
 File: runtime/jit/offline_profiling_info.cc
 
 33:0-37:1
@@ -34,6 +42,14 @@ UUID: 6a81fbc7_362b386e
 Bytes: 19
 can that be const&?
 
+30:20-30:39
+Fri Dec 18 17:01:39 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a81fbc7_362b386e
+UUID: aadcd3fd_10c2c40c
+Bytes: 171
+see the comment in jit_code_cache. Unfortunately not, because for getting the art methods we need to lock and it seems that method which acquire locks can't be constify :(
+
 45:15-45:34
 Fri Dec 18 16:38:57 2015 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -56,4 +72,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8a6aafd7_d7bbdc8b
 Bytes: 66
 Use something else? I assume this will pollute the logcat greatly?
+
+1633:2-1633:11
+Fri Dec 18 17:01:39 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a6aafd7_d7bbdc8b
+UUID: 4a7c37a4_b568a0c4
+Bytes: 54
+It's called once per app launch. I'll make it verbose.
 

@@ -22,3 +22,19 @@ UUID: 45398ab3_ed15a588
 Bytes: 13
 Yes, will do.
 
+21:0-21:48
+Fri Dec 18 10:32:42 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45398ab3_ed15a588
+UUID: cad587d0_7115588e
+Bytes: 281
+I eventually chose a strategy similar to the one used in art::ReadBarrier::Barrier in PS4:
+
+  // `temp_reg` contains the value of rb_state.
+  and  ip, temp_reg, ~LockWord::kReadBarrierStateMask
+  add  obj, obj, ip
+  // Actual reference load from `obj`.
+  // ...
+
+What do you think?
+

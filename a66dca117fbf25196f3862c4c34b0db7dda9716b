@@ -9,12 +9,30 @@ UUID: 05f952fe_bba827b9
 Bytes: 62
 How about adding a DHECK here that read barriers are disabled?
 
+828:0-834:70
+Fri Dec 18 11:52:30 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05f952fe_bba827b9
+UUID: 8a6aafd7_37f818a1
+Bytes: 23
+Good idea; done in PS3.
+
 871:6-871:30
 Thu Dec 17 19:01:27 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0512320e_6739daaa
 Bytes: 183
 This intrinsic wasn't disabled before in the read barrier case? I thought it was. Or we didn't exercise this code before because we always enabled heap poisoning as well in the tests?
+
+871:6-871:30
+Fri Dec 18 11:52:30 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0512320e_6739daaa
+UUID: 8a6aafd7_17f394c7
+Bytes: 429
+So far, this intrinsic was indeed disabled only when heap poisoning was turned on.  And yes, AFAIK, because we always test with heap poisoning + read barriers turned on on our build & test infrastructures, we were not exercising this code path on the concurrent collection test configurations.
+
+Maybe we could consider turning off heap poisoning or adding new configurations with just read barriers turned on.  What do you think?
 
 File: compiler/optimizing/intrinsics_arm64.cc
 
@@ -25,6 +43,14 @@ UUID: 651dae1a_16581c04
 Bytes: 5
 ditto
 
+1034:0-1038:6
+Fri Dec 18 11:52:30 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 651dae1a_16581c04
+UUID: 0a76bfc5_d3dc543b
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_mips64.cc
 
 1302:21-1302:25
@@ -33,6 +59,18 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e5aefef8_b22a006f
 Bytes: 5
 ditto
+
+1302:21-1302:25
+Fri Dec 18 11:52:30 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5aefef8_b22a006f
+UUID: 8a6aafd7_d7dc3c3b
+Bytes: 382
+This comment is just a reminder for when read barriers are implement on MIPS64.
+
+I don't think a DCHECK is needed here, as we do not disable the UnsafeCASObject intrinsic on MIPS64 when read barriers are enabled ­– because read barriers are not implemented yet on MIPS64 (and therefore we use the interpreter in that configuration).
+
+I extended the comment to make it more clear.
 
 File: compiler/optimizing/intrinsics_x86.cc
 
@@ -43,6 +81,14 @@ UUID: 05f952fe_9bad6bc9
 Bytes: 5
 ditto
 
+2153
+Fri Dec 18 11:52:30 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05f952fe_9bad6bc9
+UUID: 0a76bfc5_f3d95048
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 2217
@@ -51,4 +97,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05f952fe_fba2afd6
 Bytes: 5
 ditto
+
+2217
+Fri Dec 18 11:52:30 2015 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05f952fe_fba2afd6
+UUID: 2a7b83af_7415288e
+Bytes: 4
+Done
 

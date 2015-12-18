@@ -1,0 +1,42 @@
+Revision: b87b5c370d1ecb79040ce0ca636ea9e2d2ee62c1
+Patch-set: 1
+File: compiler/optimizing/intrinsics_mips64.cc
+
+879:0-908:17
+Fri Dec 18 04:54:43 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca62e7ed_aceeeb17
+Bytes: 623
+I suggest a  better variant (quicker getting to floor and independent of FCSR.NAN2008):
+
+	li		out, float representation of Integer.MIN_VALUE
+	mtc1		out, FTMP
+	cmp.lte.s	FTMP, FTMP, in
+	bc1nez		FTMP, ladd
+
+	cmp.eq.s	FTMP, in, in
+	li		out, Integer.MIN_VALUE
+	bc1nez		FTMP, ldone
+
+	move		out, ZERO
+	bc		ldone
+
+ladd:
+	li		out, float representation of +0.5f
+	mtc1		out, FTMP
+	add.s		FTMP, in, FTMP
+	floor.w.s	FTMP, FTMP
+	mfc1		out, FTMP
+ldone:
+
+But we first need to get floating-point compares in on MIPS64 (my change with them hasn't been merged yet).
+
+You should now be able to use this in the MIPS32 version of the intrinsic.
+
+926:0-955:17
+Fri Dec 18 04:54:43 2015 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a2517a8_b319a068
+Bytes: 14
+Same as above.
+

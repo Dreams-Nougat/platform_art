@@ -1,0 +1,13 @@
+Revision: 3fc666ca4498604f21e1706137233f1054d0129b
+Patch-set: 2
+File: test/466-get-live-vreg/src/Main.java
+
+47:4-49:5
+Mon Dec 21 12:40:36 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a7c37a4_754f6817
+Bytes: 360
+I don't think it's as easy as this. Until now there were no local values except the arguments with obvious v0=arg, v1=test allocation. Adding this piece of code allocates a new object and the vreg allocation is not clear any more. In fact, having cherry-picked this, I get v2=arg which breaks the native vreg checks.
+
+You might need to rewrite this in smali...
+

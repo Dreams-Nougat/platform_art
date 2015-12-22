@@ -1,0 +1,84 @@
+Revision: d90ba97fa0a4812ca6d825ac0cacd8f738fef503
+Patch-set: 8
+File: compiler/optimizing/code_generator_x86.cc
+
+1645:4-1645:9
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8ab2aff4_f75ee055
+Bytes: 27
+Why isn't this a NearLabel?
+
+1658:4-1658:9
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ac9fb78_7673b0ed
+Bytes: 10
+NearLabel?
+
+File: compiler/optimizing/select_generator.cc
+
+43:27-43:64
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0abebfc6_13fa8c65
+Bytes: 299
+Can you move this condition to Run(), please? Long term, it should be relaxed but that will require changes to the IsSinglePhi() check (only one Phi that has different inputs from succ1 and succ2), cleaning up other Phis (removing one of the two identical inputs) and not doing the last block merge.
+
+77:7-77:74
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ac43761_f55ed855
+Bytes: 17
+Obsolete comment.
+
+File: compiler/optimizing/select_generator.h
+
+17:0-51:26
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cab827d7_d96bd3bf
+Bytes: 15
+Update comment.
+
+File: test/458-checker-instruction-simplification/src/Main.java
+
+1145:25-1145:27
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ac3835c_5426aca5
+Bytes: 157
+Flipping the result here and below exposes that EqualBoolVsIntConst() and NotEqualBoolVsIntConst() are actually unused in main(). Please add some assertions.
+
+1367:34-1367:36
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaaf738e_9894f509
+Bytes: 6
+Select
+
+1394:34-1394:36
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2ac3835c_742ba86c
+Bytes: 6
+Select
+
+File: test/463-checker-boolean-simplifier/src/Main.java
+
+282
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cab827d7_594fc36d
+Bytes: 49
+Please add assertions exercising the new methods.
+
+File: test/485-checker-dce-loop-update/smali/TestCase.smali
+
+188:0-190:18
+Tue Dec 22 17:49:23 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eab5ebda_5ac2550d
+Bytes: 273
+Btw., when we start following branches, this goto leads to an if-eqz with known result (we know that p1==0 here), so it can be redirected straight to :loop_body. This will create an independent loop with header at :loop_body and the PhiX will end up in that header instead.
+

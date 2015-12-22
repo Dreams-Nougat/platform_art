@@ -19,3 +19,11 @@ No, H##type must be a subclass of HInstruction and static_cast<>() is the most a
 
 If someone used multiple inheritance to make the HInstruction a second base class instead of first, static_cast<>() would still work but, assuming the usual class layout, reinterpret_cast<>() would be broken at run-time without any compile-time errors.
 
+5893:24-5893:35
+Tue Dec 22 19:22:17 2015 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ac3835c_d419dc67
+UUID: 0af79f9a_4b49e50e
+Bytes: 187
+Hm, I was thinking that you couldn't be sure it's a subclass, but I see that this is non-virtual in HInstruction, so all given types are subtypes. In that case it should be a down_cast...
+

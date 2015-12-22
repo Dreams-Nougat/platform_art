@@ -9,6 +9,16 @@ UUID: cab827d7_5997c32e
 Bytes: 115
 You're not actually doing that, are you? The metric is: compile if there is a profile file with >=10 methods in it.
 
+12:40-12:50
+Tue Dec 22 13:25:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cab827d7_5997c32e
+UUID: 6ac9fb78_d6e64400
+Bytes: 272
+Not sure I get the comment.
+
+I'm skipping compilation if we are requested to compile guided by profiles and there's a small difference. In this CL the difference is: "do I have at least 10 new methods that I have to compile?". It's possible that this will change overtime.
+
 File: compiler/profile_assistant.cc
 
 30:38-30:46
@@ -17,6 +27,14 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0ae5dff2_5b20a3d7
 Bytes: 43
 Pre-allocate `profile_files.size()` entries
+
+30:38-30:46
+Tue Dec 22 13:25:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ae5dff2_5b20a3d7
+UUID: aaaf738e_784e41c2
+Bytes: 4
+Done
 
 File: dex2oat/dex2oat.cc
 
@@ -31,12 +49,28 @@ It's not clear whether order matters, i.e. which of these are fine and how they 
 3) -pf -pf -rpf -rpf
 4) -rpf -rpf -pf -pf
 
+338
+Tue Dec 22 13:25:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cab827d7_19262bf7
+UUID: 6ac9fb78_f6e340ed
+Bytes: 113
+I added a comment. The comment doesn't matter: first -pf will go with first -rpf, second with second and so on...
+
 761:66-761:83
 Tue Dec 22 12:12:30 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eab5ebda_3a44c1a0
 Bytes: 12
 profile-file
+
+761:66-761:83
+Tue Dec 22 13:25:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eab5ebda_3a44c1a0
+UUID: 0ae5dff2_7b9c7f52
+Bytes: 4
+Done
 
 1496
 Tue Dec 22 12:12:30 2015 +0000
@@ -46,6 +80,14 @@ Bytes: 406
 This appears like a simple function which returns an internal boolean flag and does not modify the object at all. In fact, it actually does complex I/O and the outcome will change if called repeatedly (the second time the assistant will return null, right? because the reference files have been updated).
 
 Please rename/refactor accordingly, e.g. initialize pointer elsewhere and keep this method constant.
+
+1496
+Tue Dec 22 13:25:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea9a4b77_52f334c6
+UUID: 0ae5dff2_9b806be3
+Bytes: 4
+Done
 
 File: runtime/jit/offline_profiling_info.h
 
@@ -64,4 +106,12 @@ Parent: 2a7b83af_944004e9
 UUID: 6ac9fb78_b6d2a829
 Bytes: 33
 Feel free to rename straight away
+
+31:0-31:21
+Tue Dec 22 13:25:17 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ac9fb78_b6d2a829
+UUID: aaaf738e_98523563
+Bytes: 55
+I'll do it after +2, before submit. It also helps me :)
 

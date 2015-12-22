@@ -9,3 +9,13 @@ UUID: 4aed17c9_cd668967
 Bytes: 35
 Shouldn't this be reinterpret_cast?
 
+5893:24-5893:35
+Tue Dec 22 18:07:24 2015 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4aed17c9_cd668967
+UUID: 2ac3835c_d419dc67
+Bytes: 345
+No, H##type must be a subclass of HInstruction and static_cast<>() is the most appropriate.
+
+If someone used multiple inheritance to make the HInstruction a second base class instead of first, static_cast<>() would still work but, assuming the usual class layout, reinterpret_cast<>() would be broken at run-time without any compile-time errors.
+

@@ -1,5 +1,52 @@
 Revision: 18f6afa55490a5f620d0adcabd6fe361118a4d15
 Patch-set: 2
+File: /COMMIT_MSG
+
+12:40-12:50
+Tue Dec 22 12:12:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cab827d7_5997c32e
+Bytes: 115
+You're not actually doing that, are you? The metric is: compile if there is a profile file with >=10 methods in it.
+
+File: compiler/profile_assistant.cc
+
+30:38-30:46
+Tue Dec 22 12:12:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ae5dff2_5b20a3d7
+Bytes: 43
+Pre-allocate `profile_files.size()` entries
+
+File: dex2oat/dex2oat.cc
+
+338
+Tue Dec 22 12:12:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cab827d7_19262bf7
+Bytes: 175
+It's not clear whether order matters, i.e. which of these are fine and how they are paired:
+1) -pf -rpf -pf -rpf
+2) -rpf -pf -rpf -pf
+3) -pf -pf -rpf -rpf
+4) -rpf -rpf -pf -pf
+
+761:66-761:83
+Tue Dec 22 12:12:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eab5ebda_3a44c1a0
+Bytes: 12
+profile-file
+
+1496
+Tue Dec 22 12:12:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea9a4b77_52f334c6
+Bytes: 406
+This appears like a simple function which returns an internal boolean flag and does not modify the object at all. In fact, it actually does complex I/O and the outcome will change if called repeatedly (the second time the assistant will return null, right? because the reference files have been updated).
+
+Please rename/refactor accordingly, e.g. initialize pointer elsewhere and keep this method constant.
+
 File: runtime/jit/offline_profiling_info.h
 
 31:0-31:21
@@ -9,4 +56,12 @@ UUID: 2a7b83af_944004e9
 Bytes: 93
 I'll do it in a follow up.
 Keeping the same file name makes it easier to review it in gerrit.
+
+31:0-31:21
+Tue Dec 22 12:12:30 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a7b83af_944004e9
+UUID: 6ac9fb78_b6d2a829
+Bytes: 33
+Feel free to rename straight away
 

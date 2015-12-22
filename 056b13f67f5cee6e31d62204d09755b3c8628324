@@ -1,0 +1,101 @@
+Revision: 056b13f67f5cee6e31d62204d09755b3c8628324
+Patch-set: 12
+File: runtime/jit/jit.cc
+
+183:30-183:55
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4ac43761_15e994d6
+Bytes: 258
+Nit: I feel like this is not necessary. You have DCHECKs that you don't try to stop a non-running thread and StopProfileSaver function is only called from one place where you should know that the thread has been started, so this test should not be necessary.
+
+File: runtime/jit/profile_saver.cc
+
+32:64-32:70
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0abebfc6_53a5e4be
+Bytes: 7
+seconds
+
+77
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eab5ebda_dacf4580
+Bytes: 124
+Shouldn't you restore save_period_ms to kSavePeriodMs if ProcessProfilingInfo succeeds? Otherwise the back-off is permanent.
+
+78:45-78:74
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaaf738e_98d5d516
+Bytes: 68
+Nit: I'd do *3/2 but maybe you intend to tweak the constant further?
+
+84:21-84:29
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaaf738e_b8d29929
+Bytes: 57
+Nit: Initiating/Initiated to keep the messages consistent
+
+89:22-89:57
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cab827d7_b9d9bf49
+Bytes: 101
+Nit: not true? The condition says that not enough time has passed since last saved code cache update.
+
+95:23-95:30
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea9a4b77_52bc14d7
+Bytes: 244
+I know you're just moving this here from elsewhere, but wouldn't a vector be a more suitable data structure? Set will order the methods based on the pointer value, so it's doing an unnecessary sort and it makes the algorithm less deterministic.
+
+158:59-158:65
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0abebfc6_33c7886f
+Bytes: 5
+saver
+
+162:42-162:55
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cab827d7_790f277d
+Bytes: 13
+no underscore
+
+File: runtime/jit/profile_saver.h
+
+35:85-35:98
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cab827d7_f9cc178e
+Bytes: 123
+Pardon my ignorance, but either I'm misreading this sentence or I don't know what an "excludes lock" is. Could you explain?
+
+41:14-41:23
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0ae5dff2_fb596f86
+Bytes: 149
+Nit: I think that this type of method is usually called IsRunning. You'd avoid having to use awkward words like "unstarted" in your comments as well.
+
+55:5-55:12
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ac9fb78_b6ab8891
+Bytes: 9
+Processes
+
+File: runtime/runtime.cc
+
+268:7-268:14
+Tue Dec 22 10:24:13 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aaaf738e_98dcf53a
+Bytes: 9
+Similarly
+

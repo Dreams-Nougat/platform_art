@@ -9,6 +9,16 @@ UUID: 4ac43761_15e994d6
 Bytes: 258
 Nit: I feel like this is not necessary. You have DCHECKs that you don't try to stop a non-running thread and StopProfileSaver function is only called from one place where you should know that the thread has been started, so this test should not be necessary.
 
+183:30-183:55
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4ac43761_15e994d6
+UUID: 6ac9fb78_f6cc208e
+Bytes: 264
+the DCHECK is performed in ProfilerSaver which lies at the lower level, and perfect matching of Start/Stop makes it easer to reason about thread correctness. 
+
+I prefer to not enforce this at the higher level (i.e. jit) but if you have strong opinions I can do it.
+
 File: runtime/jit/profile_saver.cc
 
 32:64-32:70
@@ -18,12 +28,28 @@ UUID: 0abebfc6_53a5e4be
 Bytes: 7
 seconds
 
+32:64-32:70
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0abebfc6_53a5e4be
+UUID: 0ae5dff2_9b394b17
+Bytes: 4
+Done
+
 77
 Tue Dec 22 10:24:13 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eab5ebda_dacf4580
 Bytes: 124
 Shouldn't you restore save_period_ms to kSavePeriodMs if ProcessProfilingInfo succeeds? Otherwise the back-off is permanent.
+
+77
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eab5ebda_dacf4580
+UUID: 8ab2aff4_f7e340ed
+Bytes: 22
+Good suggestion. Done.
 
 78:45-78:74
 Tue Dec 22 10:24:13 2015 +0000
@@ -32,12 +58,28 @@ UUID: aaaf738e_98d5d516
 Bytes: 68
 Nit: I'd do *3/2 but maybe you intend to tweak the constant further?
 
+78:45-78:74
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aaaf738e_98d5d516
+UUID: 0ae5dff2_bb360722
+Bytes: 149
+yea, i prefer to have it a float for easier tweaking (and it's easier to express it as a constant). I don't think it will make any difference anyway.
+
 84:21-84:29
 Tue Dec 22 10:24:13 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aaaf738e_b8d29929
 Bytes: 57
 Nit: Initiating/Initiated to keep the messages consistent
+
+84:21-84:29
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aaaf738e_b8d29929
+UUID: 6ac9fb78_76f810a2
+Bytes: 4
+Done
 
 89:22-89:57
 Tue Dec 22 10:24:13 2015 +0000
@@ -46,12 +88,28 @@ UUID: cab827d7_b9d9bf49
 Bytes: 101
 Nit: not true? The condition says that not enough time has passed since last saved code cache update.
 
+89:22-89:57
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cab827d7_b9d9bf49
+UUID: ea9a4b77_f2e348ed
+Bytes: 4
+Done
+
 95:23-95:30
 Tue Dec 22 10:24:13 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ea9a4b77_52bc14d7
 Bytes: 244
 I know you're just moving this here from elsewhere, but wouldn't a vector be a more suitable data structure? Set will order the methods based on the pointer value, so it's doing an unnecessary sort and it makes the algorithm less deterministic.
+
+95:23-95:30
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea9a4b77_52bc14d7
+UUID: 0abebfc6_13e9acd6
+Bytes: 100
+Done. It's more a semantic difference. Agree that vector would be better from an implementation pov.
 
 158:59-158:65
 Tue Dec 22 10:24:13 2015 +0000
@@ -60,12 +118,28 @@ UUID: 0abebfc6_33c7886f
 Bytes: 5
 saver
 
+158:59-158:65
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0abebfc6_33c7886f
+UUID: ea9a4b77_1210cc9e
+Bytes: 4
+Done
+
 162:42-162:55
 Tue Dec 22 10:24:13 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cab827d7_790f277d
 Bytes: 13
 no underscore
+
+162:42-162:55
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cab827d7_790f277d
+UUID: eab5ebda_fa596986
+Bytes: 4
+Done
 
 File: runtime/jit/profile_saver.h
 
@@ -76,6 +150,14 @@ UUID: cab827d7_f9cc178e
 Bytes: 123
 Pardon my ignorance, but either I'm misreading this sentence or I don't know what an "excludes lock" is. Could you explain?
 
+35:85-35:98
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cab827d7_f9cc178e
+UUID: 2ac3835c_b44f00ba
+Bytes: 133
+An exclude lock is REQUIRES(!Locks::profiler_lock_) which states that you should not hold the profiler_lock when calling this method.
+
 41:14-41:23
 Tue Dec 22 10:24:13 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -83,12 +165,28 @@ UUID: 0ae5dff2_fb596f86
 Bytes: 149
 Nit: I think that this type of method is usually called IsRunning. You'd avoid having to use awkward words like "unstarted" in your comments as well.
 
+41:14-41:23
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ae5dff2_fb596f86
+UUID: 8ab2aff4_d7e63c00
+Bytes: 59
+Depends if you consider the sleeping period as "running" :)
+
 55:5-55:12
 Tue Dec 22 10:24:13 2015 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6ac9fb78_b6ab8891
 Bytes: 9
 Processes
+
+55:5-55:12
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ac9fb78_b6ab8891
+UUID: 0abebfc6_f3cc308e
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -98,4 +196,12 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aaaf738e_98dcf53a
 Bytes: 9
 Similarly
+
+268:7-268:14
+Tue Dec 22 13:25:27 2015 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aaaf738e_98dcf53a
+UUID: cab827d7_d933d330
+Bytes: 4
+Done
 

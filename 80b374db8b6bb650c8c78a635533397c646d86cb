@@ -42,6 +42,14 @@ Reads during image relocation aren't normal mutator accesses?
 
 Is it handled by disabling read barriers?
 
+21:0-21:61
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 850622ce_cb16f596
+UUID: aa2133e4_cbfae98d
+Bytes: 187
+That is the goal, to disable read barriers during the relocation at least. Maybe also for the class linker fixup. I think as long as there are no thread suspension points it should be OK?
+
 File: compiler/image_writer.cc
 
 671:0-672:15
@@ -66,6 +74,14 @@ Parent: 655f6ecc_a679c610
 UUID: c5dadaa8_12583204
 Bytes: 88
 Does it make sense to add an assert that fails if this code is run against a boot image?
+
+671:0-672:15
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5dadaa8_12583204
+UUID: ca2ae7be_2c5e3b2e
+Bytes: 4
+Done
 
 File: compiler/oat_writer.cc
 
@@ -93,6 +109,14 @@ Bytes: 207
 I mean that the method is resolved as in the sense of ResolveMethod or GetResolvedMethod.
 
 Maybe add a comment on when it may not be resolved (the "method == nullptr" case) which isn't a fatal case any more?
+
+735:7-735:56
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b1fa58_c59b7a85
+UUID: aa2133e4_eb5c0d79
+Bytes: 108
+I'm still not 100% sure the new way is correct for all cases, waiting for vmarko or someone else to comment.
 
 File: dex2oat/dex2oat.cc
 
@@ -294,6 +318,14 @@ I assume this is related to the read barrier comment in the commit message.
 
 Add a comment on why the read barrier is disabled here?
 
+185:17-185:36
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 850622ce_2b7b31cf
+UUID: ca01073f_3412fe38
+Bytes: 4
+Done
+
 File: runtime/dex_file.cc
 
 254:36-254:47
@@ -335,6 +367,14 @@ Parent: 8568e271_a7a0eac6
 UUID: 653e8e9d_11384e79
 Bytes: 459
 I guess you are saying that an app image space's mark bitmap resides in the app image file, is memory-mapped, initially clean, but isn't read-only. The collector tries to mark (write to) the mark bitmap because the app image space may not be in the immune region and the collector code unconditionally tries to write to the mark bitmap if the space isn't in the immune region? And this change avoids that marking to unnecessarily dirty the memory-mapped page?
+
+171:6-171:45
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 653e8e9d_11384e79
+UUID: 2afc637c_afbb358c
+Bytes: 39
+Yes, I'll add a comment aobut that too.
 
 File: runtime/gc/heap.cc
 
@@ -391,6 +431,14 @@ UUID: c5b1fa58_c5ed3ae9
 Bytes: 40
 Add "reserved by kernel" to the comment?
 
+456:21-456:35
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c5b1fa58_c5ed3ae9
+UUID: ca2ae7be_6ca833b1
+Bytes: 4
+Done
+
 3171:52-3171:84
 Wed Dec 16 02:51:29 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -417,6 +465,14 @@ Bytes: 206
 (I meant to say "not page aligned" in the first sentence.)
 
 How about asserting that the space end may be not page-aligned if the space is an app image space and limiting the AlignUp code only to that case?
+
+3171:52-3171:84
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a5b8863e_595817d3
+UUID: 0af79f9a_aed5f715
+Bytes: 173
+Actually, how about I move the logic into ClearCardRange to round up the end of the space to the card size? We can still assert that the space begin is aligned to kCardSize.
 
 File: runtime/gc/space/image_space.cc
 
@@ -600,6 +656,14 @@ Parent: 459d0ad3_ed9145c6
 UUID: 850622ce_ebb499a9
 Bytes: 44
 If an error case, how about making it fatal?
+
+334:0-336:3
+Tue Dec 22 21:31:52 2015 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 850622ce_ebb499a9
+UUID: 0af79f9a_0eeecbde
+Bytes: 93
+I think we try to avoid aborting for oat and image file issues. I'll add a LOG(ERROR) though.
 
 1016:41-1016:54
 Wed Dec 16 02:51:29 2015 +0000

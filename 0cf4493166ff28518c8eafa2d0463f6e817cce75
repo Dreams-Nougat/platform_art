@@ -1,0 +1,24 @@
+Revision: 0cf4493166ff28518c8eafa2d0463f6e817cce75
+Patch-set: 7
+File: compiler/optimizing/builder.cc
+
+472:0-472:48
+Sun Dec 27 11:00:31 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a773b0f_46a532bf
+Bytes: 56
+Not necessary - arena allocated memory is always zeroed.
+
+File: compiler/optimizing/code_generator_arm.cc
+
+1626:0-1626:49
+Sun Dec 27 11:00:31 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a8e5b43_2eee47df
+Bytes: 830
+Are you sure this is safe? The runtime assumes that there is at most one stack map per native_pc_offset, e.g. when searching for a deoptimize or try/catch stack map (go/stack-map-native). If the previous HIR instruction generated a stack map for its last native instruction, this will generate another one with the same native pc offset.
+
+It's probably fine for the moment because GetStackMapForNativePcOffset does a linear search and will thus always return the first encountered stack map, but we've been planning to change it to binary search.
+
+Either way, I feel like this is breaking an implicit agreement between the compiler and the runtime (which we should probably try to enforce in the stack map stream) and should at least be better documented. If it were up to me, I'd emit a NOP to bump the native_pc as a safety net.
+

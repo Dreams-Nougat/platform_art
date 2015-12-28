@@ -9,3 +9,11 @@ UUID: eab5ebda_3acda13e
 Bytes: 72
 Why did you remove this section and why was there this extra BooleanNot?
 
+1126:40-1126:50
+Mon Dec 28 16:38:42 2015 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eab5ebda_3acda13e
+UUID: cab827d7_d908330b
+Bytes: 415
+That was specific to the BoolNot simplification and now does not apply any more. It would recognize the pattern Value->BoolNot1->BoolNot2 and replace BoolNot2 with Value. BoolNot2 is then guaranteed dead and can be removed immediately but BoolNot1 can still have uses. None of that matters because DCE will remove them eventually if unused, so we typically leave such instructions dangling in InstructionSimplifier.
+

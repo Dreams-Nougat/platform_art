@@ -1,0 +1,41 @@
+Revision: 92617f323d8dc2bcd0bfa214d603e2e20cf33d1b
+Patch-set: 10
+File: compiler/profile_assistant.cc
+
+101:0-121:1
+Tue Jan 05 10:25:08 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a5f3bcc_26e4f6f5
+Bytes: 425
+How about a new class for doing the locking/unlocking? For example:
+
+class ScopedLocking {
+  const std::vector<uint32_t>& fds_;
+  bool success_;
+
+  ScopedLocking(fds) : fds_(fds) {
+    success_ = LockAll(fds_);
+  }
+  ~ScopedLocking() {
+    UnlockAll(fds_);
+  }
+}
+
+And then you'd write:
+ScopedLocking prof(profile_files_fd);
+if (!prof.Success()) {
+  return;
+}
+
+ScopedLocking ref_prof(..);
+if (!ref_prof.Success()) {
+  return
+}
+
+130:1-160:65
+Tue Jan 05 10:25:08 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca6e677a_c9e891d5
+Bytes: 37
+Ditto for a ScopedOpenAllFiles class.
+

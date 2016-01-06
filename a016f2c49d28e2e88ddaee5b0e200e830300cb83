@@ -9,3 +9,15 @@ UUID: 8a41cfd9_f30f987d
 Bytes: 94
 How about an enum for this.  I don't like the hardcoded value. HSelect::kSelectConditionIndex?
 
+137:81-137:83
+Wed Jan 06 15:18:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a41cfd9_f30f987d
+UUID: cae3c748_44530069
+Bytes: 279
+Me neither but this is certainly not the only place where we hardcode input indices. What I could do in this particular case is:
+
+  !(user->IsSelect() && user->AsSelect()->GetCondition() == condition)
+
+But that's only possible because `condition` has just one use in this branch.
+

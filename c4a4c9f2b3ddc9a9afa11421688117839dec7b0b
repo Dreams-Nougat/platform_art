@@ -23,3 +23,12 @@ UUID: aa1773d7_5eb8c530
 Bytes: 115
 Why num_bytes_freed_revoke_? RecordFreeRevoke doesn't currently get called from CC, do we need to add a call there?
 
+3807:2-3807:25
+Wed Jan 06 00:24:29 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1773d7_5eb8c530
+UUID: aa1773d7_01d8b016
+Bytes: 534
+Initially I tried subtracting directly from num_bytes_allocated, but that caused some CHECKs to fail. I thought there might be an invariant that GC should be responsible for updating num_bytes_allocated for all frees, and it appeared to me that num_bytes_freed_revoke_ was an existing mechanism to tell GC that it should update num_bytes_allocated for some frees when it gets around to it.
+I have no idea if RecordFreeRevoke needs to be called from CC. Any advice from the GC masters on how to do this properly is greatly appreciated.
+

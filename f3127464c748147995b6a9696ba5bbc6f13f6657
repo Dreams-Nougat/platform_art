@@ -55,3 +55,19 @@ UUID: 4a2c372e_d5759c64
 Bytes: 67
 I'll let David chime in to figure out whether that's easily doable.
 
+1196:0-1222:21
+Wed Jan 06 12:14:04 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a2c372e_d5759c64
+UUID: 6a31fb81_b67a6801
+Bytes: 1514
+tl;dr: You need more info in the graph dump. Have a look at go/aog/194693.
+
+What you're struggling with is the fact that GraphVisualizer does not print the stuff you want to test. Other tests are typically fine with the def-use chain. They find the instruction of interest by matching instruction IDs against input lists and then test a specific property like "can be null". If you look inside graph_visualizer.cc you'll see all the properties that are printed. People add those as needed and you should feel free to do the same, perhaps only printed for BCE so as to not pollute the dump for others.
+
+In terms of testing block layout, we already have a couple of tests concerning loops. '445-checker-licm' has simple is/isn't in loop assertions, and '485-checker-dce-loop-update' has more complicated loop-membership ones.
+
+I took the liberty of writing a simple example in go/aog/194693. It prints the block ID with every instruction and successors of control-flow instructions. That allows you to very quickly test the block layout and make sure that instructions are where they're supposed to be. After that, you can easily test that NullChecks and BoundChecks were removed from the def-use chain. 
+
+Biggest advantage is that you can now use CHECK-DAG everywhere and rely on dependencies between the instructions rather than the order they are printed in. You also don't need to do -NOT tests (though you can if you want to). Testing that an ArrayGet's index value has no BoundCheck on it should be sufficient.
+

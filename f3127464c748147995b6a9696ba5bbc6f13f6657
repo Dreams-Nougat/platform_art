@@ -9,6 +9,14 @@ UUID: 8a68ef71_275aba7b
 Bytes: 46
 How about making this in its own CHECK-START ?
 
+1192:0-1192:28
+Wed Jan 06 20:32:54 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a68ef71_275aba7b
+UUID: aa3e9347_09e21152
+Bytes: 115
+Okay, I actually like this idea of doing a CHECK-START for those parts where I don't need the order to be explicit.
+
 1195:0-1195:17
 Tue Jan 05 11:49:45 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +39,14 @@ Parent: 0a4ddf0f_9b598b15
 UUID: 6a5f3bcc_86984af0
 Bytes: 104
 But do you actually care where the new blocks are added? This isn't really what you want to test, is it?
+
+1195:0-1195:17
+Wed Jan 06 20:32:54 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a5f3bcc_86984af0
+UUID: 4a4357e2_71262094
+Bytes: 44
+No, you are right, I used your restart idea.
 
 1196:0-1222:21
 Tue Jan 05 11:49:45 2016 +0000
@@ -70,4 +86,12 @@ In terms of testing block layout, we already have a couple of tests concerning l
 I took the liberty of writing a simple example in go/aog/194693. It prints the block ID with every instruction and successors of control-flow instructions. That allows you to very quickly test the block layout and make sure that instructions are where they're supposed to be. After that, you can easily test that NullChecks and BoundChecks were removed from the def-use chain. 
 
 Biggest advantage is that you can now use CHECK-DAG everywhere and rely on dependencies between the instructions rather than the order they are printed in. You also don't need to do -NOT tests (though you can if you want to). Testing that an ArrayGet's index value has no BoundCheck on it should be sufficient.
+
+1196:0-1222:21
+Wed Jan 06 20:32:54 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a31fb81_b67a6801
+UUID: aa3e9347_a9e68562
+Bytes: 352
+I had a look at your extended test. Although it may test what you want, now I have a hard time reading what is being done there :-) :-). All the regular expressions make it very hard to read compared to the simplicity of the current checkers syntax. It also seems a lot harder to maintain if something changes for someone not so familiar with the code.
 

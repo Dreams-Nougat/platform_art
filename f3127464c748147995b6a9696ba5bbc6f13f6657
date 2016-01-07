@@ -95,3 +95,15 @@ UUID: aa3e9347_a9e68562
 Bytes: 352
 I had a look at your extended test. Although it may test what you want, now I have a hard time reading what is being done there :-) :-). All the regular expressions make it very hard to read compared to the simplicity of the current checkers syntax. It also seems a lot harder to maintain if something changes for someone not so familiar with the code.
 
+1196:0-1222:21
+Thu Jan 07 18:44:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa3e9347_a9e68562
+UUID: 4a2c372e_f81c4dfd
+Bytes: 913
+I did go a bit overboard to show that you can test all the properties you need since you complained that it is not possible with Checker. Things like the block structure you don't need to test every single time, one test case should be enough and then you can focus on the data flow.
+
+While I agree that having a list of instruction names might appear readable at first glance, combining CHECK and CHECK-NOT (negative assertion in a scope) actually makes it much more difficult to argue whether the test verifies the right properties and that we won't get false positives/negatives as a result. This is a sea of nodes IR, testing dependencies is much more durable.
+
+BCE is a complicated transform so you cannot expect the test to fit on two lines. If you're telling me you'd rather dump the list of instructions and hope for the best over specifying the details of your assumptions, then that simply doesn't SGTM.
+

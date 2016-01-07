@@ -72,6 +72,16 @@ However at source compiler stage it has no idea what classes will actually be lo
 
 As Alex pointed out this isn't used at all right now so it's probably OK not to have a faster path until we see a need, since that was already the case for the class invoke-super (which is actually used in a few places).
 
+18:0-18:41
+Thu Jan 07 19:09:13 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a4ddf0f_da85c4c3
+UUID: aa1773d7_df74cc66
+Bytes: 232
+@iam Correct.
+
+Currently it will be quite slow for interpretation (since we don't add iftables or imt's to interfaces for memory usage) but when either jitting or dex2oating we can replace it with a direct call to the target method.
+
 File: compiler/dex/quick/quick_compiler.cc
 
 525

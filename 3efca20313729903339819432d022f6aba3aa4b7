@@ -24,6 +24,14 @@ UUID: 8a41cfd9_34e5e623
 Bytes: 131
 LOCAL_REQUIRED_MODULES still make ninja complain if they form a cycle (libart -> libopenjdk -> libopenjdkjvm -> libart). I tried...
 
+404:0-406:19
+Thu Jan 07 19:31:15 2016 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a41cfd9_34e5e623
+UUID: aa3e9347_95362eda
+Bytes: 95
+This setup looks awkward to me. I'd suggest you run "mmma libcore art" to get all things built.
+
 409:0-409:50
 Thu Jan 07 08:41:16 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +40,28 @@ Bytes: 85
 Comment that the name has no signification here.
 
 Any other way to make this cleaner?
+
+412:0-426:5
+Thu Jan 07 19:31:15 2016 +0000
+Author: Ying Wang <1003981@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a4357e2_09f1acff
+Bytes: 549
+If you define two phony packages, one for host and one for target, you can use LOCAL_REQUIRED_MODULES without the direct dependencies. Something like:
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := art-libartd-libopenjdkd-dependency
+ifeq ($(ART_BUILD_TARGET_DEBUG),true)
+LOCAL_REQUIRED_MODULES:= libopenjdkd
+endif
+include $(BUILD_PHONY_PACKAGE)
+
+include $(CLEAR_VARS)
+LOCAL_MODULE := art-libartd-libopenjdkd-dependency
+ifeq ($(ART_BUILD_HOST_DEBUG),true)
+LOCAL_REQUIRED_MODULES:= libopenjdkd
+endif
+LOCAL_IS_HOST_MODULE := true
+include $(BUILD_PHONY_PACKAGE)
 
 File: runtime/common_runtime_test.cc
 

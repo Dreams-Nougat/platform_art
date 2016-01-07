@@ -60,6 +60,18 @@ UUID: ca62e7ed_8902f98d
 Bytes: 369
 No (or at least probably not) b/c we need to throw ICCEs when the invoke has conflicting possible implementations. This means that sometimes there is no method in the dex file that can be said to be the target of the invoke. Note this is only possible when there are source-level incompatibilities in the dex, but needed for binary-compat/partial compilation/multi-dex.
 
+18:0-18:41
+Thu Jan 07 19:00:57 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca62e7ed_8902f98d
+UUID: 0a4ddf0f_da85c4c3
+Bytes: 698
+IIRC this is a straightforward optimization at the JIT compiler stage because by the time the class is loaded all (==before code is jitted, right?) of its superinterfaces/superclasses have also been loaded and therefore it knows the actual direct target (and we can make the same assumption for a class hierarchy within the same dex file).
+
+However at source compiler stage it has no idea what classes will actually be loaded at runtime so it cannot put down an invoke-direct.
+
+As Alex pointed out this isn't used at all right now so it's probably OK not to have a faster path until we see a need, since that was already the case for the class invoke-super (which is actually used in a few places).
+
 File: compiler/dex/quick/quick_compiler.cc
 
 525

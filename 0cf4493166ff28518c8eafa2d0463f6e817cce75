@@ -40,3 +40,13 @@ If there are two stack maps generated for the same native_pc, aren't they essent
 
 I think my only concern is that this might waste a bit of memory due to the redundancy.
 
+1626:0-1626:49
+Thu Jan 07 09:55:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a31fb81_b9e1fbbc
+UUID: 6a5f3bcc_896dbd0a
+Bytes: 620
+They are *not* guaranteed to be equivalent. Each is generated for a different HInstruction, likely with a different HEnvironment because the non-NativeDebugInfo instruction will have overwritten its output vreg. Since you generate NativeDebugInfos at the beginning of basic blocks, they're not even guaranteed to come from two subsequent HInstructions.
+
+And yes, it is absolutely critical that the runtime picks the correct one, otherwise it will look for values of vregs in the wrong locations. Deoptimization might then wrongly initialize the interpreter and try/catch will set wrong values of phis in the catch block.
+

@@ -9,6 +9,14 @@ UUID: 2a2b8319_974e4670
 Bytes: 208
 Any chance we could refactor TryBuildingSsa to do the update for us? Duplicating the code is pretty nasty because somebody updating the SSA builder - most likely me - will change the order there but not here.
 
+137:6-143:22
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a2b8319_974e4670
+UUID: 8a68ef71_ea16a72a
+Bytes: 4
+Done
+
 File: compiler/optimizing/graph_checker.cc
 
 550:0-550:11
@@ -18,12 +26,28 @@ UUID: eae08b3e_e585f0c3
 Bytes: 75
 Please don't use return, just scope the tests you don't want inside the if.
 
+550:0-550:11
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eae08b3e_e585f0c3
+UUID: 6a31fb81_d97b9708
+Bytes: 4
+Done
+
 555:0-555:56
 Thu Jan 07 12:52:14 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a2b8319_f749ba6a
 Bytes: 24
 This now always succeeds
+
+555:0-555:56
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a2b8319_f749ba6a
+UUID: ca6e677a_4c8a6f8d
+Bytes: 77
+Agree, but as discussed, that's implementation detail, so I'd rather keep it.
 
 File: compiler/optimizing/licm.cc
 
@@ -51,6 +75,14 @@ Would be nice to keep the same DCHECK for nested loops as below. Why not do:
     hoist
   }
 
+96
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a2b8319_776feace
+UUID: 0a54ffaf_e6b26023
+Bytes: 4
+Done
+
 File: compiler/optimizing/load_store_elimination.cc
 
 589:0-589:43
@@ -59,6 +91,14 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a5f3bcc_89805db5
 Bytes: 153
 This is odd. Isn't this the first time the block is visited? The default value for the vector is kUnknownHeapValue, so this doesn't actually do anything.
+
+589:0-589:43
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a5f3bcc_89805db5
+UUID: 8a68ef71_aa10af2d
+Bytes: 34
+Good point, I just need to return.
 
 File: compiler/optimizing/nodes.cc
 
@@ -69,12 +109,28 @@ UUID: 8a68ef71_aae18fbc
 Bytes: 142
 I'd change this to `if (!block->IsEntryBlock())` or at least DCHECK so that its abundantly clear that there are no blocks without a dominator.
 
+208:0-208:43
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a68ef71_aae18fbc
+UUID: 6a31fb81_99751f14
+Bytes: 4
+Done
+
 577
 Thu Jan 07 12:52:14 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a2c372e_582d4165
 Bytes: 106
 I see where all of this is coming from but it would be nice to have tests which exercise all of the paths.
+
+577
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a2c372e_582d4165
+UUID: 0a54ffaf_c99ad589
+Bytes: 21
+smali tests, yeah....
 
 584:46-584:53
 Thu Jan 07 12:52:14 2016 +0000
@@ -83,12 +139,28 @@ UUID: cae3c748_c45f10f8
 Bytes: 9
 currently
 
+584:46-584:53
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cae3c748_c45f10f8
+UUID: 6a5f3bcc_e93d519c
+Bytes: 4
+Done
+
 652:0-652:46
 Thu Jan 07 12:52:14 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a54ffaf_a69d48df
 Bytes: 37
 Don't you need to update this DCHECK?
+
+652:0-652:46
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a54ffaf_a69d48df
+UUID: 6a31fb81_bca9e99d
+Bytes: 47
+Indeed, but I removed this method entirely now.
 
 File: compiler/optimizing/ssa_phi_elimination.cc
 
@@ -98,4 +170,12 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eae08b3e_e5e170bc
 Bytes: 8
 no comma
+
+212:56-212:57
+Thu Jan 07 17:55:27 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eae08b3e_e5e170bc
+UUID: ca6e677a_ecc803d0
+Bytes: 4
+Done
 

@@ -9,12 +9,63 @@ UUID: aa1773d7_3eaab1ed
 Bytes: 8
 4 spaces
 
+3474:4-3474:6
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1773d7_3eaab1ed
+UUID: 0a4ddf0f_b0981ef0
+Bytes: 109
+In addition, I think there's an indentation convention of aligning the left ends of all "<<" at the same col.
+
 3512:98-3512:113
 Tue Jan 05 23:27:47 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: aa1773d7_be9d61df
 Bytes: 16
 Line is too long
+
+3787:19-3787:24
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa3e9347_fac1a95a
+Bytes: 68
+Maybe rename klass to klass_unused to be clearer that it's not used?
+
+3788:4-3788:7
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a1aaf01_f12b086e
+Bytes: 54
+Assert if obj is non-null, it matches the magic value?
+
+3794:63-3794:86
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea1debf7_e4a9039d
+Bytes: 225
+It seems simpler to we just ignore all three size_t values returned from TryToAllocate and AllocateInternalWithGc and use 'bytes' instead of bytes_tl_bulk_allocated here because this isn't related to thread local allocations?
+
+3794:8-3794:28
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea1debf7_847287b7
+Bytes: 440
+Adding native allocations to num_bytes_allocated_ means that Heap::GetBytesAllocated() now includes the native bytes. Did you inspect each of its call sites and see if it makes sense to include the native bytes?
+
+It may make sense to have a separate native allocation counter (native allocations are counted both in num_bytes_allocated_ and a native counter) which would allow us to see the breakdown between managed vs native in some ways.
+
+3797:6-3797:20
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a1aaf01_912acc4d
+Bytes: 274
+Use a fresh local variable and name it obj_unused as in
+
+mirror::Object* obj_unused = nullptr
+
+?
+
+Another idea is to add another version of CheckConcurrentGC that doesn't take an object and directly calls RequestConcurrentGC without calling RequestConcurrentGCAndSaveObject?
 
 3807:2-3807:25
 Tue Jan 05 23:27:47 2016 +0000
@@ -31,4 +82,44 @@ UUID: aa1773d7_01d8b016
 Bytes: 534
 Initially I tried subtracting directly from num_bytes_allocated, but that caused some CHECKs to fail. I thought there might be an invariant that GC should be responsible for updating num_bytes_allocated for all frees, and it appeared to me that num_bytes_freed_revoke_ was an existing mechanism to tell GC that it should update num_bytes_allocated for some frees when it gets around to it.
 I have no idea if RecordFreeRevoke needs to be called from CC. Any advice from the GC masters on how to do this properly is greatly appreciated.
+
+3807:2-3807:25
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1773d7_01d8b016
+UUID: 2a52a3ad_a3a0d90d
+Bytes: 229
+Let's not mix this with num_bytes_freed_revoke_. As Mathieu said, it's not used by all collectors. What checks fail? I think it makes sense to have a potentially similar but separate mechanism/counter, if that's what's necessary.
+
+File: runtime/gc/heap.h
+
+1114:10-1114:56
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea1debf7_61ec0520
+Bytes: 81
+Isn't this just num_bytes_allocated_? Member native_bytes_allocated_ was removed?
+
+File: test/004-NativeAllocations/src/Main.java
+
+26:24-26:46
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca202730_4efb2f93
+Bytes: 69
+How about starting the method name with "test" as in the junit style?
+
+28:49-28:50
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a1aaf01_0cc7836e
+Bytes: 43
+Why no spaces around the / and * operators?
+
+36:0-36:127
+Thu Jan 07 04:48:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa3e9347_0f28d128
+Bytes: 14
+Line too long?
 

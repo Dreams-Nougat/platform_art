@@ -80,3 +80,13 @@ Sorry, brain freeze. With normal stack maps you can of course assume that the st
 
 Everything else still stands...
 
+1626:0-1626:49
+Thu Jan 07 13:57:16 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a68ef71_2a9cbf2c
+UUID: 6a5f3bcc_a953d918
+Bytes: 613
+Would it be crazy to set the native_pc to point at the first native instruction? (so it actually corresponds to the location of dex maps)
+
+I am thinking what I need to do in the debugger when looking at the backtrace.  Let's say I am interested in local variables of non-leaf function.  The debugger will tell me the the PC of the call instruction, but there is no useful stack map there, I need to know to actually lookup the data a bit further down.  Even worse, if I wanted to see variables after finishing step out (and thus have PC right after the native call instruction), I would be in even bigger trouble.
+

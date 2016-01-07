@@ -1,0 +1,101 @@
+Revision: f3ca085b401400f8ea8b03dae64dcfac56216eaa
+Patch-set: 2
+File: compiler/optimizing/dead_code_elimination.cc
+
+137:6-143:22
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a2b8319_974e4670
+Bytes: 208
+Any chance we could refactor TryBuildingSsa to do the update for us? Duplicating the code is pretty nasty because somebody updating the SSA builder - most likely me - will change the order there but not here.
+
+File: compiler/optimizing/graph_checker.cc
+
+550:0-550:11
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eae08b3e_e585f0c3
+Bytes: 75
+Please don't use return, just scope the tests you don't want inside the if.
+
+555:0-555:56
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a2b8319_f749ba6a
+Bytes: 24
+This now always succeeds
+
+File: compiler/optimizing/licm.cc
+
+96
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a2b8319_776feace
+Bytes: 351
+Would be nice to keep the same DCHECK for nested loops as below. Why not do:
+
+  loop_info = ...
+  loop_effects = ...
+  pre_header = ...
+  for (HBlocksInLoop ...) {
+    inner = ...
+    if (inner->LoopInfo == loop_info) {
+      DCHECK
+      continue
+    }
+    visited.SetBit
+    if (loop_info->IsIrreducible) {
+      continue
+    }
+    ...
+    hoist
+  }
+
+File: compiler/optimizing/load_store_elimination.cc
+
+589:0-589:43
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a5f3bcc_89805db5
+Bytes: 153
+This is odd. Isn't this the first time the block is visited? The default value for the vector is kUnknownHeapValue, so this doesn't actually do anything.
+
+File: compiler/optimizing/nodes.cc
+
+208:0-208:43
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a68ef71_aae18fbc
+Bytes: 142
+I'd change this to `if (!block->IsEntryBlock())` or at least DCHECK so that its abundantly clear that there are no blocks without a dominator.
+
+577
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a2c372e_582d4165
+Bytes: 106
+I see where all of this is coming from but it would be nice to have tests which exercise all of the paths.
+
+584:46-584:53
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cae3c748_c45f10f8
+Bytes: 9
+currently
+
+652:0-652:46
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a54ffaf_a69d48df
+Bytes: 37
+Don't you need to update this DCHECK?
+
+File: compiler/optimizing/ssa_phi_elimination.cc
+
+212:56-212:57
+Thu Jan 07 12:52:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eae08b3e_e5e170bc
+Bytes: 8
+no comma
+

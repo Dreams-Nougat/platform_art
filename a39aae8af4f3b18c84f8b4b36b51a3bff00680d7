@@ -1,6 +1,29 @@
 Revision: a39aae8af4f3b18c84f8b4b36b51a3bff00680d7
 Patch-set: 1
+File: /COMMIT_MSG
+
+9:0-12:6
+Fri Jan 08 19:55:43 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca6827a1_3c019d4d
+Bytes: 195
+I don't have a good understanding of the issue. Can you describe the situation more in detail? Why are we crashing? What waits are these spurious wakeups are from? Why it's good to sleep forever?
+
 File: runtime/base/mutex.cc
+
+860:40-860:58
+Fri Jan 08 19:55:43 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a74377b_d5d07c50
+Bytes: 23
+has_stub_jni_functions?
+
+862:6-862:8
+Fri Jan 08 19:55:43 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a74377b_35d8d073
+Bytes: 64
+Can we have a high level comment why we do this? Point to a bug?
 
 863:50-863:59
 Fri Jan 08 10:30:28 2016 +0000
@@ -8,6 +31,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca6e677a_ec80031f
 Bytes: 8
 spurious
+
+863:60-863:66
+Fri Jan 08 19:55:43 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a8b57a3_20e7a4cf
+Bytes: 106
+A traditional way to handle a spurious wakeup is to put the wait call in a loop. Is it not an option here?
 
 864:0-866:7
 Fri Jan 08 10:30:28 2016 +0000
@@ -24,6 +54,15 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cae3c748_67af26e5
 Bytes: 41
 how about naming this: runtime_deleted_ ?
+
+File: runtime/jni_internal.cc
+
+2743:7-2743:30
+Fri Jan 08 19:55:43 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca6827a1_5cd01122
+Bytes: 103
+Is "stub" specific enough for this? I wonder SleepForeverStub or something like that would work better.
 
 File: runtime/thread_list.cc
 

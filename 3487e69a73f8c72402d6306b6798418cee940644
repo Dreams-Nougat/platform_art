@@ -82,6 +82,33 @@ Bytes: 232
 
 Currently it will be quite slow for interpretation (since we don't add iftables or imt's to interfaces for memory usage) but when either jitting or dex2oating we can replace it with a direct call to the target method.
 
+18:0-18:41
+Fri Jan 08 10:25:05 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a4ddf0f_da85c4c3
+UUID: 4a2c372e_bba9ef9d
+Bytes: 964
+> IIRC this is a straightforward optimization at the JIT compiler
+ > stage because by the time the class is loaded all (==before code is
+ > jitted, right?) of its superinterfaces/superclasses have also been
+ > loaded and therefore it knows the actual direct target (and we can
+ > make the same assumption for a class hierarchy within the same dex
+ > file).
+ > 
+ > However at source compiler stage it has no idea what classes will
+ > actually be loaded at runtime so it cannot put down an
+ > invoke-direct.
+
+No: at "source compiler stage" (dex2oat), we have as much as an idea than the jit about the target. The jit can also have unresolved classes when compiling methods.
+
+So the only problem I see is interpreter performance.
+
+ > 
+ > As Alex pointed out this isn't used at all right now so it's
+ > probably OK not to have a faster path until we see a need, since
+ > that was already the case for the class invoke-super (which is
+ > actually used in a few places).
+
 File: compiler/dex/quick/quick_compiler.cc
 
 525

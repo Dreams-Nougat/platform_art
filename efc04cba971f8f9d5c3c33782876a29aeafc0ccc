@@ -1,5 +1,14 @@
 Revision: efc04cba971f8f9d5c3c33782876a29aeafc0ccc
 Patch-set: 4
+File: /COMMIT_MSG
+
+8
+Fri Jan 08 11:08:57 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a68ef71_2aafdfe5
+Bytes: 77
+Maybe some justification why you're doing this and what the implications are?
+
 File: compiler/optimizing/bounds_check_elimination.cc
 
 1298:22-1298:28
@@ -8,6 +17,15 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ea1debf7_da537a18
 Bytes: 65
 pre header -> preheader (consistently used in all other comments)
+
+File: compiler/optimizing/dead_code_elimination.cc
+
+106:0-106:23
+Fri Jan 08 11:08:57 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a31fb81_5c3a150b
+Bytes: 336
+I presume you're updating all loops even if they aren't directly affected in hope that you turn some irreducible loops into natural ones, right? First, a comment would be helpful. And second, that's pretty conservative and wasteful given the frequency of irreducible loops. Could we do better than this? DCE should be a swift operation.
 
 File: compiler/optimizing/graph_visualizer.cc
 
@@ -18,6 +36,18 @@ UUID: aa3e9347_d57a7602
 Bytes: 89
 would you be open to just showing irreducible if that is the case, and nothing otherwise?
 
+509:8-509:28
+Fri Jan 08 11:08:57 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa3e9347_d57a7602
+UUID: 6a5f3bcc_0906ada4
+Bytes: 320
+That's one limitation of Checker - you (currently) cannot test a part of a line not being there, i.e. something like
+
+  /// CHECK:  InstructionName [input1,input2] !irreducible
+
+So technically if you're ever going to test only the positive case, then that's feasible. Otherwise testing for 'irreducible:false' is a must.
+
 File: compiler/optimizing/induction_var_analysis.cc
 
 80:18-80:20
@@ -26,4 +56,29 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ea1debf7_5a3e8a63
 Bytes: 23
 challenge accepted! :-)
+
+File: compiler/optimizing/load_store_elimination.cc
+
+586:0-586:50
+Fri Jan 08 11:08:57 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a54ffaf_c973b5ef
+Bytes: 111
+Add a comment that this is safe w.r.t. singletons because those are always used by the non-eliminated loop phi.
+
+File: compiler/optimizing/nodes.cc
+
+145
+Fri Jan 08 11:08:57 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a2b8319_f7cbfaa0
+Bytes: 3
+(7)
+
+150
+Fri Jan 08 11:08:57 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eae08b3e_455e5cca
+Bytes: 3
+(8)
 

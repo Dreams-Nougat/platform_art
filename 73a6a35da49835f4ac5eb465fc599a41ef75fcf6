@@ -1,0 +1,36 @@
+Revision: 73a6a35da49835f4ac5eb465fc599a41ef75fcf6
+Patch-set: 4
+File: runtime/interpreter/interpreter_switch_impl.cc
+
+113:4-116:36
+Fri Jan 08 04:52:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a4357e2_750603fd
+Bytes: 724
+Would you please extend the comment a bit, making clear what's redundant and why?
+
+I had to spend a bit of time thinking through this and making sure I understood it (I was concerned we're missing an update and exception traces would be wrong, but now I understand that mterp already wrote the dex pc in).
+
+
+The following is up for discussion:
+
+Tracing is normally off, anyways. So the TraceExecution is for all intents and purposes a nop, and I don't think it needs to be avoided.
+
+In that case, you can rewrite your
+
+ do {
+   if (x) { a }
+   ...
+ } until (y);
+ a;
+
+to be
+
+ if (x) { a }
+ do {
+   ...
+   a;
+ } until (y);
+
+That would avoid the branch in the loop. Given, it's a micro-op, and mterp is the future, but still...
+

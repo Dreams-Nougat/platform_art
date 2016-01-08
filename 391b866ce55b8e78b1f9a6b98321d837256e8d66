@@ -9,6 +9,14 @@ UUID: 0a2f9f8d_7fa1b764
 Bytes: 138
 I suspect we're inconsistent about what we generate after a volatile store.  I'm not positive that BarrierReads suffices, but it may well.
 
+893:33-893:45
+Fri Jan 08 18:14:25 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a2f9f8d_7fa1b764
+UUID: 8a68ef71_cd0f3d7e
+Bytes: 84
+Thanks Hans.  Serban, what do you think about this?  Is a DMB ISHLD sufficient here?
+
 1032:27-1032:40
 Fri Dec 18 19:08:34 2015 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -29,4 +37,12 @@ Hiroshi and I discussed this further.  This indeed seems wrong, and should be fi
 The relevant section of the architecture manual is C2.1.8.  A dmb ishst is generated here and that only orders a store followed by a store.  It is not symmetric with dmb ishld, which does order a load followed by either a load or a store.
 
 I currently believe that the trailing fence could be weakened to BarrierReads, which would hopefully make this change performance neutral.
+
+1032:27-1032:40
+Fri Jan 08 18:14:25 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea5fab25_d0fbf42a
+UUID: 0a6ebfb0_b39f9877
+Bytes: 106
+Hans, I have implemented the changes you suggested in https://android-review.googlesource.com/#/c/195360/.
 

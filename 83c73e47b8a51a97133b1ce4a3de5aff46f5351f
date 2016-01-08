@@ -58,6 +58,13 @@ What about adding these checks:
 
 here?
 
+696:65-697:17
+Fri Jan 08 12:44:18 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cae3c748_67ec4620
+Bytes: 541
+Do you actually enforce this anywhere? From what I can tell it relies on the fact that no type `I` will ever generate slow paths of two different types `T` and that's not true. HInstanceOf on arm64 can already emit ReadBarrierForHeapReferenceSlowPathARM64 followed by TypeCheckSlowPathARM64. Neither of these has the required T(I*) constructor but it still looks like a dangerous implicit assumption. It would be safer to have `T` a template on the whole class but then you wouldn't be able to have the common InstructionCodeGenerator class.
+
 702:11-702:69
 Fri Jan 08 10:42:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -147,6 +154,13 @@ UUID: eae08b3e_45893c4e
 Bytes: 8
 const I*
 
+763:68-763:72
+Fri Jan 08 12:44:18 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cae3c748_87586adc
+Bytes: 28
+Nit: Less vague name please.
+
 776:71-776:76
 Fri Jan 08 10:42:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -162,6 +176,18 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a2b8319_f799baa4
 Bytes: 57
 Please add checker tests that we only have one slow path.
+
+20:0-20:19
+Fri Jan 08 12:44:18 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a2b8319_f799baa4
+UUID: ca6e677a_cf3e5109
+Bytes: 363
++1 because this doesn't actually show that any sharing is taking place. That said, the test would have to be more concise, or "unit" if you will, to get a case where the register maps are actually equal.
+
+x86: first loop shared, second loop not
+x86_64: two out of three shared in first loop, none in second loop
+arm: two shared in first loop, all shared in second
 
 39:4-39:12
 Fri Jan 08 11:55:05 2016 +0000

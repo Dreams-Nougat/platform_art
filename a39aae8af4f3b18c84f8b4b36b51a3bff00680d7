@@ -9,6 +9,14 @@ UUID: ca6827a1_3c019d4d
 Bytes: 195
 I don't have a good understanding of the issue. Can you describe the situation more in detail? Why are we crashing? What waits are these spurious wakeups are from? Why it's good to sleep forever?
 
+9:0-12:6
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca6827a1_3c019d4d
+UUID: 2a9aa3ee_02754e60
+Bytes: 157
+For test 132, the supurious wakeup comes from calling dlclose in DlOpenOatFile when running under GDB. I haven't looked into it more. I'll add more comments.
+
 File: runtime/base/mutex.cc
 
 860:40-860:58
@@ -18,12 +26,28 @@ UUID: 4a74377b_d5d07c50
 Bytes: 23
 has_stub_jni_functions?
 
+860:40-860:58
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a74377b_d5d07c50
+UUID: 0a95dfbc_9e8e19aa
+Bytes: 4
+Done
+
 862:6-862:8
 Fri Jan 08 19:55:43 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4a74377b_35d8d073
 Bytes: 64
 Can we have a high level comment why we do this? Point to a bug?
+
+862:6-862:8
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a74377b_35d8d073
+UUID: 8a62afbe_7a55d59f
+Bytes: 42
+The main bug is that the test is crashing.
 
 863:50-863:59
 Fri Jan 08 10:30:28 2016 +0000
@@ -39,12 +63,36 @@ UUID: 4a8b57a3_20e7a4cf
 Bytes: 106
 A traditional way to handle a spurious wakeup is to put the wait call in a loop. Is it not an option here?
 
+863:60-863:66
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a8b57a3_20e7a4cf
+UUID: 6a901bcb_01ec6c42
+Bytes: 14
+Added comment.
+
+863:50-863:59
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca6e677a_ec80031f
+UUID: ca6827a1_1c70591f
+Bytes: 4
+Done
+
 864:0-866:7
 Fri Jan 08 10:30:28 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eae08b3e_e51690d8
 Bytes: 43
 SleepForever? (by moving it to utils.h/cc?)
+
+864:0-866:7
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eae08b3e_e51690d8
+UUID: 6a901bcb_21d16880
+Bytes: 4
+Done
 
 File: runtime/jni_env_ext.h
 
@@ -55,6 +103,14 @@ UUID: cae3c748_67af26e5
 Bytes: 41
 how about naming this: runtime_deleted_ ?
 
+78:7-78:25
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cae3c748_67af26e5
+UUID: 6a901bcb_01f8eca0
+Bytes: 4
+Done
+
 File: runtime/jni_internal.cc
 
 2743:7-2743:30
@@ -63,6 +119,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ca6827a1_5cd01122
 Bytes: 103
 Is "stub" specific enough for this? I wonder SleepForeverStub or something like that would work better.
+
+2743:7-2743:30
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca6827a1_5cd01122
+UUID: ea65ebc4_5d5d6f71
+Bytes: 4
+Done
 
 File: runtime/thread_list.cc
 
@@ -74,4 +138,12 @@ Bytes: 112
 Please add a comment here.
 
 Also, "SuspendAllDaemonThreads" doesn't sounds like implying the runtime is deleted.
+
+1157:0-1157:51
+Fri Jan 08 22:52:41 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eae08b3e_450c9cc6
+UUID: 4a8b57a3_c32a8aba
+Bytes: 4
+Done
 

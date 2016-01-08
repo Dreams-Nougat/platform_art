@@ -9,3 +9,17 @@ UUID: 8a68ef71_0a58dbd9
 Bytes: 76
 again why is the location relevant? "m" just invokes the top level Makefile.
 
+404:52-404:78
+Fri Jan 08 16:41:02 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a68ef71_0a58dbd9
+UUID: ca6827a1_3950cf5a
+Bytes: 749
+Sorry, I always forget that LON is so different from MTV.
+
+"Building inside" a project is well-defined. That's why mm and mma exist. They're different from a top-level build, as they pick up all modules inside the project. So thinks that are optional and not pulled in on the top-level (like the debug builds for ART) will be built when you "build inside" art/.
+
+It's standard procedure "here" to build inside ART with one mma and then mm. Because before ninja that was significantly faster. *And* it creates all debug builds. So if you want to run a debug build on device, do mm in art/, adb sync and change the system property, and you're good to go.
+
+(And basically this is why these two phony modules exist: it's to keep the old process viable.)
+

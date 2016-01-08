@@ -1,0 +1,31 @@
+Revision: 23db66bc84c8ade89914c6ebd61c572ae0cb5074
+Patch-set: 1
+File: compiler/optimizing/intrinsics_arm64.cc
+
+1057:1-1061:3
+Fri Jan 08 23:06:09 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a9aa3ee_a58ca423
+Bytes: 1402
+Thinking about this more carefully, and doing some more reading, I'm no longer convinced this suffices.  The spec (B2.10.1) says:
+
+The corresponding Store-Exclusive instruction succeeds in writing back to memory address x only if no other
+observer, process, or thread has performed a more recent store to address x. The Store-Exclusive instruction
+returns a status bit that indicates whether the memory write succeeded.
+
+Assume X and Y are initially zero, and we have two threads, each of which sets one variable to 1 using CAS, and reads the other, i.e.
+
+Thread 1:
+CAS(X, 0, 1);
+r1 = Y;
+
+Thread 2:
+CAS(Y, 0, 1);
+r2 = X;
+
+Based on the above, I think that with just the ishld barrier, the four loads from both threads can complete in order and in parallel with each other, and then the store-exclusive instruction can complete.  This results in r1 = r2 = 0, which should not be allowed.  (It doesn't matter whether the final load was volatile, since that would only result in another barrier at the end.)
+
+This involves only reordering of the final load with the store-exclusive (allowed by ishld), and an observation, but not modification, of the CAS location by another thread between the load exclusive and store exclusive.  By the above paragraph that also appears to be allowed.
+
+Unfortunately, I think the final barrier needs to stay the way it was.  Sorry about the earlier claim to the contrary.
+

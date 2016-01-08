@@ -34,3 +34,13 @@ to be
 
 That would avoid the branch in the loop. Given, it's a micro-op, and mterp is the future, but still...
 
+113:4-116:36
+Fri Jan 08 19:18:18 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a4357e2_750603fd
+UUID: 8a62afbe_f7ebc02a
+Bytes: 604
+Thinking about this a little more, I think it's probably best just to lose the "if () {}" altogether.  I inserted this code when I use using a templated version of the switch interpreter for single-stepping, so at the time it added zero cost to the switch interpreter.  Once mterp is fleshed out for a target, the single-step case is a very rare slow path.  So, redundantly setting dex_pc is of little consequence.  But, as the code stands now it does add useless work to the common case of the switch version.
+
+Changing to remove the !interpret_one_instruction test and unconditionally doing the update.
+

@@ -1,5 +1,14 @@
 Revision: 348de7eeaf1d1c4f6f00dfa3734676b58b6eda46
 Patch-set: 13
+File: compiler/optimizing/code_generator_arm.cc
+
+1643:2-1645:62
+Mon Jan 11 12:24:19 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a6ebfb0_536c84d8
+Bytes: 161
+Could you add a comment about why using a parallel move instead of a "generic" move here? (Likewise in other back ends using a parallel move for this operation.)
+
 File: compiler/optimizing/instruction_simplifier.cc
 
 619
@@ -41,12 +50,41 @@ If you think it is worth it, we could improve that in the simplifier by replacin
 
 File: compiler/optimizing/select_generator.cc
 
+28:0-36:15
+Mon Jan 11 12:24:19 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a6ebfb0_539564f0
+Bytes: 308
+What about a more "functional" approach (which matches better the comment from lines 21–22 IMO):
+
+  return last_insn->IsGoto() &&
+      (first_insn == last_insn ||
+       (first_insn->GetNext() == last_insn &&
+        first_insn->CanBeMoved() &&
+        !first_insn->GetSideEffects().HasSideEffects()));
+
+?
+
 39
 Mon Jan 11 11:56:03 2016 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a7f24e53_e037621f
 Bytes: 40
 The comment does not match the function.
+
+39:19-39:40
+Mon Jan 11 12:24:19 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa54d3e4_9038b4ae
+Bytes: 27
+Nit: `block1` and `block2`.
+
+66:11-66:56
+Mon Jan 11 12:24:19 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a431f35_ebf8316c
+Bytes: 78
+Could you add some more details on this? (When can this constraint be lifted?)
 
 File: test/458-checker-instruction-simplification/src/Main.java
 
@@ -66,4 +104,20 @@ UUID: c7ebc261_81777a6d
 Bytes: 72
 Use CHECK instead of CHECK-DAG where possible?
 Same in other test files.
+
+File: test/480-checker-dead-blocks/src/Main.java
+
+59
+Mon Jan 11 12:24:19 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8a570fe9_0fe745cf
+Bytes: 66
+« by creating a "false" block with more than one instruction. »?
+
+90
+Mon Jan 11 12:24:19 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea332bd5_eaf8276c
+Bytes: 6
+Ditto?
 

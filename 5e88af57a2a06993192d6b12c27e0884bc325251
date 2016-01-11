@@ -2,6 +2,32 @@ Revision: 5e88af57a2a06993192d6b12c27e0884bc325251
 Patch-set: 6
 File: test/449-checker-bce/src/Main.java
 
+624:0-624:69
+Mon Jan 11 16:47:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a3e5b9d_ce0b8300
+Bytes: 166
+Okay, so this says: there's at least one of each of these instructions (there are actually two) and they're all in the same loop. Not ideal but better than nothing...
+
+630:0-630:68
+Mon Jan 11 16:47:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca4d875b_915fdcf8
+Bytes: 1072
+This one is tricky because it says: there's an ArrayGet inside a loop and there's no NullCheck, ArrayLength or BoundsCheck with the same loop header *on the subsequent lines* (CHECK-DAG will set the start of the -NOT's scope). Since there was a NullCheck and BoundsCheck before the first ArrayGet, this doesn't cover them.
+
+It is also wrong because there are two ArrayGets, one in the inner loop and one in the outer loop (deopt block), so which one is this? You could at least find it by its integer type.
+
+I know I keep saying this over and over but you need to test dependencies:
+
+  CHECK-START:
+  CHECK-DAG:  {{i\d+}}       ArrayGet [<<InnerArray:l\d+>>,<<InnerIndex:i\d+>>] loop:<<InnerLoop:B\d+>>
+  CHECK-DAG:  <<InnerIndex>> Phi loop:<<InnerLoop>
+  CHECK-DAG:  <<InnerArray>> Phi loop:<<OuterLoop:B\d>>
+  CHECK-EVAL: <<InnerLoop>> != <<OuterLoop>>
+
+This immediately tells you that the ArrayGet's NullCheck and BoundsCheck were removed (you could have shown that in the (before) case) and that the array object is an invariant. Isn't that what you want to show here?
+
 637:6-637:11
 Sun Jan 10 15:04:18 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

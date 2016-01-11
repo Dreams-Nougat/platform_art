@@ -9,6 +9,14 @@ UUID: ea4a4b41_72d8b8a2
 Bytes: 9
 MIPS32R6?
 
+4884:36-4884:44
+Mon Jan 11 18:51:06 2016 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea4a4b41_72d8b8a2
+UUID: 277bbeaf_14963434
+Bytes: 244
+MIPS32R6 in our case is a subset of MIPS64R6 and doesn't exist as a separate architecture of its own, at least for now. So, you can write either in the comment, but the emulator needs to be fixed for MIPS64R6, which will cover MIPS32R6 as well.
+
 4915:13-4915:20
 Mon Jan 11 14:13:29 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,10 +26,38 @@ The Dalvik bytecode documentation specifies that for values above std::numeric_l
 
 How does the TRUNC.L.fmt (resp. TRUNC.W.fmt) instruction deal with such values?  (Same question for MIPS64.)
 
+4915:13-4915:20
+Mon Jan 11 18:51:06 2016 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca4d875b_7140b837
+UUID: 27d01ee4_ec372b1f
+Bytes: 478
+R2 (NAN2008=0):
+< min --> max
+> max --> max
+NaN --> max
+
+R6 (NAN2008=1):
+< min --> min
+> max --> max
+NaN --> 0
+
+IOW, the difference is only in handling NaNs and negative values less than the minimum.
+
+There's no difference between MIPS32 and MIPS64 other than the truncate/round/ceil/floor instructions with L in the format requiring a 64-bit FPU, which is always true for MIPS64 and R6 (AKA FR=1), while older MIPS32R2 could have either a 32-bit FPU (AKA FR=0) or a 64-bit one.
+
 4944:34-4944:42
 Mon Jan 11 14:13:29 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8a570fe9_cfc1bd09
 Bytes: 9
 MIPS32R6?
+
+4944:34-4944:42
+Mon Jan 11 18:51:06 2016 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a570fe9_cfc1bd09
+UUID: 0776bac5_53a04462
+Bytes: 14
+Same as above.
 

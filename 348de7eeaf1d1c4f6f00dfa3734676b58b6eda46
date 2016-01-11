@@ -9,7 +9,23 @@ UUID: 0a6ebfb0_536c84d8
 Bytes: 161
 Could you add a comment about why using a parallel move instead of a "generic" move here? (Likewise in other back ends using a parallel move for this operation.)
 
+File: compiler/optimizing/code_generator_x86.cc
+
+1642:0-1643:71
+Mon Jan 11 13:22:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a3e5b9d_0ee74bcf
+Bytes: 64
+Shouldn't you split pairs, like we do in the register allocator?
+
 File: compiler/optimizing/instruction_simplifier.cc
+
+618:9-618:10
+Mon Jan 11 13:22:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a738396_b416a029
+Bytes: 54
+Add a comment what you intend on doing in this branch?
 
 619
 Mon Jan 11 11:56:03 2016 +0000
@@ -37,6 +53,21 @@ UUID: 6a273b99_661d4e41
 Bytes: 89
 How does the order here impact codegen? We can pass indexes as we prefer at codegen time.
 
+5583
+Mon Jan 11 13:22:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a273b99_661d4e41
+UUID: ca4d875b_1195ac03
+Bytes: 73
+I guess it's the SameAsFirstInput? But I agree it's odd to see this here.
+
+5594:7-5594:17
+Mon Jan 11 13:22:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a738396_b43060dc
+Bytes: 77
+You also need InstructionDataEquals and InstructionTypeEquals to support gvn.
+
 File: compiler/optimizing/prepare_for_register_allocation.cc
 
 138
@@ -49,6 +80,13 @@ This made me think of a corner case when a value is both used as the condition a
 If you think it is worth it, we could improve that in the simplifier by replacing the use of the condition as a true/false value by constant true/false.
 
 File: compiler/optimizing/select_generator.cc
+
+21:57-21:64
+Mon Jan 11 13:22:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea4a4b41_5284947b
+Bytes: 22
+Explain why "at most"?
 
 28:0-36:15
 Mon Jan 11 12:24:19 2016 +0000
@@ -64,6 +102,18 @@ What about a more "functional" approach (which matches better the comment from l
         !first_insn->GetSideEffects().HasSideEffects()));
 
 ?
+
+28:0-36:15
+Mon Jan 11 13:22:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a6ebfb0_539564f0
+UUID: 4a3997b3_2d888dd9
+Bytes: 108
+I think I actually find the "ifs" more readable.
+
+Or just having:
+if (!last_insn->IsGoto()) return false
+...
 
 39
 Mon Jan 11 11:56:03 2016 +0000
@@ -85,6 +135,13 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a431f35_ebf8316c
 Bytes: 78
 Could you add some more details on this? (When can this constraint be lifted?)
+
+71:36-71:83
+Mon Jan 11 13:22:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a3e5b9d_2e0b2740
+Bytes: 50
+How about if_instruction->IfTrueSuccessorIndex() ?
 
 File: test/458-checker-instruction-simplification/src/Main.java
 

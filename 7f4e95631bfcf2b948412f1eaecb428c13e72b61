@@ -9,6 +9,16 @@ UUID: ca4d875b_d14ec470
 Bytes: 58
 Don't you have compiler_options_->GetGenerateDebugInfo() ?
 
+111:22-111:51
+Mon Jan 11 15:06:03 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ca4d875b_d14ec470
+UUID: ca4d875b_91119c36
+Bytes: 98
+Done.
+
+The compiler option still needs to be set somewhere, so I just moved the flag one level up.
+
 File: runtime/jit/debugger_interface.h
 
 28:0-32:45
@@ -27,4 +37,14 @@ Bytes: 389
 +1: We should remove these as they should be only the implementation details of the 2 methods below.
 
 On the other hand ElfFileImpl<ElfTypes>::GdbJITSupport depends on these. That function should be removed as it isn't needed anymore (that information is communicated to the debugger through the linker rendezvous structure) but I think it would be a good idea to do it with a separate CL.
+
+28:0-32:45
+Mon Jan 11 15:06:03 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a3997b3_4d09590c
+UUID: 0a6ebfb0_f3ebd02a
+Bytes: 267
+The native debugger needs to be notified that code has been removed from the JIT cache.  Otherwise we would run into problems once the cache gets reused by new entry.
+
+I am happy to make those two implementation detail of the two below after GdbJITSupport is removed.
 

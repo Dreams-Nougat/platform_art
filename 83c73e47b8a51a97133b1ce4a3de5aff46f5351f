@@ -129,6 +129,28 @@ UUID: ea65ebc4_3d37db20
 Bytes: 216
 I added an explicit run time test on the type found in the map, with a continue if there is a mismatch. That way, we allow future extensions where one instruction can have several slow path types (stored in one map).
 
+696:65-697:17
+Mon Jan 11 10:31:21 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a62afbe_7ab6b5fa
+UUID: ca4d875b_918c3c24
+Bytes: 570
+Note: we could reintroduce arch-specific abstract slow path classes for all back ends (SlowPathCodeARM, SlowPathCodeX86, etc.) and have concrete InstructionCodeGenerator* classes pass the right slow path type to their InstructionCodeGenerator super class:
+
+  template <typename SlowPathType>
+  class InstructionCodeGenerator : public HGraphVisitor {
+    
+    // ...
+    
+    SlowPathGenerator<HDeoptimize, SlowPathType> deopt_slow_paths_;
+  };
+  
+  // ...
+  
+  class InstructionCodeGeneratorARM : public InstructionCodeGenerator<arm::SlowPathCodeARM64> {
+    // ...
+  };
+
 702:11-702:69
 Fri Jan 08 10:42:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

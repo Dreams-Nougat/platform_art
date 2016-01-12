@@ -17,6 +17,14 @@ UUID: 277bbeaf_14963434
 Bytes: 244
 MIPS32R6 in our case is a subset of MIPS64R6 and doesn't exist as a separate architecture of its own, at least for now. So, you can write either in the comment, but the emulator needs to be fixed for MIPS64R6, which will cover MIPS32R6 as well.
 
+4884:36-4884:44
+Tue Jan 12 12:13:13 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 277bbeaf_14963434
+UUID: 67f216a9_2e7587d5
+Bytes: 38
+All right, thanks for the explanation.
+
 4915:13-4915:20
 Mon Jan 11 14:13:29 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -45,6 +53,16 @@ NaN --> 0
 IOW, the difference is only in handling NaNs and negative values less than the minimum.
 
 There's no difference between MIPS32 and MIPS64 other than the truncate/round/ceil/floor instructions with L in the format requiring a 64-bit FPU, which is always true for MIPS64 and R6 (AKA FR=1), while older MIPS32R2 could have either a 32-bit FPU (AKA FR=0) or a 64-bit one.
+
+4915:13-4915:20
+Tue Jan 12 12:13:13 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 27d01ee4_ec372b1f
+UUID: 27fc9e7c_cc5faf50
+Bytes: 361
+So only the behavior of the R6 (NAN2008=1) instructions match the Dex {float,double}-to-{int,long} specification (https://source.android.com/devices/tech/dalvik/dalvik-bytecode.html); the R2 (NAN2008=0) ones do not produce the expected result for values above max and NaN.
+
+Should you adjust the code for the R2 cases, or maybe delegate to runtime entry points?
 
 4944:34-4944:42
 Mon Jan 11 14:13:29 2016 +0000

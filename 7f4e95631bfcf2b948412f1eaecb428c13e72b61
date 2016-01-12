@@ -29,6 +29,15 @@ Bytes: 147
 Shouldn't this be a DCHECK(it != g_jit_code_entries.end())?
 I don't see any use case where we want to permit the deletion of an entry never created
 
+124
+Tue Jan 12 13:09:48 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c701023f_318cd021
+UUID: 07f79a9a_0b7a3dc3
+Bytes: 170
+The entries will not be created if we are not running under debugger.
+So this allows the code cache to just call this method without caring about the current debug flags.
+
 File: runtime/jit/debugger_interface.h
 
 28:0-32:45
@@ -65,4 +74,12 @@ Parent: 0a6ebfb0_f3ebd02a
 UUID: 67f216a9_4e9bb359
 Bytes: 150
 Please remove these methods declarations from here and also mark them as static in the cpp file as go/aog/195561 removed the only remaining dependency
+
+28:0-32:45
+Tue Jan 12 13:09:48 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 67f216a9_4e9bb359
+UUID: 47ed12c9_cd8689fc
+Bytes: 51
+Actually, the type info generation still uses them.
 

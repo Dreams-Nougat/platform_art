@@ -19,6 +19,16 @@ Done.
 
 The compiler option still needs to be set somewhere, so I just moved the flag one level up.
 
+File: runtime/jit/debugger_interface.cc
+
+124
+Tue Jan 12 11:53:49 2016 +0000
+Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c701023f_318cd021
+Bytes: 147
+Shouldn't this be a DCHECK(it != g_jit_code_entries.end())?
+I don't see any use case where we want to permit the deletion of an entry never created
+
 File: runtime/jit/debugger_interface.h
 
 28:0-32:45
@@ -47,4 +57,12 @@ Bytes: 267
 The native debugger needs to be notified that code has been removed from the JIT cache.  Otherwise we would run into problems once the cache gets reused by new entry.
 
 I am happy to make those two implementation detail of the two below after GdbJITSupport is removed.
+
+28:0-32:45
+Tue Jan 12 11:53:49 2016 +0000
+Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a6ebfb0_f3ebd02a
+UUID: 67f216a9_4e9bb359
+Bytes: 150
+Please remove these methods declarations from here and also mark them as static in the cpp file as go/aog/195561 removed the only remaining dependency
 

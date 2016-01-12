@@ -64,6 +64,22 @@ So only the behavior of the R6 (NAN2008=1) instructions match the Dex {float,dou
 
 Should you adjust the code for the R2 cases, or maybe delegate to runtime entry points?
 
+4915:13-4915:20
+Tue Jan 12 20:56:00 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 27fc9e7c_cc5faf50
+UUID: a7532e54_728598c3
+Bytes: 920
+It's NaN and values below the minimum that need special care on R2/NAN2008=0 and with the currently incorrect implementation of R6 in the emulator (it must have NAN2008=1, but doesn't).
+
+This code takes care of them by comparing the float/double input with numeric_limits<int64_t/int32_t>::min() and then, if input >= min turns out true, it procedes to the trunc instruction, which takes care of values greater than the maximum the same way with any NAN2008 setting.
+
+Otherwise (input >= min is false), the input is compared with itself (to detect a NaN) and the output is set to either the minimum or 0.
+
+The runtime, where still used, takes care of the special cases. See file art/runtime/entrypoints/math_entrypoints.cc, functions art_d2l(), art_f2l(), art_d2i(), art_f2i() and the magic behind them in art_float_to_integral<int_type, float_type>().
+
+I believe everything's correct (no failures in math tests either).
+
 4944:34-4944:42
 Mon Jan 11 14:13:29 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

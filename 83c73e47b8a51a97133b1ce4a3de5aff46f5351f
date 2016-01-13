@@ -430,6 +430,64 @@ I actually played with that idea already. But making two Deopt instructions adja
 
 Would it be possible to do something during code generation (i.e. before doing a deopt, do some manipulations to make stack maps similar)?
 
+20:0-20:19
+Wed Jan 13 14:53:46 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 67c69632_6e16cf9e
+UUID: 27fc9e7c_cfe201ec
+Bytes: 1851
+Let's have a look. Here's the second deopt block for init() on x86:
+
+  v123    ParallelMove
+    mov esi, [esp + 72]
+  z91     Equal [l9,l90]
+  v92     Deoptimize [z91]
+    test edx, edx
+    jz/eq +169 (0x00000147)
+  i52     ArrayLength [l9]
+    mov edi, [edx + 8]
+  v119    ParallelMove
+    mov eax, esi
+  i95     Sub [i17,i15]
+    sub eax, ebp
+  i96     Sub [i95,i37]
+    sub eax, 1
+  i97     Add [i96,i15]
+    add eax, ebp
+  z98     Above [i15,i97]
+  v99     Deoptimize [z98]
+    cmp ebp, eax
+    jnbe/a +172 (0x0000015e)
+  z100    AboveOrEqual [i97,i52]
+  v101    Deoptimize [z100]
+    cmp eax, edi
+    jnb/ae/nc +187 (0x00000175)
+
+The problem is that EAX (i97) is still live after v99 but not after v101. The spill set is therefore different and so are the locations of vregs in the stack map:
+
+  DeoptimizationSlowPathX86
+    mov [esp + 4], eax
+    mov [esp + 8], ecx
+    mov [esp + 12], edx
+    mov [esp + 16], ebx
+    call fs:[0x2c4]  ; pDeoptimize
+      v1: in stack (8)
+      v2: in stack (12)
+      v3: in stack (16)
+
+  DeoptimizationSlowPathX86
+    mov [esp + 4], ecx
+    mov [esp + 8], edx
+    mov [esp + 12], ebx
+    call fs:[0x2c4]  ; pDeoptimize
+      v1: in stack (4)
+      v2: in stack (8)
+      v3: in stack (12)
+
+The same thing happens in the first deopt block as well but the Add gets allocated to ESI which is callee-save so the spill set is the same and the slow paths are shared.
+
+I see two ways how you can deal with this. You can spill the union of registers live across the shared slow paths, i.e. spill EAX for v101 too. That would work for any kind of slow path but it's wasteful. Or you can go the other way and leverage the fact that DeoptimizationSlowPath never returns and spill only caller-save registers mentioned in the stack map's dex register map, i.e. not spill EAX at v99 because it doesn't correspond to a vreg.
+
 39:4-39:12
 Fri Jan 08 11:55:05 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

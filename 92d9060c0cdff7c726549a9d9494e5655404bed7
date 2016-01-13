@@ -1,0 +1,40 @@
+Revision: 92d9060c0cdff7c726549a9d9494e5655404bed7
+Patch-set: 1
+File: compiler/optimizing/code_generator_mips.cc
+
+1545:2-1545:10
+Wed Jan 13 10:48:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 67f216a9_6e45cff4
+Bytes: 14
+const uint32_t
+
+1546:2-1546:10
+Wed Jan 13 10:48:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 870b8a60_6f45d1f4
+Bytes: 14
+const uint32_t
+
+1585:0-1586:35
+Wed Jan 13 10:48:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07f79a9a_0bf51dec
+Bytes: 120
+Maybe add a comment saying that this works because SLLV uses only the low-order 5 bits of the third operand (`rhs_reg`)?
+
+1649:12-1649:44
+Wed Jan 13 10:48:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 870b8a60_2f4bc90b
+Bytes: 332
+For the sake of readability, please introduce a new constant (e.g. `shift_value_high`) here:
+
+  const uint32_t shift_value_high = shift_value - kMipsBitsPerWord;
+
+and change line 1660 to use the initial `shift_value` instead
+
+  if (shift_value == kMipsBitsPerWord)
+
+This will also make the comment on line 1661 easier to understand.
+

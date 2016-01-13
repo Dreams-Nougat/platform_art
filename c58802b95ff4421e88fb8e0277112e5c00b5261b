@@ -77,6 +77,18 @@ The ArrayGet and ArrayLength should still be in the graph but should be in the o
   CHECK-DAG: ArrayLength loop:<<OuterLoop>>
   CHECK-EVAL: ...
 
+642:6-642:15
+Wed Jan 13 18:27:19 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47ed12c9_704e4e72
+UUID: 07623a24_a865ff1f
+Bytes: 522
+Yes, you may have noticed that I separated -DAG and -NOT completely in the other file for exactly that reason, it does not tell much. I thought it would be okay here since it appears typically before the array get, but you are right I might as well go the full way.
+
+What you suggest does not test that there is no ArrayLength in the inner loop at all (some strange optimization may move it out and keep it inside :-)
+
+Any pointers on how you would do that (since it seems you need *some* positive mixed with the negative?
+
 File: test/530-checker-loops/src/Main.java
 
 1057:0-1059:48

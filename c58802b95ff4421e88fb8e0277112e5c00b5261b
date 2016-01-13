@@ -89,6 +89,31 @@ What you suggest does not test that there is no ArrayLength in the inner loop at
 
 Any pointers on how you would do that (since it seems you need *some* positive mixed with the negative?
 
+642:6-642:15
+Wed Jan 13 19:13:23 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 07623a24_a865ff1f
+UUID: c701023f_74f5a672
+Bytes: 1246
+Correct, we'd need to pass the name of the inner loop header between the passes to test that the instruction is not present there. We've never needed something like this before, maybe I should think about adding a feature for doing a match without moving the cursor...
+
+That said, it reminds me of the instruction simplifier where we don't actually remove the optimized-out instructions but assume that DCE will do so later on. Showing in Checker that the instruction was removed from the data flow is then sufficient enough evidence that it will not be present in the native code. You could do that by showing that the two inputs of the integer ArrayGet are now the two Phis and be done with it.
+
+If you wanted to be absolutely strict about making sure there's no dangling ArrayLength, you could do a match on the number of users - that's the number before the instruction id. You would show that they had just one user in (before):
+
+  CHECK-DAG {{\d}} 1 <<Len:i\d+>> ArrayLength
+  CHECK-DAG                       BoundsCheck [<<Len>>,...]
+
+that that user was removed in (after)
+
+  CHECK-NOT BoundsCheck
+
+and now there isn't an ArrayLength with no users
+
+  CHECK-NOT {{\d+}} 0 {{i\d+}} ArrayLength
+
+but that just seems like a massive overkill...
+
 File: test/530-checker-loops/src/Main.java
 
 1057:0-1059:48

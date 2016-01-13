@@ -1,0 +1,20 @@
+Revision: 0f7821957ed50feec0baccff4ea6b0263879e62e
+Patch-set: 11
+File: compiler/optimizing/pc_relative_fixups_x86.cc
+
+111:5-113:44
+Wed Jan 13 13:17:23 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07495aa4_f05fe64f
+Bytes: 375
+I don't believe that this will work correctly.  The X86 code generator assumes that there is only 1 instruction to compute the address, as its offset is saved and used when generating the fixup.
+
+A better fix is to just return if the graph has irreducible loops, and not generate it everywhere.  As these are optimizations, not correctness changes, that is a better solution.
+
+140
+Wed Jan 13 13:17:23 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 676db610_205c6375
+Bytes: 37
+I am not sure how to handle this one.
+

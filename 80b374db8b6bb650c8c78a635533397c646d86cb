@@ -62,6 +62,14 @@ I think, with the current CC collector, "there are no thread suspension points" 
 
 So I don't think "there are no thread suspension points" is sufficient to disable read barriers  in the general case. But if image relocation, class linker fixup, etc. are the situations where either we guarantee GC isn't already running, or the content of the heap, roots aren't subject to GC yet (like the app image space at load time), it's probably okay.
 
+21:0-21:61
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a4ddf0f_de94e16d
+UUID: 07623a24_7cc8c82a
+Bytes: 139
+With the new CL, you can have read barriers in ClassLinker::AddImageSpace. But we should still avoid any inside of the in-place relocation.
+
 File: compiler/image_writer.cc
 
 671:0-672:15
@@ -137,6 +145,14 @@ Parent: aa2133e4_eb5c0d79
 UUID: aa1773d7_bea9e19d
 Bytes: 34
 Did you get feedback from someone?
+
+735:7-735:56
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aa1773d7_bea9e19d
+UUID: 87562a44_d17f44b7
+Bytes: 57
+Yes, I changed the logic to be conditional on app images.
 
 File: dex2oat/dex2oat.cc
 
@@ -240,6 +256,14 @@ UUID: 2a52a3ad_e2758264
 Bytes: 54
 How about adding DCHECK that element is of right type?
 
+937:55-937:62
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a52a3ad_e2758264
+UUID: 87562a44_f186c8fb
+Bytes: 4
+Done
+
 1108:26-1108:35
 Wed Dec 16 23:42:10 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -292,6 +316,14 @@ Parent: eafecb6e_9285bc33
 UUID: 4a4357e2_63c2d67c
 Bytes: 130
 I am not sure what you meant exactly or the intent of this code. But can we split the debug check code from the rest more clearly?
+
+1350:24-1350:41
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a4357e2_63c2d67c
+UUID: 87562a44_5175f4d3
+Bytes: 4
+Done
 
 File: runtime/class_table.cc
 
@@ -370,6 +402,14 @@ UUID: ea1debf7_c05e32fa
 Bytes: 123
 I don't see a comment here. Where did you add it? Can you add it right before the line that contains "kWithoutReadBarrier"?
 
+185:17-185:36
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea1debf7_c05e32fa
+UUID: 07623a24_e80417f6
+Bytes: 19
+No longer relevant.
+
 File: runtime/dex_file.cc
 
 254:36-254:47
@@ -427,6 +467,14 @@ Parent: 2afc637c_afbb358c
 UUID: 0a4ddf0f_c1c08655
 Bytes: 390
 Thanks for the comment. As a side note, we currently don't and probably shouldn't have the collector to mark a read-only bitmap (eg the boot image bitmap) because the collector should likely take advantage of that fact that all of the objects in the space are alive and avoid marking those objects like objects in the space where objects can die/be reclaimed for performance reasons. Right?
+
+171:6-171:45
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a4ddf0f_c1c08655
+UUID: 07495aa4_4491bf3a
+Bytes: 100
+Yes, currently the case where this can happen is for image spaces that are not in the immune region.
 
 File: runtime/gc/heap.cc
 
@@ -536,6 +584,14 @@ The end of an (app) image space isn't page-aligned nor card-aligned, correct? Ju
 
 I think loosening the precondition (removing the check) in ClearCardRange() could allow subtle bugs to be left unnoticed in some other cases. I think handling image spaces specially rather than loosening the card table code (ClearCardRange) seems preferable. Is there a cleaner way?
 
+3171:52-3171:84
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a41cfd9_850b663e
+UUID: c75ca266_253639bc
+Bytes: 4
+Done
+
 File: runtime/gc/space/image_space.cc
 
 576:9-576:36
@@ -591,6 +647,14 @@ UUID: 8a1aaf01_1a06d9a4
 Bytes: 64
 I prefer doing that now unless there's a difficulty in doing so.
 
+877:0-901:3
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a1aaf01_1a06d9a4
+UUID: 07623a24_88e64364
+Bytes: 4
+Done
+
 912:0-915:3
 Wed Dec 16 23:42:10 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -613,6 +677,14 @@ Parent: 6a1bbbb8_09a08daf
 UUID: ea1debf7_c3c2bcab
 Bytes: 5
 Same.
+
+912:0-915:3
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea1debf7_c3c2bcab
+UUID: 27673e34_dbbc8486
+Bytes: 4
+Done
 
 918:12-918:27
 Wed Dec 16 23:42:10 2015 +0000
@@ -637,6 +709,14 @@ UUID: 2a52a3ad_423eb663
 Bytes: 114
 So, "in place" means modifying a single ImageSpace in place rather than relocating from one ImageSpace to another?
 
+918:12-918:27
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a52a3ad_423eb663
+UUID: 274e5eac_593884ab
+Bytes: 3
+Yes
+
 1314:27-1315:4
 Wed Dec 16 23:42:10 2015 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -659,6 +739,14 @@ Parent: 6a1bbbb8_69a5c1bf
 UUID: 0a4ddf0f_816fdecd
 Bytes: 83
 Is it easy to assert that oat_file == nulltpr iff it's a boot image? It may not be.
+
+1314:27-1315:4
+Wed Jan 13 21:42:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a4ddf0f_816fdecd
+UUID: e759a674_17e40b28
+Bytes: 4
+Done
 
 File: runtime/image.h
 

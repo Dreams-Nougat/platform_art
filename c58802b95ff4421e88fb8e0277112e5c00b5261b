@@ -2,6 +2,13 @@ Revision: c58802b95ff4421e88fb8e0277112e5c00b5261b
 Patch-set: 10
 File: test/449-checker-bce/src/Main.java
 
+624
+Wed Jan 13 18:15:55 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 870b8a60_52e192ba
+Bytes: 36
+Thanks for doing this. Way better :)
+
 639:20-639:21
 Tue Jan 12 11:53:23 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,6 +55,27 @@ Parent: 870b8a60_af54d9d9
 UUID: 274e5eac_4bc39163
 Bytes: 4
 Done
+
+642:6-642:15
+Wed Jan 13 18:15:55 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47ed12c9_704e4e72
+Bytes: 662
+This is still nasty (I should forbid mixing -DAG and -NOT entirely) because it only tests the assertion in a part of the file.
+
+IIUC, there should be no NullCheck and no BoundsCheck whatsoever, right? Then let's move them to their own pass just like you do everywhere else:
+
+  CHECK-START:
+  CHECK-NOT: NullCheck
+  CHECK-NOT: BoundsCheck
+
+The ArrayGet and ArrayLength should still be in the graph but should be in the outer loop, right? So why not test them the same way as the Deoptimize below?
+
+  ...
+  CHECK-DAG: Deoptimize loop:<<OuterLoop:B\d+>>
+  CHECK-DAG: {{l\d+}} ArrayGet loop:<<OuterLoop>>
+  CHECK-DAG: ArrayLength loop:<<OuterLoop>>
+  CHECK-EVAL: ...
 
 File: test/530-checker-loops/src/Main.java
 

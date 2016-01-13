@@ -1,0 +1,30 @@
+Revision: 16ed0ab5ff081f67ea1c2c84e63e3d5104ad0ebd
+Patch-set: 1
+File: compiler/optimizing/code_generator_mips.cc
+
+613:18-613:48
+Wed Jan 13 11:26:46 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 87246af4_c7af7ee2
+Bytes: 247
+Introduce a helper to hide those static_casts, e.g. `NextFRegister`?
+
+Or better, a codegen routine to encapsulate this pattern:
+
+  if (fpu_32bit) {
+    __ Mfc1(dst, NextFRegister(src));
+  } else {
+    __ Mfhc1(dst, src);
+  }
+
+(Likewise for Mthc1.)
+
+File: compiler/optimizing/intrinsics_mips.h
+
+70:21-70:26
+Wed Jan 13 11:26:46 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c72ae2be_2cc91b32
+Bytes: 31
+Thanks for adding these consts.
+

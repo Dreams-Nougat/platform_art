@@ -1,0 +1,17 @@
+Revision: bb6e7269b7d3cbf375133f531e8f9983d353d28a
+Patch-set: 2
+File: runtime/interpreter/mterp/arm/op_iget_object_quick.S
+
+5:4-7:55
+Thu Jan 14 23:29:00 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 676db610_44bd2ced
+Bytes: 585
+Can we add some kind of checks for this?
+
+I would advocate instead of bl to use a macro (with the name of the runtime function), but it prohibits micro optimizations like your scheduling here. And it's also not clear whether you should do it everywhere (though it would probably be better).
+
+We don't store a frame on such a direct transition, so we can't compare in the runtime code, regrettably.
+
+How about in debug builds always scrambling the stored pc first in every assembly fragment? Kinda like heap poisoning. Still requires coverage for all the paths, but better than nothing.
+

@@ -21,3 +21,13 @@ I think it is still safe, harder to justify though. Profile infos are only colle
 
 The other case to think about is when the GC sets the profile infos to null. Since there is a thread checkpoint between there and when we do the sweeping, it should be safe as long as you have no suspension points between where you add a profiling info and where you use it.
 
+679:2-679:45
+Thu Jan 14 21:20:38 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e759a674_6843e19a
+UUID: 076cfa46_86680cf7
+Bytes: 296
+Yes, Mathieu is right, it's safe to create a ProfilingInfo object even when a GC is in progress.
+
+It used to be a problem to allocate those ProfilingInfo, as the GC used to just clear the vector containing them, but now that we keep the ones being used for compilation, it's ok to do this change.
+

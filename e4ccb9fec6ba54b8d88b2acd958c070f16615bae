@@ -1,0 +1,15 @@
+Revision: e4ccb9fec6ba54b8d88b2acd958c070f16615bae
+Patch-set: 2
+File: runtime/jit/jit_instrumentation.cc
+
+180:2-180:4
+Thu Jan 14 20:06:34 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4768b202_e390b015
+Bytes: 350
+Had a chat with Mathieu in person.
+
+Let me throw in an idea: An alternative way is to wrap this_object in a Handle (Mathieu says it would need be on the caller side) and allow the thread suspension, which should avoid the stale ref issue.
+
+Mathieu's idea of avoiding to sweep recently-allocated ProfilingInfo's with a bool flag seems to work as well.
+

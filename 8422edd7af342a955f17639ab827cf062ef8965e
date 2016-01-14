@@ -25,3 +25,15 @@ UUID: 676db610_e2870b3a
 Bytes: 97
 It is strange and interesting.  Removing the check causes 122-npe to fail.  Looking into why now.
 
+7:12-7:36
+Thu Jan 14 23:17:20 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 676db610_e2870b3a
+UUID: 676db610_e4327897
+Bytes: 509
+Oh, this is a good one - something anyone working on mterp should keep in mind.  To save cycles, mterp keeps Dalvik PC in a register.  However, any runtime support routine which might throw needs to know the current Dalvik PC.  So, prior to calling out to the runtime it is a requirement that the EXPORT_PC macro be used.  If not, the runtime will attempt to pin the exception at whatever Dalvik PC was last stashed.
+
+When I changed this routine to use runtime support, I failed to use EXPORT_PC.
+
+Fix coming.
+

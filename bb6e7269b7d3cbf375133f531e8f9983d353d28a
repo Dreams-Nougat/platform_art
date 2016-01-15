@@ -15,3 +15,15 @@ We don't store a frame on such a direct transition, so we can't compare in the r
 
 How about in debug builds always scrambling the stored pc first in every assembly fragment? Kinda like heap poisoning. Still requires coverage for all the paths, but better than nothing.
 
+5:4-7:55
+Fri Jan 15 00:09:58 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 676db610_44bd2ced
+UUID: 07623a24_ebc24c7a
+Bytes: 997
+Though I understand macro vs. bl, I would prefer the keep the ability to schedule.  And yes, not all runtime support calls can throw.
+
+One thing that makes it a little more difficult to have debug vs. non-debug builds is that there is a hard limit on the size of the initial assembly block (128 bytes currently, but Dalvik used 64 and I'd planned to switching back to that after thing stabilized).   So, you have to be careful not to have a macro with extra debug code expand and push you over the limit.
+
+However, there is a place we could do something like this.  The traditional "alt" version of mterp includes a common callout prior to each instruction interpretation - MterpCheckBefore().  This could scramble the stashed Dalvik PC prior to each interpretation without altering the opcode handling bodies.  In fact, in my early development of mterp I did something opposite - I always exported PC.  If I crashed regular and passed when using Alt that was a clear sign I'd forgotten to export.
+

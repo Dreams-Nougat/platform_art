@@ -1,0 +1,23 @@
+Revision: aa1af9717964560e5abc4e4bd04ef9afc7389d36
+Patch-set: 3
+File: runtime/common_runtime_test.h
+
+179:6-179:32
+Fri Jan 15 19:40:28 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e783661b_4d59cd40
+Bytes: 506
+This class is identical to the CommonRuntimeTest, except for the base. Why not
+
+    class CommonRuntimeTestBaseImpl { ... }  // Rename the "Base" to "BaseImpl".
+
+    template <typename GTestBase>
+    class CommonRuntimeTestBase
+        : public GTestBase,
+          public CommonRuntimeTestBaseImpl { ... }
+
+    using CommonRuntimeTest = CommonRuntimeTestBase<testing::Test>;
+    template <typename Param>
+    using CommonRuntimeTestWithParam =
+        CommonRuntimeTestBase<testing::TestWithParam<Param>>;
+

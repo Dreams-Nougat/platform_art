@@ -9,3 +9,13 @@ UUID: 8780ea14_6a8597c3
 Bytes: 92
 Who calls this? And I thought Stirng.<init> calls were special through a thread entry point?
 
+413:0-419:71
+Mon Jan 18 10:25:57 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8780ea14_6a8597c3
+UUID: e783661b_cdabfdee
+Bytes: 536
+INVOKE_DIRECT* invokes DoInvoke (interpreter_common.h:613) which calls this from line 619. The special casing for String.<init> is in DoCallCommon (interpreter_common.cc:557) called later. So there is an explicit null check on `this`.
+
+It does not, however, call the entry points directly. DoCallCommon translates the method IDs of String constructors to corresponding methods in libcore's StringFactory class. Its methods are still written in Java with a native method for converting char[] and byte[] to String using the entry points.
+

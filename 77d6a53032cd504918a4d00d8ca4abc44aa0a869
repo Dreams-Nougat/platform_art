@@ -9,6 +9,35 @@ UUID: 8780ea14_8a2bab51
 Bytes: 52
 Reasonable to think we can? (here and arm64 as well)
 
+1580:0-1580:40
+Mon Jan 18 11:35:02 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8780ea14_8a2bab51
+UUID: 47727221_283d639b
+Bytes: 81
+Yes, we should be able to use the SIMD instructions VCNT on ARM and CNT on ARM64.
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+2386:0-2389:63
+Mon Jan 18 11:35:02 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47727221_882bb751
+Bytes: 256
+I would use the `POPCOUNT` helper provided by runtime/base/bit_utils.h here:
+
+    HInstruction* arg = invoke->InputAt(0)
+    int32_t count = is_long ?
+        POPCOUNT(arg->AsLongConstant()->GetValue()) :
+        POPCOUNT(arg->AsIntConstant()->GetValue());
+
+2395:11-2395:21
+Mon Jan 18 11:35:02 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47727221_a8287355
+Bytes: 7
+Remove?
+
 File: test/564-bitcount/src/Main.java
 
 19:21-19:27

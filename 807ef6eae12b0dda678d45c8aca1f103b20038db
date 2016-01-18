@@ -2,6 +2,13 @@ Revision: 807ef6eae12b0dda678d45c8aca1f103b20038db
 Patch-set: 4
 File: runtime/jit/jit.cc
 
+224:0-227:1
+Mon Jan 18 12:02:56 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a77deeee_ceef77a3
+Bytes: 51
+Please inline this line 232, and remove the method.
+
 236:0-252:1
 Mon Jan 18 09:22:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,4 +25,12 @@ Bytes: 769
 I use jit_types_loaded_ to report both the list of types loaded during initialization (through this function) and to report types loaded during runtime (through Jit::NewTypeLoaded). The second use case can't work with passing a ClassLoader* to the compiler as it emits only the debug info for the newly loaded types.
 
 If we want to move this code to the compiler (to jit_types_loaded) then we either have to add a new method for it and have 2 method to pass type information over to the jit or make the interface of jit_types_loaded_ more complicated with either accepting a mirror::Class* or accepting a ClassLoader*. I don't think any of this option is better then the current one with implementing it in the runtime but let me know if you have different preferences.
+
+236:0-252:1
+Mon Jan 18 12:02:56 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e783661b_adcc09e6
+UUID: 8780ea14_ead6e775
+Bytes: 4
+sgtm
 

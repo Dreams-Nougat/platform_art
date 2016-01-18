@@ -17,6 +17,29 @@ UUID: 47727221_283d639b
 Bytes: 81
 Yes, we should be able to use the SIMD instructions VCNT on ARM and CNT on ARM64.
 
+1580:0-1580:40
+Mon Jan 18 12:09:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47727221_283d639b
+UUID: 8780ea14_aaccefe5
+Bytes: 869
+For code size, the best option on ARM would be
+
+  vmov sTmp, rInput
+  vcnt.8 sTmp, sTmp
+  vmov rOutput, rOutput
+  add rOutput, rOutput, rOutput, shl #8
+  add rOutput, rOutput, rOutput, shl #16
+  lsr rOutput, rOutput, #24
+
+Note, that LSR can be a 16-bit instruction but AND is always 32-bit, so we should choose to accumulate the result in the highest byte (as above) rather than the lowest.
+
+For Long, we have two options how to add the results for the two words: VADD or UADD8. VADD should be preferred to avoid clobbering an extra core register.
+
+The question is, would it be faster if we stick to core registers (with 6 extra instructions for Int and even more for Long)?
+
+Similar on ARM64, except that for adding the high and low word results for Long should be done in core register. And it doesn't matter whether the result is accumulated in the high or low byte.
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 2386:0-2389:63

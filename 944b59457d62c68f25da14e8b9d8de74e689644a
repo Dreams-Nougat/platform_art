@@ -18,6 +18,23 @@ Bytes: 104
 No, the integer get is still in the inner loop.
 The bounds check has been removed though by dynamic bce.
 
+645:43-645:51
+Tue Jan 19 19:18:17 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 27673e34_1a054bf0
+UUID: 8780ea14_adcc09e6
+Bytes: 437
+Right, so why not follow the flow?
+
+  CHECK-DAG: <<Array1:l\d+>> ArrayGet loop:<<Outer>>
+  CHECK-DAG: <<Array2:l\d+>> Phi [<<Array1>>,<<Null>>] loop:<<Outer>>
+
+  CHECK-DAG: <<Index:i\d+>>  Phi loop:<<Inner:B\d+>>
+  CHECK-DAG: <<Get:i\d+>>    ArrayGet [<<Array2>>,<<Index>>]
+  CHECK-DAG:                 Invoke [<<Get>>]
+
+I'm nit-picking at this point, but it's so close to perfect that it would be shame not to cross the finish line. O:)
+
 File: test/530-checker-loops/src/Main.java
 
 1139

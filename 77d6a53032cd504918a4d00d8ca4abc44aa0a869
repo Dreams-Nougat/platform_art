@@ -56,6 +56,14 @@ UUID: c786622d_2c1e5bf4
 Bytes: 154
 If we're willing to use an extra temp on ARM (or use IP), the accumulation can be done by loading 0 to a register and using USAD8, saving one instruction.
 
+1580:0-1580:40
+Tue Jan 19 19:11:07 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c786622d_2c1e5bf4
+UUID: 07623a24_7919ed0a
+Bytes: 77
+Thanks for thinking about this (I leave this for a later CL though of course)
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 2386:0-2389:63
@@ -70,12 +78,30 @@ I would use the `POPCOUNT` helper provided by runtime/base/bit_utils.h here:
         POPCOUNT(arg->AsLongConstant()->GetValue()) :
         POPCOUNT(arg->AsIntConstant()->GetValue());
 
+2386:0-2389:63
+Tue Jan 19 19:11:07 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47727221_882bb751
+UUID: 07623a24_19eb9908
+Bytes: 4
+Done
+
 2395:11-2395:21
 Mon Jan 18 11:35:02 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 47727221_a8287355
 Bytes: 7
 Remove?
+
+2395:11-2395:21
+Tue Jan 19 19:11:07 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47727221_a8287355
+UUID: 27673e34_fa268f92
+Bytes: 124
+Ah, I always like to flag early exits to avoid overlooking them, but it is indeed not consistent with the other code.
+
+Done.
 
 File: test/564-bitcount/src/Main.java
 
@@ -85,4 +111,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e783661b_4d71cd75
 Bytes: 74
 Maybe add an ARCH-X86_64 specific checker test to ensure there is no call?
+
+19:21-19:27
+Tue Jan 19 19:11:07 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e783661b_4d71cd75
+UUID: 676db610_8eed9ae3
+Bytes: 59
+can you please point me to a arch specific checker example?
 

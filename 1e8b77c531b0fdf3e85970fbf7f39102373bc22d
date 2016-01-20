@@ -1,0 +1,107 @@
+Revision: 1e8b77c531b0fdf3e85970fbf7f39102373bc22d
+Patch-set: 3
+File: compiler/driver/compiler_driver-inl.h
+
+311:0-320:3
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a77deeee_1c11c5a4
+Bytes: 59
+Why this change? And it looks like methods_class is unused?
+
+329:5-329:10
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8780ea14_704d86c2
+Bytes: 23
+What needs to be fixed?
+
+347:5-347:9
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2771fe1c_0dea795a
+Bytes: 133
+I think same_dex_file was just here for simplicity, as dealing with different dex files for an invoke-super is a very rare situation.
+
+File: compiler/optimizing/builder.cc
+
+800:30-800:51
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 07931a6b_7f4d57c2
+Bytes: 30
+ResolveDeclaringClassOfMethod?
+
+867:0-868:50
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e783661b_d39d5e2b
+Bytes: 196
+Can't this only happen if the compiling class is null? It is null when the AOT compiler could not resolve its super class or interfaces. So I think you just need to move test line 871 to line 863.
+
+895:11-895:36
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 076cfa46_b7cc50e6
+Bytes: 42
+Where is the compiler driver invoked here?
+
+1008:17-1008:36
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c786622d_7274aed6
+Bytes: 5
+ditto
+
+1247:0-1247:7
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8780ea14_b04e1ebc
+Bytes: 11
+extra space
+
+File: runtime/class_linker.h
+
+273:17-273:38
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e798c691_36a990f7
+Bytes: 29
+ResolveDeclaringClassOfMethod
+
+File: runtime/verifier/method_verifier.cc
+
+3708
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8780ea14_d05b927c
+Bytes: 33
+Why do you need verifier changes?
+
+File: test/972-iface-super-multidex/build
+
+3:12-3:16
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47727221_ae015b4f
+Bytes: 27
+2016 (here and other files)
+
+File: test/972-iface-super-multidex/info.txt
+
+5:0-5:44
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e798c691_f67b2856
+Bytes: 23
+I could not parse this.
+
+File: test/972-iface-super-multidex/smali-multidex/conflictinterface.smali
+
+22:0-23:3
+Wed Jan 20 16:14:03 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e783661b_93bcc685
+Bytes: 45
+Why is that commented? (here and other files)
+

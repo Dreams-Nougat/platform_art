@@ -9,6 +9,14 @@ UUID: a77deeee_1c11c5a4
 Bytes: 59
 Why this change? And it looks like methods_class is unused?
 
+311:0-320:3
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a77deeee_1c11c5a4
+UUID: c70ca2f0_dcc7e11a
+Bytes: 17
+Used in line 353.
+
 329:5-329:10
 Wed Jan 20 16:14:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 8780ea14_704d86c2
 Bytes: 23
 What needs to be fixed?
 
+329:5-329:10
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8780ea14_704d86c2
+UUID: e7ae06f9_35d71a1f
+Bytes: 63
+Removed and rewrote the comment in builder.cc to be more clear.
+
 347:5-347:9
 Wed Jan 20 16:14:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2771fe1c_0dea795a
 Bytes: 133
 I think same_dex_file was just here for simplicity, as dealing with different dex files for an invoke-super is a very rare situation.
+
+347:5-347:9
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2771fe1c_0dea795a
+UUID: 07123a0e_934f1c15
+Bytes: 5
+Fine.
 
 File: compiler/optimizing/builder.cc
 
@@ -32,12 +56,30 @@ UUID: 07931a6b_7f4d57c2
 Bytes: 30
 ResolveDeclaringClassOfMethod?
 
+800:30-800:51
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 07931a6b_7f4d57c2
+UUID: 27fe5ee6_1f02e752
+Bytes: 30
+ResolveReferencedClassOfMethod
+
 867:0-868:50
 Wed Jan 20 16:14:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e783661b_d39d5e2b
 Bytes: 196
 Can't this only happen if the compiling class is null? It is null when the AOT compiler could not resolve its super class or interfaces. So I think you just need to move test line 871 to line 863.
+
+867:0-868:50
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e783661b_d39d5e2b
+UUID: 47efd232_7d5977dd
+Bytes: 78
+I guess. I don't really understand how the compiling class is resolved.
+
+Done.
 
 895:11-895:36
 Wed Jan 20 16:14:03 2016 +0000
@@ -46,6 +88,20 @@ UUID: 076cfa46_b7cc50e6
 Bytes: 42
 Where is the compiler driver invoked here?
 
+895:11-895:36
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 076cfa46_b7cc50e6
+UUID: 07123a0e_7359a0dd
+Bytes: 718
+Updated comment to be clearer.
+
+AIUI the problem is that if we do not have the same dex file the dex_method_index will not be updated to the actual index we want to invoke up in builder.cc. This means that we would search the dex_cache for the wrong dex_method_index and possibly call the wrong method. This is bad because both types of invoke-super don't **need** to point to the actual method invoked, they can point to a totally different or non-existent one. In that case the method in the dex_cache at that index might not be the one we expect.
+
+This might be totally wrong and if so please correct me but that is how I read the code.
+
+The TODO Here is just that having the logic separated so much is undesirable.
+
 1008:17-1008:36
 Wed Jan 20 16:14:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,12 +109,30 @@ UUID: c786622d_7274aed6
 Bytes: 5
 ditto
 
+1008:17-1008:36
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c786622d_7274aed6
+UUID: 87062ace_3a21bd8b
+Bytes: 175
+See above.
+
+Also I think this should maybe be a CHECK or DCHECK since if this fails I am not sure that the dex-cache lookup the code-generator emits will succeed in all cases.
+
 1247:0-1247:7
 Wed Jan 20 16:14:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8780ea14_b04e1ebc
 Bytes: 11
 extra space
+
+1247:0-1247:7
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8780ea14_b04e1ebc
+UUID: 07123a0e_535624af
+Bytes: 4
+Done
 
 File: runtime/class_linker.h
 
@@ -69,6 +143,14 @@ UUID: e798c691_36a990f7
 Bytes: 29
 ResolveDeclaringClassOfMethod
 
+273:17-273:38
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e798c691_36a990f7
+UUID: 671db61a_d6a224c8
+Bytes: 30
+ResolveReferencedClassOfMethod
+
 File: runtime/verifier/method_verifier.cc
 
 3708
@@ -77,6 +159,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8780ea14_d05b927c
 Bytes: 33
 Why do you need verifier changes?
+
+3708
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8780ea14_d05b927c
+UUID: 07f95afe_1bcddbe0
+Bytes: 134
+Previously we would just force interpret here whenever we saw an interface super. We need to replace it with a real verification step.
 
 File: test/972-iface-super-multidex/build
 
@@ -87,6 +177,14 @@ UUID: 47727221_ae015b4f
 Bytes: 27
 2016 (here and other files)
 
+3:12-3:16
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 47727221_ae015b4f
+UUID: 87062ace_1a24b988
+Bytes: 4
+Done
+
 File: test/972-iface-super-multidex/info.txt
 
 5:0-5:44
@@ -96,6 +194,14 @@ UUID: e798c691_f67b2856
 Bytes: 23
 I could not parse this.
 
+5:0-5:44
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e798c691_f67b2856
+UUID: e7ae06f9_95424695
+Bytes: 42
+Removed. I copied the wrong info.txt file.
+
 File: test/972-iface-super-multidex/smali-multidex/conflictinterface.smali
 
 22:0-23:3
@@ -104,4 +210,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e783661b_93bcc685
 Bytes: 45
 Why is that commented? (here and other files)
+
+22:0-23:3
+Wed Jan 20 23:01:25 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e783661b_93bcc685
+UUID: 87062ace_9a3c49a0
+Bytes: 34
+Just to show equivalent java code.
 

@@ -1,5 +1,25 @@
 Revision: 0804062eff64ac6868f8ada58817da3e29bb5020
 Patch-set: 4
+File: runtime/fault_handler.cc
+
+150:2-153:3
+Wed Jan 20 21:54:18 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 47efd232_201ea44f
+Bytes: 360
+The name is bad. If the check is inline (which I can see for performance reasons, then call it Try...
+
+I also originally meant to move the other_handlers_ code out, not everything. This is still a large function with two separate concerns. Would prefer moving the whole stuff after "// We hit" into its own function, to have this look clean and maintainable...
+
+247:17-247:21
+Wed Jan 20 21:54:18 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 87062ace_fd7f3f88
+Bytes: 196
+Why "true"? This is still a failure case that should terminate, so should be propagated along the chain.
+
+(And no, we will not accept other_handlers_ that fix up internal state in managed code...)
+
 File: runtime/fault_handler.h
 
 64:7-64:33

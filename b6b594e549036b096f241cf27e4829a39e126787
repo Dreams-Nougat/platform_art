@@ -1,0 +1,31 @@
+Revision: b6b594e549036b096f241cf27e4829a39e126787
+Patch-set: 15
+File: compiler/optimizing/code_generator_x86.cc
+
+1404
+Thu Jan 21 18:16:21 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 544ea283_65748666
+Bytes: 12
+Indentation.
+
+File: compiler/optimizing/select_generator.cc
+
+66:8-66:36
+Thu Jan 21 18:16:21 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 344dae87_44ee2e72
+Bytes: 328
+Even this is a bit too restrictive.
+
+For example:
+  int x = 0;
+  int y = 0;
+  if (bool1) {
+    x = bool2 ? 42 : 7;  // We want to use HSelect here
+  } else {
+    y = foo();
+  }  // but the merge_block has 2 Phis.
+
+There is only one Phi which has different inputs from the ternary expression blocks. (That's what I meant in PS8.)
+

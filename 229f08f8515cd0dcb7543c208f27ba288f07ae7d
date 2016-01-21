@@ -36,6 +36,16 @@ Ideally, we should create phis in irreducible loop headers for all these instruc
 
 So the algorithm will just create live intervals that have holes in them, at places where they are expected to be live_in. Again, this normally does not work, but we can special case constants and ArtMethod as those are easily re-materializable.
 
+1764:25-1764:77
+Thu Jan 21 23:00:40 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7453a627_46cbd2cc
+UUID: b40b5e17_3e78d107
+Bytes: 172
+In ssa_phi_elimination.cc, this line:
+    if (irreducible_loop_phi_in_cycle && !candidate->IsConstant()) {
+I don't see !IsCurrentMethod() is tested. Should it be done also?
+
 1769:25-1769:41
 Thu Jan 21 22:31:35 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>

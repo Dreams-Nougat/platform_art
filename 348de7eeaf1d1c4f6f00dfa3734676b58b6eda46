@@ -9,6 +9,14 @@ UUID: 0a6ebfb0_536c84d8
 Bytes: 161
 Could you add a comment about why using a parallel move instead of a "generic" move here? (Likewise in other back ends using a parallel move for this operation.)
 
+1643:2-1645:62
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a6ebfb0_536c84d8
+UUID: 4774327b_759b2836
+Bytes: 48
+Removed, using MoveLocation after go/aog/197640.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1617:23-1617:24
@@ -18,12 +26,28 @@ UUID: 67f216a9_ae54d7d9
 Bytes: 113
 You can specify the template parameter here to avoid the static_cast<>() below. Same further down and for x86-64.
 
+1617:23-1617:24
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 67f216a9_ae54d7d9
+UUID: 344dae87_24f21289
+Bytes: 39
+Much better, thanks for the suggestion.
+
 1642:0-1643:71
 Mon Jan 11 13:22:51 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a3e5b9d_0ee74bcf
 Bytes: 64
 Shouldn't you split pairs, like we do in the register allocator?
+
+1642:0-1643:71
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a3e5b9d_0ee74bcf
+UUID: e74a8641_d2c2440d
+Bytes: 46
+Good catch, thanks. Resolved by go/aog/197640.
 
 File: compiler/optimizing/instruction_simplifier.cc
 
@@ -34,12 +58,28 @@ UUID: 2a738396_b416a029
 Bytes: 54
 Add a comment what you intend on doing in this branch?
 
+618:9-618:10
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a738396_b416a029
+UUID: f484f6cd_425b9238
+Bytes: 4
+Done
+
 619
 Mon Jan 11 11:56:03 2016 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a273b99_46205274
 Bytes: 66
 Nit: You have this in the `if` as well. Take out of the `if/else`?
+
+619
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a273b99_46205274
+UUID: 1448aa77_43cf4639
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.cc
 
@@ -50,6 +90,14 @@ UUID: 2a21c386_847326f0
 Bytes: 91
 `DCHECK(insn->CanBeMoved());`
 `DCHECK(!insn->HasSideEffects() && !insn->HasDependencies());
+
+683
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a21c386_847326f0
+UUID: 4774327b_b56300ee
+Bytes: 21
+Why !HasDependencies?
 
 File: compiler/optimizing/nodes.h
 
@@ -76,6 +124,21 @@ UUID: 6a901bcb_87aa4ceb
 Bytes: 78
 It helps x86, which has two operand instructions, and SameAsFirst output mode.
 
+5583
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a901bcb_87aa4ceb
+UUID: 544ea283_c537bad4
+Bytes: 411
+Yeah, it's a combination of two things: SameAsFirstInput allocation policy and inverting floating-point compares.
+
+With the fallback implementation and architectures with conditional moves (x86, x86_64, arm) we will do:
+
+  out = SameAsFirstInput = false_value;
+  if (cond) { out = true_value; }
+
+So first input needs to be `false_value`. If we could at least invert conditions, it could be `true_value` as well.
+
 5594:7-5594:17
 Mon Jan 11 13:22:51 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -99,6 +162,14 @@ UUID: ea4a4b41_52dbb49f
 Bytes: 161
 Yeah, InstructionTypeEquals is provided by the DECLARE_INSTRUCTION macro. Still, you need InstructionDataEquals to return true (default implementation is false).
 
+5594:7-5594:17
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea4a4b41_52dbb49f
+UUID: 344dae87_64a36a71
+Bytes: 4
+Done
+
 File: compiler/optimizing/prepare_for_register_allocation.cc
 
 138
@@ -109,6 +180,24 @@ Bytes: 264
 This made me think of a corner case when a value is both used as the condition and as the true or false value.
 
 If you think it is worth it, we could improve that in the simplifier by replacing the use of the condition as a true/false value by constant true/false.
+
+138
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a22778b_ab146d93
+UUID: 67793673_d67fa488
+Bytes: 259
+So what you're saying is:
+
+  a = x ? x : y = x || y
+  b = x ? y : x = x && y
+
+There are other patterns like that, for example:
+
+  c = x ? 1 : y = x || y
+  d = x ? y : 0 = x && y
+
+If you want to implement a general-purpose static math solver, then be my guest.
 
 File: compiler/optimizing/select_generator.cc
 
@@ -146,6 +235,14 @@ Or just having:
 if (!last_insn->IsGoto()) return false
 ...
 
+28:0-36:15
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4a3997b3_2d888dd9
+UUID: 341f6e57_f4871883
+Bytes: 35
+Yeah, I'd rather left it like this.
+
 39
 Mon Jan 11 11:56:03 2016 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -182,12 +279,41 @@ For example:
 
 (See also my comment in PS8.)
 
+66:11-66:56
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c72ae2be_6977851c
+UUID: 341f6e57_54e48c5e
+Bytes: 626
+I was gonna do this in a follow-up CL but might as well do it now because the code needs some refactor to allow for this.
+
+Note, however, that this has a strange consequence of chaining Selects. Consider:
+
+  x = bool1 ? (bool2 ? a : b) : c;
+
+Translates to:
+
+  temp = Select [b, a, bool2]
+  x = Select [c, temp, bool1]
+
+Here we will always do the bool2 comparison even if bool1 is false. I don't think the performance impact would be significant in either direction though.
+
+It also only happens if bool2 is a simplified condition because otherwise there are three instructions in the true branch (Cond, Select, Goto) of bool1.
+
 71:36-71:83
 Mon Jan 11 13:22:51 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a3e5b9d_2e0b2740
 Bytes: 50
 How about if_instruction->IfTrueSuccessorIndex() ?
+
+71:36-71:83
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a3e5b9d_2e0b2740
+UUID: 4774327b_f5465837
+Bytes: 138
+Huh? This computes the predecessor index from the merge block. What you're suggesting would give me the successor index from the if block.
 
 File: test/458-checker-instruction-simplification/src/Main.java
 
@@ -197,6 +323,14 @@ Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e7e8c667_622c76d5
 Bytes: 176
 We can use simple CHECK directives for the parameter and after the constants. This may be fixed in another commit since it appears other tests in this file are using CHECK-DAG.
+
+973:6-973:15
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7e8c667_622c76d5
+UUID: e74a8641_b23ce09f
+Bytes: 107
+Sorry, I don't follow. There's no guaranteed order of instructions in the entry block. We need to use -DAG.
 
 File: test/463-checker-boolean-simplifier/src/Main.java
 
@@ -208,6 +342,14 @@ Bytes: 72
 Use CHECK instead of CHECK-DAG where possible?
 Same in other test files.
 
+0
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c7ebc261_81777a6d
+UUID: 4774327b_3529b059
+Bytes: 4
+Why?
+
 File: test/480-checker-dead-blocks/src/Main.java
 
 59
@@ -217,10 +359,26 @@ UUID: 8a570fe9_0fe745cf
 Bytes: 66
 « by creating a "false" block with more than one instruction. »?
 
+59
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8a570fe9_0fe745cf
+UUID: f484f6cd_a24ffe42
+Bytes: 4
+Done
+
 90
 Mon Jan 11 12:24:19 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ea332bd5_eaf8276c
 Bytes: 6
 Ditto?
+
+90
+Thu Jan 21 17:28:03 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea332bd5_eaf8276c
+UUID: a75faef8_7805e1ee
+Bytes: 4
+Done
 

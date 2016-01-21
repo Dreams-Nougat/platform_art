@@ -9,6 +9,14 @@ UUID: b4f27e53_664daa1f
 Bytes: 69
 better inline this... the  name is so long, and it's  used just once.
 
+1737:12-1737:75
+Thu Jan 21 22:37:15 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4f27e53_664daa1f
+UUID: 341f6e57_94910475
+Bytes: 47
+I have a follow-up change that will use it too.
+
 1764:25-1764:77
 Thu Jan 21 22:31:35 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,30 @@ UUID: 940e5a27_5db14b1b
 Bytes: 263
 I think this requires more explanations. You are basically stating that if the destination is null it must be so because the instruction is used in a irreducible loops. I don't see (it's not really straightforward) where that implication is done in the algorithm.
 
+1764:25-1764:77
+Thu Jan 21 22:37:15 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 940e5a27_5db14b1b
+UUID: 7453a627_46cbd2cc
+Bytes: 653
+The algorithm does not support this, hence the reason you're not seeing it.
+
+Ideally, we should create phis in irreducible loop headers for all these instructions we are adding in the entry block, and then the algorithm just works. But that is 1) annoying as GetIntConstant would now need to find those loop headers and 2) not working for on-stack replacement, as the interpreter has no notion of that phi.
+
+So the algorithm will just create live intervals that have holes in them, at places where they are expected to be live_in. Again, this normally does not work, but we can special case constants and ArtMethod as those are easily re-materializable.
+
 1769:25-1769:41
 Thu Jan 21 22:31:35 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f4115643_aea70f25
 Bytes: 30
 What's an *entry* instruction?
+
+1769:25-1769:41
+Thu Jan 21 22:37:15 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4115643_aea70f25
+UUID: a75faef8_38b60945
+Bytes: 90
+An instruction in the entry block. Obviously, other suggestion for another name welcome :)
 

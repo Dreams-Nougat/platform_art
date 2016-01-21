@@ -11,6 +11,14 @@ Is it possible to get the locations through the instruction?
 
 If we move the SlowPath allocation to the LocationsBuilder then out_ and obj_ will be kInvalid when used below - since register allocation happens afterwards.
 
+590:58-590:84
+Thu Jan 21 15:19:00 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e7e60628_b50c6a18
+UUID: 341f6e57_144a943e
+Bytes: 136
+Yes, I guess we could get the locations from the instruction. I'll try to do that in a follow-up CL (for ARM64 and other architectures).
+
 599:27-599:46
 Wed Jan 20 18:20:09 2016 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,12 +27,28 @@ Bytes: 70
 type = instruction_->GetType();
 DCHECK(type == Primitive::kPrimNot); ?
 
+599:27-599:46
+Thu Jan 21 15:19:00 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e70fe6af_4de12d29
+UUID: 67793673_96752caf
+Bytes: 140
+This does not work for all instructions: the type of an InstanceOf instruction is `kPrimBoolean` and the type of a CheckCast is `kPrimVoid`.
+
 641:38-645:58
 Wed Jan 20 18:20:09 2016 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 27e49e25_1218ec5f
 Bytes: 33
 Same comment for these Location s
+
+641:38-645:58
+Thu Jan 21 15:19:00 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 27e49e25_1218ec5f
+UUID: a75faef8_78b4019a
+Bytes: 33
+I'll try to change these as well.
 
 1741:13-1741:17
 Wed Jan 20 15:56:13 2016 +0000

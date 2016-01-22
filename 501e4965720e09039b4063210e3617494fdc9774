@@ -1,0 +1,219 @@
+Revision: 501e4965720e09039b4063210e3617494fdc9774
+Patch-set: 4
+File: compiler/driver/compiler_driver-inl.h
+
+335:41-335:54
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94b81aa8_aae58ff6
+Bytes: 62
+What about invoke-super from app code into bootclasspath code?
+
+344:51-344:64
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34d04ee4_af4cb54e
+Bytes: 62
+What about invoke-super from app code into bootclasspath code?
+
+File: compiler/driver/compiler_driver.cc
+
+1624
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4bb169e_4d2e6d83
+Bytes: 1
+?
+
+File: compiler/optimizing/builder.cc
+
+800
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4bb169e_908c7c20
+Bytes: 112
+This one won't take into account the copy of the default method right? So why not ResolveDeclaredClassOfMethod ?
+
+File: compiler/optimizing/builder.h
+
+323
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 14cb4a3e_6be4815f
+Bytes: 9
+Comments?
+
+File: runtime/class_linker-inl.h
+
+122
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54aa2254_8805372c
+Bytes: 145
+Why can't you just do something like
+
+  return GetResolvedMethod(method_idx, referer)->GetDeclaringClass()
+
+(perhaps with appropriate handles)
+
+?
+
+File: runtime/class_linker.h
+
+273
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54aa2254_08db8712
+Bytes: 284
+This should have the comments in the header from the PS3 back-and-forth.
+
+I'd also like to understand why it can't literally return the declaring class of the method (perhaps by going up to the super class recursively?) since that would make this operation much simpler to understand.
+
+273
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4bb169e_4d5c2d33
+Bytes: 355
+Please consider including the back-and-forth from PS3 here about copied methods etc (from PS3).
+
+Also I'd like to understand why we can't just return the declaring class instead? That would be more intuitive.
+---------------
+
+Also just for my own sanity the referrer is only to get the dex_file right? (so that we know what the method_idx is relative to?)
+
+File: runtime/verifier/method_verifier.cc
+
+3718
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 14cb4a3e_4e7673e0
+Bytes: 16
+Update comments?
+
+3960:11-3960:41
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 14cb4a3e_ce6903fe
+Bytes: 103
+That doesn't seem right, I'm guessing this would be something like VERIFY_ERROR_BAD_CLASS_SOFT instead.
+
+3968
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54aa2254_487e5ff9
+Bytes: 94
+Is this the transitive closure or directs?
+
+Is it allowed to invoke-super on indirects or not?
+
+3977
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b4b51eae_4ef8a76a
+Bytes: 66
+Could use a comment explaining this set of checks (from 3968-3977)
+
+File: test/973-iface-super-multidex-generated/util-src/generate_smali.py
+
+96
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54aa2254_e86e2b44
+Bytes: 63
+Public methods should have a docstring.
+
+Why is it returning 1?
+
+221
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74c64632_f1cf02db
+Bytes: 39
+Public methods should have a docstring.
+
+223
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4be1290_2cc53bb5
+Bytes: 19
+Line length 223-229
+
+325
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 14cb4a3e_4ed193f0
+Bytes: 11
+Line length
+
+384
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4bb169e_30e030b8
+Bytes: 11
+line length
+
+404
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4bb169e_d0e434ce
+Bytes: 39
+Public methods should have a docstring.
+
+447
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54aa2254_a8683336
+Bytes: 39
+Public methods should have a docstring.
+
+553
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54aa2254_6b9eb57c
+Bytes: 39
+Public methods should have a docstring.
+
+569
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74af2662_c9d25582
+Bytes: 39
+Public methods should have a docstring.
+
+708
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74c64632_b1d97aa5
+Bytes: 39
+Public methods should have a docstring.
+
+714
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4bb169e_50f8446a
+Bytes: 39
+Public methods should have a docstring.
+
+718
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34d04ee4_d23a04bf
+Bytes: 39
+Public methods should have a docstring.
+
+725
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54aa2254_cbac89af
+Bytes: 39
+Public methods should have a docstring.
+
+File: test/etc/default-build
+
+189
+Fri Jan 22 21:22:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74c64632_71cb12cd
+Bytes: 149
+Consider failing with an error message if both HAS_SRC_MULTIDEX and HAS_SMALI_MULTIDEX is true since otherwise the user will get unexpected behavior.
+

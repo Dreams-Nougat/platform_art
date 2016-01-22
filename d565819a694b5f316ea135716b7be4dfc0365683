@@ -18,6 +18,26 @@ UUID: b48efeed_40194e06
 Bytes: 58
 Why not making this also take into account the other flag?
 
+1079:11-1079:75
+Fri Jan 22 12:13:20 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b48efeed_40194e06
+UUID: 142fca8d_91b33c07
+Bytes: 737
+Well the two flags are distinct and orthogonal.
+
+--generate-debug-info will generate everything it can (line number, etc)
+
+--generate-mini-debug-info will generate only the bare minimum for backtraces and then it will also compress it.
+
+In theory you can generate both at the same time, although the "mini" is always subset of the full one.
+
+In this case if GetGenerateDebugInfo() returns true also if --generate-mini-debug-info is then we it would result all the debug being written if only "mini" was required on the command line.
+
+So I suppose the Get* methods should still correspond to command line arguments.
+
+I could add extra method GetGenerateCFI() which would do the OR but it would not correspond to any command-line argument.
+
 File: compiler/elf_builder.h
 
 174:7-174:62

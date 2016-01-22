@@ -9,6 +9,14 @@ UUID: b48efeed_20fd2ad1
 Bytes: 81
 Can we avoid this? It's pretty bizarre to move something to a void destination...
 
+193:20-193:67
+Fri Jan 22 16:19:35 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b48efeed_20fd2ad1
+UUID: 142fca8d_aee2571c
+Bytes: 158
+I was gonna get rid of it entirely but ARM64 and MIPS64 do sanity checks on it (if not kPrimVoid). So comes down to whether we want to preserve those DCHECKs.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1021:5-1021:72
@@ -17,6 +25,18 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3434cedb_cf66c12b
 Bytes: 75
 Isn't that the other way around? The ParallelMoveResolver may request temp?
+
+1021:5-1021:72
+Fri Jan 22 16:19:35 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3434cedb_cf66c12b
+UUID: b4dc3efe_90e8f4cf
+Bytes: 656
+This is my limited understanding of how the swap resolver works, so please correct me if I'm wrong.
+
+In the original Move32 function, a StackSlot->StackSlot moves the value through stack with push+pop. The ParallelMoveResolver, on the other hand, requests EAX with ScratchRegisterScope and does mov+mov with that temp register.
+
+Now that I'm looking at how the ScratchRegisterScope works, however, it looks like we cannot do that - it would never spill EAX even if used by the caller of this. Which would mean that DoubleStackSlot->DoubleStackSlot in Move64 is broken because it uses the move resolver. Looking at use sites, it never hits that case though.
 
 1022:5-1023:68
 Fri Jan 22 09:55:33 2016 +0000

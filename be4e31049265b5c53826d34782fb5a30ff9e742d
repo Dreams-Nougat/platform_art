@@ -9,3 +9,11 @@ UUID: 14cb4a3e_da0bf93f
 Bytes: 223
 Would it be better to check this inside Reference::SetPendingNext instead? I think that would follow the existing patterns better and would avoid separating the IsActiveTransaction() check and the if statement that uses it.
 
+280:30-280:71
+Mon Jan 25 20:31:21 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14cb4a3e_da0bf93f
+UUID: d4b8d2d6_39292fc8
+Bytes: 310
+I tried to do that originally, but compilation failed, saying  the call to SetFieldObject in SetpendingNext might not always be inlined. Is it okay to include whatever file defines Runtime::Current() in the header files so I can call Runtime::Current()->IsActiveTransaction() in a function that can be inlined?
+

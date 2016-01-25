@@ -9,12 +9,32 @@ UUID: 94b81aa8_aae58ff6
 Bytes: 62
 What about invoke-super from app code into bootclasspath code?
 
+335:41-335:54
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94b81aa8_aae58ff6
+UUID: 34d04ee4_d5d3ce2c
+Bytes: 69
+Unsupported, this is the current behavior.
+
+Out of scope for this CL.
+
 344:51-344:64
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 34d04ee4_af4cb54e
 Bytes: 62
 What about invoke-super from app code into bootclasspath code?
+
+344:51-344:64
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34d04ee4_af4cb54e
+UUID: 74c64632_b457284f
+Bytes: 71
+Unsupported, just like regular invoke-super.
+
+Out of scope for this CL.
 
 File: compiler/driver/compiler_driver.cc
 
@@ -25,6 +45,14 @@ UUID: f4bb169e_4d2e6d83
 Bytes: 1
 ?
 
+1624
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4bb169e_4d2e6d83
+UUID: 74af2662_0cf39b55
+Bytes: 4
+Done
+
 File: compiler/optimizing/builder.cc
 
 800
@@ -34,6 +62,14 @@ UUID: f4bb169e_908c7c20
 Bytes: 112
 This one won't take into account the copy of the default method right? So why not ResolveDeclaredClassOfMethod ?
 
+800
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4bb169e_908c7c20
+UUID: d4be1290_cfd3312d
+Bytes: 70
+I didn't use that to avoid confusion WRT ArtMethod::GetDeclaringClass.
+
 File: compiler/optimizing/builder.h
 
 323
@@ -42,6 +78,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 14cb4a3e_6be4815f
 Bytes: 9
 Comments?
+
+323
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14cb4a3e_6be4815f
+UUID: f4bb169e_9363261a
+Bytes: 4
+Done
 
 File: runtime/class_linker-inl.h
 
@@ -57,6 +101,14 @@ Why can't you just do something like
 (perhaps with appropriate handles)
 
 ?
+
+122
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54aa2254_8805372c
+UUID: 74af2662_8ceeabaa
+Bytes: 491
+This is to determine if an invoke-super is an interface one or not. This is important since it would have implications in the presence of conflicts (since those are copied from one of the sources but we aren't sure which one). This admittedly should only come up when there is very weird bytecode (specifically if a non-interface class that is not the referrer's superclass is placed as the class in an invoke-super) but we should probably try to match previous behavior as much as possible.
 
 File: runtime/class_linker.h
 
@@ -81,6 +133,28 @@ Also I'd like to understand why we can't just return the declaring class instead
 
 Also just for my own sanity the referrer is only to get the dex_file right? (so that we know what the method_idx is relative to?)
 
+273
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54aa2254_08db8712
+UUID: 74af2662_aca7e724
+Bytes: 111
+Done.
+
+I added an explenation of why we didn't do the simpler version you are thinking of in class_linker-inl.h
+
+273
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4bb169e_4d5c2d33
+UUID: 94b81aa8_8d1d4543
+Bytes: 181
+> Also just for my own sanity the referrer is only to get the
+ > dex_file right? (so that we know what the method_idx is relative
+ > to?)
+
+See reply to comment in class_linker-inl.h
+
 File: runtime/verifier/method_verifier.cc
 
 3718
@@ -90,12 +164,28 @@ UUID: 14cb4a3e_4e7673e0
 Bytes: 16
 Update comments?
 
+3718
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14cb4a3e_4e7673e0
+UUID: d4be1290_cffc9125
+Bytes: 4
+Done
+
 3960:11-3960:41
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 14cb4a3e_ce6903fe
 Bytes: 103
 That doesn't seem right, I'm guessing this would be something like VERIFY_ERROR_BAD_CLASS_SOFT instead.
+
+3960:11-3960:41
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14cb4a3e_ce6903fe
+UUID: 74af2662_8c81cb6f
+Bytes: 4
+Done
 
 3968
 Fri Jan 22 21:22:32 2016 +0000
@@ -106,12 +196,32 @@ Is this the transitive closure or directs?
 
 Is it allowed to invoke-super on indirects or not?
 
+3968
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54aa2254_487e5ff9
+UUID: 54c14218_73179896
+Bytes: 379
+> Is this the transitive closure or directs?
+
+Now that you mention it this should actually be a transitive closure (since we are allowing invoke-super on indirects) and that we actually cannot get it (since we cannot be sure that we can get so I'm going to just remove this check).
+
+Alternatively we could leave this here and just ban invoke-super on indirects like the JLS does.
+
 3977
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b4b51eae_4ef8a76a
 Bytes: 66
 Could use a comment explaining this set of checks (from 3968-3977)
+
+3977
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4b51eae_4ef8a76a
+UUID: b4b51eae_71b1ca1b
+Bytes: 8
+removed.
 
 File: test/973-iface-super-multidex-generated/util-src/generate_smali.py
 
@@ -124,12 +234,28 @@ Public methods should have a docstring.
 
 Why is it returning 1?
 
+96
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54aa2254_e86e2b44
+UUID: f4bb169e_734d521f
+Bytes: 32
+Done. Since it's the main class.
+
 221
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74c64632_f1cf02db
 Bytes: 39
 Public methods should have a docstring.
+
+221
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74c64632_f1cf02db
+UUID: 94b81aa8_90eebaaa
+Bytes: 4
+Done
 
 223
 Fri Jan 22 21:22:32 2016 +0000
@@ -138,12 +264,28 @@ UUID: d4be1290_2cc53bb5
 Bytes: 19
 Line length 223-229
 
+223
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4be1290_2cc53bb5
+UUID: f4bb169e_53128ea7
+Bytes: 90
+Line length is required since it is the output of the program which it must match exactly.
+
 325
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 14cb4a3e_4ed193f0
 Bytes: 11
 Line length
+
+325
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14cb4a3e_4ed193f0
+UUID: 54c14218_d3052c5d
+Bytes: 34
+Required to have correct behavior.
 
 384
 Fri Jan 22 21:22:32 2016 +0000
@@ -152,12 +294,28 @@ UUID: f4bb169e_30e030b8
 Bytes: 11
 line length
 
+384
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4bb169e_30e030b8
+UUID: 54aa2254_ae603b0d
+Bytes: 4
+Done
+
 404
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f4bb169e_d0e434ce
 Bytes: 39
 Public methods should have a docstring.
+
+404
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4bb169e_d0e434ce
+UUID: 74c64632_54f36406
+Bytes: 4
+Done
 
 447
 Fri Jan 22 21:22:32 2016 +0000
@@ -166,12 +324,28 @@ UUID: 54aa2254_a8683336
 Bytes: 39
 Public methods should have a docstring.
 
+447
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54aa2254_a8683336
+UUID: 14cb4a3e_d10be43f
+Bytes: 4
+Done
+
 553
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 54aa2254_6b9eb57c
 Bytes: 39
 Public methods should have a docstring.
+
+553
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54aa2254_6b9eb57c
+UUID: 74c64632_b452c8b5
+Bytes: 4
+Done
 
 569
 Fri Jan 22 21:22:32 2016 +0000
@@ -180,12 +354,28 @@ UUID: 74af2662_c9d25582
 Bytes: 39
 Public methods should have a docstring.
 
+569
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74af2662_c9d25582
+UUID: 34d04ee4_15a156c5
+Bytes: 4
+Done
+
 708
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74c64632_b1d97aa5
 Bytes: 39
 Public methods should have a docstring.
+
+708
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74c64632_b1d97aa5
+UUID: 54c14218_b303c0ec
+Bytes: 4
+Done
 
 714
 Fri Jan 22 21:22:32 2016 +0000
@@ -194,6 +384,14 @@ UUID: f4bb169e_50f8446a
 Bytes: 39
 Public methods should have a docstring.
 
+714
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4bb169e_50f8446a
+UUID: 74c64632_94554ca2
+Bytes: 4
+Done
+
 718
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -201,12 +399,28 @@ UUID: 34d04ee4_d23a04bf
 Bytes: 39
 Public methods should have a docstring.
 
+718
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34d04ee4_d23a04bf
+UUID: d4be1290_2fee8d3f
+Bytes: 4
+Done
+
 725
 Fri Jan 22 21:22:32 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 54aa2254_cbac89af
 Bytes: 39
 Public methods should have a docstring.
+
+725
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54aa2254_cbac89af
+UUID: 14cb4a3e_31f7c879
+Bytes: 4
+Done
 
 File: test/etc/default-build
 
@@ -216,4 +430,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74c64632_71cb12cd
 Bytes: 149
 Consider failing with an error message if both HAS_SRC_MULTIDEX and HAS_SMALI_MULTIDEX is true since otherwise the user will get unexpected behavior.
+
+189
+Mon Jan 25 18:09:46 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74c64632_71cb12cd
+UUID: b4b51eae_5124c6ef
+Bytes: 90
+Why? if both are there then we will just combine them on this very line into classes2.dex.
 

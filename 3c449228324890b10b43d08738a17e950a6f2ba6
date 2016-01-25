@@ -17,6 +17,14 @@ UUID: 142fca8d_aee2571c
 Bytes: 158
 I was gonna get rid of it entirely but ARM64 and MIPS64 do sanity checks on it (if not kPrimVoid). So comes down to whether we want to preserve those DCHECKs.
 
+193:20-193:67
+Mon Jan 25 09:26:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 142fca8d_aee2571c
+UUID: b408be64_50118c9d
+Bytes: 149
+Looking at the code in arm64, it's not just a sanity check is it? It actually affects what you're going to generate. So the method might get void in.
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1021:5-1021:72
@@ -37,6 +45,14 @@ This is my limited understanding of how the swap resolver works, so please corre
 In the original Move32 function, a StackSlot->StackSlot moves the value through stack with push+pop. The ParallelMoveResolver, on the other hand, requests EAX with ScratchRegisterScope and does mov+mov with that temp register.
 
 Now that I'm looking at how the ScratchRegisterScope works, however, it looks like we cannot do that - it would never spill EAX even if used by the caller of this. Which would mean that DoubleStackSlot->DoubleStackSlot in Move64 is broken because it uses the move resolver. Looking at use sites, it never hits that case though.
+
+1021:5-1021:72
+Mon Jan 25 09:26:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4dc3efe_90e8f4cf
+UUID: f4ccf67e_e2cd468c
+Bytes: 75
+Not sure why you're saying it's broken? We should just push eax and pop it?
 
 1022:5-1023:68
 Fri Jan 22 09:55:33 2016 +0000

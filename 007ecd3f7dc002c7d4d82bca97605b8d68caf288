@@ -9,6 +9,14 @@ UUID: 74c9e678_5699545f
 Bytes: 288
 We shouldn't enqueue a reference that's already pending-enqueued, correct? If so, is the original comment better phrased ("without checking" for a performance reason) because this new comment would make it sound like it's valid to enqueue a reference that may already be pending-enqueued?
 
+65:5-65:61
+Mon Jan 25 23:31:21 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74c9e678_5699545f
+UUID: f49a3677_55f23e89
+Bytes: 215
+I think EnqueuePendingReference should be a private function, that is used only internally. It may currently be used in a few places instead of EnqueueReference to improve performance. I'll look into this some more.
+
 File: runtime/mirror/reference.h
 
 92
@@ -19,4 +27,12 @@ Bytes: 142
 Does this sort depends on the discussion in bug 26647823?
 
 How about keeping the comment "once enqueued, the pending next is always non-null"?
+
+92
+Mon Jan 25 23:31:21 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74c9e678_f6fc208a
+UUID: b4afde8e_fb524bb6
+Bytes: 105
+This does not depend on the answer to the question in b/26647823. I'll update the comment as you suggest.
 

@@ -1,0 +1,22 @@
+Revision: 007ecd3f7dc002c7d4d82bca97605b8d68caf288
+Patch-set: 2
+File: runtime/gc/reference_queue.h
+
+65:5-65:61
+Mon Jan 25 20:26:34 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74c9e678_5699545f
+Bytes: 288
+We shouldn't enqueue a reference that's already pending-enqueued, correct? If so, is the original comment better phrased ("without checking" for a performance reason) because this new comment would make it sound like it's valid to enqueue a reference that may already be pending-enqueued?
+
+File: runtime/mirror/reference.h
+
+92
+Mon Jan 25 20:26:34 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74c9e678_f6fc208a
+Bytes: 142
+Does this sort depends on the discussion in bug 26647823?
+
+How about keeping the comment "once enqueued, the pending next is always non-null"?
+

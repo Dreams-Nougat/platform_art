@@ -52,6 +52,22 @@ If we got a fault at this point we should just propagate along the chain and not
 
 The other_handlers could provide more info on the fault but not fix it.
 
+247:17-247:21
+Tue Jan 26 01:31:11 2016 +0000
+Author: Jinghui Gu <1051763@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14b18a0d_dbc4d36c
+UUID: f49a3677_3894d128
+Bytes: 688
+The patch set 6 has been uploaded. We'd better comment on the latest set.
+
+----
+
+Yes. I totally agree with you.
+But please confirm the motivation of other_handlers_ here.
+So far, other_handlers_ only has the JavaStackTraceHandler, which always returns FALSE in its Action and pass down the signal to the chain. So, this code will not reach, actually. If the other_handlers_ will contain new handlers in future which will handle the signal well, we have to leave these code here.
+I think the design of other_handlers_ is ambiguous and confused here.
+If you ensured there should be no handler in other_handlers_ which can FIX the signal, we'd better remove or re-design the other_handlers_.
+
 File: runtime/fault_handler.h
 
 64:7-64:33

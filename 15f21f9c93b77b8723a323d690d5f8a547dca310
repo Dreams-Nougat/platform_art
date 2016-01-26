@@ -24,6 +24,29 @@ Either way, we need something in the interpreter to exit it.
 
 Having said that, there might be other places in the interpreter to do this, but this place might be as good as any. (and we have already done the dance with testing it)
 
+199:0-203:43
+Tue Jan 26 15:41:00 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14b18a0d_9b2c0b87
+UUID: 74ac86b5_1e7fcd3d
+Bytes: 765
+> I would really like to avoid going into the interpreter if
+ > possible, but presumably we can not avoid it.
+ > We set the flags when the Zygote is forked and the code might
+ > already be in the interpreter.
+
+Sure, but you check whether you need to run into jit if the dex_pc is 0, so existing threads in the interpreter will stay in the interpreter.
+
+What I'm asking for is an earlier place where we check if the JIT is set for first use.
+
+ > We will also get into the interpreter if the code can not be
+ > compiled.
+ > Either way, we need something in the interpreter to exit it.
+ > 
+ > Having said that, there might be other places in the interpreter to
+ > do this, but this place might be as good as any. (and we have
+ > already done the dance with testing it)
+
 File: runtime/interpreter/interpreter_switch_impl.cc
 
 101:14-101:15

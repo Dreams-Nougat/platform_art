@@ -1,0 +1,24 @@
+Revision: 7db5deb820c901f80d4a43a2836adbac3e463504
+Patch-set: 6
+File: compiler/optimizing/code_generator_x86.cc
+
+3969:2-3969:9
+Tue Jan 26 21:31:22 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34c3ee5c_1b045cf4
+Bytes: 192
+size_t may be 64-bit, depending on what machine the compiler runs. However, you movl the result as 32-bit, since you compile for x86.
+
+So the use of uint32_t seems better (done elsewhere too).
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+3971:9-3971:22
+Tue Jan 26 21:31:22 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f49a3677_06032a26
+Bytes: 191
+By similar argument, this should be a uint64_t to avoid issues when cross compiling for x86_64 on a 32-bit host.
+
+Or, if this is always  uint32_t, then perhaps best to use that type here too?
+

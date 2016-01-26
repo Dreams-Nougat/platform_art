@@ -16,6 +16,14 @@ UUID: f4c1566d_bab911e7
 Bytes: 16
 Out of the loop?
 
+735:4-735:73
+Tue Jan 26 18:31:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4c1566d_bab911e7
+UUID: d4b8d2d6_8219e009
+Bytes: 49
+The other phases also record this per dex file...
+
 805:0-806:77
 Tue Jan 26 09:12:08 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,12 +31,30 @@ UUID: b4a27ebd_a0f9daa5
 Bytes: 131
 Why would you get a thread_pool argument if you're going to create another one? Please move this logic before entering this method.
 
+805:0-806:77
+Tue Jan 26 18:31:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4a27ebd_a0f9daa5
+UUID: 94b2daf4_4b15251c
+Bytes: 244
+Because I wanted the phases that can be parallel to remain so. E.g., verification and compilation can still run with whatever -j (or default) dex2oat got, while resolution and initialization need this single-threaded threadpool for determinism.
+
 1885:0-1887:36
 Tue Jan 26 09:12:08 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 94a57ac9_3f004749
 Bytes: 26
 Why the need for this now?
+
+1885:0-1887:36
+Tue Jan 26 18:31:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94a57ac9_3f004749
+UUID: 54c4e260_3ef82de1
+Bytes: 198
+For completeness. We shouldn't be starting things over and over, without stopping.
+
+(I needed this behavior before, but it's not mandatory for determinism anymore. So I can remove it if you want...)
 
 File: compiler/driver/compiler_driver.h
 
@@ -39,6 +65,16 @@ UUID: 34b68e05_dcef2ddb
 Bytes: 113
 Having this field and also a parameter is extremely confusing. Please refactor the code so that we only need one.
 
+673:9-673:22
+Tue Jan 26 18:31:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34b68e05_dcef2ddb
+UUID: b4a43ebb_c434be1b
+Bytes: 130
+Impossible. The goal is to keep phases that can be parallel parallel.
+
+I will rename this to parallel_thread_count_, if that's OK.
+
 File: compiler/image_writer.cc
 
 1767:32-1768:49
@@ -48,12 +84,28 @@ UUID: b4a27ebd_60dcf235
 Bytes: 45
 Huh? Did we use to write the id in the image?
 
+1767:32-1768:49
+Tue Jan 26 18:31:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4a27ebd_60dcf235
+UUID: f4b5d6da_837d64fa
+Bytes: 39
+Because we copy the object by memcpy...
+
 1897:52-1897:70
 Tue Jan 26 09:12:08 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b4a27ebd_40e9eed1
 Bytes: 56
 Why? Were we putting arbitrary pointers in the oat file?
+
+1897:52-1897:70
+Tue Jan 26 18:31:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4a27ebd_40e9eed1
+UUID: d4b8d2d6_e2b9bc01
+Bytes: 127
+Yep, whatever the DexFile address was the compiler was using. The class-linker is fixing them up, so it wasn't relevant before.
 
 File: runtime/gc/heap.cc
 
@@ -63,4 +115,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 54a782d1_bdb9ffe6
 Bytes: 24
 Explain why you need it.
+
+355:3-355:46
+Tue Jan 26 18:31:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54a782d1_bdb9ffe6
+UUID: f4b5d6da_e36b8031
+Bytes: 187
+I was hoping the GC guys could tell me another way... :-)
+
+Short answer is that the compiler uses pointers as keys for hash sets/maps, so the addresses are relevant, not just their order.
 

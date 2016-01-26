@@ -82,6 +82,14 @@ UUID: 54edc2c8_adbdfd80
 Bytes: 32
 if you can remove it, go for it.
 
+193:20-193:67
+Tue Jan 26 00:01:57 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54edc2c8_adbdfd80
+UUID: d4b8d2d6_dcdca197
+Bytes: 551
+I'd prefer the Move() method to receive correct type info on MIPS64 so that when we get to the point of fixing 32-bit non-float loads/moves/exchanges we have one fewer place to take care of. (I'm reminding that 32-bit integers must be loaded with sign-extending loads (lw) while 32-bit object references must be loaded with zero-extending loads (lwu) on MIPS64. On MIPS64, unlike on ARM64 and x86/64, it's impossible to simply choose to work only with the least significant 32 bits of a general purpose register ignoring the most significant 32 bits).
+
 File: compiler/optimizing/code_generator_x86.cc
 
 1021:5-1021:72

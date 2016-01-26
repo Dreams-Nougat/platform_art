@@ -1,0 +1,56 @@
+Revision: 15f21f9c93b77b8723a323d690d5f8a547dca310
+Patch-set: 4
+File: runtime/interpreter/interpreter_goto_table_impl.cc
+
+199:0-203:43
+Tue Jan 26 12:02:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34b68e05_1cec75b0
+Bytes: 314
+This dance (repeated in the other interpreter implementations) is annoying. It's a shame we create all the ifnrastructure for starting running with the interpreter and then decide that we actually want to JIT and discard everything.
+
+Could you try moving this earlier, before the creation of the interpreter state?
+
+File: runtime/interpreter/interpreter_switch_impl.cc
+
+101:14-101:15
+Tue Jan 26 12:02:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b4a27ebd_40068e37
+Bytes: 9
+misplaced
+
+File: runtime/jit/jit.cc
+
+206:28-206:34
+Tue Jan 26 12:02:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b4a27ebd_20038a27
+Bytes: 36
+I think you don't need this anymore.
+
+File: runtime/jit/jit_instrumentation.cc
+
+165:6-165:65
+Tue Jan 26 12:02:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54a782d1_7d6a57f3
+Bytes: 25
+GetJit()->JitAtFirstUse()
+
+166:0-169:5
+Tue Jan 26 12:02:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94a57ac9_5f942b04
+Bytes: 105
+Drop the logging, just create it and comment that's because the compiler requires a ProfilingInfo object.
+
+File: runtime/native/dalvik_system_ZygoteHooks.cc
+
+115:0-115:35
+Tue Jan 26 12:02:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d4c4527f_19612b11
+Bytes: 88
+Should you log fatal if that's not the case? Blindly continuing is not helping the user.
+

@@ -68,6 +68,18 @@ So far, other_handlers_ only has the JavaStackTraceHandler, which always returns
 I think the design of other_handlers_ is ambiguous and confused here.
 If you ensured there should be no handler in other_handlers_ which can FIX the signal, we'd better remove or re-design the other_handlers_.
 
+247:17-247:21
+Tue Jan 26 12:31:06 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f49a3677_3894d128
+UUID: f4c1566d_5a679527
+Bytes: 482
+I think other_handlers_ were just a quick way to make things more generic when adding the stack trace handler and we didn't actually expect to recover from the signal here. 
+
+However I do not have the entire historical context here :). Mathieu might know more. 
+
+I think it's fine to leave this as it is in the current CL (PS6) and just add a comment that this should be clarified and possibly removed. Am happy to do this in a subsequent CL since it seems like an orthogonal issue.
+
 File: runtime/fault_handler.h
 
 64:7-64:33

@@ -40,6 +40,18 @@ I'm not sure about the motivation of other_handlers_.
 So far, only the JavaStackTraceHandler is added in other_handlers_, which always return false in its Action.
 Will any new handler be added into it in future?
 
+247:17-247:21
+Tue Jan 26 00:15:48 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d439b2d1_71c0d857
+UUID: 14b18a0d_dbc4d36c
+Bytes: 401
+I think that was a bug and that's what Andreas tried to highlight.
+
+If we got a fault at this point we should just propagate along the chain and not marked it resolved hopping that another handler will fix the state. There's no handler yet which will do that, and as Andreas mentioned I doubt we have good reasons to accept one.
+
+The other_handlers could provide more info on the fault but not fix it.
+
 File: runtime/fault_handler.h
 
 64:7-64:33

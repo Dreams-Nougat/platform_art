@@ -1,5 +1,14 @@
 Revision: c505378e0f93d08e5187371551ecebcb3f72f7a7
 Patch-set: 1
+File: compiler/image_test.cc
+
+186:25-186:44
+Tue Jan 26 19:40:57 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4b5d6da_4ea8d34b
+Bytes: 164
+As GetContinuousSpaces() returns a vector&, we don't guard the returned vector with the mutator lock. Is there a better way? Add Heap::CheckContinuousSpacesEmpty()?
+
 File: runtime/gc/heap.h
 
 310:2-310:98
@@ -8,4 +17,13 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f49a3677_fba7a323
 Bytes: 44
 Code comment on why it's the mutator lock...
+
+File: runtime/gc/space/rosalloc_space.cc
+
+251:51-251:73
+Tue Jan 26 19:40:57 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 54c4e260_09b5f992
+Bytes: 46
+Do we call GetRosAllocSpace in this code path?
 

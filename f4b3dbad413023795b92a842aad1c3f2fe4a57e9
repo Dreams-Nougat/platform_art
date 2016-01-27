@@ -48,6 +48,18 @@ UUID: f49a3677_79f578a7
 Bytes: 196
 A pointer-to-uint64 cast sign-extends but A pointer-to-uintptr_t cast doesn't? This seems error-prone. Is there a pointer to some document? Also, are there any compiler checks/warnings about this?
 
+10:25-10:34
+Wed Jan 27 19:49:54 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f49a3677_79f578a7
+UUID: f49a3677_b921a08d
+Bytes: 175
+Pointer-to-integral cast mappings are implementation-defined (see C++11 5.2.10).
+
+GCC will sign extend and clang will zero-extend.
+
+https://llvm.org/bugs/show_bug.cgi?id=20441
+
 File: runtime/mirror/class-inl.h
 
 211:20-211:41
@@ -64,4 +76,12 @@ Parent: f4b5d6da_c1d3d12c
 UUID: 74c9e678_f1089f45
 Bytes: 12
 Probably not
+
+211:20-211:41
+Wed Jan 27 19:49:54 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74c9e678_f1089f45
+UUID: b4afde8e_138d1b1b
+Bytes: 35
+Redundant on 64-bit or smaller arch
 

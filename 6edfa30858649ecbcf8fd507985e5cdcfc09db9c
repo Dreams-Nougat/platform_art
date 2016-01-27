@@ -1,5 +1,14 @@
 Revision: 6edfa30858649ecbcf8fd507985e5cdcfc09db9c
 Patch-set: 2
+File: compiler/driver/compiler_driver.cc
+
+729:0-730:38
+Wed Jan 27 10:42:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94a57ac9_42e9f4d1
+Bytes: 200
+We should collect string ids in parallel and then resolve them single-threaded. This would also remove the overhead of changing to runnable and back and looking up the dex cache for each const-string.
+
 File: compiler/driver/compiler_driver.h
 
 564:0-565:33
@@ -10,4 +19,13 @@ Bytes: 330
 From an API standpoint, you have to agree, this isn't great. But it was already pretty bad, I give you that :-)
 
 Can we make the thread_pool_ a field of CompilerDriver (most methods take it, so not sure why it wasn't the case before), and change the thread_count argument to "bool deterministic" (in the end that's what it's for).
+
+File: runtime/gc/heap.cc
+
+356:0-359:3
+Wed Jan 27 10:42:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4c1566d_faf2e901
+Bytes: 140
+Why do we need this? (Does GC walk the heap in a different order for different addresses? Does the address contribute to the identity hash?)
 

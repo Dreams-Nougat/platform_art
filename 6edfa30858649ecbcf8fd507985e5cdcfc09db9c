@@ -9,6 +9,14 @@ UUID: 94a57ac9_42e9f4d1
 Bytes: 200
 We should collect string ids in parallel and then resolve them single-threaded. This would also remove the overhead of changing to runnable and back and looking up the dex cache for each const-string.
 
+729:0-730:38
+Wed Jan 27 17:45:10 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94a57ac9_42e9f4d1
+UUID: 54c4e260_3ee90869
+Bytes: 153
+Sure, I'll implement that optimization. I wanted something simple for the first iteration (considering you'd need a map of dex file to ordered set, etc).
+
 File: compiler/driver/compiler_driver.h
 
 564:0-565:33
@@ -20,6 +28,14 @@ From an API standpoint, you have to agree, this isn't great. But it was already 
 
 Can we make the thread_pool_ a field of CompilerDriver (most methods take it, so not sure why it wasn't the case before), and change the thread_count argument to "bool deterministic" (in the end that's what it's for).
 
+564:0-565:33
+Wed Jan 27 17:45:10 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d49b728b_e19b6699
+UUID: b4a43ebb_5ac50266
+Bytes: 104
+Well, the parallel thread pool is created late and not stored in a field. But sure, I can push it there.
+
 File: runtime/gc/heap.cc
 
 356:0-359:3
@@ -28,4 +44,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f4c1566d_faf2e901
 Bytes: 140
 Why do we need this? (Does GC walk the heap in a different order for different addresses? Does the address contribute to the identity hash?)
+
+356:0-359:3
+Wed Jan 27 17:45:10 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4c1566d_faf2e901
+UUID: d4b8d2d6_c2e67344
+Bytes: 202
+There are sets in the compiler (image writer) that have object pointers as keys. I wanted this to be low-impact, so not change it to an ordered set/map. But then the addresses need to be reproduce-able.
 

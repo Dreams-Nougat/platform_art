@@ -9,6 +9,14 @@ UUID: 94b2daf4_4c429b98
 Bytes: 34
 Why is it safe to remove the test?
 
+157:6-157:55
+Wed Jan 27 21:14:47 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94b2daf4_4c429b98
+UUID: 7431e681_b6bee8ca
+Bytes: 162
+There is a check on the Java side to ensure a reference isn't put on its (Java) ReferenceQueue multiple times, so we don't have to check or worry about that here.
+
 File: runtime/gc/reference_queue.h
 
 63:2-63:86
@@ -17,6 +25,14 @@ Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 34c3ee5c_d1d5633a
 Bytes: 106
 I would have inlined the two line implementation, thus removing the need for at least most of the comment.
+
+63:2-63:86
+Wed Jan 27 21:14:47 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34c3ee5c_d1d5633a
+UUID: b4a43ebb_ad6f9ad0
+Bytes: 42
+I merged the two implementations into one.
 
 65:5-65:61
 Mon Jan 25 20:26:34 2016 +0000
@@ -32,6 +48,14 @@ Parent: 74c9e678_5699545f
 UUID: f49a3677_55f23e89
 Bytes: 215
 I think EnqueuePendingReference should be a private function, that is used only internally. It may currently be used in a few places instead of EnqueueReference to improve performance. I'll look into this some more.
+
+65:5-65:61
+Wed Jan 27 21:14:47 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f49a3677_55f23e89
+UUID: 14beeac6_b521b38d
+Bytes: 4
+Done
 
 File: runtime/mirror/reference.h
 
@@ -61,4 +85,12 @@ Bytes: 185
 In light of Jeremy's comment in the other discussion is "WasPendingEnqueued" or just "PendingEnqueued" a better name?
 
 This returns true even if the reference is no longer on any queue.
+
+92
+Wed Jan 27 21:14:47 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4b5d6da_b450e05a
+UUID: 34c3ee5c_a66ee895
+Bytes: 86
+I switched the polarity and renamed it to IsUnprocessed. Hopefully that is more clear.
 

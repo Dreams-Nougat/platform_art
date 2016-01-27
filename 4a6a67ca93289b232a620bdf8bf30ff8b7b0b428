@@ -1,0 +1,50 @@
+Revision: 4a6a67ca93289b232a620bdf8bf30ff8b7b0b428
+Patch-set: 1
+File: compiler/optimizing/intrinsics_arm64.cc
+
+1018:2-1032:30
+Wed Jan 27 21:43:42 2016 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f40f96af_caf743f0
+Bytes: 1346
+Hans, Roland - Following on a previous discussion on the semantics of Cas - 
+
+https://android-review.googlesource.com/#/c/123598/12/compiler/optimizing/intrinsics_arm64.cc
+
+
+"""
+Will Deacon
+Jan 28, 2015
+You're missing a subtlety here in that DMB; LDXR; ...; STXR; DMB has stronger ordering guarantees than the corresponding LDAXR; ...; STLXR sequence.
+For example, if A() and B() consist of standard LDR/STR instructions then:
+A()
+DMB
+LDXR
+...
+STXR
+DMB
+B()
+Requires A() to be globally observed before B(). However:
+A()
+LDAXR
+...
+STLXR
+B()
+Permits B() to be observed before A().
+So the question really is: what memory ordering semantics do you require for your cmpxchg? If you define that, then we can come up with an optimal instruction sequence.
+
+"""
+
+I believe that with Roland's recent changed to the DMB path, that replaces the DMB(IS, ST) with a DMB(IS, ALL) the semantics is not equivalent anymore between the DMB path and the acquire-release one.  
+
+The comment says that accompanies the change says:
+
+"""
+// Emit a `Dmb(InnerShareable, BarrierAll)` (DMB ISH) instruction
+// instead of a `Dmb(InnerShareable, BarrierWrites)` (DMB ISHST)
+// one, as the latter allows a preceding load to be delayed past
+// the STXR instruction below.
+"""
+
+Is that the case? Should we provide stronger memory ordering guarantees for the acquire-release path?
+

@@ -9,6 +9,20 @@ UUID: 54a782d1_80dff82a
 Bytes: 109
 I think I proposed this before: how about having a GetTrue/ GetFalse in the graph? Can do in a subsequent CL.
 
+570:33-570:47
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 54a782d1_80dff82a
+UUID: d4c4527f_5c031158
+Bytes: 177
+Sure, be my guest. I have another sore spot and that's constantly having to do:
+
+  insn->GetBlock()->RemoveInstruction(insn)
+
+one of these days I'll add sugar:
+
+  insn->Remove()
+
 600:4-600:50
 Wed Jan 27 11:54:36 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +30,28 @@ UUID: 34b68e05_9f9d174e
 Bytes: 22
 What does this buy us?
 
+600:4-600:50
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34b68e05_9f9d174e
+UUID: d4c4527f_1cfd9983
+Bytes: 146
+One less BooleanNot? Codegen's don't (and shouldn't have to) recognize a negated condition to flip the branches, so it would always emit a XOR x,1
+
 622:20-622:44
 Wed Jan 27 11:54:36 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b417ded7_d8d06df0
 Bytes: 64
 Similar suggestion as above: Have, IsBooleanFalse/IsBooleanTrue.
+
+622:20-622:44
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b417ded7_d8d06df0
+UUID: b4bb5ef1_987c15fd
+Bytes: 58
+As above, feel free to do a follow up. (hey, that rhymes!)
 
 File: compiler/optimizing/prepare_for_register_allocation.cc
 
@@ -31,6 +61,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b417ded7_b8c8192f
 Bytes: 266
 I guess you can always emit... I find this method a bit confusing on what it does. I would either call it just for a select user, and name it SelectCanInlineCondition or something, or have a larger scope method that returns whether a condition needs materialization.
+
+130:35-130:51
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b417ded7_b8c8192f
+UUID: f4c1566d_fd11c3a2
+Bytes: 326
+Agreed that the name might be better but not agreed that this doesn't make sense for other instructions than Selects. It's a query of whether the kind of instruction that `user` is can inline `condition`. The structure of the code follows that: if it's an If or Deopt, it always can. If it's a Select, more conditions apply...
 
 137:4-137:50
 Wed Jan 27 11:28:17 2016 +0000
@@ -79,6 +117,14 @@ Bytes: 75
 8 spaces alignment.
 I think it will look better if you split the arguments.
 
+189:4-189:9
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4c1566d_dac965ad
+UUID: b417ded7_78092147
+Bytes: 4
+Done
+
 File: compiler/optimizing/select_generator.cc
 
 21:24-21:48
@@ -88,6 +134,34 @@ UUID: b4bb5ef1_5888bd4b
 Bytes: 106
 Will you ever be able to handle more than 1 instruction in a branch? If not, consider being more specific.
 
+21:24-21:48
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4bb5ef1_5888bd4b
+UUID: f4c1566d_da9ba599
+Bytes: 430
+Of course I could. I initially enforced this with:
+
+  first_insn->GetNext() == last_insn
+
+but wanted to make it more tweakable, although I'd need to update Run() as well to move more instructions out.
+
+The agreement is that converting:
+
+  if (cond) {
+    x = a + b;
+  } else {
+    x = c + d;
+  }
+
+to:
+
+  int t1 = a + b;
+  int t2 = c + d;
+  x = cond ? t1 : t2
+
+is worthwhile, but maybe two instructions in each branch would be too.
+
 File: compiler/optimizing/select_generator.h
 
 37:3-37:7
@@ -96,4 +170,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 34b68e05_7f836bf1
 Bytes: 112
 As a follow up, we should enforce this for our sanity. We already have something similar: side_effects.HasRun().
+
+37:3-37:7
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34b68e05_7f836bf1
+UUID: 14b18a0d_9e9d194e
+Bytes: 165
+I actually plan on dealing with this another way. The suspend checks are there for baseline. When I merge GraphBuilder and SsaBuilder, they won't be needed any more.
 

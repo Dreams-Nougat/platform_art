@@ -9,3 +9,15 @@ UUID: 94a57ac9_628078e3
 Bytes: 61
 seems unrelated. Can you explain? and add an equivalent test?
 
+289:14-289:39
+Wed Jan 27 14:21:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94a57ac9_628078e3
+UUID: b4bb5ef1_1bfd9f83
+Bytes: 515
+This was explained earlier. It comes down to moving simplification of BoolNot->If from boolean simplifier (which does not exist any more) to instruction simplifier.
+
+The particular test case relies on inlining a method that returns InstanceOf, forming InstanceOf->BoolNot->If recognized by the post-inline RTP. That was possible to set up before but not any more because you cannot have Invoke->BoolNot->If in the code just before the inliner is called.
+
+Suggestions on how to exercise this are more than welcome...
+

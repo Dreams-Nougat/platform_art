@@ -41,3 +41,11 @@ UUID: 741d661a_d9bed7cb
 Bytes: 247
 According to what I read, StoreStore is guarenteed by the Intel memory model http://gee.cs.oswego.edu/dl/jmm/cookbook.html says that StoreStore on intel is a no-op, so really, this code is irrelevant.  I will remove the StoreStore case altogether.
 
+631:6-631:69
+Thu Jan 28 21:26:16 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 741d661a_d9bed7cb
+UUID: 5418622c_151f744b
+Bytes: 290
+This is designed to handle non-temporal stores, which do require a fence.  But I believe we don't actually generate any non-temporal stores in Quick, and hence never generate this fence.  And as you said, Quick is deprecated anyway.  If it mattered, SFENCE would clearly be the right thing.
+

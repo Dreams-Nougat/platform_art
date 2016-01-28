@@ -9,6 +9,14 @@ UUID: f49a3677_72702de0
 Bytes: 21
 Allow src2 to be Any?
 
+2447
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f49a3677_72702de0
+UUID: 54c4e260_f2318191
+Bytes: 161
+Well, I could with some efforts, but then it will be very hard to deal with immediates (cmpq only supports 32 bit immediate). Is it really worth the extra logic?
+
 2448:0-2448:63
 Thu Jan 28 01:21:41 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,12 +75,30 @@ UUID: 14beeac6_a1e095b9
 Bytes: 171
 inc/dec have some slight performance issues compared to add/sub, but I am sure that they are irrelevant here.  I would go for the smaller code like Vladimir is suggesting.
 
+2448:0-2448:63
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34520eae_9f0bb773
+UUID: b4a43ebb_a62df783
+Bytes: 176
+I like the compactness but then I will have to add the inc/dec instructions first. Will consider that in a follow up CL.
+
+For now I have moved the xor up so we save one branch.
+
 2510:6-2514:7
 Thu Jan 28 02:46:13 2016 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f49a3677_32d145f2
 Bytes: 55
 Can just use xorl.  That will clear the upper bits too.
+
+2510:6-2514:7
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f49a3677_32d145f2
+UUID: 14beeac6_210485f4
+Bytes: 2
+OK
 
 2526
 Thu Jan 28 02:46:13 2016 +0000
@@ -89,6 +115,14 @@ UUID: f4b5d6da_3a7e76f8
 Bytes: 110
 No, movq handles all values.  It is inefficient for ones that fit in int32_t.  Load64BitValue is still better.
 
+2526
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f4b5d6da_3a7e76f8
+UUID: 542ce22d_7ed10524
+Bytes: 258
+Yes, the movd() method does the right thing for wider constants (otherwise my tests, and a lot of other code in this file would fail). But I like this Load() method since it avoids duplicating all the decisions every time. I am using that at more places now.
+
 2553:0-2559:5
 Thu Jan 28 15:31:49 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -96,12 +130,28 @@ UUID: b4bb5ef1_bb1353e8
 Bytes: 39
 Use movl() and pull it out of the `if`.
 
+2553:0-2559:5
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4bb5ef1_bb1353e8
+UUID: d4b8d2d6_71f013b9
+Bytes: 4
+Done
+
 2562:4-2566:5
 Thu Jan 28 02:46:13 2016 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 94b2daf4_2f90f4fd
 Bytes: 4
 xorl
+
+2562:4-2566:5
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94b2daf4_2f90f4fd
+UUID: 542ce22d_1eced187
+Bytes: 4
+Done
 
 2785:0-2785:51
 Thu Jan 28 14:26:58 2016 +0000
@@ -126,10 +176,26 @@ UUID: 34b68e05_4207b6fa
 Bytes: 86
 that's not supported right now, but could be an improvement of the register allocator.
 
+2785:0-2785:51
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d4c4527f_1c69193a
+UUID: 542ce22d_3ecb8d78
+Bytes: 4
+Done
+
 2822:44-2822:46
 Thu Jan 28 02:46:13 2016 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 542ce22d_78591ddd
 Bytes: 30
 31/63 to handle int/long cases
+
+2822:44-2822:46
+Thu Jan 28 18:58:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 542ce22d_78591ddd
+UUID: f49a3677_12b7e10c
+Bytes: 4
+Done
 

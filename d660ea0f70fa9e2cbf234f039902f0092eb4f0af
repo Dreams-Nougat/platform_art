@@ -41,6 +41,24 @@ while the reference implementation can do no better than
       0x000020e8:             E905000000               jmp +5 (0x000020f2)
       0x000020ed:             B801000000               mov eax, 1
 
+2448:0-2448:63
+Thu Jan 28 15:31:49 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94b2daf4_b4a619dc
+UUID: 34520eae_9f0bb773
+Bytes: 361
+Since you allow the default kOutputOverlap for the "out", why don't you set it to 0 first and save code size on jumps (three instead of 4)? You can then also save code size on movs by using smaller inc/dec, assuming it doesn't impact the performance:
+
+    xor eax, eax
+    cmp esi, edx
+    je end
+    jl lower
+    inc eax
+    jmp end
+  lower:
+    dec eax
+  end:
+
 2510:6-2514:7
 Thu Jan 28 02:46:13 2016 +0000
 Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -62,6 +80,13 @@ Parent: f49a3677_b2e455cd
 UUID: f4b5d6da_3a7e76f8
 Bytes: 110
 No, movq handles all values.  It is inefficient for ones that fit in int32_t.  Load64BitValue is still better.
+
+2553:0-2559:5
+Thu Jan 28 15:31:49 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b4bb5ef1_bb1353e8
+Bytes: 39
+Use movl() and pull it out of the `if`.
 
 2562:4-2566:5
 Thu Jan 28 02:46:13 2016 +0000

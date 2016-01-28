@@ -1,0 +1,36 @@
+Revision: d660ea0f70fa9e2cbf234f039902f0092eb4f0af
+Patch-set: 1
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+2448:0-2448:63
+Thu Jan 28 01:21:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94b2daf4_b4a619dc
+Bytes: 1533
+Note that this does not have a constant folding section (yet; I wonder if we really should do this every time rather than just folding this in the HIR).
+
+Also note that low level testing allows us to do a single compare and short branches. So we get
+
+
+      0x00002094:                   3BF2               cmp esi, edx
+      0x00002096:                   7C06               jl/nge +6 (0x0000209e)
+      0x00002098:                   7F0B               jnle/g +11 (0x000020a5)
+      0x0000209a:                   33C0               xor eax, eax
+      0x0000209c:                   EB0C               jmp +12 (0x000020aa)
+      0x0000209e:             B8FFFFFFFF               mov eax, -1
+      0x000020a3:                   EB05               jmp +5 (0x000020aa)
+      0x000020a5:             B801000000               mov eax, 1
+
+
+while the reference implementation can do no better than
+
+      0x000020cc:                   3BF2               cmp esi, edx
+      0x000020ce:           0F8D0A000000               jnl/ge +10 (0x000020de)
+      0x000020d4:             B8FFFFFFFF               mov eax, -1
+      0x000020d9:             E914000000               jmp +20 (0x000020f2)
+      0x000020de:                   3BF2               cmp esi, edx
+      0x000020e0:           0F8507000000               jnz/ne +7 (0x000020ed)
+      0x000020e6:                   33C0               xor eax, eax
+      0x000020e8:             E905000000               jmp +5 (0x000020f2)
+      0x000020ed:             B801000000               mov eax, 1
+

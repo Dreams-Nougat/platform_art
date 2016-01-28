@@ -48,3 +48,24 @@ The comment says that accompanies the change says:
 
 Is that the case? Should we provide stronger memory ordering guarantees for the acquire-release path?
 
+1018:2-1032:30
+Thu Jan 28 00:14:30 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f40f96af_caf743f0
+UUID: 54c4e260_d46e3544
+Bytes: 1504
+Interesting question.
+
+I think we want to match the C++11/14 compare_exchange_weak(..., memory_order_seq_cst) semantics, which also cover Java semantics to the extent they're defined.
+
+For the reasons pointed out above, these are indeed weaker than the ones you get by using one or more fences.  A C++11 CAS does not act as a fence for nearby memory_order_relaxed operations.  In the absence of non-seq_cst atomics, the difference should however not be observable.
+
+I hope and believe that the answer here is that LDAXR/STLXR are sufficient.  I believe they do guarantee sufficient ordering among sequentially consistent atomics since STLXR is multi-copy-store-atomic and no reordering is allowed among LDAXR and STLXR.
+The latter prevents the problem from the first comment in https://android-review.googlesource.com/#/c/195360/
+
+Although I think this is technically correct, and we should go ahead with this CL, there are some hazards:
+
+1) This does not technically mix with DMB-based volatile implementations.  (The example in https://android-review.googlesource.com/#/c/195360/ can fail if volatile loads use DMB in conjunction with this CAS implementation.) Thus we should make sure that the runtime code also uses LDAXR/STLXR consistently.
+
+2) I'm sure there exists code that erroneously assumes that CAS acts as a full barrier/fence.  But I think that's mostly C++ code and kernel code, so this is unlikely to compound those bugs.  I have one such ART bug assigned to me.  We do need to fix those.
+

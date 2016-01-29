@@ -53,3 +53,20 @@ Bytes: 87
 Pure genius! I like it, very compact.
 Thanks for the links. I even book an ARM book :-)
 
+299:1-300:86
+Fri Jan 29 01:22:56 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 548b02a3_a3c9fe36
+UUID: f465d6c4_c0419294
+Bytes: 452
+Hmm. I am having trouble setting the rn to zero reg.
+The code breaks on the 3th assertion below. What am I missing (btw. we don't need the is_long, since the output is 32-bit, so we can use wzr in all cases)
+
+void Cinc(const Register& rd, const Register& rn, Condition cond) {
+    VIXL_ASSERT(allow_macro_instructions_);
+    VIXL_ASSERT(!rd.IsZero());
+    VIXL_ASSERT(!rn.IsZero());
+    SingleEmissionCheckScope guard(this);
+    cinc(rd, rn, cond);
+  }
+

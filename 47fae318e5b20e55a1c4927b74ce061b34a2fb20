@@ -16,3 +16,31 @@ UUID: 94ed7a3a_7fce8f88
 Bytes: 27
 This doesn't change cflags?
 
+298:0-298:58
+Fri Jan 29 00:43:25 2016 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94ed7a3a_7fce8f88
+UUID: 910e6c27_f7aba092
+Bytes: 219
+No, for ARM64 there is no MOV + setflags. If you are referring to the issue we have recently discussed that applies only to ARM Thumb2 code and in particular when instructions that set flags are used inside an IT block.
+
+299:1-300:86
+Fri Jan 29 00:43:25 2016 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51207491_15a734cc
+Bytes: 470
+I guess we can do this without the MOV as follows:
+
+Register zero_register = is_long ? xzr : wzr;
+
+__Cinc(out, zero_register, gt);
+__Cinv(out, out, lt);
+
+Please note that for ARM64 we have a dedicated zero register:
+- XZR - 64bit register view
+- WZR - 32bit register view
+
+Here are a couple of useful presentations on the ARM64 ISA:
+http://malideveloper.arm.com/downloads/ARMv8_InstructionSetOverview.pdf
+http://malideveloper.arm.com/downloads/ARMv8_64_bit_migration.pdf
+

@@ -92,3 +92,17 @@ UUID: 5125d4a7_8dea0194
 Bytes: 149
 Just make it part of the pc_relative fixups. Might make sense to turn that into a more general x86 prep for code gen (arm64 has something like that).
 
+140:1-150:3
+Fri Jan 29 14:54:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5125d4a7_8dea0194
+UUID: b140d043_d009bc47
+Bytes: 375
+> I see some subl/addl that could become lea for stack manipulation,
+ > the xorl for 0, a xorpd for 0.0, and xorls to do an exchange of
+ > registers
+
+The exchange could be rewritten as PUSH+MOV+POP (reducing code size by 2 bytes). Would that impact performance?
+
+Could we tell the move resolver to preserve flags (and emit different code for 0 and 0.0) in certain situations?
+

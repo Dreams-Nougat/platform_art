@@ -33,3 +33,13 @@ That said, we typically try to avoid platform-specific code in the HIR optimizat
 
 The "right" way of doing this would be to investigate how the register allocator could spill the true value (input1) of the Select. What happens in the highlighted case here is that the Select has effectively 4 inputs - val_false, val_true, cond_lhs, cond_rhs. We set out=val_false=needs_reg_pair, cond_lhs=needs_reg_pair, cond_rhs=needs_reg_pair. If we could set val_true=needs_double_stack, then we'd have no problem at all.
 
+140:1-150:3
+Fri Jan 29 13:14:00 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7153b827_a664c623
+UUID: 14950abd_019e2e48
+Bytes: 626
+I disagree.  Even if we allowed an input to be forced to the  stack, the x86 long compare would still need to materialize -1/0/1, which will then be compared to 0 to set the CC in order to implement the select.  This is VERY inefficient.  The same applies if the compare was FP.
+
+What I would really prefer is a virtual function in CodeGenerator called ShouldGenerateSelect, which is passed in all 4 inputs (or just the types of the compare and moves), and returns a boolean.  That allows the code generator to proactively decide before getting into trouble later.  Last time I suggested something like that, it was shot down.
+

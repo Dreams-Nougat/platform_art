@@ -68,6 +68,25 @@ Bytes: 148
 And it does not: 0xFFFFFFFF, 0x1.
 I think it can work if we restrict the input ranges. Maybe this staid in our mind from v8's smis (31bit integers).
 
+296
+Fri Jan 29 14:36:36 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71fc982b_9e191d65
+UUID: 7153b827_26ac565d
+Bytes: 598
+The CMP+CSET/NE+CNEG/LT should be just as good as the CMP+CSET/GT+CINV/LT. Both work perfectly for the signed comparison. (If we wanted an unsigned compare, we would have to replace LT->LO, GT->HI, but I cannot see why we would ever need that.)
+
+And the CMP+CSET/NE+CNEG/LT approach is exactly what I would want for Thumb2:
+
+    cmp op1, op2
+    ite eq
+    moveq out, #0       // 16-bit if out is low reg.
+    movne out, #1       // 16-bit if out is low reg.
+    it lt
+    rsblt out, out, #0  // 16-bit if out is low reg.
+
+(mov out, #-1 would be 32-bit) so maybe we should use that for consistency.
+
 297:18-297:28
 Fri Jan 29 11:03:45 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -14,6 +14,21 @@ It's a matter of personal taste, but I'd use the RegisterFrom helper here, as we
 
 (and pass `type` instead of `is_long` to this method).
 
+296
+Fri Jan 29 12:05:57 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1116843_5a7955a3
+Bytes: 312
+Three instructions are necessary, but we can spare one conditional instruction by using an arithmetic shift.
+
+__ Sub(out, op1, op2, SetFlags);
+__ Asr(out, out, op1.size() - 1);
+// At this point `out` contains:
+//   * -1 if op1 < op2
+//   * 0 otherwise
+// Now fix the result when op1 > op2.
+__ Cinc(out, out, gt);
+
 297:18-297:28
 Fri Jan 29 11:03:45 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

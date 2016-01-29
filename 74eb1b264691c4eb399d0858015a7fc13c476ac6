@@ -1,0 +1,15 @@
+Revision: 74eb1b264691c4eb399d0858015a7fc13c476ac6
+Patch-set: 32
+File: compiler/optimizing/prepare_for_register_allocation.cc
+
+140:1-150:3
+Fri Jan 29 11:49:35 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 349a0eef_a5f2e400
+Bytes: 510
+I thought about this some more.  This check will cause  selects with a long compare to be quite inefficient on x86, as the comparison will have to be materialized.
+
+In addition, there is no easy way that I know to generate a single condition code representing a long comparison on X86, which is needed to control CMOV.
+
+I am planning to move this check to the HSelect generation, and avoid HSelect on x86 if the comparison is between longs.  That is sufficient to remove this check and generate efficient code.
+

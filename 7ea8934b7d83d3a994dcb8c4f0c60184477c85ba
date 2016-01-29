@@ -1,0 +1,120 @@
+Revision: 7ea8934b7d83d3a994dcb8c4f0c60184477c85ba
+Patch-set: 7
+File: compiler/dex/quick/mips/utility_mips.cc
+
+763:10-763:28
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d162a4ed_a9edbdaf
+Bytes: 25
+(displacement & 0x7) != 0
+
+771:17-771:35
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3134e0db_0c83b7c3
+Bytes: 5
+ditto
+
+958:10-958:28
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9143cc4f_8f9c352c
+Bytes: 5
+ditto
+
+965:17-965:35
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7153b827_06f83a65
+Bytes: 5
+ditto
+
+File: compiler/utils/mips64/assembler_mips64.cc
+
+1808:0-1811:15
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d139c4d1_91b57c96
+Bytes: 259
+You're losing the alignment information here. The simplest thing to do is
+
+    LoadConst32(AT, offset & ~(kMips64WordSize - 1));
+    Daddu(AT, AT, base);
+    base = AT;
+    offset &= (kMips64WordSize - 1);
+
+or you can chose the mask based on the operand size.
+
+1836:10-1836:22
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3134e0db_cc848fca
+Bytes: 17
+(offset & 7) != 0
+
+1853:0-1856:15
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d139c4d1_717458af
+Bytes: 5
+ditto
+
+1865:10-1865:22
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b10b7017_58fefd56
+Bytes: 5
+ditto
+
+1911:0-1914:15
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9143cc4f_4fd08dd5
+Bytes: 5
+ditto
+
+1929:10-1929:22
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d139c4d1_517954a3
+Bytes: 5
+ditto
+
+1948:0-1951:15
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7153b827_c6090248
+Bytes: 5
+ditto
+
+1960:10-1960:22
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7153b827_a6060636
+Bytes: 5
+ditto
+
+File: compiler/utils/mips64/assembler_mips64_test.cc
+
+858:2-858:22
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9143cc4f_0fca8525
+Bytes: 109
+Change "expected" to std::ostringstream and write directly to that instead of creating the "instr" temporary.
+
+879:2-879:22
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 112fdc8d_2bf3f98e
+Bytes: 5
+ditto
+
+1088
+Fri Jan 29 14:19:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9143cc4f_afb8198c
+Bytes: 248
+All offsets except 4 are 8-byte aligned. Please add more values. For 1-byte and 2-byte load/store add values like 1 and 2, perhaps also 0x7fff and 7ffe, 0x8001 and 0x8002. For 8-byte values, add 0x7ffc and 0x8004. Similar for the other tests below.
+

@@ -2,6 +2,30 @@ Revision: f7fd970244f143b1abb956e29794c446e4d57f46
 Patch-set: 27
 File: runtime/class_linker.cc
 
+1281:17-1281:31
+Fri Jan 29 07:39:47 2016 +0000
+Author: Artem Udovichenko <1083288@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 311f8057_b4640024
+Bytes: 1563
+I want to suggest you one things.
+As I understand, when app art file is mapped into memory (in case of kStorageModeUncompressed), linux does not allocate physical pages until program access it. When program read data from art file then linux allocate physical page and this page is clear. I.e. this page could be stored in disk cache and reused at next launch of application. When program modified data in memory then physical page become dirty and this page will not be used at next app launch (at next app launch new physical page will be allocated and filled by data from art file).
+Here you modify data in memory backed by art file.
+Instead of setting class loader for each class you could do this.
+At compile time:
+1. Allocate memory for instance of PathClassLoader and do not call <init> on this memory.
+2. Store pointer to allocated instance in ImageRoots.
+3. For each class in image set pointer to allocated memory as pointer to class loader.
+
+At runtime:
+After app art file mapped into memory, get pointer to instance of PathClassLoader from image roots and call <init>.
+
+After that all classes in app image will refer to valid class loader. Only one page will be modified.
+
+To implement this you need to modify method android.app.ApplicationLoaders.getClassLoader. This method should not instantiate new instance of PathClassLoader but get it from static method PathClassLoader.open for example.
+Static method PathClassLoader.open should open oat file and art file and return instance of PathClassLoader from app art file.
+
+What do you think about this?
+
 1327:0-1327:30
 Sat Jan 23 14:16:34 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

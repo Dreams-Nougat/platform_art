@@ -21,3 +21,15 @@ UUID: d468d2a0_ff18f705
 Bytes: 169
 Okay, you will generate a single CC by comparing the materialized compare result with 0, but it is still slow, and undoes the work to merge the long compare with the HIf
 
+140:1-150:3
+Fri Jan 29 12:44:45 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d468d2a0_ff18f705
+UUID: 7153b827_a664c623
+Bytes: 893
+Yep, I agree that this is not very efficient - the point was to get Selects in already and find a better solution later, so feel free to tweak this.
+
+That said, we typically try to avoid platform-specific code in the HIR optimizations and assume that codegens can always generate the code they want from the HIR. Now I know that I've already broken that by forcing input0 of the Select to be the false value, but would be a shame to spread such assumptions further.
+
+The "right" way of doing this would be to investigate how the register allocator could spill the true value (input1) of the Select. What happens in the highlighted case here is that the Select has effectively 4 inputs - val_false, val_true, cond_lhs, cond_rhs. We set out=val_false=needs_reg_pair, cond_lhs=needs_reg_pair, cond_rhs=needs_reg_pair. If we could set val_true=needs_double_stack, then we'd have no problem at all.
+

@@ -103,6 +103,25 @@ UUID: d468d2a0_420bc8b0
 Bytes: 63
 So, what's the verdict. Should I change, or it this good to go?
 
+296
+Fri Jan 29 18:15:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d468d2a0_420bc8b0
+UUID: 7153b827_6675ae62
+Bytes: 321
+Your choice.
+
+There's actually also a Thumb2 approach similar to CMP+CSET/GT+CINV/LT:
+
+    cmp op1, op2
+    ite le
+    movle out, #0       // 16-bit if out is low reg.
+    movgt out, #1       // 16-bit if out is low reg.
+    it lt
+    sublt out, out, #1  // 16-bit if out is low reg.
+
+(With 0-1 being used instead of ~0.)
+
 297:18-297:28
 Fri Jan 29 11:03:45 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,3 +9,19 @@ UUID: f465d6c4_6fb8b18d
 Bytes: 112
 Not really sure that should be the condition. If you want it this way, I'd really want a warning otherwise here.
 
+935:9-936:58
+Mon Feb 01 11:35:12 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f465d6c4_6fb8b18d
+UUID: 517cf4a3_b5eae093
+Bytes: 313
+Also, I would introduce a 
+
+  bool PreservesDeterministicCompiling() {
+    return (gc::kCollectorTypeDefault == gc::kCollectorTypeCMS ||
+            gc::kCollectorTypeDefault == gc::kCollectorTypeMS) &&
+        !kEmitCompilerReadBarrier;
+  }
+
+predicate and use it here and also as a condition on line 1185–1187.
+

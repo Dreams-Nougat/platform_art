@@ -25,3 +25,34 @@ Also, I would introduce a
 
 predicate and use it here and also as a condition on line 1185–1187.
 
+935:9-936:58
+Mon Feb 01 19:58:31 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 517cf4a3_b5eae093
+UUID: 5422228b_9fc9ab37
+Bytes: 421
+How about this:
+
+if (!kIsTargetBuild && IsBootImage()) {
+  if (SupportsDeterministicCompilation()) {
+    force_determinism_ = true;
+  } else {
+    LOG(WARNING) << "Deterministic compilation is disabled."
+  }
+}
+
+bool SupportsDeterministicCompilation() {
+    return (gc::kCollectorTypeDefault == gc::kCollectorTypeCMS ||
+            gc::kCollectorTypeDefault == gc::kCollectorTypeMS) &&
+        !kEmitCompilerReadBarrier;
+}
+
+1185:12-1185:36
+Mon Feb 01 19:58:31 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 548b02a3_1c304c8e
+Bytes: 136
+if (SupportsDeterministicCompilation()) {
+  Usage("Cannot use --force-determinism with read barriers or a non-CMS garbage collector");
+}
+

@@ -1,0 +1,34 @@
+Revision: e52d1257e1e8e6589d0964c9928613f7e7dc7930
+Patch-set: 2
+File: compiler/optimizing/intrinsics_arm64.cc
+
+1510:18-1510:25
+Mon Feb 01 10:57:50 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51207491_385d85fc
+Bytes: 46
+__ Cmp(op1_reg, 0);
+
+and get rid of `op2_reg`.
+
+1510
+Mon Feb 01 10:57:50 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7125789f_967fcc3b
+Bytes: 729
+I couldn't find anything in two instructions. Here are a couple other possibilities.
+
+Using only one 'conditional' instruction (same as suggested before, but here we don't have integer overflows annoying us):
+
+    __ Cmp(op1_reg, 0);
+    __ Asr(out_reg, out_reg, 31);
+    __ Cinc(out_reg, out_reg, gt);
+
+Or using only arithmetic operations (we would need to not specify kNoOutputOverlap for this one):
+
+    __ Neg(out_reg, op1_reg);
+    __ Lsr(out_reg, out_reg, 31);
+    __ Orr(out_reg, out_reg, Operand(op1_reg, ASR, 31));
+
+I benchmarked the three routines on A53 and A57 in a tight loop, and they time exactly the same. I would have a preference for the `Cinc`, but sticking to yours is good as it mirrors the `compare()` code.
+

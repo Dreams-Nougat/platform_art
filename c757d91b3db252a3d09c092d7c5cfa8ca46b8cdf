@@ -11,12 +11,31 @@ Why do we need to align to page boundary if we are switching from allocated sect
 
 Should we (explicitly) align the first section to page boundary if it is allocated?
 
+113:6-117:7
+Mon Feb 01 14:49:10 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 517cf4a3_d5fbdc28
+UUID: 317b00b0_14f3948e
+Bytes: 208
+I do not want to included non-related data at the end of mmaped page.  It just feels wrong.
+
+Whether we align or not given section depends on which sections are written.  Thus I like to do it implicitly here.
+
 372
 Mon Feb 01 14:19:45 2016 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7153b827_4993e542
 Bytes: 290
 What do you think about changing it to "bool write_program_headers" without a default value? It would mean the user of the class don't have to know how many program headers an ELF file has and it would be more consistent with the approach we use for write_oat patches in the End() function.
+
+372
+Mon Feb 01 14:49:10 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7153b827_4993e542
+UUID: 317b00b0_34f81066
+Bytes: 214
+The user of the class kind of needs to know the number of headers.  That is, at least the upper bound needs to be provided.
+Having said that I am happy to revert to compile-time upper bound + write_program_headers.
 
 File: compiler/elf_writer_debug.cc
 

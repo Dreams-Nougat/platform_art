@@ -18,3 +18,13 @@ UUID: 5116b490_a5ba3e24
 Bytes: 134
 No, that is not enough, as the input has no SSA index.  I think you need to handle this case (IsEmittedAtUseSite) first.  Will confirm
 
+186:0-186:31
+Tue Feb 02 17:57:58 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5116b490_a5ba3e24
+UUID: 91d90c41_3fd587de
+Bytes: 444
+There's nothing wrong with the DCHECK. What this says is that if an instruction expects an input value, the input instruction must produce one.
+
+What you need to do is not set the in-location on the input which uses the HX86LoadFromConstantTable in the LocationBuilder. If you look at LocationBuilderX86::VisitAdd, you'll see that I've added code that does exactly that. You should do the same with the instructions you're modifying in your CL.
+

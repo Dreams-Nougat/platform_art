@@ -1,0 +1,12 @@
+Revision: b9e81a5ce6a0e565f083a500fb8ff06dca62473d
+Patch-set: 1
+File: compiler/optimizing/ssa_liveness_analysis.cc
+
+186:0-186:31
+Tue Feb 02 17:47:24 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 31c3005d_9424c48e
+Bytes: 199
+This can fail in the case where one of the inputs is HX86LoadFromConstantTable, which has emitted_at_use_site_ true and no output.  How about:
+DCHECK(has_out_location || input->IsEmittedAtUseSite())?
+

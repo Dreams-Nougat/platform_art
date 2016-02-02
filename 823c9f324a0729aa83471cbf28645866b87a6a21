@@ -27,3 +27,17 @@ I intend to leave this test as is (you're right that the comment could be rephra
 
 And yes, I am aware that I do not have a test for the case of image checksum mismatch. I was trying to find an equivalent test for other oat file types in this source file but could not find one. Could you suggest a good way of going about that?
 
+834:4-834:82
+Tue Feb 02 18:06:10 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 317b00b0_b43420b1
+UUID: 11f7dc9a_6b0b0103
+Bytes: 738
+We need some way to change the checksum of the image.
+
+If we generate the image again, will it have a different checksum from the last time we generated it? In this case, you could compile the oat file against the first image, remove (or relocate) the first image, then test the oat file up-to-date against the new image that has a different checksum.
+
+Otherwise, we could build a modified version of a pre-compiled image for this test case (or use one of the existing pre-compiled images, so long as it has a different checksum), and switch to using the different image when testing if the oat file is up-to-date.
+
+See the implementation of GeneratePicOdexForTest for an example of how to modify the image the oat file is compiled under.
+

@@ -33,6 +33,16 @@ UUID: 11e51cf3_3b62f7ec
 Bytes: 5
 ping?
 
+2388:0-2423:1
+Tue Feb 02 21:35:34 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1b8e4d6_597ee38d
+UUID: 31fce07c_d240e43b
+Bytes: 790
+Well, unless you map the intrinsic to a very specific HIR node, something like signum allows us to do a single test followed by two conditional jumps on the same condition code. If you rewrite this into the HIR equivalent of (x == 0 ? 0 : (x > 0) ? 1 : -1)) you get two cmp instructions. Of course we can pattern match on this and avoid it, but hopefully you get my point.
+
+Note that I tried to bring this up a few days back, but I don't think I made my email very clear. I was bringing up we have several paths (method call -> inlined -> codegen, method  call -> intrinsic -> HIR -> codegen and method call -> intrinsic  -> instrinsic codegen). All make certain things simpler, but ultimately all could in theory yield the same code. So I was asking for a preference, but did not hear any.
+
 2680:13-2680:45
 Tue Feb 02 10:24:47 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

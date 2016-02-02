@@ -9,6 +9,17 @@ UUID: f1cc087f_22c1ee5c
 Bytes: 85
 Should we move this into some utility class so we can use it in other places as well?
 
+32:0-43:2
+Tue Feb 02 14:44:22 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1cc087f_22c1ee5c
+UUID: 91d90c41_9fddb334
+Bytes: 246
+Hmmm... I kind of like that the DWARF code is self contained.
+I am happy to put it to some ART utility file as well.
+
+I am also considering removing the hashing altogether and doing something else.  But I will need to measure performance of that.
+
 88:0-89:49
 Tue Feb 02 12:54:00 2016 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +27,27 @@ UUID: 517cf4a3_9806f936
 Bytes: 43
 Why do you add 2 attribute list end marker?
 
+88:0-89:49
+Tue Feb 02 14:44:22 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 517cf4a3_9806f936
+UUID: b1d6100b_40efcedb
+Bytes: 52
+That is how DWARF defines the end of attribute list.
+
 90
 Tue Feb 02 12:54:00 2016 +0000
 Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 712ad87b_1162aeba
 Bytes: 147
 I would prefer to not push and pop the abbrev table terminator every time we are adding a new entry. Can we just move it to some finalization code?
+
+90
+Tue Feb 02 14:44:22 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 712ad87b_1162aeba
+UUID: 1110bc94_03efcedc
+Bytes: 191
+I am not sure whether complexity of finalization code is worth it (in particular, making sure it is called).
+Not that there so few abbrevs that the cost of doing this is basically irrelevant.
 

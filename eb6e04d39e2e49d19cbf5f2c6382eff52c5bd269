@@ -1,0 +1,50 @@
+Revision: eb6e04d39e2e49d19cbf5f2c6382eff52c5bd269
+Patch-set: 2
+File: compiler/dwarf/debug_abbrev_writer.h
+
+38:16-38:28
+Tue Feb 02 19:43:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b1d6100b_203c8a0d
+Bytes: 90
+#include <type_traits> (prefer explicit dependency over transitive #include from wherever)
+
+68:8-68:16
+Tue Feb 02 19:43:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b1d6100b_804b96b0
+Bytes: 121
+I would drop the UNLIKELY() unless you have measured that it helps. You're certainly hitting this on the first insertion.
+
+82:2-82:5
+Tue Feb 02 19:43:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51db1439_9d4f83bc
+Bytes: 14
+Maybe int32_t?
+
+83:15-83:35
+Tue Feb 02 19:43:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1b8e4d6_39d5afde
+Bytes: 117
+static_cast<int32_t>() and DCHECK_LT(abbrev_codes_.size(), static_cast<size_t>(std::numeric_limits<int32_t>::max())).
+
+89:34-89:49
+Tue Feb 02 19:43:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 71e018e1_7e8391c2
+Bytes: 21
+#include "stl_util.h"
+
+File: compiler/elf_writer_debug.cc
+
+613:41-613:42
+Tue Feb 02 19:43:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11e51cf3_7b839fc2
+Bytes: 206
+Add a comment, please.
+
+Is this the offset of this compilation unit's abbreviations from the start of .debug_abbrev? And are we passing 0 because we want to share abbreviations across all compilation units?
+

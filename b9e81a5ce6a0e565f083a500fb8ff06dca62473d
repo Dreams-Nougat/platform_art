@@ -28,3 +28,35 @@ There's nothing wrong with the DCHECK. What this says is that if an instruction 
 
 What you need to do is not set the in-location on the input which uses the HX86LoadFromConstantTable in the LocationBuilder. If you look at LocationBuilderX86::VisitAdd, you'll see that I've added code that does exactly that. You should do the same with the instructions you're modifying in your CL.
 
+186:0-186:31
+Tue Feb 02 17:58:13 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5116b490_a5ba3e24
+UUID: 5116b490_8530e28e
+Bytes: 1157
+Working version:
+  for (size_t i = 0, e = current->InputCount(); i < e; ++i) {
+    HInstruction* input = current->InputAt(i);
+    if (input->IsEmittedAtUseSite()) {
+      // `Input` is inlined into `current`. Walk over its inputs and record
+      // uses at `current`.
+      RecursivelyProcessInputs(input, actual_user, live_in);
+    } else {
+      bool has_in_location = current->GetLocations()->InAt(i).IsValid();
+      bool has_out_location = input->GetLocations()->Out().IsValid();
+
+      if (has_in_location) {
+        DCHECK(has_out_location);
+        DCHECK(input->HasSsaIndex());
+        // `Input` generates a result used by `current`. Add use and update
+        // the live-in set.
+        input->GetLiveInterval()->AddUse(current, /* environment */ nullptr, i, actual_user);
+        live_in->SetBit(input->GetSsaIndex());
+      } else if (has_out_location) {
+        // `Input` generates a result but it is not used by `current`.
+      }
+    }
+  }
+
+This is similar to the version that I had in my code.  You could eliminate the last else if and replace the bools has_in_location and has_out_location with their expression in the only uses of them
+

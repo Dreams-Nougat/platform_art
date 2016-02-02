@@ -1,0 +1,28 @@
+Revision: ae63d0762f79a9caa761d61eeb54776447b3bc9b
+Patch-set: 7
+File: compiler/optimizing/ssa_liveness_analysis.cc
+
+177
+Tue Feb 02 16:52:08 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51db1439_7d2477ee
+Bytes: 255
+Okay, no reason why we couldn't support this. We assumed single-level inlining should be enough and added the DCHECKs to warn ourselves if that didn't hold any more. Let me clean this up for you though.
+
+https://android-review.googlesource.com/#/c/200352/
+
+277:0-277:62
+Tue Feb 02 16:52:08 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51db1439_9d38630f
+Bytes: 145
+I don't get this... 
+
+  user->InputAt(index) == current
+
+and you know that
+
+  current->IsEmittedAtUseSite()
+
+So this will always skip the DCHECK.
+

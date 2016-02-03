@@ -9,6 +9,14 @@ UUID: d1b8e4d6_1c8e191d
 Bytes: 59
 Can we have the standard if (is_double) {} else {}, please?
 
+1410:0-1410:11
+Wed Feb 03 20:56:53 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1b8e4d6_1c8e191d
+UUID: 711bb8b8_7bdaa30d
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_x86.cc
 
 279:25-279:35
@@ -18,12 +26,28 @@ UUID: d1cf0471_2413bcac
 Bytes: 5
 ditto
 
+279:25-279:35
+Wed Feb 03 20:56:53 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1cf0471_2413bcac
+UUID: 31fce07c_c1fbf028
+Bytes: 4
+Done
+
 467:25-467:35
 Wed Feb 03 17:47:16 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d1b8e4d6_7c9d554a
 Bytes: 72
 Nit: Make this IsValid() and DCHECK that it is a register inside the if.
+
+467:25-467:35
+Wed Feb 03 20:56:53 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1b8e4d6_7c9d554a
+UUID: 31c3005d_43fef056
+Bytes: 4
+Done
 
 File: test/458-checker-instruction-simplification/src/Main.java
 
@@ -34,12 +58,28 @@ UUID: d1b8e4d6_9c8149eb
 Bytes: 5
 after
 
+1407:100-1407:106
+Wed Feb 03 20:56:53 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1b8e4d6_9c8149eb
+UUID: f127a8f2_d9d8ffa0
+Bytes: 4
+Done
+
 1423:100-1423:106
 Wed Feb 03 17:47:16 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1b5e8da_dd8bbf04
 Bytes: 5
 after
+
+1423:100-1423:106
+Wed Feb 03 20:56:53 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1b5e8da_dd8bbf04
+UUID: 11f7dc9a_37fe7356
+Bytes: 4
+Done
 
 File: test/565-checker-condition-liveness/src/Main.java
 
@@ -60,4 +100,18 @@ All three of these should have a use at the Select, so add
   uses:[<<UseInput>>]
 
 to the LoadFromConstantTable and LessThanOrEqual. That will prove that the three instructions have a use at the same position and then the EVAL proves that it's at the Select's second position.
+
+24:6-26:69
+Wed Feb 03 20:56:53 2016 +0000
+Author: Mark P Mendell <1036869@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1b8e4d6_dc8bc104
+UUID: 31fce07c_41754062
+Bytes: 525
+Actually, the instructions DON'T all have uses.  I get:
+      0 1 i28 X86ComputeBaseMethodAddress liveness:16 ranges:{[16,23)} uses:[23] env_uses:[] is_fixed:0 is_split:0 is_low:0 is_high:0 <|@
+      0 1 f29 X86LoadFromConstantTable [i28,f24] liveness:18 <|@
+      0 1 z12 LessThanOrEqual [f2,f29] liveness:20 <|@
+      0 1 i26 Select [i11,i18,z12] liveness:22 ranges:{[22,24)} uses:[24] env_uses:[] is_fixed:0 is_split:0 is_low:0 is_high:0 <|@
+
+This is because they are marked as EmitAtUseSite, and don't get added directly.
 

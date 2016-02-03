@@ -16,12 +16,28 @@ UUID: b1d6100b_804b96b0
 Bytes: 121
 I would drop the UNLIKELY() unless you have measured that it helps. You're certainly hitting this on the first insertion.
 
+68:8-68:16
+Wed Feb 03 10:04:33 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b1d6100b_804b96b0
+UUID: 51db1439_fd8ec7e4
+Bytes: 146
+I would like to keep it.  It is fairly hot path and the chances of the block being executed are very small. (there is a lot of duplicated entries)
+
 82:2-82:5
 Tue Feb 02 19:43:29 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51db1439_9d4f83bc
 Bytes: 14
 Maybe int32_t?
+
+82:2-82:5
+Wed Feb 03 10:04:33 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51db1439_9d4f83bc
+UUID: 51db1439_1d5d332e
+Bytes: 15
+Done - uint32_t
 
 83:15-83:35
 Tue Feb 02 19:43:29 2016 +0000
@@ -30,12 +46,28 @@ UUID: d1b8e4d6_39d5afde
 Bytes: 117
 static_cast<int32_t>() and DCHECK_LT(abbrev_codes_.size(), static_cast<size_t>(std::numeric_limits<int32_t>::max())).
 
+83:15-83:35
+Wed Feb 03 10:04:33 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1b8e4d6_39d5afde
+UUID: f1b5e8da_7a62b9bb
+Bytes: 19
+Done - checked cast
+
 89:34-89:49
 Tue Feb 02 19:43:29 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 71e018e1_7e8391c2
 Bytes: 21
 #include "stl_util.h"
+
+89:34-89:49
+Wed Feb 03 10:04:33 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71e018e1_7e8391c2
+UUID: 1110bc94_432ee67e
+Bytes: 4
+Done
 
 File: compiler/elf_writer_debug.cc
 
@@ -47,4 +79,12 @@ Bytes: 206
 Add a comment, please.
 
 Is this the offset of this compilation unit's abbreviations from the start of .debug_abbrev? And are we passing 0 because we want to share abbreviations across all compilation units?
+
+613:41-613:42
+Wed Feb 03 10:04:33 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 11e51cf3_7b839fc2
+UUID: b1d6100b_40ed0e72
+Bytes: 4
+Done
 

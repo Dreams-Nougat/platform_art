@@ -1,0 +1,63 @@
+Revision: eb005200788890b710434c2851804f44bbf667b8
+Patch-set: 8
+File: compiler/optimizing/code_generator_x86.cc
+
+1410:0-1410:11
+Wed Feb 03 17:47:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1b8e4d6_1c8e191d
+Bytes: 59
+Can we have the standard if (is_double) {} else {}, please?
+
+File: compiler/optimizing/intrinsics_x86.cc
+
+279:25-279:35
+Wed Feb 03 17:47:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1cf0471_2413bcac
+Bytes: 5
+ditto
+
+467:25-467:35
+Wed Feb 03 17:47:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1b8e4d6_7c9d554a
+Bytes: 72
+Nit: Make this IsValid() and DCHECK that it is a register inside the if.
+
+File: test/458-checker-instruction-simplification/src/Main.java
+
+1407:100-1407:106
+Wed Feb 03 17:47:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1b8e4d6_9c8149eb
+Bytes: 5
+after
+
+1423:100-1423:106
+Wed Feb 03 17:47:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1b5e8da_dd8bbf04
+Bytes: 5
+after
+
+File: test/565-checker-condition-liveness/src/Main.java
+
+21:2-23:53
+Wed Feb 03 17:47:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1b8e4d6_bc7e0db8
+Bytes: 61
+Turn these three into CHECK-DAG. The order is not guaranteed.
+
+24:6-26:69
+Wed Feb 03 17:47:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1b8e4d6_dc8bc104
+Bytes: 276
+All three of these should have a use at the Select, so add
+
+  uses:[<<UseInput>>]
+
+to the LoadFromConstantTable and LessThanOrEqual. That will prove that the three instructions have a use at the same position and then the EVAL proves that it's at the Select's second position.
+

@@ -1,0 +1,17 @@
+Revision: 1fc467d8e67a803fe26da2ca25ea1bdb56ad0aef
+Patch-set: 4
+File: runtime/class_linker.cc
+
+2471:2-2477:3
+Thu Feb 04 22:21:21 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11f7dc9a_d9d47e19
+Bytes: 391
+I strongly wonder whether this should go into LinkCode and FixupTrampolines, i.e., into NeedsInterpreter.
+
+That is considering how we do instrumentation already - we still have the oat class accessible, but linking diverts to the interpreter.
+
+It may be a better point to keep those things in one point instead of two.
+
+(The "benchmark" would still be basically valid, just down the line...)
+

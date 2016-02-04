@@ -9,6 +9,14 @@ UUID: b1d6100b_c321287d
 Bytes: 51
 if (kRuntimeISA == kArm || kRuntimeISA == kArm64) ?
 
+326:0-326:46
+Thu Feb 04 16:18:14 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b1d6100b_c321287d
+UUID: 11f7dc9a_e8e36ac3
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm/op_goto.S
 
 22:0-25:70
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51db1439_402a70bc
 Bytes: 64
 Do you plan on doing a compare and not branch in a follow-up cl?
+
+22:0-25:70
+Thu Feb 04 16:18:14 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51db1439_402a70bc
+UUID: b121b0e4_92bbf9db
+Bytes: 441
+After this (and OSR) is all in, I'll be doing a round of cost analysis for the various profiling modes.  If justified, I'll move some of it to the alternate interpreter and enable/disable via a change in IBASE.  For example, fold the branch profile code together with MterpCheckSuspendAndContinue (which fires on backwards branches), and then do the OSR check in the alternative interpreter (which would be enabled when the method goes hot).
 
 File: runtime/interpreter/mterp/mterp.cc
 
@@ -28,4 +44,12 @@ Bytes: 171
 Is it worth doing this check here? Note that the JIT instrumentation will already do it.
 
 Also, once osr is in, we will have to do something regardless of backward branch.
+
+631:0-631:20
+Thu Feb 04 16:18:14 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 11e51cf3_9e3939cc
+UUID: 31c3005d_e9935d7b
+Bytes: 202
+As the code is now, yes - it is worth doing a check to avoid the call to instrumentation->Branch.  But, I do expect to rework this all once OSR is in and I have a change to measure instrumentation cost.
 

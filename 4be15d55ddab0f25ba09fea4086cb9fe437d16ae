@@ -63,6 +63,24 @@ This tells me that you might store two different compiled methods: osr and norma
 Can't you re-use the normal compile method here?
 If not, do we get rid of the osr method eagerly (once the execution of the methods finishes we wouldn't need it)?
 
+163:2-163:46
+Fri Feb 05 11:48:12 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7176584c_ce7663df
+UUID: 7176584c_8e705be2
+Bytes: 538
+> This tells me that you might store two different compiled methods:
+ > osr and normal).
+ > 
+ > Can't you re-use the normal compile method here?
+
+That would be nice wouldn't it? :) But no, an osr method has to be compiled in a way that loop headers only have dex registers as context.
+
+ > If not, do we get rid of the osr method eagerly (once the execution
+ > of the methods finishes we wouldn't need it)?
+
+No, but that might be an option while tuning the code cache. I will follow up with another CL on code cache adjustments in general.
+
 File: runtime/thread.cc
 
 3019:99-3019:104

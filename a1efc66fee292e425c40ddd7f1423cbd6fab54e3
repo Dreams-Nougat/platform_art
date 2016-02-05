@@ -9,12 +9,28 @@ UUID: d137046a_61ac16ac
 Bytes: 13
 static state?
 
+63:0-63:40
+Fri Feb 05 19:09:36 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d137046a_61ac16ac
+UUID: f16b2868_aa618fb7
+Bytes: 113
+We do have other static state like this. As long as it's not something that needs destructors, I think it's fine.
+
 324:0-329:26
 Fri Feb 05 08:54:10 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7176584c_0ecf8b83
 Bytes: 20
 Do we verify -j1...?
+
+324:0-329:26
+Fri Feb 05 19:09:36 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7176584c_0ecf8b83
+UUID: 515a34de_a5abfeac
+Bytes: 100
+No. This is best effort, in a sense. If you prefer, I'll use an atomic (I think a lock is overkill).
 
 File: runtime/verifier/method_verifier.h
 
@@ -24,4 +40,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 918f4c7c_afa679cc
 Bytes: 269
 I think this is confusing (not blaming you, as it looks like it's always been the terminology?). What's the difference between kind and types? Would "failure level" and "failure kind" be more appropriate? "types" is somehow overloaded, especially in a verifier setup...
+
+348:0-349:23
+Fri Feb 05 19:09:36 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 918f4c7c_afa679cc
+UUID: 715f38cc_e6333ee5
+Bytes: 175
+I'm worried of renaming things now, as this will make it a non-local change, impacting class-linker, compiler, and tests. Let me file a cleanup bug and do this in a follow-up?
 

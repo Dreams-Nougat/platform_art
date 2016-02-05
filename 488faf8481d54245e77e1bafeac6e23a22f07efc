@@ -16,3 +16,18 @@ UUID: f1340868_62e416cd
 Bytes: 275
 This is not right because it tests the NOT:Or after the matched BoolNot which is just before Return. Either split this into two CHECK-STARTs - one BoolNot vs. zero Ors - or get rid of it entirely because you've shown the Or is not part of the data-flow leading to the Return.
 
+158:0-158:119
+Fri Feb 05 13:57:02 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1340868_62e416cd
+UUID: 31e4e025_acc4231b
+Bytes: 196
+I splitted it.
+
+But wouldn't that be correct when the new IRs are inserted before the original Or? If the Or wasn't deleted we could have
+
+    And
+    BooleanNot
+    Or
+    Return [<<BooleanNot>>]
+

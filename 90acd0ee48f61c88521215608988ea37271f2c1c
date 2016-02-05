@@ -30,6 +30,14 @@ No need to branch. They're both single-input instructions.
 
 You can DCHECK that it matches the GetInput if you want.
 
+191:29-192:68
+Fri Feb 05 11:38:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7176584c_2e304723
+UUID: b109b0b1_a8977b2c
+Bytes: 4
+Done
+
 File: test/565-checker-doublenegbitwise/src/Main.java
 
 69
@@ -39,12 +47,31 @@ UUID: d185445a_11e80ccd
 Bytes: 51
 Maybe add `before` checks as well (here and below)?
 
+69
+Fri Feb 05 11:38:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d185445a_11e80ccd
+UUID: 7103b891_e676bede
+Bytes: 154
+I had not put them thinking it would be confusing because it involves `HSelect` and constants rather than `HBooleanNot`.
+I'll add it along with a comment.
+
 84:14-84:15
 Fri Feb 05 11:01:28 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 918f4c7c_aff8b99f
 Bytes: 80
 Just out of curiosity... You're using & instead of && to avoid short-circuiting?
+
+84:14-84:15
+Fri Feb 05 11:38:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 918f4c7c_aff8b99f
+UUID: 31e4e025_8cb047b1
+Bytes: 465
+To be honest I did not pay attention to this. But there is an issue with using `&&` and `||`. Somehow the `HSelect` optimization doesn't kick in and we end up with a series of `HIf` and constants. I haven't looked further. Maybe because there is no `HCondition` input to the `Hif` (they take directly a boolean value)?
+
+But I *am* using `boolean` inputs instead of synthesizing conditions to avoid being short-circuited by `HSelect` and `HBooleanNot` optimizations.
 
 126:21-126:23
 Fri Feb 05 10:57:10 2016 +0000

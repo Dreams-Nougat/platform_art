@@ -9,3 +9,18 @@ UUID: 918f4c7c_2fb609a1
 Bytes: 106
 Hans, can you confirm that we need to emit the barrier only if we write a non-zero value to a final field?
 
+681:10-681:82
+Fri Feb 05 23:01:49 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 918f4c7c_2fb609a1
+UUID: 11951cbd_1bacdbaa
+Bytes: 902
+I assume we're just suppressing known zero stores to final fields?  If so, I believe the answer is yes.  If not, this gets more complicated ...
+
+Details:
+I believe AllocObjectWithAllocator always clears memory and calls pre_fence_visitor to set the class pointer before executing a suitable fence.  Hopefully any other allocation paths do something equivalent.  Thus these implicitly "final" values are already guarded by a suitable fence.
+
+Non-final fields currently don't need top be guarded.  If you communicate the object to another thread via a data race, and then access a non-final field initialized in the constructor, you lose.  This rule may change.  I would rather it didn't.  But that's a long story.
+
+There seems to be an unrealized opportunity here to move some final field stores into something like the pre_fence_visitor, thus avoiding one fence in many cases.  Worth considering for O?
+

@@ -1,0 +1,11 @@
+Revision: d5576865bb05b8639b3491a183116077ac9b945f
+Patch-set: 5
+File: runtime/interpreter/interpreter.cc
+
+300
+Fri Feb 05 15:47:12 2016 +0000
+Author: Tamas Berghammer <1059813@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b18c5088_f04a205f
+Bytes: 444
+In the previous version of the patch method->HasAnyCompiledCode() was equivalent with jit->GetCodeCache()->ContainsMethod(method) because the oat file lookup code was disabled. After the change we have to check if the method is available in the JIT cache because if force JIT fails we don't want to fall back to AOT because CanUseAOTCode() will return false what will enforce the usage of the interpreter and resulting in an infinite recursion.
+

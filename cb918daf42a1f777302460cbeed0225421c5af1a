@@ -9,6 +9,14 @@ UUID: d1c4647f_99c53bb8
 Bytes: 6
 const?
 
+476
+Fri Feb 05 20:13:26 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1c4647f_99c53bb8
+UUID: 11543cb0_26fe3880
+Bytes: 4
+Done
+
 531:5-531:45
 Fri Feb 05 03:57:47 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,40 @@ UUID: 31fce07c_78010699
 Bytes: 30
 Remove the commented out code?
 
+531:5-531:45
+Fri Feb 05 20:13:26 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 31fce07c_78010699
+UUID: d1e38448_418ad245
+Bytes: 4
+Done
+
 534:10-534:13
 Fri Feb 05 03:57:47 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 31c3005d_342f657e
 Bytes: 99
 Why is there a -1 here, is there a thread local bracket index equal to kNumThreadLocalSizeBrackets?
+
+534:10-534:13
+Fri Feb 05 20:13:26 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 31c3005d_342f657e
+UUID: f16b2868_2ab83ffa
+Bytes: 593
+The -1 is part of the first 'term' and is needed to compute the index from the bracket size. It's more like (note the parentheses):
+
+idx = ((size - kMaxThreadLocalBracketSize) / kBracketQuantumSize - 1) + kNumThreadLocalSizeBrackets
+
+Indexes 0 (8 bytes) through 15 (128 bytes) are thread local. Index 16 (=kNumThreadLocalSizeBrackets) isn't thread local.
+
+For example, if size = 144 (index 16), given
+
+kMaxThreadLocalBracketSize = 128
+kBracketQuantumSize = 16
+kNumThreadLocalSizeBrackets = 16
+
+idx = ((144 - 128) / 16 - 1) + 16 = (16 / 16 - 1) + 16 = 0 + 16 = 16.
+
+I reformatted it to clarify.
 

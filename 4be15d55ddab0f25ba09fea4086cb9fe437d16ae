@@ -1,0 +1,47 @@
+Revision: 4be15d55ddab0f25ba09fea4086cb9fe437d16ae
+Patch-set: 8
+File: compiler/optimizing/code_generator.cc
+
+662:2-662:21
+Fri Feb 05 10:51:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51feb4bd_e51236a7
+Bytes: 81
+Since you're not counting the edges any more, this can now be a BitVector, right?
+
+802:4-802:29
+Fri Feb 05 10:51:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1126fc4f_93f3bcc5
+Bytes: 149
+Thanks for adding this, we should have had this a long time ago. Could you refactor the code a little to also apply to non-OSR SuspendChecks, though?
+
+File: runtime/jit/jit_code_cache.h
+
+249:2-249:34
+Fri Feb 05 10:51:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51feb4bd_2533ae33
+Bytes: 225
+I'm gonna nitpick here because the map is queried from the interpreter instrumentation...
+
+What is the expected number of entries for this map? If it's in single digits, a vector of pairs would give you better cache locality.
+
+File: runtime/thread.cc
+
+3019:99-3019:104
+Fri Feb 05 10:51:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1340868_22012e4f
+Bytes: 9
+long line
+
+File: test/570-checker-osr/src/Main.java
+
+65:38-65:45
+Fri Feb 05 10:51:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 918f4c7c_4fd58d11
+Bytes: 48
+Can we have a non-zero pattern for the high reg?
+

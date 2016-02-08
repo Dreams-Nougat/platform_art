@@ -9,12 +9,30 @@ UUID: 1d20d090_b5b400ff
 Bytes: 105
 Remove the comment, and drop the DCHECK. Comment is kind of obvious now that you cannot use the oat code.
 
+2598:0-2600:35
+Mon Feb 08 08:25:11 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d20d090_b5b400ff
+UUID: 3d2594a0_56c37455
+Bytes: 86
+I would keep the comment "No code: need interpreter." to make it clear for the reader.
+
 2610:0-2612:3
 Sat Feb 06 16:36:36 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3148604f_eca68bcd
 Bytes: 86
 +shertz: does that sound reasonable? Why do we have two flags for the instrumentation?
+
+2610:0-2612:3
+Mon Feb 08 08:25:11 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3148604f_eca68bcd
+UUID: 7d0b8c18_b8cbd968
+Bytes: 365
+IsForcedInterpretOnly is for the runtime being started with -Xint. InterpretOnly is for the instrumentation being configured for full interpreter (during debug or tracing).
+
+Looking at the code, InterpretOnly will return true when IsForcedInterpretOnly also returns true (see Instrumentation::ForceInterpretOnly). So here I guess we only need to call InterpretOnly.
 
 2673:0-2674:28
 Sat Feb 06 16:36:36 2016 +0000

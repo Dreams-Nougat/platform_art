@@ -17,6 +17,14 @@ UUID: 3148604f_ccd9cf19
 Bytes: 7
 Agreed.
 
+2669:6-2672:7
+Tue Feb 09 00:17:57 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3148604f_ccd9cf19
+UUID: 5d3de8ec_7fa3afd8
+Bytes: 62
+I moved the logic to CanUseAOTCode() which was recently added.
+
 File: runtime/jdwp/jdwp_main.cc
 
 537:4-544:5
@@ -27,4 +35,12 @@ Bytes: 315
 I don't think this is the right place. If the debugger updates instrumentation to re-enable compiled code, it will revert your entrypoint update.
 
 IIUC, you want all methods from boot image classes to always be interpreted when the debugger is connected, whatever debug events are requested by the connected client.
+
+537:4-544:5
+Tue Feb 09 00:17:57 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3148604f_acd483e2
+UUID: dda3987e_a6f628a4
+Bytes: 175
+The change I'm going to make will add the CanUseAOTCode() check in linker's get quick code logic so uninstalling stub won't revert to the compiled oat code for framework code.
 

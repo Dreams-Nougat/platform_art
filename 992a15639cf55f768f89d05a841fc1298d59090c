@@ -18,6 +18,14 @@ UUID: bd30a413_88b2bb5c
 Bytes: 41
 (See my comment on the generated file...)
 
+11:16-11:21
+Tue Feb 09 06:35:18 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bd30a413_88b2bb5c
+UUID: bd9a6476_b24c6043
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm64/header.S
 
 91
@@ -36,6 +44,14 @@ UUID: 9d33e01f_8a53cf0d
 Bytes: 58
 This looks wrong. A macro would avoid typos in repetition.
 
+1138:4-1138:21
+Tue Feb 09 06:35:18 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9d33e01f_8a53cf0d
+UUID: ddbd58cb_53cec42e
+Bytes: 37
+Yes - should have been rSELF.   Done.
+
 File: runtime/interpreter/mterp/out/mterp_arm64.S
 
 1094:0-1101:6
@@ -44,4 +60,22 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bd30a413_e8cb87be
 Bytes: 42
 Consider a macro, as it's always the same?
+
+1094:0-1101:6
+Tue Feb 09 06:35:18 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bd30a413_e8cb87be
+UUID: ddbd58cb_f3bef085
+Bytes: 1388
+I'm a big fan of macros - and for the reason given.  However, when I tried to use multi-instruction macros for mterp back in the Dalvik days I ran into some problems.
+
+First, although they were good for repetition, they obscured which registers were getting stepped on.  Macros which perform may perform a call are particularly dangerous.  I burned myself on that one a few times.
+
+Next, there were a few cases in which the macro fit perfectly for most uses, but had a couple of uses in which I could usefully schedule instructions that would have been inside the macro elsewhere.  That lead to sometimes performing the operation using a macro, and sometimes not.  Ugly.
+
+Finally, because mterp relies on fixed-size code regions, you often needed to count instructions to fit the hot path in the main block and push the rest into the sister region.  Multi-instruction macros made that a little more difficult.
+
+So, in the end I abandoned the effort to macroize mterp and stuck with single-instruction macros intended primary to make the code more readable.
+
+The example here, though, may be a reasonable macro candidate.  I have some ideas about how to further reduce the cost of branch profiling, and doing it as a macro would be useful for A/B testing and comparisons (though again we may run into the instruction scheduling limitation).   I'm inclined to leave these as-is, and revisit
 

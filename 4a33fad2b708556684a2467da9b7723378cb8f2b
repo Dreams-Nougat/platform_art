@@ -1,0 +1,20 @@
+Revision: 4a33fad2b708556684a2467da9b7723378cb8f2b
+Patch-set: 1
+File: compiler/debug/elf_debug_loc_writer.h
+
+298
+Wed Feb 10 15:39:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fde93cd0_bc89a153
+Bytes: 257
+Or the tail of the last one? I think the format doesn't allow such match but even if it did, this would be OK as the offset would still point to the correct data. (If you find the same binary data anywhere else, you can just point the offset there as well.)
+
+302:37-302:40
+Wed Feb 10 15:39:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3de034e0_a1d1781d
+Bytes: 258
+I don't like std::vector::at() because it's specified to throw a C++ exception which we do not support. Note that you implicitly rely on `debug_ranges_entry_size > 0`, otherwise it would throw.
+
+I would prefer `debug_ranges_buffer->data() + previous_offset`.
+

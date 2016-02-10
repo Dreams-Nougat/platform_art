@@ -18,3 +18,19 @@ UUID: 1d729020_c5cbda67
 Bytes: 267
 Yes indeed. [Following offline discussion] Since it doesn't improve the code either in this case, we can leave it like that for now, until a later change that also applies the transformation to arm32 (in which case it is much simpler to always do the transformation).
 
+261:23-263:23
+Wed Feb 10 17:50:41 2016 +0000
+Author: Artem Serov <1089808@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d729020_c5cbda67
+UUID: bd98a490_627bd651
+Bytes: 363
+Actually if we avoid checking '!hother->IsConstant()' we can gain performance in case when the constant can not be encoded as an immediate operand into AND instructions. If we don't switch to BitwiseNegated we will have 3 instructions:
+ mov r0, #large_constant
+ neg r2, r1
+ and r0, r0, r2
+
+With BitwiseNegated it will be:
+
+ mov r0, #large_constant
+ bic r0, r0, r1
+

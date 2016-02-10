@@ -76,3 +76,23 @@ I always thought they validate that we run correctly if the app is not precompil
 
 If no-prebuild was meant to test that we can compile on the fly at runtime, well, that's a different story I guess. And I would propose to make that explicit with a flag.
 
+325:0-329:3
+Wed Feb 10 19:15:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51c6b4da_e5a156b8
+UUID: 9dc4c07e_82aca0ff
+Bytes: 614
+I think we wanted to test that compilation was happening, and that we weren't inadvertently running interpreted because of some bug.
+
+It's not clear to me what behavior we are promising the users of PathClassLoader. If we are promising the code will run compiled, then the existing tests are good. If we are promising nothing about whether something runs compiled or interpreted, then we only need to test correct behavior. If we are promising something about performance and JIT is good enough for to meet that performance promise, then we should revise the test to test for performance and not compilation state.
+
+325:0-329:3
+Wed Feb 10 19:15:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1d7a87c_6ab6d7fa
+UUID: 1dd0d03a_5e178967
+Bytes: 502
+Here is my interpretation of the oat file assistant API:
+
+The user of the oat file assistant provides a dex location and oat location to use. If the user doesn't provide an oat location, "the standard oat location" is used. Thus, the user of the oat file assistant knows what the path to the oat file is. When the user calls MakeUpToDate, that tells the oat file assistant to generate the oat file if needed. The oat file assistant assumes the oat file can be written to if the user calls MakeUpToDate.
+

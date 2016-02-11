@@ -11,6 +11,14 @@ This won't work, we need the JValue result to be returned to the Java caller.
 
 I think we need to split MaybeDoOnStackReplacement to CheckIfCanDoOnStack and DoOnStackReplacement.
 
+636:0-637:84
+Thu Feb 11 22:45:15 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fde93cd0_3f34a392
+UUID: 9de920fd_daa274d4
+Bytes: 305
+My intention here was that if MaybeDoOnStackReplacement returns true, we abort the currently executing branch, roll back and re-attempt it using the reference interpreter.  It, presumably, would then ask the same question, get a "true" and take care of the transition.  Thus, the JValue here is discarded.
+
 File: runtime/interpreter/mterp/out/mterp_arm64.S
 
 2512:0-2512:4

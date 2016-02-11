@@ -9,6 +9,28 @@ UUID: bdb504dc_9d214788
 Bytes: 61
 Nit: take an HInstruction and do the cast to HCondition here?
 
+2986:9-2986:29
+Thu Feb 11 11:06:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bdb504dc_9d214788
+UUID: fde93cd0_df13bf78
+Bytes: 2
++1
+
+2995:6-2995:78
+Thu Feb 11 11:06:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7daf0c90_1e0c4d8e
+Bytes: 21
+Why this restriction?
+
+2997:26-2997:36
+Thu Feb 11 11:06:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1dc45060_dbf90b98
+Bytes: 175
+If the other input is 1 or -1, you're about to make it impossible to emit CSET or CSETM. Maybe you should introduce a new SelectVariant kCset? (And add additional test cases.)
+
 2998
 Thu Feb 11 10:51:20 2016 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -23,10 +45,34 @@ UUID: dde478f9_7e58ed29
 Bytes: 13
 `DCHECK_NE` ?
 
+3008:4-3008:10
+Thu Feb 11 11:06:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dde478f9_7e58ed29
+UUID: 1dc45060_1b1aa3b5
+Bytes: 56
+Only if you add operator<<(std::ostream&,SelectVariant).
+
+3020:28-3020:76
+Thu Feb 11 11:06:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5da5e8c5_62a998ed
+Bytes: 79
+I would prefer to require register if the constant is not in the range [-1, 1].
+
 3050:41-3050:48
 Thu Feb 11 10:51:20 2016 +0000
 Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1dc45060_fb4de7b4
 Bytes: 102
 Nit: There is an implicit `Operand` constructor for constants and registers, so you could remove this.
+
+File: test/570-checker-select/src/Main.java
+
+192:0-195:3
+Thu Feb 11 11:06:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7daf0c90_befc4189
+Bytes: 100
+There are 2 selects here. Should we add assertions for the second one? (And the same 4 times below.)
 

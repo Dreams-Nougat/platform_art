@@ -1,0 +1,38 @@
+Revision: f2372e0ec3e8d896b2c0dc6ba030737f917994d7
+Patch-set: 5
+File: compiler/optimizing/bounds_check_elimination.cc
+
+1169:4-1172:14
+Thu Feb 11 11:31:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5da5e8c5_a23d6077
+Bytes: 55
+for (const auto& entry : first_index_bounds_check_map_)
+
+1194:37-1194:71
+Thu Feb 11 11:31:37 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7daf0c90_de501550
+Bytes: 578
+Shouldn't we also check that all non-exceptional paths inevitably reach `user`?
+
+    x = a[0];
+    if (b) {
+      x += a[1];
+    } else {
+      // Does not throw is a.length == 1.
+    }
+
+However, for cases where the same range check is done on different branches, we should probably move it to an earlier point first:
+
+    int x = a[0];
+    // All paths reach a[1], so the range check should be
+    // pulled out of the `if` and replaced with deoptimize.
+    if (b) {
+      x += a[1];
+    } else {
+      x -= a[1];
+    }
+
+This is the case for android.opengl.Matrix.setRotateM().
+

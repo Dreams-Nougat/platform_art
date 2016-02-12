@@ -17,3 +17,15 @@ UUID: 1dd53033_657f61b4
 Bytes: 108
 Good point. Otherwise we might not force access-checks on it which could cause it to be accepted at runtime.
 
+4530:8-4530:27
+Fri Feb 12 23:09:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1dd53033_657f61b4
+UUID: 7df0ecdc_8d5036d9
+Bytes: 491
+Not so much concerned about the AC interpreter. I don't know what the right semantics are there. If you're concerned about the interpreter, then all of this is wrong already and we should not fail hard. That would be a change we should not make now, though...
+
+I was more worried that it would pass with the unresolved reference at compile time, setting the status to verified, and at runtime the class could be resolved (e.g., extradex etc).
+
+The current solution looks in line with that...
+

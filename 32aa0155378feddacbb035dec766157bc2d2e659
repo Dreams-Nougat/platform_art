@@ -9,6 +9,14 @@ UUID: 7daf0c90_5e7a4500
 Bytes: 66
 I think this is confusing, it's not related to HBasicBlock, is it?
 
+10:46-10:57
+Fri Feb 12 16:25:57 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7daf0c90_5e7a4500
+UUID: 9dc4c07e_8ed9673f
+Bytes: 115
+I needed a term different from loop-based so it is easier to talk about the two. Any suggestions for a better name?
+
 File: compiler/optimizing/bounds_check_elimination.cc
 
 506:61-506:67
@@ -25,6 +33,14 @@ UUID: fde93cd0_7fb1cb27
 Bytes: 310
 This is misleading. We have chosen kMaxLengthForAddingDeoptimize so that if the first and last indexes are valid, all indexes in between will also be valid. You should add DCHECK_LE(distance, kMaxLengthForAddingDeoptimize) and static_assert(kMaxLengthForAddingDeoptimize < std::numeric_limits<int32_t>::max()).
 
+1147:19-1147:74
+Fri Feb 12 16:25:57 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fde93cd0_7fb1cb27
+UUID: 1dd53033_79c272a7
+Bytes: 154
+Not sure why that is misleading, since the comment just explains that the deopt checks for the extremes and anything in between, but I added your asserts.
+
 1201:45-1201:83
 Fri Feb 12 14:07:57 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,10 +56,26 @@ I think these should be eliminated after we have added the deoptimization compar
 
 We would not add the a[i+2] bound check to the candidate list here even though we can obviously eliminate it after adding the deoptimization compares for a[i]...a[i+4].
 
+1201:45-1201:83
+Fri Feb 12 16:25:57 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fde93cd0_5fa32fd8
+UUID: 9dc4c07e_4ee34fed
+Bytes: 165
+Yes, I made a few tests too that suffered from this ordering problem. I have fixed this with making a working list, and adding them if at the end the range is wider.
+
 1218:67-1218:73
 Fri Feb 12 14:07:57 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ddb703a_03c9526f
 Bytes: 17
 likely or certain
+
+1218:67-1218:73
+Fri Feb 12 16:25:57 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ddb703a_03c9526f
+UUID: fdce9ca2_1efd8ad0
+Bytes: 4
+Done
 

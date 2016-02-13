@@ -1,0 +1,31 @@
+Revision: 870520c708fe59c29394040c66b8d2b8b362d124
+Patch-set: 1
+File: compiler/optimizing/intrinsics_mips.cc
+
+1983:0-2012:25
+Sat Feb 13 07:15:43 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5dbec8e3_d98cc6b6
+Bytes: 557
+Could be shorter and without branches.
+
+Note that except for the sign, an infinity is a single value (with maximum exponent and zero mantissa). Only NaNs have millions and billions of encodings. So you can compare directly.
+
+floats:
+
+  mfc1    TMP, in
+  li      AT, INF_FLOAT
+  xor     TMP, TMP, AT
+  sll     TMP, TMP, 1 # shift the sign out
+  sltiu   out, TMP, 1
+
+doubles:
+
+  MoveFromFpuHi TMP, in
+  li      AT, HIGH(INF_DOUBLE)
+  xor     TMP, TMP, AT
+  sll     TMP, TMP, 1 # shift the sign out
+  mfc1    AT, in
+  or      TMP, TMP, AT
+  sltiu   out, TMP, 1
+

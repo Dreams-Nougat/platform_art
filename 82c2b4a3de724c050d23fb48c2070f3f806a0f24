@@ -96,3 +96,25 @@ Here is my interpretation of the oat file assistant API:
 
 The user of the oat file assistant provides a dex location and oat location to use. If the user doesn't provide an oat location, "the standard oat location" is used. Thus, the user of the oat file assistant knows what the path to the oat file is. When the user calls MakeUpToDate, that tells the oat file assistant to generate the oat file if needed. The oat file assistant assumes the oat file can be written to if the user calls MakeUpToDate.
 
+325:0-329:3
+Mon Feb 15 18:43:34 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1dd0d03a_5e178967
+UUID: 1ddb703a_26681cf6
+Bytes: 581
+This interpretation leaks the implicit "standard location" to more places making difficult to maintain.
+
+Also, in practice, having write-permissions to the "standard location" is an exception (i.e. only system server will be able to generate something there and not the rest of the apps, and that's rarely gonna be needed). 
+
+I don't really see why we should keep this assumption around.
+
+I'm ok to have "oat_location != nullptr" test here instead of OatFileAssistant (to make some progress) but on the long run I think relying on the implicit location adds unnecessary complexity.
+
+325:0-329:3
+Mon Feb 15 18:43:34 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9dc4c07e_82aca0ff
+UUID: 1ddb703a_66622416
+Bytes: 51
+We don't make any promises for the PathClassLoader.
+

@@ -9,6 +9,13 @@ UUID: 9d85a05b_4596ca02
 Bytes: 16
 ifdef __linux__?
 
+53
+Wed Feb 17 17:14:51 2016 +0000
+Author: Andrew Lutomirski <1090553@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5d8fa87c_fbcafa92
+Bytes: 359
+I'm a bit puzzled by this comment.  Sharing a slot between multiple ART runtime instances sounds entirely sensible, but sharing a slot between multiple kernel threads is possibly dangerous is some other library allocates a slot on just one thread.  If you can use __thread here, it would be slightly safer.  Admittedly, this is unlikely to matter in practice.
+
 66:0-66:31
 Wed Feb 17 06:21:00 2016 +0000
 Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +23,30 @@ UUID: 5d8fa87c_7874d00f
 Bytes: 88
 note that you've set this to 0 (unlike bionic's 1). not sure whether that's intentional.
 
+66:0-66:31
+Wed Feb 17 17:14:51 2016 +0000
+Author: Andrew Lutomirski <1090553@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5d8fa87c_7874d00f
+UUID: 9d85a05b_e0bd6ce1
+Bytes: 395
+What is the actual intended size of the data structure pointed to by the descriptor?  If you want to have an unlimited size (which, if you port to 64-bit, you'll have no choice about), set limit_in_pages to 1 and limit to 0xFFFFF.  If you want to clamp it to, say, sizeof(Thread), then doing that is fine, too.
+
+(If you port to 64-bit, just use arch_prctl(ARCH_SET_GS, ...) and be done with it.)
+
 100
 Wed Feb 17 06:21:00 2016 +0000
 Author: Elliott Hughes <1003224@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dd255844_7c9eed2d
 Bytes: 101
 comment that you don't need a lock because you know this happens while there's still only one thread?
+
+100
+Wed Feb 17 17:14:51 2016 +0000
+Author: Andrew Lutomirski <1090553@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dd255844_7c9eed2d
+UUID: dd7ab832_344ad126
+Bytes: 65
+If gdt_entry_number were __thread, then this would be a nonissue.
 
 104
 Wed Feb 17 06:21:00 2016 +0000

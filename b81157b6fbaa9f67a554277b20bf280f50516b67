@@ -9,6 +9,14 @@ UUID: 9d85a05b_4596ca02
 Bytes: 16
 ifdef __linux__?
 
+44:1-44:17
+Wed Feb 17 17:29:23 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9d85a05b_4596ca02
+UUID: 5d8fa87c_1bb7be20
+Bytes: 74
+I wanted it to be consistent with the check below, which is for __APPLE__.
+
 53
 Wed Feb 17 17:14:51 2016 +0000
 Author: Andrew Lutomirski <1090553@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,6 +40,16 @@ Bytes: 395
 What is the actual intended size of the data structure pointed to by the descriptor?  If you want to have an unlimited size (which, if you port to 64-bit, you'll have no choice about), set limit_in_pages to 1 and limit to 0xFFFFF.  If you want to clamp it to, say, sizeof(Thread), then doing that is fine, too.
 
 (If you port to 64-bit, just use arch_prctl(ARCH_SET_GS, ...) and be done with it.)
+
+66:0-66:31
+Wed Feb 17 17:29:23 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9d85a05b_e0bd6ce1
+UUID: 5d8fa87c_7bdfea51
+Bytes: 134
+Yeah, I can clamp it to the Thread size.
+
+(For x86-64, see the corresponding thread_x86_64.cc, where we exactly use ARCH_SET_GS :-) ).
 
 100
 Wed Feb 17 06:21:00 2016 +0000
@@ -58,4 +76,14 @@ is it too late for me to be reviewing code, or is there a subtle reason why L100
   gdt_entry.entry_number = gdt_entry_number;
 
 ?
+
+104
+Wed Feb 17 17:29:23 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3d76744b_75c8571f
+UUID: 3d76744b_78228e8c
+Bytes: 309
+It's semantically equivalent. I just like to be expressive about the -1 literal as an input to the syscall ('cause I hate missing inline documentation, I don't like to have to look up magic values).
+
+If you strongly prefer the simpler code (which I, btw, would hope to be output by the compiler), I'll change.
 

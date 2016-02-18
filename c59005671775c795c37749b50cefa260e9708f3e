@@ -9,6 +9,14 @@ UUID: 1dc610da_a52f5e86
 Bytes: 82
 can you add a comment why you don't need access checks and why is it in dex cache.
 
+389:63-390:91
+Thu Feb 18 14:41:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1dc610da_a52f5e86
+UUID: fdc4dcd3_0473d6b8
+Bytes: 4
+Done
+
 424:7-424:29
 Thu Feb 18 14:26:25 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,6 +27,14 @@ all_targets_inlined and one_target_inlined
 instead of
 one_target_not_inlined and ont_target_inlined
 
+424:7-424:29
+Thu Feb 18 14:41:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7dd1cc8b_e85bf32d
+UUID: 3dcbd4e3_864d0a6c
+Bytes: 4
+Done
+
 455:6-456:74
 Thu Feb 18 14:26:25 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -26,12 +42,30 @@ UUID: ddbf1831_83d85ef5
 Bytes: 120
 Would be interested to be able to quantify if this (i.e. deoptimizing instead of invoking) is an actual optimization :).
 
+455:6-456:74
+Thu Feb 18 14:41:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ddbf1831_83d85ef5
+UUID: 1d9d30d4_0d1f7141
+Bytes: 141
+It will: invoking trash your registers and can have all side effects.
+
+If we do deoptimize, the next compilation may not HDeoptimize anymore.
+
 467:48-467:71
 Thu Feb 18 14:26:25 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1d9d30d4_6d0555f3
 Bytes: 60
 don't you work with a copy here? if not, I think you should.
+
+467:48-467:71
+Thu Feb 18 14:41:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d9d30d4_6d0555f3
+UUID: fdabfced_4c6dffce
+Bytes: 79
+No, we shouldn't copy, as it contains gc roots that need to be known by the GC.
 
 File: compiler/optimizing/inliner.h
 
@@ -42,6 +76,14 @@ UUID: fdc4dcd3_847fc687
 Bytes: 11
 extra space
 
+170:26-170:27
+Thu Feb 18 14:41:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fdc4dcd3_847fc687
+UUID: fdc4dcd3_a448025c
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.h
 
 982:26-982:37
@@ -50,4 +92,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ddbf1831_03c58e04
 Bytes: 18
 why "ForInlining"?
+
+982:26-982:37
+Thu Feb 18 14:41:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ddbf1831_03c58e04
+UUID: 1d9d30d4_4d197959
+Bytes: 105
+To make it specific. It's the only user, and it leaves the graph in a broken state that fits the inliner.
 

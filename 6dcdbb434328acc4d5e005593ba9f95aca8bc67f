@@ -9,6 +9,14 @@ UUID: fde93cd0_ffa79b7d
 Bytes: 61
 Do not use implicit conversion to bool, use explicit `!= 0u`.
 
+1619:8-1619:50
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fde93cd0_ffa79b7d
+UUID: dd9478c3_4173d6b7
+Bytes: 4
+Done
+
 File: compiler/optimizing/scheduler.cc
 
 97:7-97:15
@@ -18,12 +26,28 @@ UUID: 9d9da072_54396289
 Bytes: 17
 const auto& entry
 
+97:7-97:15
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9d9da072_54396289
+UUID: 9d6840a0_3f9eef2c
+Bytes: 30
+Done here and in other places.
+
 112:13-112:14
 Tue Feb 16 10:29:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fde93cd0_df981f31
 Bytes: 9
 Add "\n".
+
+112:13-112:14
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fde93cd0_df981f31
+UUID: 9d7f604c_6aab4b4e
+Bytes: 4
+Done
 
 185:58-185:59
 Tue Feb 16 10:29:19 2016 +0000
@@ -32,12 +56,28 @@ UUID: 9d9da072_94690a69
 Bytes: 21
 kArenaAllocScheduling
 
+185:58-185:59
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9d9da072_94690a69
+UUID: 3d9034ca_01446c21
+Bytes: 4
+Done
+
 197:9-197:30
 Tue Feb 16 10:29:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1ddb703a_60dbec97
 Bytes: 19
 !candidates.empty()
+
+197:9-197:30
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ddb703a_60dbec97
+UUID: bd7c2458_88117b73
+Bytes: 4
+Done
 
 230:0-233:3
 Tue Feb 16 10:29:19 2016 +0000
@@ -46,12 +86,30 @@ UUID: 1dc45060_9e8ea1ea
 Bytes: 153
 The delay depends on the successor delays, so I think this loop needs to iterate in reverse order instead of the pseudo-random order provided by HashMap.
 
+230:0-233:3
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1dc45060_9e8ea1ea
+UUID: bd7c2458_e8b687b9
+Bytes: 370
+Here the order does not actually matter, because the delay is computed recursively by looking at successors. (See early exit in `HScheduler::CalculateDelay()`.)
+
+This part of the code is imperfect, and relates to my comment about scheduling in reverse order. Ideally we could schedule in reverse order and compute the delay as we go 'up' the graph. I am looking at this.
+
 251
 Tue Feb 16 10:29:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3de034e0_4413623f
 Bytes: 94
 The way this function is written, I'd almost expect `switch (instruction->GetKind()) { ... }`.
+
+251
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3de034e0_4413623f
+UUID: 7d862c98_2900754d
+Bytes: 168
+Yes, we could do that. Do you think it would generate better code? I tried to avoid checking every single kind by checking groups of instructions (unary, binary, etc.).
 
 File: compiler/optimizing/scheduler.h
 
@@ -61,6 +119,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9d9da072_f474165f
 Bytes: 26
 Add kArenaAllocScheduling.
+
+36:42-36:57
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9d9da072_f474165f
+UUID: 3d9034ca_c160c4af
+Bytes: 4
+Done
 
 76:2-76:50
 Tue Feb 16 10:29:19 2016 +0000
@@ -76,6 +142,18 @@ UUID: 1ddb703a_4088b0a1
 Bytes: 70
 Why do you need this indirection? It's just storing a SchedulingNode*.
 
+119:6-119:19
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ddb703a_4088b0a1
+UUID: fd993cfa_e23ea2a2
+Bytes: 319
+I asked the same question.
+In the original code this structure was also holding pipeline bypass information, which was used for scheduling.
+It represents additional info about some fast paths forwarding results from a specific type of instruction to another specific type of instruction.
+
+I'll see if I can remove this.
+
 235:26-235:85
 Tue Feb 16 10:29:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -83,12 +161,30 @@ UUID: 7daf0c90_277bc49e
 Bytes: 93
 This API forces the selector to go through the whole nodes array. This is not very efficient.
 
+235:26-235:85
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7daf0c90_277bc49e
+UUID: dd9478c3_816dded1
+Bytes: 166
+It only goes through the list of candidates, not through all the nodes in the graph.
+
+We could do better by keeping the list of candidates sorted. I will have a look.
+
 244:4-244:58
 Tue Feb 16 10:29:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bdb504dc_3d611bb1
 Bytes: 28
 nodes[index] = nodes.back();
+
+244:4-244:58
+Thu Feb 18 15:08:23 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bdb504dc_3d611bb1
+UUID: dd9478c3_a1481a5c
+Bytes: 4
+Done
 
 File: compiler/optimizing/scheduler_arm64.h
 

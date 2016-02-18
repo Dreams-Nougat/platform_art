@@ -17,3 +17,38 @@ UUID: fd7f7c1f_55767ea9
 Bytes: 101
 There is an AllowThreadSuspension below, we should not hold the lock for the whole function duration.
 
+2865:0-2865:77
+Thu Feb 18 09:37:14 2016 +0000
+Author: Li Han <1096239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7d8c6c87_b07ed8f0
+UUID: ddde385a_d401329e
+Bytes: 378
+It will make current thread waitting on the lock.
+But if we do not acquire the lock, the current thread will modify the class data during the GC thread visiting the class.
+
+Or is there any way could guarantee this function execute complete always before GC start ?
+
+In other words,should we ensure that the class data could not be modified during GC visiting the class ?
+
+thanks
+
+2865:0-2865:77
+Thu Feb 18 09:37:14 2016 +0000
+Author: Li Han <1096239@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd7f7c1f_55767ea9
+UUID: ddde385a_d43372aa
+Bytes: 195
+we did not hold the lock for the whole function.
+the lock is in a struct.
+like this:
+LoadClassMembers() 
+{
+  {
+   ...
+   classlinker_classes_lock;
+   ...
+   }
+
+   self->AllowThreadSuspension();
+}
+

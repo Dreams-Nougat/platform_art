@@ -17,3 +17,24 @@ UUID: 0234edda_cca6cfd6
 Bytes: 48
 Structured which way? Looking at whether we JIT?
 
+560:8-560:36
+Thu Feb 18 16:45:40 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0234edda_cca6cfd6
+UUID: 4225059f_3607d86b
+Bytes: 467
+I mean: the code that's trying to be inlined has not been touched before. Example
+
+ if (TRUE DURING PROFILING) {
+   A.a();
+ } else {
+   B.b();
+ }
+
+Assuming the second call-site is definite (final, static, w/e), it is not a given that B has been verified when you inline.
+
+(I make the distinction to A as that would have been executed and thus initialized and thus verified.)
+
+
+I was asking what you see in practice: how much code is structured this way and bails out?
+

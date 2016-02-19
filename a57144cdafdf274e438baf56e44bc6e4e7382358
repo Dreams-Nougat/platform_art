@@ -18,6 +18,14 @@ Bytes: 118
 I don't think that can actually happen.
 And in general, can we end up having an oat and an odex file at the same time?
 
+150:0-152:5
+Fri Feb 19 00:40:51 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02d06de3_6c9b3b90
+UUID: 22aad153_45b3aa35
+Bytes: 293
+You can have both an oat and an odex file if the app was a pre-compiled system app that has since received an update. I think this code could be restructured to make it more clear what the distinction is between kOatIsExtractOnly and kNoDexOptNeeded; but I need to think about it a little bit.
+
 File: runtime/oat_file_assistant.h
 
 75:21-75:66
@@ -34,6 +42,16 @@ Parent: 021f8d56_3d09f30b
 UUID: 223f31ea_1d9b9390
 Bytes: 17
 yes, go/ag/203650
+
+75:21-75:66
+Fri Feb 19 00:40:51 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 223f31ea_1d9b9390
+UUID: 62b849a7_6736f2e6
+Bytes: 133
+typo? Do you mean go/aog/203660?
+
+Partly I was asking to get a better sense of who is doing something different based on this result.
 
 76:5-76:26
 Thu Feb 18 23:29:55 2016 +0000
@@ -53,4 +71,21 @@ Bytes: 525
 I should move some of the comments from the cc file here. From the runtime perspective an ExtractOnly oat file is UpToDate as there is no need for relocation of compilation. That's why I didn't bother adding it to the OatStatus enum.
 
 The status is only useful for the caller of DexOptNeeded as a refinement of UpToDate. The caller can decide if it wants to do a "proper" compilation or not. This unlocks the possibility  to compile apks even if we only extracted them before. See the referred bug for when this is desirable.
+
+76:5-76:26
+Fri Feb 19 00:40:51 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22681102_3596706a
+UUID: 02a94d5f_c4223e8b
+Bytes: 687
+So it is a refinement of UpToDate into two possibilities:
+1. ExtractOnly UpToDate
+2. Compiled UpToDate
+
+Could we change the names so it's clear the two options are disjoint? Perhaps:
+
+kNoDexOptNeeded for (2)
+kDexOptOptional for (1)
+
+My understanding is that ExtractOnly was added so that the package manager would not compile things in this state, but the bug suggests you want it to compile in this state. Can you clarify where in the package manager it is decided to treat ExtractOnly as not needing compilation, and where it is decided to treat ExtractOnly as needing compilation? That is, if you get kDexOptOptional, who decides when to run dexopt and how do they make that decision?
 

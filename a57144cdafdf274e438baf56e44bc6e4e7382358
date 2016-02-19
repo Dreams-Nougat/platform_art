@@ -9,6 +9,15 @@ UUID: 6243e950_186ac97b
 Bytes: 130
 What if the odex file is compiled and up to date, but the oat file is extract only? Do you still want to return kOatIsExtractOnly?
 
+150:0-152:5
+Fri Feb 19 00:11:41 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6243e950_186ac97b
+UUID: 02d06de3_6c9b3b90
+Bytes: 118
+I don't think that can actually happen.
+And in general, can we end up having an oat and an odex file at the same time?
+
 File: runtime/oat_file_assistant.h
 
 75:21-75:66
@@ -18,6 +27,14 @@ UUID: 021f8d56_3d09f30b
 Bytes: 51
 Presumably there is a corresponding libcore change?
 
+75:21-75:66
+Fri Feb 19 00:11:41 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 021f8d56_3d09f30b
+UUID: 223f31ea_1d9b9390
+Bytes: 17
+yes, go/ag/203650
+
 76:5-76:26
 Thu Feb 18 23:29:55 2016 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -26,4 +43,14 @@ Bytes: 196
 kOatIsExtractOnly makes sense for an individual oat file. I would expect to see this as an entry in the OatStatus enum.
 
 How do you interpret kOatIsExtractOnly as an overall 'DexOptNeeded' status?
+
+76:5-76:26
+Fri Feb 19 00:11:41 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c23655de_7881d925
+UUID: 22681102_3596706a
+Bytes: 525
+I should move some of the comments from the cc file here. From the runtime perspective an ExtractOnly oat file is UpToDate as there is no need for relocation of compilation. That's why I didn't bother adding it to the OatStatus enum.
+
+The status is only useful for the caller of DexOptNeeded as a refinement of UpToDate. The caller can decide if it wants to do a "proper" compilation or not. This unlocks the possibility  to compile apks even if we only extracted them before. See the referred bug for when this is desirable.
 

@@ -26,6 +26,16 @@ UUID: 22aad153_45b3aa35
 Bytes: 293
 You can have both an oat and an odex file if the app was a pre-compiled system app that has since received an update. I think this code could be restructured to make it more clear what the distinction is between kOatIsExtractOnly and kNoDexOptNeeded; but I need to think about it a little bit.
 
+150:0-152:5
+Fri Feb 19 12:05:06 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22aad153_45b3aa35
+UUID: 428185c7_3689f8e2
+Bytes: 232
+If the app was updated then we should not even look at its precompiled odex file. That would be wrong since it's another version. If that happens that's a bug we need to fix.
+
+I will rename the flags to better express the intention.
+
 File: runtime/oat_file_assistant.h
 
 75:21-75:66
@@ -52,6 +62,14 @@ Bytes: 133
 typo? Do you mean go/aog/203660?
 
 Partly I was asking to get a better sense of who is doing something different based on this result.
+
+75:21-75:66
+Fri Feb 19 12:05:06 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62b849a7_6736f2e6
+UUID: 421b45b8_e64f1eab
+Bytes: 16
+see go/ag/868994
 
 76:5-76:26
 Thu Feb 18 23:29:55 2016 +0000
@@ -88,4 +106,12 @@ kNoDexOptNeeded for (2)
 kDexOptOptional for (1)
 
 My understanding is that ExtractOnly was added so that the package manager would not compile things in this state, but the bug suggests you want it to compile in this state. Can you clarify where in the package manager it is decided to treat ExtractOnly as not needing compilation, and where it is decided to treat ExtractOnly as needing compilation? That is, if you get kDexOptOptional, who decides when to run dexopt and how do they make that decision?
+
+76:5-76:26
+Fri Feb 19 12:05:06 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02a94d5f_c4223e8b
+UUID: 6224c9f3_4741ce82
+Bytes: 311
+ExtractOnly is really a "quirk" to improve performance. It kinda messes previous runtime assumptions. An extract-only apk is up to date from the runtime perspective but depending on the use case the package manager might consider that's not good enough. I will re-name the flags to better capture the new heeds.
 

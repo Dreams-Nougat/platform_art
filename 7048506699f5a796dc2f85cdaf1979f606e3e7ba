@@ -19,6 +19,18 @@ Yes, if the original dex files have been stripped from the apk, which happens fo
 
 Maybe add another possible status result for this case? The idea is that the package manager should not try to compile, even though the oat file is out of date, because compilation will fail without access to the original dex files.
 
+172:0-173:71
+Fri Feb 19 19:34:21 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2301515_6b8931e2
+UUID: a2b881d5_79a567cb
+Bytes: 284
+I was thinking in adding a new status code but I still don't see the case when this can happen.
+
+If we have a pre-compiled app with its dex stripped then it's odex file will either be up to date (if compiled pic) or need relocation. Both paths are covered above.
+
+Am I missing a case?
+
 179:40-179:55
 Fri Feb 19 18:45:57 2016 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,4 +44,16 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 02a94d5f_4acad793
 Bytes: 239
 How does this relate to go/aog/200364? What if an application uses a DexClassLoader to try and explicitly aot-compile their dex file, but there exists an extract-only dex file. Don't we want to do compilation in that case via MakeUpToDate?
+
+180:4-180:38
+Fri Feb 19 19:34:21 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02a94d5f_4acad793
+UUID: 62a769c0_0f96e569
+Bytes: 465
+We don't extract secondary dex files so we should not hit that case.
+
+However, you are right that we need more tweaking in the other CL. That was in my plans.
+
+We need tweaking mostly because we do plan to profile guide compile the secondary dex file. The simple strategy I'm planning to implement is that as soon as you call DexClassLoader we'll gonna fully compile the apk in case it wasn't done before. I'm still thinking if that's actually the best thing to do.
 

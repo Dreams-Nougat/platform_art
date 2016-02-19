@@ -11,12 +11,28 @@ I don't think the purpose of that method is to handle instrumentation/debugging.
 
 I think a better place is in the callers, at least the ones that change entrypoint during execution.
 
+2579:25-2579:43
+Fri Feb 19 11:48:38 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d9d30d4_8d6081ae
+UUID: c2d2d5e6_3bb80b3c
+Bytes: 55
+I left this method unchanged and updated a few callers.
+
 2588:27-2588:40
 Thu Feb 18 15:01:26 2016 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3da2f411_cef56336
 Bytes: 34
 ShouldUseInterpreterEntrypoint now
+
+2588:27-2588:40
+Fri Feb 19 11:48:38 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3da2f411_cef56336
+UUID: e2a3597e_e992b1cf
+Bytes: 19
+Removed the change.
 
 2643:0-2646:32
 Thu Feb 18 15:49:54 2016 +0000
@@ -27,6 +43,14 @@ Is that enough? Do we guarantee compiled code in the oat file will have their de
 
 How about we just make this return false, always? I know it will make aot compiled code with --debuggable useless.
 
+2643:0-2646:32
+Fri Feb 19 11:48:38 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3dcbd4e3_e63e7ea2
+UUID: 02a94d5f_47cad093
+Bytes: 113
+I added a IsInBootImageOatFIle() to test directly if some code is in boot image oat file. That should be precise.
+
 File: runtime/debugger.cc
 
 574:6-574:35
@@ -36,10 +60,26 @@ UUID: 9dda00a8_49bfa182
 Bytes: 42
 Please add a comment describing the class.
 
+574:6-574:35
+Fri Feb 19 11:48:38 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9dda00a8_49bfa182
+UUID: e2ca7938_d118c409
+Bytes: 4
+Done
+
 634:0-634:37
 Thu Feb 18 15:49:54 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1d9d30d4_cd68c986
 Bytes: 26
 Why do you need this flag?
+
+634:0-634:37
+Fri Feb 19 11:48:38 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d9d30d4_cd68c986
+UUID: c2d2d5e6_1bad07cc
+Bytes: 82
+A debugger can be attached multiple times so I added this flag to do it just once.
 

@@ -37,3 +37,35 @@ UUID: 22aad153_7968cfc4
 Bytes: 105
 There is a version of libm for x86 with improved speed.  Not sure about improved accuracy.  Added Serguei
 
+1265:4-1297:61
+Sat Feb 20 00:03:10 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22aad153_7968cfc4
+UUID: 62a5a9c6_424b3429
+Bytes: 1999
+Here's my impression of the state of the world:
+
+- Static evaluation here would use libm.
+
+- The actual Math.java implementation in libcore also bottoms out at (a possibly different) libm. We often use intrinsics that may have better understood properties.
+
+- We use libm even when the C specification refers to the "current rounding mode", and the Java one does not.   I presume that if you visibly change rounding modes in JNI code, you're on your own?
+
+- The Java spec mostly has accuracy specifications, typically "correctly rounded" for the easy stuff and "within 1 ulp" for the harder stuff.
+
+- The C++ spec refers to the C spec.
+
+- The C11 spec says (N1570, 5.2.4.2.2): "The accuracy of the floating-point operations (+, -, *, /) and of the library functions in <math.h> and <complex.h> that return floating-point results is implementation-defined ... The implementation may state that the accuracy is unknown."
+
+- C11 allows intermediate results to be evaluated to higher precision unless FLT_EVAL_METHOD (float.h) is 0, which seems to hold for gcc on my Linux box, with c11 and clang, but not c++11.  C++ should provide it in <cfloat>.
+
+- C11 Annex F states that if __STDC_IEC_559__ is defined then IEEE guarantees apply.  This probably doesn't technically apply to C++.  It seems to be defined for the old gcc on my linux box, but not clang
+
+- The IEEE standard requires correct rounding for rational operations and square roots, and recommends it for basic transcendental functions.  Aside from the important problem that the latter is only a recommendation (which I'm not sure anyone implements?), this seems stronger than Java.
+
+Tentative conclusion: This is safe for non-transcendental (possibly only in c11 code), and if __STDC_IEC_559__ is defined.  We may also need to check FLT_EVAL_METHOD == 0 in some cases.
+
+For transcendentals, it doesn't look to me like anything is guaranteed, but we might have a sufficiently high quality library everyplace to make it work.
+
+Other theories?
+

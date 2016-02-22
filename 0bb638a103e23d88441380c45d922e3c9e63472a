@@ -1,0 +1,29 @@
+Revision: 0bb638a103e23d88441380c45d922e3c9e63472a
+Patch-set: 5
+File: runtime/memory_region.h
+
+141:21-141:33
+Mon Feb 22 13:33:25 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22dbb13a_3d62efb6
+Bytes: 108
+For length==32, the behavior is undefined per 5.8/1 (C++11). And I suspect we want to support this use case.
+
+File: runtime/stack_map.cc
+
+72:25-72:39
+Mon Feb 22 13:33:25 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42c98578_9695acbb
+Bytes: 39
+Undefined behavior for bit_count == 32.
+
+File: runtime/stack_map.h
+
+995:4-995:73
+Mon Feb 22 13:33:25 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42c98578_96276c93
+Bytes: 138
+Either use memcpy() or `static_assert(alignof(StackMapEncoding) == 1, "...")` to make sure we don't hit SIGBUS/BUS_ADRALN on ARM and MIPS.
+

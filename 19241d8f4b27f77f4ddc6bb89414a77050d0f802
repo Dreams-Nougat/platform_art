@@ -36,3 +36,11 @@ Sorry can you be more specific? We need to install the entry-exit stub as wrappe
 
 I also have a question on Instrumentation::UpdateMethodsCode(), which is called by jit to install jitted code in method. However when entry_exit_stubs_installed_ is true, GetQuickInstrumentationEntryPoint() is installed, not jitted code. The entry-exit stub will still call GetQuickCodeFor() to get the oat code to call, instead of the jitted code.
 
+155:0-155:63
+Mon Feb 22 09:46:00 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a2d5e1d0_97e1cce6
+UUID: c283b51b_8a456b91
+Bytes: 158
+How about we kill those entry-exit stubs and just rely on the interpreter? With mterp we should get enough performance benefits that I think we can afford it.
+

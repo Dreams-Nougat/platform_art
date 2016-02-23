@@ -24,6 +24,14 @@ UUID: a2b881d5_9c2ea9d5
 Bytes: 153
 As Nicolas said, I think you need to do this every time a debugger connects. But you should also restore the compiled code when the debugger disconnects.
 
+630:6-630:34
+Tue Feb 23 21:44:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a2b881d5_9c2ea9d5
+UUID: e2b0b90b_d5d37c4e
+Bytes: 89
+Got rid of the flag. For restoring the code, please see my response to Nicolas's comment.
+
 File: runtime/instrumentation.cc
 
 111:9-111:57
@@ -32,6 +40,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e2bd19cb_56079269
 Bytes: 12
 One per line
+
+111:9-111:57
+Tue Feb 23 21:44:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2bd19cb_56079269
+UUID: c2981592_0cdaf8eb
+Bytes: 4
+Done
 
 155:0-155:63
 Fri Feb 19 12:18:30 2016 +0000
@@ -108,4 +124,12 @@ Bytes: 283
 Not sure about this either. When the debugger is about to disconnect, it undeoptimizes every method where a breakpoint is set (see Instrumentation::DisableDeoptimization).
 
 So here, NeedDebugVersionForBootImageCode would still return true and you would not restore the compiled code.
+
+791:2-793:7
+Tue Feb 23 21:44:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2bd19cb_760c8e8b
+UUID: 82bb7df1_334d1869
+Bytes: 110
+Good point. Still it seems to me fine to leave some entry points unrestored. We may optimize such cases later.
 

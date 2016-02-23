@@ -17,7 +17,21 @@ UUID: 82dc5dfe_76c4685e
 Bytes: 4
 Done
 
+630:6-630:34
+Tue Feb 23 08:45:24 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2b881d5_9c2ea9d5
+Bytes: 153
+As Nicolas said, I think you need to do this every time a debugger connects. But you should also restore the compiled code when the debugger disconnects.
+
 File: runtime/instrumentation.cc
+
+111:9-111:57
+Tue Feb 23 08:45:24 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2bd19cb_56079269
+Bytes: 12
+One per line
 
 155:0-155:63
 Fri Feb 19 12:18:30 2016 +0000
@@ -84,4 +98,14 @@ Parent: 82affd8e_d8958d68
 UUID: c2981592_5171bead
 Bytes: 152
 For the purpose of debugging framework code. NeedDebugVersionForBootImageCode() basically detects situations when boot image oat code shouldn't be used.
+
+791:2-793:7
+Tue Feb 23 08:45:24 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2981592_5171bead
+UUID: e2bd19cb_760c8e8b
+Bytes: 283
+Not sure about this either. When the debugger is about to disconnect, it undeoptimizes every method where a breakpoint is set (see Instrumentation::DisableDeoptimization).
+
+So here, NeedDebugVersionForBootImageCode would still return true and you would not restore the compiled code.
 

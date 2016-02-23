@@ -9,6 +9,14 @@ UUID: c2981592_694bb629
 Bytes: 62
 Add a short comment on how we pick the best region in English?
 
+64:2-64:3
+Tue Feb 23 20:33:51 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2981592_694bb629
+UUID: 02e4ed24_b690e5ca
+Bytes: 4
+Done
+
 File: runtime/gc/collector/immune_spaces_test.cc
 
 100
@@ -18,6 +26,14 @@ UUID: e2def959_b755839b
 Bytes: 30
 Explain oat_begin and oat_end?
 
+100
+Tue Feb 23 20:33:51 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2def959_b755839b
+UUID: 82bb7df1_50b9a242
+Bytes: 4
+Done
+
 104:33-105:59
 Tue Feb 23 20:05:06 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -26,6 +42,16 @@ Bytes: 182
 Having both oat_offset/oat_size and oat_begin/oat_end seems to have a bit of redundancy and could causes some potential consistency issue? 
 
 Is it sufficient to have only either one?
+
+104:33-105:59
+Tue Feb 23 20:33:51 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_b42fd9d1
+UUID: 62a5a9c6_5cb1cc0c
+Bytes: 217
+Currently we use the oat_offset + oat_size to reserve memory to ensure there is no overlapping maps.
+i.e. [image1][reserve][image1oat]
+then place [image2oat] in the reserve section by passing in oat_begin and oat_end.
 
 186:2-186:69
 Tue Feb 23 20:05:06 2016 +0000
@@ -38,12 +64,28 @@ If we don't include the oat if there's no image after, then could we miss includ
 
 Do we have a test for a dummy zygote/non-moving space?
 
+186:2-186:69
+Tue Feb 23 20:33:51 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82bb7df1_b09d9e30
+UUID: c2981592_e90586a9
+Bytes: 88
+That gets included, it is tested when we add the space beginning at GetOatFileEnd below.
+
 231:10-231:46
 Tue Feb 23 20:05:06 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 22d0113b_d2d8256b
 Bytes: 173
 Can we also describe the intended layout in terms of Image1, Image2, Image3, Image1Oat, and Image2Oat in a similar way? That would make it easier to read the following code.
+
+231:10-231:46
+Tue Feb 23 20:33:51 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22d0113b_d2d8256b
+UUID: c2c1f56d_c27f243b
+Bytes: 249
+Its hard to do that since GetImageEnd goes through image header. So the image spaces can not have a faked Begin(). I would have to reserve a large block of memory then manually create all the images by unmapping and remapping at the right addresses.
 
 246:37-246:51
 Tue Feb 23 20:05:06 2016 +0000
@@ -52,10 +94,26 @@ UUID: 62a5a9c6_8116d1da
 Bytes: 30
 Should this be kImage2OatSize?
 
+246:37-246:51
+Tue Feb 23 20:33:51 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62a5a9c6_8116d1da
+UUID: 62be89e4_9425f58b
+Bytes: 4
+Done
+
 258:7-258:11
 Tue Feb 23 20:05:06 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 62a5a9c6_21ca6593
 Bytes: 5
 last?
+
+258:7-258:11
+Tue Feb 23 20:33:51 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62a5a9c6_21ca6593
+UUID: 22d0113b_8dd5ec01
+Bytes: 4
+Done
 

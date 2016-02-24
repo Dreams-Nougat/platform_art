@@ -229,3 +229,31 @@ UUID: 22dbb13a_062fa068
 Bytes: 245
 Right.  I would keep DCHECKs for ParameterValue instructions, but I think we should switch to DCHECK-DAGs for other instructions, as we do not want to enforce a specific order here (and dependencies introduced by use-def information are enough).
 
+39:6-39:11
+Wed Feb 24 15:27:52 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22dbb13a_062fa068
+UUID: 82bb7df1_71d02575
+Bytes: 776
+I think CHECK is better below as well. There is no need for CHECK-DAG, since the order is guaranteed thanks to data dependencies and arguments order.
+
+CHECK-DAG is used if we are unsure of the order the instructions appear. For example in
+
+    int foo(int x, int y) {
+      int a = x + y;
+      int b = x - y;
+      int res = a * b;
+      return res;
+    }
+
+we would need CHECK-DAG because `a` is not necessarily computed before `b`.
+
+    CHECK       <<y>>        ParameterValue
+    CHECK       <<x>>        ParameterValue
+    CHECK-DAG   <<a:i\d+>>   Add [<<x>>,<<y>>]
+    CHECK-DAG   <<b:i\d+>>   Sub [<<x>>,<<y>>]
+    CHECK       <<res:i\d+>> Mul [<<a>>,<<b>>]
+    CHECK                    Return <<res>>
+
+Or correct me if I am wrong. Maybe David can help us conclude here.
+

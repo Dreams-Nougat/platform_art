@@ -9,6 +9,14 @@ UUID: 62be89e4_e97fb7eb
 Bytes: 27
 prototype is bitCount(long)
 
+10:30-10:33
+Wed Feb 24 20:29:15 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_e97fb7eb
+UUID: c2981592_ddf27cbe
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_mips64.cc
 
 519
@@ -18,12 +26,37 @@ UUID: 22d0113b_46de92f9
 Bytes: 71
 perhaps a comment, even as simple as saying this is magic bit twiddling
 
+519
+Wed Feb 24 20:29:15 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22d0113b_46de92f9
+UUID: c2c1f56d_f4553f9a
+Bytes: 631
+I can cite the URL which has the algorithm or I can add a comment which expresses the algorithm:
+
+"A generalization of the best bit counting method to integers of bit-widths upto 128 (parameterized by type T) is this:
+
+v = v - ((v >> 1) & (T)~(T)0/3);                           // temp
+v = (v & (T)~(T)0/15*3) + ((v >> 2) & (T)~(T)0/15*3);      // temp
+v = (v + (v >> 4)) & (T)~(T)0/255*15;                      // temp
+c = (T)(v * ((T)~(T)0/255)) >> (sizeof(T) - 1) * CHAR_BIT; // count"
+
+Does this give enough information? I haven't sifted through the algorithm and figured out what it "means". I basically did a cut'n'paste job.
+
 565
 Wed Feb 24 17:35:12 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 82bb7df1_546e2f02
 Bytes: 6
 (long)
+
+565
+Wed Feb 24 20:29:15 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82bb7df1_546e2f02
+UUID: e2def959_5df8b990
+Bytes: 4
+Done
 
 File: compiler/utils/mips64/assembler_mips64.cc
 
@@ -33,4 +66,12 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e2def959_5ddf991d
 Bytes: 31
 tests for the new instructions?
+
+211
+Wed Feb 24 20:29:15 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2def959_5ddf991d
+UUID: c2981592_58f8ba90
+Bytes: 4
+Done
 

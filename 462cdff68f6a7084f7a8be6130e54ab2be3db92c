@@ -1,5 +1,32 @@
 Revision: 462cdff68f6a7084f7a8be6130e54ab2be3db92c
 Patch-set: 1
+File: runtime/arch/arm/instruction_set_features_arm.cc
+
+246:0-246:47
+Wed Feb 24 17:17:32 2016 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2b0b90b_270dd589
+Bytes: 366
+This seems very dubious. What does it mean to be a super set with respect to SMP? Could you write comments that captures what you expect the function to return and why? Why would it be safe to say have code with and without barriers within it, mixed? It'd be very broken on the SMP side to be missing barriers, but safe on the non-SMP side but it'd hurt performance.
+
+File: runtime/arch/instruction_set_features.h
+
+68:15-68:27
+Wed Feb 24 17:17:32 2016 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22d0113b_86e26ae8
+Bytes: 167
+This is a sufficiently vague concept that it relies needs a comment! How does this and other relate? Why no IsSubsetOf which is defined to just be the inverse of this?
+
+File: runtime/arch/instruction_set_features_test.cc
+
+51:35-51:47
+Wed Feb 24 17:17:32 2016 +0000
+Author: Ian Rogers <1010118@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2981592_c2a617e8
+Bytes: 287
+This removes a key property of this test that it ensures all notions of InstructionSetFeatures are in sync - for example, did someone get lazy in specifying C++ flags that a target has a divide instruction? Has this functionality been moved to CTS? Could you provide a link in a comment?
+
 File: runtime/arch/mips64/instruction_set_features_mips64.cc
 
 81:5-81:47

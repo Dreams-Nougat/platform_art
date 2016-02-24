@@ -64,6 +64,14 @@ UUID: 62a5a9c6_b1efdea0
 Bytes: 90
 Is it useful considering that HArm64BitwiseNegatedRight's constructor already checks that?
 
+243
+Wed Feb 24 15:16:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62a5a9c6_b1efdea0
+UUID: a2b881d5_9ff13b8b
+Bytes: 82
+Yes, we do that in other places (see e.g. HandleShift methods in code generators).
+
 250:0-258:5
 Wed Feb 24 11:29:14 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -95,6 +103,14 @@ Parent: 02c30d5c_fa1b215f
 UUID: 62be89e4_e95697fd
 Bytes: 35
 Done (I think you just meant `op`).
+
+164
+Wed Feb 24 15:16:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_e95697fd
+UUID: 02c30d5c_7a5631a8
+Bytes: 73
+Right; I read this too fast and thought `op` was a HInstruction at first.
 
 170
 Wed Feb 24 11:44:06 2016 +0000
@@ -182,6 +198,14 @@ Done. For the record, this was copy/pasted from another test, it appears that th
 - 551-checker-shifter-operand
 - 565-checker-doublenegbitwise
 
+2:0-2:1
+Wed Feb 24 15:16:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_691cc758
+UUID: a2b881d5_5fe8839b
+Bytes: 74
+Thanks for pointing out the issue in other tests!  I'll take care of them.
+
 39:6-39:11
 Wed Feb 24 11:39:27 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -196,4 +220,12 @@ Parent: 82affd8e_bbda935d
 UUID: 82bb7df1_71826585
 Bytes: 226
 Isn't the order of ParameterValue instructions expected to be in the same as for arguments? If so I don't think we should use CHECK-DAG here. And the other instructions below are also strictly ordered due to data dependencies.
+
+39:6-39:11
+Wed Feb 24 15:16:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82bb7df1_71826585
+UUID: 22dbb13a_062fa068
+Bytes: 245
+Right.  I would keep DCHECKs for ParameterValue instructions, but I think we should switch to DCHECK-DAGs for other instructions, as we do not want to enforce a specific order here (and dependencies introduced by use-def information are enough).
 

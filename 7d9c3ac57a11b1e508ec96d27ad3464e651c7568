@@ -53,6 +53,18 @@ Currently we use the oat_offset + oat_size to reserve memory to ensure there is 
 i.e. [image1][reserve][image1oat]
 then place [image2oat] in the reserve section by passing in oat_begin and oat_end.
 
+104:33-105:59
+Wed Feb 24 02:41:47 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62a5a9c6_5cb1cc0c
+UUID: e2def959_be61d8e1
+Bytes: 580
+I see what you want to do, but
+
+For image2, it seems unnecessary to reserve the space right after image2 (and create oat_map pointing there) if image2oat will be at the specified address. Maybe if oat_begin is non-null, could we avoid reserving the space after the image? Also it seems that image2's oat_map_ and oat_file_ do not actually point to the same location. Would it be possible to make them actually point to the same location?
+
+Is it possible to violate oat_begin + oat_size == oat_end with the current interface? Maybe we could get rid of oat_end in favor of oat_size?
+
 186:2-186:69
 Tue Feb 23 20:05:06 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -86,6 +98,16 @@ Parent: 22d0113b_d2d8256b
 UUID: c2c1f56d_c27f243b
 Bytes: 249
 Its hard to do that since GetImageEnd goes through image header. So the image spaces can not have a faked Begin(). I would have to reserve a large block of memory then manually create all the images by unmapping and remapping at the right addresses.
+
+231:10-231:46
+Wed Feb 24 02:41:47 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2c1f56d_c27f243b
+UUID: c2c1f56d_43eb135a
+Bytes: 254
+I meant describing the relative positions of image1, image2, etc. in the comment using a similar notation. Was it misunderstood?
+
+I think you are testing "[image2].....[image1][oat2][oat1][image3]" using the same notation? Please add that to the comment.
 
 246:37-246:51
 Tue Feb 23 20:05:06 2016 +0000

@@ -1,0 +1,30 @@
+Revision: 5120483790f5aad4c926114dec0ef8b68bae2b79
+Patch-set: 9
+File: compiler/optimizing/stack_map_stream.cc
+
+143:46-143:58
+Thu Feb 25 16:09:10 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 42c98578_4ae9a3cf
+Bytes: 202
+Reordered arguments.  I found it highly irritating that the parameters were in random order.  The order is now the same as the order used in memory which is also the order of fields in StackMapEncoding.
+
+490:43-490:67
+Thu Feb 25 16:09:10 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 22c49160_5ea089bc
+Bytes: 70
+Finish rebase - CheckCodeInfo needed to be adjusted to the API change.
+
+File: runtime/stack_map.h
+
+661:7-661:20
+Thu Feb 25 16:09:10 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62b209f8_5d65ebab
+Bytes: 450
+* I made this into a helper class since I want to reuse the logic for CodeInfo.
+* It also reduces repetition.  I was worried about mixing the wrong *BitOffset, *BitSize and check_max somewhere.
+* The check_max is replaced with min_value.  It is equivalent in size, but it is much faster to calculate.  It also allow for more then one magic value, which I might need later.
+* The Load/Store code is intentionally kept in header to allow for inclining.
+

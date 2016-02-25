@@ -9,6 +9,18 @@ UUID: 22c49160_7b5637a8
 Bytes: 74
 This comment is not clear to me; do you mean "Multi-byte UTF-16 involved"?
 
+1784:63-1784:81
+Thu Feb 25 18:14:50 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22c49160_7b5637a8
+UUID: e2b0b90b_93d06719
+Bytes: 503
+I can improve the comment:
+
+'The "bltu" conditional branch tests to see if the character value fits in a valid 16-bit (MIPS halfword) value. If it doesn't then the character being searched for, if it exists in the string, is encoded/stored in the string using UTF-16 into two (16-bit) halfwords. Currently the assembly code used to implement this intrinsic doesn't support searching for a character stored as two halfwords so we fallback to using the generic implementation of indexOf().'
+
+Is this okay?
+
 1791:4-1798:3
 Thu Feb 25 12:44:00 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +28,34 @@ UUID: 22dbb13a_11e51c20
 Bytes: 56
 Why is this logic here (and not in `art_quick_indexof`)?
 
+1791:4-1798:3
+Thu Feb 25 18:14:50 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 22dbb13a_11e51c20
+UUID: a29b218c_c3df261c
+Bytes: 644
+I'm not sure what you're asking.
+
+If you're asking why there isn't logic in `art_quick_indexof` to choose between "seleqz/selnez", and "movz/movn", none of these instruction appear in `art_quick_indexof`. They did appear in an earlier version of the CL but since then I've defined/used the MINu macro which conditionally selects between the R6, and pre-R6 instructions. See the file runtime/arch/mips/asm_support_mips.S.
+
+If you are asking why doesn't `art_quick_indexof` have a test for 'fromIndex < 0'? It doesn't need to, this code prevents that condition from happening when `art_quick_indexof` is called.
+
+Or are you asking something else?
+
 1913
 Thu Feb 25 12:44:00 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 82affd8e_be7b614e
 Bytes: 70
 Why is there no null check similar to the ones on lines 1886 and 1943?
+
+1913
+Thu Feb 25 18:14:50 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82affd8e_be7b614e
+UUID: 82bb7df1_3af39dc4
+Bytes: 197
+Because I patterned to code after the ARM implementation, and the ARM implementation of these three intrinsics follows the same pattern. I can add the test. Is this a bug in the ARM implementation?
 
 File: runtime/arch/mips/asm_support_mips.S
 
@@ -32,10 +66,28 @@ UUID: a220812e_dccf01d1
 Bytes: 84
 What about implementing and using these `MINs` and `MINu` macros for MIPS64 as well?
 
+133:7-133:11
+Thu Feb 25 18:14:50 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a220812e_dccf01d1
+UUID: e2def959_f2e78ccb
+Bytes: 262
+They can be implemented for MIPS64 but weren't because only because we're not supporting pre-R6 64-bit MIPS implementations so the MIPS64 doesn't need to use #if-#else-#endif.
+
+Do you want these macros added to this patch or do you want them in a separate patch?
+
 157:2-157:26
 Thu Feb 25 12:44:00 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 02c30d5c_3d0cb35c
 Bytes: 123
 The only difference between the definitions of `MINu` and `MINs` is this line; could you try to refactor these definitions?
+
+157:2-157:26
+Thu Feb 25 18:14:50 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02c30d5c_3d0cb35c
+UUID: e2b0b90b_136e9701
+Bytes: 4
+Done
 

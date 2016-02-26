@@ -21,6 +21,14 @@ I can improve the comment:
 
 Is this okay?
 
+1784:63-1784:81
+Fri Feb 26 15:12:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2b0b90b_93d06719
+UUID: 22c49160_be243d8f
+Bytes: 10
+Yes, SGTM.
+
 1791:4-1798:3
 Thu Feb 25 12:44:00 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -42,6 +50,14 @@ If you are asking why doesn't `art_quick_indexof` have a test for 'fromIndex < 0
 
 Or are you asking something else?
 
+1791:4-1798:3
+Fri Feb 26 15:12:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a29b218c_c3df261c
+UUID: 22dbb13a_772bb078
+Bytes: 361
+I was just wondering why this lower-bound clamping was outside `art_quick_indexof` on MIPS, whereas it is _inside_ that entrypoint on ARM (https://android.googlesource.com/platform/art/+/master/runtime/arch/arm/quick_entrypoints_arm.S#1410) and on ARM64 (https://android.googlesource.com/platform/art/+/master/runtime/arch/arm64/quick_entrypoints_arm64.S#1955).
+
 1913
 Thu Feb 25 12:44:00 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -56,6 +72,14 @@ Parent: 82affd8e_be7b614e
 UUID: 82bb7df1_3af39dc4
 Bytes: 197
 Because I patterned to code after the ARM implementation, and the ARM implementation of these three intrinsics follows the same pattern. I can add the test. Is this a bug in the ARM implementation?
+
+1913
+Fri Feb 26 15:12:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82bb7df1_3af39dc4
+UUID: 22c49160_7e5c65f5
+Bytes: 114
+I also noticed that discrepancy on ARM, but I didn't dig further to see it this is a bug.  I'll have a look at it.
 
 File: runtime/arch/mips/asm_support_mips.S
 
@@ -76,6 +100,16 @@ They can be implemented for MIPS64 but weren't because only because we're not su
 
 Do you want these macros added to this patch or do you want them in a separate patch?
 
+133:7-133:11
+Fri Feb 26 15:12:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2def959_f2e78ccb
+UUID: 62b209f8_808f1c17
+Bytes: 284
+A separate CL is fine.
+
+I agree that implementing these macros on MIPS64 makes less sense than on MIPS32, because we only (need to) support R6 on the former.  However, if these MINs/MINu patterns are recurring on MIPS64 (I didn't check BTW), it is still nice to factor them in macros.
+
 157:2-157:26
 Thu Feb 25 12:44:00 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -90,4 +124,14 @@ Parent: 02c30d5c_3d0cb35c
 UUID: e2b0b90b_136e9701
 Bytes: 4
 Done
+
+157:2-157:26
+Fri Feb 26 15:12:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2b0b90b_136e9701
+UUID: 62b209f8_a07340f0
+Bytes: 58
+> Done
+
+I presume this is coming in a follow-up patch set?
 

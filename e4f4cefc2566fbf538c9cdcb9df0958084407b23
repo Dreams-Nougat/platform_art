@@ -45,6 +45,14 @@ UUID: 82bb7df1_2ef11ff9
 Bytes: 145
 This function seems to share a lot of code with AllocateInternalWithGc, maybe we could factor the code out and use a template function + visitor?
 
+1798:11-1798:31
+Fri Feb 26 19:13:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82bb7df1_2ef11ff9
+UUID: 62be89e4_e15d8350
+Bytes: 33
+Yes, that seems like a good idea.
+
 1803:50-1803:66
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -66,6 +74,14 @@ Parent: 82bb7df1_cea7437f
 UUID: c2c1f56d_19ab354e
 Bytes: 139
 I think this CL removes kGcCauseForNativeAlloc, I dont care too much if we keep it or not. I suppose more data is usually better than less.
+
+1813:41-1813:57
+Fri Feb 26 19:13:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2c1f56d_19ab354e
+UUID: c2981592_0aa08dbb
+Bytes: 417
+I thought more about this, and as Mathieu says, it may not really matter a lot whether we use kGcCauseForAlloc or kGcCauseForNativeAlloc because it just attributes the GC cause to the last allocation attempt, which may not necessarily be the largest contributor to the memory use. In an extreme case where there's very few managed-heap allocations and a large amount of native allocations, it could be useful, though.
 
 1827:40-1827:56
 Fri Feb 26 00:19:52 2016 +0000
@@ -95,6 +111,14 @@ UUID: 2271f153_ed61e5b2
 Bytes: 287
 If we change bytes_allocated_before_gc and bytes_allocated so they only include managed-heap bytes (subtract the native bytes), then we don't need to worry about native bytes at all here (don't need to pass in native_bytes_registered_before_gc or subtract any native bytes in line 3589)?
 
+3534:39-3534:64
+Fri Feb 26 19:13:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2271f153_ed61e5b2
+UUID: c2c1f56d_daf9286e
+Bytes: 184
+Another thought is that since we include native allocations for OOME, we may want to include native bytes into the allocation rate computation in this function. We could go either way?
+
 3551:13-3551:19
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -118,6 +142,14 @@ Parent: e2b0b90b_490110e7
 UUID: 62be89e4_ab32cad1
 Bytes: 167
 Also, we even though we have enqueued references at this point, the native allocations probably have not been finalized yet, does it really make sense to look at this?
+
+3589:10-3589:71
+Fri Feb 26 19:13:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_ab32cad1
+UUID: 2271f153_c2b7104d
+Bytes: 148
+Mathieu and I chatted in person, and if we use a total-native-bytes-freed-ever counter that never decreases, we may avoid a counter underflow issue?
 
 3872:0-3874:15
 Fri Feb 26 00:19:52 2016 +0000

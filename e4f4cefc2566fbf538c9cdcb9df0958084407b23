@@ -1,0 +1,137 @@
+Revision: e4f4cefc2566fbf538c9cdcb9df0958084407b23
+Patch-set: 4
+File: runtime/gc/heap.cc
+
+1794:11-1794:30
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2b0b90b_09c4285c
+Bytes: 684
+If we define registering as incrementing the num_native_bytes_registered_ counter, this doesn't attempt to do this, which the name prefix "TryTo" typically suggests.
+
+A better name?
+
+Maybe directly use !IsOutOfMemoryOnAllocation (and remove this function)?
+Maybe something like CheckOutOfMemoryOnNativeAllocation()?
+Maybe have
+
+if (!IsOutOfMemoryOnAllocation<kGrow>(alloc_size)) {
+  num_native_bytes_registered_.FetchAndAddSequentiallyConsistent(bytes);
+  size_t new_bytes_allocated = static_cast<size_t>(
+      num_bytes_allocated_.FetchAndAddSequentiallyConsistent(bytes)) + bytes;
+  if (IsGcConcurrent()) {
+    CheckConcurrentGC(self, new_bytes_allocated);
+  }
+}
+
+in this function?
+
+1798:11-1798:31
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2981592_9932c1d2
+Bytes: 188
+Likewise, this doesn't "register", either.
+
+A better name?
+
+Maybe CheckOutOfMemoryOnNativeAllocationWithGc()?
+Maybe we change TryToRegisterNative to increment num_native_bytes_registered_?
+
+1803:50-1803:66
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 628f697d_925cfa26
+Bytes: 82
+kGcCauseForNativeAlloc to make it easier to see what's causing this GC in the log?
+
+1813:41-1813:57
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82bb7df1_cea7437f
+Bytes: 22
+kGcCauseForNativeAlloc
+
+1827:40-1827:56
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2981592_d98cc963
+Bytes: 22
+kGcCauseForNativeAlloc
+
+1845:16-1845:26
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2b0b90b_e92a1c74
+Bytes: 20
+"native allocation"?
+
+1849:42-1849:58
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 628f697d_7274f69f
+Bytes: 22
+kGcCauseForNativeAlloc
+
+3534:39-3534:64
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2271f153_ed61e5b2
+Bytes: 287
+If we change bytes_allocated_before_gc and bytes_allocated so they only include managed-heap bytes (subtract the native bytes), then we don't need to worry about native bytes at all here (don't need to pass in native_bytes_registered_before_gc or subtract any native bytes in line 3589)?
+
+3551:13-3551:19
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 628f697d_92515a09
+Bytes: 19
+target_utilization?
+
+3589:10-3589:71
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2b0b90b_490110e7
+Bytes: 164
+What if native_bytes_registered_before_gc < native_bytes_registered?
+
+Should we add 0 to freed_bytes if native_bytes_registered_before_gc < native_bytes_registered?
+
+3872:0-3874:15
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 628f697d_f2ea2655
+Bytes: 97
+Good question. How about throwing an exception if the counters would underflow like the old code?
+
+File: runtime/gc/heap.h
+
+855:6-855:43
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a29b218c_b75d7cf5
+Bytes: 163
+I think we don't need this as this version of CheckConcurrentGC doesn't take an object as a parameter and RequestConcurrentGC() it calls doesn't need this, either.
+
+884:43-884:63
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62a5a9c6_53e3edc2
+Bytes: 198
+Is it clearer if we change "ultimately available" to "successfully registered"?
+
+Drop "registered" from "the registered native allocation" in the next line because if it may not be registered (yet)?
+
+915:46-915:84
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62be89e4_2807e06a
+Bytes: 77
+I think we don't need this here as IsOutOfMemoryOnAllocation doesn't, either.
+
+1183:57-1184:10
+Fri Feb 26 00:19:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a29b218c_d2f92e6e
+Bytes: 43
+We don't need this comment change any more?
+

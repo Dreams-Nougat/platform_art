@@ -38,6 +38,13 @@ A better name?
 Maybe CheckOutOfMemoryOnNativeAllocationWithGc()?
 Maybe we change TryToRegisterNative to increment num_native_bytes_registered_?
 
+1798:11-1798:31
+Fri Feb 26 02:26:35 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82bb7df1_2ef11ff9
+Bytes: 145
+This function seems to share a lot of code with AllocateInternalWithGc, maybe we could factor the code out and use a template function + visitor?
+
 1803:50-1803:66
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,6 +58,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 82bb7df1_cea7437f
 Bytes: 22
 kGcCauseForNativeAlloc
+
+1813:41-1813:57
+Fri Feb 26 02:26:35 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82bb7df1_cea7437f
+UUID: c2c1f56d_19ab354e
+Bytes: 139
+I think this CL removes kGcCauseForNativeAlloc, I dont care too much if we keep it or not. I suppose more data is usually better than less.
 
 1827:40-1827:56
 Fri Feb 26 00:19:52 2016 +0000
@@ -95,6 +110,14 @@ Bytes: 164
 What if native_bytes_registered_before_gc < native_bytes_registered?
 
 Should we add 0 to freed_bytes if native_bytes_registered_before_gc < native_bytes_registered?
+
+3589:10-3589:71
+Fri Feb 26 02:26:35 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2b0b90b_490110e7
+UUID: 62be89e4_ab32cad1
+Bytes: 167
+Also, we even though we have enqueued references at this point, the native allocations probably have not been finalized yet, does it really make sense to look at this?
 
 3872:0-3874:15
 Fri Feb 26 00:19:52 2016 +0000

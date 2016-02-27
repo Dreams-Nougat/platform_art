@@ -1,0 +1,65 @@
+Revision: c5486380bec38081e29fd2ac0b02c6c7359fc1bf
+Patch-set: 1
+File: compiler/optimizing/intrinsics_mips.cc
+
+2133:0-2167:5
+Sat Feb 27 03:47:34 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82bb7df1_e0fe8b7e
+Bytes: 400
+Shorter and more straightforward:
+
+    clz  TMP, in_hi
+    li   AT, 0x80000000
+    srlv AT, AT, TMP
+    and  out_hi, AT, in_hi
+    clz  TMP, in_lo
+    li   AT, 0x80000000
+    srlv AT, AT, TMP
+    and  out_lo, AT, in_lo
+    if (R6) {
+      seleqz out_lo, out_lo, out_hi
+    } else {
+      movn out_lo, ZERO, out_hi
+    }
+
+And if we get another temp register or make it overlapping, we can save one li.
+
+2177:0-2180:77
+Sat Feb 27 03:47:34 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02594de9_4446ce9c
+Bytes: 75
+Shorter:
+
+    li   AT, 0x80000000
+    srlv AT, AT, TMP
+    and  out, AT, in
+
+2214:0-2241:5
+Sat Feb 27 03:47:34 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02e4ed24_2f70086f
+Bytes: 218
+Shorter:
+
+    subu TMP, ZERO, in_lo
+    and  out_lo, TMP, in_lo
+    subu TMP, ZERO, in_hi
+    and  out_hi, TMP, in_hi
+    if (R6) {
+      seleqz out_hi, out_hi, out_lo
+    } else {
+      movn out_hi, ZERO, out_lo
+    }
+
+2246:0-2249:26
+Sat Feb 27 03:47:34 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82bb7df1_e0a7abd0
+Bytes: 75
+Shorter (the classic x & -x):
+
+    subu TMP, ZERO, in
+    and  out, TMP, in
+

@@ -9,12 +9,28 @@ UUID: 02806d4d_4f19110b
 Bytes: 15
 kCallOnSlowPath
 
+6510:81-6510:86
+Tue Mar 01 12:14:19 2016 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02806d4d_4f19110b
+UUID: a2e32149_a0cd8f7d
+Bytes: 4
+Done
+
 6513:48-6513:51
 Tue Mar 01 09:25:01 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a2b881d5_adefb511
 Bytes: 4
 why?
+
+6513:48-6513:51
+Tue Mar 01 12:14:19 2016 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a2b881d5_adefb511
+UUID: a26ec178_687f163d
+Bytes: 208
+We need to put the original lock word into EAX for the following cmpxchg instruction. For x86, we pass the object address to another register and move it to EAX in the slow path before calling the entrypoint.
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -25,10 +41,26 @@ UUID: 82037dbe_9836153b
 Bytes: 5
 ditto
 
+6006:81-6006:86
+Tue Mar 01 12:14:19 2016 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82037dbe_9836153b
+UUID: c26bb568_c08b779b
+Bytes: 4
+Done
+
 6009:48-6009:51
 Tue Mar 01 09:25:01 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 42f42502_be2db947
 Bytes: 5
 ditto
+
+6009:48-6009:51
+Tue Mar 01 12:14:19 2016 +0000
+Author: Yu L Li <1039961@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 42f42502_be2db947
+UUID: 82ea9d1e_e7be91db
+Bytes: 132
+We need to put the lock word into EAX for the cmpxchg instruction used in the fast path. So, one of the temp register should be RAX.
 

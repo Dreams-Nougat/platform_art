@@ -32,6 +32,16 @@ UUID: a26ec178_687f163d
 Bytes: 208
 We need to put the original lock word into EAX for the following cmpxchg instruction. For x86, we pass the object address to another register and move it to EAX in the slow path before calling the entrypoint.
 
+6513:48-6513:51
+Tue Mar 01 12:21:59 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a26ec178_687f163d
+UUID: 620689d1_772990cb
+Bytes: 147
+So it's cmpxchng that requires EAX? Please add that as a comment.
+
+Moving it to EAX in the slow path does not require you to request EAX as a temp.
+
 File: compiler/optimizing/code_generator_x86_64.cc
 
 6006:81-6006:86

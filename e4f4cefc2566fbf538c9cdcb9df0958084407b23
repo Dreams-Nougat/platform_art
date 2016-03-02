@@ -26,6 +26,14 @@ if (!IsOutOfMemoryOnAllocation<kGrow>(alloc_size)) {
 
 in this function?
 
+1794:11-1794:30
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2b0b90b_09c4285c
+UUID: e211990a_a8329fa6
+Bytes: 23
+not applicable anymore.
+
 1798:11-1798:31
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,12 +61,28 @@ UUID: 62be89e4_e15d8350
 Bytes: 33
 Yes, that seems like a good idea.
 
+1798:11-1798:31
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_e15d8350
+UUID: e2b0b90b_c5c177a3
+Bytes: 11
+Better now?
+
 1803:50-1803:66
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 628f697d_925cfa26
 Bytes: 82
 kGcCauseForNativeAlloc to make it easier to see what's causing this GC in the log?
+
+1803:50-1803:66
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 628f697d_925cfa26
+UUID: e211990a_884c0319
+Bytes: 138
+When sharing this code with AllocateInternalWithGc, we would need to pass this in as an extra argument. I'm fine doing that if you prefer.
 
 1813:41-1813:57
 Fri Feb 26 00:19:52 2016 +0000
@@ -83,12 +107,28 @@ UUID: c2981592_0aa08dbb
 Bytes: 417
 I thought more about this, and as Mathieu says, it may not really matter a lot whether we use kGcCauseForAlloc or kGcCauseForNativeAlloc because it just attributes the GC cause to the last allocation attempt, which may not necessarily be the largest contributor to the memory use. In an extreme case where there's very few managed-heap allocations and a large amount of native allocations, it could be useful, though.
 
+1813:41-1813:57
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2981592_0aa08dbb
+UUID: a26ec178_316e6202
+Bytes: 56
+I can pass the cause as an extra argument if you prefer.
+
 1827:40-1827:56
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c2981592_d98cc963
 Bytes: 22
 kGcCauseForNativeAlloc
+
+1827:40-1827:56
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2981592_d98cc963
+UUID: 82ea9d1e_f8862795
+Bytes: 5
+same.
 
 1845:16-1845:26
 Fri Feb 26 00:19:52 2016 +0000
@@ -97,12 +137,32 @@ UUID: e2b0b90b_e92a1c74
 Bytes: 20
 "native allocation"?
 
+1845:16-1845:26
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2b0b90b_e92a1c74
+UUID: a2e32149_f8790257
+Bytes: 367
+Would it be worth passing a boolean to AllocateInternalWithGc to indicate we are doing native allocation, for the purposes of setting the cause for alloc and better messages?
+
+Or, I could rename the Null allocator to a RegisterNative allocator, and check for that in AllocateInternalWithGc to decide what the cause for alloc is and what to put in messages.
+
+Thoughts?
+
 1849:42-1849:58
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 628f697d_7274f69f
 Bytes: 22
 kGcCauseForNativeAlloc
+
+1849:42-1849:58
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 628f697d_7274f69f
+UUID: a26ec178_5157562f
+Bytes: 5
+same.
 
 3534:39-3534:64
 Fri Feb 26 00:19:52 2016 +0000
@@ -125,6 +185,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 628f697d_92515a09
 Bytes: 19
 target_utilization?
+
+3551:13-3551:19
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 628f697d_92515a09
+UUID: a26ec178_310c225c
+Bytes: 4
+Done
 
 3589:10-3589:71
 Fri Feb 26 00:19:52 2016 +0000
@@ -158,6 +226,14 @@ UUID: 628f697d_f2ea2655
 Bytes: 97
 Good question. How about throwing an exception if the counters would underflow like the old code?
 
+3872:0-3874:15
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 628f697d_f2ea2655
+UUID: e211990a_681087de
+Bytes: 317
+To me that seems arbitrary. It ensures the total sum of all users don't call RegisterNativeFree more than RegisterNativeAlloc was called, but it does nothing to prevent a malicious caller from "stealing" native allocation memory from another caller. Perhaps that's better than nothing. I'll add the exception back in.
+
 File: runtime/gc/heap.h
 
 855:6-855:43
@@ -166,6 +242,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a29b218c_b75d7cf5
 Bytes: 163
 I think we don't need this as this version of CheckConcurrentGC doesn't take an object as a parameter and RequestConcurrentGC() it calls doesn't need this, either.
+
+855:6-855:43
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a29b218c_b75d7cf5
+UUID: 02feade5_2e1a09b2
+Bytes: 4
+Done
 
 884:43-884:63
 Fri Feb 26 00:19:52 2016 +0000
@@ -176,6 +260,14 @@ Is it clearer if we change "ultimately available" to "successfully registered"?
 
 Drop "registered" from "the registered native allocation" in the next line because if it may not be registered (yet)?
 
+884:43-884:63
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62a5a9c6_53e3edc2
+UUID: e2b0b90b_65d06375
+Bytes: 23
+not applicable anymore.
+
 915:46-915:84
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -183,10 +275,26 @@ UUID: 62be89e4_2807e06a
 Bytes: 77
 I think we don't need this here as IsOutOfMemoryOnAllocation doesn't, either.
 
+915:46-915:84
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62be89e4_2807e06a
+UUID: e27a7932_383e29a3
+Bytes: 23
+not applicable anymore.
+
 1183:57-1184:10
 Fri Feb 26 00:19:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a29b218c_d2f92e6e
 Bytes: 43
 We don't need this comment change any more?
+
+1183:57-1184:10
+Wed Mar 02 23:03:30 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a29b218c_d2f92e6e
+UUID: 02594de9_bfb540b0
+Bytes: 4
+Done
 

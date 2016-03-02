@@ -1,0 +1,20 @@
+Revision: 90685e08562851bdb0137c8a5033d61bbc864b67
+Patch-set: 5
+File: dex2oat/dex2oat.cc
+
+1998:6-1999:50
+Wed Mar 02 15:04:14 2016 +0000
+Author: Artem Udovichenko <1083288@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02cf8da0_916bcb5e
+Bytes: 136
+It would be good to put classes of hot methods into image_classes. If method is hot then its class will be loaded with high probability.
+
+File: runtime/gc/heap.cc
+
+3648:63-3648:67
+Wed Mar 02 15:04:14 2016 +0000
+Author: Artem Udovichenko <1083288@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2e65528_bba1fbd2
+Bytes: 362
+I think delay 1s is too short. For example launch time of Facebook messages is 5.1s, Runkeeper 1.9s. So ClassProfileTask will collect information during app launch for these applications. I know that this task will be executed in separate thread, but we need not additional CPU work during app launch. May be set delay equals to 5s or greater? What do you think?
+

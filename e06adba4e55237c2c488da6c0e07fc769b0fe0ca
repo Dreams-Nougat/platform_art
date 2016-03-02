@@ -35,3 +35,20 @@ UUID: 82037dbe_db55279b
 Bytes: 66
 This is odd.  I'll try to test on the emulator on my side as well.
 
+1934:0-1936:89
+Wed Mar 02 18:24:59 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82037dbe_db55279b
+UUID: e27a7932_4bb8060f
+Bytes: 932
+I just did a sanity test on only passing two arguments (build emulator, run emulator, run test/082-inline-execute), and the tests pass ("--optimizing", "", "--no-prebuild --optimizing", and "--no-prebuild). More exhaustive testing may show that this is broken too.
+
+I've also been tracking through the code and it lead me to
+- lines 231/244 of /runtime/entrypoints/quick/quick_alloc_entrypoints.cc, then to 
+- lines 43/87 of runtime/arch/quick_alloc_entrypoints.S, and finally to
+- line 1274 of runtime/arch/mips/quick_entrypoints_mips.S.
+
+This code/macro (line 1274 of runtime/arch/mips/quick_entrypoints_mips.S) passes the Thread::Current ("move $a1, rSELF") as the second argument so, to me, it makes a certain amount of sense that the code works when passed two arguments (deleting only the third/last argument) but deleting the last two arguments causes a problem.
+
+Did I follow the code properly, and get to the correct place?
+

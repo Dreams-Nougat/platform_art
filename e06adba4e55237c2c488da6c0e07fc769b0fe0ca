@@ -60,3 +60,15 @@ UUID: a2e32149_2cca0893
 Bytes: 4
 Done
 
+1934:0-1936:89
+Thu Mar 03 14:49:27 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a2e32149_2cca0893
+UUID: a2b16159_144e5a39
+Bytes: 617
+I think your reasoning is correct, but I'm not sure to understand the conclusion.
+
+The ONE_ARG_DOWNCALL macro supposedly generates an entrypoint taking one argument (through A0 on MIPS), passing it (delegating) to an actual routine (artAllocStringFromStringFromCode*, defined in runtime/entrypoints/quick/quick_alloc_entrypoints.cc), as well as Thread::Current (though A1).  So it does not make sense for me to pass more than one argument, as the artAllocStringFromStringFromCode* routines take two arguments (mirror::String* string, Thread* self).
+
+I haven't tried your CL on the MIPS emulator yet, but will do ASAP.
+

@@ -9,3 +9,15 @@ UUID: 421d051a_df6197e1
 Bytes: 175
 Mathieu, Hiroshi, I'd appreciate some context on this. Apparently, having the ArtField and ArtMethod call VisitRoot on their declaring class is fine, but anything else is not.
 
+9:0-13:42
+Thu Mar 03 23:57:18 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 421d051a_df6197e1
+UUID: 82ea9d1e_2f32004a
+Bytes: 778
+The way I see this is that a class makes its method/field roots reachable from GC and causes GC to visit them through it. It's sort of a canonical way for GC to visit methods/fields. This doesn't mean that GC can't visit methods/fields through other paths (like the allocation records). And it makes sense because if a class becomes (otherwise) unreachable but its methods are reachable from the allocation records (the allocation site stack traces), the methods makes the class reachable (note that methods/fields have a back pointer to their class) and avoids an incorrect situation like methods are alive but their class isn't and gets unloaded.
+
+So, I don't think this assumption exists.
+
+Do you see a case where visiting methods/fields outside their class causes a problem?
+

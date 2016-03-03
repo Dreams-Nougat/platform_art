@@ -9,3 +9,13 @@ UUID: a2b16159_74fb668f
 Bytes: 89
 I don't understand this change. There's code in the inliner to not inline infinite loops.
 
+21:0-23:5
+Thu Mar 03 10:00:49 2016 +0000
+Author: Serguei I Katkov <1040038@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a2b16159_74fb668f
+UUID: a2b881d5_537f9c87
+Bytes: 487
+Optimizing compiler has a bug. Indeed inliner checks whether the method contains infinite loop or not. It checks whether the graph corresponding to inlining method contains or not exit_block_ set. This field is set by builder in the beginning. After that exit block can be removed but no one clear exit_block_ field in graph. As result graph contains a link to block which is removed. So inliner does not really detect that inlining method contains the infinite loop.
+
+I hope this helps.
+

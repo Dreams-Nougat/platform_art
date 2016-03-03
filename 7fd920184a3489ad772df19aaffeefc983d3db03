@@ -9,3 +9,21 @@ UUID: 62eda937_6501e2e7
 Bytes: 149
 May be decide whether to profile all branches or only backward branches basing on events. As I understand other interpreters do in this way, correct?
 
+655:2-655:19
+Thu Mar 03 13:47:11 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62eda937_6501e2e7
+UUID: e211990a_524295e8
+Bytes: 2415
+Serguei, what you're seeing here is just a snapshot of a work in progress.  Here's where I'm going with this:
+
+The JIT currently requires two profiling-related things from the interpreters: hotness updates and OSR switch checks.  The hotness updates use the existing instrumentation framework - which is flexible, but quite heavyweight.  For most things, the instrumentation framework overhead is acceptable, but because we do a hotness update on every backwards branch the overhead is unacceptable.  Right now, branch profiling dominates interpreter cost.
+
+The most efficient hotness update mechanism would simply bypass the instrumentation framework.  However, from a code health point of view, this would be somewhat unclean.  I'd like to avoid parallel instrumentation mechanisms.  What I'm doing here is introducing a new instrumentation "event" - a batch update of hotness count.  This will enable us to locally update hotness, but only periodically call out to the instrumentation framework to amortize the cost.  This isn't yet apparent in the CL - but it should be more clear in an upcoming patch set.
+
+Right now, the JIT doesn't need true branch profiling.  But, we expect it will in the future.  However, taken/not-taken profiling is only useful once you've decided a method is hot enough to optimize.  That's another reason why I've introduced a new "event", and kept the old one.  During the initial stages, we'd interpret using the hotness event only.  Once a method is hot, we could then disable hotness and enable full branch profiling for a short duration to gather additional info to feed into the optimizer.  Once we've collected enough, full branch profiling would be disabled and hotness resumed (in order to detect OSR candidates).
+
+I would expect that full branch profiling would not need to be implemented in mterp.  It's heavyweight enough that it would largely eliminate mterp gains anyway.  And, we'd presumably only be doing it for a short time.
+
+The other thing you will see coming up is a type change in the method's hotness counter.  I'll be moving it to an int rather than uint and will encode state information.  We don't need to do an OSR check until after we've requested an OSR compilation (or better, once the OSR compilation is complete).  A magic negative value in the hotness counter will determine whether we should bother to take the time to detect a viable OSR loop entry.
+

@@ -26,6 +26,14 @@ UUID: 620689d1_7dfccf5d
 Bytes: 55
 Could we have that logic somehow in NeedsCurrentMethod.
 
+549:0-557:44
+Fri Mar 04 16:06:23 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 620689d1_7dfccf5d
+UUID: a2e32149_491bf0b8
+Bytes: 315
+I wish I could even put this in the intrinsic needs environment flag. However, we have the same problem. This instruction can either denote a method call (needs env) or, if implemented under the right features, an intrinsic (does not need env). It is related to the problem in the other file, see suggestions there.
+
 File: compiler/optimizing/pc_relative_fixups_x86.cc
 
 223:7-223:27
@@ -34,6 +42,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 82037dbe_61df0c1e
 Bytes: 34
 WillHaveCallFreeIntrinsicsCodeGen?
+
+223:7-223:27
+Fri Mar 04 16:06:23 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82037dbe_61df0c1e
+UUID: a26ec178_65d5eabb
+Bytes: 4
+Done
 
 225:0-233:17
 Fri Mar 04 11:22:44 2016 +0000
@@ -45,4 +61,19 @@ This feels like abusing the intrinsic infrastructure :)
 If that's how we need to do it please add big comments on the SetLocations(nullptr).
 
 There's a lot of side effects going on in both HasIntrinsicsCodeGen and TryDispatch, and we need to be varey careful.
+
+225:0-233:17
+Fri Mar 04 16:06:23 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 421d051a_3f236b91
+UUID: a2e32149_0951e852
+Bytes: 841
+I hate this probably even more than you ;-)
+I can offer you three alternatives, in order of increasing difficulty
+
+(1) Since we are just talking about x86, there is only a handful of unimplemented and conditionally implemented intrinsics. I can simply duplicate that logic here with a few statements. Advantage: cheap and quick. Disadvantage: no automated way of keeping this in sync (but I cannot help but notice, L205 and up do exactly that for another situation!).
+
+(2) I can extend the macro mechanism to also put UNIMPLEMENTED_IF_NOT_FEATURE and test that here. In fact, I have that working already with some macro magic. Advantage: always in sync. Disadvantage: bit of macro magic, programmers must remember to add macro.
+
+(3) Major refactoring to do intrinsic codegen first. Advantage: always in sync. Disadvantage: major refactoring.
 

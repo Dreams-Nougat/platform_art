@@ -17,3 +17,32 @@ UUID: 82d1bd8e_cedef784
 Bytes: 163
 I don't expect a land-slide, since it only applies to methods that become a leaf method after being intrinsified, but I can make some measurements and report back.
 
+File: compiler/optimizing/code_generator.cc
+
+549:0-557:44
+Fri Mar 04 11:22:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 620689d1_7dfccf5d
+Bytes: 55
+Could we have that logic somehow in NeedsCurrentMethod.
+
+File: compiler/optimizing/pc_relative_fixups_x86.cc
+
+223:7-223:27
+Fri Mar 04 11:22:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82037dbe_61df0c1e
+Bytes: 34
+WillHaveCallFreeIntrinsicsCodeGen?
+
+225:0-233:17
+Fri Mar 04 11:22:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 421d051a_3f236b91
+Bytes: 260
+This feels like abusing the intrinsic infrastructure :)
+
+If that's how we need to do it please add big comments on the SetLocations(nullptr).
+
+There's a lot of side effects going on in both HasIntrinsicsCodeGen and TryDispatch, and we need to be varey careful.
+

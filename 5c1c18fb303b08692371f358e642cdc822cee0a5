@@ -1,0 +1,71 @@
+Revision: 5c1c18fb303b08692371f358e642cdc822cee0a5
+Patch-set: 2
+File: /COMMIT_MSG
+
+9:52-9:55
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e27a7932_a46aea79
+Bytes: 10
+typo here?
+
+File: runtime/class_linker.cc
+
+1370:39-1370:43
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2e32149_4c6e6302
+Bytes: 288
+I think this calls GcRoot::Read() with read barrier enabled. Would that cause a crash?
+
+How about we use unordered_set<mirror::Class*> or something other than ClassTable::ClassSet for new_class_set and avoid the issue of disabling read barriers because these aren't reachable from GC yet?
+
+1372:28-1372:32
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 82d1bd8e_d1f4d63b
+Bytes: 41
+Read<kWithoutReadBarrier> like line 1365?
+
+1375:42-1375:46
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2e32149_2c7f9fb3
+Bytes: 5
+Same.
+
+1377:31-1377:35
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c26bb568_cc6e3fcb
+Bytes: 41
+Read<kWithoutReadBarrier> like line 1365?
+
+1380:31-1380:49
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2b0b90b_25d9363c
+Bytes: 158
+I think this calls GcRoot::Read() with read barrier enabled. Would that cause a crash? I don't know why this is already a problem as this was in the old code.
+
+1383:32-1383:50
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2e32149_ec5db750
+Bytes: 5
+Same.
+
+1425:3-1425:5
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 02feade5_a3762a64
+Bytes: 5
+typo?
+
+1701:21-1701:25
+Fri Mar 04 02:05:32 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a26ec178_e589db14
+Bytes: 44
+Do we want to disable the read barrier here?
+

@@ -21,3 +21,15 @@ So, I don't think this assumption exists.
 
 Do you see a case where visiting methods/fields outside their class causes a problem?
 
+9:0-13:42
+Fri Mar 04 09:57:47 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82ea9d1e_2f32004a
+UUID: a220812e_531afc4e
+Bytes: 621
+Mathieu: The ProfilingInfo objects are indeed visited twice. Once through the the allocation records (via SemiSpace::MarkRoots), and one through the mark stack (via SemiSpace::MarkReachableObjects).
+
+The first visit through SemiSpace::MarkRoots moves entries in the ProfilingInfo from the from space to the to space. The second visit crashes because it doesn't expect a to space entry in the ProfilingInfo.
+
+I'm not sure why it doesn't happen with the declaring class. I also don't understand the comment in "Class::VisitNativeRoots": "// Visit roots first in case the declaring class gets moved", which could be related.
+

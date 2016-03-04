@@ -9,3 +9,54 @@ UUID: 82ea9d1e_ec7e698a
 Bytes: 124
 That looks like a very nice concise implementation. Any perf numbers? Can't wait to try this out on my reversi/checkers app!
 
+383:5-383:9
+Fri Mar 04 16:14:33 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 82ea9d1e_ec7e698a
+UUID: 02cf8da0_8afef47d
+Bytes: 1388
+Hi Aart,
+Actually I didn't run real life Android application to test the performance improvement of this intrinsic.
+I measured the performance on a micro benchmark I wrote in C and assembly, as shown below.
+
+The 'gpr' version is written according to how ART compiles and generates code from the java implementation of Long.bigCount in libcore.
+The 'neon' version is the one I used in the intrinsic implementation.
+
+Compared to the 'gpr' version, the 'neon' version is:
+* On A53: 1.9x faster to complete following loop.
+* On A57: 1.5x faster to complete following loop.
+* On A72: 1.3x faster to complete following loop.
+
+So I guess any application which relies heavily on bitCount should benefit from this neon implementation on ARM64.                                                                        
+
+---------------------------------------
+
+void perf_test() {
+for (int i=0; i<1000000000; i++)
+  {popcount_64_gpr(i);}
+}
+
+<popcount_64_gpr>:
+  mov x3,#0x3333333333333333
+  mov x2, #0x5555555555555555
+  mov w0, #0x7f
+  and x2, x2, x1, lsr #1
+  sub x1, x1, x2
+  and x2, x1, #0x3333333333333333
+  and x1, x3, x1, lsr #2
+  add x1, x2, x1
+  add x1, x1, x1, lsr #4
+  and x1, x1, #0xf0f0f0f0f0f0f0f
+  add x1, x1, x1, lsr #8
+  add x1, x1, x1, lsr #16
+  add x1, x1, x1, lsr #32
+  and w0, w0, w1
+  ret
+
+<popcount_64_neon>:
+  fmov d0, x0
+  cnt v0.8b, v0.8b
+  addv b0, v0.8b
+  fmov x0, d0
+  ret
+

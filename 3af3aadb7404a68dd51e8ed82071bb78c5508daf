@@ -1,0 +1,73 @@
+Revision: 3af3aadb7404a68dd51e8ed82071bb78c5508daf
+Patch-set: 7
+File: runtime/gc/allocator_type.h
+
+35
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37fcd52a_c1fb448c
+Bytes: 90
+Maybe add that kAllocatorTypeNull can be used to check the OOME condition to this comment?
+
+File: runtime/gc/heap-inl.h
+
+259:0-259:46
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f705ddfe_dff55f32
+Bytes: 30
+Is the indentation right here?
+
+409:2-409:15
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97ebc162_a41ccc58
+Bytes: 93
+If all the cases of the switch should return, this is unreachable code? If so, UNREACHABLE()?
+
+File: runtime/gc/heap.cc
+
+1768:14-1768:25
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17f7d148_3d620fa7
+Bytes: 70
+Returning here would miss the VLOG(heap) below. Return after the VLOG?
+
+1827:2-1827:3
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17f7d148_fd94a7bb
+Bytes: 50
+DCHECK here that results.object_allocated is null?
+
+3832
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e21b5959_c6b8c4f0
+Bytes: 82
+It's not universally followed around here, but how about "/*instrumented*/ false"?
+
+3851:6-3851:12
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 770bad18_185ac520
+Bytes: 116
+break -> return? To prevent a malicious caller from affecting num_native_bytes_freed_ever_ and num_bytes_allocated_?
+
+File: runtime/gc/heap.h
+
+1202:9-1202:15
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 97ebc162_c448f058
+Bytes: 119
+I think this should be uint64_t so that we won't overflow this counter in 32 bit mode. size_t is 32 bit in 32 bit mode.
+
+1202:17-1202:45
+Sat Mar 05 01:44:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57f5c93b_62ceb8aa
+Bytes: 93
+If we call the above counter "registered", would like to call this "unregistered"? Up to you.
+

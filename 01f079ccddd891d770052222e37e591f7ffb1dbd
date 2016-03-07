@@ -57,3 +57,20 @@ UUID: d79c592c_9b758b5a
 Bytes: 192
 I used the getUnsafe from the existing test. Which is more or less what you suggested. Obviously I was waiting for your CL before running this on all archs, so the getUnsafe worked for now :-)
 
+29
+Mon Mar 07 20:18:09 2016 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d79c592c_9b758b5a
+UUID: c26575c5_da0505aa
+Bytes: 450
+What existing test ? The existing tests define getUnsafe like so:
+
+  private static Unsafe getUnsafe() throws Exception {
+    Class<?> unsafeClass = Class.forName("sun.misc.Unsafe");
+    Field f = unsafeClass.getDeclaredField("theUnsafe");
+    f.setAccessible(true);
+    return (Unsafe) f.get(null);
+  }
+
+That's how application code is "supposed" to access Unsafe (as propagated by stackoverflow et al.). Unsafe.getUnsafe has always behaved this way.
+

@@ -1,0 +1,18 @@
+Revision: c7dad76b89cbe4fb56d1c964871820cf1fa7343d
+Patch-set: 4
+File: compiler/optimizing/intrinsics_mips64.cc
+
+950:5-950:35
+Mon Mar 07 23:48:12 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37af7563_2caf77c8
+Bytes: 446
+I strongly suspect this fails to handle a second set of pathological cases that we (along with OpenJDK 9) recently fixed in the library code.  If the input is an odd integer in the range in which integers are exactly representable but an integer pus 0.5 is not, then this algorithm results in the next higher integer.
+
+Fdlibm uses something more like:
+
+result = floor(in);
+if (in - result >= 0.5) result += 1;
+
+I suspect that can be made correct.
+

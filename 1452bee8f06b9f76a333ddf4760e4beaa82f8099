@@ -70,6 +70,24 @@ UUID: b7fe056e_32817080
 Bytes: 22
 UBFX r9, rINST, #8, #4
 
+File: runtime/interpreter/mterp/arm/op_cmp_long.S
+
+9:7-13:35
+Tue Mar 08 18:40:18 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_f2fc08cf
+Bytes: 417
+Misleading comment, for cmp-long(Long.MIN_VALUE, Long.MAX_VALUE) we would get IP=1 but the result of the comparison should be -1.
+
+On the other hand, we could do
+
+  cmp r0, r2       // Same CCs as `sub ip, r0, r2`.
+  sbcs ip, r1, r3  // Sets correct CCs for checking LT (but not EQ/NE).
+  mov ip, #0
+  mvnlt ip, #0     // -1
+  cmpeq r0, r2     // For correct EQ/NE, we may need to repeat the first CMP.
+  orrne ip, #1
+
 File: runtime/interpreter/mterp/arm/op_goto.S
 
 8:4-8:43

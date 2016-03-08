@@ -9,3 +9,11 @@ UUID: 37af7563_40be3292
 Bytes: 270
 We'll want to play with this number.  As part of my rework of branch profiling, I've changed the hotness counter to be a signed 16-bit int, so threshold would be capped at 32767.  I could go to 32 bits, but that would involve increasing the shadow frame size by 4 bytes.
 
+46
+Tue Mar 08 18:00:23 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37af7563_40be3292
+UUID: 37af7563_60600ee0
+Bytes: 261
+On second thought, I can deal with this as-is.  To speed up branch profiling, I'm caching a countdown value - and that's what's limited to signed 16-bits.  The actual threshold can be as large as you want - I'll just do updates in no-larger-than 16-bit batches.
+

@@ -9,6 +9,14 @@ UUID: 37fcd52a_c1fb448c
 Bytes: 90
 Maybe add that kAllocatorTypeNull can be used to check the OOME condition to this comment?
 
+35
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37fcd52a_c1fb448c
+UUID: 37af7563_efccf185
+Bytes: 73
+I renamed it kAllocatorTypeRegisterNative and added a comment about OOME.
+
 File: runtime/gc/heap-inl.h
 
 259:0-259:46
@@ -18,12 +26,28 @@ UUID: f705ddfe_dff55f32
 Bytes: 30
 Is the indentation right here?
 
+259:0-259:46
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f705ddfe_dff55f32
+UUID: 37af7563_8fc9bd74
+Bytes: 4
+Done
+
 409:2-409:15
 Sat Mar 05 01:44:14 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 97ebc162_a41ccc58
 Bytes: 93
 If all the cases of the switch should return, this is unreachable code? If so, UNREACHABLE()?
+
+409:2-409:15
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 97ebc162_a41ccc58
+UUID: 37af7563_4fe74501
+Bytes: 4
+Done
 
 File: runtime/gc/heap.cc
 
@@ -34,12 +58,28 @@ UUID: 17f7d148_3d620fa7
 Bytes: 70
 Returning here would miss the VLOG(heap) below. Return after the VLOG?
 
+1768:14-1768:25
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17f7d148_3d620fa7
+UUID: 37af7563_4f0e658b
+Bytes: 119
+I moved the VLOG up. One consequence is we won't get the update to count_delayed_oom_ in this case. Is that acceptable?
+
 1827:2-1827:3
 Sat Mar 05 01:44:14 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 17f7d148_fd94a7bb
 Bytes: 50
 DCHECK here that results.object_allocated is null?
+
+1827:2-1827:3
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17f7d148_fd94a7bb
+UUID: 37af7563_8ffbfd8c
+Bytes: 140
+In theory we shouldn't be looking at results.object_allocated unless TryToAllocate returned true, so I would rather not add the DCHECK here.
 
 2732:47-2733:41
 Mon Mar 07 19:35:28 2016 +0000
@@ -56,6 +96,14 @@ Maybe if 6 MB out of the 21 MB is native bytes, change "21MB/25MB" to "21MB(6MB)
 
 There may be an alternative way to export the native bytes.
 
+2732:47-2733:41
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 77672d0f_b8a97957
+UUID: 37af7563_6f36c13b
+Bytes: 30
+"21MB/25MB (6MB native)" okay?
+
 3832
 Sat Mar 05 01:44:14 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,12 +111,28 @@ UUID: e21b5959_c6b8c4f0
 Bytes: 82
 It's not universally followed around here, but how about "/*instrumented*/ false"?
 
+3832
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e21b5959_c6b8c4f0
+UUID: 37af7563_2f40c97f
+Bytes: 4
+Done
+
 3851:6-3851:12
 Sat Mar 05 01:44:14 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 770bad18_185ac520
 Bytes: 116
 break -> return? To prevent a malicious caller from affecting num_native_bytes_freed_ever_ and num_bytes_allocated_?
+
+3851:6-3851:12
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 770bad18_185ac520
+UUID: 37af7563_8f4e9db2
+Bytes: 48
+Done. And I added a test case to catch this bug.
 
 File: runtime/gc/heap.h
 
@@ -85,4 +149,20 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 57f5c93b_62ceb8aa
 Bytes: 93
 If we call the above counter "registered", would like to call this "unregistered"? Up to you.
+
+1202:17-1202:45
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 57f5c93b_62ceb8aa
+UUID: 37af7563_efd71104
+Bytes: 82
+I changed "registered" above to "allocated". I think it makes more sense that way.
+
+1202:9-1202:15
+Tue Mar 08 00:36:04 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 97ebc162_c448f058
+UUID: 37af7563_8fe45df7
+Bytes: 4
+Done
 

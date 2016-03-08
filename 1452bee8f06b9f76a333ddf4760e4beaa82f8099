@@ -1,5 +1,23 @@
 Revision: 1452bee8f06b9f76a333ddf4760e4beaa82f8099
 Patch-set: 7
+File: runtime/interpreter/mterp/arm/fbinop2addr.S
+
+12
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_b251e0db
+Bytes: 22
+UBFX r9, rINST, #8, #4
+
+File: runtime/interpreter/mterp/arm/fbinopWide2addr.S
+
+13
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_924e5c3b
+Bytes: 22
+UBFX r9, rINST, #8, #4
+
 File: runtime/interpreter/mterp/arm/footer.S
 
 148:0-149:24
@@ -24,6 +42,65 @@ Parent: 07623a24_19cbaba2
 UUID: 47ed12c9_6de67567
 Bytes: 145
 Sorry for late feedback, I'm debugging x86 port of this patch and review the difference between yours and mine code so I found this strange code.
+
+File: runtime/interpreter/mterp/arm/funop.S
+
+13
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_f24b6829
+Bytes: 22
+UBFX r9, rINST, #8, #4
+
+File: runtime/interpreter/mterp/arm/funopNarrower.S
+
+13
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_d248e42f
+Bytes: 22
+UBFX r9, rINST, #8, #4
+
+File: runtime/interpreter/mterp/arm/funopWider.S
+
+13
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_32817080
+Bytes: 22
+UBFX r9, rINST, #8, #4
+
+File: runtime/interpreter/mterp/arm/op_goto.S
+
+8:4-8:43
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_529074c6
+Bytes: 85
+We're already using UBFX for many other ops, so there's no reason to avoid SBFX here.
+
+10:0-12:69
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_b29440bb
+Bytes: 57
+SBFX+ADDS, even the comment says that the ADD sets flags.
+
+20:0-22:69
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_92913ccb
+Bytes: 5
+ditto
+
+File: runtime/interpreter/mterp/arm/op_instance_of.S
+
+15
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_1286ec97
+Bytes: 22
+UBFX r9, rINST, #8, #4
 
 File: runtime/interpreter/mterp/mterp.cc
 

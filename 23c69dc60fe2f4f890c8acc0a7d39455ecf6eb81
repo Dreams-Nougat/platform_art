@@ -1,5 +1,36 @@
 Revision: 23c69dc60fe2f4f890c8acc0a7d39455ecf6eb81
 Patch-set: 5
+File: runtime/interpreter/mterp/arm/alt_stub.S
+
+8:4-8:84
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_32d33080
+Bytes: 81
+REFRESH_IBASE
+
+Why do we need to do this here? How can the callee-save r8 change?
+
+File: runtime/interpreter/mterp/arm/binopLit8.S
+
+16
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_f261a87e
+Bytes: 31
+Missing ')' at end off comment.
+
+File: runtime/interpreter/mterp/arm/binopWide.S
+
+22:0-24:54
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_72ddb888
+Bytes: 126
+VREG_INDEX_TO_ADDR here and in a lot of other places,
+
+    git grep -E 'add.*, rFP, .*, lsl #2' runtime/interpreter/mterp/arm/
+
 File: runtime/interpreter/mterp/arm/entry.S
 
 2:17-2:21
@@ -17,6 +48,38 @@ UUID: 0a95dfbc_aa49cf14
 Bytes: 4
 Done
 
+50:53-50:100
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_f29ec8d8
+Bytes: 35
+Wrong comment, rFP points to vregs.
+
+58:4-58:57
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_d272a46e
+Bytes: 14
+REFRESH_IBASE?
+
+File: runtime/interpreter/mterp/arm/footer.S
+
+103:4-103:57
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_f2752859
+Bytes: 81
+REFRESH_IBASE
+
+Why do we need to do this here? How can the callee-save r8 change?
+
+118:4-118:75
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_92781c53
+Bytes: 5
+ditto
+
 File: runtime/interpreter/mterp/arm/header.S
 
 2:17-2:21
@@ -33,6 +96,60 @@ Parent: 6a3e5b9d_4efeb384
 UUID: 07015af3_db1d7354
 Bytes: 4
 Done
+
+File: runtime/interpreter/mterp/arm/op_const.S
+
+3:0-4:57
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_3254d09d
+Bytes: 32
+Missing ')' at end off comments.
+
+File: runtime/interpreter/mterp/arm/op_const_16.S
+
+2
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_1259ccd5
+Bytes: 31
+Missing ')' at end off comment.
+
+File: runtime/interpreter/mterp/arm/op_const_high16.S
+
+2
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_724e5811
+Bytes: 31
+Missing ')' at end off comment.
+
+File: runtime/interpreter/mterp/arm/op_const_string_jumbo.S
+
+3:0-4:57
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_525354b3
+Bytes: 32
+Missing ')' at end off comments.
+
+File: runtime/interpreter/mterp/arm/op_const_wide_16.S
+
+2
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_b2672094
+Bytes: 31
+Missing ')' at end off comment.
+
+File: runtime/interpreter/mterp/arm/op_mul_long.S
+
+28:12-28:19
+Tue Mar 08 18:03:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7fe056e_5267d4b5
+Bytes: 177
+You could use `r1, r2` here and in op_mul_long_2addr.S and the r10 would remain free for some other uses. (Maybe it would be useful as rZERO for SET_VREG and CLEAR_SHADOW_PAIR.)
 
 File: runtime/interpreter/mterp/mterp.cc
 

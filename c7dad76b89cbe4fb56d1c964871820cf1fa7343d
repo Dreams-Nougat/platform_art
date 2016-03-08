@@ -16,3 +16,33 @@ if (in - result >= 0.5) result += 1;
 
 I suspect that can be made correct.
 
+950:5-950:35
+Tue Mar 08 00:55:37 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37af7563_2caf77c8
+UUID: 37af7563_aff919dd
+Bytes: 473
+Yeah, I think it should be done simlar to this (except for the rounding direction for negative half-way values):
+
+https://github.com/freebsd/freebsd/blob/master/lib/msun/src/s_round.c
+
+Something like this?:
+
+    long round(double x)
+    {
+      double t;
+      if (x >= 0)
+      {
+        t = floor(x);
+        if (x - t >= 0.5)
+          t += 1;
+      }
+      else
+      {
+        t = ceil(x);
+        if (t - x > 0.5)
+          t -= 1;
+      }
+      return (long)t;
+    }
+

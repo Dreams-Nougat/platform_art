@@ -11,6 +11,18 @@ REFRESH_IBASE
 
 Why do we need to do this here? How can the callee-save r8 change?
 
+8:4-8:84
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_32d33080
+UUID: 570ce9bf_bcd21547
+Bytes: 1197
+This is the Dalvik interpreter switch mechanism.  Dalvik's mterp used this to avoid having to do any polling-style suspend checks or debugger/profiler attach/detach checks.  Instead, when a suspend was requested or debugger/profiler state changed, the requesting thread would walk the thread list and set the current ibase to the alternate mterp table.  The ibase refresh needs to happen at suspend points (but could happen elsewhere).  When set to the alternate ibase, control goes to this handler, which also calls out to MterpCheckBefore() to handle the uncommon cases (such as doing a suspend or switching to the full debug interpreter).
+
+Art's mterp is currently only using the alternate interpreter mechanism for development debugging & tracing, but we will be rolling to it for suspend and debugger checks in a future release.  Eliminating the polling-style suspend and debugger checks is a significant win.
+
+When I implemented this in Dalvik years ago, though, it was a little tricky because this ibase rewrite happens without threads being stopped.  It took a while to get it right, so I thought it best to start with the safe and slow polling mechanism.  I do expect to go there, though.
+
 File: runtime/interpreter/mterp/arm/binopLit8.S
 
 16
@@ -19,6 +31,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b7fe056e_f261a87e
 Bytes: 31
 Missing ')' at end off comment.
+
+16
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_f261a87e
+UUID: 570ce9bf_7ca37d79
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm/binopWide.S
 
@@ -30,6 +50,14 @@ Bytes: 126
 VREG_INDEX_TO_ADDR here and in a lot of other places,
 
     git grep -E 'add.*, rFP, .*, lsl #2' runtime/interpreter/mterp/arm/
+
+22:0-24:54
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_72ddb888
+UUID: 570ce9bf_d09ecd7c
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm/entry.S
 
@@ -55,12 +83,28 @@ UUID: b7fe056e_f29ec8d8
 Bytes: 35
 Wrong comment, rFP points to vregs.
 
+50:53-50:100
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_f29ec8d8
+UUID: 570ce9bf_30b08906
+Bytes: 4
+Done
+
 58:4-58:57
 Tue Mar 08 18:03:16 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b7fe056e_d272a46e
 Bytes: 14
 REFRESH_IBASE?
+
+58:4-58:57
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_d272a46e
+UUID: 570ce9bf_f0c0b14c
+Bytes: 25
+see other rIBASE comment.
 
 File: runtime/interpreter/mterp/arm/footer.S
 
@@ -73,12 +117,28 @@ REFRESH_IBASE
 
 Why do we need to do this here? How can the callee-save r8 change?
 
+103:4-103:57
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_f2752859
+UUID: 570ce9bf_90d05517
+Bytes: 25
+See other rIBASE comment.
+
 118:4-118:75
 Tue Mar 08 18:03:16 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b7fe056e_92781c53
 Bytes: 5
 ditto
+
+118:4-118:75
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_92781c53
+UUID: 570ce9bf_50cadd68
+Bytes: 25
+See other rIBASE comment.
 
 File: runtime/interpreter/mterp/arm/header.S
 
@@ -106,6 +166,14 @@ UUID: b7fe056e_3254d09d
 Bytes: 32
 Missing ')' at end off comments.
 
+3:0-4:57
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_3254d09d
+UUID: 570ce9bf_30e2c9ea
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm/op_const_16.S
 
 2
@@ -114,6 +182,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b7fe056e_1259ccd5
 Bytes: 31
 Missing ')' at end off comment.
+
+2
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_1259ccd5
+UUID: 570ce9bf_b00c798e
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm/op_const_high16.S
 
@@ -124,6 +200,14 @@ UUID: b7fe056e_724e5811
 Bytes: 31
 Missing ')' at end off comment.
 
+2
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_724e5811
+UUID: 570ce9bf_70ff217b
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm/op_const_string_jumbo.S
 
 3:0-4:57
@@ -132,6 +216,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b7fe056e_525354b3
 Bytes: 32
 Missing ')' at end off comments.
+
+3:0-4:57
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_525354b3
+UUID: 570ce9bf_10310542
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm/op_const_wide_16.S
 
@@ -142,6 +234,14 @@ UUID: b7fe056e_b2672094
 Bytes: 31
 Missing ')' at end off comment.
 
+2
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_b2672094
+UUID: 570ce9bf_b03fd90b
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm/op_mul_long.S
 
 28:12-28:19
@@ -150,6 +250,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b7fe056e_5267d4b5
 Bytes: 177
 You could use `r1, r2` here and in op_mul_long_2addr.S and the r10 would remain free for some other uses. (Maybe it would be useful as rZERO for SET_VREG and CLEAR_SHADOW_PAIR.)
+
+28:12-28:19
+Wed Mar 09 22:47:39 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7fe056e_5267d4b5
+UUID: 570ce9bf_10dd85fa
+Bytes: 201
+Yes, thanks (and it looks like lr is available as a temp here as well).  Might find more value using r10 as the branch profiling countdown register.  I'll add a TUNING comment here for now and revisit.
 
 File: runtime/interpreter/mterp/mterp.cc
 

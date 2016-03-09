@@ -25,3 +25,13 @@ UUID: 3776954b_eec0ff4c
 Bytes: 246
 When I put kNoOutputOverlap then DCHECK(!invoke_->GetLocations()->GetLiveRegisters()->ContainsCoreRegister(out.reg())) fails (line 125). I doubt that is wise to remove this DCHECK? On the other hand, ARM64 uses kOutputOverlap in similar scenario.
 
+1467:60-1467:74
+Wed Mar 09 11:04:02 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3776954b_eec0ff4c
+UUID: 37313583_76429089
+Bytes: 211
+Oh yes, the inputs will be considered live at that instruction and restored. And will overwrite the output with kNoOutputOverlap.
+
+You can add this as a comment or, remove the kOutputOverlap, that's the default.
+

@@ -99,3 +99,29 @@ Bytes: 523
 Please, do not emit extra NOPs. The debug line info can be used not only for debugging with gdb or lldb, but for low-level profiling with tools like the linux perf, Streamline or VTune. The extra NOPs might affect performance dramatically. Is it so important to have a distinct debugging PcInfo record if we have already put one at the same place? I suggest that in such cases we just omit the PcInfo for the sake of keeping the generated code as if it is not native-debuggable.
 If you agree, I will prepare a simple patch.
 
+1626:0-1626:49
+Thu Mar 10 09:12:38 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37313583_f69f8088
+UUID: 37313583_768cd063
+Bytes: 1914
+I agree that those NOPs are nasty and it took a bit of convincing for me to add them in the first place, but I do not see a better solution.  The trouble is that the run-time like to puts its stackmaps after the instruction rather then before.  Let say you have function call followed by add:
+ 0x10: brl
+ (stackmap: pc 0x12 dex_pc 40)
+ 0x12: add
+If you dully add line mapping before each java statement:
+ (stackmap: pc 0x10 dex_pc 40)
+ 0x10: brl
+ (stackmap: pc 0x12 dex_pc 40)
+ (stackmap: pc 0x12 dex_pc 41)
+ 0x12: add
+Note the we have non-unique pc and the dex_pc (and thus mapped java line differ).  Removing the second stack map would generate wrong java line number for the "add".  Thus the NOP was added.
+
+Possible solutions:
+1) Emit run-time's stackmap before the "br", not after. I think this is the right solution, but it is significant change and it is just not happening for N. Even I am too worried.
+2) Keep the NOPs.  Performance is already affected since the code as compiled debuggable and the NOPs are only emitted when strictly necessary (which is somewhat rare).
+3) Distinguish run-time's stackmaps, and debugging stackmaps.  I keep going back on forth on whether stackmap entries should have generic "flags" field (variable sized).  The only non-debuggale cost would be single extra uint8_t in the header.
+4) Store all stackmaps off-by-one.  That is, run-times stackmaps stay untouched, but debugging ones get offset by one.  This is hacky and there is couple of corner cases, but I think it could be made to work.  It assumes that the run-time always stores stackmaps after the instruction.  I am not sure if that is the case.
+
+As a side note, I currently trying to figure out how to generate reasonable data for the non-debuggable case.  That is, the debugger asks for line number at "0x10 brl" when doing the backtrace, and gets back non-sense, because the stackmap only maps the line on 0x12.
+

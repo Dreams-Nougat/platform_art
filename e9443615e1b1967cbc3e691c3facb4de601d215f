@@ -45,6 +45,41 @@ Yes, precisely.
 
 Sure, sounds good to me.
 
+100:0-100:27
+Thu Mar 10 07:51:02 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9d20402f_9c8429cd
+UUID: 570ce9bf_3573d375
+Bytes: 2462
+Roland, we have a bit of a problem with class Mips[64]Label derived from class Label.
+
+We want SlowPathCode::GetEntryLabel() and SlowPathCode::GetExitLabel() to return pointers to instances of MIPS-specific labels. Right now class SlowPathCode simply contains two instances of class Label and returns pointers to them. I'm not sure if we could somehow easily tweak the label instance type at this level (SlowPathCode is a generic class and exposing arch-specific types in it appears problematic and is probably wrong, though the existing hard-coded type Label in it isn't great either).
+
+We could make SlowPathCode::GetE*Label() virtual and have the derived class SlowPathCodeMIPS[64] override these and return pointers to its own labels of type Mips[64]Label, much like it's done now.
+But this alone doesn't help with class IntrinsicSlowPath<>, currently deriving from SlowPathCode directly. It still needs to be derived from SlowPathCodeMIPS[64] or it has to replicate the same MIPS-specific label stuff.
+
+We aren't planning to redo the MIPS labels and branches mechanism right now (we will revisit it when we get to making improvements in the areas of delay slots, static/direct method calls and method loading in e.g. CodeGeneratorMIPS*::GenerateStaticOrDirectCall()) and so right now we won't be able to just use the base class Label for MIPS. We still need our Mips[64]Label.
+
+A few solutions that I can think of:
+
+1. "virtualize" SlowPathCode::GetE*Label() and extend the template class IntrinsicSlowPath<> to take the type of a SlowPathCode class, so we can plug SlowPathCodeMIPS[64] in more seamlessly.
+
+2. Move prev_branch_id_plus_one_ from Mips[64]Label to the parent class Label and abandon Mips[64]Label.
+
+3. "virtualize" SlowPathCode::GetE*Label() and figure out how to create the two labels of the right type at run time.
+
+I'm not sure no. 2 is great, it makes it less generic (although just an extra int32_t won't break it if unused) and we may need to touch/redo class Label again.
+
+No. 3 may be a little(?) involving.
+
+I'd probably go with no. 1.
+
+Also, we have the same issue with ARM64 (rather custom label and slow path classes).
+
+If we use a bit of pointer casting (between vixl::Label* and Label*), we could apply no. 1 to MIPS[64] and ARM64. With this we'd trade code cleanliness in one place with uncleanliness in another.
+
+If you have some other thoughts or recommendations w.r.t. how to do this better at this time, please let us know.
+
 860:7-860:10
 Tue Feb 16 16:16:00 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

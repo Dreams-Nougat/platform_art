@@ -47,6 +47,23 @@ UUID: d7a61927_80ade464
 Bytes: 693
 Perhaps a more extensive comment discussing how we live with imprecision?  As we've discussed, hotness is a hint and not worth the cost of atomicity.  With the previous setup, at worst we'd end up submitting multiple compilation requests for the same method.  My concern with the addition of batch updates is that we're much more likely to wrap around, and the penalty is slightly worse.  In the new world, a wrap-around would usually mean we'd stop checking for OSR.  Again, it's still unlikely and it's lost opportunity rather than incorrectness - so not a huge deal.  But, at least attempting to avoid wrap-around would greatly decrease the likelihood of inadvertently disabling OSR checks.
 
+477:0-482:3
+Fri Mar 11 20:35:51 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_80ade464
+UUID: b76525c6_bdebebcb
+Bytes: 565
+The way it's written, it can theoretically overflow when 2 threads pass the check and then increment. Though I would expect -O2 to optimize away the extra loads, we should at least make it explicit:
+
+  int16_t count = hotness_count_;  // Single read.
+  if ((count >= 0) && (count < std::numeric_limits<int16_t>::max())) {
+    ++count;
+    hotness_count_ = count;  // Single write.
+  }
+  return count;
+
+and maybe mark the hotness_count_ volatile; though the meaning of volatile is very weak in C++, it should prevent the compiler from introducing extra reads/writes.
+
 File: runtime/instrumentation.h
 
 104:0-108:48
@@ -156,6 +173,14 @@ Parent: b76525c6_9adc6d00
 UUID: d7a61927_80fb2465
 Bytes: 171
 Not sure I understand.  The r3 setup is all alu ops, so I thought it best to add distance between the load and use of s1 (though I doubt it makes much difference here)....
+
+12
+Fri Mar 11 20:35:51 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_80fb2465
+UUID: b76525c6_fdf563a3
+Bytes: 69
+Moving discussion to https://android-review.googlesource.com/207970 .
 
 File: runtime/interpreter/mterp/arm/footer.S
 

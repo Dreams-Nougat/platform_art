@@ -2,12 +2,62 @@ Revision: 66044694f9c4a5ababdd9cd6ee8965de44704025
 Patch-set: 12
 File: runtime/art_method.h
 
+50:27-50:48
+Fri Mar 11 13:48:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_5ae575f0
+Bytes: 9
+Disabled?
+
 478:51-478:59
 Fri Mar 11 00:19:14 2016 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d7a61927_f4058ef2
 Bytes: 54
 INT16_MAX or even std::numeric_limits<int16_t>::min()?
+
+477:0-482:3
+Fri Mar 11 13:48:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_7ae239eb
+Bytes: 69
+The counter isn't atomic, so you can't assume it will not overflow...
+
+File: runtime/instrumentation.h
+
+104:0-108:48
+Fri Mar 11 13:48:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7995dfa_fc16498a
+Bytes: 108
+Sort of feels very ad-hoc to the JIT. How about hard coding it in the interpreters, just like we do for osr?
+
+File: runtime/interpreter/interpreter_goto_table_impl.cc
+
+73:0-73:99
+Fri Mar 11 13:48:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_3a71a1ad
+Bytes: 65
+That looks fragile knowing the counter gets concurrently updated.
+
+File: runtime/interpreter/mterp/arm/binopWide.S
+
+22:0-22:54
+Fri Mar 11 13:48:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_7a6b19bf
+Bytes: 23
+Unrelated to profiling?
+
+File: runtime/interpreter/mterp/arm/header.S
+
+75:0-75:42
+Fri Mar 11 13:48:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 173991b4_ade9dd65
+Bytes: 43
+Neat, so you do reserve a register for arm.
 
 File: runtime/interpreter/mterp/mterp.cc
 

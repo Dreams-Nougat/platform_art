@@ -18,6 +18,14 @@ UUID: b76525c6_bdc04b4c
 Bytes: 53
 Maybe reorder to allow more dual-issued instructions?
 
+12
+Fri Mar 11 20:44:32 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_bdc04b4c
+UUID: b76525c6_3dd8bb35
+Bytes: 354
+I don't know if modern ARM CPUs have 2 ALUs (or shift-rotate units or whatever) per core. If so, the UBFX would be better paired with the "mov r3, rINST, lsr #12" and the "flds s1, [r3]" would be paired with "VREG_INDEX_TO_ADDR r9, r9". Otherwise, it doesn't really matter but I'd still try to avoid sequences of directly dependent instructions in a row.
+
 File: runtime/interpreter/mterp/arm/fbinopWide2addr.S
 
 13

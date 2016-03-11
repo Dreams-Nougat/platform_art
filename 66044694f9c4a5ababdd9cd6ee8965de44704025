@@ -41,6 +41,23 @@ UUID: b76525c6_3a71a1ad
 Bytes: 65
 That looks fragile knowing the counter gets concurrently updated.
 
+73:0-73:99
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_3a71a1ad
+UUID: b76525c6_ba6cd19c
+Bytes: 66
+Would you prefer std::atomic<int16_t>::load(memory_order_relaxed)?
+
+File: runtime/interpreter/mterp/arm/bincmp.S
+
+2:58-4:38
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_fa3009e5
+Bytes: 15
+Update comment.
+
 File: runtime/interpreter/mterp/arm/binopWide.S
 
 22:0-22:54
@@ -49,6 +66,80 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_7a6b19bf
 Bytes: 23
 Unrelated to profiling?
+
+File: runtime/interpreter/mterp/arm/entry.S
+
+37:0-39:50
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_9a31cdec
+Bytes: 73
+stmfd sp!, {r3,r4-r10,fp,lr}  @ Arbitrarily save r3 for 64-bit alignment.
+
+File: runtime/interpreter/mterp/arm/fbinop2addr.S
+
+12
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_9adc6d00
+Bytes: 62
+Why here? Wouldn't it be better interleaved with the r3 setup?
+
+File: runtime/interpreter/mterp/arm/footer.S
+
+144:42-144:65
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_ba08514d
+Bytes: 440
+Looking at MterpAddHotnessBatch() and MterpSetUpHotnessCountdown(), it seems that we should never hit the ==0 case.
+
+This could be abused to streamline the assembly a bit if we make kMethodCheckForOSR = -1 and kMethodHotnessDisable = -2:
+
+    cmp rPROFILE, #METHOD_CHECK_OSR  @ Actually cmn rPROFILE, #1
+    beq .L_osr_check
+    subgts rPROFILE, #1
+    beq .L_add_batch
+
+and we don't need to branch there and back for kMethodHotnessDisable.
+
+149:0-150:64
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_dae6e5d1
+Bytes: 138
+Is
+
+    add r2, rINST, rINST
+    ldrh rINST, [rPC, r2]!
+
+better, worse or the same as
+
+    add rPC, rINST, shl #1
+    ldrh rINST, [rPC]
+
+?
+
+151
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_ba64d1f3
+Bytes: 57
+Interleave with the FETCH sequence for better scheduling.
+
+259:0-262:79
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_5a49f559
+Bytes: 71
+ldmfdlt sp!, {r3,r4-r10,fp,pc}  @ Arbitrarily pop alignment word to r3.
+
+273
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_7a46b94a
+Bytes: 69
+ldmfd sp!, {r3,r4-r10,fp,pc}  @ Arbitrarily pop alignment word to r3.
 
 File: runtime/interpreter/mterp/arm/header.S
 
@@ -59,6 +150,90 @@ UUID: 173991b4_ade9dd65
 Bytes: 43
 Neat, so you do reserve a register for arm.
 
+114:27-114:54
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_3aee01a9
+Bytes: 9
+OFF_FP(0)
+
+File: runtime/interpreter/mterp/arm/op_if_eq.S
+
+1:26-1:39
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_1a269db0
+Bytes: 63
+Obsolete parameter in all the op_if_*.S files, including arm64.
+
+File: runtime/interpreter/mterp/arm/zcmp.S
+
+2:58-4:38
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_3a2361a1
+Bytes: 15
+Update comment.
+
+File: runtime/interpreter/mterp/arm64/bincmp.S
+
+2:58-4:38
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_daeee56a
+Bytes: 15
+Update comment.
+
+File: runtime/interpreter/mterp/arm64/footer.S
+
+135:0-135:23
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_5a9f35d5
+Bytes: 76
+This label is unused after you fix op_goto_32.S (there is no ORRS on arm64).
+
+138:43-138:66
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_5a1ad54e
+Bytes: 80
+If ==0 is impossible (see comments for arm), we can use TBNZ instead of CMP+BLE.
+
+155:0-156:25
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_1a205d83
+Bytes: 4
+CBNZ
+
+File: runtime/interpreter/mterp/arm64/header.S
+
+120:27-120:54
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_9a80ed7d
+Bytes: 9
+OFF_FP(0)
+
+File: runtime/interpreter/mterp/arm64/op_goto_32.S
+
+16:12-16:34
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_ba85b18c
+Bytes: 8
+*NoFlags
+
+File: runtime/interpreter/mterp/arm64/zcmp.S
+
+2:58-4:38
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_9a0b8d09
+Bytes: 15
+Update comment.
+
 File: runtime/interpreter/mterp/mterp.cc
 
 649:6-649:16
@@ -68,6 +243,13 @@ UUID: d7a61927_d487b2cf
 Bytes: 80
 Isn't a zero offset also backwards? Or we don't care about this particular case?
 
+708:0-709:45
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_7af87968
+Bytes: 56
+return MterpSetUpHotnessCountdown(method, shadow_frame);
+
 File: runtime/jit/jit_instrumentation.cc
 
 197:41-197:49
@@ -76,4 +258,20 @@ Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d7a61927_9436cadf
 Bytes: 96
 Ditto. Or maybe even have a descriptively named constant instead of this max for a generic type?
+
+File: runtime/stack.h
+
+470:2-470:11
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_9a82adf3
+Bytes: 15
+const uint16_t*
+
+473:2-473:85
+Fri Mar 11 14:58:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_7a2319ee
+Bytes: 156
+Alternatively, drop number_of_vregs_ and dex_pc_? The first is in code_item_->registers_size_, the second can be calculated from code_item_ and dex_pc_ptr_.
 

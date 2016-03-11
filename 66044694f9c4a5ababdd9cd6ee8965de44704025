@@ -9,6 +9,14 @@ UUID: b76525c6_5ae575f0
 Bytes: 9
 Disabled?
 
+50:27-50:48
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_5ae575f0
+UUID: d7a61927_60f8b868
+Bytes: 4
+Done
+
 478:51-478:59
 Fri Mar 11 00:19:14 2016 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: d7a61927_f4058ef2
 Bytes: 54
 INT16_MAX or even std::numeric_limits<int16_t>::min()?
 
+478:51-478:59
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_f4058ef2
+UUID: d7a61927_c0036c2f
+Bytes: 4
+Done
+
 477:0-482:3
 Fri Mar 11 13:48:34 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_7ae239eb
 Bytes: 69
 The counter isn't atomic, so you can't assume it will not overflow...
+
+477:0-482:3
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_7ae239eb
+UUID: d7a61927_80ade464
+Bytes: 693
+Perhaps a more extensive comment discussing how we live with imprecision?  As we've discussed, hotness is a hint and not worth the cost of atomicity.  With the previous setup, at worst we'd end up submitting multiple compilation requests for the same method.  My concern with the addition of batch updates is that we're much more likely to wrap around, and the penalty is slightly worse.  In the new world, a wrap-around would usually mean we'd stop checking for OSR.  Again, it's still unlikely and it's lost opportunity rather than incorrectness - so not a huge deal.  But, at least attempting to avoid wrap-around would greatly decrease the likelihood of inadvertently disabling OSR checks.
 
 File: runtime/instrumentation.h
 
@@ -31,6 +55,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f7995dfa_fc16498a
 Bytes: 108
 Sort of feels very ad-hoc to the JIT. How about hard coding it in the interpreters, just like we do for osr?
+
+104:0-108:48
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7995dfa_fc16498a
+UUID: d7a61927_e08788cf
+Bytes: 747
+Could you expand on this?  The previous hard-coding of the OSR check in the interpreter was actually the biggest contributor to the slowdown (it was happening on every branch, even for cold methods).  It had to do this because it was decoupled from the instrumentation's hotness mechanism - so it didn't know whether the method was hot enough to check or not.  By coupling it to hotness, we are able to avoid the check until there is at least a possibility of a compiled loop header entry.  I thought about completely bypassing the instrumentation framework for hotness, but it seemed a little unclean to me to have some profiling information come from instrumentation and some from a side channel.  But, perhaps I misunderstand your comment here.
 
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
@@ -49,6 +81,14 @@ UUID: b76525c6_ba6cd19c
 Bytes: 66
 Would you prefer std::atomic<int16_t>::load(memory_order_relaxed)?
 
+73:0-73:99
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_ba6cd19c
+UUID: d7a61927_e05ca8f5
+Bytes: 1058
+At least in my opinion, the cost of being precise here far exceeds the benefits of avoiding a missed osr check in a rare circumstance.  In this case, though, I believe that even if a concurrent update undid a transition to kMethodCheckForOSR, we would correct it on a subsequent backwards branch.  I suspect the most likely case of a bad update would be if two threads picked up the hotness_count just below OSR threshold.  The first added a count that crossed threshold and set kMethodCheckForOSR.  The second then updates to just below threshold, wiping out the first's transition.  But, if it's hot, someone will cross the threshold again.  In general, though we are imprecise with hotness, I think we can live with multiple threshold crossings.  The worst case is if we somehow wrongly go negative (either kHotnessDisabled or some other odd negative value).  In that case, we effectively turn off profiling and won't have the opportunity to self-correct.  So long as we attempt to avoid wrap-around on updates, that case seems exceedingly unlikely to me.
+
 File: runtime/interpreter/mterp/arm/bincmp.S
 
 2:58-4:38
@@ -57,6 +97,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_fa3009e5
 Bytes: 15
 Update comment.
+
+2:58-4:38
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_fa3009e5
+UUID: d7a61927_e052e8ae
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm/binopWide.S
 
@@ -67,6 +115,14 @@ UUID: b76525c6_7a6b19bf
 Bytes: 23
 Unrelated to profiling?
 
+22:0-22:54
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_7a6b19bf
+UUID: d7a61927_40681c65
+Bytes: 84
+Moved (along with the others) to https://android-review.googlesource.com/#/c/188977/
+
 File: runtime/interpreter/mterp/arm/entry.S
 
 37:0-39:50
@@ -76,6 +132,14 @@ UUID: b76525c6_9a31cdec
 Bytes: 73
 stmfd sp!, {r3,r4-r10,fp,lr}  @ Arbitrarily save r3 for 64-bit alignment.
 
+37:0-39:50
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_9a31cdec
+UUID: d7a61927_2065108b
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm/fbinop2addr.S
 
 12
@@ -84,6 +148,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_9adc6d00
 Bytes: 62
 Why here? Wouldn't it be better interleaved with the r3 setup?
+
+12
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_9adc6d00
+UUID: d7a61927_80fb2465
+Bytes: 171
+Not sure I understand.  The r3 setup is all alu ops, so I thought it best to add distance between the load and use of s1 (though I doubt it makes much difference here)....
 
 File: runtime/interpreter/mterp/arm/footer.S
 
@@ -103,6 +175,14 @@ This could be abused to streamline the assembly a bit if we make kMethodCheckFor
 
 and we don't need to branch there and back for kMethodHotnessDisable.
 
+144:42-144:65
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_ba08514d
+UUID: d7a61927_3415515d
+Bytes: 7
+Abused.
+
 149:0-150:64
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -120,12 +200,28 @@ better, worse or the same as
 
 ?
 
+149:0-150:64
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_dae6e5d1
+UUID: d7a61927_00dd7488
+Bytes: 211
+I'd doubt it's any different these days (arm folks chime in?).  From my ancient history of working with machines that had more ALUs that shift/rotate units, I tend to add when a shl would do.  Just old habits...
+
 151
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_ba64d1f3
 Bytes: 57
 Interleave with the FETCH sequence for better scheduling.
+
+151
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_ba64d1f3
+UUID: d7a61927_00b45446
+Bytes: 4
+Done
 
 259:0-262:79
 Fri Mar 11 14:58:14 2016 +0000
@@ -134,12 +230,28 @@ UUID: b76525c6_5a49f559
 Bytes: 71
 ldmfdlt sp!, {r3,r4-r10,fp,pc}  @ Arbitrarily pop alignment word to r3.
 
+259:0-262:79
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_5a49f559
+UUID: d7a61927_00373495
+Bytes: 4
+Done
+
 273
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_7a46b94a
 Bytes: 69
 ldmfd sp!, {r3,r4-r10,fp,pc}  @ Arbitrarily pop alignment word to r3.
+
+273
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_7a46b94a
+UUID: d7a61927_e03b087f
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm/header.S
 
@@ -150,12 +262,28 @@ UUID: 173991b4_ade9dd65
 Bytes: 43
 Neat, so you do reserve a register for arm.
 
+75:0-75:42
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 173991b4_ade9dd65
+UUID: d7a61927_203eb06e
+Bytes: 64
+Thank vmarko for that.  He noticed the under-utilization of r10.
+
 114:27-114:54
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_3aee01a9
 Bytes: 9
 OFF_FP(0)
+
+114:27-114:54
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_3aee01a9
+UUID: d7a61927_c0536cb5
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm/op_if_eq.S
 
@@ -166,6 +294,14 @@ UUID: b76525c6_1a269db0
 Bytes: 63
 Obsolete parameter in all the op_if_*.S files, including arm64.
 
+1:26-1:39
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_1a269db0
+UUID: d7a61927_20f070f0
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm/zcmp.S
 
 2:58-4:38
@@ -174,6 +310,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_3a2361a1
 Bytes: 15
 Update comment.
+
+2:58-4:38
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_3a2361a1
+UUID: d7a61927_80fde4ca
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm64/bincmp.S
 
@@ -184,6 +328,14 @@ UUID: b76525c6_daeee56a
 Bytes: 15
 Update comment.
 
+2:58-4:38
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_daeee56a
+UUID: d7a61927_c0252c49
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm64/footer.S
 
 135:0-135:23
@@ -193,6 +345,14 @@ UUID: b76525c6_5a9f35d5
 Bytes: 76
 This label is unused after you fix op_goto_32.S (there is no ORRS on arm64).
 
+135:0-135:23
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_5a9f35d5
+UUID: d7a61927_0020d434
+Bytes: 4
+Done
+
 138:43-138:66
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -200,12 +360,28 @@ UUID: b76525c6_5a1ad54e
 Bytes: 80
 If ==0 is impossible (see comments for arm), we can use TBNZ instead of CMP+BLE.
 
+138:43-138:66
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_5a1ad54e
+UUID: d7a61927_54745d9d
+Bytes: 4
+Done
+
 155:0-156:25
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_1a205d83
 Bytes: 4
 CBNZ
+
+155:0-156:25
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_1a205d83
+UUID: d7a61927_a02aa016
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm64/header.S
 
@@ -216,6 +392,14 @@ UUID: b76525c6_9a80ed7d
 Bytes: 9
 OFF_FP(0)
 
+120:27-120:54
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_9a80ed7d
+UUID: d7a61927_2017d0d6
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/arm64/op_goto_32.S
 
 16:12-16:34
@@ -224,6 +408,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_ba85b18c
 Bytes: 8
 *NoFlags
+
+16:12-16:34
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_ba85b18c
+UUID: d7a61927_00d3b44d
+Bytes: 4
+Done
 
 File: runtime/interpreter/mterp/arm64/zcmp.S
 
@@ -234,6 +426,14 @@ UUID: b76525c6_9a0b8d09
 Bytes: 15
 Update comment.
 
+2:58-4:38
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_9a0b8d09
+UUID: d7a61927_20da305f
+Bytes: 4
+Done
+
 File: runtime/interpreter/mterp/mterp.cc
 
 649:6-649:16
@@ -243,12 +443,28 @@ UUID: d7a61927_d487b2cf
 Bytes: 80
 Isn't a zero offset also backwards? Or we don't care about this particular case?
 
+649:6-649:16
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_d487b2cf
+UUID: d7a61927_40c49c7b
+Bytes: 119
+Correct - fixed (but in truth, we this is a case not to care about unless we really want to optimize an infinite loop).
+
 708:0-709:45
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_7af87968
 Bytes: 56
 return MterpSetUpHotnessCountdown(method, shadow_frame);
+
+708:0-709:45
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_7af87968
+UUID: d7a61927_80be84f3
+Bytes: 4
+Done
 
 File: runtime/jit/jit_instrumentation.cc
 
@@ -259,6 +475,14 @@ UUID: d7a61927_9436cadf
 Bytes: 96
 Ditto. Or maybe even have a descriptively named constant instead of this max for a generic type?
 
+197:41-197:49
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_9436cadf
+UUID: d7a61927_a09f4089
+Bytes: 4
+Done
+
 File: runtime/stack.h
 
 470:2-470:11
@@ -268,10 +492,26 @@ UUID: b76525c6_9a82adf3
 Bytes: 15
 const uint16_t*
 
+470:2-470:11
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_9a82adf3
+UUID: d7a61927_40765c17
+Bytes: 4
+Done
+
 473:2-473:85
 Fri Mar 11 14:58:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b76525c6_7a2319ee
 Bytes: 156
 Alternatively, drop number_of_vregs_ and dex_pc_? The first is in code_item_->registers_size_, the second can be calculated from code_item_ and dex_pc_ptr_.
+
+473:2-473:85
+Fri Mar 11 20:19:10 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_7a2319ee
+UUID: d7a61927_80704419
+Bytes: 102
+Dropping both seems promising - updated TUNING comment and will take a look at doing so in another CL.
 

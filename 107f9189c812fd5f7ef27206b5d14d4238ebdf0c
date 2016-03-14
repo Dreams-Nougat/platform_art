@@ -12,6 +12,14 @@ I'm not sure I like overloading fields like this but if we are going to can we a
 a) change the name to something more descriptive or
 b) make it a union with descriptive names.
 
+614:0-617:32
+Mon Mar 14 18:01:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_03261454
+UUID: b76525c6_c0999297
+Bytes: 37
+I think I'd prefer changing the name.
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 2141:0-2157:3
@@ -20,6 +28,14 @@ Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d7a61927_4362dca7
 Bytes: 88
 I believe all the asm trampolines used to do this for you. Why can they not still do so?
+
+2141:0-2157:3
+Mon Mar 14 18:01:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_4362dca7
+UUID: b76525c6_e09e967c
+Bytes: 67
+I wish, but unfortunately not arm. That one is kind of important :)
 
 2229:0-2231:74
 Mon Mar 14 17:55:55 2016 +0000
@@ -35,6 +51,14 @@ UUID: d7a61927_c34b6c02
 Bytes: 87
 This still seems somewhat race-y to me (although I think it's a benign race but still).
 
+2234:0-2236:36
+Mon Mar 14 18:01:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_c34b6c02
+UUID: b76525c6_00a46acf
+Bytes: 57
+Yeah that's benign (and intentional). I'll add a comment.
+
 2237:0-2237:54
 Mon Mar 14 17:55:55 2016 +0000
 Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,10 +68,28 @@ I realize linear-alloc doesn't currently support free'ing memory but we really s
 
 It seems to me we just leak the old table every time we hit a new conflict. If I understand this change right this array should be per-referrer method so it might be okay (i.e. the current_table is almost always empty) but we should at least have a comment to this effect and a test that the impact is negligible.
 
+2237:0-2237:54
+Mon Mar 14 18:01:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_0368d487
+UUID: b76525c6_20a96ea9
+Bytes: 272
+It frees memory when the class loader gets deallocated. For the null class loader, it's alive throughout the lifetime of the app, so no need to care.
+
+And yes we do leak the table every time we hit a new conflict. That's a tradeoff compared to making the table fixed size.
+
 2240:3-2242:48
 Mon Mar 14 17:55:55 2016 +0000
 Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d7a61927_0354549c
 Bytes: 21
 No fence needed here?
+
+2240:3-2242:48
+Mon Mar 14 18:01:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_0354549c
+UUID: b76525c6_60b36615
+Bytes: 78
+No, it's only the data in the table that must be visible before going further.
 

@@ -82,6 +82,18 @@ I'm still a bit hesitant on relying on volatile for this. We could think in the 
 
 I really liked the idea that overflowing did not matter.
 
+477:0-482:3
+Mon Mar 14 21:21:35 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_dd825fc2
+UUID: d7a61927_0c6761b6
+Bytes: 809
+Well, I think overflow is going to matter in some way no matter what we do.  In all cases, we have the possibility of triggering multiple compilation requests for the same method when we do updates near state change boundaries. The existing code has that same race condition, but in addition allows multiple compilation requests via wrap-around.  And, with only a 16-bit hotness counter, I could imagine worst-case scenarios of swarms of requests for the same hot computational method while the JIT is busy compiling other methods.
+
+That said, though, I think I can see a way to put this code back to the way you had it and still avoid the performance hit of doing an OSR check for all branches even when an OSR entry cannot exist.
+
+Let's take this off-line, and I'll summarize the discussion here afterwards.
+
 File: runtime/instrumentation.h
 
 104:0-108:48
@@ -141,6 +153,14 @@ Bytes: 200
 Actually, I forgot that we are already fragile with the counter. So whatever we check against is fine.
 
 I did add a command line option for the osr threshold. How is that interacting with this change?
+
+73:0-73:99
+Mon Mar 14 21:21:35 2016 +0000
+Author: Bill Buzbee <1001578@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b76525c6_3d8a7bd9
+UUID: d7a61927_4c7169ac
+Bytes: 384
+Re: osr threshold option - the interaction here isn't affected by command-line changes to the osr threshold.  kMethodCheckForOSR is a state that says the method has gone hot enough to trigger an OSR compilation, so we should check to see if there is an available entry.  AddSamples() is who cares about the actual value of the threshold - and it will pick up the command-line changes.
 
 File: runtime/interpreter/mterp/arm/bincmp.S
 

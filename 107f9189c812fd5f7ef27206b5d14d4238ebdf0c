@@ -1,0 +1,53 @@
+Revision: 107f9189c812fd5f7ef27206b5d14d4238ebdf0c
+Patch-set: 5
+File: runtime/art_method.h
+
+614:0-617:32
+Mon Mar 14 17:55:55 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7a61927_03261454
+Bytes: 191
+I'm not sure I like overloading fields like this but if we are going to can we at least either 
+
+a) change the name to something more descriptive or
+b) make it a union with descriptive names.
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+2141:0-2157:3
+Mon Mar 14 17:55:55 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7a61927_4362dca7
+Bytes: 88
+I believe all the asm trampolines used to do this for you. Why can they not still do so?
+
+2229:0-2231:74
+Mon Mar 14 17:55:55 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7a61927_634f1839
+Bytes: 11
+null check.
+
+2234:0-2236:36
+Mon Mar 14 17:55:55 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7a61927_c34b6c02
+Bytes: 87
+This still seems somewhat race-y to me (although I think it's a benign race but still).
+
+2237:0-2237:54
+Mon Mar 14 17:55:55 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7a61927_0368d487
+Bytes: 484
+I realize linear-alloc doesn't currently support free'ing memory but we really should have some comment about where it would/could be done, since that ability is a TODO.
+
+It seems to me we just leak the old table every time we hit a new conflict. If I understand this change right this array should be per-referrer method so it might be okay (i.e. the current_table is almost always empty) but we should at least have a comment to this effect and a test that the impact is negligible.
+
+2240:3-2242:48
+Mon Mar 14 17:55:55 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7a61927_0354549c
+Bytes: 21
+No fence needed here?
+

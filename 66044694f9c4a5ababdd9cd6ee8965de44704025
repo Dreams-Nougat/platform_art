@@ -72,6 +72,16 @@ UUID: d7a61927_0da5a8dd
 Bytes: 25
 Sounds reasonable - done.
 
+477:0-482:3
+Mon Mar 14 10:38:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_0da5a8dd
+UUID: b76525c6_dd825fc2
+Bytes: 240
+I'm still a bit hesitant on relying on volatile for this. We could think in the future to have AOT code also increment the counter, and we probably don't want to check for overflows.
+
+I really liked the idea that overflowing did not matter.
+
 File: runtime/instrumentation.h
 
 104:0-108:48
@@ -88,6 +98,14 @@ Parent: f7995dfa_fc16498a
 UUID: d7a61927_e08788cf
 Bytes: 747
 Could you expand on this?  The previous hard-coding of the OSR check in the interpreter was actually the biggest contributor to the slowdown (it was happening on every branch, even for cold methods).  It had to do this because it was decoupled from the instrumentation's hotness mechanism - so it didn't know whether the method was hot enough to check or not.  By coupling it to hotness, we are able to avoid the check until there is at least a possibility of a compiled loop header entry.  I thought about completely bypassing the instrumentation framework for hotness, but it seemed a little unclean to me to have some profiling information come from instrumentation and some from a side channel.  But, perhaps I misunderstand your comment here.
+
+104:0-108:48
+Mon Mar 14 10:38:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_e08788cf
+UUID: b76525c6_fd8723cf
+Bytes: 256
+Yeah, my comment was about bypassing the instrumentation framework. That method seems very JIT hotness counting specific, and instead of going through the instrumentation, you could call direclty the method that does what you want from, eg, the Jit class..
 
 File: runtime/interpreter/interpreter_goto_table_impl.cc
 
@@ -113,6 +131,16 @@ Parent: b76525c6_ba6cd19c
 UUID: d7a61927_e05ca8f5
 Bytes: 1058
 At least in my opinion, the cost of being precise here far exceeds the benefits of avoiding a missed osr check in a rare circumstance.  In this case, though, I believe that even if a concurrent update undid a transition to kMethodCheckForOSR, we would correct it on a subsequent backwards branch.  I suspect the most likely case of a bad update would be if two threads picked up the hotness_count just below OSR threshold.  The first added a count that crossed threshold and set kMethodCheckForOSR.  The second then updates to just below threshold, wiping out the first's transition.  But, if it's hot, someone will cross the threshold again.  In general, though we are imprecise with hotness, I think we can live with multiple threshold crossings.  The worst case is if we somehow wrongly go negative (either kHotnessDisabled or some other odd negative value).  In that case, we effectively turn off profiling and won't have the opportunity to self-correct.  So long as we attempt to avoid wrap-around on updates, that case seems exceedingly unlikely to me.
+
+73:0-73:99
+Mon Mar 14 10:38:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7a61927_e05ca8f5
+UUID: b76525c6_3d8a7bd9
+Bytes: 200
+Actually, I forgot that we are already fragile with the counter. So whatever we check against is fine.
+
+I did add a command line option for the osr threshold. How is that interacting with this change?
 
 File: runtime/interpreter/mterp/arm/bincmp.S
 

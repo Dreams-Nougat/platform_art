@@ -23,3 +23,13 @@ Should be relying on the implementation of AtomicBoolean for the Unsafe unit tes
 
 Looking at the current implementation of AtomicBoolean it's not using any of the new 1.8 methods yet, am I looking in the wrong place?
 
+253:10-253:23
+Tue Mar 15 18:57:59 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc842acd_426ab2ee
+UUID: bc842acd_62aed666
+Bytes: 460
+Igor: no, this unit test uses the unsafe memory fence between the write of m.l in the main thread and the reads of m.l in the spawned threads.
+
+It is just that we also need a *relaxed memory* signal between the two, but after/before the fence. Java does not really provide that, so I used atomic boolean with weak set. The problem is that these are implemented with a true happens-before relation (probably), so that memory visibility is derived through these.
+

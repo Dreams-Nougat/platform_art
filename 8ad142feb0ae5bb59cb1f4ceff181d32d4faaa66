@@ -13,3 +13,13 @@ That's especially true since I believe we implement weakCompareAndSet as Compare
 
 The probability of this failing with a broken implementation is still likely to be very small.  Another way to test is to have one thread increment x, then increment y, in a tight loop, with a fence in between, ensuring x >= y. Another thread reads y then x, again with a fence in between.  It should always see x >= y.  But even that seems to fail rarely in practice without fences.
 
+253:10-253:23
+Tue Mar 15 18:55:22 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc842acd_423f120c
+UUID: bc842acd_426ab2ee
+Bytes: 260
+Should be relying on the implementation of AtomicBoolean for the Unsafe unit test? Why not test the Unsafe methods directly?
+
+Looking at the current implementation of AtomicBoolean it's not using any of the new 1.8 methods yet, am I looking in the wrong place?
+

@@ -1,0 +1,15 @@
+Revision: 8ad142feb0ae5bb59cb1f4ceff181d32d4faaa66
+Patch-set: 3
+File: test/004-checker-UnsafeTest18/src/Main.java
+
+253:10-253:23
+Tue Mar 15 18:50:23 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc842acd_423f120c
+Bytes: 732
+I would use a non-atomic field.  Unlike in C++, I think these are intended to work with ordinary accesses as the communication variable.
+
+That's especially true since I believe we implement weakCompareAndSet as CompareAndSet, which we should probably stop doing.  Maybe after looking at all of our clients.  Atomic get() will also ensure ordering.
+
+The probability of this failing with a broken implementation is still likely to be very small.  Another way to test is to have one thread increment x, then increment y, in a tight loop, with a fence in between, ensuring x >= y. Another thread reads y then x, again with a fence in between.  It should always see x >= y.  But even that seems to fail rarely in practice without fences.
+

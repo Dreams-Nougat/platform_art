@@ -1,0 +1,94 @@
+Revision: ef14f0910d68160b475f240a61f04de24a7b9f45
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:8-7:37
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_0c8adbd8
+Bytes: 133
+This isn't just a test, you're actually changing LoadConst64(). Name it something like "Improve non-trivial 64-bit constant loading".
+
+File: compiler/utils/mips64/assembler_mips64.cc
+
+1049:11-1049:21
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_8ccd2bae
+Bytes: 177
+Following the renaming of EmitDinsu() to LoadReplicatedConst32(), this should also be renamed.
+
+InstrCountForLoadReplicatedConst32() is a bit long, but is much more descriptive.
+
+1056:13-1056:61
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_cc5283af
+Bytes: 69
+(x & 0xFFFF) == 0. And then the whole return statement fits one line.
+
+1062:0-1062:26
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_ac0bc708
+Bytes: 38
+I don't think this comment adds value.
+
+1063:22-1063:31
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_6c9f0fd6
+Bytes: 131
+OTOH, this name is confusing as we already have Dinsu() and the method does more than just that. Rename to LoadReplicatedConst32().
+
+1065:0-1065:0
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_2c7cf745
+Bytes: 59
+Insert:
+
+  int32_t y = High32Bits(value);
+  CHECK_EQ(x, y);
+
+1078:6-1078:16
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_2cc4f77a
+Bytes: 22
+Rename to rep32_count.
+
+File: compiler/utils/mips64/assembler_mips64.h
+
+516:0-517:39
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_ec549ff5
+Bytes: 56
+Move further down to between
+EmitBcondc()
+and
+Buncond().
+
+File: compiler/utils/mips64/assembler_mips64_test.cc
+
+1953:39-1953:50
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_77e518f1
+Bytes: 300
+Too cryptic, IMO. It could've been an underscored integer suffix (_1, _2, etc) just as well, not pretending to convey any additional info, which there really isn't. Perhaps the only utility of a name here is to locate a failing test case by its name.
+
+I'd like someone else's (google's) opinion here.
+
+1961:0-1961:0
+Tue Mar 15 23:41:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d7bff930_774fd8af
+Bytes: 221
+Some 1000+ tests (for a single method) in source code looks excessive. I'm not saying these values shouldn't be tested, though.
+
+I'd like someone else's (google's) opinion here.
+
+I'm not reviewing the following test code.
+

@@ -1,5 +1,14 @@
 Revision: afc8cf747e6e5964b5b267be8503dc6bed64b6d1
 Patch-set: 1
+File: compiler/optimizing/code_generator_arm64.cc
+
+2402
+Wed Mar 16 14:26:59 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_63c4500a
+Bytes: 88
+Does it matter for the result of the HCompare whether we're comparing with +0.0 or -0.0?
+
 File: compiler/optimizing/inliner.cc
 
 916:58-916:81
@@ -10,4 +19,12 @@ Bytes: 288
 I think a NullConstant should return true for IsZeroBitPattern, unless you think that there is a chance of null not being 0.  You can then simplify this.
 
 I have heard of machines with non-0 NULL pointers, but not in the last 30 years or so.  Perhaps you can add a static_assert for this.
+
+916:58-916:81
+Wed Mar 16 14:26:59 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7bff930_5248ea05
+UUID: b76525c6_23ca581a
+Bytes: 141
++1; Non-0 null pointers don't really work with Java where you expect reference fields in zero-initialized objects to actually represent null.
 

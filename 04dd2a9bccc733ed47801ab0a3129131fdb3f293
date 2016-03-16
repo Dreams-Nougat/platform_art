@@ -1,0 +1,22 @@
+Revision: 04dd2a9bccc733ed47801ab0a3129131fdb3f293
+Patch-set: 2
+File: runtime/class_linker.cc
+
+2676:6-2676:35
+Wed Mar 16 15:59:07 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_a3e4a88c
+Bytes: 364
+I have removed the condition on JitAtFirstUse and replaced with IsNativeDebuggable.
+
+This means JitAtFirstUse has its pure meaning again - instead for waiting for method to get hot in the interpreter, it will JIT it when it is used for first time, and it will wait for this compilation to complete.
+
+JitAtFirstUse no longer affects decisions about AOT vs JIT code.
+
+2685:4-2685:10
+Wed Mar 16 15:59:07 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b76525c6_c3e99c65
+Bytes: 74
+This is counter-part to the code in Debugger:GoActive. I missed it in PS1.
+

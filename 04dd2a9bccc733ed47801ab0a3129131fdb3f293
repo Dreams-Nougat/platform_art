@@ -64,3 +64,15 @@ The question was how this is communicated to the runtime. If simply having Andro
 
 So he's asking how DEBUG_NATIVE_DEBUGGABLE is derived in the frontend.
 
+629:75-629:93
+Wed Mar 16 18:53:58 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9cd5a6d1_b4f96e94
+UUID: 1cc1b619_edff2578
+Bytes: 420
+The debugger type of the run configuration has to be switched from Java to Native. (internally we have a lot of bike-shedding how these should be called)
+
+If that is done, android studio will start the app with "adb shell am start" with additional -N flag.  This in turn will be transalted by the activity manager to the DEBUG_NATIVE_DEBUGGABLE flag.
+
+We definitely do not want to do this for normal Java debugging flow.
+

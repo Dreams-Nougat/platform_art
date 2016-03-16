@@ -1,0 +1,17 @@
+Revision: 43ccff924513466888e8ed37a843b4e78f0496d6
+Patch-set: 1
+File: runtime/art_method-inl.h
+
+335
+Wed Mar 16 22:29:49 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9cd5a6d1_d7c4347f
+Bytes: 259
+I think the existing convention is to put the guard into the call site, not here. But if everyone else is ok with it then I recommend making it slightly more obvious:
+
+  if (UNLIKELY(IsProxyMethod()) {
+     return nullptr;
+  }
+
+  return GetDeclaringClass(...)
+

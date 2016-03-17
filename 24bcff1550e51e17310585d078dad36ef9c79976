@@ -1,0 +1,82 @@
+Revision: 24bcff1550e51e17310585d078dad36ef9c79976
+Patch-set: 8
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1235
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dccabe38_eb72b1e9
+Bytes: 124
+Load to r12 and exchange r4<->r12 below, that gives you better options (CBZ/CBNZ and 16-bit instructions instead of 32-bit).
+
+1244
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ced36ca_0d1ed1a5
+Bytes: 236
+You could smooth this out with a bit of reordering:
+
+  .Limt_table_iterate:
+    ldr r4, [r0], #(2 * __SIZEOF_POINTER__)
+    cbz r4, .Lconflict_trampoline
+    cmp r4, r12
+    bne .Limt_table_iterate
+    ldr r0, [r0, #-__SIZEOF_POINTER__]
+
+1247:0-1248:10
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dccabe38_cb9335d2
+Bytes: 97
+Either `ldr pc, #[r0, ...]` (single 32-bit instruction) or just use r4 (two 16-bit instructions).
+
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+1704
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cc67a31_71c23256
+Bytes: 278
+Use xIP1 as the table iterator and smooth out as on ARM:
+
+  .Limt_table_iterate:
+    ldr x0, [xIP1], #(2 * __SIZEOF_POINTER__)
+    cbz x0, .Lconflict_trampoline
+    cmp xIP0, x0
+    bne .Limt_table_iterate
+    ldr x0, [xIP1, #-__SIZEOF_POINTER__]!  // Needs different registers.
+
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1416:4-1416:45
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9cbe868f_a944bd42
+Bytes: 160
+You could merge that with the PUSH EAX but you'd have to do explicit .cfi_adjust_cfa_offset. And I think the .cfi_rel_offset from PUSH/POP is rather bogus here.
+
+1422:17-1422:18
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dccabe38_8b4c4d43
+Bytes: 22
+2 * __SIZEOF_POINTER__
+
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+1333:17-1333:19
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c3deeec_3f3647cc
+Bytes: 22
+2 * __SIZEOF_POINTER__
+
+File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
+
+2131:0-2132:67
+Thu Mar 17 16:10:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dccabe38_2b68b983
+Bytes: 25
+Why do you need a handle?
+

@@ -23,6 +23,27 @@ You could smooth this out with a bit of reordering:
     bne .Limt_table_iterate
     ldr r0, [r0, #-__SIZEOF_POINTER__]
 
+1244
+Thu Mar 17 16:45:28 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ced36ca_0d1ed1a5
+UUID: 3cc67a31_71147296
+Bytes: 503
+If you want the fastest possible for a single-entry table:
+
+    ldr r4, [r0]
+  .Limt_table_iterate:
+    cmp r4, r12
+    bne .Limt_table_next_entry
+    // First entry is a hit.
+    ldr r0, [r0, #__SIZEOF_POINTER__]
+    ldr pc, [r0, #ART_METHOD_QUICK_CODE_OFFSET_32]
+  .Limt_table_next_entry:
+    cbz r4, .Lconflict_trampoline
+    ldr r4, [r0, #(2 * __SIZEOF_POINTER__)]!
+    b .Limt_table_iterate  // We could unroll the loop instead.
+                           // (Copy-paste the CMP+BNE+LDR+LDR above.)
+
 1247:0-1248:10
 Thu Mar 17 16:10:15 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

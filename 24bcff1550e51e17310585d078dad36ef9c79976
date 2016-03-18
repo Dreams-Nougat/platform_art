@@ -9,6 +9,14 @@ UUID: dccabe38_eb72b1e9
 Bytes: 124
 Load to r12 and exchange r4<->r12 below, that gives you better options (CBZ/CBNZ and 16-bit instructions instead of 32-bit).
 
+1235
+Fri Mar 18 10:18:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dccabe38_eb72b1e9
+UUID: 5c3deeec_ff333fd3
+Bytes: 4
+Done
+
 1244
 Thu Mar 17 16:10:15 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +52,28 @@ If you want the fastest possible for a single-entry table:
     b .Limt_table_iterate  // We could unroll the loop instead.
                            // (Copy-paste the CMP+BNE+LDR+LDR above.)
 
+1244
+Fri Mar 18 10:18:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cc67a31_71147296
+UUID: 9ccf6672_c19e8229
+Bytes: 34
+Neat. Done, but not the unrolling.
+
 1247:0-1248:10
 Thu Mar 17 16:10:15 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dccabe38_cb9335d2
 Bytes: 97
 Either `ldr pc, #[r0, ...]` (single 32-bit instruction) or just use r4 (two 16-bit instructions).
+
+1247:0-1248:10
+Fri Mar 18 10:18:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dccabe38_cb9335d2
+UUID: 3ce03ae0_3e874906
+Bytes: 4
+Done
 
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
@@ -67,6 +91,14 @@ Use xIP1 as the table iterator and smooth out as on ARM:
     bne .Limt_table_iterate
     ldr x0, [xIP1, #-__SIZEOF_POINTER__]!  // Needs different registers.
 
+1704
+Fri Mar 18 10:18:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cc67a31_71c23256
+UUID: 3ce03ae0_be7279e8
+Bytes: 4
+Done
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 1416:4-1416:45
@@ -83,6 +115,14 @@ UUID: dccabe38_8b4c4d43
 Bytes: 22
 2 * __SIZEOF_POINTER__
 
+1422:17-1422:18
+Fri Mar 18 10:18:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dccabe38_8b4c4d43
+UUID: bcb50adc_9a74eda0
+Bytes: 4
+Done
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 1333:17-1333:19
@@ -92,6 +132,14 @@ UUID: 5c3deeec_3f3647cc
 Bytes: 22
 2 * __SIZEOF_POINTER__
 
+1333:17-1333:19
+Fri Mar 18 10:18:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c3deeec_3f3647cc
+UUID: 3ce03ae0_de7f45af
+Bytes: 4
+Done
+
 File: runtime/entrypoints/quick/quick_trampoline_entrypoints.cc
 
 2131:0-2132:67
@@ -100,4 +148,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dccabe38_2b68b983
 Bytes: 25
 Why do you need a handle?
+
+2131:0-2132:67
+Fri Mar 18 10:18:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dccabe38_2b68b983
+UUID: 5cb88ea6_47e40e8d
+Bytes: 71
+Because it's being used line 2220, and that's after a suspension point.
 

@@ -43,6 +43,20 @@ Replace with
 
 as this is not really a null-sized array?
 
+112:2-112:20
+Fri Mar 18 16:34:56 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bccc2a7e_820d5ad3
+UUID: fc14e289_ae9e9827
+Bytes: 284
+> Replace with
+ > 
+ > Entry* entries_;
+ > 
+ > as this is not really a null-sized array?
+
+Type name[0] acts as a pointer to the end of the struct (or the next field but that use is rare). Having it here is intentional since the Entry's appear in memory right at the end of this struct.
+
 620:10-620:31
 Fri Mar 18 16:15:41 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,4 +72,17 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ce03ae0_9e521dde
 Bytes: 54
 Move these after line 298 to keep the offsets ordered?
+
+File: runtime/class_linker.cc
+
+6101:0-6101:73
+Fri Mar 18 16:34:56 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc14e289_aec7b80f
+Bytes: 303
+Have you made sure that this method continues to work correctly now that there are multiple conflict methods?
+
+This line especially seems like it could have problems.
+
+I think you need to replace any IMT conflict methods with the generic one in the loop there or else they could call superclass methods.
 

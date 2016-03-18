@@ -9,6 +9,14 @@ UUID: 3ce03ae0_3ee109bc
 Bytes: 2
 r0
 
+1236:8-1236:10
+Fri Mar 18 11:49:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ce03ae0_3ee109bc
+UUID: 9cb846d6_d958335e
+Bytes: 4
+Done
+
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
 1707
@@ -27,6 +35,14 @@ UUID: 9cb846d6_9975dbd5
 Bytes: 12
 add comment.
 
+466:20-466:41
+Fri Mar 18 11:49:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9cb846d6_9975dbd5
+UUID: 3ce03ae0_5eb895a3
+Bytes: 4
+Done
+
 File: runtime/art_method.h
 
 109:1-109:20
@@ -35,6 +51,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dce47ef9_5be6e3d4
 Bytes: 125
 just looking at this class, it seems magic that you're able to iterate over this array. Comment where the allocation happens.
+
+109:1-109:20
+Fri Mar 18 11:49:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dce47ef9_5be6e3d4
+UUID: 9cb846d6_f90fb74b
+Bytes: 4
+Done
 
 File: runtime/class_linker.cc
 
@@ -53,4 +77,19 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ce03ae0_fe55e124
 Bytes: 73
 do you have any intuitive measure of how badly this can get? same bellow.
+
+2228:45-2228:49
+Fri Mar 18 11:49:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ce03ae0_fe55e124
+UUID: 5cd96e3d_3f6667fd
+Bytes: 266
+If your craft an interface class with lots of methods, and manage to get them to the same slot, as well as calling all of them at runtime, that's pretty bad. Even worst if you create multiple interfaces like this. The bound is the number of methods a class can have.
+
+2238:0-2240:23
+Fri Mar 18 11:49:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7cd6320e_60593203
+Bytes: 118
+Leak will be number of threads executing this at the same time for the same class. Chances of happening repeatedly: 0.
 

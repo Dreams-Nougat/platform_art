@@ -39,6 +39,14 @@ UUID: fc14e289_9fab04ba
 Bytes: 147
 I don't yet understand why we have to do this.  Why can't we just explicitly map the protected region while leaving the rest of the stack unmapped?
 
+536:15-536:82
+Fri Mar 18 22:49:28 2016 +0000
+Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc14e289_9fab04ba
+UUID: fc14e289_30995d95
+Bytes: 314
+See b/27718174#comment10 for the gory details, but the short version is that VM_GROWSDOWN mappings (like the main stack) have strange behavior.  The kernel keeps a virtual guard page at the end of the VM_GROWSDOWN mapping - if you map a guard page manually, the kernel will fault at the page before the guard page.
+
 540:7-540:40
 Fri Mar 18 15:34:22 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

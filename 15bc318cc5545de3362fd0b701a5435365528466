@@ -9,12 +9,28 @@ UUID: 7cd6320e_a08dfa61
 Bytes: 17
 misses the table?
 
+12:23-12:48
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7cd6320e_a08dfa61
+UUID: 1cdb763a_1d9a939a
+Bytes: 76
+Hmmm, I'll say "does not find a target method in the table". Is that better?
+
 15
 Fri Mar 18 16:50:46 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ce03ae0_be90b9c6
 Bytes: 73
 Also, maybe mention that this is supported on ARM, ARM64, x86 and x86-64?
+
+15
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ce03ae0_be90b9c6
+UUID: bcb50adc_1d80d77b
+Bytes: 4
+Done
 
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
@@ -46,6 +62,14 @@ UUID: fc14e289_44e6e306
 Bytes: 196
 This method is no longer accurate. Either update it to be (and use it in preference to IsRuntimeMethod), rename it (maybe IsImtConflictMethodDuringCompilation?), or remove it to be less confusing.
 
+266:0-272:1
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc14e289_44e6e306
+UUID: bcb50adc_3d859b8c
+Bytes: 4
+Done
+
 File: runtime/art_method.h
 
 59:0-63:5
@@ -54,6 +78,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cdb763a_9d5223de
 Bytes: 26
 Replace with a `for` loop?
+
+59:0-63:5
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cdb763a_9d5223de
+UUID: bcb50adc_3d6e7b94
+Bytes: 83
+Why? There is no bound, which makes me prefer a while loop. How would you write it?
 
 76:4-76:9
 Fri Mar 18 16:15:41 2016 +0000
@@ -94,12 +126,28 @@ Bytes: 284
 
 Type name[0] acts as a pointer to the end of the struct (or the next field but that use is rare). Having it here is intentional since the Entry's appear in memory right at the end of this struct.
 
+112:2-112:20
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc14e289_ae9e9827
+UUID: 9cb846d6_7c3f150c
+Bytes: 161
+As Alex says, putting Entry* entries_ means we have a pointer to an array in the structure, which is opposite to what we want: an inlined array in the structure.
+
 620:10-620:31
 Fri Mar 18 16:15:41 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dce47ef9_1b361bcc
 Bytes: 109
 Maybe give another name to this member, as it serves different purposes?  What about turning it into a union?
+
+620:10-620:31
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dce47ef9_1b361bcc
+UUID: 1cdb763a_fd94076a
+Bytes: 38
+See discussion earlier in this change.
 
 File: runtime/asm_support.h
 
@@ -109,6 +157,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ce03ae0_9e521dde
 Bytes: 54
 Move these after line 298 to keep the offsets ordered?
+
+307:0-313:68
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ce03ae0_9e521dde
+UUID: bccc2a7e_e56e30ce
+Bytes: 4
+Done
 
 File: runtime/class_linker.cc
 
@@ -122,4 +178,12 @@ Have you made sure that this method continues to work correctly now that there a
 This line especially seems like it could have problems.
 
 I think you need to replace any IMT conflict methods with the generic one in the loop there or else they could call superclass methods.
+
+6101:0-6101:73
+Mon Mar 21 10:23:26 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc14e289_aec7b80f
+UUID: 5cd96e3d_c2c7640f
+Bytes: 151
+That's an excellent catch Alex. Turns out it was a problem as SetIMTRef was keeping the conflict already in place. I fixed SetIMTRef, and added a test.
 

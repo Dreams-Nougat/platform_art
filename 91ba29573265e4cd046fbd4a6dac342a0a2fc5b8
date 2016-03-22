@@ -9,6 +9,14 @@ UUID: 7cd6320e_66630aac
 Bytes: 12
 mention why.
 
+239:38-239:60
+Tue Mar 22 14:02:34 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7cd6320e_66630aac
+UUID: fce942d0_62b5b244
+Bytes: 4
+Done
+
 365:2-367:3
 Thu Mar 17 11:49:34 2016 +0000
 Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -27,6 +35,14 @@ UUID: bcb50adc_830e4484
 Bytes: 46
 document. "Check" is more vague then SameBits.
 
+26:12-26:26
+Tue Mar 22 14:02:34 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcb50adc_830e4484
+UUID: 1cdb763a_60212c3a
+Bytes: 4
+Done
+
 File: runtime/base/bit_utils.h
 
 272:23-272:50
@@ -35,6 +51,15 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dce47ef9_1e5fe9eb
 Bytes: 16
 why this change?
+
+272:23-272:50
+Tue Mar 22 14:02:34 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dce47ef9_1e5fe9eb
+UUID: 9ccf6672_8a680f86
+Bytes: 100
+See the change in memory_region.h
+I consider MaxInt<uint32_t>(0) a valid call which should return 0.
 
 File: runtime/stack_map.h
 
@@ -45,6 +70,14 @@ UUID: bcb50adc_e3fc6086
 Bytes: 17
 Create or Set? :)
 
+715:5-715:11
+Tue Mar 22 14:02:34 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcb50adc_e3fc6086
+UUID: 9ccf6672_ca793756
+Bytes: 16
+Done, thanks :-)
+
 1261:2-1261:25
 Tue Mar 22 13:32:15 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,4 +86,16 @@ Bytes: 153
 Do you need this here?
 
 We designed the StackMaps to be a direct reflection of the memory region. Adding a state introduces some complexity on top of it.
+
+1261:2-1261:25
+Tue Mar 22 14:02:34 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcb50adc_43350c2d
+UUID: 1cdb763a_e0145cd3
+Bytes: 602
+The first few bytes of the header are encoded in memory as ULEB128. This field holds the decoded values.
+
+It is not required, but it is very desirable optimization (as opposed to decoding it again whenever we need any of the header fields).
+
+One of the first patch sets of this CL uses different approach where the fields are single byte where postivie values represent themself, but negative values are memory offsets to full uint32_t. This approached avoided need for this field. However, on second though, I changed it to just standard ULEB128 which most people know, and caching of the result here.
 

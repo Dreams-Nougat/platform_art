@@ -49,6 +49,20 @@ UUID: dce47ef9_de70211b
 Bytes: 220
 Remove the comment. I suggested this and I missed that the CMP.W can actually encode #-1, so the assembler does not have to translate that to CMN. But as a matter of fact, `CMP.W rN, #-1` and `CMN rN, #1` are equivalent.
 
+143:40-143:67
+Wed Mar 23 10:03:46 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dce47ef9_de70211b
+UUID: 3ce03ae0_046cfad3
+Bytes: 329
+Actually, it does make sense to reiterate that JIT_CHECK_OSR is -1, otherwise the SUBGTS is wrong. What about
+
+    // We need to subtract 1 from positive values and we should not
+    // see 0 here, so we may use the result of the comparison with -1.
+    #if JIT_CHECK_OSR != -1
+    #  error "JIT_CHECK_OSR must be -1."
+    #endif
+
 262:0-263:30
 Wed Mar 23 09:37:47 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

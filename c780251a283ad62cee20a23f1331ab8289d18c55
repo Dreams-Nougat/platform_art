@@ -9,12 +9,28 @@ UUID: 9ccf6672_d5655c8d
 Bytes: 38
 do you want to do this in this change?
 
+15:0-15:4
+Thu Mar 24 05:35:55 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ccf6672_d5655c8d
+UUID: fc14e289_405fc8e7
+Bytes: 50
+Yes. (Probably should have marked the CL with WIP)
+
 16:0-16:37
 Wed Mar 23 12:05:15 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5cd96e3d_688af79b
 Bytes: 32
 Shouldn't it result in 'Object'?
+
+16:0-16:37
+Thu Mar 24 05:35:55 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cd96e3d_688af79b
+UUID: fc14e289_605ac4f9
+Bytes: 131
+Yeah, Object is the right resolution. Still the same problem, it should be merged to not soft-fail something that should hard-fail.
 
 File: runtime/verifier/method_verifier.cc
 
@@ -24,6 +40,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c416ed6_df04db3a
 Bytes: 112
 Isn't that more an internal problem in the verifier? How can we flag an array type unresolved if it's primitive?
+
+4259:0-4262:53
+Thu Mar 24 05:35:55 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c416ed6_df04db3a
+UUID: fc14e289_80270094
+Bytes: 106
+is_primitive means that the *operation* expects a primitive type. E.g., it's an aput, vs an aput-object...
 
 4264:40-4264:43
 Wed Mar 23 12:05:15 2016 +0000
@@ -82,6 +106,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7cd6320e_4912993b
 Bytes: 75
 Add a comment please, the one line 528 does not mention this early bailout.
+
+531:0-534:7
+Thu Mar 24 05:35:55 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7cd6320e_4912993b
+UUID: fc14e289_0065d0bf
+Bytes: 183
+I'll clarify, but 528 includes this. This one says that the resolvable part of a merged type exists (!zero) and is not an object array type -> one element of the merge is not -> bail.
 
 544:10-544:50
 Wed Mar 23 12:05:15 2016 +0000

@@ -32,3 +32,17 @@ UUID: 3c5f5acd_06fd3a7f
 Bytes: 27
 How can you guarantee that?
 
+5360:25-5360:74
+Thu Mar 24 11:03:15 2016 +0000
+Author: Chunlei Sang <1061369@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c5f5acd_06fd3a7f
+UUID: fc14e289_430fd281
+Bytes: 790
+is_gc_marking is set and reset only at safepoint. If there is no safepoint between the two heap references (immediately after is_gc_marking test), we can say the two references are up to date (marked) with guard of !is_gc_marking.
+
+Actually there is only one potential risk among code sequence: !is_gc_marking, load, load, cmpl. It's null check. If null check does not pass, the whole code sequence will canceled together, and the two heap references load are discarded together. We still can say the two load without read barrier are safe. right ?
+
+The inexact !is_gc_marking guard has potential performance risk, because this guard is coarse grain, and always take slow path when concurrent marking.
+
+If the exact baker's read barrier has been implemented, this patch should be abandoned.
+

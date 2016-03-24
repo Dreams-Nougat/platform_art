@@ -65,6 +65,23 @@ UUID: dca63e27_7a96a502
 Bytes: 23
 http://go/artstyleguide
 
+19
+Thu Mar 24 22:59:46 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dca63e27_7aace565
+UUID: dca63e27_5a93e910
+Bytes: 641
+My interpretation of that document was that arch/arm64/instruction_set_features_arm64.h should be *before* any system headers.
+
+Also for some reason the external version adds a special rule for non-dir headers, I disagree and the internal version makes more sense.
+
+1. dir2/foo2.h.
+2. C system files.
+3. C++ system files.
+4. Google .h files.
+
+Especially since the logic is "With the preferred ordering, if dir2/foo2.h omits any necessary includes, the build of dir/foo.cc or dir/foo_test.cc will break. Thus, this rule ensures that build breaks show up first for the people working on these files, not for innocent people in other packages."
+
 File: compiler/linker/arm64/relative_patcher_arm64.h
 
 20:0-24:17

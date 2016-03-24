@@ -27,6 +27,16 @@ If a local header forgets to include the system header, it could "work" in one .
 
 Very similar to the problem this is trying to solve as well.
 
+19
+Thu Mar 24 22:47:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dca63e27_9f09c351
+UUID: dca63e27_9a86f106
+Bytes: 138
+Just check other files that actually had system headers. It's our current style.
+
+(And in case the codebase is consistent, a non-issue...)
+
 File: compiler/linker/arm64/relative_patcher_arm64.h
 
 20:0-24:17
@@ -216,6 +226,14 @@ UUID: dca63e27_7f77b761
 Bytes: 37
 I thought we didn't use exceptions...
 
+29:0-29:20
+Thu Mar 24 22:47:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dca63e27_7f77b761
+UUID: dca63e27_5ae129e5
+Bytes: 165
+Yeah, sorry, forgot to filter this one. iwyu constantly thinks it's necessary, as "new" has uncaught_exception, even though we do not compile with exception support.
+
 File: tools/dmtracedump/createtesttrace.cc
 
 23:0-23:19
@@ -224,4 +242,15 @@ Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dca63e27_ffdba792
 Bytes: 28
 this seems random and wrong.
+
+23:0-23:19
+Thu Mar 24 22:47:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dca63e27_ffdba792
+UUID: dca63e27_3a2d3ddc
+Bytes: 254
+Line 409:
+ int32_t opt = getopt(argc, argv, "v:d");
+
+But unistd.h should be enough for that. I don't have that build file anymore, when I get around to it, I'll look for the explanation (iwyu helpfully tells you what it thinks is needed from the header).
 

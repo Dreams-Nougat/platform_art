@@ -9,10 +9,30 @@ UUID: 3c5f5acd_a603062e
 Bytes: 45
 is there really no better way of doing this ?
 
+209:0-229:1
+Tue Mar 29 12:41:28 2016 +0000
+Author: Yi Kong <1087625@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c5f5acd_a603062e
+UUID: 7141fdd6_dfe05be4
+Bytes: 608
+As discussed with pszczepaniak@, we have several possible solutions for tagging socket:
+1. Change every call to {socket, accept, close} to JVM version and do the tagging there. (The implementation)
+2. Same as 1, but call the underlying native tagging function directly. However the native function specifically binds to NetworkManagementSocketTagger, therefore would be broken if a different SocketTagger implementation is registered.
+3. Do tag/untag at each occurrence of {socket, accept, close}. This is a lot of duplicate code and hard to maintain.
+4. Rewrite functions involving these calls in pure Java.
+
 296:9-296:32
 Thu Mar 24 11:59:30 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c5f5acd_86fe0a4f
 Bytes: 69
 this seems broken - why are you untagging the return value of close ?
+
+296:9-296:32
+Tue Mar 29 12:41:28 2016 +0000
+Author: Yi Kong <1087625@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c5f5acd_86fe0a4f
+UUID: 7141fdd6_ffe51ff1
+Bytes: 5
+Done.
 

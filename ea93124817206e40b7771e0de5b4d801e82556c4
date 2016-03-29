@@ -1,0 +1,158 @@
+Revision: ea93124817206e40b7771e0de5b4d801e82556c4
+Patch-set: 13
+File: compiler/optimizing/code_generator_arm.cc
+
+5263:10-5263:43
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_73010026
+Bytes: 228
+Just a suggestion, not sure what the right way is... How about you test whether the LoadString has the special input instead? Then the DexCachePcRelative would kick in as soon as someone extends the fixup pass. Same for x86(_64)
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+3796:5-3796:87
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d1e62928_d2970466
+Bytes: 32
+I don't understand this comment.
+
+File: compiler/optimizing/code_generator_arm64.h
+
+476:15-476:39
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1b08d0b_dbbe13d8
+Bytes: 92
+Please document this better, e.g. what the `adrp_label` is for and what this method returns.
+
+479:15-479:46
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51acf9b4_9e1cfdb2
+Bytes: 5
+ditto
+
+File: compiler/optimizing/code_generator_mips.cc
+
+4067:40-4069:40
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_b35c7859
+Bytes: 30
+swap operands to avoid the NOT
+
+File: compiler/optimizing/code_generator_mips64.cc
+
+3286:40-3288:40
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_d359f467
+Bytes: 5
+ditto
+
+File: compiler/optimizing/nodes.h
+
+5501:22-5501:29
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_b3eb9891
+Bytes: 87
+Absolute? That would make it the opposite of PcRelative. But I'll leave it up to you...
+
+5511:14-5511:21
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_13028c2e
+Bytes: 5
+ditto
+
+5515:13-5515:20
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_d3f81469
+Bytes: 5
+ditto
+
+5596:4-5596:73
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 31a785d3_3dc84f70
+Bytes: 14
+Extend comment
+
+5599:8-5601:48
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_53fc0457
+Bytes: 83
+You're using this in the codegens as well. Maybe add a helper method IsInBootImage?
+
+File: compiler/optimizing/sharpening.cc
+
+158:4-158:25
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_b312b879
+Bytes: 53
+When would this happen? I'd DCHECK the above instead.
+
+174:8-174:9
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_f30c305e
+Bytes: 11
+Indentation
+
+183:26-183:46
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_13a9ac56
+Bytes: 32
+Any chance we could DCHECK this?
+
+197:8-198:67
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_33aea85f
+Bytes: 25
+Why can't we do that now?
+
+200:12-200:29
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_53b324c6
+Bytes: 62
+Nit: is_in_dex_cache? Matches your comment in the else branch.
+
+214:17-214:34
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_f3ba708d
+Bytes: 5
+ditto
+
+220
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_d3bd7488
+Bytes: 6
+indent
+
+File: compiler/utils/string_reference.h
+
+40:7-42:52
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d198e991_02bacae5
+Bytes: 156
+This comment is difficult to parse, please rephrase. I understood that the slow comparison will be made only in the rare (?) case of dex files not matching.
+
+51:4-51:5
+Tue Mar 29 10:41:31 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1bdedca_13ba8ce5
+Bytes: 9
+Nit: else
+

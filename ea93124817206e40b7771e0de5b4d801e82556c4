@@ -9,6 +9,14 @@ UUID: f1bdedca_73010026
 Bytes: 228
 Just a suggestion, not sure what the right way is... How about you test whether the LoadString has the special input instead? Then the DexCachePcRelative would kick in as soon as someone extends the fixup pass. Same for x86(_64)
 
+5263:10-5263:43
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_73010026
+UUID: f1bdedca_5357a4fe
+Bytes: 157
+We actually add the special input much later and only if the load kind is actually set to kDexCachePcRelative, i.e. accepted by GetSupportedLoadStringKind().
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 3796:5-3796:87
@@ -17,6 +25,14 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d1e62928_d2970466
 Bytes: 32
 I don't understand this comment.
+
+3796:5-3796:87
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d1e62928_d2970466
+UUID: 7141fdd6_3ff387b3
+Bytes: 97
+It's about the "else" case in the ternary expression below, `info->pc_insn_label = &info->label`.
 
 File: compiler/optimizing/code_generator_arm64.h
 
@@ -27,12 +43,28 @@ UUID: f1b08d0b_dbbe13d8
 Bytes: 92
 Please document this better, e.g. what the `adrp_label` is for and what this method returns.
 
+476:15-476:39
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1b08d0b_dbbe13d8
+UUID: 7141fdd6_bfef97cf
+Bytes: 4
+Done
+
 479:15-479:46
 Tue Mar 29 10:41:31 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51acf9b4_9e1cfdb2
 Bytes: 5
 ditto
+
+479:15-479:46
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51acf9b4_9e1cfdb2
+UUID: 7141fdd6_5fd52b02
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_mips.cc
 
@@ -43,6 +75,14 @@ UUID: f1bdedca_b35c7859
 Bytes: 30
 swap operands to avoid the NOT
 
+4067:40-4069:40
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_b35c7859
+UUID: f1bdedca_d34ad450
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_mips64.cc
 
 3286:40-3288:40
@@ -51,6 +91,14 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_d359f467
 Bytes: 5
 ditto
+
+3286:40-3288:40
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_d359f467
+UUID: f1bdedca_13344cd7
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.h
 
@@ -61,10 +109,26 @@ UUID: f1bdedca_b3eb9891
 Bytes: 87
 Absolute? That would make it the opposite of PcRelative. But I'll leave it up to you...
 
+5501:22-5501:29
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_b3eb9891
+UUID: f1bdedca_7333c0ed
+Bytes: 57
+I'd rather keep the kBootImage*Address, kDexCacheAddress.
+
 5511:14-5511:21
 Tue Mar 29 10:41:31 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_13028c2e
+Bytes: 5
+ditto
+
+5511:14-5511:21
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_13028c2e
+UUID: 7141fdd6_ff975f65
 Bytes: 5
 ditto
 
@@ -75,6 +139,14 @@ UUID: f1bdedca_d3f81469
 Bytes: 5
 ditto
 
+5515:13-5515:20
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_d3f81469
+UUID: 7141fdd6_9f9c138c
+Bytes: 5
+ditto
+
 5596:4-5596:73
 Tue Mar 29 10:41:31 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -82,12 +154,28 @@ UUID: 31a785d3_3dc84f70
 Bytes: 14
 Extend comment
 
+5596:4-5596:73
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 31a785d3_3dc84f70
+UUID: 5177990e_263916d0
+Bytes: 4
+Done
+
 5599:8-5601:48
 Tue Mar 29 10:41:31 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_53fc0457
 Bytes: 83
 You're using this in the codegens as well. Maybe add a helper method IsInBootImage?
+
+5599:8-5601:48
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_53fc0457
+UUID: 7141fdd6_df929b78
+Bytes: 89
+The only use in codegens is to disable for read barriers. That should eventually go away.
 
 File: compiler/optimizing/sharpening.cc
 
@@ -98,12 +186,28 @@ UUID: f1bdedca_b312b879
 Bytes: 53
 When would this happen? I'd DCHECK the above instead.
 
+158:4-158:25
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_b312b879
+UUID: 7141fdd6_bfe9d79d
+Bytes: 139
+Done. Maybe in future we'll try to re-run sharpening after post-inlining reference type propagation. If we do so, this will need to change.
+
 174:8-174:9
 Tue Mar 29 10:41:31 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_f30c305e
 Bytes: 11
 Indentation
+
+174:8-174:9
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_f30c305e
+UUID: 7141fdd6_ff899f1a
+Bytes: 41
+Moved the condition to the previous line.
 
 183:26-183:46
 Tue Mar 29 10:41:31 2016 +0000
@@ -112,12 +216,30 @@ UUID: f1bdedca_13a9ac56
 Bytes: 32
 Any chance we could DCHECK this?
 
+183:26-183:46
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_13a9ac56
+UUID: 7141fdd6_9f8e5320
+Bytes: 19
+Not that I know of.
+
 197:8-198:67
 Tue Mar 29 10:41:31 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_33aea85f
 Bytes: 25
 Why can't we do that now?
+
+197:8-198:67
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_33aea85f
+UUID: 7141fdd6_5f79abcb
+Bytes: 221
+Fixing bogus flags is not in scope for this CL. Note that fixing that could expose some unrelated bugs and I don't want that to be pulled into this CL.
+
+I can try and do it in a separate CL and then rebase this CL across.
 
 200:12-200:29
 Tue Mar 29 10:41:31 2016 +0000
@@ -126,10 +248,26 @@ UUID: f1bdedca_53b324c6
 Bytes: 62
 Nit: is_in_dex_cache? Matches your comment in the else branch.
 
+200:12-200:29
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_53b324c6
+UUID: 7141fdd6_bf6a37e7
+Bytes: 121
+`string != nullptr` is exactly what I want to check here. Replacing it with `is_in_dex_cache` would just hide the intent.
+
 214:17-214:34
 Tue Mar 29 10:41:31 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_f3ba708d
+Bytes: 5
+ditto
+
+214:17-214:34
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_f3ba708d
+UUID: 7141fdd6_9f65f319
 Bytes: 5
 ditto
 
@@ -139,6 +277,14 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_d3bd7488
 Bytes: 6
 indent
+
+220
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_d3bd7488
+UUID: 7141fdd6_ff70bfdc
+Bytes: 171
+Done. I thought this was the correct indentation but now I can see that there's not a single such indentation in Optimizing (and we just removed those that were in Quick).
 
 File: compiler/utils/string_reference.h
 
@@ -155,4 +301,12 @@ Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1bdedca_13ba8ce5
 Bytes: 9
 Nit: else
+
+51:4-51:5
+Tue Mar 29 14:00:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1bdedca_13ba8ce5
+UUID: 7141fdd6_3fae27a9
+Bytes: 4
+Done
 

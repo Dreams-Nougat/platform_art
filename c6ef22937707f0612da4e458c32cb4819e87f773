@@ -2,12 +2,34 @@ Revision: c6ef22937707f0612da4e458c32cb4819e87f773
 Patch-set: 1
 File: compiler/optimizing/instruction_simplifier.cc
 
+791
+Wed Mar 30 17:05:49 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 319dc5d4_8d0ec118
+Bytes: 45
+boolean->char also satisfies the constraints.
+
+793:45-796:81
+Wed Mar 30 17:05:49 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b1da95a7_099ac93c
+Bytes: 129
+Maybe `Primitive::PrimitiveKind(input_type) == Primitive::kPrimInt`? (Even though that includes the kPrimInt case handled above.)
+
 799:7-799:42
 Wed Mar 30 16:14:04 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1a6cd26_0bc11dfd
 Bytes: 151
 We should never have result_type be kPrimBoolean, right? There's no bytecode instruction for it but can we generate it somehow? Might be worth a DCHECK
+
+799:7-799:42
+Wed Mar 30 17:05:49 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1a6cd26_0bc11dfd
+UUID: d1ae29f9_928b7ca2
+Bytes: 54
+I agree, the result_type should never be kPrimBoolean.
 
 File: test/593-checker-boolean-to-integral-conversions/src/Main.java
 

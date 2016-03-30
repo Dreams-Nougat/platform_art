@@ -1,0 +1,13 @@
+Revision: a60548c8dd71bcb226f1295c52e62bb133d937db
+Patch-set: 4
+File: test/422-type-conversion/src/Main.java
+
+658:49-658:87
+Wed Mar 30 08:40:16 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1b08d0b_3b0e17c6
+Bytes: 423
+IIUC, you rely on this being inlined and LoadStoreElimination generating the conversion of 1L to float. That's pretty clever but also shaky in the sense that it will stop testing what you want sooner or later.
+
+I'd suggest making this a small regression Checker test (see test 532 for an example) where you make sure that the CFG contains the long-const to float conversion you expect after the register allocator has run).
+

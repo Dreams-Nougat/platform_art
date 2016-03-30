@@ -47,6 +47,16 @@ UUID: b1da95a7_e9b3f50c
 Bytes: 109
 I'd opt for an HInstructionFwdRemovalIterator (or something along those lines), but I'll leave it up to Aart.
 
+65
+Wed Mar 30 15:28:00 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b1da95a7_e9b3f50c
+UUID: 3174e57a_75dc082e
+Bytes: 385
+Yes, this solution works because the instruction iterator already preloads the next. and we cannot reach instructions that are removed "farther forward" because the next pointer of the instructions before them will no longer point to them (if you want to remove that oddity, there are probably a lot of other places that rely on that already).
+
+So what do you guys want to change here?
+
 File: test/593-amd64-simplifier/src/Main.java
 
 23

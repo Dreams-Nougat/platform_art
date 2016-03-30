@@ -73,6 +73,18 @@ UUID: 3174e57a_752968c7
 Bytes: 176
 Hmm, I do see a potential flaw though if we could remove a cascade of next instructions at once. Does not happen in this phase, but is that what you guys want to guard against?
 
+65
+Wed Mar 30 15:56:21 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3174e57a_752968c7
+UUID: 11ac4106_cce9ef9d
+Bytes: 466
+Sry, wrong facts on my part. It currently holds together because we don't set the "next" pointer to null when we remove an instruction from the doubly linked list.
+
+If we wanted to do this properly, we should have an iterator that remembers the previous instruction instead. That way we can remove the current instruction or any subsequent instruction and always find the next one. 
+
+WDYT, Vladimir? You had your the instruction lists in your crosshairs for a while.
+
 File: test/593-amd64-simplifier/src/Main.java
 
 23

@@ -31,6 +31,14 @@ UUID: d1ae29f9_928b7ca2
 Bytes: 54
 I agree, the result_type should never be kPrimBoolean.
 
+799:7-799:42
+Wed Mar 30 17:24:29 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1a6cd26_0bc11dfd
+UUID: d1d7097d_eade478a
+Bytes: 195
+As discussed offline, this is probably not needed, as this routine is about widening integral conversions; the only relevant case (boolean → boolean) is already covered by the test on line 792.
+
 File: test/593-checker-boolean-to-integral-conversions/src/Main.java
 
 31:52-31:59
@@ -40,12 +48,28 @@ UUID: b1b1b559_319d7035
 Bytes: 95
 Do you need to test all these passes? Why not just before and after the instruction simplifier?
 
+31:52-31:59
+Wed Mar 30 17:24:29 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b1b1b559_319d7035
+UUID: d1ae29f9_b2868098
+Bytes: 394
+Because we are checking a regression here (from a failure found while compiling an APK), I like to check all the passes where a relevant simplification has been performed.  Also, because this is Java code (and not Dex bytecode), it is easy for such tests to no longer exercise what they were written for in the first place; checking more passes (especially the builder) minimizes that risk IMO.
+
 32:6-32:11
 Wed Mar 30 16:14:04 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 71bbbd3b_4fa4cd76
 Bytes: 84
 Nit: CHECK-DAG (your code works, but let's not mix the CHECK kinds if not necessary)
+
+32:6-32:11
+Wed Mar 30 17:24:29 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71bbbd3b_4fa4cd76
+UUID: b1da95a7_c9b711b0
+Bytes: 215
+I have taken the habit to use CHECK for ParameterValue instructions, as the order matters when there are more than one.  Even if those methods have a single argument, I decided to use CHECK to perpetuate this idiom.
 
 49:2-52:47
 Wed Mar 30 16:14:04 2016 +0000
@@ -54,10 +78,26 @@ UUID: f1116d0a_d606a26e
 Bytes: 75
 I'd remove these. Showing the data-flow should be sufficient, shouldn't it?
 
+49:2-52:47
+Wed Mar 30 17:24:29 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1116d0a_d606a26e
+UUID: 71bbbd3b_ef8821e7
+Bytes: 4
+Done
+
 240:0-240:57
 Wed Mar 30 16:14:04 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f1a6cd26_2bc4d90c
 Bytes: 6
 unused
+
+240:0-240:57
+Wed Mar 30 17:24:29 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f1a6cd26_2bc4d90c
+UUID: 11ac4106_8cad2764
+Bytes: 4
+Done
 

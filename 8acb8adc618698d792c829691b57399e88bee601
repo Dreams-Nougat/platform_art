@@ -1,0 +1,27 @@
+Revision: 8acb8adc618698d792c829691b57399e88bee601
+Patch-set: 5
+File: test/593-checker-long-to-float-regression/src/Main.java
+
+26:4-26:18
+Wed Mar 30 13:05:14 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f1a6cd26_2b7979cd
+Bytes: 562
+Cool, almost there. Let's shuffle the methods a little bit, though, because this invoke may get inlined in the future and your Checker test would not test the code that you run.
+
+You can also drop the $opt$ marker, it's obsolete now.
+
+  static void main(...) {
+    assertEquals(1.0f, $noinline$longToFloat());
+  }
+
+  // CHECK-START: ...
+  // CHECK-DAG: ...
+  static float $noinline$longToFloat() {
+    if (doThrow) { throw new Error(); }
+    longValue = $inline$returnConst();
+    return (float) longValue;
+  }
+
+  static long $inline$returnConst() { return 1L; }
+

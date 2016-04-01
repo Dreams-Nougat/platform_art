@@ -11,3 +11,33 @@ Checker already tells you that, doesn't it? The format of the error message shou
 
   File.java:666: Test case "XXX" not found in the CFG file.
 
+177:37-177:57
+Fri Apr 01 18:06:24 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee00a8f1_7e352dd4
+UUID: 4e25349f_f93f13b7
+Bytes: 1370
+Nope; at least when I run it through run-test Make targets.
+
+After our offline discussion, I tried the alternative solution you suggested (removing the `if lineText:` condition from `Logger.fail`).  It doesn't look very good; see this example:
+
+  error: Test case "int Main.bits32a(int) intrinsics_recognition (after)" not found in the CFG file
+  Main.java:23: Traceback (most recent call last):
+    File "/ssd2/aosp-art/art/test/../tools/checker/checker.py", line 108, in <module>
+      RunTests(args.check_prefix, args.source_path, args.tested_file, args.arch, args.debuggable)
+    File "/ssd2/aosp-art/art/test/../tools/checker/checker.py", line 94, in RunTests
+      MatchFiles(checkerFile, c1File, targetArch, debuggableMode)
+    File "/ssd2/aosp-art/art/tools/checker/match/file.py", line 177, in MatchFiles
+      testCase.fileName, testCase.startLineNo)
+    File "/ssd2/aosp-art/art/tools/checker/common/logger.py", line 70, in fail
+      Logger.log(lineText, Logger.Level.Error, out=sys.stderr)
+    File "/ssd2/aosp-art/art/tools/checker/common/logger.py", line 49, in log
+      text = Logger.Color.terminalCode(color, out) + text + \
+  TypeError: cannot concatenate 'str' and 'NoneType' objects
+
+versus the solution in PS1:
+
+  error: Test case "int Main.bits32a(int) intrinsics_recognition (after)" on line 23 not found in the CFG file
+
+Or did I miss something?
+

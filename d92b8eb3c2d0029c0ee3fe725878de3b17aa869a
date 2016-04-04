@@ -17,6 +17,14 @@ UUID: aeb870d5_ce7f7f36
 Bytes: 46
 I wanted to hide internals of this function...
 
+378
+Mon Apr 04 23:02:17 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aeb870d5_ce7f7f36
+UUID: aeb870d5_a58d09f5
+Bytes: 178
+I'm not sure if anyone really does put structs into functions like that except for macros which make anonymous classes. It makes it much harder to find them later without an IDE.
+
 379
 Mon Apr 04 21:36:59 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,6 +41,24 @@ Parent: aeb870d5_cec13fff
 UUID: aeb870d5_4ed9afa1
 Bytes: 34
 It's a struct, isn't that a given?
+
+379
+Mon Apr 04 23:02:17 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aeb870d5_4ed9afa1
+UUID: aeb870d5_e525419f
+Bytes: 463
+It can be initialized any number of ways 
+
+  ClassData x; // all the primitive fields have indeterminate values
+  new ClassData; // same as above
+
+  ClassData x{}; // all the primitive fields are zeroed out
+  new ClassData(); // same as above
+
+http://en.cppreference.com/w/cpp/language/default_initialization
+
+It probably works fine because I'm guessing "new T()" somewhere to provide the backing memory for a its keys/values, so the memory is already zeroed out.
 
 554:51-554:84
 Mon Apr 04 21:36:59 2016 +0000

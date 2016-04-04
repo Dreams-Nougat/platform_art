@@ -1,0 +1,17 @@
+Revision: 9dd39978621eae151d792ef8196aefb03681f9d6
+Patch-set: 1
+File: runtime/mirror/class.cc
+
+883:4-884:42
+Mon Apr 04 20:52:36 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aeb870d5_333068cc
+Bytes: 286
+If you really want it pretty, why not store the old value?
+
+  const mirror::Class* old_common = common_super_class;
+  common_super_class = common_super_class->GetSuperClass();
+  DCHECK(common_super_class != nullptr) << PrettyClass(old_common);
+
+The compiler should do the right thing...
+

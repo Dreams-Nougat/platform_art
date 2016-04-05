@@ -55,3 +55,19 @@ then we get the following vtable for Z
 
 and calling foo on Y actually prints A's bar since we are using the unrelated index 11 of Y!
 
+32:33-32:34
+Tue Apr 05 01:48:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aeb870d5_b6f1c147
+UUID: aeb870d5_96691d86
+Bytes: 556
+And, messing with the signature of bar() allows us to break the compiler with a crash, similar to what we saw in the existing bugs (but now with just a few lines of testing code)
+
+e.g. returning int:
+
+art/compiler/optimizing/optimizing_compiler.cc:198] Error after inliner: art::GraphChecker: Binary operation Add 101 has inputs of different kinds: PrimLong, and PrimInt.
+
+or returning reference:
+
++dex2oatd F 10760 10767 art/compiler/optimizing/nodes.h:1933] Check failed: GetType() == Primitive::kPrimNot (GetType()=PrimVoid, Primitive::kPrimNot=PrimNot)
+

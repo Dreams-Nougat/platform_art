@@ -1,0 +1,32 @@
+Revision: 32c842eb6b29016a237c55ae93ef2b7db7e2ccef
+Patch-set: 1
+File: test/594-invoke-super/smali/invoke-super.smali
+
+32:33-32:34
+Tue Apr 05 01:05:36 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aeb870d5_7b3ab2ab
+Bytes: 586
+sending this out for discussion
+
+at the moment, this invoke-super calls A's foo (which could be one of the semantics :-), but in a very fragile way, since messing with the vtables even slightly breaks this already
+
+we resolve the method
+ void Y.foo()
+into
+ void A.foo()
+
+with the following vtables for class Z (compiling) and class Y (method)
+
+
++Class java.lang.Class<Z> status=StatusInitialized
++@0 java.lang.Object java.lang.Object.clone()
+....
++@11 void Z.foo()
+
+
++Class java.lang.Class<Y> status=StatusInitialized
++@0 java.lang.Object java.lang.Object.clone()
+....
++@11 void Y.foo()
+

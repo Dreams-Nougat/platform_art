@@ -30,3 +30,28 @@ with the following vtables for class Z (compiling) and class Y (method)
 ....
 +@11 void Y.foo()
 
+32:33-32:34
+Tue Apr 05 01:34:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: aeb870d5_7b3ab2ab
+UUID: aeb870d5_b6f1c147
+Bytes: 614
+Another interesting way to make this fail horribly (in a way very closely related to the bug, since it allows for the signature change), is to add a bar() method to A:
+
+class A {
+  A() { System.out.println("new A"); }
+  public void foo() { System.out.println("I am A's foo"); }
+  public void bar() { System.out.println("I am A's bar"); }
+}
+
+then we get the following vtable for Z
+
+
++Class java.lang.Class<Z> status=StatusInitialized
++@0 java.lang.Object java.lang.Object.clone()
+.....
++@11 void A.bar()
++@12 void Z.foo()
+
+and calling foo on Y actually prints A's bar since we are using the unrelated index 11 of Y!
+

@@ -9,6 +9,18 @@ UUID: ee4c2816_5b40e332
 Bytes: 223
 This is quite ugly. I think we should instead strengthen the ownership of all slow paths, changing the SlowPathCode to DeletableArenaObject<> and the CodeGenerator::slow_paths_ to ArenaVector<std::unique_ptr<SlowPathCode>>.
 
+184
+Wed Apr 06 11:34:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee4c2816_5b40e332
+UUID: 0e525cad_dc34edda
+Bytes: 262
+Right.  If so, I guess we should also remove (or amend) the following comment before the definition of art::DeletableArenaObject in runtime/base/arena_object.h:
+
+  // Currently this is used by the quick compiler for debug reference counting arena allocations.
+
+?
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 947

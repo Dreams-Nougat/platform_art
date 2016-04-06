@@ -1,0 +1,20 @@
+Revision: 99961c7b0a24aa28b3fe3d31e85b68370f3d6a4a
+Patch-set: 1
+File: compiler/optimizing/code_generator.h
+
+184
+Wed Apr 06 10:50:32 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ee4c2816_5b40e332
+Bytes: 223
+This is quite ugly. I think we should instead strengthen the ownership of all slow paths, changing the SlowPathCode to DeletableArenaObject<> and the CodeGenerator::slow_paths_ to ArenaVector<std::unique_ptr<SlowPathCode>>.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+947
+Wed Apr 06 10:50:32 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0e525cad_fc07693c
+Bytes: 154
+Try to change the block_labels_ to ArenaVector<vixl::Label> instead and circumvent the Codegenerator::CommonInitializeLabels<>(), doing a simple resize().
+

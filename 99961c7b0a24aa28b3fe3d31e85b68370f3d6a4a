@@ -29,6 +29,22 @@ UUID: 0e525cad_3cf391fc
 Bytes: 11
 Absolutely.
 
+184
+Thu Apr 07 12:35:39 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e525cad_dc34edda
+UUID: 6e1af804_57f66c3e
+Bytes: 62
+Removed the 'quick' part of comment since it has been removed.
+
+184
+Thu Apr 07 12:35:39 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee4c2816_5b40e332
+UUID: 6e1af804_b7f02843
+Bytes: 5
+Done.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 947
@@ -37,4 +53,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0e525cad_fc07693c
 Bytes: 154
 Try to change the block_labels_ to ArenaVector<vixl::Label> instead and circumvent the Codegenerator::CommonInitializeLabels<>(), doing a simple resize().
+
+947
+Thu Apr 07 12:35:39 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0e525cad_fc07693c
+UUID: 6e1af804_f70f8013
+Bytes: 326
+Using a vector does not compile because the copy constructor for Labels is disabled and we don't have a move constructor.
+
+I am pushing a patch to VIXL internally to add a move constructor, which fixes the issue here. I'll add a TODO to use a vector here once it is available (in the soon to be released next version of VIXL).
 

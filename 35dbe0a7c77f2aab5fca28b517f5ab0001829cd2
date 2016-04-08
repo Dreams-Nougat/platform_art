@@ -1,0 +1,36 @@
+Revision: 35dbe0a7c77f2aab5fca28b517f5ab0001829cd2
+Patch-set: 2
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+965:4-965:25
+Fri Apr 08 19:07:54 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e22c08a_4e478721
+Bytes: 84
+References in dex cache GcRoots aren't currently poisoned. We do not need this line.
+
+986:4-986:25
+Fri Apr 08 19:07:54 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e22c08a_ae8abb9b
+Bytes: 84
+References in dex cache GcRoots aren't currently poisoned. We do not need this line.
+
+998
+Fri Apr 08 19:07:54 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e22c08a_ee6d938f
+Bytes: 73
+The sp isn't aligned by 16 here as we have five PUSH'es up to this point?
+
+999:4-999:11
+Fri Apr 08 19:07:54 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e22c08a_8e297f38
+Bytes: 210
+I don't know if POP is any better.
+
+How about "addl LITERAL(4), %esp"?
+
+I think addl is clearer as edx is overwritten in the next line and may be faster as it avoids a memory access (though likely a cache hit).
+

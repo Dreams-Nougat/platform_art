@@ -1,0 +1,36 @@
+Revision: 1cd2a005aa1e956c0093307f21eca8821a005bf5
+Patch-set: 2
+File: compiler/optimizing/reference_type_propagation_test.cc
+
+24:0-24:9
+Mon Apr 11 18:58:06 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e22c08a_b3585b09
+Bytes: 188
+Setting up a unit test for this was a bit elaborate, but in the end I am happy we can test the merging function with all sorts of scenarios now.
+
+PTAL, specifically at the questions below.
+
+160:5-160:9
+Mon Apr 11 18:58:06 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e22c08a_f352d3e6
+Bytes: 137
+this is now current behavior:
+
+invalid AND error -> error
+error AND invalid  -> error
+
+but we probably want that Object(inexact) as well?
+
+203
+Mon Apr 11 18:58:06 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2e22c08a_7347c321
+Bytes: 207
+The current code, as written, does
+
+String(inexact) AND String(inexact) = String(inexact)
+
+more or less what one would expect, but this fails (sic!) the check in create as well. Unwritten assumption, or bug?
+

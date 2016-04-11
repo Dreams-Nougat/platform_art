@@ -9,3 +9,13 @@ UUID: ee1b4859_63470249
 Bytes: 222
 This fixes MergeTypes, but maybe we have other places where we check assignability. Could we instead prevent a ReferenceTypeInfo to get an erroneous class? If we try to create one, it will automatically use Object instead?
 
+685:0-687:21
+Mon Apr 11 13:12:18 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ee1b4859_63470249
+UUID: ee1b4859_03f64e3d
+Bytes: 261
+We should be able to track that by looking at IsObjectClass(). I suggested that we should check that the class is not erronous as part of IsObjectClass().
+
+That should protect us against the any mis-uses (and probably expose a few other places where we'd crash)
+

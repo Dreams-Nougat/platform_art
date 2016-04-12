@@ -2,6 +2,29 @@ Revision: 35dbe0a7c77f2aab5fca28b517f5ab0001829cd2
 Patch-set: 2
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
+816:0-819:79
+Tue Apr 12 09:47:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b24aaf3_c7f49e99
+Bytes: 41
+Please copy this comment to the new code.
+
+915:0-916:88
+Tue Apr 12 09:47:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b24aaf3_872c66dd
+Bytes: 56
+Is using ebx better than addressing with the fs: prefix?
+
+917:0-918:83
+Tue Apr 12 09:47:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b24aaf3_a7488aad
+Bytes: 317
+Potential overflow. I would prefer `end - pos <= size` instead of `pos + size <= end`. Note that, assuming correct alignment of `end - pos`, you can do that comparison before rounding up the `size`.
+
+[Comment copied from https://android-review.googlesource.com/#/c/187537/1/runtime/arch/arm/quick_entrypoints_arm.S .]
+
 965:4-965:25
 Fri Apr 08 19:07:54 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +45,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2e22c08a_ee6d938f
 Bytes: 73
 The sp isn't aligned by 16 here as we have five PUSH'es up to this point?
+
+998
+Tue Apr 12 09:47:35 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e22c08a_ee6d938f
+UUID: 6b24aaf3_27877a0a
+Bytes: 107
+If I remember correctly, the x86 native ABI requires only 8-byte alignment. (5xPUSH + return PC gives 24B.)
 
 999:4-999:11
 Fri Apr 08 19:07:54 2016 +0000

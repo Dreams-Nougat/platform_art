@@ -11,3 +11,27 @@ gentlemen, any feedback on the questions in this CL
 
 making a unit test exposed a few inaccuracies in the current code, and getting some clarification would be helpful
 
+159:0-160:23
+Wed Apr 13 00:13:07 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b71d253_ed95655d
+Bytes: 636
+So this falls back to what the result of Merge(Invalid, Errournous) should be. Right?
+
+It is not "wrong" from the algorithm point of view to return errornous here since Invalid stands for "no information yet".
+
+However, these are all sketchy cases for sound reasoning.
+
+What I propose, and Nicolas also mentioned is to *not* allow a errornous ReferenceTypeInfo to be created.
+
+we should DCHECK in RTI::Create() that the class handle is valid.
+
+The caller should make sure that if the handle is not ok it falls back to the inexact object type. We could employ a helper for that if there are too many places to check but I don't think so.
+
+208:34-208:51
+Wed Apr 13 00:13:07 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b71d253_8d9aa18c
+Bytes: 113
+The string type can never be inexact. The class is final and we have a DCHECK that final classes get to be exact.
+

@@ -1,0 +1,21 @@
+Revision: 4db1d0609e5f303faca322dba703faa4096ebe8a
+Patch-set: 1
+File: runtime/interpreter/unstarted_runtime_test.cc
+
+181:11-182:34
+Wed Apr 13 02:26:02 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb4c1a16_a449c80c
+Bytes: 184
+I think it's worse than that.  We really need bitwise comparison here, since we need to distinguish -0 and +0.
+Can we just reinterpret_cast<int64_t> and compare the results as int64_t?
+
+647:6-647:21
+Wed Apr 13 02:26:02 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb4c1a16_e4fa70d3
+Bytes: 243
+I think the result should be -0.0, right?
+It's probably good to leave this as is until it actually fails.
+Another good test might be (double)((1l << 53) - 1), which should map to itself.  And maybe (double)(1l << 55), which should do the same.
+

@@ -10,6 +10,14 @@ Bytes: 184
 I think it's worse than that.  We really need bitwise comparison here, since we need to distinguish -0 and +0.
 Can we just reinterpret_cast<int64_t> and compare the results as int64_t?
 
+181:11-182:34
+Wed Apr 13 04:21:23 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb4c1a16_a449c80c
+UUID: eb4c1a16_0fe6958f
+Bytes: 69
+reinterpret_cast from double to int is not allowed. I'll use bitcast.
+
 647:6-647:21
 Wed Apr 13 02:26:02 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,4 +26,14 @@ Bytes: 243
 I think the result should be -0.0, right?
 It's probably good to leave this as is until it actually fails.
 Another good test might be (double)((1l << 53) - 1), which should map to itself.  And maybe (double)(1l << 55), which should do the same.
+
+647:6-647:21
+Wed Apr 13 04:21:23 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb4c1a16_e4fa70d3
+UUID: eb4c1a16_cfef4d61
+Bytes: 87
+It does actually fail with the bit check, and compared to RI... :-)
+
+Other tests added.
 

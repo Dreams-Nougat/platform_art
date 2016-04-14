@@ -9,12 +9,28 @@ UUID: 0b732e96_744a4854
 Bytes: 69
 I prefer CHECK() when we're already in an "if (kIsDebugBuild)" block.
 
+1037:12-1037:18
+Thu Apr 14 14:55:07 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_744a4854
+UUID: 0b732e96_54ff0c0d
+Bytes: 116
+But this way it's obvious it is still checked only in debug builds. I'm pretty sure we do it this way elsewhere too.
+
 1044:0-1052:7
 Thu Apr 14 14:30:28 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b732e96_d42f9c81
 Bytes: 41
 Maybe also "if (kIsDebugBuild)" as above?
+
+1044:0-1052:7
+Thu Apr 14 14:55:07 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_d42f9c81
+UUID: 0b732e96_9407e4ff
+Bytes: 137
+We need to `break` here so we don't generate an unsorted use list. Other parts of liveness analysis assume it is sorted. Added a comment.
 
 File: test/594-regression-irreducible-linorder/smali/IrreducibleLoop.smali
 
@@ -25,6 +41,14 @@ UUID: 0b732e96_d4587c2f
 Bytes: 4
 2016
 
+1:16-1:20
+Thu Apr 14 14:55:07 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_d4587c2f
+UUID: 0b732e96_f4065800
+Bytes: 43
+Done. Thanks for catching it a second time.
+
 File: test/594-regression-irreducible-linorder/src/Main.java
 
 23
@@ -33,4 +57,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b732e96_b43a20c1
 Bytes: 42
 I prefer actually running the test anyway.
+
+23
+Thu Apr 14 14:55:07 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_b43a20c1
+UUID: 0b732e96_b40ce024
+Bytes: 386
+And do what exactly? I carefully crafted the test case to generate an ill-formed linear order. It is not meant to do anything meaningful and I don't intend to sacrifice clarity of the smali code for this. I would have dumped the failing DEX file here and wished you good luck making sense of those 200+ blocks if I wanted to run it.
+
+I've added a Checker test case instead - compromise?
 

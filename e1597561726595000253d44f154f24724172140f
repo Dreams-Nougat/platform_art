@@ -2,6 +2,13 @@ Revision: e1597561726595000253d44f154f24724172140f
 Patch-set: 4
 File: compiler/optimizing/code_generator_arm64.cc
 
+931:7-931:12
+Thu Apr 14 14:53:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_34f29046
+Bytes: 47
+I was told the recommended version is "auto&&".
+
 944:51-944:59
 Thu Apr 14 14:35:43 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -11,10 +18,49 @@ reset
 
 File: compiler/optimizing/code_generator_arm64.h
 
+357:28-357:30
+Thu Apr 14 14:53:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_d4ea3c53
+Bytes: 151
+we don't use C++ exceptions, so I strongly discourage the use of "at()" which is specified as throwing std::out_of_range. Use the "operator[]" instead.
+
 416:0-420:3
 Thu Apr 14 14:35:43 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b732e96_142af471
 Bytes: 22
 Is this really needed?
+
+429:27-429:58
+Thu Apr 14 14:53:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_14f5942d
+Bytes: 110
+Nit: Why not change the parameter to a std::unique_ptr<> and wrap the jump table right where it's constructed?
+
+629:2-629:17
+Thu Apr 14 14:53:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_f4ef3860
+Bytes: 36
+Remove this unnecessary indirection.
+
+File: compiler/utils/arm64/assembler_arm64.cc
+
+614:2-614:35
+Thu Apr 14 14:53:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_d4015ceb
+Bytes: 182
+Please define as "std::unique_ptr<Arm64Exception> current_exception(...)" and reorder the code below, so that the "exception_blocks_.push_back(std::move(current_exception))" is last.
+
+File: compiler/utils/arm64/assembler_arm64.h
+
+256:2-256:65
+Thu Apr 14 14:53:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_74fc0818
+Bytes: 234
+This is actually dangerous as the Arm64Exception is defined below so the compiler will actually see it as an incomplete type while compiling the Arm64Assembler constructor and destructor above. Can you reorder the two classes, please?
 

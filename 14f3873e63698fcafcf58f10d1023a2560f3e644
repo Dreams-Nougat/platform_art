@@ -1,0 +1,17 @@
+Revision: 14f3873e63698fcafcf58f10d1023a2560f3e644
+Patch-set: 7
+File: compiler/optimizing/code_generator_arm64.h
+
+420:0-423:3
+Fri Apr 15 11:08:41 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_b7ddc2ff
+Bytes: 328
+I don't like this one at all, it's once again taking ownership of something passed as a raw pointer. What about
+
+    JumpTableARM64* CreateJumpTable(HPackedSwitch* switch_instr) {
+      jump_tables_.emplace_back(
+          new (GetGraph()->GetArena()) JumpTableARM64(switch_instr));
+      return jump_tables_.back().get();
+    }
+

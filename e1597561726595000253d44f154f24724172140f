@@ -9,12 +9,28 @@ UUID: 0b732e96_34f29046
 Bytes: 47
 I was told the recommended version is "auto&&".
 
+931:7-931:12
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_34f29046
+UUID: 6b62eac1_d7a87cb5
+Bytes: 4
+Done
+
 944:51-944:59
 Thu Apr 14 14:35:43 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b732e96_3427f0a8
 Bytes: 5
 reset
+
+944:51-944:59
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_3427f0a8
+UUID: 6b62eac1_f7582006
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm64.h
 
@@ -25,12 +41,29 @@ UUID: 0b732e96_d4ea3c53
 Bytes: 151
 we don't use C++ exceptions, so I strongly discourage the use of "at()" which is specified as throwing std::out_of_range. Use the "operator[]" instead.
 
+357:28-357:30
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_d4ea3c53
+UUID: 8b5f1ef9_7877a15b
+Bytes: 16
+Changed to `[]`.
+
 416:0-420:3
 Thu Apr 14 14:35:43 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b732e96_142af471
 Bytes: 22
 Is this really needed?
+
+416:0-420:3
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_142af471
+UUID: 6b62eac1_174e7441
+Bytes: 93
+Removed.
+This was a safety net, but one would really have to be badly intentioned to call it.
 
 429:27-429:58
 Thu Apr 14 14:53:34 2016 +0000
@@ -39,12 +72,34 @@ UUID: 0b732e96_14f5942d
 Bytes: 110
 Nit: Why not change the parameter to a std::unique_ptr<> and wrap the jump table right where it's constructed?
 
+429:27-429:58
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_14f5942d
+UUID: 4b79a672_f637408d
+Bytes: 293
+I agree it would clarify the ownership issues.
+
+We do this late building of the `unique_ptr` for slow paths. Maybe we should clean those as well then. I think doing it in a separate patch would help keep this one small. So I'll add a TODO and upload a separate patch for that (along this one).
+
 629:2-629:17
 Thu Apr 14 14:53:34 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b732e96_f4ef3860
 Bytes: 36
 Remove this unnecessary indirection.
+
+629:2-629:17
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_f4ef3860
+UUID: 4b79a672_764410f5
+Bytes: 297
+I should have commented on this.
+Removing this indirection breaks compilation, because `GetLabelOf()` must return a non-const `vixl::Label*`.
+For other archs it works fine because `block_labels_` is a pointer.
+
+Another solution is to remove `const` from the related methods, but I don't prefer it.
 
 File: compiler/utils/arm64/assembler_arm64.cc
 
@@ -63,6 +118,14 @@ UUID: 0b732e96_14803473
 Bytes: 28
 Or perhaps "emplace_back()".
 
+614:2-614:35
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_14803473
+UUID: 0b732e96_549d4c8f
+Bytes: 91
+Yes I like it. It stays readable and avoids the explicit `std::unique_ptr` and `std::move`.
+
 File: compiler/utils/arm64/assembler_arm64.h
 
 256:2-256:65
@@ -71,4 +134,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b732e96_74fc0818
 Bytes: 234
 This is actually dangerous as the Arm64Exception is defined below so the compiler will actually see it as an incomplete type while compiling the Arm64Assembler constructor and destructor above. Can you reorder the two classes, please?
+
+256:2-256:65
+Fri Apr 15 08:16:15 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_74fc0818
+UUID: 4b79a672_39460ba0
+Bytes: 4
+Done
 

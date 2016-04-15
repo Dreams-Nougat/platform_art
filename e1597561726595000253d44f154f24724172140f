@@ -109,6 +109,18 @@ For other archs it works fine because `block_labels_` is a pointer.
 
 Another solution is to remove `const` from the related methods, but I don't prefer it.
 
+629:2-629:17
+Fri Apr 15 09:16:54 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b79a672_764410f5
+UUID: cb4af641_559b9e2d
+Bytes: 284
+Or "mutable" or "const_cast<>". Neither is very appealing but they do serve the purpose.
+
+In the long term, I'd remove the bogus const qualifier from GetLabelOf(). If that's too much work, just use a const_cast<>.
+
+(Note that I really want avoid the calls to "::operator new/delete".)
+
 File: compiler/utils/arm64/assembler_arm64.cc
 
 614:2-614:35
@@ -133,6 +145,17 @@ Parent: 0b732e96_14803473
 UUID: 0b732e96_549d4c8f
 Bytes: 91
 Yes I like it. It stays readable and avoids the explicit `std::unique_ptr` and `std::move`.
+
+614:2-614:35
+Fri Apr 15 09:16:54 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_549d4c8f
+UUID: 0b732e96_f7b65afa
+Bytes: 240
+I'd still want to create the object and assign ownership in the same expression. What about
+
+    exception_blocks_.push_back(new Arm64Exception(scratch, stack_adjust));
+    Arm64Exception *current_exception = exception_blocks_.back().get();
 
 File: compiler/utils/arm64/assembler_arm64.h
 

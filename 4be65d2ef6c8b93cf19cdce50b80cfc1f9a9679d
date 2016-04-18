@@ -1,0 +1,17 @@
+Revision: 4be65d2ef6c8b93cf19cdce50b80cfc1f9a9679d
+Patch-set: 8
+File: compiler/optimizing/nodes.h
+
+5445:28-5445:49
+Mon Apr 18 09:21:11 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_daec25e1
+Bytes: 254
+Hmmm, don't we have a problem if we start saying Foo.class is the Object class if Foo is erroneous? For example:
+
+if (a instanceof Foo) ...
+
+Won't optimizing the instanceof say always true?
+
+So maybe we can live with an invalid ReferenceTypeInfo instead?
+

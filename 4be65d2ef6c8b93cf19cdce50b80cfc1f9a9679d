@@ -74,6 +74,18 @@ UUID: 287c78a3_db978bc2
 Bytes: 130
 No, if it is just these two, I will remove the helper(s). But can you confirm this is the situation both you and Nicolas want now?
 
+5445:28-5445:49
+Mon Apr 18 21:48:47 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 287c78a3_db978bc2
+UUID: 48c60c32_0e9aab8c
+Bytes: 312
+I think the situation we need to have is
+- The rtp of HInstruction can never be invalid or erroneous. If it's erroneous, we fallback to inexact Object
+- The LoadedClassRti of a HLoadClass needs to be exact or invalid. If the class is unresolved or erroneous, we make it invalid.
+
+Does that clarify the situation?
+
 File: compiler/optimizing/reference_type_propagation.cc
 
 253:39-253:81

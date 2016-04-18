@@ -1,0 +1,11 @@
+Revision: d4545c75e00f73366b3dc739bcf3f37e51b90584
+Patch-set: 1
+File: runtime/monitor.cc
+
+677:8-677:24
+Mon Apr 18 23:25:23 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a82a28bd_cfdcb12d
+Bytes: 251
+I don't think thats safe, if the owner thread unlocks and exists SuspendThreadByThreadId will return null. We can't just blindly put a new lock word since another thread could have locked the object or put a hash code in the lock word in the meantime.
+

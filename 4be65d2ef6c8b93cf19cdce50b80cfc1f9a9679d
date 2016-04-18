@@ -37,3 +37,27 @@ We discussed this quite a bit with Calin. We already special case the LoadedClas
 
 So I'd suggest special casing the HLoadClass to either get a) an invalid RTI if the class is erroneous/unresolved, or b) a boolean flag in HLoadClass. I think I have a preference for a).
 
+5445:28-5445:49
+Mon Apr 18 17:31:59 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b732e96_7aa07115
+UUID: 0b732e96_da6505ab
+Bytes: 146
+Yes, I also prefer to make it invalid (option a). We already have a special handling for LoadedClass and it's easier than creating a special case.
+
+File: compiler/optimizing/reference_type_propagation.cc
+
+253:39-253:81
+Mon Apr 18 17:31:59 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_5a7ad546
+Bytes: 68
+you can keep Create here. We know that object will not be erroneous.
+
+544:6-544:53
+Mon Apr 18 17:31:59 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b732e96_3a7d193e
+Bytes: 6
+ditto.
+

@@ -1,0 +1,102 @@
+Revision: 2f380654655ad177f1ed76102963d2d2fece72fa
+Patch-set: 7
+File: compiler/utils/intrusive_forward_list.h
+
+21:19-21:42
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_040eb61b
+Bytes: 7
+Remove?
+
+22:0-22:19
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_64032af4
+Bytes: 66
+Move this C header inclusion before C++ ones, per the style guide.
+
+98:0-100:69
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_4408ae0c
+Bytes: 216
+Nit: move first argument on the same line as method's name:
+
+  operator==(const IntrusiveForwardListIterator<OtherT1, OtherTraits>& lhs,
+             const IntrusiveForwardListIterator<OtherT2, OtherTraits>& rhs);
+
+?
+
+136:25-136:39
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_c413fe3a
+Bytes: 26
+Maybe use
+
+  = default;
+
+?
+
+230:2-233:40
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_4441ce18
+Bytes: 189
+I know this is documented in std::forward_list, but maybe add as a reminder in a comment that the element pointed-to by `first` (as well as the element pointed-to by `last`) won't be moved?
+
+280:11-280:82
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_245bf203
+Bytes: 46
+Replace with
+
+  std::equal_to<value_type>()
+
+?
+
+299:17-299:87
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_046076aa
+Bytes: 42
+Replace with
+
+  std::less<value_type>()
+
+?
+
+329:9-329:79
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_445a6efc
+Bytes: 6
+Ditto?
+
+439:19-439:34
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_e448ba33
+Bytes: 19
+Where is this used?
+
+File: compiler/utils/intrusive_forward_list_test.cc
+
+76:43-76:72
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_a497e2c2
+Bytes: 122
+Alternatively, I think you can use this syntax to get rid of the linter error:
+
+  std::forward_list<int> ref({ 1, 2, 7 });
+
+82:35-82:59
+Tue Apr 19 15:04:31 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_648e8ab4
+Bytes: 55
+Maybe document why you're disabling optimizations here?
+

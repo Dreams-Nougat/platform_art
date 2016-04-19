@@ -1,0 +1,20 @@
+Revision: 60efa3a3be0c119b6f76522d2a2759ef166dc3f3
+Patch-set: 5
+File: compiler/optimizing/nodes.cc
+
+1246:9-1246:53
+Tue Apr 19 10:02:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_e45c3a56
+Bytes: 307
+Same as below, you only need to compare return types to preserve type consistency after GVN, don't you? This case is arguably more complicated because it you would still GVN IGETs with the same field offset on different classes. Could we compare the class idx (in FieldInfo) in InstructionDataEqual instead?
+
+1251:5-1251:56
+Tue Apr 19 10:02:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0815f483_c4801eec
+Bytes: 522
+I still think you're being too conservative here. At least for primitive types (wouldn't go so far with RTP), the return type of the HArrayGet always matches the component type of the input array. That's guaranteed by the verifier and I/F aliasing is resolved in the SsaBuilder.
+
+The fact that the input array (Invoke) is replaced with the inlined NullConstant doesn't make a difference, so why not compare the return types instead? That can be in the generic Equals method and you don't need any additional virtual calls.
+

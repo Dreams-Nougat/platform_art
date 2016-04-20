@@ -9,10 +9,34 @@ UUID: 2bc632da_18684cf2
 Bytes: 72
 Make it an else-if checking ART_TARGET_ANDROID, and an else with #error.
 
+67:0-67:5
+Wed Apr 20 08:18:08 2016 +0000
+Author: Bilyan Borisov <1093328@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bc632da_18684cf2
+UUID: 28163890_6558462c
+Bytes: 641
+What about the case when we are doing a host build? Then neither is defined and we'll hit the #error. 
+To also address the response to the next comment, I think we can have the following set of cases (of defined variables):
+1) ART_TARGET and ART_TARGET_LINUX -> (kIsTargetLinux) = true
+2) ART_TARGET and ART_TARGET_ANDROID -> false
+3) ART_TARGET and !ART_TARGET_LINUX and !ART_TARGET_ANDROID-> error
+5) !ART_TARGET and ART_TARGET_LINUX -> error
+6) !ART_TARGET and ART_TARGET_ANDROID -> error
+7) !ART_TARGET and !ART_TARGET_LINUX and !ART_TARGET_ANDROID -> false (host case, no error)
+5 and 6 can be conflated (with an or) to simplify things.
+
 61:0-69:6
 Thu Apr 14 15:28:21 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2bc632da_d86d1406
 Bytes: 134
 Should the true case only be true when kIsTargetBuild is true? Right now you depend on the right way of ART_TARGET_LINUX being used...
+
+61:0-69:6
+Wed Apr 20 08:18:08 2016 +0000
+Author: Bilyan Borisov <1093328@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bc632da_d86d1406
+UUID: a8cf8871_01fb0a20
+Bytes: 33
+See response to previous comment.
 

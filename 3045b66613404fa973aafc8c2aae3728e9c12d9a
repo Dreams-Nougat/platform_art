@@ -38,3 +38,21 @@ Bytes: 352
 
 The other cases we don't actually try to open the dex file so we have no idea if that is the cause.
 
+452:10-453:60
+Thu Apr 21 21:22:19 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e85340c8_fe1bb3b5
+UUID: e85340c8_8a42793c
+Bytes: 585
+Huh?
+
+What I am saying: assume
+ PathClassLoader("/data/local/tmp/x.dex")
+with x.dex being a bad version.
+
+Then the code would tell you !HasOriginalDexFiles, even though there *are* dex files, just invalid ones. So you would *not* get the message about the invalid version, but the message in line 459.
+
+You only ever get here for APKs, because it's not attempting to load the dex files there (just inspecting the zip for a classes.dex entry, and the right checksum, maybe).
+
+(It's a minor nit and not blocking, as I don't know how to fix it nicely without doing double or triple work.)
+

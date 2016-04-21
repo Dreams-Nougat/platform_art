@@ -9,12 +9,28 @@ UUID: e89420c3_5bf823d4
 Bytes: 67
 I'd also add a comment about what 'exact_match' semantically means.
 
+72:0-73:54
+Thu Apr 21 14:06:15 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e89420c3_5bf823d4
+UUID: e8a6e026_ce09e382
+Bytes: 4
+Done
+
 159:56-159:64
 Thu Apr 21 13:00:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e8a6e026_8ebd1bdb
 Bytes: 14
 comment please
+
+159:56-159:64
+Thu Apr 21 14:06:15 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e8a6e026_8ebd1bdb
+UUID: e8a6e026_2effc777
+Bytes: 4
+Done
 
 428:6-428:35
 Thu Apr 21 13:00:43 2016 +0000
@@ -23,10 +39,32 @@ UUID: e8a6e026_ceb723f7
 Bytes: 45
 As discussed you don't need skip_predecessor.
 
+428:6-428:35
+Thu Apr 21 14:06:15 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e8a6e026_ceb723f7
+UUID: e8a6e026_0efc8b7f
+Bytes: 4
+Done
+
 430:74-430:87
 Thu Apr 21 13:00:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e8a6e026_2ecd0784
 Bytes: 150
 Explain why you pass dominator_set as a reference. I guess that's because you know the size of the resulting set will be lower than the dominator_set?
+
+430:74-430:87
+Thu Apr 21 14:06:15 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e8a6e026_2ecd0784
+UUID: e8a6e026_8e387b22
+Bytes: 574
+Huh? It can be both larger and smaller at the end of that iteration, depending on how much you add and kill... You're right that we start with `dominator_set` and only kill until line 466. Then it can grow again.
+
+In the end it's just a sensible heuristic. You look at how much you're putting in the set before you start adding/killing. You're guaranteed at most 0.75 load factor, so that gives you some wiggling space.
+
+If you used a predecessor, you're risking that the kills until 466 will not have a constant lookup.
+
+Added a short comment, let me know if that's enough.
 

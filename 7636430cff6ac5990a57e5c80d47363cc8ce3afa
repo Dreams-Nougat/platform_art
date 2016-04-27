@@ -13,3 +13,47 @@ Nit: We're trying to use this style everywhere now (also, please use a 4-space i
       ? LocationSummary::kCallOnSlowPath
       : LocationSummary::kNoCall
 
+1213:33-1213:85
+Wed Apr 27 17:20:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8b5c9db_3a1da164
+Bytes: 42
+Avoid the allocation if you don't need it.
+
+1251:51-1251:90
+Wed Apr 27 17:20:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a8b5c9db_5a125553
+Bytes: 163
+We do not rely on the zeros here, we just need to be able to read the memory (satisfied by the alignment), we ignore the extra bits further down (lines 1274-1275).
+
+1253:0-1254:44
+Wed Apr 27 17:20:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 88b805d6_39ee8f33
+Bytes: 81
+Would it be beneficial for the A53 to interleave this with the ADD or SUBS below?
+
+1255:0-1260:13
+Wed Apr 27 17:20:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48b28df7_7725709a
+Bytes: 581
+If you want one less instruction in the loop:
+
+  __ Subs(temp2, temp2, 4);
+  __ Add(temp1, temp1, char_size * 4);
+  __ Ccmp(temp4, temp0, NoFlag, gt);
+  __ B(eq, &loop);
+  // Either some characters differ or we are at the end of the loop.
+  __ Add(temp2, temp2, 4);  // Interleave with code below for better scheduling?
+
+The code below works just fine even if "temp0 == temp4" because the ARM64 CLZ(0) is well-defined unlike the __builtin_clz(0). However, if you want to skip the extra calculations for a match, you can add CBZ after the EOR (which would rely on the zero padding).
+
+1271:23-1271:35
+Wed Apr 27 17:20:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48b28df7_d71c7c5d
+Bytes: 68
+I see, ~0xf is a logical immediate, so this is a single instruction.
+

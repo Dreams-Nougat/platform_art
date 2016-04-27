@@ -1,5 +1,16 @@
 Revision: a0af7f54b1704ccd72fcb7a8273a7b5f4584e75e
 Patch-set: 2
+File: runtime/entrypoints/entrypoint_utils-inl.h
+
+524
+Wed Apr 27 18:03:01 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 28c9d979_76e2d014
+Bytes: 463
+Previously, we would have called the wrong method, right? So, my vote goes to ThrowNoSuchMethodError(). We would not break anything that was previously working correctly.
+
+If you think it's too radical for backward compatibility, check the dex file version and if it's >= 37, ThrowNoSuchmethodError(). If someone changes tools to generate version 37 and doesn't test that their app still works, it's their problem. (Though this approach will complicate the test.)
+
 File: test/594-invoke-super/src/Main.java
 
 28:17-28:19

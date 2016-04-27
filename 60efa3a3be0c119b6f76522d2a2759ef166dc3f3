@@ -38,3 +38,28 @@ Treating NullConstant as different for field load is conceptually simple since n
 
 For the additional virtual call, I just renamed InstructionTypeEquals() to InstructionKindEquals() and got rid of one virtual call. I can use InstructionTypeEquals() for this bug and override that one, but that method seems misnamed in the first place.
 
+1251:5-1251:56
+Wed Apr 27 10:19:04 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a82a28bd_f277d95a
+UUID: 28e0f9df_fe5ec101
+Bytes: 938
+> This is a really rare case and I don't think we are trying to
+ > squeeze out performance here. The null check proceeding the
+ > instruction will throw exception.
+ > 
+ > Treating NullConstant as different for field load is conceptually
+ > simple since null can represent different object types. We don't
+ > need to make Equals() complex by requiring mutator lock (for non
+ > primitive type case).
+
+I agree. But just realized: we don't need the mutator lock was we're just doing a pointer comparison. Here's an alternative shorter CL that does what we should do, that is not GVN'ing things that don't have the same type:
+
+https://android-review.googlesource.com/220683
+
+ > 
+ > For the additional virtual call, I just renamed InstructionTypeEquals()
+ > to InstructionKindEquals() and got rid of one virtual call. I can
+ > use InstructionTypeEquals() for this bug and override that one, but
+ > that method seems misnamed in the first place.
+

@@ -11,3 +11,13 @@ The pointer wrapped by the handle can move if mutator lock isn't held, so in the
 
 So looks to me the mutator lock is still needed.
 
+251
+Wed Apr 27 21:04:33 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8801e53f_51b07404
+UUID: 889d6572_b1ab80e5
+Bytes: 327
+You're absolutely right, and we did discuss it with David earlier. We could say it's ok to have false negatives (so returning false while they are actually equal), but I guess we could come up with a very unlikely scenario of false positive.
+
+Let me see if I can add the ArtField to HFieldGet instead. This should do the trick.
+

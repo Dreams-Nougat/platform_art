@@ -9,6 +9,14 @@ UUID: 289d58d4_7cc34578
 Bytes: 71
 What about eliding the slow path if "!invoke->InputAt(1)->CanBeNull()"?
 
+1177:60-1177:92
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 289d58d4_7cc34578
+UUID: a89a2976_d2dac426
+Bytes: 4
+Done
+
 1217:0-1218:25
 Tue Apr 26 14:15:11 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,6 +26,14 @@ Given the kOutputOverlap, why not
 
     __ Subs(out, str, arg);
     __ B(&end, eq);
+
+1217:0-1218:25
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8659cc5_a3be6824
+UUID: 08c41560_d5c39c46
+Bytes: 4
+Done
 
 1223:0-1224:30
 Tue Apr 26 14:15:11 2016 +0000
@@ -29,12 +45,28 @@ Similarly,
     __ Orr(out, temp0, temp1);
     __ Cbz(out, &end);
 
+1223:0-1224:30
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 288b98a4_6311b6e4
+UUID: 28c9d979_96c92c6d
+Bytes: 4
+Done
+
 1226:31-1226:33
 Tue Apr 26 14:15:11 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 289d58d4_5c43e9ee
 Bytes: 178
 Where did you set the condition? Should the "__ Subs(out, temp0, temp1);" be before this line? (That would also solve the problem that you didn't set "out" before the CBZ below.)
+
+1226:31-1226:33
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 289d58d4_5c43e9ee
+UUID: 889d6572_91c91c6d
+Bytes: 4
+Done
 
 1227:5-1227:13
 Tue Apr 26 14:15:11 2016 +0000
@@ -43,12 +75,28 @@ UUID: c87cbc59_eb5761fb
 Bytes: 7
 Shorter
 
+1227:5-1227:13
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c87cbc59_eb5761fb
+UUID: 889d6572_b1c62058
+Bytes: 4
+Done
+
 1239
 Tue Apr 26 14:15:11 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a87f884b_7525f09d
 Bytes: 109
 Please also repeat the alignment assertions from VisitStringEquals() - you're reading characters 4 at a time.
+
+1239
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a87f884b_7525f09d
+UUID: a8b5c9db_7ab559dc
+Bytes: 4
+Done
 
 1241:2-1241:20
 Tue Apr 26 15:03:54 2016 +0000
@@ -57,6 +105,14 @@ UUID: 289d58d4_7c1185e4
 Bytes: 132
 Is this to "promote" temp0 from a W to an X register (before using it in a 64-bit move in line 1245)?  If so, I would add a comment.
 
+1241:2-1241:20
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 289d58d4_7c1185e4
+UUID: a89a2976_7203d863
+Bytes: 4
+Done
+
 1243
 Tue Apr 26 15:03:54 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -64,12 +120,28 @@ UUID: c8659cc5_0350f4aa
 Bytes: 96
 Mention in a comment that you are comparing four (4 * 16-bit) characters at a time in this loop?
 
+1243
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8659cc5_0350f4aa
+UUID: 28c9d979_f6c0a03c
+Bytes: 4
+Done
+
 1253
 Tue Apr 26 15:03:54 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2874787a_f8e48d57
 Bytes: 90
 Likewise, mention that you're comparing one (1 * 16-bit) character at a time in this loop?
+
+1253
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2874787a_f8e48d57
+UUID: 28c9d979_d6c3a446
+Bytes: 4
+Done
 
 1254:0-1261:28
 Tue Apr 26 14:15:11 2016 +0000
@@ -94,12 +166,28 @@ You can also do this without the loop:
     temp0 &= 0xffff;  // UXTH
     out = temp0 - (temp4 & 0xffff);  // SUB (extended register)
 
+1254:0-1261:28
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 288b98a4_83e7a225
+UUID: a8b5c9db_fad7a9fb
+Bytes: 4
+Yes!
+
 1263:0-1264:17
 Tue Apr 26 14:15:11 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2874787a_38c7e5bd
 Bytes: 58
 With all the changes suggested above, this is unnecessary.
+
+1263:0-1264:17
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2874787a_38c7e5bd
+UUID: 68af5190_f8c0913c
+Bytes: 4
+Done
 
 File: runtime/arch/arm64/entrypoints_init_arm64.cc
 
@@ -109,4 +197,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 288b98a4_e3d5c635
 Bytes: 128
 Maybe add a comment saying that this entrypoint is not needed on ARM64 the StringCompareTo intrinsics does not call the runtime?
+
+137:2-137:38
+Wed Apr 27 14:05:29 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 288b98a4_e3d5c635
+UUID: 28c9d979_566dd4f3
+Bytes: 4
+Done
 

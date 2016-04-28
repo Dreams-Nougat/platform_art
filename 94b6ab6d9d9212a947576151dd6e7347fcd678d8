@@ -16,6 +16,16 @@ UUID: 889d6572_f15188c9
 Bytes: 30
 Any way we can stress test it?
 
+26:18-27:13
+Thu Apr 28 21:12:55 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 889d6572_f15188c9
+UUID: 28dab964_2e76e72e
+Bytes: 457
+It seems difficult to do a decent job of that.  The current version starts out with a tiny list for debug builds, which should do a bit of that.  But even for much more frequently executed code, we've had trouble getting memory model issues to show up during testing. Some processors basically don't exhibit these issues at all, so it also depends a lot on which particular core design you use for testing.
+
+Being able to run tsan is probably a better goal.
+
 File: runtime/monitor_pool.h
 
 198:76-198:98
@@ -32,10 +42,26 @@ UUID: 8801e53f_a5acf646
 Bytes: 8
 256 now?
 
+211:38-211:41
+Thu Apr 28 21:12:55 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8801e53f_a5acf646
+UUID: 28dab964_d162669d
+Bytes: 57
+Clarified that this is with the maximum possible setting.
+
 212:14-212:19
 Thu Apr 28 01:26:02 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8801e53f_e57d5ea3
 Bytes: 70
 How many monitors do we support in the debug build? Is it high enough?
+
+212:14-212:19
+Thu Apr 28 21:12:55 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8801e53f_e57d5ea3
+UUID: 28dab964_f12b2222
+Bytes: 137
+Good question.  It's a megabyte worth of monitors, which is on the order of 10,000 inflated monitors.  I think it works for an AOSP boot.
 

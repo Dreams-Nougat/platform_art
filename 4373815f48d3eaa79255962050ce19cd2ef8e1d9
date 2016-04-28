@@ -25,6 +25,14 @@ UUID: 8801e53f_65d68ed7
 Bytes: 22
 Does memset work here?
 
+32:0-34:3
+Thu Apr 28 21:12:55 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8801e53f_65d68ed7
+UUID: 28dab964_51c79655
+Bytes: 215
+I think it works, but it's probably not officially technically correct.  I would guess the loop only takes an instruction or two more than setting up the call?  The fully unrolled loop is probably also not terrible.
+
 47:51-47:52
 Thu Apr 28 01:20:29 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,12 +49,28 @@ UUID: 8801e53f_ba67f5d9
 Bytes: 58
 Have a DCHECK that kMaxListSize is a power of 2 somewhere?
 
+138:31-138:43
+Thu Apr 28 21:12:55 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8801e53f_ba67f5d9
+UUID: 28dab964_51ff9644
+Bytes: 30
+Added static assertions below.
+
 154:29-154:31
 Thu Apr 28 01:20:29 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8801e53f_25300646
 Bytes: 76
 Would it make sense to swap the left and the right of the && for efficiency?
+
+154:29-154:31
+Thu Apr 28 21:12:55 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8801e53f_25300646
+UUID: 28dab964_1190eefb
+Bytes: 152
+In most production cases, I would expect current_chunk_list to be zero, so the second test is vacuous. So I think this is faster, though less intuitive.
 
 160:10-160:18
 Thu Apr 28 00:32:30 2016 +0000

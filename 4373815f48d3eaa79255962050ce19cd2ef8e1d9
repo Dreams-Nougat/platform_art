@@ -16,7 +16,37 @@ UUID: 8801e53f_9ad95196
 Bytes: 2
 be
 
+File: runtime/monitor_pool.cc
+
+32:0-34:3
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_65d68ed7
+Bytes: 22
+Does memset work here?
+
+47:51-47:52
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_e5e1deab
+Bytes: 98
+Add an error message using a << as this is where we hit the maximum number of monitors we support?
+
 File: runtime/monitor_pool.h
+
+138:31-138:43
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_ba67f5d9
+Bytes: 58
+Have a DCHECK that kMaxListSize is a power of 2 somewhere?
+
+154:29-154:31
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_25300646
+Bytes: 76
+Would it make sense to swap the left and the right of the && for efficiency?
 
 160:10-160:18
 Thu Apr 28 00:32:30 2016 +0000
@@ -51,12 +81,35 @@ UUID: 8801e53f_052062e6
 Bytes: 310
 There's nothing magic about page size, so I think a constant is fine. I followed your advice for now (with a slightly smaller value for 512U to save space), but I'm a little nervous about always having the debug configuration diverge from the release one.  We should probably change this after initial testing?
 
+200:50-200:52
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_1a31e192
+Bytes: 32
+28 -> LockWord::kMonitorIdSize ?
+
+208:9-208:50
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_1a8d6142
+Bytes: 217
+I assume this means that 2^9 * 8 (kMonitorAlignment) = 4096 (kChunkSize)?
+
+Maybe would it be clearer if "int64_t offset" is changed to "index into an array of kMonitorAlignment-aligned entries" or something like that?
+
 210:5-211:59
 Thu Apr 28 00:32:30 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8801e53f_1a0a81c2
 Bytes: 1
 ?
+
+218:9-218:28
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_45dd4a24
+Bytes: 38
+How about "current_chunk_list_index_"?
 
 221:39-221:55
 Thu Apr 28 00:32:30 2016 +0000
@@ -65,10 +118,31 @@ UUID: 8801e53f_3a2ca53a
 Bytes: 1
 ?
 
+221:39-221:55
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_65ecced8
+Bytes: 97
+Is this meant to be current_chunk_list_ instead (I don't see the definition of num_chunk_lists_)?
+
 222:38-222:41
 Thu Apr 28 00:32:30 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8801e53f_5ab08904
 Bytes: 2
 is
+
+222:74-222:90
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_c5d01a0a
+Bytes: 5
+Same.
+
+223:9-223:18
+Thu Apr 28 01:20:29 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8801e53f_25cc8645
+Bytes: 41
+How about "current_chunk_list_capacity_"?
 

@@ -13,12 +13,28 @@ Nit: We're trying to use this style everywhere now (also, please use a 4-space i
       ? LocationSummary::kCallOnSlowPath
       : LocationSummary::kNoCall
 
+1177:61-1179:86
+Fri Apr 29 10:23:54 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48b28df7_174a7473
+UUID: 68af5190_38d5a953
+Bytes: 4
+Done
+
 1213:33-1213:85
 Wed Apr 27 17:20:03 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: a8b5c9db_3a1da164
 Bytes: 42
 Avoid the allocation if you don't need it.
+
+1213:33-1213:85
+Fri Apr 29 10:23:54 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8b5c9db_3a1da164
+UUID: 889d6572_f1ed0801
+Bytes: 4
+Done
 
 1251:51-1251:90
 Wed Apr 27 17:20:03 2016 +0000
@@ -27,12 +43,28 @@ UUID: a8b5c9db_5a125553
 Bytes: 163
 We do not rely on the zeros here, we just need to be able to read the memory (satisfied by the alignment), we ignore the extra bits further down (lines 1274-1275).
 
+1251:51-1251:90
+Fri Apr 29 10:23:54 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8b5c9db_5a125553
+UUID: 889d6572_31bf90e2
+Bytes: 4
+Done
+
 1253:0-1254:44
 Wed Apr 27 17:20:03 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 88b805d6_39ee8f33
 Bytes: 81
 Would it be beneficial for the A53 to interleave this with the ADD or SUBS below?
+
+1253:0-1254:44
+Fri Apr 29 10:23:54 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88b805d6_39ee8f33
+UUID: 889d6572_d44ab244
+Bytes: 61
+Not the ADD, it's the load address. SUBS, yes, but see below.
 
 1255:0-1260:13
 Wed Apr 27 17:20:03 2016 +0000
@@ -50,10 +82,37 @@ If you want one less instruction in the loop:
 
 The code below works just fine even if "temp0 == temp4" because the ARM64 CLZ(0) is well-defined unlike the __builtin_clz(0). However, if you want to skip the extra calculations for a match, you can add CBZ after the EOR (which would rely on the zero padding).
 
+1255:0-1260:13
+Fri Apr 29 10:23:54 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48b28df7_7725709a
+UUID: 889d6572_14743a8b
+Bytes: 520
+A CBZ after the EOR only helps when the strings are equal and the same length, it doesn't stop strings that match up to a shorter length going through find_char_diff only to discard the difference as out of range.
+
+Optimizing this loop does speed up longer compare lengths (> 32 Chars) but regresses shorter ones (especially <= 8).
+
+As most string comparisons fail, and most different strings differ quickly, we think we should find differences in short compare lengths as fast as possible, and that is LDR/LDR/CMP/B ...
+
 1271:23-1271:35
 Wed Apr 27 17:20:03 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 48b28df7_d71c7c5d
 Bytes: 68
 I see, ~0xf is a logical immediate, so this is a single instruction.
+
+1271:23-1271:35
+Fri Apr 29 10:23:54 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 48b28df7_d71c7c5d
+UUID: 08c41560_d84d91b6
+Bytes: 18
+Yes, a single AND.
+
+1279
+Fri Apr 29 10:23:54 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 48b28df7_fa8c0592
+Bytes: 19
+AND is faster here.
 

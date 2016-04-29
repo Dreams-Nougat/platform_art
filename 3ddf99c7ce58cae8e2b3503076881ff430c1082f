@@ -13,6 +13,14 @@ BUG=26327751
 
 to commit message.
 
+7:34-7:35
+Fri Apr 29 21:55:38 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28dab964_d525ab4c
+UUID: 2848f9fc_07bf5ce1
+Bytes: 4
+Done
+
 File: compiler/optimizing/intrinsics_mips.cc
 
 2453
@@ -22,12 +30,48 @@ UUID: 28dab964_4b811a9f
 Bytes: 230
 I would be helpful if you wrote the full pseudo code here in a top level comment, and then only use minor comments below to separate out the different parts. Now I have to scan over the full method to know how this is implemented.
 
+2453
+Fri Apr 29 21:55:38 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28dab964_4b811a9f
+UUID: 2848f9fc_64f97ed8
+Bytes: 636
+How's this for top-level pseudocode?
+
+  // if (in.isNaN) {
+  //   return 0;
+  // }
+
+  // if (in <= (float)Integer.MIN_VALUE) {
+  //   /*
+  //    * Needed for MIPS32 because values <= Integer.MIN_VALUE
+  //    * get output as Integer.MAX_VALUE by "floor.w.s" & Java requires Integer.MIN_VALUE.
+  //    */
+  //   return Integer.MIN_VALUE;
+  // }
+
+  // out = floor(in);
+  // TMP = (((in - out) >= 0.5f) && (out != java.lang.Integer.MAX_VALUE)) ? 1 : 0;
+  // return out += TMP;
+  //
+  // Note: Except for the two exception cases (in.isNaN &
+  // in <= (float)Integer.MIN_VALUE), branching is avoided
+  // to keep from breaking the pipeline.
+
 2454:14-2454:17
 Fri Apr 29 17:22:25 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 28dab964_ebc0c6f2
 Bytes: 13
 period at end
+
+2454:14-2454:17
+Fri Apr 29 21:55:38 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28dab964_ebc0c6f2
+UUID: 2848f9fc_52d8c42d
+Bytes: 4
+Done
 
 2518:15-2518:16
 Fri Apr 29 17:22:25 2016 +0000
@@ -36,10 +80,26 @@ UUID: 28dab964_8b7702c4
 Bytes: 160
 This looks like a commented out comment, not an actual comment. I would rephrase this and all other comments in the google style (use sentences, not fragments).
 
+2518:15-2518:16
+Fri Apr 29 21:55:38 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28dab964_8b7702c4
+UUID: 2848f9fc_324978c1
+Bytes: 4
+Done
+
 2529:30-2529:45
 Fri Apr 29 17:22:25 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 28dab964_6badf640
 Bytes: 21
 plans for double too?
+
+2529:30-2529:45
+Fri Apr 29 21:55:38 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28dab964_6badf640
+UUID: 2848f9fc_b234a83a
+Bytes: 48
+No, 32-bit processors don't support "floor.l.d".
 

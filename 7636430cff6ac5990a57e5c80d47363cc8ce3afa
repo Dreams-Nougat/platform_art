@@ -104,6 +104,20 @@ Under your assumptions for the most common cases, the CBZ is indeed useless.
 
 I'm OK with the code as it is but you may want to consider changing the loop to the LDR+SUBS+LDR+ADD+CCMP+BEQ (plus the ADD after the loop). It has no taken branch at all if there's a difference in the first 4 characters.
 
+1255:0-1260:13
+Fri Apr 29 13:37:07 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28e0f9df_27ee589c
+UUID: 68d6710e_a6afd23a
+Bytes: 783
+While I enjoy being able to use CCMP, I don't see why we should push for it in this case.
+
+The branch to the start of the loop, whenever met, will be predicted taken (we expect to exit the loop on a character difference). So in both version branch prediction depends on the character comparison. Not having a taken branch on the fast path allows avoiding to insert an entry in the branch target address cache, which would be useful if we expect a high density of branches and collisions. We don't have data on this so I don't think we should consider it more important than the benchmark results.
+
+So I'd go with the non-CCMP version. (Unless we want to favour bigger comparison sizes, where the CCMP version performs better.)
+
+Any other reasons you think the CCMP version is better?
+
 1271:23-1271:35
 Wed Apr 27 17:20:03 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

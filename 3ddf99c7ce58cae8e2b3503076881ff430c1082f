@@ -68,6 +68,20 @@ Much better. But as non-longer-a-MIPS-expert, it would greatly help me if the fl
 
 Since Integer.MAX_VALUE can presumably only arise from overflow, isn't it cheaper just to do one test after evaluating the floor() function?
 
+2453
+Mon May 02 21:18:12 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28a2b911_c2a092b8
+UUID: 28a2b911_7d9fc36f
+Bytes: 1122
+MIPS has a series of floor commands in the form of "floor.x.y" where x can be either l (64 bits) or w (32 bits), and y can be s (32 bits) or d (64 bits). Here we're dealing with floor.w.s. Both the input register, and the output register are FP registers but the output register holds a 32-bit integer value. So, yes, this is necessitating the MAX_VALUE test; it's also necessitating the explicit conversion back to "float" using the cvt.s.w command (via the Cvtsw() method).
+
+[Note: 32-bit MIPS (the case this code is dealing with) doesn't have support for floor.l.s, or floor.s.d so the intrinsic java.lang.Math.round(double) won't be implemented in this file.]
+
+I'm not following the chain of logic for how only one test is required. If out == Integer.MAX_VALUE then it's true that we don't need to test ((in - out) >= 0.5), so I can see how the first test could cause the code to skip the second test. But I wrote the code to avoid breaking the pipeline for either case by using conditional move instructions (selnez/movn/movf). Could you be more explicit about how you think the code could use a single test?
+
+Thanks.
+
 2454:14-2454:17
 Fri Apr 29 17:22:25 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>

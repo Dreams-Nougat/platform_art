@@ -82,6 +82,16 @@ I'm not following the chain of logic for how only one test is required. If out =
 
 Thanks.
 
+2453
+Mon May 02 21:44:59 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28a2b911_7d9fc36f
+UUID: 28a2b911_08cabbb1
+Bytes: 432
+Could you unconditionally do the floor.w.s, and then test the output against Integer.MAX_VALUE? If you see MAX_VALUE, you then check the input against zero, and return MIN_VALUE or MAX_VALUE as appropriate.  Otherwise you just do the conditional increment by 1.
+
+Or am I misunderstanding the instruction semantics? It sounds like any overflow is indicated by MAX_VALUE.  Which is a good choice, since it can't otherwise be produced.
+
 2454:14-2454:17
 Fri Apr 29 17:22:25 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>

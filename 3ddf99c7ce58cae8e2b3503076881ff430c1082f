@@ -92,6 +92,44 @@ Could you unconditionally do the floor.w.s, and then test the output against Int
 
 Or am I misunderstanding the instruction semantics? It sounds like any overflow is indicated by MAX_VALUE.  Which is a good choice, since it can't otherwise be produced.
 
+2453
+Mon May 02 23:25:48 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 28a2b911_08cabbb1
+UUID: 28a2b911_b82f76e5
+Bytes: 836
+If I understand you correctly you're looking at getting rid of this part of the code:
+
+  // if (in <= (float)Integer.MIN_VALUE) {
+  //   /*
+  //    * Needed for MIPS32 because values <= Integer.MIN_VALUE
+  //    * get output as Integer.MAX_VALUE by "floor.w.s" & Java requires Integer.MIN_VALUE.
+  //    */
+  //   return Integer.MIN_VALUE;
+  // }
+
+not getting rid of the ((in - out) >= 0.5) part of the code, yes?
+
+So the pseudocode would be:
+
+  // if (in.isNaN) {
+  //   return 0;
+  // }
+  //
+  // out = floor(in);
+  //
+  // if (out == Integer.MAX_VALUE) {
+  //   TMP = (in < 0.0f) ? 1 : 0;
+  //   /*
+  //    * If TMP is 1, then adding it to out will wrap its value from
+  //    * Integer.MAX_VALUE to Integer.MIN_VALUE.
+  //    */
+  //   return out += TMP;
+  // }
+  //
+  // TMP = (((in - out) >= 0.5f) ? 1 : 0;
+  // return out += TMP;
+
 2454:14-2454:17
 Fri Apr 29 17:22:25 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>

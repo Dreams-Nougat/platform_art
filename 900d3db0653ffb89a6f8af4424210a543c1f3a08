@@ -1,0 +1,28 @@
+Revision: 900d3db0653ffb89a6f8af4424210a543c1f3a08
+Patch-set: 1
+File: compiler/optimizing/load_store_elimination.cc
+
+737:37-737:68
+Wed May 04 18:58:06 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd6bef2f_4921c58f
+Bytes: 109
+What does it mean? When we hunt down original references, we only traverse through null check and bound type.
+
+739:73-739:93
+Wed May 04 18:58:06 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd6bef2f_29ed6935
+Bytes: 69
+Kind of ambiguous. "eliminate array gets" seems more straightforward.
+
+742
+Wed May 04 18:58:06 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cd6bef2f_e9b43148
+Bytes: 680
+I think there may be very rare cases where storing a value into a field of null constant ref, and loading a field (which is actually a different field) with the same offset from null constant ref, may trigger this assert since it's not array get. So we should probably relax the assert more.
+
+It's almost not necessary. FindHeapLocationIndex() does compare GetDeclaringClassDefIndex() of the resolved field (for type based aliasing analysis), however since currently we don't compare dex_file (which can create unnecessary aliases, but very rare and benign), it might treat two null constant fields that should be different as the same instead,
+and then try to eliminate the load.
+

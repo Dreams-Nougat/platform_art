@@ -9,12 +9,28 @@ UUID: cd6bef2f_4921c58f
 Bytes: 109
 What does it mean? When we hunt down original references, we only traverse through null check and bound type.
 
+737:37-737:68
+Thu May 05 09:45:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd6bef2f_4921c58f
+UUID: edb513f9_1c1eb5a9
+Bytes: 100
+We could hunt down even further for this particular DCHECK but I'd think it's not worth the trouble.
+
 739:73-739:93
 Wed May 04 18:58:06 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cd6bef2f_29ed6935
 Bytes: 69
 Kind of ambiguous. "eliminate array gets" seems more straightforward.
+
+739:73-739:93
+Thu May 05 09:45:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd6bef2f_29ed6935
+UUID: edb513f9_fc7789f7
+Bytes: 4
+Done
 
 742
 Wed May 04 18:58:06 2016 +0000
@@ -25,4 +41,37 @@ I think there may be very rare cases where storing a value into a field of null 
 
 It's almost not necessary. FindHeapLocationIndex() does compare GetDeclaringClassDefIndex() of the resolved field (for type based aliasing analysis), however since currently we don't compare dex_file (which can create unnecessary aliases, but very rare and benign), it might treat two null constant fields that should be different as the same instead,
 and then try to eliminate the load.
+
+742
+Thu May 05 09:45:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd6bef2f_e9b43148
+UUID: edb513f9_bc8101d7
+Bytes: 904
+> I think there may be very rare cases where storing a value into a
+ > field of null constant ref, and loading a field (which is actually
+ > a different field) with the same offset from null constant ref, may
+ > trigger this assert since it's not array get. So we should probably
+ > relax the assert more.
+
+Really? Fields are correctly typed from the beginning, so GVN will not try to merge them. Don't you do the same type check in lse?
+
+ > 
+ > It's almost not necessary. FindHeapLocationIndex() does compare
+ > GetDeclaringClassDefIndex() of the resolved field (for type based
+ > aliasing analysis), however since currently we don't compare
+ > dex_file (which can create unnecessary aliases, but very rare and
+ > benign), it might treat two null constant fields that should be
+ > different as the same instead,
+ > and then try to eliminate the load.
+
+ok, so IIUC you agree the DCHECK can stay as it is?
+
+742
+Thu May 05 09:45:43 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cd6bef2f_e9b43148
+UUID: edb513f9_dc7ccddc
+Bytes: 4
+Done
 

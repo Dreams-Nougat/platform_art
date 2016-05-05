@@ -9,6 +9,14 @@ UUID: edb513f9_5c243dfd
 Bytes: 136
 I don't think we swap inputs to put the constant on the right, do we? Should you use the GetConstantRight and GetLeastConstantLeft here?
 
+979:28-979:61
+Thu May 05 16:21:55 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: edb513f9_5c243dfd
+UUID: cd6bef2f_b17533bf
+Bytes: 193
+Yes, the new and existing code relies on being right-constant-heavy. Most code seems to be rewritten in that form, but I like the suggestion of using these utilities (with cmp rewrite in here).
+
 File: test/449-checker-bce/src/Main.java
 
 943:0-944:28
@@ -25,6 +33,19 @@ Parent: edb513f9_dce04de0
 UUID: 2dac8bb4_fe12e1a4
 Bytes: 163
 Nope, this is fine. Maybe just CHECK would be more descriptive but Checker will never match the same line twice, so this says "there are at least two BoundsChecks"
+
+943:0-944:28
+Thu May 05 16:21:55 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2dac8bb4_fe12e1a4
+UUID: cd6bef2f_51c23ffb
+Bytes: 331
+Yes, like David says, this works fine (I had already verified this long time back with one extra check-dag that would fail). As for CHECK vs CHECK-DAG, since the order in 
+
+CHECK X
+CHECK X
+
+does not matter, it only seemed appropriate to pick the order-does-not matter check. But I am ok with CHECK if that has the group preference.
 
 948
 Wed May 04 21:42:44 2016 +0000

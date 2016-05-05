@@ -17,6 +17,14 @@ UUID: edb513f9_1c1eb5a9
 Bytes: 100
 We could hunt down even further for this particular DCHECK but I'd think it's not worth the trouble.
 
+737:37-737:68
+Thu May 05 23:48:29 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: edb513f9_1c1eb5a9
+UUID: 6d1763d9_2dbfe50b
+Bytes: 182
+I just meant the "the null could be behind a field access" part of the comment. A null check/bound check on null is still really null. But a field access on a null isn't really null.
+
 739:73-739:93
 Wed May 04 18:58:06 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -74,4 +82,14 @@ Parent: cd6bef2f_e9b43148
 UUID: edb513f9_dc7ccddc
 Bytes: 4
 Done
+
+742
+Thu May 05 23:48:29 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: edb513f9_bc8101d7
+UUID: 6d1763d9_1fbc84c9
+Bytes: 334
+LSE currently uses GetDeclaringClassDefIndex() (plus offset) but not dex_file so strictly it's not correctly typed. If CL 220683 goes in, we can type fields correctly with the ArtField in FieldInfo.
+
+So the assert can stay the same if we do a follow-up in LSE after CL 220683 goes in, or CL 220683 includes the LSE part of the change.
 

@@ -1,0 +1,135 @@
+Revision: 0984097620f322a7ddda74c79b7def31c638e44e
+Patch-set: 1
+File: compiler/optimizing/code_generator_x86.cc
+
+4321:0-4322:51
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_78a64173
+Bytes: 221
+Nit: I believe we prefer this style:
+
+  Location CodeGeneratorX86::GenerateCalleeMethodStaticOrDirectCall(HInvokeStaticOrDirect* invoke,
+                                                                    Location temp) {
+
+File: compiler/optimizing/code_generator_x86.h
+
+401:0-402:52
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_389cc91d
+Bytes: 27
+Nit: fits on a single line.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+765:0-766:51
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_b887f9c6
+Bytes: 6
+Ditto.
+
+File: compiler/optimizing/code_generator_x86_64.h
+
+397:0-398:52
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_988a35d0
+Bytes: 6
+Ditto.
+
+File: compiler/optimizing/intrinsics_x86.cc
+
+2633
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_b871b9ce
+Bytes: 383
+This intrinsic probably won't work as-is with the read barrier configuration, so you should add something like this:
+
+  if (kEmitCompilerReadBarrier) {
+    // Do not intrinsify this call with the read barrier configuration.
+    return;
+  }
+
+Note that we are safe for now as intrinsics that may use a slow path are currently disabled with the read barrier configuration (see line 63).
+
+2642
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_f87b31aa
+Bytes: 86
+Likewise, ensure we are not using read barriers:
+
+  DCHECK(!kEmitCompilerReadBarrier);
+
+2654:2-2654:24
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_58b89d84
+Bytes: 33
+DCHECK(invoke_direct != nullptr);
+
+2665:0-2666:56
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_d8abcd2d
+Bytes: 164
+Please split the assertions:
+
+  DCHECK_NE(slow_path_flag_offset, 0u);
+  DCHECK_NE(disable_flag_offset, 0u);
+  DCHECK_NE(slow_path_flag_offset, disable_flag_offset);
+
+2668:5-2668:10
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_f8a89133
+Bytes: 5
+Check
+
+2670:7-2670:61
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_f8525122
+Bytes: 50
+Is there any alignment condition to use CMPW here?
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+2721
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_384da98c
+Bytes: 9
+Likewise.
+
+2730
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_58425d5b
+Bytes: 9
+Likewise.
+
+2742:2-2742:24
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_7847216a
+Bytes: 9
+Likewise.
+
+2753:0-2754:56
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_b858d946
+Bytes: 9
+Likewise.
+
+2756:5-2756:10
+Mon May 09 14:44:38 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 72af4490_d8558d0d
+Bytes: 5
+Check
+

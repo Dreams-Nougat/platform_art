@@ -49,6 +49,14 @@ UUID: f2fb3484_cc520f23
 Bytes: 144
 Not sure I understand. The comment says "..originates from the null constant", which IMO includes HFieldGet on a null. Is the comment confusing?
 
+737:37-737:68
+Mon May 09 16:48:32 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f2fb3484_cc520f23
+UUID: f266d435_9d0de72a
+Bytes: 439
+Ok. Probably I was still thinking about after field is strongly typed. In that case, we would create different heap locations when fields are different, even for the same null constant. Then we'd stop wrong typing right at the field/array get at the null constant, instead of letting it propagate further and do special asserts downstream. I think we actually can turn line 733 into asserts once CL 220683 and its follow-up in done in LSE.
+
 739:73-739:93
 Wed May 04 18:58:06 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>

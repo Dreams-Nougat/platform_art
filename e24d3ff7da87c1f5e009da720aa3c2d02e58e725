@@ -17,3 +17,16 @@ UUID: 321dcc1b_16677cdc
 Bytes: 69
 I found ways to do it in bash, but none that I find better than this.
 
+58:0-58:111
+Wed May 11 16:07:41 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 321dcc1b_16677cdc
+UUID: d211d00a_f3277054
+Bytes: 288
+The cleanest bash way I found is
+
+    public_libraries_path="${ANDROID_PRODUCT_OUT}/.../public.libraries.txt"
+    make_command+=" ${public_libraries_path#$(readlink -f $PWD/)}"                
+
+but it is not very portable because of `readlink` having a different behaviour on BSD and OSX.
+

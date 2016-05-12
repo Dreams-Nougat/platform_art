@@ -9,6 +9,14 @@ UUID: f247b43c_6721c9ee
 Bytes: 128
 This seems like a workaround to me. Is it a normal exit that causes DCHECK failures? What is the root cause for DCHECK failures?
 
+10:29-10:68
+Thu May 12 20:07:39 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f247b43c_6721c9ee
+UUID: f247b43c_a2a8ff8a
+Bytes: 357
+Yes, a normal exit causes a DCHECK failure. The DCHECK asserts that a mutex has no owner (being unlocked) in ~Mutex(). An atexit handler calls the destructor for the global Mutexes if we use the normal exit. But a program calls exit via System.exit() in an arbitrary time. In an arbitrary time, it's possible that one of the mutexes may happen to be locked.
+
 File: runtime/runtime_options.def
 
 135

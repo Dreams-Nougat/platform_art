@@ -11,10 +11,34 @@ Native debug info is needed not only for --debuggable, but for any other compila
 Please change it to GetGenerateDebugInfo().
 I will prepare a patch.
 
+817:27-817:46
+Fri May 13 07:26:38 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d700e2f1_1ba51b66
+UUID: 17f7da48_1db873f1
+Bytes: 815
+The trouble is that without --debuggable the compiler can not produce accurate line number information. Fixing this one case will not help.
+
+Also, this method will add an extra stackmap, which increases the binary size (other than the generated DWARF sections). I do not want -g to affect the generated code (nops) and runtime data structures (stackmaps).
+
+If we really need to keep extra line-numbers for non-debuggable compiles, I would go back to keeping them as a separate map, and then we can go all-in and include line numbers for any instructions with dex pc. It would still be in-accurate and noisy.
+
+Can I ask why you want this?  What sort of profiling are you doing?  Isn't knowing the expensive methods enough?  Does that have to be line-number granularity?  Is profiling with --debuggable not an option?
+
 820:6-820:19
 Thu May 12 14:14:30 2016 +0000
 Author: Yevgeny Y Rouban <1037563@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 37fcde2a_fecca19d
 Bytes: 151
 For accuracy of hardware level performance profiling I would suggest to avoid generating extra nops here. I propose to just skip recording PcInfo here.
+
+820:6-820:19
+Fri May 13 07:26:38 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37fcde2a_fecca19d
+UUID: 9714aa34_dc38c12a
+Bytes: 259
+We need to record PcInfo here to get accurate line-number information for debuggable apps.
+The condition above ensures that it happens only when there is a collision, which is reasonably rare.
+I still plan to remove the nop, but the proper fix is non-trivial.
 

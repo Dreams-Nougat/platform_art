@@ -1,0 +1,17 @@
+Revision: 468fae1b5fcbaf53e66d70c9693fa12f61d0e645
+Patch-set: 2
+File: runtime/runtime.cc
+
+580:0-589:5
+Fri May 13 09:43:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b75fee26_0adf1b49
+Bytes: 343
+This style is sort of confusing, as you're creating scopes ({}) only for the 'klass' variable: the handles remain live until scope at line 578 gets closed.
+
+I suggest drop the inner {}, and having two variables:
+Handle<mirror::Class> klass_klass = ..
+Handle<mirror::Class> field_klass = ..
+
+(We could also go with just one handle if you want).
+

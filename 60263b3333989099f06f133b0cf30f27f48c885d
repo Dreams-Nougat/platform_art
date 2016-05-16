@@ -1,0 +1,25 @@
+Revision: 60263b3333989099f06f133b0cf30f27f48c885d
+Patch-set: 2
+File: runtime/interpreter/interpreter.cc
+
+554:0-554:74
+Mon May 16 22:32:56 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f247b43c_4df5b2fa
+Bytes: 67
+As discussed, you also need to fix the aliases in the shadow frame.
+
+571:0-574:7
+Mon May 16 22:32:56 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f247b43c_1a2e7e35
+Bytes: 227
+As discussed, I think what bothered me at the beginning if this else branch just doing a DCHECK. If we changed the code line 557 to:
+
+} else {
+DCHECK_EQ(instr->Opcode(), Instruction::NEW_INSTANCE)
+...
+}
+
+That would work for me.
+

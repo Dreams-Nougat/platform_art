@@ -9,6 +9,14 @@ UUID: b75fee26_6db911f9
 Bytes: 142
 IIRC ResolveMethod can throw an exception and return null if the method cannot be resolved. You should handle the exception when that happens.
 
+494:15-494:21
+Tue May 17 19:50:59 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b75fee26_6db911f9
+UUID: f2209484_4d05d1ac
+Bytes: 358
+We just returned from callee, so that method should resolve without problem. However I'm worried about cases like runtime methods where we just return null. Maybe that won't happen but I really only care about if it's string init and return true for it. If in case there are pending exceptions (say due to oom), I'll pass that up to let the caller handle it.
+
 498:8-498:25
 Tue May 17 03:30:09 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,6 +32,14 @@ UUID: b75fee26_4dbe4de3
 Bytes: 90
 That's related to my comment above. If callee==nullptr is a hard fail, I would even CHECK.
 
+498:8-498:25
+Tue May 17 19:50:59 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b75fee26_4dbe4de3
+UUID: f2209484_2d7b3518
+Bytes: 193
+As commented above, I'm just worried about some special method where we just return null. I don't assert since I don't care about if that case is possible as long as I take care of string init.
+
 File: runtime/interpreter/interpreter_common.cc
 
 556:2-556:62
@@ -33,6 +49,14 @@ UUID: b75fee26_edcce19d
 Bytes: 67
 for (uint32_t i = 0, e = shadow_frame->NumberOfVRegs(); i < e; ++i)
 
+556:2-556:62
+Tue May 17 19:50:59 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b75fee26_edcce19d
+UUID: f2209484_4de95126
+Bytes: 4
+Done
+
 File: test/597-deopt-new-string/src/Main.java
 
 79:20-79:26
@@ -41,4 +65,12 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b75fee26_cdc91d8c
 Bytes: 30
 Why no "System.exit(0); here ?
+
+79:20-79:26
+Tue May 17 19:50:59 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b75fee26_cdc91d8c
+UUID: f2209484_4d787119
+Bytes: 33
+Changed return to System.exit(0).
 

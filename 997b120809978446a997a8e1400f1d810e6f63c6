@@ -17,12 +17,28 @@ UUID: 1720ba90_dec55951
 Bytes: 202
 For which instruction(s)?  For "VRINTA (floating-point)", "VRINTM (floating-point)", "VRINTN (floating-point)", "VRINTP (floating-point)", bits 28-31 seem to be 1111 for both the A1 and the T1 encoding.
 
+967:43-967:60
+Tue May 17 13:39:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1720ba90_dec55951
+UUID: d700e2f1_5ebef1e2
+Bytes: 7
+Agreed.
+
 973:21-973:28
 Tue May 17 11:32:52 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 17f7da48_834e625f
 Bytes: 65
 Why not put this between B23 and B21?  Likewise for other fields.
+
+973:21-973:28
+Tue May 17 13:39:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17f7da48_834e625f
+UUID: 57431250_f5e39017
+Bytes: 229
+I put it there because `D/Vd` and `M/Vm` are the encoding for the register indexes. I found them grouped together for `Thumb2Assembler::EmitVPushPop`. I gave a try at ordering everything by bit index, but I find it less readable.
 
 File: compiler/utils/arm/assembler_arm32.cc
 
@@ -33,6 +49,14 @@ UUID: b711ae44_c04572a8
 Bytes: 25
 Nit: /* is_64bit */ false
 
+530:68-530:85
+Tue May 17 13:39:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b711ae44_c04572a8
+UUID: 37fcde2a_cd50154f
+Bytes: 4
+Done
+
 File: compiler/utils/arm/assembler_thumb2.cc
 
 1119:70-1119:87
@@ -41,6 +65,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 57431250_9548c44d
 Bytes: 6
 Ditto.
+
+1119:70-1119:87
+Tue May 17 13:39:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 57431250_9548c44d
+UUID: f705e6fe_652d9cee
+Bytes: 4
+Done
 
 File: disassembler/disassembler_arm.cc
 
@@ -56,4 +88,12 @@ Also, why not using the 3-argument constructor:
   FpRegister(uint32_t instr, uint16_t at_bit, uint16_t extra_at_bit)
 
 as the `size` information is at bit 8 (see line 205) in VRINT instructions?
+
+1516:0-1519:40
+Tue May 17 13:39:54 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1720ba90_5e0ca996
+UUID: b75fee26_1062ac2e
+Bytes: 34
+Refactored using that constructor.
 

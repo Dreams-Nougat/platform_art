@@ -9,3 +9,51 @@ UUID: b75fee26_109bcc74
 Bytes: 61
 Is this OK for Thumb? The T1 encoding is listed as "1110|..."
 
+967:43-967:60
+Tue May 17 11:32:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b75fee26_109bcc74
+UUID: 1720ba90_dec55951
+Bytes: 202
+For which instruction(s)?  For "VRINTA (floating-point)", "VRINTM (floating-point)", "VRINTN (floating-point)", "VRINTP (floating-point)", bits 28-31 seem to be 1111 for both the A1 and the T1 encoding.
+
+973:21-973:28
+Tue May 17 11:32:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17f7da48_834e625f
+Bytes: 65
+Why not put this between B23 and B21?  Likewise for other fields.
+
+File: compiler/utils/arm/assembler_arm32.cc
+
+530:68-530:85
+Tue May 17 11:32:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b711ae44_c04572a8
+Bytes: 25
+Nit: /* is_64bit */ false
+
+File: compiler/utils/arm/assembler_thumb2.cc
+
+1119:70-1119:87
+Tue May 17 11:32:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57431250_9548c44d
+Bytes: 6
+Ditto.
+
+File: disassembler/disassembler_arm.cc
+
+1516:0-1519:40
+Tue May 17 11:32:52 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1720ba90_5e0ca996
+Bytes: 262
+Maybe move these inside the `if` instruction in lines 1521–1524?
+
+Also, why not using the 3-argument constructor:
+
+  FpRegister(uint32_t instr, uint16_t at_bit, uint16_t extra_at_bit)
+
+as the `size` information is at bit 8 (see line 205) in VRINT instructions?
+

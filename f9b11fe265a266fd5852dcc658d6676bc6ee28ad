@@ -2,10 +2,43 @@ Revision: f9b11fe265a266fd5852dcc658d6676bc6ee28ad
 Patch-set: 3
 File: runtime/interpreter/interpreter.cc
 
+494:15-494:21
+Tue May 17 08:58:13 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b75fee26_6db911f9
+Bytes: 142
+IIRC ResolveMethod can throw an exception and return null if the method cannot be resolved. You should handle the exception when that happens.
+
 498:8-498:25
 Tue May 17 03:30:09 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f247b43c_bc59e24b
 Bytes: 31
 Should you DCHECK that instead?
+
+498:8-498:25
+Tue May 17 08:58:13 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f247b43c_bc59e24b
+UUID: b75fee26_4dbe4de3
+Bytes: 90
+That's related to my comment above. If callee==nullptr is a hard fail, I would even CHECK.
+
+File: runtime/interpreter/interpreter_common.cc
+
+556:2-556:62
+Tue May 17 08:58:13 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b75fee26_edcce19d
+Bytes: 67
+for (uint32_t i = 0, e = shadow_frame->NumberOfVRegs(); i < e; ++i)
+
+File: test/597-deopt-new-string/src/Main.java
+
+79:20-79:26
+Tue May 17 08:58:13 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b75fee26_cdc91d8c
+Bytes: 30
+Why no "System.exit(0); here ?
 

@@ -9,3 +9,11 @@ UUID: a87f884b_c738d223
 Bytes: 26
 Maybe keep this assertion?
 
+1097:8-1097:75
+Thu May 19 02:18:51 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a87f884b_c738d223
+UUID: e85340c8_506c2694
+Bytes: 329
+There's a slight chance that some thread changes it back to gray right after the AtomicSetReadBarrierPointer call succeeds in a 'false gray' case. So, elided this. Note the DCHECK was somewhat redundant because the success of the AtomicSetReadBarrierPointer would at least indicate that the object changed to white at least once.
+

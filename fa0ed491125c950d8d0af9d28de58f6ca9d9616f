@@ -20,6 +20,14 @@ Could we introduce some sort of "view" or "computed array" over the input_record
 
 ?
 
+917:27-917:60
+Thu May 19 11:41:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37e05ee0_7e439106
+UUID: b7b52edc_5d016f5d
+Bytes: 54
+I'm thinking about a bit more generic utility wrapper.
+
 File: compiler/optimizing/graph_checker.cc
 
 392:25-392:45
@@ -28,6 +36,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 57b232f7_bafd2d4b
 Bytes: 102
 Why not keeping `input_records.size()` in a variable `e` as in the original code (here and elsewhere)?
+
+392:25-392:45
+Thu May 19 11:41:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 57b232f7_bafd2d4b
+UUID: 77a496ba_d0ed5c03
+Bytes: 111
+Have a little trust in clang's scalarization. (input_records is a local variable and its members never change.)
 
 File: compiler/optimizing/nodes.h
 
@@ -48,6 +64,16 @@ Why not?  I does require a bit of checking code, but I think it's faire given th
 
 There are too many "special inputs" IMO in HInvokeStaticOrDirect.  Maybe we should start thinking about simplifying/splitting this instruction.
 
+3932
+Thu May 19 11:41:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 77a496ba_90f914d8
+UUID: 37e05ee0_fe00819f
+Bytes: 254
+If we drop this check, we can remove the whole GetInputRecords() override and make the HInvoke::GetInputRecords() final.
+
+(And I'm thinking about making the HExpression<>::GetInputRecords() final and rewriting the HLoadString to avoid the HExpression<>.)
+
 File: compiler/utils/array_ref.h
 
 63:2-63:4
@@ -56,6 +82,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f7cec6a2_74cdc896
 Bytes: 43
 Could you fix the indentation here as well?
+
+63:2-63:4
+Thu May 19 11:41:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7cec6a2_74cdc896
+UUID: 57beb2e3_dabde1e5
+Bytes: 9
+Shall do.
 
 66:0-71:3
 Thu May 19 10:55:34 2016 +0000
@@ -70,4 +104,12 @@ Would
   }
 
 work too?
+
+66:0-71:3
+Thu May 19 11:41:34 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 37d5be2a_5692d4af
+UUID: 378e9e42_8e22db43
+Bytes: 115
+You mean "add_const" instead of "remove_const". That would create 2 identical non-template overloads if T is const.
 

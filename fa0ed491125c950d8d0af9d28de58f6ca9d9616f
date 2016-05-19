@@ -1,5 +1,34 @@
 Revision: fa0ed491125c950d8d0af9d28de58f6ca9d9616f
 Patch-set: 2
+File: compiler/optimizing/bounds_check_elimination.cc
+
+917:27-917:60
+Thu May 19 10:55:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37e05ee0_7e439106
+Bytes: 417
+This pattern is recurring.  It'd be nice to have some syntactic sugar to keep the code look simple.
+
+Could we introduce some sort of "view" or "computed array" over the input_records showing the instructions?  Something like:
+
+  // Type could be replaced by `auto`.
+  InstructionView<ArrayRef<HUserRecord<HInstruction*>>> input_instructions(input_records);
+
+  // ...
+
+  HInstruction* input1 = input_instruction[1];
+
+?
+
+File: compiler/optimizing/graph_checker.cc
+
+392:25-392:45
+Thu May 19 10:55:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 57b232f7_bafd2d4b
+Bytes: 102
+Why not keeping `input_records.size()` in a variable `e` as in the original code (here and elsewhere)?
+
 File: compiler/optimizing/nodes.h
 
 3932
@@ -8,4 +37,37 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f7cec6a2_d485bc6c
 Bytes: 47
 Should we really try to preserve this DCHECK()?
+
+3932
+Thu May 19 10:55:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7cec6a2_d485bc6c
+UUID: 77a496ba_90f914d8
+Bytes: 279
+Why not?  I does require a bit of checking code, but I think it's faire given the complexity of the HInvokeStaticOrDirect instruction.
+
+There are too many "special inputs" IMO in HInvokeStaticOrDirect.  Maybe we should start thinking about simplifying/splitting this instruction.
+
+File: compiler/utils/array_ref.h
+
+63:2-63:4
+Thu May 19 10:55:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7cec6a2_74cdc896
+Bytes: 43
+Could you fix the indentation here as well?
+
+66:0-71:3
+Thu May 19 10:55:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 37d5be2a_5692d4af
+Bytes: 165
+Would
+
+  template <size_t size>
+  explicit constexpr ArrayRef(typename std::remove_const<T>::type (&array)[size])
+      : array_(array), size_(size) {
+  }
+
+work too?
 

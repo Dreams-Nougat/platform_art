@@ -9,12 +9,28 @@ UUID: 378e9e42_ceace348
 Bytes: 144
 You could relax this and use CompareAndBranchIfZero() instead of cbz() - it would use CBZ if we happen to get a low register, CMP+BEQ otherwise.
 
+996:0-997:53
+Thu May 19 15:24:08 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 378e9e42_ceace348
+UUID: 378e9e42_0e342b9a
+Bytes: 4
+Done
+
 1000:47-1000:49
 Wed May 18 14:58:52 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 378e9e42_2e656710
 Bytes: 41
 Relax this at least for the kNoCall case.
+
+1000:47-1000:49
+Thu May 19 15:24:08 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 378e9e42_2e656710
+UUID: 378e9e42_2e39e790
+Bytes: 4
+Done
 
 1032:0-1033:41
 Wed May 18 14:58:52 2016 +0000
@@ -23,12 +39,28 @@ UUID: 378e9e42_ce7dc3a1
 Bytes: 24
 CompareAndBranchIfZero()
 
+1032:0-1033:41
+Thu May 19 15:24:08 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 378e9e42_ce7dc3a1
+UUID: 378e9e42_ee4eff28
+Bytes: 4
+Done
+
 1042:0-1045:39
 Wed May 18 14:58:52 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 378e9e42_4e3c73d0
 Bytes: 14
 Merge as SUBS.
+
+1042:0-1045:39
+Thu May 19 15:24:08 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 378e9e42_4e3c73d0
+UUID: 378e9e42_0e5d0bda
+Bytes: 4
+Done
 
 1053:2-1053:46
 Wed May 18 14:58:52 2016 +0000
@@ -37,6 +69,16 @@ UUID: 378e9e42_0e498b7f
 Bytes: 57
 Reorder with CBZ above for better instruction scheduling?
 
+1053:2-1053:46
+Thu May 19 15:24:08 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 378e9e42_0e498b7f
+UUID: 378e9e42_4e5713ba
+Bytes: 282
+If the branch is predicted not taken, the three MOVs could be adjacent in the issue queue and this one likely dual-issue with the first in the IT block (if the right string is shorter).
+
+If the branch is predicted taken, we would waste time on this MOV by putting it before the CBZ.
+
 1056:0-1057:97
 Wed May 18 14:58:52 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,10 +86,26 @@ UUID: 378e9e42_6e484f79
 Bytes: 285
 The loop below is unrolled to actually compare 4 characters at a time, so it needs 8B alignment to avoid over-reading, which can cause SIGSEGV in the extremely rare case that you're exactly at the end of the allocated heap. (Or you can remove the loop unrolling and save on code size.)
 
+1056:0-1057:97
+Thu May 19 15:24:08 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 378e9e42_6e484f79
+UUID: f7cec6a2_9736263f
+Bytes: 4
+Done
+
 1069:2-1069:43
 Wed May 18 14:58:52 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 378e9e42_ce56a319
 Bytes: 185
 Use sub() instead of subs() as you don't explicitly use the flags. If temp0 is a low register, the sub() with kCcDontCare will use the 16-bit SUBS, otherwise it will use the 32-bit SUB.
+
+1069:2-1069:43
+Thu May 19 15:24:08 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 378e9e42_ce56a319
+UUID: d7c9c29d_96ebca89
+Bytes: 4
+Done
 

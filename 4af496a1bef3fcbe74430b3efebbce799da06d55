@@ -9,6 +9,14 @@ UUID: fcf6ab4a_7db89784
 Bytes: 111
 Can you split these out to separate CL(s)? (Not related or only remotely related to the HInvokeStaticOrDirect.)
 
+23:0-26:37
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcf6ab4a_7db89784
+UUID: b7d7ee7d_f11477e5
+Bytes: 8
+Will do.
+
 File: compiler/linker/mips/relative_patcher_mips_base.h
 
 25:6-25:29
@@ -17,6 +25,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7ceb9b63_01feca45
 Bytes: 87
 Do you anticipate using this also for mips64? If not, merge to the MipsRelativePatcher.
+
+25:6-25:29
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ceb9b63_01feca45
+UUID: b7d7ee7d_b1bddfe6
+Bytes: 93
+Yes, there should be a MIPS64 implementation as well (when we're done with the MIPS32 round).
 
 File: compiler/optimizing/code_generator_mips.cc
 
@@ -27,6 +43,14 @@ UUID: 17227a8a_e56e96f0
 Bytes: 43
 Please update to use map->GetOrCreate(...).
 
+995:0-1003:17
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17227a8a_e56e96f0
+UUID: b7d7ee7d_91a09bb4
+Bytes: 55
+Is in CodeGeneratorARM::Deduplicate*Literal()? Will do.
+
 3825:0-3826:75
 Fri May 20 15:47:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -34,12 +58,30 @@ UUID: 17227a8a_25718ece
 Bytes: 79
 I don't see any reason to bundle kDexCachePcRelative with kCallDirectWithFixup.
 
+3825:0-3826:75
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17227a8a_25718ece
+UUID: d742a22f_4bb6a54e
+Bytes: 754
+Could you please elaborate? My current implementation of VisitInvokeStaticOrDirect() adds at most one additional input register, which is either the base for PC-relative literals (needed for k*WithFixup) or the base for the dex cache array (needed for kDexCachePcRelative). It won't work with a combination of, say, kDexCachePcRelative and kCallDirectWithFixup because they'd need two different input registers. Which is why I put a CHECK() below to catch this in case it happens (haven't seen so far). Do I need to do anything about the implementation or is your comment only about my comment? Or are you, in fact, confirming that kDexCachePcRelative and kCallDirectWithFixup can't (or shouldn't) ever come together? IOW, what do you want me to do here?
+
 5326:2-5326:19
 Fri May 20 15:47:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 17227a8a_45304af1
 Bytes: 51
 Can you already read the RA that in the delay slot?
+
+5326:2-5326:19
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17227a8a_45304af1
+UUID: d742a22f_ab85496d
+Bytes: 188
+I've found a statement in the documentation that says that RA is updated before the instruction in the delay slot. So, that's already happening (there's no NOP between NAL and MOVE).
+
+Why?
 
 File: compiler/optimizing/dex_cache_array_fixups_mips.cc
 
@@ -50,6 +92,14 @@ UUID: 17227a8a_a51f3e58
 Bytes: 123
 Looks like there's another bit of code that could use SafeMap::GetOrCreate(), though I didn't clean this up for ARM either.
 
+67
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17227a8a_a51f3e58
+UUID: d742a22f_eb7f5151
+Bytes: 82
+If you do it for ARM, I can incorporate the change into here in a later patch set.
+
 File: compiler/optimizing/pc_relative_fixups_mips.cc
 
 48
@@ -58,6 +108,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cfc5f2a_9e2fdd8c
 Bytes: 71
 I see no reason to do anything for HInvokeVirtual and HInvokeInterface.
+
+48
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cfc5f2a_9e2fdd8c
+UUID: d742a22f_2b9239af
+Bytes: 90
+On x86 this is only needed for constant parameters being passed to invoked methods, right?
 
 File: compiler/utils/mips/assembler_mips.cc
 
@@ -68,6 +126,16 @@ UUID: 1cfc5f2a_fe282188
 Bytes: 64
 Why not simply AUI and offset = SignExtend(offset[0..15]) on R6?
 
+2448
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cfc5f2a_fe282188
+UUID: d742a22f_abee2931
+Bytes: 701
+We can do it in some but not all cases. 64-bit accesses broken down into pairs of 32-bit accesses need offset and offset + 4. On the caller side I may be unable to add the 4 in the 16 least-significant bits of the offset (e.g. 0x7ffc + 4) because the offset in LW and SW is int16_t (0x7ffc + 4 overflows into the negative range to -0x8000). This is why in the general case the 32-bit offset is first loaded in its entirety into a register after which we can always do e.g. LW reg, 0(reg) or LW reg, 4(reg).
+
+I didn't feel like complicating the code at this time by bringing in the type accessed (64-bit double vs 64-bit long vs everything else) and moving the existing callers' logic into this method.
+
 2454:0-2455:33
 Fri May 20 15:47:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -75,12 +143,28 @@ UUID: 17227a8a_a5c3beff
 Bytes: 69
 Please use more descriptive names, say kMaxOffsetForSimpleAdjustment.
 
+2454:0-2455:33
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17227a8a_a5c3beff
+UUID: d742a22f_cbf37518
+Bytes: 8
+Will do.
+
 2468:0-2470:15
 Fri May 20 15:47:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f7208684_042656c1
 Bytes: 56
 Why not LUI+ADDU and offset = SignExtend(offset[0..15])?
+
+2468:0-2470:15
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7208684_042656c1
+UUID: d742a22f_0bde5d7a
+Bytes: 119
+Same as above. I may be unable to add 4 while staying within the bounds of the 16 least-significant bits of the offset.
 
 File: compiler/utils/mips/assembler_mips.h
 
@@ -91,10 +175,26 @@ UUID: f7208684_242352b2
 Bytes: 109
 It's really weird to call these "conditions." The branch type should be sufficient to distinguish the labels.
 
+666:0-667:62
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7208684_242352b2
+UUID: d742a22f_0bc73daa
+Bytes: 479
+I agree it looks a bit weird now. The idea was that similarly to generating different conditional branches based on the condition we'll choose between e.g. lw and lwc1 for literals. OTOH, since PC-relative addressing on R6 is available for GPR loading only, different instruction sequences will be needed for literals of different types and we'll indeed have to use different "branch types" as you say. So, I guess, I could use some kind of kFakeLiteralCond here. How about that?
+
 903:2-903:12
 Fri May 20 15:47:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cf5a33d_3f5e876c
 Bytes: 10
 ArenaDeque
+
+903:2-903:12
+Fri May 20 23:02:11 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cf5a33d_3f5e876c
+UUID: d742a22f_2bc4f9a2
+Bytes: 8
+Will do.
 

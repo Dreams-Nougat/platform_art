@@ -1,0 +1,100 @@
+Revision: 4af496a1bef3fcbe74430b3efebbce799da06d55
+Patch-set: 1
+File: /COMMIT_MSG
+
+23:0-26:37
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcf6ab4a_7db89784
+Bytes: 111
+Can you split these out to separate CL(s)? (Not related or only remotely related to the HInvokeStaticOrDirect.)
+
+File: compiler/linker/mips/relative_patcher_mips_base.h
+
+25:6-25:29
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ceb9b63_01feca45
+Bytes: 87
+Do you anticipate using this also for mips64? If not, merge to the MipsRelativePatcher.
+
+File: compiler/optimizing/code_generator_mips.cc
+
+995:0-1003:17
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17227a8a_e56e96f0
+Bytes: 43
+Please update to use map->GetOrCreate(...).
+
+3825:0-3826:75
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17227a8a_25718ece
+Bytes: 79
+I don't see any reason to bundle kDexCachePcRelative with kCallDirectWithFixup.
+
+5326:2-5326:19
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17227a8a_45304af1
+Bytes: 51
+Can you already read the RA that in the delay slot?
+
+File: compiler/optimizing/dex_cache_array_fixups_mips.cc
+
+67
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17227a8a_a51f3e58
+Bytes: 123
+Looks like there's another bit of code that could use SafeMap::GetOrCreate(), though I didn't clean this up for ARM either.
+
+File: compiler/optimizing/pc_relative_fixups_mips.cc
+
+48
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1cfc5f2a_9e2fdd8c
+Bytes: 71
+I see no reason to do anything for HInvokeVirtual and HInvokeInterface.
+
+File: compiler/utils/mips/assembler_mips.cc
+
+2448
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1cfc5f2a_fe282188
+Bytes: 64
+Why not simply AUI and offset = SignExtend(offset[0..15]) on R6?
+
+2454:0-2455:33
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17227a8a_a5c3beff
+Bytes: 69
+Please use more descriptive names, say kMaxOffsetForSimpleAdjustment.
+
+2468:0-2470:15
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7208684_042656c1
+Bytes: 56
+Why not LUI+ADDU and offset = SignExtend(offset[0..15])?
+
+File: compiler/utils/mips/assembler_mips.h
+
+666:0-667:62
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7208684_242352b2
+Bytes: 109
+It's really weird to call these "conditions." The branch type should be sufficient to distinguish the labels.
+
+903:2-903:12
+Fri May 20 15:47:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cf5a33d_3f5e876c
+Bytes: 10
+ArenaDeque
+

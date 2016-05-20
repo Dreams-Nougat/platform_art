@@ -1,0 +1,27 @@
+Revision: dd64a5e648d8d08d630d2099e1383204917c3516
+Patch-set: 4
+File: runtime/interpreter/interpreter.cc
+
+491:40-491:61
+Fri May 20 17:54:30 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7d7ee7d_993607f1
+Bytes: 95
+Add something like "we don't want to use ResolveMethod which includes a suspend point and GC" ?
+
+556:17-556:29
+Fri May 20 17:54:30 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7d7ee7d_190df726
+Bytes: 269
+Is this guaranteed to have a valid non-null ref here?
+
+What if we call ResolveType below or do "value.SetJ(0)" and then we don't call Execute below (if new_dex_pc == DexFile::kDexNoIndex), and in the next iteration of the loop we reach here? Is it impossible to happen?
+
+566:15-566:27
+Fri May 20 17:54:30 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b7d7ee7d_193697d6
+Bytes: 10
+Same here.
+

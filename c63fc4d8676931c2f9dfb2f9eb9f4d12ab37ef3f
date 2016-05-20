@@ -9,3 +9,19 @@ UUID: b7d7ee7d_d90a3f11
 Bytes: 18
 Why separate this?
 
+71:2-79:3
+Fri May 20 18:09:09 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7d7ee7d_d90a3f11
+UUID: b7d7ee7d_f928e327
+Bytes: 579
+Probably because I am missing a subtle point :-)
+
+My rationale:
+
+(1) getHostCoreImagePath is used at L89 to see if the core image exists in the build; this needs the x86 addition I made above (for x86, which is currently the only host arch supported)
+
+(2) getHostPICCoreImagePath is used at L165 inside getHostExecutionFlags() which, in turn, is used in all the arch back end executor classes to be passed to dalvikvm32 ..... to call, appended as -Ximage:....
+
+I found the current settings (1) and (2) it the only way that works, but love to hear how to do this shorter/better...
+

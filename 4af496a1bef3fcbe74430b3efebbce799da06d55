@@ -34,6 +34,14 @@ UUID: b7d7ee7d_b1bddfe6
 Bytes: 93
 Yes, there should be a MIPS64 implementation as well (when we're done with the MIPS32 round).
 
+25:6-25:29
+Tue May 24 09:56:24 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b7d7ee7d_b1bddfe6
+UUID: 5c67b70e_3863292d
+Bytes: 100
+The question is whether this particular class adds some value to the intended mips64 implementation.
+
 File: compiler/optimizing/code_generator_mips.cc
 
 995:0-1003:17
@@ -66,6 +74,14 @@ UUID: d742a22f_4bb6a54e
 Bytes: 754
 Could you please elaborate? My current implementation of VisitInvokeStaticOrDirect() adds at most one additional input register, which is either the base for PC-relative literals (needed for k*WithFixup) or the base for the dex cache array (needed for kDexCachePcRelative). It won't work with a combination of, say, kDexCachePcRelative and kCallDirectWithFixup because they'd need two different input registers. Which is why I put a CHECK() below to catch this in case it happens (haven't seen so far). Do I need to do anything about the implementation or is your comment only about my comment? Or are you, in fact, confirming that kDexCachePcRelative and kCallDirectWithFixup can't (or shouldn't) ever come together? IOW, what do you want me to do here?
 
+3825:0-3826:75
+Tue May 24 09:56:24 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d742a22f_4bb6a54e
+UUID: 5c67b70e_98511558
+Bytes: 181
+Yes, I'm just saying that I don't see any reason why the sharpening should ever ask for kDexCachePcRelative+kCallDirectWithFixup. So, your code should be fine. (Nothing to do here.)
+
 5326:2-5326:19
 Fri May 20 15:47:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -82,6 +98,14 @@ Bytes: 188
 I've found a statement in the documentation that says that RA is updated before the instruction in the delay slot. So, that's already happening (there's no NOP between NAL and MOVE).
 
 Why?
+
+5326:2-5326:19
+Tue May 24 09:56:24 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d742a22f_ab85496d
+UUID: 5c67b70e_b84e59b3
+Bytes: 78
+I'm always cautious. But if the documentation says it's OK, than we can do it.
 
 File: compiler/optimizing/dex_cache_array_fixups_mips.cc
 
@@ -117,6 +141,14 @@ UUID: d742a22f_2b9239af
 Bytes: 90
 On x86 this is only needed for constant parameters being passed to invoked methods, right?
 
+48
+Tue May 24 09:56:24 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d742a22f_2b9239af
+UUID: 5c67b70e_58c37d1a
+Bytes: 79
+Yes, constant floating point parameters (and some FP constants for intrinsics).
+
 File: compiler/utils/mips/assembler_mips.cc
 
 2448
@@ -135,6 +167,14 @@ Bytes: 701
 We can do it in some but not all cases. 64-bit accesses broken down into pairs of 32-bit accesses need offset and offset + 4. On the caller side I may be unable to add the 4 in the 16 least-significant bits of the offset (e.g. 0x7ffc + 4) because the offset in LW and SW is int16_t (0x7ffc + 4 overflows into the negative range to -0x8000). This is why in the general case the 32-bit offset is first loaded in its entirety into a register after which we can always do e.g. LW reg, 0(reg) or LW reg, 4(reg).
 
 I didn't feel like complicating the code at this time by bringing in the type accessed (64-bit double vs 64-bit long vs everything else) and moving the existing callers' logic into this method.
+
+2448
+Tue May 24 09:56:24 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d742a22f_abee2931
+UUID: 5c67b70e_78c8c135
+Bytes: 120
+Doesn't 64-bit access need to be 8B-aligned? And with the base register presumably 8B-aligned, offset 0xfffc is illegal?
 
 2454:0-2455:33
 Fri May 20 15:47:20 2016 +0000
@@ -182,6 +222,14 @@ Parent: f7208684_242352b2
 UUID: d742a22f_0bc73daa
 Bytes: 479
 I agree it looks a bit weird now. The idea was that similarly to generating different conditional branches based on the condition we'll choose between e.g. lw and lwc1 for literals. OTOH, since PC-relative addressing on R6 is available for GPR loading only, different instruction sequences will be needed for literals of different types and we'll indeed have to use different "branch types" as you say. So, I guess, I could use some kind of kFakeLiteralCond here. How about that?
+
+666:0-667:62
+Tue May 24 09:56:24 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d742a22f_0bc73daa
+UUID: 5c67b70e_7869a10c
+Bytes: 268
+I think storing kUncond in Branch::branch_condition_ should be just fine. You don't have to read it at all if you first check the Branch::type_. And you should create a different constructor for literals instead of trying to make the old one conform to a new use case.
 
 903:2-903:12
 Fri May 20 15:47:20 2016 +0000

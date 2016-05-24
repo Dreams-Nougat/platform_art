@@ -42,6 +42,14 @@ UUID: 5c67b70e_3863292d
 Bytes: 100
 The question is whether this particular class adds some value to the intended mips64 implementation.
 
+25:6-25:29
+Tue May 24 22:51:10 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c67b70e_3863292d
+UUID: 3ca763c1_cfe05da6
+Bytes: 379
+I believe the DexCacheArraysBase optimization is as useful on MIPS64 as it is on MIPS32. I guess, we could indeed fold MipsBaseRelativePatcher into MipsRelativePatcher and use the that same class for both MIPS32 and MIPS64 and simply invoke the constructor a bit differently so that MipsRelativePatcher::is_r6 is initialized with true on MIPS64. Is this what you're asking about?
+
 File: compiler/optimizing/code_generator_mips.cc
 
 995:0-1003:17
@@ -176,6 +184,16 @@ UUID: 5c67b70e_78c8c135
 Bytes: 120
 Doesn't 64-bit access need to be 8B-aligned? And with the base register presumably 8B-aligned, offset 0xfffc is illegal?
 
+2448
+Tue May 24 22:51:10 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c67b70e_78c8c135
+UUID: 3ca763c1_2f964904
+Bytes: 901
+Yes, we must have aligned accesses on R2 and we prefer to have them aligned on R6 as well. The problem is that they aren't always aligned. For instance, as I indicated it a long time ago, CodeGenerator::InitializeCodeGeneration() does not care to align 64-bit things within the frame, however the frame size is guaranteed to be a multiple of 8 bytes.
+
+This brings up a question. While the locations of non-callee-saves within the frame are controlled by the common part of the code generator, the code generator probably doesn't care about the exact locations of callee-saves so long as they occupy the same region at the top of the frame. If so (I haven't tried it yet), I could swap callee-saved FPU regs with callee-saved GPRs in CodeGenerator*::GenerateFrameEntry()/GenerateFrameExit() to guarantee 64-bit alignment for callee-save doubles on MIPS32. Do you think it'd work and I should go for it?
+
 2454:0-2455:33
 Fri May 20 15:47:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -230,6 +248,14 @@ Parent: d742a22f_0bc73daa
 UUID: 5c67b70e_7869a10c
 Bytes: 268
 I think storing kUncond in Branch::branch_condition_ should be just fine. You don't have to read it at all if you first check the Branch::type_. And you should create a different constructor for literals instead of trying to make the old one conform to a new use case.
+
+666:0-667:62
+Tue May 24 22:51:10 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c67b70e_7869a10c
+UUID: 3ca763c1_cfa5bd55
+Bytes: 19
+I'll clean this up.
 
 903:2-903:12
 Fri May 20 15:47:20 2016 +0000

@@ -9,6 +9,14 @@ UUID: 9ce04f3e_62a6f6b8
 Bytes: 317
 That's a part I'm not sure to understand: is the single-frame deopt a special case of partial deopt (when there is only one frame in the fragment or until an not deoptimizable frame) OR still a request from the runtime (or compiled code) to deopt exactly only one frame (whatever how many frames are in the fragment)?
 
+16:22-17:70
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ce04f3e_62a6f6b8
+UUID: 5c3ed74a_e66908ae
+Bytes: 79
+I added some comments for DeoptimizeSingleFrame() in quick_exception_handler.h.
+
 File: runtime/entrypoints/quick/quick_deoptimization_entrypoints.cc
 
 34:0-34:41
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3ca5a3c7_ffa41fc7
 Bytes: 84
 Please move this to the actual entry points, not the helper. Very brittle otherwise.
+
+34:0-34:41
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ca5a3c7_ffa41fc7
+UUID: 5c3ed74a_865b5c16
+Bytes: 4
+Done
 
 File: runtime/instrumentation.cc
 
@@ -27,6 +43,14 @@ UUID: 3cbe83e3_1ad479fb
 Bytes: 79
 How about returning this instead? That would look nicer from an api standpoint.
 
+1137:9-1137:30
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cbe83e3_1ad479fb
+UUID: 5c3ed74a_c6cf2491
+Bytes: 107
+It's a struct that has multiple fields. I only need return_pc_ here. I added comments for the return value.
+
 File: runtime/instrumentation.h
 
 405:2-405:11
@@ -36,6 +60,14 @@ UUID: 3c804313_47f7ee02
 Bytes: 110
 You change the return type of the method: please update the documentation to explain what is returned exactly.
 
+405:2-405:11
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c804313_47f7ee02
+UUID: 5c3ed74a_c6e884f0
+Bytes: 4
+Done
+
 File: runtime/quick_exception_handler.cc
 
 346:4-346:105
@@ -44,6 +76,14 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c804313_67fcf2e6
 Bytes: 9
 long line
+
+346:4-346:105
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c804313_67fcf2e6
+UUID: 5c3ed74a_268cd049
+Bytes: 4
+Done
 
 559:0-567:3
 Thu May 26 09:35:24 2016 +0000
@@ -69,6 +109,14 @@ UUID: 3c804313_a7dd0a86
 Bytes: 9
 long line
 
+271:0-271:112
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c804313_a7dd0a86
+UUID: 5c3ed74a_c19cee71
+Bytes: 79
+Actually this method shouldn't be changed. type matching should still be there.
+
 File: test/600-deoptimizeable/src/Main.java
 
 71:8-72:17
@@ -78,12 +126,28 @@ UUID: bcb0b30a_1ef5895c
 Bytes: 117
 nit: the "t = new Thread(...); t.start(); t.join()" could be moved to a method that takes your runnable as parameter.
 
+71:8-72:17
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcb0b30a_1ef5895c
+UUID: 5c3ed74a_c1a94e33
+Bytes: 4
+Done
+
 79:20-82:72
 Thu May 26 08:25:10 2016 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c804313_c7eafe14
 Bytes: 113
 IIUC you use reflection to insert a transition in the stack, right? You should add a comment here for the reader.
+
+79:20-82:72
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c804313_c7eafe14
+UUID: 5c3ed74a_81eb46b0
+Bytes: 4
+Done
 
 151:12-151:23
 Thu May 26 08:25:10 2016 +0000
@@ -92,12 +156,28 @@ UUID: 9ce04f3e_c28a6227
 Bytes: 70
 Add a comment to say that it throws the ArrayIndexOutOfBoundsException
 
+151:12-151:23
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ce04f3e_c28a6227
+UUID: 5c3ed74a_61a64262
+Bytes: 4
+Done
+
 175:12-175:23
 Thu May 26 08:25:10 2016 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9ce04f3e_a28f5e35
 Bytes: 5
 ditto
+
+175:12-175:23
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ce04f3e_a28f5e35
+UUID: 5c3ed74a_2164ba34
+Bytes: 4
+Done
 
 File: test/common/stack_inspect.cc
 
@@ -115,6 +195,22 @@ UUID: 9ce04f3e_02956a45
 Bytes: 8
 jboolean
 
+40:5-40:18
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ce04f3e_429f7265
+UUID: 5c3ed74a_416c5ef5
+Bytes: 4
+Done
+
+40:0-40:4
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ce04f3e_02956a45
+UUID: 5c3ed74a_2167da13
+Bytes: 4
+Done
+
 62:0-62:4
 Thu May 26 08:25:10 2016 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -128,4 +224,20 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9ce04f3e_229cee6e
 Bytes: 12
 make static?
+
+62:12-62:21
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ce04f3e_229cee6e
+UUID: 5c3ed74a_017656c5
+Bytes: 4
+Done
+
+62:0-62:4
+Thu May 26 22:11:13 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ce04f3e_e2996683
+UUID: 5c3ed74a_c1786eb2
+Bytes: 4
+Done
 

@@ -50,6 +50,16 @@ UUID: 3ca763c1_cfe05da6
 Bytes: 379
 I believe the DexCacheArraysBase optimization is as useful on MIPS64 as it is on MIPS32. I guess, we could indeed fold MipsBaseRelativePatcher into MipsRelativePatcher and use the that same class for both MIPS32 and MIPS64 and simply invoke the constructor a bit differently so that MipsRelativePatcher::is_r6 is initialized with true on MIPS64. Is this what you're asking about?
 
+25:6-25:29
+Thu May 26 17:02:52 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ca763c1_cfe05da6
+UUID: 9ce04f3e_2226aeb9
+Bytes: 375
+No, that's not what I was asking about, but if it makes sense to share the implementation to such extent, you could merge it all to one class.
+
+As it stands now, this class seems to add very little value to both mips and mips64. If you intend to add more shared code to this class (say, PatchCall()) but still keep some things separated, then it makes sense to keep it as is.
+
 File: compiler/optimizing/code_generator_mips.cc
 
 995:0-1003:17

@@ -98,3 +98,24 @@ UUID: 39b855a6_5b34e3e8
 Bytes: 287
 don't we know the tid's of the expected threads to remove from the set returned from GetProcessThreads()? I was assuming we'd just probe for the continued existence of the extra threads, since these an obvious place to have a TODO about using libbacktrace on these threads in the future.
 
+122:8-122:34
+Wed Jun 01 17:40:31 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b855a6_5b34e3e8
+UUID: 39b855a6_9cc25198
+Bytes: 714
+> don't we know the tid's of the expected threads to remove from the
+ > set returned from GetProcessThreads()?
+
+I guess. This just seemed easier frankly and we don't need to do the intersect of a pair of vectors.
+
+Also IIUC if we are good (and no other, unrelated, threads are around) this should be fine since the daemon threads won't really ever exit just sleep forever and should be the only thing on the thread list other then this thread. Therefore we can just see if we have more threads than expected.
+
+ > I was assuming we'd just
+ > probe for the continued existence of the extra threads, 
+ > since these
+ > an obvious place to have a TODO about using libbacktrace on these
+ > threads in the future.
+
+Done.
+

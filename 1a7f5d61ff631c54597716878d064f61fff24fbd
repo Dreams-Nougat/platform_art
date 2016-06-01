@@ -9,6 +9,57 @@ UUID: 39b855a6_47716e97
 Bytes: 224
 Won't this wait for 2s anytime someone has 2 threads and calls DestroyJavaVM? I suppose it might be OK, I wonder if there is a cleaner way. We could keep track of all the threads that were registered and only wait for those.
 
+112:17-112:42
+Wed Jun 01 05:56:10 2016 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b855a6_47716e97
+UUID: 39b855a6_bb595f4e
+Bytes: 1857
+I thought about keeping the list, it seemed an overly invasive change to make.
+
+A more practical localized TODO would be to use libbacktrace to see if the threads have any code running in libart, but that seemed pretty expensive to do without at least trying to sleep a bit first.
+
+I don't think we are really going to see this in practice, but we should clearly comment this here. that assumption is based on the idea that other threads won't exist and that hopefully most android processes don't exit(2) at all, and those that do like am, pm, etc don't need to return, but can simply exit(2).
+
+first first bit about other threads is unclear, the second bit doesn't seem to be true at the moment either. it does seem true for dex2oat:
+
+int main(int argc, char** argv) {
+  int result = art::dex2oat(argc, argv);
+  // Everything was done, do an explicit exit here to avoid running Runtime destructors that take
+  // time (bug 10645725) unless we're a debug build or running on valgrind. Note: The Dex2Oat class
+  // should not destruct the runtime in this case.
+  if (!art::kIsDebugBuild && (RUNNING_ON_MEMORY_TOOL == 0)) {
+    exit(result);
+  }
+  return result;
+}
+
+but not in AndroidRuntime::start which uses DestroyJavaVM.
+
+we could fix this in BaseCommand.run however:
+
+    public void run(String[] args) {
+        if (args.length < 1) {
+            onShowUsage(System.out);
+            return;
+        }
+
+        mArgs.init(null, null, null, null, args, 0);
+
+        try {
+            onRun();
+        } catch (IllegalArgumentException e) {
+            onShowUsage(System.err);
+            System.err.println();
+            System.err.println("Error: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace(System.err);
+            System.exit(1);
+        }
+    }
+
+so we need to change BaseCommand or others to be safe as well.
+
 120:6-120:31
 Tue May 31 23:54:38 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -38,4 +89,12 @@ Parent: 39b855a6_2a3d1f19
 UUID: 39b855a6_cab1e355
 Bytes: 4
 yes.
+
+122:8-122:34
+Wed Jun 01 05:56:10 2016 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b855a6_cab1e355
+UUID: 39b855a6_5b34e3e8
+Bytes: 287
+don't we know the tid's of the expected threads to remove from the set returned from GetProcessThreads()? I was assuming we'd just probe for the continued existence of the extra threads, since these an obvious place to have a TODO about using libbacktrace on these threads in the future.
 

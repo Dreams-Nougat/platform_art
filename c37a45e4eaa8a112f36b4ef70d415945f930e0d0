@@ -9,3 +9,24 @@ UUID: 79e3ad4a_61a556ab
 Bytes: 37
 Can LDP/STP use an unaligned address?
 
+1799:32-1799:39
+Fri Jun 03 08:56:04 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79e3ad4a_61a556ab
+UUID: c6f6769d_6be5c1e9
+Bytes: 1432
+Yes.
+
+ARMv8 supports unaligned data accesses to Normal memory by LDP/STP.
+
+Software can control whether a misaligned access to Normal memory by one of these instructions causes an Alignment fault Data Abort exception:
+
+  - When executing at PL0 or PL1, by setting bit [1] in the System Control Register (SCTLR.A).
+  - When executing at EL2, by setting bit [1] in the Hyp System Control Register (HSCTLR.A).
+
+We think it's safe to assume, in this case, this won't happen. What do you think?
+
+In general, the cost of an unaligned LDP/STP is an extra cycle in the issue stage. Exceptions that may incur a further penalty are load operations that cross a cache line boundary, or store operations that cross a 16-byte boundary. These may reduce bandwidth or incur additional latency. The benchmark we've quoted performance improvements from in this patch's commit message trigger both these cases with significant gain over what's currently committed.
+
+LDRD/STRD instructions on ARM *do* fault on non-WORD aligned addresses. We felt the additional code required to check and correct such misaligned addresses belonged more in an optimized routine meant for handling larger workloads than in an intrinsic that is inlined so often and which has the more common use case of working with shorter runs of memory. So on ARM we elected not to use LDRD/STRD, and on ARM64 we chose to take the performance gain from the simpler code you see here.
+

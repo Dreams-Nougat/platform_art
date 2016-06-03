@@ -11,3 +11,15 @@ note that this test C is not covering as the other two yet, since it always seem
 
 Any pointers on how to force this to compile first time?
 
+19:27-19:28
+Fri Jun 03 03:47:17 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 86339e1f_4772629b
+UUID: 86339e1f_27f47efc
+Bytes: 426
+Reflection just does a regular invoke, so whatever the entry point is at the time is being called.
+
+The class will soft-fail runtime verification, but that shouldn't set it up to be run through the interpreter (it will ensure at the moment that it won't ever be JIT-compiled). If that's happening, that's a bug.
+
+You may want to debug dex2oat to see the compiler decision ( or verify that the oat file contains compiled code).
+

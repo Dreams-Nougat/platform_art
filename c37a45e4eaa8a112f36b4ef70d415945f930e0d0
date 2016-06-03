@@ -30,3 +30,36 @@ In general, the cost of an unaligned LDP/STP is an extra cycle in the issue stag
 
 LDRD/STRD instructions on ARM *do* fault on non-WORD aligned addresses. We felt the additional code required to check and correct such misaligned addresses belonged more in an optimized routine meant for handling larger workloads than in an intrinsic that is inlined so often and which has the more common use case of working with shorter runs of memory. So on ARM we elected not to use LDRD/STRD, and on ARM64 we chose to take the performance gain from the simpler code you see here.
 
+1803
+Fri Jun 03 10:22:22 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66530a56_1819e5c9
+Bytes: 406
+The loop is not exactly optimal, it contains one extra CMP+Bcc. What about
+
+    SUBS    num_chr, #8
+    BLT     remainder_preheader
+  loop:
+    LDP ...
+    SUBS    num_chr, #8
+    STP ...
+    BHS     loop
+  remainder_preheader:
+    ADDS    num_chr, #8
+    BEQ     done
+  remainder:
+    LDRH ...
+    SUBS    num_chr, #1
+    STRH ...
+    BNE     remainder
+  done:
+
+(This also handles num_chr == 0 correctly.)
+
+1805
+Fri Jun 03 10:22:22 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 66530a56_d8476db0
+Bytes: 48
+You're not handling num_chr == 0 correctly here.
+

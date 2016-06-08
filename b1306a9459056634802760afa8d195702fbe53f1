@@ -17,6 +17,16 @@ UUID: 0318802b_15f49490
 Bytes: 225
 This has been considered and rejected, see https://android-review.googlesource.com/#/c/220983/8/compiler/optimizing/bounds_check_elimination.cc@1558 . If you feel strongly about it, I can do the hack but it will be very ugly.
 
+1693:0-1703:39
+Wed Jun 08 09:48:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0318802b_15f49490
+UUID: 0318802b_55472cb2
+Bytes: 366
+We've just discussed this. I agree with Aart here that we coulda void this complexity and move this to prepare_for_register_allocaiton.cc. I think this is safer and cleaner when you think about not spreading the complexity of this CharAt optimization
+
+Adding a method_idx into BoundsCheck should do the trick and avoid going back to the dex file which I agree sucks.
+
 File: compiler/optimizing/stack_map_stream.cc
 
 239:0-242:7

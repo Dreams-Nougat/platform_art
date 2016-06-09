@@ -9,3 +9,101 @@ UUID: c611160b_538e24e7
 Bytes: 183
 For the (written) record: not super happy about this feature creeping in the code... I've discussed with David and Vladimir, and hopefully Vladimir will try to come up with a typedef.
 
+File: compiler/optimizing/nodes.h
+
+1791:2-1791:6
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_db5f93f8
+Bytes: 147
+I don't mind the use of `auto` at use sites of this method as it makes the code less verbose, but maybe we could have an explicit return type here?
+
+5601:29-5601:43
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_bb3f27aa
+Bytes: 27
+Maybe document this member?
+
+File: compiler/optimizing/reference_type_propagation.cc
+
+825:0-825:6
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_3b6b17a2
+Bytes: 30
+Nit: align with previous line.
+
+File: compiler/utils/transform_array_ref.h
+
+57:2-57:55
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_9bdeeb72
+Bytes: 63
+Does this work even if `Iter` is not a bi-directional iterator?
+
+134:11-134:14
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_fbd12f63
+Bytes: 178
+I would use the expanded acronym: "Empty Base Optimization (EBO)".
+
+Also, this design choice means that `Function` has to be a class (and thus cannot be a function pointer type).
+
+File: compiler/utils/transform_iterator.h
+
+0
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_9b590b15
+Bytes: 10
+Very nice!
+
+49:10-49:91
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_7b98bfe3
+Bytes: 116
+Out of curiosity, in which cases can `std::iterator_traits<T>::reference` be `void`?  This might be worth a comment.
+
+85:4-88:75
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_9b87cb74
+Bytes: 494
+As this method is not a template itself (meaning it will be instantiated when `TransformIterator` is instantiated IIUC), will the whole class compile without error if `BaseIterator` is not a bidirectional iterator (even if this operator-- is never used)?  Intuitively, I would say this need an `std::enable_if` to work even with non-bidirectional iterators, but maybe I'm wrong.
+
+I would add a test to cover this (e.g., one wrapping `std::istream_iterator` or `std::forward_list<T>::iterator`).
+
+146:11-146:14
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_bb840770
+Bytes: 6
+Ditto.
+
+File: compiler/utils/transform_iterator_test.cc
+
+23:0-23:16
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_5be14338
+Bytes: 40
+Why is this not between lines 17 and 18?
+
+46:65-46:95
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_7be67f53
+Bytes: 65
+Maybe we should start educating cpplint about these constructs…
+
+50:0-76:82
+Thu Jun 09 17:33:47 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af9cf82a_1bebbb1a
+Bytes: 99
+These tests on the various iterators of `TransformIterator` are similar; factor them in a function?
+

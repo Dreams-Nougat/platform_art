@@ -1,0 +1,15 @@
+Revision: 87a5d93456478462d537d9865815cb410c019abb
+Patch-set: 1
+File: runtime/gc/space/region_space.h
+
+407:41-407:42
+Thu Jun 09 19:34:12 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f14c033_a5872922
+Bytes: 259
+There's a way to avoid this division if ShouldBeEvacuated() does
+
+result = (live_bytes_ * 100 < kEvaculateLivePercentThreshold * RoundUp(BytesAllocated(), kRegionSize))
+
+on the caller side instead. I'd do it that way. Feel free to try that or assign it to me.
+

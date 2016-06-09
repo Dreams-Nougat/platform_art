@@ -18,6 +18,14 @@ UUID: af9cf82a_db5f93f8
 Bytes: 147
 I don't mind the use of `auto` at use sites of this method as it makes the code less verbose, but maybe we could have an explicit return type here?
 
+1791:2-1791:6
+Thu Jun 09 18:36:17 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af9cf82a_db5f93f8
+UUID: af9cf82a_3bc797a1
+Bytes: 150
+I'm thinking about how to do that but the lambda below will need to be a standalone class. That actually tears the code apart and reduces readability.
+
 5601:29-5601:43
 Thu Jun 09 17:33:47 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,6 +51,14 @@ UUID: af9cf82a_9bdeeb72
 Bytes: 63
 Does this work even if `Iter` is not a bi-directional iterator?
 
+57:2-57:55
+Thu Jun 09 18:36:17 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af9cf82a_9bdeeb72
+UUID: af9cf82a_7bcd1fc1
+Bytes: 71
+As long as you don't actually instantiate it, the typedef is just fine.
+
 134:11-134:14
 Thu Jun 09 17:33:47 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,6 +67,14 @@ Bytes: 178
 I would use the expanded acronym: "Empty Base Optimization (EBO)".
 
 Also, this design choice means that `Function` has to be a class (and thus cannot be a function pointer type).
+
+134:11-134:14
+Thu Jun 09 18:36:17 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af9cf82a_fbd12f63
+UUID: af9cf82a_dbbb1328
+Bytes: 125
+Hm, I didn't realize that. I'll need to introduce a compressed pair helper that works for both classes and fundamental types.
 
 File: compiler/utils/transform_iterator.h
 
@@ -68,6 +92,14 @@ UUID: af9cf82a_7b98bfe3
 Bytes: 116
 Out of curiosity, in which cases can `std::iterator_traits<T>::reference` be `void`?  This might be worth a comment.
 
+49:10-49:91
+Thu Jun 09 18:36:17 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af9cf82a_7b98bfe3
+UUID: af9cf82a_fbb84f2d
+Bytes: 143
+I'll need to think about this a bit. Originally, I wanted to support output iterators but now the assertion above probably precludes void here.
+
 85:4-88:75
 Thu Jun 09 17:33:47 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -76,6 +108,14 @@ Bytes: 494
 As this method is not a template itself (meaning it will be instantiated when `TransformIterator` is instantiated IIUC), will the whole class compile without error if `BaseIterator` is not a bidirectional iterator (even if this operator-- is never used)?  Intuitively, I would say this need an `std::enable_if` to work even with non-bidirectional iterators, but maybe I'm wrong.
 
 I would add a test to cover this (e.g., one wrapping `std::istream_iterator` or `std::forward_list<T>::iterator`).
+
+85:4-88:75
+Thu Jun 09 18:36:17 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af9cf82a_9b87cb74
+UUID: af9cf82a_9bb58b34
+Bytes: 205
+No, implicit instantiation of the class does not instantiate every member function; though the declaration needs to be well-formed. Otherwise the TEST(TransformIterator, ForwardListSub1) would not compile.
 
 146:11-146:14
 Thu Jun 09 17:33:47 2016 +0000
@@ -92,6 +132,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: af9cf82a_5be14338
 Bytes: 40
 Why is this not between lines 17 and 18?
+
+23:0-23:16
+Thu Jun 09 18:36:17 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af9cf82a_5be14338
+UUID: af9cf82a_bbb2c747
+Bytes: 91
+Why is it here at all? Something I forgot to remove after choosing not to use std::array<>?
 
 46:65-46:95
 Thu Jun 09 17:33:47 2016 +0000

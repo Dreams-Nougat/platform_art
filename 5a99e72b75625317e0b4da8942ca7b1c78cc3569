@@ -9,6 +9,25 @@ UUID: 2f62c8c0_376378f7
 Bytes: 111
 Are you referring to missing calls to RecordPCInfo (e.g. in IntrinsicCodeGeneratorARM64::VisitStringCompareTo)?
 
+10:32-11:47
+Tue Jun 14 08:52:29 2016 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f62c8c0_376378f7
+UUID: f4924913_bde71fe0
+Bytes: 301
+Missing calls is one issue. The other one is generating stack maps by calling RecordPCInfo() at the wrong PC.
+
+E.g:
+{
+  RecordPcInfo();
+  Blr();
+}  // Incorrect usage. RecordPcInfo() will generate a stack map pointing at the wrong PC (correct PC - 4).
+
+{
+  Blr()
+  RecordPcInfo();
+}  // Correct usage.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 4174:26-4175:69
@@ -33,4 +52,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2f62c8c0_17667406
 Bytes: 165
 As you've replace the initial code with a call to InvokeRuntime, does it mean we were missing a call to RecordPcInfo here (as well as in GenerateVisitStringIndexOf)?
+
+1197:12-1197:25
+Tue Jun 14 08:52:29 2016 +0000
+Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f62c8c0_17667406
+UUID: 3491410e_ff283f92
+Bytes: 223
+Yes. There are a couple of places where we are missing a RecordPcInfo(). They are harmless however since pStringCompareTo & other helpers will not suspend, therefore not needing the stack map at all (they are leaf methods).
 

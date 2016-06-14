@@ -9,3 +9,30 @@ UUID: 5467950e_b8017931
 Bytes: 137
 Please move this back where it was before. There is no reason why it would have to be before CreateAssembler() from the C++ language PoV.
 
+460:2-460:41
+Tue Jun 14 18:47:53 2016 +0000
+Author: Chris Larsen <1071873@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5467950e_b8017931
+UUID: b447f166_a5cef55d
+Bytes: 1314
+I moved this declaration to this location because when we try to run this new set of tests the compiler emits the following set of errors:
+
+art/compiler/utils/mips/assembler_mips32r6_test.cc:60:17: error: 'arena_' is a private member of 'art::AssemblerTest<art::mips::MipsAssembler, art::mips::Register, art::mips::FRegister, unsigned int>'
+    return new (arena_.get()) mips::MipsAssembler(arena_.get(), instruction_set_features_.get());
+                ^
+art/compiler/utils/assembler_test.h:931:35: note: declared private here
+  std::unique_ptr<ArenaAllocator> arena_;
+                                  ^
+art/compiler/utils/mips/assembler_mips32r6_test.cc:60:51: error: 'arena_' is a private member of 'art::AssemblerTest<art::mips::MipsAssembler, art::mips::Register, art::mips::FRegister, unsigned int>'
+    return new (arena_.get()) mips::MipsAssembler(arena_.get(), instruction_set_features_.get());
+                                                  ^
+art/compiler/utils/assembler_test.h:931:35: note: declared private here
+  std::unique_ptr<ArenaAllocator> arena_;
+                                  ^
+2 errors generated.
+ninja: build stopped: subcommand failed.
+make: *** [ninja_wrapper] Error 1
+make: Leaving directory `/local/home/crl/src/aosp'
+
+#### make failed to build some targets (18:22 (mm:ss)) ####
+

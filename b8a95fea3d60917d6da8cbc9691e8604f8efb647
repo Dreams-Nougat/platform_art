@@ -9,6 +9,14 @@ UUID: b447f166_a5a035a8
 Bytes: 202
 The naming for this function seems weird now. I think it would be better to clean this up so the value is filled in where the HInterfaceInvoke is constructed (at that point you also have the ArtMethod).
 
+1904:33-1904:54
+Tue Jun 14 20:37:16 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b447f166_a5a035a8
+UUID: 94c10d6f_1a7c7d03
+Bytes: 4
+Done
+
 File: runtime/mirror/class-inl.h
 
 283:4-283:40
@@ -17,6 +25,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 94c10d6f_5a07950e
 Bytes: 27
 Only needed on declaration.
+
+283:4-283:40
+Tue Jun 14 20:37:16 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94c10d6f_5a07950e
+UUID: 94c10d6f_9d94074f
+Bytes: 4
+Done
 
 File: runtime/mirror/class.h
 
@@ -27,10 +43,27 @@ UUID: b447f166_42bdf7ec
 Bytes: 31
 Feels like this is superfluous?
 
+825:2-825:53
+Tue Jun 14 20:37:16 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b447f166_42bdf7ec
+UUID: 94c10d6f_da95e554
+Bytes: 173
+It is a bit awkward having two functions here, but some code knows method indices and some code knows ArtMethods.
+e.g., "mirror::Class::GetIMTIndex(instruction->GetIndex())"
+
 827:2-827:58
 Tue Jun 14 18:48:42 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b447f166_6296b362
 Bytes: 112
 I wonder whether we should give the IMT size as a parameter (to remove the modulo at the call-site). Pros? Cons?
+
+827:2-827:58
+Tue Jun 14 20:37:16 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b447f166_6296b362
+UUID: 94c10d6f_1a07ddbd
+Bytes: 155
+Call sites shouldn't have to worry about taking the result modulo IMT size, since this function already does that using the global ImTable::kSize variable.
 

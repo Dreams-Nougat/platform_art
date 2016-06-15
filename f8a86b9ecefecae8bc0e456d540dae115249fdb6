@@ -1,0 +1,38 @@
+Revision: f8a86b9ecefecae8bc0e456d540dae115249fdb6
+Patch-set: 3
+File: /COMMIT_MSG
+
+9:6-9:56
+Wed Jun 15 19:11:15 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 540315bf_a1cda4c2
+Bytes: 679
+To clarify, I think there are three situations reaching this code:
+
+1 the current thread is a mutator thread doing the checkpoint to mark its thread roots,
+
+2 the current thread is the GC-running thread that's doing concurrent recursive mark,
+
+3 the current thread is the GC-running thread that's doing non-concurrent (at a pause) (recursive or non-recursive) mark
+
+Is that right? And the strategy is:
+
+For 1, we don't care about the other threads' roots. Check self's thread roots.
+
+For 2, it's a recursive mark and we don't care about the thread roots. We don't check thread roots at all.
+
+For 3, it's at a pause, thread are already suspended. Check their thread roots.
+
+Right?
+
+File: runtime/thread_list.cc
+
+1307:2-1307:28
+Wed Jun 15 19:11:15 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 540315bf_e1b67c09
+Bytes: 416
+Can you clarify what VisitRootsForSuspendedThreads does in a comment?
+
+This comment and the name of the function do not seem to match clearly for me. We are not trying to suspend all threads (and wait for them to suspend) like SuspendAll does, but making sure that the suspended threads stay suspended and picking out a set of threads that includes the already-suspended ones, by doing ModifySuspendCount(+1). Right?
+

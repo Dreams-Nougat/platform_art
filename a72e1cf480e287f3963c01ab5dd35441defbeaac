@@ -1,0 +1,173 @@
+Revision: a72e1cf480e287f3963c01ab5dd35441defbeaac
+Patch-set: 4
+File: compiler/optimizing/code_generator_arm.cc
+
+5212:6-5212:57
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 346221c1_374a9896
+Bytes: 198
+For the sake of consistency, maybe add something like:
+
+  // /* GcRoot<mirror::Class> */ out = *address
+
+before this line?
+
+(Likewise in LocationsBuilderARM::VisitLoadString and in other back ends.)
+
+5220:6-5220:62
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 545f95f9_d866edd8
+Bytes: 113
+Ditto, I'd add something like:
+
+  // /* GcRoot<mirror::Class> */ out = *(dex_cache_arrays_base + offset)
+
+before.
+
+5233:100-5233:101
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d499c5fa_5c0f3d2c
+Bytes: 15
+Nit: long line.
+
+6698:25-6698:38
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 346221c1_77b090a2
+Bytes: 11
+target_type
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+3868:25-3868:38
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7468199f_d92ef337
+Bytes: 11
+target_type
+
+4033:6-4033:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f48a499e_9d20e3a8
+Bytes: 55
+Replace with:
+
+  return;  // No dex cache slow path.
+
+?
+
+4052:6-4052:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b49451c2_9b91cbc3
+Bytes: 6
+Ditto?
+
+4058:6-4058:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 545f95f9_58de5d73
+Bytes: 6
+Ditto?
+
+File: compiler/optimizing/code_generator_x86.cc
+
+5987:6-5987:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94658dc6_bdb3eb03
+Bytes: 55
+Replace with:
+
+  return;  // No dex cache slow path.
+
+?
+
+5994:6-5994:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 747f394d_87db2a81
+Bytes: 6
+Ditto?
+
+6002:6-6002:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94658dc6_dda89f8e
+Bytes: 6
+Ditto?
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+5418:6-5418:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 346221c1_f751001f
+Bytes: 55
+Replace with:
+
+  return;  // No dex cache slow path.
+
+?
+
+5425:6-5425:12
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 346221c1_17675404
+Bytes: 6
+Ditto?
+
+5454:100-5454:101
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94658dc6_bdd84b2c
+Bytes: 15
+Nit: long line.
+
+File: compiler/optimizing/dex_cache_array_fixups_arm.cc
+
+48:66-48:73
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 346221c1_37dff8e0
+Bytes: 6
+types?
+
+63:66-63:73
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94658dc6_fa33a9a0
+Bytes: 8
+strings?
+
+File: compiler/optimizing/nodes.h
+
+5342:32-5342:44
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 747f394d_0479d8b0
+Bytes: 229
+Did you change the base class to HInstruction to get rid of the FieldType bit field provided by HExpression<> (which does not seem to be useful for HLoadClass)?  If so, this change might also be beneficial to HLoadString as well?
+
+File: compiler/utils/type_reference.h
+
+39:18-39:54
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f48a499e_dd798be3
+Bytes: 107
+Why are the arguments passed by value instead of by reference?  (Ditto for StringReferenceValueComparator.)
+
+File: test/552-checker-sharpening/src/Main.java
+
+282
+Wed Jun 15 17:59:14 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 346221c1_376458fd
+Bytes: 197
+Maybe also add MIPS32 and MIPS64 cases, even if they don't support class (and string) sharpening yet, so that the test won't silently ignore a potential future change regarding those architectures?
+

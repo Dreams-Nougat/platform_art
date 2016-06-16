@@ -9,6 +9,14 @@ UUID: 346221c1_77a330c5
 Bytes: 34
 Shouldn't that be ObjectReference?
 
+3799:14-3799:22
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_77a330c5
+UUID: 346221c1_7ae875af
+Bytes: 190
+What is ObjectReference? Something that the GC can walk over and fix up? We don't need that here, this will be a direct pointer that will be determined by the ImageWriter rather than the GC.
+
 File: compiler/optimizing/nodes.cc
 
 2437:5-2437:50
@@ -17,6 +25,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 346221c1_37829817
 Bytes: 148
 Isn't this preventing you from GVN'ing the same class but reference from different dex files? Which is what you're trying to achieve with line 2443?
+
+2437:5-2437:50
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_37829817
+UUID: 545f95f9_9b6c6fbb
+Bytes: 231
+Yes, I've got a little mental TODO scheduled for this and HLoadString::InstructionDataEquals() that I'd like to address in a follow-up CL. But it will also require a rethink of the hash codes, so that's really too much for this CL.
 
 File: compiler/optimizing/nodes.h
 
@@ -29,6 +45,14 @@ It has to be an invariant that HInstruction can only be in use/def relations, no
 
 I think  you can add this to the inputs a build time, and then remove it when sharpening?
 
+5388:0-5388:67
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_f78f403d
+UUID: 94658dc6_00c46afa
+Bytes: 195
+Discussed offline. For the record, special_input_ is just the backing storage for the input record (similar to HTemplateInstruction<1>::inputs_) and it's used just like for any other instruction.
+
 File: compiler/optimizing/sharpening.cc
 
 159:7-159:52
@@ -38,12 +62,28 @@ UUID: 545f95f9_7b115b49
 Bytes: 130
 Maybe just say we're going to call the runtime anyway, so might was well just get the class as a return value of the runtime call.
 
+159:7-159:52
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 545f95f9_7b115b49
+UUID: 346221c1_3aeefdbd
+Bytes: 4
+Done
+
 171:0-171:38
 Thu Jun 16 15:07:15 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 346221c1_577f0cfa
 Bytes: 78
 Maybe add: << "a load class shouldn't have been optimized before sharpening" ?
+
+171:0-171:38
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_577f0cfa
+UUID: 7468199f_dc2ee137
+Bytes: 4
+Done
 
 180:0-181:58
 Thu Jun 16 15:07:15 2016 +0000
@@ -52,12 +92,28 @@ UUID: 346221c1_777c1005
 Bytes: 96
 I'd move this 2 lines below to have the stack allocated objects first, motivating the new block.
 
+180:0-181:58
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_777c1005
+UUID: d499c5fa_ff947b4f
+Bytes: 4
+Done
+
 192:0-194:69
 Thu Jun 16 15:07:15 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 346221c1_ba8a0d28
 Bytes: 61
 Isn't that going to be prevented by the call line 248 anyway?
+
+192:0-194:69
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_ba8a0d28
+UUID: 545f95f9_3b30c3e3
+Bytes: 108
+The compiler_driver_test is special and I'd rather handle it here than spreading it around all the codegens.
 
 212
 Thu Jun 16 15:07:15 2016 +0000
@@ -68,10 +124,26 @@ Maybe add a comment: "we only put direct addresses of class from the boot image"
 
 Also, maybe add a comment on classes from an app image?
 
+212
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_1a9a1979
+UUID: d420e584_c41a7e72
+Bytes: 131
+Hm, app image... are objects in the app image movable? Maybe I should actually check if runtime->GetHeap()->IsMovableObject(klass)?
+
 221:0-221:38
 Thu Jun 16 15:07:15 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 346221c1_3a97dd51
 Bytes: 48
 Please file a bug instead, these TODOs get lost.
+
+221:0-221:38
+Thu Jun 16 18:00:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_3a97dd51
+UUID: 545f95f9_fbee4b26
+Bytes: 4
+Done
 

@@ -86,3 +86,18 @@ Bytes: 152
 Hmm, that's an interesting question. Why do you think we are OK?
 (If two threads try to quicken the same dex instruction, it can produce wrong results.)
 
+697:14-697:61
+Thu Jun 16 15:30:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_daa8a18e
+UUID: 540315bf_447beba7
+Bytes: 489
+My best guess: Because Quickening works over symbols that include a class name.
+
+Then for it to be resolvable, the receiver (either this or a parameter/field value) must be a subclass of the symbol's class, which means the layout of it is fixed.
+
+So even though we have a race, we should be writing the same value.
+
+
+Now what I think *may* be wrong (but isn't a race): if the code is OK for one class, but not another. Then quickening may or may not screw up the access-checks interpreter.
+

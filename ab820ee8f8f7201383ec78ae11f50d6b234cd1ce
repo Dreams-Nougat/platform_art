@@ -16,6 +16,16 @@ UUID: 346221c1_575b8c0a
 Bytes: 119
 It'd be great to have something more reliable: can we have the two threads notify to the main thread they have started?
 
+40:0-40:71
+Thu Jun 16 15:23:35 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_575b8c0a
+UUID: 540315bf_24f19773
+Bytes: 251
+The barrier.await makes sure they have started the <clinit>. After that, you can't really guarantee a lot.
+
+(We could use a volatile or Atomic, but that only says they were scheduled after their await, but not that they have started the cross-clinit.)
+
 54:60-54:61
 Thu Jun 16 09:20:31 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

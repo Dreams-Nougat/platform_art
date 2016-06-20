@@ -17,6 +17,14 @@ UUID: 346221c1_7ae875af
 Bytes: 190
 What is ObjectReference? Something that the GC can walk over and fix up? We don't need that here, this will be a direct pointer that will be determined by the ImageWriter rather than the GC.
 
+3799:14-3799:22
+Mon Jun 20 12:59:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 346221c1_7ae875af
+UUID: 692a00c1_4ca0cf0c
+Bytes: 144
+It's more the size I'm worried about: we say here it's 32bits because ObjectReference is 32bits, but it could be 64bits some time in the future.
+
 File: compiler/optimizing/nodes.cc
 
 2437:5-2437:50
@@ -33,6 +41,14 @@ Parent: 346221c1_37829817
 UUID: 545f95f9_9b6c6fbb
 Bytes: 231
 Yes, I've got a little mental TODO scheduled for this and HLoadString::InstructionDataEquals() that I'd like to address in a follow-up CL. But it will also require a rethink of the hash codes, so that's really too much for this CL.
+
+2437:5-2437:50
+Mon Jun 20 12:59:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 545f95f9_9b6c6fbb
+UUID: 692a00c1_8ca12711
+Bytes: 88
+OK. Please add at least some comment that would make sure no one gets surprised by this.
 
 File: compiler/optimizing/nodes.h
 
@@ -131,6 +147,14 @@ Parent: 346221c1_1a9a1979
 UUID: d420e584_c41a7e72
 Bytes: 131
 Hm, app image... are objects in the app image movable? Maybe I should actually check if runtime->GetHeap()->IsMovableObject(klass)?
+
+212
+Mon Jun 20 12:59:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d420e584_c41a7e72
+UUID: 692a00c1_6c9b13de
+Bytes: 31
+Yeah, I think you can use this.
 
 221:0-221:38
 Thu Jun 16 15:07:15 2016 +0000

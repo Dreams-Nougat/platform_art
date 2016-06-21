@@ -9,3 +9,13 @@ UUID: 891d74f9_da07056b
 Bytes: 106
 nit: isn't this going to burn the cpu? Especially if you end up running multiple test in parallel on host.
 
+29:12-29:25
+Tue Jun 21 09:39:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 891d74f9_da07056b
+UUID: 291ac803_77061015
+Bytes: 231
+Yeah, I reduced to 5 the number of daemons in the latest PS. 5 makes it consistenly failing for me.
+
+Problem is you can't really do a sleep here, as it will dominate the execution, and not be stuck waiting for the thread list lock.
+

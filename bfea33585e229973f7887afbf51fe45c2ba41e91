@@ -9,6 +9,14 @@ UUID: 639dc16f_7a180d26
 Bytes: 84
 Is Primitive::ComponentSizeShift(Primitive::kPrimNot) like the arm64 version better?
 
+6108:29-6108:36
+Fri Jun 24 10:59:33 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 639dc16f_7a180d26
+UUID: c3e3cd1d_6c699b0a
+Bytes: 185
+art::Primitive::ComponentSizeShift does not seem to be used in the ARM code generator, so I have stuck to the style used in this file, which uses enum values from art::arm::ScaleFactor.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 4943:27-4943:29
@@ -17,4 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 639dc16f_fa55ddb1
 Bytes: 30
 There is no TIMES_1 for arm64?
+
+4943:27-4943:29
+Fri Jun 24 10:59:33 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 639dc16f_fa55ddb1
+UUID: e3d45139_2de6ede0
+Bytes: 317
+No; ARM64 is the only back end where we do not have a ScaleFactor enum, probably because of VIXL, which provides more generic way to express load/stores, and uses Primitive::ComponentSizeShift instead.
+
+Maybe we could move other back ends from using ScaleFactor to using Primitive::ComponentSizeShift (in another CL)?
 

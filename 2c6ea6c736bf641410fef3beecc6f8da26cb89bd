@@ -17,6 +17,26 @@ UUID: 03da4564_ce9be3e3
 Bytes: 84
 Of course. Without the fix both comparisons yield false and the EXPECT_TRUE() fails.
 
+10
+Fri Jun 24 14:04:51 2016 +0000
+Author: Tobias Thierer <1103203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 03da4564_ce9be3e3
+UUID: 63e941fa_11fd8c3d
+Bytes: 388
+Right, because the strings were considered equal with the broken comparator. Thanks.
+
+Perhaps we should also test the case:
+
+dex 1:
+"a"
+"b"
+
+dex 2:
+"b"
+"a"
+
+(or some other combination where dex1 has two strings in ascending order vs. dex2 has descending order) and comprehensively check that all string comparisons are correct both within and across two dex files? Does that sound useful?
+
 File: compiler/utils/string_reference_test.cc
 
 36:16-36:41
@@ -36,4 +56,12 @@ UUID: c3e3cd1d_cc41af4a
 Bytes: 265
 Are you confusing the number '1' (one) with the letter 'l' (lower-case L)? Many fonts make them look the same.
 This is a simple assertion that the dex file contains exactly one string to make sure the index 0 below actually refers to the string we have added above.
+
+36:16-36:41
+Fri Jun 24 14:04:51 2016 +0000
+Author: Tobias Thierer <1103203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c3e3cd1d_cc41af4a
+UUID: 830f15b1_2ae93f89
+Bytes: 116
+Ah, yes, thanks. I did indeed misread as "1u" as "lu" and completely misread this assertion. Disregard my comment :)
 

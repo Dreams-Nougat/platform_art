@@ -21,3 +21,15 @@ UUID: 837c7558_f8ae4e95
 Bytes: 111
 That should be equivalent, I would think. Vladimir, are there weird inlining effects of constants at play here?
 
+675:0-682:5
+Tue Jun 28 09:41:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837c7558_f8ae4e95
+UUID: 400b5318_dbb1e7a4
+Bytes: 735
+No it's not, you're forgetting the magic handling of String literals, including static final fields, in Java.
+
+This way, we have an explicit Main.<clinit>() and Main.run() uses sget-object to retrieve the "Finishing worker\n". With plain String literals, we would have an encoded_array_item referenced by the class_def_item.static_values_off instead of Main.clinit(), and the Main.run() would use const-string.
+
+Note that the const-string has a slow-path that first allocates the String and then interns it, so it could fail if the dex cache entry is empty. I don't want to rely on the EncodedStaticFieldValueIterator::ReadValueToField<>() to initialize the dex cache entry (even though it arguably does), so sget-object is preferable.
+

@@ -9,12 +9,28 @@ UUID: a342592e_eb22f1a6
 Bytes: 5
 flip?
 
+12:45-12:48
+Tue Jun 28 00:06:58 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a342592e_eb22f1a6
+UUID: 205c9f35_7640be26
+Bytes: 4
+Done
+
 15:27-16:7
 Mon Jun 27 12:57:07 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e338d1b2_0d3111fc
 Bytes: 40
 I'm not sure I understand this sentence.
+
+15:27-16:7
+Tue Jun 28 00:06:58 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e338d1b2_0d3111fc
+UUID: 205c9f35_963a12b4
+Bytes: 94
+Sorry, there was a typo here. It should go "mutators don't need to gray immune space objects".
 
 File: runtime/gc/collector/concurrent_copying-inl.h
 
@@ -25,6 +41,14 @@ UUID: e338d1b2_4d3b19dc
 Bytes: 28
 Nit: one statement per line.
 
+81:15-82:39
+Tue Jun 28 00:06:58 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e338d1b2_4d3b19dc
+UUID: 205c9f35_d659aa17
+Bytes: 4
+Done
+
 File: runtime/gc/collector/concurrent_copying.cc
 
 382:4-382:24
@@ -33,4 +57,12 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 837c7558_d7415e4a
 Bytes: 165
 Maybe it would be possible to avoid this checkpoint if we just check the immune_gray_stack_ after the next checkpoint and set the objects in the stack back to white?
+
+382:4-382:24
+Tue Jun 28 00:06:58 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 837c7558_d7415e4a
+UUID: 205c9f35_761b1e6d
+Bytes: 289
+That's possible. But we'd like to whiten the immune objects sooner rather than later so that mutators will stop triggering the slow path when loading field from immune objects (though they won't *newly* gray immune objects from this point on.) I think this checkpoint is worth it for that.
 

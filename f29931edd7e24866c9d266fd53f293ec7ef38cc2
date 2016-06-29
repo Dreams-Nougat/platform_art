@@ -9,3 +9,16 @@ UUID: 80bb8b9f_9f1c87bf
 Bytes: 35
 Hopefully generates zero for a NaN?
 
+637:5-637:28
+Wed Jun 29 09:34:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 80bb8b9f_9f1c87bf
+UUID: e0152784_0514f29a
+Bytes: 609
+Yes, FCVTAS generates zero for NaN inputs.
+
+This FCVTAS is the one we found in ARM64 ISA which is closest to Java 8's Math.round() definition.
+The only difference is that it has different rounding direction for negative 'half' values. That's why we need a few instructions below to check and handle these negative 'half' values.
+
+We actually have art/test/082-inline-execute/Main.java test to test Math.round implementation. The test cases cover inputs like NaN, +/-0.0, 0.4999999701976776123046875, +/-infinity, floating-point values which are bigger or smaller than Integer.MAX_VALUE/Integer.MIN_VALUE, etc.
+

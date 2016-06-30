@@ -17,10 +17,38 @@ UUID: 606e977c_0971c95a
 Bytes: 79
 ternary operator is needed to override the value from GetFlagsFromCppDefined().
 
+84:41-84:55
+Thu Jun 30 19:06:36 2016 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20d49f7c_c77c1e9f
+UUID: fd6cf216_b9a27bbe
+Bytes: 109
+You're absolutely right. But I vaguely remember having been asked to write this kind of code more explicitly.
+
+84:41-84:55
+Thu Jun 30 19:06:36 2016 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 606e977c_0971c95a
+UUID: fd6cf216_19e28f0b
+Bytes: 123
+Goran is saying that the "? true : false" part is redundant and that "r6 = (variant[kPrefixLength] >= '6');" is sufficient.
+
 95:4-95:17
 Thu Jun 30 18:07:54 2016 +0000
 Author: Douglas Leung <1079955@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 606e977c_6974054c
 Bytes: 121
 We need to set the default value of all the variables here also, since they might be different than GetFlagsCppDefined().
+
+95:4-95:17
+Thu Jun 30 19:06:36 2016 +0000
+Author: Alexey Frunze <1056098@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 606e977c_6974054c
+UUID: fd6cf216_b9255b52
+Bytes: 655
+I tried setting the two other bools here and ran into a lot of trouble, which is why I extended the comment. We have code and tests that rely on "default" working for both MIPS32R2 and MIPS32R6.
+
+If we make "default" mean R2, R6 will break. If we make "default" mean R6, R2 will break. Effectively, "default" means good enough for the runtime ISA.
+
+If we want "default" to always (that is, irrespective of the runtime ISA) mean the same thing, e.g. R2, we need to make some other changes and that's more than I'm really after. I only need the "mips32r#" part to properly set all three bools to make test-art-target-gtest-relative_patcher_mips_test32 work.
 

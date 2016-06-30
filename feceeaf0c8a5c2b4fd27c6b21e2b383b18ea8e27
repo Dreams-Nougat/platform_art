@@ -48,3 +48,23 @@ UUID: 20d49f7c_c7009efe
 Bytes: 4
 Done
 
+188:35-188:38
+Thu Jun 30 15:43:06 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 20d49f7c_c7009efe
+UUID: ddc00e18_10e72a1c
+Bytes: 805
+The read call tries to read as many bytes as you tell it to:
+
+ The read() function shall attempt to read nbyte bytes from the file associated with the open file descriptor, fildes, into the buffer pointed to by buf.
+
+The result of the read call is the number of bytes written (if > 0).
+
+ Upon successful completion, read() [XSI] [Option Start]  and pread() [Option End] shall return a non-negative integer indicating the number of bytes actually read. Otherwise, the functions shall return -1 and set errno to indicate the error.
+
+The value of buffer does *not* form a C string, as it is not zero-terminated by the call (the memset will only ensure that it's correct for the very first string).
+
+As such, you should take care of this yourself. One option is:
+
+ output_ += std::string(buffer, read_result);
+

@@ -1,0 +1,100 @@
+Revision: 0105f3d7441bc30323b278f32931bd1ee035f9be
+Patch-set: 4
+File: compiler/optimizing/instruction_simplifier.cc
+
+1912
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_ead92733
+Bytes: 27
+I'd remove this blank line.
+
+1917:0-1919:61
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 80ae2bf8_d5820ee4
+Bytes: 48
+Could you use GetLeastConstantLeft instead here?
+
+1923
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_0ac11b36
+Bytes: 27
+I'd remove that blank line.
+
+1925
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_6aced765
+Bytes: 6
+Ditto.
+
+1938:0-1947:1
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_4acb1354
+Bytes: 387
+What about something like:
+
+  static int64_t ComputeAddition(Primitive::Type type, int64_t x, int64_t y) {
+    // Use the HAdd::Compute<T>() method for consistency with TryStaticEvaluation().
+    if (type == Primitive::kPrimInt) {
+      return HAdd::Compute<int32_t>(x, y);
+    } else {
+      DCHECK_EQ(type, Primitive::kPrimLong);
+      return HAdd::Compute<int64_t>(x, y);
+    }
+  }
+
+?
+
+1964
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_8afd0b75
+Bytes: 27
+<< instruction->DebugName()
+
+1967
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_eaf2c7a2
+Bytes: 18
+Remove blank line.
+
+1975
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_caf70391
+Bytes: 118
+I'd move the
+
+  if (const2 == nullptr) {
+    return false;
+  }
+
+test from lines 1983–1985 here just after line 1975.
+
+1989
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_0aeabba5
+Bytes: 120
+Ditto, I'd move the
+
+  if (const1 == nullptr) {
+    return false;
+  }
+
+test from lines 1993–1995 just after line 1989.
+
+File: test/458-checker-instruction-simplification/smali/SmaliTests.smali
+
+295:26-295:29
+Fri Jul 01 13:43:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 20d49f7c_6ae7f7dd
+Bytes: 59
+Could these constants be encoded as decimal values instead?
+

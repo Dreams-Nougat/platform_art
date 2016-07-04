@@ -9,3 +9,11 @@ UUID: 7d0f22b2_0a879b7a
 Bytes: 62
 Any thoughts on how this could be also applied to mul and div?
 
+1954:35-1954:68
+Mon Jul 04 16:14:40 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7d0f22b2_0a879b7a
+UUID: 1d0c66bf_0723169b
+Bytes: 865
+Mainly thoughts on why it can't be applied: The main reason is that division over the integers does not work like subtraction (with respect to the corresponding inverse operations). Consider the expression x * 5 / 4. If x is 20, then (x * 5) / 4 will be 25, but x * (5 / 4) will be 20. I suppose that the code could check whether the divisor divides the multiplicand, and only then apply the transformation (or check if the divisor and the multiplicand are not coprime, and apply a partial transformation, which may enable further simplifications). However, given that the current optimization is applied a lot less frequently to multiplications than to additions (the difference is a couple of orders of magnitude based on testing with boot.oat, Facebook, Facebook Messenger and Twitter, if I remember correctly), I have decided that further work is not justified.
+

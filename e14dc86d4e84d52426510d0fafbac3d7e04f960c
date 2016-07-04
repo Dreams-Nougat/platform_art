@@ -17,3 +17,11 @@ UUID: 1d0c66bf_0723169b
 Bytes: 865
 Mainly thoughts on why it can't be applied: The main reason is that division over the integers does not work like subtraction (with respect to the corresponding inverse operations). Consider the expression x * 5 / 4. If x is 20, then (x * 5) / 4 will be 25, but x * (5 / 4) will be 20. I suppose that the code could check whether the divisor divides the multiplicand, and only then apply the transformation (or check if the divisor and the multiplicand are not coprime, and apply a partial transformation, which may enable further simplifications). However, given that the current optimization is applied a lot less frequently to multiplications than to additions (the difference is a couple of orders of magnitude based on testing with boot.oat, Facebook, Facebook Messenger and Twitter, if I remember correctly), I have decided that further work is not justified.
 
+1954:35-1954:68
+Mon Jul 04 16:37:57 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d0c66bf_0723169b
+UUID: ddd48e39_4dbff90e
+Bytes: 195
+Even if the divisor divides the multiplicand, you would also have to check that the intermediate results do not overflow; without that you cannot guarantee that (x * 14) / 7 is the same as x * 2.
+

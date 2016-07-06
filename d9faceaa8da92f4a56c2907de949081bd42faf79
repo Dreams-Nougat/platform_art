@@ -2,6 +2,24 @@ Revision: d9faceaa8da92f4a56c2907de949081bd42faf79
 Patch-set: 6
 File: compiler/optimizing/inliner.cc
 
+764:10-764:49
+Wed Jul 06 13:57:01 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d41c6d7_ffc8bf89
+Bytes: 197
+Doesn't this point to the interface method id? How come the CHECK at https://android-review.googlesource.com/#/c/245772/6/test/609-checker-inline-interface/src/Main.java@54 matches the method name?
+
+767:0-770:7
+Wed Jul 06 13:57:01 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fdd95270_b1d23adb
+Bytes: 241
+Mixing range-based loop with the index looks odd. I think it should just use the index.
+
+  for (size_t index = 0; index != inputs.size(); ++index) { ... }
+
+Note: No need to store inputs.size() in a local variable; just rely on scalarization.
+
 863
 Wed Jul 06 12:40:01 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,4 +34,13 @@ Parent: 7d0f22b2_b04da088
 UUID: 1d0c66bf_8a94ab57
 Bytes: 101
 Oh, thanks, I think this felt through the cracks because of line 866 and 869. Will fix in another CL.
+
+File: test/478-checker-clinit-check-pruning/src/Main.java
+
+512:28-512:34
+Wed Jul 06 13:57:01 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d41c6d7_5fd8cb52
+Bytes: 68
+Strange to use plural here compared to singular in all other places.
 

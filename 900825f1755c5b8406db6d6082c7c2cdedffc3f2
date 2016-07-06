@@ -1,0 +1,54 @@
+Revision: 900825f1755c5b8406db6d6082c7c2cdedffc3f2
+Patch-set: 1
+File: compiler/optimizing/code_generator.h
+
+388
+Wed Jul 06 17:01:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fd4792ea_a1e9b888
+Bytes: 99
+Why not QUICK_ENTRYPOINT_OFFSET(pointer_size, pReadBarrierMarkReg00).Int32Value()+pointer_size*reg?
+
+File: compiler/optimizing/code_generator_arm.cc
+
+444:8-444:25
+Wed Jul 06 17:01:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d41c6d7_82c4bc47
+Bytes: 110
+The slow-path is always constructed with out_==obj_. Can we clean this up and remove the "standard" slow-path?
+
+454:29-454:64
+Wed Jul 06 17:01:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1d0c66bf_0de455af
+Bytes: 37
+a non-conventional calling convention
+
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1758
+Wed Jul 06 17:01:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7d0f22b2_106b4c6c
+Bytes: 90
+Isn't 8-byte alignment sufficient for ARM native ABI? (Or was that x86 with the mismatch?)
+
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1931:26-1931:27
+Wed Jul 06 17:01:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7d0f22b2_d00ff4de
+Bytes: 1
+4
+
+File: runtime/entrypoints/quick/quick_entrypoints_list.h
+
+168:26-168:30
+Wed Jul 06 17:01:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9df776e1_e65fe0cd
+Bytes: 146
+Despite using a different calling convention, I think they should be declared as taking and returning mirror::Object* because that's what they do.
+

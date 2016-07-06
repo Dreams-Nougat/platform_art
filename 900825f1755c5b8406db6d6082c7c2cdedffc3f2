@@ -1,5 +1,14 @@
 Revision: 900825f1755c5b8406db6d6082c7c2cdedffc3f2
 Patch-set: 1
+File: compiler/oat_test.cc
+
+441:7-441:14
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bde99ad1_972f53eb
+Bytes: 40
+Do we also need to bump the oat version?
+
 File: compiler/optimizing/code_generator.h
 
 388
@@ -10,6 +19,13 @@ Bytes: 99
 Why not QUICK_ENTRYPOINT_OFFSET(pointer_size, pReadBarrierMarkReg00).Int32Value()+pointer_size*reg?
 
 File: compiler/optimizing/code_generator_arm.cc
+
+440:4-440:21
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bde99ad1_177503dc
+Bytes: 107
+Just to clarify, this CL doesn't move the register saving code to the slow path entrypoints (yet), correct?
 
 444:8-444:25
 Wed Jul 06 17:01:10 2016 +0000
@@ -25,7 +41,29 @@ UUID: 1d0c66bf_0de455af
 Bytes: 37
 a non-conventional calling convention
 
+454:29-454:64
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d0c66bf_0de455af
+UUID: bde99ad1_570ceb94
+Bytes: 15
+"non-standard"?
+
+459:19-459:32
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bde99ad1_3723df9a
+Bytes: 70
+(Side note, we could also remove the stack map for this runtime call.)
+
 File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1750:17-1750:50
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bde99ad1_1ccfea8b
+Bytes: 170
+I'm probably confused about the calling conventions across the architectures. Can you clarify what this non-standard calling convention is like? Does r0 need to be saved?
 
 1758
 Wed Jul 06 17:01:10 2016 +0000
@@ -34,7 +72,22 @@ UUID: 7d0f22b2_106b4c6c
 Bytes: 90
 Isn't 8-byte alignment sufficient for ARM native ABI? (Or was that x86 with the mismatch?)
 
+1758
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7d0f22b2_106b4c6c
+UUID: bde99ad1_5c65f299
+Bytes: 45
+I heard a 8 byte alignment for arm and arm64.
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1929:40-1929:48
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bde99ad1_17142343
+Bytes: 23
+Do we need to save EAX?
 
 1931:26-1931:27
 Wed Jul 06 17:01:10 2016 +0000
@@ -42,6 +95,22 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7d0f22b2_d00ff4de
 Bytes: 1
 4
+
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+1837:39-1837:47
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bde99ad1_17b6e3e8
+Bytes: 13
+Why save RDI?
+
+1850:39-1850:47
+Wed Jul 06 18:29:56 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bde99ad1_b7e28fd7
+Bytes: 23
+Similarly why save RAX?
 
 File: runtime/entrypoints/quick/quick_entrypoints_list.h
 

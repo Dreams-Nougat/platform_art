@@ -9,6 +9,14 @@ UUID: bde99ad1_972f53eb
 Bytes: 40
 Do we also need to bump the oat version?
 
+441:7-441:14
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_972f53eb
+UUID: dd380eb3_6de455b1
+Bytes: 30
+Yes, I guess so.  Done in PS2.
+
 File: compiler/optimizing/code_generator.h
 
 388
@@ -17,6 +25,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fd4792ea_a1e9b888
 Bytes: 99
 Why not QUICK_ENTRYPOINT_OFFSET(pointer_size, pReadBarrierMarkReg00).Int32Value()+pointer_size*reg?
+
+388
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd4792ea_a1e9b888
+UUID: fd787271_3601b837
+Bytes: 212
+I thought it'd be safer and more clear to map each register number to its own named entry point, but I guess we're sort of covered by runtime/entrypoints_order_test.cc, so I've implemented your suggestion in PS2.
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -27,12 +43,28 @@ UUID: bde99ad1_177503dc
 Bytes: 107
 Just to clarify, this CL doesn't move the register saving code to the slow path entrypoints (yet), correct?
 
+440:4-440:21
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_177503dc
+UUID: fd787271_f6c020ef
+Bytes: 108
+Yes, it doesn't do that yet. :)  This will be done in another PS or CL, depending on the size of the change.
+
 444:8-444:25
 Wed Jul 06 17:01:10 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1d41c6d7_82c4bc47
 Bytes: 110
 The slow-path is always constructed with out_==obj_. Can we clean this up and remove the "standard" slow-path?
+
+444:8-444:25
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1d41c6d7_82c4bc47
+UUID: 5d36dec8_6917e597
+Bytes: 29
+Sure we can! :)  Done in PS2.
 
 454:29-454:64
 Wed Jul 06 17:01:10 2016 +0000
@@ -49,12 +81,28 @@ UUID: bde99ad1_570ceb94
 Bytes: 15
 "non-standard"?
 
+454:29-454:64
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_570ceb94
+UUID: 5d4dfe58_11ddacea
+Bytes: 41
+Done (here and in other code generators).
+
 459:19-459:32
 Wed Jul 06 18:29:56 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bde99ad1_3723df9a
 Bytes: 70
 (Side note, we could also remove the stack map for this runtime call.)
+
+459:19-459:32
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_3723df9a
+UUID: 9d42162f_eb8591ed
+Bytes: 42
+Added as a TODO (here and in other files).
 
 File: runtime/arch/arm/quick_entrypoints_arm.S
 
@@ -64,6 +112,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bde99ad1_1ccfea8b
 Bytes: 170
 I'm probably confused about the calling conventions across the architectures. Can you clarify what this non-standard calling convention is like? Does r0 need to be saved?
+
+1750:17-1750:50
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_1ccfea8b
+UUID: fd3dd29f_ae10f7a5
+Bytes: 91
+I augmented the comment (here and in other back ends); hopefully this should be more clear.
 
 1758
 Wed Jul 06 17:01:10 2016 +0000
@@ -80,6 +136,19 @@ UUID: bde99ad1_5c65f299
 Bytes: 45
 I heard a 8 byte alignment for arm and arm64.
 
+1758
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_5c65f299
+UUID: fd3dd29f_2e8c07f7
+Bytes: 423
+I've changed this to 8-byte alignment.
+
+I thought we were 16-byte aligning everywhere, but it seems 
+that we only 8-byte align on ARM and ARM64 when dealing only with native code.  IIUC, we use 16-byte alignment in assembly code calling/potentially calling ART (managed) code, right?
+
+Note: the macro READ_BARRIER (and maybe other functions/macros) uses 16-byte alignment (see line 690).  Should we remove that padding too?
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 1929:40-1929:48
@@ -89,12 +158,28 @@ UUID: bde99ad1_17142343
 Bytes: 23
 Do we need to save EAX?
 
+1929:40-1929:48
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_17142343
+UUID: 5d36dec8_89f09933
+Bytes: 37
+No, that's unnecessary; fixed in PS2.
+
 1931:26-1931:27
 Wed Jul 06 17:01:10 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7d0f22b2_d00ff4de
 Bytes: 1
 4
+
+1931:26-1931:27
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7d0f22b2_d00ff4de
+UUID: 5d4dfe58_f1c028ef
+Bytes: 26
+Good catch!  Fixed in PS2.
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
@@ -105,6 +190,14 @@ UUID: bde99ad1_17b6e3e8
 Bytes: 13
 Why save RDI?
 
+1837:39-1837:47
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_17b6e3e8
+UUID: fd3dd29f_8e6c1bf2
+Bytes: 35
+This is not needed; changed in PS2.
+
 1850:39-1850:47
 Wed Jul 06 18:29:56 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -112,12 +205,28 @@ UUID: bde99ad1_b7e28fd7
 Bytes: 23
 Similarly why save RAX?
 
+1850:39-1850:47
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bde99ad1_b7e28fd7
+UUID: 9d42162f_0b057d0b
+Bytes: 6
+Ditto.
+
 1864:0-1865:86
 Thu Jul 07 09:03:07 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dd380eb3_edf84582
 Bytes: 147
 And why save RDI and RAX? In the follow-up we shall save all caller-save registers but in this CL the caller still considers RDI and RAX clobbered.
+
+1864:0-1865:86
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dd380eb3_edf84582
+UUID: 3dd12a8d_e87653bb
+Bytes: 69
+Right; I may have anticipated too much here.  Removed and documented.
 
 File: runtime/entrypoints/quick/quick_entrypoints_list.h
 
@@ -127,4 +236,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9df776e1_e65fe0cd
 Bytes: 146
 Despite using a different calling convention, I think they should be declared as taking and returning mirror::Object* because that's what they do.
+
+168:26-168:30
+Thu Jul 07 16:28:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9df776e1_e65fe0cd
+UUID: 3dd12a8d_c819cf29
+Bytes: 22
+Right; changed in PS2.
 

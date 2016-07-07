@@ -1,0 +1,31 @@
+Revision: 0e638a4a8a4e255fc81eb7b7b701cf86226e3e96
+Patch-set: 6
+File: compiler/optimizing/intrinsics_x86.cc
+
+1079:32-1079:37
+Thu Jul 07 09:55:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3d2daa77_e8e113d6
+Bytes: 145
+We're dealing with a String, so the comment was correct. It's the Array::LengthOffset() below that should be replaced with String::CountOffset().
+
+1096:0-1102:52
+Thu Jul 07 09:55:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3d2daa77_48d13f03
+Bytes: 298
+Since you're already improving this function, you can also replace this with
+
+    __ movl(temp, Address(input, length_offset));
+    __ sub(temp, Immediate(pos_const));
+    __ j(kLess, slow_path->GetEntryLabel());
+
+to avoid the unnecessary LEA and avoid the extra register requirement for input_len.
+
+2748
+Thu Jul 07 09:55:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dd73ae92_152034ef
+Bytes: 81
+If src_pos < dst_pos, you still need to __ j(kEqual, slow_path->GetEntryLabel()).
+

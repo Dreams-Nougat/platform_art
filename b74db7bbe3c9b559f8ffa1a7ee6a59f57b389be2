@@ -1,0 +1,27 @@
+Revision: b74db7bbe3c9b559f8ffa1a7ee6a59f57b389be2
+Patch-set: 4
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1750:45-1751:25
+Thu Jul 07 17:44:37 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5d7fbe4c_0769daa5
+Bytes: 363
+Trying to understand this better, the difference in this non-standard calling convention is to pass the argument and return the result in the specified register instead of R0, R0 is treated like a normal (non-argument) caller-save register (when it's not used for passing argument), and the rest of the calling convention is the same as the standard one, correct?
+
+1753:37-1754:56
+Thu Jul 07 17:44:37 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5d7fbe4c_272c1e8c
+Bytes: 126
+R0 has always been caller-save and the responsibility to save it has always been with the caller (no shifting happening here)?
+
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1926:21-1926:23
+Thu Jul 07 17:44:37 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5d7fbe4c_e775d668
+Bytes: 4
+EAX?
+

@@ -17,6 +17,14 @@ UUID: 5d4dfe58_915d1c69
 Bytes: 39
 Sorry, I got confused. Ignore this one.
 
+1079:32-1079:37
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3d2daa77_e8e113d6
+UUID: 5d4dfe58_717278f5
+Bytes: 76
+No, CheckPosition is called for arraycopy and the char version of arraycopy.
+
 1096:0-1102:52
 Thu Jul 07 09:55:16 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +38,28 @@ Since you're already improving this function, you can also replace this with
 
 to avoid the unnecessary LEA and avoid the extra register requirement for input_len.
 
+1096:0-1102:52
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3d2daa77_48d13f03
+UUID: dd73ae92_f58578ed
+Bytes: 34
+Done here and on x86_64/arm/arm64.
+
 2704
 Thu Jul 07 11:00:03 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dd73ae92_75e408b1
 Bytes: 160
 I think we should instead set the "length" location to "Location::Any()" and load it to "temp3" if it ends up on the stack. That will greatly simplify the code.
+
+2704
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dd73ae92_75e408b1
+UUID: 5dda5eaa_49e4c1b0
+Bytes: 27
+Excellent suggestion. Done.
 
 2748
 Thu Jul 07 09:55:16 2016 +0000
@@ -51,12 +75,28 @@ UUID: 5d36dec8_2936cd41
 Bytes: 51
 __ cmpl(Address(temp1, super_offet), Immediate(0));
 
+2883:0-2885:29
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5d36dec8_2936cd41
+UUID: fd3dd29f_cee9c388
+Bytes: 4
+Done
+
 2913:64-2913:84
 Thu Jul 07 10:35:00 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5d4dfe58_f15ca869
 Bytes: 28
 Assert that element_size==4.
+
+2913:64-2913:84
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5d4dfe58_f15ca869
+UUID: 3d2daa77_6849a3a5
+Bytes: 4
+Done
 
 2924
 Thu Jul 07 10:35:00 2016 +0000
@@ -65,12 +105,28 @@ UUID: 3dd12a8d_a85d7b68
 Bytes: 28
 __ cfi().AdjustCFAOffset(4);
 
+2924
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3dd12a8d_a85d7b68
+UUID: 5dda5eaa_e9d2d5db
+Bytes: 4
+Done
+
 2940
 Thu Jul 07 10:35:00 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dd73ae92_f55c9869
 Bytes: 28
 __ cfi().AdjustCFAOffset(4);
+
+2940
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dd73ae92_f55c9869
+UUID: dd380eb3_8d42612f
+Bytes: 4
+Done
 
 2941
 Thu Jul 07 10:35:00 2016 +0000
@@ -79,6 +135,14 @@ UUID: 5d36dec8_c9053167
 Bytes: 29
 __ cfi().AdjustCFAOffset(-4);
 
+2941
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5d36dec8_c9053167
+UUID: 3d2daa77_e8d753c9
+Bytes: 4
+Done
+
 2945
 Thu Jul 07 10:35:00 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -86,10 +150,26 @@ UUID: fd787271_d6bb2484
 Bytes: 69
 Why don't we use __ rep_movsl()? (Not yet provided by the assembler.)
 
+2945
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd787271_d6bb2484
+UUID: 9d42162f_cb4d3588
+Bytes: 53
+I'll leave it for a follow-up performance experiment.
+
 2949
 Thu Jul 07 10:35:00 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fd787271_d6a40470
 Bytes: 29
 __ cfi().AdjustCFAOffset(-4);
+
+2949
+Thu Jul 07 13:37:50 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd787271_d6a40470
+UUID: 5d36dec8_a971ddc6
+Bytes: 4
+Done
 

@@ -149,6 +149,14 @@ that we only 8-byte align on ARM and ARM64 when dealing only with native code.  
 
 Note: the macro READ_BARRIER (and maybe other functions/macros) uses 16-byte alignment (see line 690).  Should we remove that padding too?
 
+1758
+Tue Jul 12 17:27:46 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fd3dd29f_2e8c07f7
+UUID: 1ab2acf6_facc056f
+Bytes: 158
+It seems 16-byte alignment is required on ARM64; with just 8-byte alignment, I get SIGBUSes when running tests on angler.  I'll fix this in my next patch set.
+
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
 1929:40-1929:48

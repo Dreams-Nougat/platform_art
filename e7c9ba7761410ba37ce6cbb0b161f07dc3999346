@@ -2,6 +2,13 @@ Revision: e7c9ba7761410ba37ce6cbb0b161f07dc3999346
 Patch-set: 8
 File: compiler/optimizing/code_generator_x86_64.cc
 
+243:6-243:37
+Tue Jul 12 17:28:21 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ab2acf6_1a80d90f
+Bytes: 166
+Most of the work here is the same as for BoundsCheckSlowPathX86_64, so it would make sense to simply adjust that class to handle the length being emitted at use site.
+
 5064:4-5064:56
 Tue Jul 12 15:32:40 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,4 +25,26 @@ Bytes: 156
 I tried that originally.  Dies with:
 ssa_liveness_analysis.h:321] Check failed: first_range_->GetStart() > position
 called from ssa_liveness_analysis.cc:194
+
+5064:4-5064:56
+Tue Jul 12 17:28:21 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5acfc472_40dc2352
+UUID: 1ab2acf6_7ae1d5d4
+Bytes: 159
+You should also move the ArrayLength just before the BoundsCheck. Together with the "Out() -> InputAt(0)" fix below, you should be closer to a working version.
+
+5138:0-5140:7
+Tue Jul 12 17:28:21 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ab2acf6_dacf4161
+Bytes: 69
+I believe this is unnecessary after the PrepareForRegisterAllocation.
+
+5142:50-5142:55
+Tue Jul 12 17:28:21 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ab2acf6_bac28d3a
+Bytes: 10
+InputAt(0)
 

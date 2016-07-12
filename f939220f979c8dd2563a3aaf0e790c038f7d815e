@@ -44,3 +44,15 @@ UUID: 1ab2acf6_777c9053
 Bytes: 80
 But RoundUp(slots_size, 4) should return you slots_slize for other archs, right?
 
+425:43-425:59
+Tue Jul 12 14:34:56 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ab2acf6_777c9053
+UUID: 1ab2acf6_37d4d851
+Bytes: 501
+Oh I think see what you mean now. Your suggestion would of course work.
+
+I am not a fan of introducing a `RoundUp` call for all archs. Even if it does nothing, it looks like it enforces something (when no alignment is actually needed). In that way I like that the current default implementation clearly does nothing.
+
+Note that I also tried to not have any `if (isa == arm64)` in arch-independent code. Otherwise we could just have a few lines under `if (isa == arm64)` at the call site if you prefer.
+

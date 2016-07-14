@@ -9,10 +9,26 @@ UUID: 5acfc472_86746ce2
 Bytes: 144
 Clarify this comment a bit? Mathieu says in person that this means we can't use h_class->MonitorEnter (or block in any way) to avoid a deadlock.
 
+2196:54-2197:28
+Thu Jul 14 16:39:09 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5acfc472_86746ce2
+UUID: 5acfc472_86638cf2
+Bytes: 4
+Done
+
 2198:4-2198:18
 Wed Jul 13 23:26:22 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5acfc472_91e908b4
 Bytes: 399
 In my experience, sched_yield loops are prone to livelock, especially if you're adjusting priorities, as we do.  If we are one of the N highest priority threads, all waiting, and the thread we are waiting for has a lower priority, and the number of cores is <= N, we never make progress.  This is probably unlikely here, but I would call usleep after the first few iterations, on general principles.
+
+2198:4-2198:18
+Thu Jul 14 16:39:09 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5acfc472_91e908b4
+UUID: 5acfc472_4cc36399
+Bytes: 97
+We could add a dedicated lock object for class initialization, this would be a bit slower though.
 

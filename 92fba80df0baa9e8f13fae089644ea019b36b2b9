@@ -1,5 +1,37 @@
 Revision: 92fba80df0baa9e8f13fae089644ea019b36b2b9
 Patch-set: 1
+File: compiler/optimizing/intrinsics_mips64.cc
+
+1885:77-1885:84
+Thu Jul 14 22:41:25 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ad1308d_285fcbfb
+Bytes: 5
+kCall
+
+1941:0-1942:27
+Thu Jul 14 22:41:25 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ad1308d_a8e57b46
+Bytes: 157
+memcpy() will always do this check, so I'd rather remove the duplication so as not to penalize the normal cases, when there's data to copy. Shorter code too.
+
+1952:0-1953:31
+Thu Jul 14 22:41:25 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ad1308d_a8329b99
+Bytes: 28
+Move it into the delay slot.
+
+1955:0-1959:67
+Thu Jul 14 22:41:25 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ad1308d_089f677a
+Bytes: 170
+Make it the very first instruction, so the call address is available in advance.
+
+We should probably make a separate change to do this in other places, wherever possible.
+
 File: compiler/utils/assembler_test.h
 
 157:54-157:55

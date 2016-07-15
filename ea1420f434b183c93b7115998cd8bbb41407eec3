@@ -9,6 +9,14 @@ UUID: 6ae91769_02bfea16
 Bytes: 14
 Line too long.
 
+893
+Fri Jul 15 16:58:26 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ae91769_02bfea16
+UUID: 3ad1308d_6f4a629b
+Bytes: 4
+Done
+
 1339
 Fri Jul 15 16:33:38 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -43,6 +51,14 @@ but I'd prefer
   skip_loop:
 
 This approach is also applicable in cases where we previously didn't want to deoptimize, for example where an early exit from the loop can avoid AIOOB. And if we do throw AIOOB, this will speed up the execution to get there.
+
+1339
+Fri Jul 15 16:58:26 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ba20c083_a4f4a226
+UUID: 3ad1308d_cff0ae6d
+Bytes: 127
+Ok, I will study this a bit (but for now I like to keep the CL as is, since this approach would require some more "soldering").
 
 1424:0-1424:109
 Fri Jul 15 09:25:09 2016 +0000
@@ -116,6 +132,14 @@ UUID: ba20c083_247d1295
 Bytes: 225
 One Deopt is later eliminated (fold+simplify) because Above(0,.) is always false. There is a missed optimization opportunity to eliminate another Deopt because Below(x,2) is always false in a branch taken on GreaterThan(x,1).
 
+132
+Fri Jul 15 16:58:26 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ba20c083_247d1295
+UUID: 3ad1308d_efa81243
+Bytes: 382
+Yes it is. I actually was just adding the test on that optimization. Note that by design (and earlier request from Nicolas), I don't to full optimization in the range code gen to keep that simple and rely on subsequent phases to remove the redundant cases). We could use the range information on i to do the other optimization you suggest (since later phases cannot do that indeed).
+
 156
 Fri Jul 15 16:33:38 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -123,12 +147,28 @@ UUID: ba20c083_242fd298
 Bytes: 181
 Similarly, one Deopt eliminated by fold+simplify, another missed opportunity (though relating Below(x+1,4) to GreaterThan(x,2) requires considering that x+1 does not overflow to 0).
 
+156
+Fri Jul 15 16:58:26 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ba20c083_242fd298
+UUID: 3ad1308d_6f9542f7
+Bytes: 13
+same feedback
+
 178
 Fri Jul 15 16:33:38 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fa26b89b_c67522b2
 Bytes: 282
 Optimization opportunity: the loop body is always executed and the null check is the first instruction there, so the Deopt is unnecessary if we do an actual (implicit) null check on the ArrayLength, though we would need to provide an environment appropriate for the first iteration.
+
+178
+Fri Jul 15 16:58:26 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa26b89b_c67522b2
+UUID: 3ad1308d_afc73a07
+Bytes: 5
+noted
 
 205
 Fri Jul 15 16:33:38 2016 +0000
@@ -154,4 +194,12 @@ What we generate for the inputs of these Deopts is pretty brain-dead (especially
   v82 Deoptimize[z81]
   z83 = (end + 2) above/equal array.length
   v84 Deoptimize[z83]
+
+205
+Fri Jul 15 16:58:26 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: caf9233e_7dde57db
+UUID: 3ad1308d_2fb4ea90
+Bytes: 258
+I had originally much more simplification in induction/range var code generator, but we decided for the less bug prone way of avoiding duplication of simplification rules; if we don't optimize enough in the eventual code, though, we should revisit indeed....
 

@@ -2,6 +2,48 @@ Revision: ea1420f434b183c93b7115998cd8bbb41407eec3
 Patch-set: 1
 File: compiler/optimizing/bounds_check_elimination.cc
 
+893
+Fri Jul 15 16:33:38 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae91769_02bfea16
+Bytes: 14
+Line too long.
+
+1339
+Fri Jul 15 16:33:38 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba20c083_a4f4a226
+Bytes: 1057
+If you're rewriting the transformation, can I suggest a very different approach? For example, the "stencil" test is transformed to
+
+  if (end >= start) {
+    if (array == null) deopt;
+    if (Above(start - 2, start + 2) deopt;
+    if (Above(start + 2, end + 2) deopt;
+    if (Above(end + 2, array.length) deopt;
+  }
+  for (int i = end; i >= start; i--) {
+    <body without null/bound checks>;
+  }
+
+but I'd prefer
+
+  if (end < start) goto skip_loop;
+  if (array == null) deopt;
+  // The max 'i' for accessing elements in range [i, i+5).
+  int max_i = array.length - 5;
+  if (max_i < 0) deopt;
+  if (Above(end - 2, max_i) deopt;  // AIOOB in first iteration?
+  int cutoff = max(start, 2);
+  int i;
+  for (i = end; i >= cutoff; --i) {
+    <body without null/bound checks>;
+  } while (i >= start);
+  if (i >= start) deopt;
+  skip_loop:
+
+This approach is also applicable in cases where we previously didn't want to deoptimize, for example where an early exit from the loop can avoid AIOOB. And if we do throw AIOOB, this will speed up the execution to get there.
+
 1424:0-1424:109
 Fri Jul 15 09:25:09 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,4 +100,50 @@ Parent: 3ad1308d_5dd0f727
 UUID: ba20c083_c44b5e49
 Bytes: 74
 Actually, I see you're commenting in the code body. so scratch my comment.
+
+132
+Fri Jul 15 16:33:38 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba20c083_247d1295
+Bytes: 225
+One Deopt is later eliminated (fold+simplify) because Above(0,.) is always false. There is a missed optimization opportunity to eliminate another Deopt because Below(x,2) is always false in a branch taken on GreaterThan(x,1).
+
+156
+Fri Jul 15 16:33:38 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba20c083_242fd298
+Bytes: 181
+Similarly, one Deopt eliminated by fold+simplify, another missed opportunity (though relating Below(x+1,4) to GreaterThan(x,2) requires considering that x+1 does not overflow to 0).
+
+178
+Fri Jul 15 16:33:38 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fa26b89b_c67522b2
+Bytes: 282
+Optimization opportunity: the loop body is always executed and the null check is the first instruction there, so the Deopt is unnecessary if we do an actual (implicit) null check on the ArrayLength, though we would need to provide an environment appropriate for the first iteration.
+
+205
+Fri Jul 15 16:33:38 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: caf9233e_7dde57db
+Bytes: 757
+What we generate for the inputs of these Deopts is pretty brain-dead (especially since we do not run GVN after BCE). There are additions and subtractions that cancel each other out but they make it all the way to codegen.
+
+  i64 = start - 1
+  i65 = end - (start - 1) = end - start + 1
+  i66 = (end - start + 1) - 1 = end - start
+  i67 = end + 2
+  i68 = (end + 2) - (end - start) = start + 2
+  i70 = end + 2
+  i72 = start - 1
+  i73 = end - (start - 1) = end - start + 1
+  i74 = (end - start + 1) - 1 = end - start
+  i75 = end - 2
+  i76 = (end - 2) - (end - start) = start - 2
+  z79 = (start - 2) above (start + 2)
+  v80 Deoptimize[z79]
+  z81 = (start + 2) above (end + 2)
+  v82 Deoptimize[z81]
+  z83 = (end + 2) above/equal array.length
+  v84 Deoptimize[z83]
 

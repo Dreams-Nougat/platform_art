@@ -1,0 +1,91 @@
+Revision: a54d4af8d496d45073de133dd33990b0104c6a18
+Patch-set: 3
+File: compiler/optimizing/dead_code_elimination.cc
+
+97:21-97:33
+Fri Jul 15 13:08:00 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba20c083_a49e621f
+Bytes: 73
+I'd prefer HCondition. That's the only instruction kind this is used for.
+
+104:0-108:5
+Fri Jul 15 13:08:00 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae91769_2239cef9
+Bytes: 123
+For FP argument, this may be wrong for NaN. For integral argument, we should be able to fully evaluate all conditions here.
+
+176:27-176:48
+Fri Jul 15 13:08:00 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae91769_e24ac67d
+Bytes: 51
+Add a comment that this may change inside the loop.
+
+203:12-203:16
+Fri Jul 15 13:08:00 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: da21f486_0521f2f4
+Bytes: 103
+I'd prefer the "++i" moved out of the for() statement to an else block, so that we can avoid the "--i".
+
+209:0-213:11
+Fri Jul 15 13:08:00 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae91769_e2f8861d
+Bytes: 149
+This can be inside the "if (value_to_check != nullptr)" block and since the predecessor count is the same as phi->InputCount(), I'd check the latter.
+
+File: test/611-checker-simplify-if/src/Main.java
+
+29
+Fri Jul 15 13:08:00 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa022ff5_9cc7e53b
+Bytes: 768
+Add a test with more predecessors, say
+
+  bool cond = false;
+  switch (args.length) {
+    case 42:
+      staticField = 11;
+      cond = true;
+      break;
+    case 43:
+      cond = $noinline$foo();
+      break;
+    default:
+      cond = false;
+      break;
+  }
+  // Keep case 43 going here.
+  if (cond) {
+    // Redirect case 42 here.
+    bar(1234);
+  }
+  // Redirect default here.
+
+Also add the following test case that can create an irreducible loop:
+
+  void foo(boolean c) {
+    while (true) {
+      if (c) {
+        if ($noinline$foo()) return;
+        c = false;
+        // Redirecting to the "else" branch...
+      } else {
+        $noinline$bar();
+        c = true;
+        // ... and redirecting to the "then" branch creates irreducible loop.
+      }
+    }
+  }
+
+112:15-112:16
+Fri Jul 15 13:08:00 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: caf9233e_3d732f1c
+Bytes: 7
+Remove.
+

@@ -23,6 +23,14 @@ What is the problem of using those bits, you think?
 
 Hard limit is currently 255. We could work around using 65535 if you want to, but I doubt the intrinsic maintainer will survive that.
 
+10:32-11:41
+Fri Jul 15 16:23:37 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a12f748_5ae395a1
+UUID: 3ad1308d_fd2c4b3f
+Bytes: 56
+No, I meant the number of methods being tagged that way.
+
 14:16-16:18
 Fri Jul 15 16:12:04 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -47,4 +55,21 @@ Parent: 0af41b40_df1f9b5f
 UUID: 6a12f748_3ad8e1e9
 Bytes: 194
 For cleanups that is. We can surely put some hooks between class linker and dex method inliner / compiler driver, but I feel it's much nicer to avoid the map altogeter and not require any hooks.
+
+14:16-16:18
+Fri Jul 15 16:23:37 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0af41b40_df1f9b5f
+UUID: 3ad1308d_5d1e3704
+Bytes: 266
+Using a map nicely decouples runtime internals (who don't care that the method can be intrinsified) from the compiler, though. And means that my favorite modes, interpreter and AoT, don't have any "overhead." Maybe an implementation of a sparse map would save space?
+
+File: runtime/art_method.h
+
+297:57-297:70
+Fri Jul 15 16:23:37 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ad1308d_bdc49375
+Bytes: 22
+Why waste another bit?
 

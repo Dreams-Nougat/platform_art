@@ -1,0 +1,43 @@
+Revision: c139654e84d86c7aa37ea55a92c70064dff7ca05
+Patch-set: 1
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1774
+Mon Jul 18 10:47:55 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eafc272d_a144b86f
+Bytes: 71
+If we want precise CFI, we should record offsets also for FP registers.
+
+1787:0-1796:48
+Mon Jul 18 10:47:55 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a08ff1a_981b7582
+Bytes: 184
+I'd prefer we pop everything in a single instruction. If \reg is one of the caller-save registers, we can simply write it to the stack instead of moving it to the destination register.
+
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+1261
+Mon Jul 18 10:47:55 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eafc272d_2130a803
+Bytes: 78
+It is a bit odd to leave the \xReg1 recoverable by the debugger at this point.
+
+2294
+Mon Jul 18 10:47:55 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a08ff1a_d8f8cd1d
+Bytes: 11
+Record CFI.
+
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1935:4-1935:24
+Mon Jul 18 10:47:55 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6ae91769_65d24005
+Bytes: 50
+4B-aligned store of 8B register. Is this intended?
+

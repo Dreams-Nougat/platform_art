@@ -18,10 +18,28 @@ UUID: ea2507a1_f62280a9
 Bytes: 123
 I don't think this is set at this point. You're probably either removing all suspend checks at entry or keeping them all :)
 
+46:6-46:30
+Mon Jul 18 22:10:31 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea2507a1_f62280a9
+UUID: 3ad1308d_d7e4b144
+Bytes: 359
+You're right, it looks like this is not set until liveness analysis runs. Thank you for catching this.
+
+This means I can't move this to prepare_for_register_allocation, though, since we'll have the same issue. It would be nice if marking a method as a leaf were not tied up with liveness analysis, but creating a new pass just for that is not cheap. Thoughts?
+
 47:0-48:34
 Mon Jul 18 21:48:05 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ea2507a1_d61f845f
 Bytes: 155
 That's heavyweight for just removing a suspend check: you're visiting the whole graph here. Ideally this should be done in prepare_for_register_allocation.
+
+47:0-48:34
+Mon Jul 18 22:10:31 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea2507a1_d61f845f
+UUID: 3ad1308d_377b8da5
+Bytes: 179
+Agreed, I'll move this to prepare_for_register_allocation. I must have misunderstood your email about this. (Edit: see my other comment regarding prepare_for_register_allocation.)
 

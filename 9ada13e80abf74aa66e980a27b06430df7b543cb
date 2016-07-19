@@ -1,0 +1,34 @@
+Revision: 9ada13e80abf74aa66e980a27b06430df7b543cb
+Patch-set: 3
+File: /COMMIT_MSG
+
+7:0-7:57
+Tue Jul 19 19:36:17 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_7089e184
+Bytes: 128
+I wonder why we didn't do this to begin with? Any reason that we originally wanted to get to inline cache roots via ArtMethod's?
+
+10:26-10:59
+Tue Jul 19 19:36:17 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_1c7881f4
+Bytes: 105
+This is referring to loading 0xwilldie into a local variable (eg art_method-inl.h:468 in Base PS), right?
+
+14:50-15:54
+Tue Jul 19 19:36:17 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_9c3a3119
+Bytes: 529
+I think the GC thread (when running GC) is treated as suspended and the checkpoint code (is it MarkCodeClosure?) for the GC thread is run by the thread driving the checkpoint rather than the GC thread itself.
+
+So, is it more like the checkpoint is still run for the GC thread but not by the GC thread itself and so running the checkpoint doesn't ensure that the GC will see the updated (nulled) profiling info, that is, GC isn't in the middle of visiting a profiling info and is potentially preempted with a stale local variable?
+
+16:3-17:43
+Tue Jul 19 19:36:17 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_dc11c963
+Bytes: 82
+Is this referring to the FreeData call near the end of JitCodeCache::DoCollection?
+

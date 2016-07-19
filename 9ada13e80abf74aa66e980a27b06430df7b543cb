@@ -9,12 +9,31 @@ UUID: 0a5b3b40_7089e184
 Bytes: 128
 I wonder why we didn't do this to begin with? Any reason that we originally wanted to get to inline cache roots via ArtMethod's?
 
+7:0-7:57
+Tue Jul 19 22:04:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a5b3b40_7089e184
+UUID: 0a697be4_37f258d6
+Bytes: 236
+Mainly it felt to me that was the most natural way of doing it?
+Class -> methods -> ProfilingInfo.
+
+But if someone can concurrently erase profiling info, then yeah, we shouldn't do it this way and ensure we hold the profiling info lock.
+
 10:26-10:59
 Tue Jul 19 19:36:17 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a5b3b40_1c7881f4
 Bytes: 105
 This is referring to loading 0xwilldie into a local variable (eg art_method-inl.h:468 in Base PS), right?
+
+10:26-10:59
+Tue Jul 19 22:04:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a5b3b40_1c7881f4
+UUID: 0a697be4_d7f67cc8
+Bytes: 8
+Correct.
 
 14:50-15:54
 Tue Jul 19 19:36:17 2016 +0000
@@ -25,10 +44,28 @@ I think the GC thread (when running GC) is treated as suspended and the checkpoi
 
 So, is it more like the checkpoint is still run for the GC thread but not by the GC thread itself and so running the checkpoint doesn't ensure that the GC will see the updated (nulled) profiling info, that is, GC isn't in the middle of visiting a profiling info and is potentially preempted with a stale local variable?
 
+14:50-15:54
+Tue Jul 19 22:04:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a5b3b40_9c3a3119
+UUID: 0a697be4_f7f380d5
+Bytes: 167
+Correct. The thread initiating the MarkCodeClosure, will visit the stack of the GC thread.
+
+And yes, GC thread got preempted in the middle of visiting a ProfilingInfo.
+
 16:3-17:43
 Tue Jul 19 19:36:17 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0a5b3b40_dc11c963
 Bytes: 82
 Is this referring to the FreeData call near the end of JitCodeCache::DoCollection?
+
+16:3-17:43
+Tue Jul 19 22:04:45 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0a5b3b40_dc11c963
+UUID: 0a697be4_9700049d
+Bytes: 33
+Yes, the one line 749 of this PS.
 

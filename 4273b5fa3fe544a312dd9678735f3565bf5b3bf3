@@ -9,3 +9,32 @@ UUID: 0a697be4_77977094
 Bytes: 102
 the term you're looking for is "wankery" but 612-nondelegating-classloader is probably a better name ?
 
+File: compiler/optimizing/inliner.cc
+
+222:4-227:5
+Tue Jul 19 16:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_96633243
+Bytes: 404
+You could do a simple classloader analysis here. I'd at least try to see if the classloaders are the same, which will do multidex correctly (maybe put that as an || to IsSameDexFile).
+
+In general, the oat_file_manager has code that knows what a complete chain is PathClassLoader, and you could do "sub-string" analysis on that to ensure correctness for default loaders. I guess that is probably overkill.
+
+File: test/612-classloader-wonkery/src/Main.java
+
+56:21-56:28
+Tue Jul 19 16:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_d612caae
+Bytes: 34
+Maybe don't stress the GC so much?
+
+File: test/common/runtime_state.cc
+
+123:44-123:59
+Tue Jul 19 16:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_3673661c
+Bytes: 60
+That isn't an intuitive name considering it forces JITing...
+

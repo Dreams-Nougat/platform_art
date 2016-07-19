@@ -28,6 +28,14 @@ You're right, it looks like this is not set until liveness analysis runs. Thank 
 
 This means I can't move this to prepare_for_register_allocation, though, since we'll have the same issue. It would be nice if marking a method as a leaf were not tied up with liveness analysis, but creating a new pass just for that is not cheap. Thoughts?
 
+46:6-46:30
+Tue Jul 19 08:24:01 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ad1308d_d7e4b144
+UUID: 8a748bbe_f3b630d7
+Bytes: 211
+Fixing the TODO is not so trivial :) So we need liveness analysis to run before marking a method as leaf/not leaf, can we move the removal of the suspend check in liveness analysis instead of register allocator?
+
 47:0-48:34
 Mon Jul 18 21:48:05 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

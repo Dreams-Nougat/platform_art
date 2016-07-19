@@ -9,6 +9,14 @@ UUID: 3ad1308d_b7565de2
 Bytes: 7
 caller?
 
+12:8-12:14
+Tue Jul 19 13:40:27 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3ad1308d_b7565de2
+UUID: 0a697be4_97eb2475
+Bytes: 4
+Done
+
 File: runtime/arch/arm/quick_entrypoints_arm.S
 
 1774
@@ -18,12 +26,28 @@ UUID: eafc272d_a144b86f
 Bytes: 71
 If we want precise CFI, we should record offsets also for FP registers.
 
+1774
+Tue Jul 19 13:40:27 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eafc272d_a144b86f
+UUID: 6a12f748_ba43d147
+Bytes: 186
+I agree, but I think we do not record stack offset for FP registers anywhere in this file at the moment; I don't know why – maybe it is (or was?) not supported by all the tools we use?
+
 1787:0-1796:48
 Mon Jul 18 10:47:55 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a08ff1a_981b7582
 Bytes: 184
 I'd prefer we pop everything in a single instruction. If \reg is one of the caller-save registers, we can simply write it to the stack instead of moving it to the destination register.
+
+1787:0-1796:48
+Tue Jul 19 13:40:27 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a08ff1a_981b7582
+UUID: 2a08ff1a_d8e9ed16
+Bytes: 39
+Thanks for the suggestion; done in PS3.
 
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
@@ -34,12 +58,30 @@ UUID: eafc272d_2130a803
 Bytes: 78
 It is a bit odd to leave the \xReg1 recoverable by the debugger at this point.
 
+1261
+Tue Jul 19 13:40:27 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eafc272d_2130a803
+UUID: 0a697be4_d7cafc16
+Bytes: 115
+Right; changed in PS3.
+
+I guess we should change the definition of POP_REG_NE (lines 1249–1254) similarly, right?
+
 2294
 Mon Jul 18 10:47:55 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2a08ff1a_d8f8cd1d
 Bytes: 11
 Record CFI.
+
+2294
+Tue Jul 19 13:40:27 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2a08ff1a_d8f8cd1d
+UUID: ea2507a1_96d10ccb
+Bytes: 91
+Likewise, it seems we do not record CFI information for FP registers anywhere in this file.
 
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
@@ -49,4 +91,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6ae91769_65d24005
 Bytes: 50
 4B-aligned store of 8B register. Is this intended?
+
+1935:4-1935:24
+Tue Jul 19 13:40:27 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6ae91769_65d24005
+UUID: 2a08ff1a_38da2974
+Bytes: 265
+Good catch!  I didn't think about that, as we already had similar code in other places in this file (e.g. in every function using the macro SETUP_REFS_AND_ARGS_CALLEE_SAVE_FRAME).
+
+I've fixed this particular case; I'll have a look a other occurrences in another CL.
 

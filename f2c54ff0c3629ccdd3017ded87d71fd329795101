@@ -1,0 +1,46 @@
+Revision: f2c54ff0c3629ccdd3017ded87d71fd329795101
+Patch-set: 16
+File: compiler/optimizing/register_allocator_graph_color.cc
+
+211:0-213:64
+Wed Jul 20 04:34:29 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_9cb10795
+Bytes: 162
+I've done my best to guarantee forward progress during graph coloring, so we wouldn't need an NDEBUG limit here. Still, is there a compiler timeout, just in case?
+
+263:0-268:78
+Wed Jul 20 04:34:29 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_3c79fbd8
+Bytes: 147
+This is a fairly important TODO, since being too conservative here can mean spilling too many callee-save registers at the beginning of a function.
+
+327:0-327:81
+Wed Jul 20 04:34:29 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_1cef5784
+Bytes: 408
+As I mentioned, some of the code in this method (and the methods it calls) is adapted from the linear scan allocator. Ideally, the register allocator base class could become a driver class that does this setup before calling into a subclass, but some details are too implementation-specific right now, and I hesitate to further refactor linear scan for the sake of graph coloring. Let me know what you think.
+
+552:10-555:29
+Wed Jul 20 04:34:29 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_fc3da313
+Bytes: 141
+Is there a cleaner way to check that we are at the end of the block? Is (position + 1) the correct place to split when at the end of a block?
+
+634:0-635:51
+Wed Jul 20 04:34:29 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_5c626f14
+Bytes: 160
+Is it true that this needs to be special-cased, or are the live intervals such that this constraint will automatically be represented in the interference graph?
+
+890:0-891:40
+Wed Jul 20 04:34:29 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a5b3b40_5cab8f20
+Bytes: 24
+[Highlighting this TODO]
+

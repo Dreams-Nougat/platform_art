@@ -1,0 +1,15 @@
+Revision: 72e50c68a367833c9688d387cfe8e971680e8a6c
+Patch-set: 1
+File: runtime/gc/collector/concurrent_copying.cc
+
+197:0-197:69
+Thu Jul 21 04:31:57 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2a7abff6_f1ca5a9b
+Bytes: 372
+Why not roll this into the class below, or at least make it a private inner class of that class?
+
+Otherwise one could argue that VisitRoots should use the info object in a debug build to ensure that it's correct to elide the CAS.
+
+In general, is the header file change necessary? I can only see an access to Mark, which looks like it's public in ConcurrentCopying anyways?
+

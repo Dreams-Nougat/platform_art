@@ -1,0 +1,113 @@
+Revision: 01bbb3032feec67882b9b5aacfea248a7e4e5609
+Patch-set: 1
+File: /COMMIT_MSG
+
+7
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_bfdc7fde
+Bytes: 199
+I would change the main line to read "Implementation of bisection bug search in the compiler" or something like that (the fact that you use switches is a minor detail, this CL does already much more)
+
+File: compiler/driver/compiler_options.cc
+
+163:25-163:26
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_ff6197e1
+Bytes: 51
+see elsewhere that we probably don't need this bool
+
+173:31-173:32
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_bf6b1fc0
+Bytes: 69
+see elsewhere on guarding against having this, but not the other flag
+
+File: compiler/driver/compiler_options.h
+
+173:11-173:33
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_1f448b4e
+Bytes: 95
+perhaps we don't need this bool field; having optimize_up_to_method != maxuint32 seems the same
+
+File: compiler/optimizing/bisection_controller.h
+
+30
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_5fbf6315
+Bytes: 325
+I would use one API consistent, as in "bool Can..." even if you don't test the return value, but move that logic in the phase method in the controller. Having two forms (start next and can run next) seems a bit confusing.
+
+Also, I would not use Next, but just CanOptimizeMethod() to be consistent with what you did for phase.
+
+37:20-37:21
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_3fc62fb0
+Bytes: 30
+white line before the DISALLOW
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+310:15-310:31
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_bff1dfd2
+Bytes: 115
+I suspect that most team members would like the static instance method change to be done in its own (preparing CL).
+
+1101:30-1101:53
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_df3b7384
+Bytes: 412
+I would not exit the loop, but keep on querying
+
+that way, we can get the log that comes with this mechanism that is more intuitive
+
+optimizing method [1] foo
+        doing inlining
+        doing constant folding
+        doing etc.
+optimizing method [2] bar      [LAST]
+        doing inlining
+        NOT doing constant folding
+        NOT doing etc.
+NOT optimizing method [3] joho
+NOT optimizing method [4] doit
+
+File: dex2oat/dex2oat.cc
+
+387:53-387:60
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_5f23e3ae
+Bytes: 97
+do we have to say to here (seems generally true, and I would expect most clients to stick to dec)
+
+388:36-388:45
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_3f6e2ffd
+Bytes: 29
+example does not match switch
+
+391:20-391:27
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_3f2aaf81
+Bytes: 103
+not sure if we want to show a default. intuitively not setting the flag means all methods are optimized
+
+393:73-393:77
+Fri Jul 22 18:15:45 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_ff3af7cf
+Bytes: 66
+we probably want to complain if this flag is set but not the other
+

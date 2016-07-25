@@ -1,0 +1,94 @@
+Revision: 51bcec2140d54ff8fa7eaaae90c85818e3753943
+Patch-set: 2
+File: /COMMIT_MSG
+
+51:0-56:31
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_aa4aed5d
+Bytes: 123
+Is this part to be removed (there's already Maps data above and this one doesn't show any change between before and after)?
+
+File: runtime/gc/accounting/mod_union_table.cc
+
+328:2-328:24
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_2ab1fdfb
+Bytes: 104
+Add a comment that we use an empty visitor because filtering is done as part of UpdateAndMarkReferences?
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+325:8-325:31
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_6a7295ac
+Bytes: 428
+I think if we want to allow kGrayDirtyImmuneObjects to be switched on and off with this flag, changing this to 
+
+"if (kUseBakerReadBarrier && kGrayDirtyImmuneObjects)"
+
+and changing line 46 above to
+
+"static constexpr bool kGrayDirtyImmuneObjects = true;"
+
+would match the existing convention to surround Baker-RB specific code with "if (kUseBakerReadBarrier) {...}" and, if we need to, use a separate flag to switch it and off.
+
+367:59-367:74
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_cd12db67
+Bytes: 53
+There's a presubmit check around here about noreturn.
+
+391:8-391:24
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_eaec65fa
+Bytes: 144
+The "table != nullptr" case is for the boot image spaces and the zygote, and the other case is for the app image spaces, correct? Add a comment?
+
+392
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_ed49dfbd
+Bytes: 39
+Add "TODO: preclean outside the pause"?
+
+395
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_0dc69313
+Bytes: 203
+I guess I overlooked this case previously. How about we add "TODO: maybe bring back a mark bitmap for app image spaces and avoid scanning during the pause because app image spaces are all dirty anyway."?
+
+400:30-400:57
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_4a41d1f3
+Bytes: 59
+May not matter, but StoreRelaxed as this is during a pause?
+
+446:8-446:31
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_4dd24b05
+Bytes: 69
+Similarly,
+
+"if (kUseBakerReadBarrier && kGrayDirtyImmuneObjects)"
+
+?
+
+2122:8-2122:28
+Mon Jul 25 17:42:35 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a23733a_2d53574a
+Bytes: 66
+Similarly,
+
+"if (kUseBakerReadBarrier && kFilterModUnionCards)"
+
+?
+

@@ -1,0 +1,75 @@
+Revision: e9d19f1c13c118fc91795efcd95668a083becfb7
+Patch-set: 4
+File: compiler/optimizing/code_generator_mips.cc
+
+4170
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca73e35a_0d5b112d
+Bytes: 133
+Please split the read-barrier bits out of this CL and just put
+
+    UNIMPLEMENTED(FATAL) << "for read barrier";
+
+here for the moment.
+
+4247:0-4249:7
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0a8edb80_ef57a131
+Bytes: 12
+Unnecessary.
+
+4597
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a88d372_11f6cc2e
+Bytes: 111
+With HMipsComputeBaseMethodAddress, you could load an offset from the literal pool and then add it to the base.
+
+4630
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca73e35a_4d51190b
+Bytes: 54
+Why do you need a literal? You should do a simple LUI.
+
+4802
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca2e8326_380de58b
+Bytes: 3
+LUI
+
+File: compiler/optimizing/nodes.h
+
+5630
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ea76e749_ae82f75d
+Bytes: 139
+I'd prefer to keep a DCHECK(). Also, improve the comment above, pointing out that literal pool loads are PC-relative and may need this too.
+
+5847
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ca73e35a_ad343de1
+Bytes: 5
+ditto
+
+File: runtime/arch/mips/quick_entrypoints_mips.S
+
+2065
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: aa278f49_54fc2c10
+Bytes: 52
+Missing reserved space for a0-a3, see ARG_SLOT_SIZE.
+
+2148
+Mon Jul 25 13:37:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4a88d372_312af081
+Bytes: 60
+Overwrites v0 before it's moved to the destination register.
+

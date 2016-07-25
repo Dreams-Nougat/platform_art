@@ -2,6 +2,35 @@ Revision: 5dc4eab2f4153f748a4b40a2c7f0934508cd8c43
 Patch-set: 1
 File: runtime/common_runtime_test.h
 
+67
+Mon Jul 25 21:27:33 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a4bd746_f8de4965
+Bytes: 117
+Why is there an extra class indirection anyway, couldn't this class itself could inherit from gtest classes directly?
+
+144
+Mon Jul 25 21:27:33 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a4bd746_18d4ed42
+Bytes: 222
+This doesn't seem right.
+
+It should be either:
+
+   (a) private, so it's clear you're not supposed to override it.
+or
+   (b) virtual so that it's actually sane to override it.
+
+Probably (b) since it's called on line 164,168
+
+146
+Mon Jul 25 21:27:33 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6a4bd746_58ce75b2
+Bytes: 9
+see above
+
 163:2-169:3
 Mon Jul 25 21:03:23 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -9,10 +38,26 @@ UUID: 6a4bd746_3864511c
 Bytes: 45
 override? Or iam@ will tell you what to do...
 
+163:2-169:3
+Mon Jul 25 21:27:33 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4bd746_3864511c
+UUID: 6a4bd746_98b0ddf9
+Bytes: 24
+Override here seems good
+
 171:0-175:3
 Mon Jul 25 20:53:58 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6a4bd746_98b61da3
 Bytes: 14
 Please remove.
+
+171:0-175:3
+Mon Jul 25 21:27:33 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6a4bd746_98b61da3
+UUID: 6a4bd746_3889b122
+Bytes: 97
+If removing, please move the comment to CommonRunTimeTestImpl which currently lacks this comment.
 

@@ -1,0 +1,156 @@
+Revision: 4cbe09583e1d35ea3b5ba251ea8b21cb96a0cc48
+Patch-set: 5
+File: compiler/driver/compiler_options.cc
+
+152:2-152:19
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_785590c9
+Bytes: 63
+do we have any guard setting -j1 in combination with this flag?
+
+File: compiler/driver/compiler_options.h
+
+310:13-310:32
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_38e66843
+Bytes: 56
+I would omit the used by, just start with Specifies ....
+
+312:48-312:49
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_18f604f8
+Bytes: 157
+isn't it simpler to make this a string (empty string means not set). it introduces having to copy values a few times, but other than that seems a bit simpler
+
+File: compiler/optimizing/bisection_controller.cc
+
+33:4-33:14
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_187d644a
+Bytes: 86
+how about making this a static, file private array in the implementation file instead?
+
+51
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_3819482f
+Bytes: 47
+is this safe for weird values like method=foo ?
+
+55:31-55:36
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_04c864ba
+Bytes: 121
+don't we want to make this a bit more robust, also allowing just method:xxx and only add pass: once method search is over
+
+70:38-70:60
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_781d9068
+Bytes: 401
+I find the current mechanism a bit confusing in practice.
+How about counting from 1 for the first method/optimization, and having the flag do the same
+
+so not
+
+optimizing method [0] void Main.<init>()
+optimizing method [1] int[] Main.add()
+
+but
+
+optimizing method [1] void Main.<init>()
+optimizing method [2] int[] Main.add()
+
+and when I set method:2, then add() is the last optimized
+
+Same for passes
+
+86:16-86:17
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_bb8ed21f
+Bytes: 28
+what about mandatory passes?
+
+95:9-95:10
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_b88ed81f
+Bytes: 152
+I would recommend only showing the break down of passes in the log for the last method (all methods before do everything, all methods after do nothing).
+
+File: compiler/optimizing/bisection_controller.h
+
+28:19-28:26
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_69db091e
+Bytes: 101
+built-in
+
+period at end
+
+Also, I would give a bit longer description of this debugging mechanism here
+
+30:18-30:19
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_18d444ba
+Bytes: 97
+Let's allow just giving prefix (just method for example), with all implied for all all following.
+
+34
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_b841b893
+Bytes: 28
+perhaps also syntax for step
+
+35:1-35:3
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_98c034fa
+Bytes: 151
+perhaps give an example
+
+Sample usages:
+
+--bisection-config="method:all"
+--bisection-config="method:10,pass:all"
+--bisection-config="method:10,pass:10"
+
+39:22-39:25
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_586fec96
+Bytes: 25
+white space before Init()
+
+40
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_d882bc2e
+Bytes: 52
+I would use white lines between the methods here too
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+1071
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_583d2c77
+Bytes: 36
+probably hard CHECK, not just DCHECK
+
+1083
+Wed Jul 27 00:45:53 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0f0a6d5d_3baca288
+Bytes: 133
+it is tempting to use the return value of the method request and skip all passes otherwise, but this would also skip mandatory passes
+

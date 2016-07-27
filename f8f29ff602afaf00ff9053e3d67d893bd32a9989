@@ -9,12 +9,30 @@ UUID: 0f0a6d5d_eec41aaa
 Bytes: 343
 Here and in several other places "pointer" and its size is not what's being actually used if we're trying to use the right terms in the code. Specifically, here we aren't storing 2 pointers to memory and aren't adding a pointer size to the offset. It's a word (two words) here. I'm confused. Could you elaborate here and in the commit message?
 
+1434
+Wed Jul 27 02:55:19 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f0a6d5d_eec41aaa
+UUID: 0f0a6d5d_0e007e9b
+Bytes: 662
+When I read your argument, I should then reply that it should have never been kMipsWordSize either. It should have been a hard-coded 4. Because this is about halves of a 64-bit value. Otherwise there should have been an assert that word-size equals 32-bits at line 1425 to assert that your layout is actually correct at all (or that Low32 and High32 mean anything in respect to Mips words).
+
+So, yeah, I wanted maintainability by reducing the amount of dummy variables that are redundant (because word size is luckily pointer size, unlike something backwards [IMHO brain-dead] like Mips64). But I'll revert this and let ImgTec deal with all the duplicate values.
+
 2453
 Wed Jul 27 02:35:29 2016 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0f0a6d5d_cea67607
 Bytes: 87
 You need to run a script on the changed files to detect overly long lines and fix them.
+
+2453
+Wed Jul 27 02:55:19 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0f0a6d5d_cea67607
+UUID: 0f0a6d5d_ced4b647
+Bytes: 103
+Yes, this will all be fixed. This is still a work-in-progress, as clearly marked in the commit message.
 
 File: runtime/base/enums.h
 

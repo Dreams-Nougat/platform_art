@@ -25,3 +25,22 @@ UUID: 4f3aa556_e1dee6d7
 Bytes: 243
 Well, the mutator only wants to know whether this is the Object.class, it does not want to "see" the superclass for any other purpose. If that information was encoded in some flags, for example, we would not need to load the superclass at all.
 
+4810:0-4816:92
+Thu Jul 28 19:12:53 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4f3aa556_e1dee6d7
+UUID: 2f62d18f_48a7bf03
+Bytes: 406
+Right, checking nullness doesn't need a read barrier as long as we don't keep the loaded ref. Because if it's not null, it could be either a from-space (stale) ref or a to-space (updated) ref. Either way, it's not null. So we can omit this read barrier.
+
+There's the to-space invariant, which is an important property for correctness. There are some edge cases where we can loosen it a bit for performance.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+2178:7-2178:17
+Thu Jul 28 19:12:53 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f62d18f_e818f32c
+Bytes: 147
+Does this mean we use more temp registers for this? If so, perhaps, a potential slowdown, if any, might be due to the extra temp register pressure?
+

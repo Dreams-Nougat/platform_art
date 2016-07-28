@@ -1,0 +1,37 @@
+Revision: 60c00edb0c02f4cd14f896caed73d5879a588930
+Patch-set: 2
+File: compiler/optimizing/code_generator_arm.cc
+
+4604:44-4604:64
+Thu Jul 28 19:12:53 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f62d18f_48457f9d
+Bytes: 331
+A minor point, but in the spirit of having kEmitCompilerReadBarrier separately from kUseReadBarrier, should we define kEmitCompilerBakerReadBarrier and use it instead of kUseBakerReadBarrier so that we can emit Baker code without enabling CC (for debugging etc.)? There's already other code that uses kUseBakerReadBarrier, however.
+
+4722:8-4722:10
+Thu Jul 28 19:12:53 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f62d18f_c883afae
+Bytes: 201
+Can the code structure be simplified to
+
+if (kEmitCompilerReadBarrier) {
+  if (!kUseBakerReadBarrier) {
+    // Non-Baker RB case.
+   } else {
+    // Baker RB case.
+   }
+} else {
+   // Non-RB case.
+}
+
+?
+
+4776:15-4776:72
+Thu Jul 28 19:12:53 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2f62d18f_a82e7ba5
+Bytes: 46
+Is this line a dup of line 4770 and removable?
+

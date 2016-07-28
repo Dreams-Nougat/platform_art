@@ -13,6 +13,14 @@ installd will do unlink to indicate "boot completes".
 It seems not OK to make Erase changed to unlink.
 Please correct me if any misunderstanding.
 
+211:0-212:59
+Thu Jul 28 17:43:28 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: afb2410f_7c2ed9f7
+UUID: cfd7753a_6511a1aa
+Bytes: 108
+As you know yourself, this is an outdated comment. The file should not be empty. It should contain a number.
+
 232:11-232:59
 Thu Jul 28 04:33:13 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,4 +39,22 @@ Bytes: 68
 Hi Andreas,
 May I know more about the concept of your patch?
 Thanks.
+
+232:11-232:59
+Thu Jul 28 17:43:28 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: afb2410f_1c359541
+UUID: cfd7753a_0561bde1
+Bytes: 462
+Your issue is that right now:
+
+  * file is length 0
+  * this code fails reading
+  * this code erases the file (== sets it to zero length)
+  * this code does not prune the cache
+  * the zygote boots up with the same old files
+  * the system crashes before deleting the boot file
+  * go to first step
+
+This cycle would be broken if you change the third step to not erase but unlink. Then it will still crash once, but then finds back to the right counting process.
 

@@ -1,0 +1,13 @@
+Revision: 411cd7915f0007ea9b0773a1b9080d26fbd7e09e
+Patch-set: 2
+File: runtime/gc/space/image_space_fs.h
+
+232:11-232:59
+Thu Jul 28 04:33:13 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cfd7753a_19cb6e78
+Bytes: 395
+I really don't understand why you're pushing this hack when you here so clearly state what the issue is. That we Erase(), which doesn't unlink. *That* is the issue, which wouldn't require your hackish special-casing of zero.
+
+I have a patch for that, but I need to inspect all other sites of Erase() to decide whether it's OK to make it unlink(), or whether FdFile should expose Unlink() itself.
+

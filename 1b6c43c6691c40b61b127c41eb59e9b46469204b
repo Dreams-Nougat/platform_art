@@ -35,6 +35,14 @@ Right, checking nullness doesn't need a read barrier as long as we don't keep th
 
 There's the to-space invariant, which is an important property for correctness. There are some edge cases where we can loosen it a bit for performance.
 
+4810:0-4816:92
+Fri Jul 29 15:35:46 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f62d18f_48a7bf03
+UUID: 145b6640_a7e3aacd
+Bytes: 33
+Right, makes sense.  Done in PS3.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 2178:7-2178:17
@@ -43,4 +51,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2f62d18f_e818f32c
 Bytes: 147
 Does this mean we use more temp registers for this? If so, perhaps, a potential slowdown, if any, might be due to the extra temp register pressure?
+
+2178:7-2178:17
+Fri Jul 29 15:35:46 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2f62d18f_e818f32c
+UUID: b430dae9_ec64eb21
+Bytes: 112
+Yes, (Baker) read barriers require more registers for ArraySet; this might indeed have an impact on performance.
 

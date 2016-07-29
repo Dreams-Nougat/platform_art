@@ -1,0 +1,393 @@
+Revision: c3e93211244a0aeeb856c8909204896f89f25c76
+Patch-set: 2
+File: compiler/dex/quick/dex_file_method_inliner.cc
+
+853
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_24e98eae
+Bytes: 171
+This looks fine.
+
+I'm a little confused what the code is actually doing though (logic wise)? Why does it need to multiply by pointer size (as opposed to pointer size / 4)?
+
+File: compiler/image_writer.cc
+
+1576
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_04500a61
+Bytes: 45
+Why not change this parameter to PointerSize?
+
+File: compiler/image_writer.h
+
+528
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_245c2e83
+Bytes: 6
+const?
+
+File: compiler/jni/quick/arm/calling_convention_arm.cc
+
+258:63-258:77
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a4de5ed6
+Bytes: 44
+What's the difference  between this and 293?
+
+293:49-293:64
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_04c56a07
+Bytes: 30
+Why not kArmFramePointerSize ?
+
+File: compiler/jni/quick/arm/calling_convention_arm.h
+
+26
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_44420298
+Bytes: 56
+constexpr size_t kFramePointerSize = PointerSize::k32
+
+?
+
+File: compiler/jni/quick/arm64/calling_convention_arm64.cc
+
+214:63-214:80
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c4b19295
+Bytes: 134
+Are we losing anything from dropping the word "Frame"? Can any of the frame pointers ever be a different size than non-frame pointers?
+
+File: compiler/jni/quick/arm64/calling_convention_arm64.h
+
+36:40-36:42
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c488b2cb
+Bytes: 32
+Why not kArm64FramePointerSize ?
+
+File: compiler/jni/quick/calling_convention.h
+
+203:19-203:26
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_e4a69658
+Bytes: 18
+nit: frame pointer
+
+File: compiler/jni/quick/x86/calling_convention_x86.h
+
+26
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_846dda00
+Bytes: 46
+Why not kFramePointerSize = PointerSize::k32 ?
+
+File: compiler/jni/quick/x86_64/calling_convention_x86_64.h
+
+26
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c43fd2dd
+Bytes: 44
+Why not kFramePointerSize = PointerSize::k64
+
+File: compiler/oat_test.cc
+
+448
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c40d1242
+Bytes: 60
+What's the difference between this and kRuntimePointerSize ?
+
+File: compiler/utils/arm/assembler_arm.cc
+
+835
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_441f625f
+Bytes: 13
+ATTR_UNUSED ?
+
+File: compiler/utils/arm64/assembler_arm64.cc
+
+546
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a4365eeb
+Bytes: 13
+ATTR_UNUSED ?
+
+File: compiler/utils/x86_64/assembler_x86_64.cc
+
+2686
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_444da26b
+Bytes: 42
+Why not define it in terms of one another?
+
+File: patchoat/patchoat.h
+
+172
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c4899286
+Bytes: 95
+Do we do this often? Perhaps we can have IsISAPointerSize32() and IsISAPointerSize64() helpers?
+
+File: runtime/arch/arm/fault_handler_arm.cc
+
+148:24-148:34
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a4f73ef8
+Bytes: 32
+nit: What's with these magic #s?
+
+File: runtime/arch/instruction_set.h
+
+86
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a4e01e28
+Bytes: 36
+Couldn't this be constexpr on C++14?
+
+111
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_44d2025a
+Bytes: 19
+nit: Also constexpr
+
+File: runtime/art_method-inl.h
+
+0
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c44a7229
+Bytes: 63
+nit: some params named ptr_size some pointer_size, inconsistent
+
+File: runtime/art_method.cc
+
+510
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_647d4649
+Bytes: 44
+nit: line breaks should be 4 spaces indented
+
+514
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_847a3a50
+Bytes: 44
+nit: line breaks should be 4 spaces indented
+
+File: runtime/asm_support.h
+
+60
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_840f9ada
+Bytes: 185
+Not sure if it buys us anything ,__SIZEOF_POINTER__ is the compiler intrinsic for cpp
+
+That being said it's probably ok to leave it in, I'm planning on refactoring this further anyway..
+
+File: runtime/base/enums.h
+
+34
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_e4fcd663
+Bytes: 227
+Maybe add/move some helpers here?
+
+  PointerSize GetImagePointerSize() -> Runtime::Current()->GetClassLinker()->GetImagePointerSize()
+
+  constexpr PointerSize GetIsaPointerSize(isa) -> InstructionSetPointerSize(ptr_size) 
+
+etc?
+
+File: runtime/class_linker.cc
+
+950
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_84287a30
+Bytes: 33
+Surprised at this, does it warn ?
+
+2054
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_04f1ead1
+Bytes: 238
+nit: I'd slightly prefer a line break between ( and image_pointer_size_ for extra readability
+
+It's technically expr(expr2) and line breaking at outer expression boundaries is superior to line breaking in the middle of an inner expression
+
+File: runtime/dex_file.cc
+
+2008
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_6487060e
+Bytes: 21
+indentation seems off
+
+2012
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_9f7d271a
+Bytes: 21
+indentation seems off
+
+File: runtime/entrypoints/quick/callee_save_frame.h
+
+90
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_ff8c632c
+Bytes: 73
+Seems like this could be merged into the isa pointer size we already have
+
+File: runtime/handle_scope-inl.h
+
+62
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_dfa07f8f
+Bytes: 68
+using ReferencesOffset here would probably be slightly more readable
+
+File: runtime/handle_scope.h
+
+77
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_ffa5439c
+Bytes: 14
+nit: constexpr
+
+82
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_1fbbf7c1
+Bytes: 14
+nit: constexpr
+
+87
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_3fb8bbc2
+Bytes: 71
+nit: Why not NumberOfReferencesOFfset + sizeof(number_of_references_) ?
+
+File: runtime/memory_region.h
+
+181
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_7fe073c0
+Bytes: 16
+nit: constexpr ?
+
+File: runtime/mirror/abstract_method.cc
+
+36:68-36:73
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_ff28e3ec
+Bytes: 43
+nit: include /* kTransactionActive */ here?
+
+File: runtime/mirror/method.cc
+
+66
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_7fea3371
+Bytes: 21
+indentation seems off
+
+File: runtime/mirror/object.h
+
+489
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_bfb10b96
+Bytes: 84
+Shouldn't the typename T be at after kTransactionActive to get the defaults to work?
+
+File: runtime/mirror/reference-inl.h
+
+26:52-26:53
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_5f9baf0a
+Bytes: 19
++ sizeof something?
+
+File: runtime/mirror/string-inl.h
+
+37:52-37:54
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_5f700fdb
+Bytes: 46
+Very magical, replace with sizeof or offsetof?
+
+File: runtime/native/java_lang_Class.cc
+
+141
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_1f14d753
+Bytes: 21
+indentation seems off
+
+155
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_3f119b64
+Bytes: 21
+indentation seems off
+
+File: runtime/utils/dex_cache_arrays_layout-inl.h
+
+57
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_3f57dbd1
+Bytes: 10
+constexpr?
+
+61
+Fri Jul 29 17:54:06 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_ff6d439b
+Bytes: 298
+What happened to IsValidPointerSize?
+I can see a helper here
+
+  template <typename T>
+  constexpr ConvertToPointerSize(T any) {
+    if (any == 4 || any == 8) return static_cast<PointerSize>(any); else { LOG(FATAL); UNREACHABLE(); }
+  }
+
+This logic is also replicated in image.h iirc (with a DCHECK)
+

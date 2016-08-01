@@ -1,0 +1,51 @@
+Revision: 12089af567bd5c2c06b387b882f00b927756ad11
+Patch-set: 1
+File: compiler/driver/compiler_driver.cc
+
+559:0-601:1
+Mon Aug 01 19:07:02 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_f65ba55c
+Bytes: 131
+Can we move this to some helper h or ArtMethod.h? It seems this could be shared later.
+
+(It would also allow testing in a gtest...)
+
+651:6-669:82
+Mon Aug 01 19:07:02 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_001d5668
+Bytes: 175
+I'd consider putting this into another helper function to keep this method's size at bay.
+
+(It would also help to track not using an ArtMethod, which should be a strong TODO.)
+
+File: compiler/jni/quick/jni_compiler.cc
+
+432:15-432:33
+Mon Aug 01 19:07:02 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_60453a4c
+Bytes: 1
+?
+
+File: runtime/class_linker.cc
+
+679:0-680:83
+Mon Aug 01 19:07:02 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_e0b3ea51
+Bytes: 94
+Why do you need this as a root? It much more fits into WellKnownClasses by the usage, I think.
+
+File: runtime/entrypoints/quick/quick_jni_entrypoints.cc
+
+101:0-101:103
+Mon Aug 01 19:07:02 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_c0898e86
+Bytes: 146
+Line too long.
+
+I think it may have been used directly at one point, before it became thread entrypoints? Feel free to clean up in a follow-up CL.
+

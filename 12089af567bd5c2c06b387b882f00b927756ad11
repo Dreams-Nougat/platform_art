@@ -2,6 +2,20 @@ Revision: 12089af567bd5c2c06b387b882f00b927756ad11
 Patch-set: 1
 File: compiler/driver/compiler_driver.cc
 
+562:0-562:66
+Mon Aug 01 20:10:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_c0e34ea1
+Bytes: 63
+Will there be following lookups? We only compile a method once.
+
+594:0-598:3
+Mon Aug 01 20:10:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_a0de42d6
+Bytes: 70
+Please do this in the caller, and avoid passing in an inout parameter.
+
 559:0-601:1
 Mon Aug 01 19:07:02 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,6 +34,13 @@ I'd consider putting this into another helper function to keep this method's siz
 
 (It would also help to track not using an ArtMethod, which should be a strong TODO.)
 
+669:0-672:68
+Mon Aug 01 20:10:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_e0d84aec
+Bytes: 85
+Could you pass the flag IsFastNative to JniCompile instead of altering the modifiers?
+
 File: compiler/jni/quick/jni_compiler.cc
 
 432:15-432:33
@@ -28,6 +49,13 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: af44013b_60453a4c
 Bytes: 1
 ?
+
+432:0-432:56
+Mon Aug 01 20:10:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_80ea266e
+Bytes: 29
+I don't understand this TODO.
 
 File: runtime/class_linker.cc
 
@@ -39,6 +67,13 @@ Bytes: 94
 Why do you need this as a root? It much more fits into WellKnownClasses by the usage, I think.
 
 File: runtime/entrypoints/quick/quick_jni_entrypoints.cc
+
+39:0-44:3
+Mon Aug 01 20:10:34 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_1b66a727
+Bytes: 124
+Then I'd drop this. At compile time ew knew it was fast, so don't check (or do some unsafery by looking at the annotations).
 
 101:0-101:103
 Mon Aug 01 19:07:02 2016 +0000

@@ -11,6 +11,14 @@ This looks fine.
 
 I'm a little confused what the code is actually doing though (logic wise)? Why does it need to multiply by pointer size (as opposed to pointer size / 4)?
 
+853
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_24e98eae
+UUID: 6f34c9be_14acb935
+Bytes: 147
+This is Jeff's code. There's a range of String.<init> replacement entrypoints in the TLS. As they're pointing to code, they're all pointer-sized...
+
 File: compiler/image_writer.cc
 
 1576
@@ -19,6 +27,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_04500a61
 Bytes: 45
 Why not change this parameter to PointerSize?
+
+1576
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_04500a61
+UUID: 6f34c9be_789ec3fc
+Bytes: 66
+Because it's directly written to file. It seemed cleaner this way.
 
 File: compiler/image_writer.h
 
@@ -29,6 +45,14 @@ UUID: 6f34c9be_245c2e83
 Bytes: 6
 const?
 
+528
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_245c2e83
+UUID: 6f34c9be_58a1ff3d
+Bytes: 75
+No, the image writer is setting this late. This would be a larger refactor.
+
 File: compiler/jni/quick/arm/calling_convention_arm.cc
 
 258:63-258:77
@@ -38,12 +62,28 @@ UUID: 6f34c9be_a4de5ed6
 Bytes: 44
 What's the difference  between this and 293?
 
+258:63-258:77
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_a4de5ed6
+UUID: 6f34c9be_78632317
+Bytes: 4
+Done
+
 293:49-293:64
 Fri Jul 29 17:54:06 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_04c56a07
 Bytes: 30
 Why not kArmFramePointerSize ?
+
+293:49-293:64
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_04c56a07
+UUID: 6f34c9be_185ce754
+Bytes: 187
+Because we didn't have a distinction before, and kFramePointerSize is used as an integral for offset computations otherwise so is kept size_t (ImgTec complained about mixing terminology).
 
 File: compiler/jni/quick/arm/calling_convention_arm.h
 
@@ -56,6 +96,14 @@ constexpr size_t kFramePointerSize = PointerSize::k32
 
 ?
 
+26
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_44420298
+UUID: 6f34c9be_d8516f42
+Bytes: 4
+Done
+
 File: compiler/jni/quick/arm64/calling_convention_arm64.cc
 
 214:63-214:80
@@ -64,6 +112,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_c4b19295
 Bytes: 134
 Are we losing anything from dropping the word "Frame"? Can any of the frame pointers ever be a different size than non-frame pointers?
+
+214:63-214:80
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_c4b19295
+UUID: 6f34c9be_584f3f8e
+Bytes: 81
+Nope, it's always the same. Not sure why Ian called it frame pointer size before.
 
 File: compiler/jni/quick/arm64/calling_convention_arm64.h
 
@@ -74,6 +130,14 @@ UUID: 6f34c9be_c488b2cb
 Bytes: 32
 Why not kArm64FramePointerSize ?
 
+36:40-36:42
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_c488b2cb
+UUID: 6f34c9be_9870d7dc
+Bytes: 49
+Because it's not declared to keep includes small.
+
 File: compiler/jni/quick/calling_convention.h
 
 203:19-203:26
@@ -82,6 +146,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_e4a69658
 Bytes: 18
 nit: frame pointer
+
+203:19-203:26
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_e4a69658
+UUID: 6f34c9be_b8467b76
+Bytes: 106
+See previous comment, there's really no distinction, and a separate cleanup should probably change this...
 
 File: compiler/jni/quick/x86/calling_convention_x86.h
 
@@ -92,6 +164,14 @@ UUID: 6f34c9be_846dda00
 Bytes: 46
 Why not kFramePointerSize = PointerSize::k32 ?
 
+26
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_846dda00
+UUID: 6f34c9be_f82473cb
+Bytes: 4
+Done
+
 File: compiler/jni/quick/x86_64/calling_convention_x86_64.h
 
 26
@@ -100,6 +180,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_c43fd2dd
 Bytes: 44
 Why not kFramePointerSize = PointerSize::k64
+
+26
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_c43fd2dd
+UUID: 6f34c9be_382feba4
+Bytes: 4
+Done
 
 File: compiler/oat_test.cc
 
@@ -110,6 +198,14 @@ UUID: 6f34c9be_c40d1242
 Bytes: 60
 What's the difference between this and kRuntimePointerSize ?
 
+448
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_c40d1242
+UUID: 6f34c9be_78116363
+Bytes: 134
+Defined independently. There's a test in instruction_set_test (GetInstructionSetPointerSize is not constexpr as it contains a switch).
+
 File: compiler/utils/arm/assembler_arm.cc
 
 835
@@ -118,6 +214,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_441f625f
 Bytes: 13
 ATTR_UNUSED ?
+
+835
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_441f625f
+UUID: 6f34c9be_d8088f34
+Bytes: 4
+Done
 
 File: compiler/utils/arm64/assembler_arm64.cc
 
@@ -128,6 +232,14 @@ UUID: 6f34c9be_a4365eeb
 Bytes: 13
 ATTR_UNUSED ?
 
+546
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_a4365eeb
+UUID: 6f34c9be_3808cb2e
+Bytes: 4
+Done
+
 File: compiler/utils/x86_64/assembler_x86_64.cc
 
 2686
@@ -136,6 +248,16 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_444da26b
 Bytes: 42
 Why not define it in terms of one another?
+
+2686
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_444da26b
+UUID: af44013b_15d59640
+Bytes: 77
+Minimal change.
+
+I'm working on potential cleanup of the assemblers, anyways.
 
 File: patchoat/patchoat.h
 
@@ -146,6 +268,14 @@ UUID: 6f34c9be_c4899286
 Bytes: 95
 Do we do this often? Perhaps we can have IsISAPointerSize32() and IsISAPointerSize64() helpers?
 
+172
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_c4899286
+UUID: af44013b_80b226e1
+Bytes: 76
+Only these two here, I think. Not sure it's worth it, but I'll add a helper.
+
 File: runtime/arch/arm/fault_handler_arm.cc
 
 148:24-148:34
@@ -154,6 +284,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_a4f73ef8
 Bytes: 32
 nit: What's with these magic #s?
+
+148:24-148:34
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_a4f73ef8
+UUID: af44013b_e0d5aaeb
+Bytes: 57
+The comment describes this, it's the encoding of the ldr.
 
 File: runtime/arch/instruction_set.h
 
@@ -164,12 +302,30 @@ UUID: 6f34c9be_a4e01e28
 Bytes: 36
 Couldn't this be constexpr on C++14?
 
+86
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_a4e01e28
+UUID: af44013b_00db961e
+Bytes: 90
+But we are not C++14 AFAIK.
+
+(And yes, once we are, I'll happily set this to be constexpr)
+
 111
 Fri Jul 29 17:54:06 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_44d2025a
 Bytes: 19
 nit: Also constexpr
+
+111
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_44d2025a
+UUID: af44013b_40bd9ea9
+Bytes: 10
+See above.
 
 File: runtime/art_method-inl.h
 
@@ -180,6 +336,14 @@ UUID: 6f34c9be_c44a7229
 Bytes: 63
 nit: some params named ptr_size some pointer_size, inconsistent
 
+0
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_c44a7229
+UUID: af44013b_80c7863b
+Bytes: 14
+All inherited.
+
 File: runtime/art_method.cc
 
 510
@@ -188,6 +352,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_647d4649
 Bytes: 44
 nit: line breaks should be 4 spaces indented
+
+510
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_647d4649
+UUID: af44013b_00f47688
+Bytes: 79
+We're very inconsistent when it comes to parts of a conjunction or disjunction.
 
 514
 Fri Jul 29 17:54:06 2016 +0000
@@ -207,6 +379,14 @@ Not sure if it buys us anything ,__SIZEOF_POINTER__ is the compiler intrinsic fo
 
 That being said it's probably ok to leave it in, I'm planning on refactoring this further anyway..
 
+60
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_840f9ada
+UUID: af44013b_40e67edf
+Bytes: 97
+__SIZEOF_POINTER__ is not the enum. So it seems more straightforward to use the conditional here.
+
 File: runtime/base/enums.h
 
 34
@@ -222,6 +402,14 @@ Maybe add/move some helpers here?
 
 etc?
 
+34
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_e4fcd663
+UUID: af44013b_a019e2e1
+Bytes: 229
+Any of these would require an -inl or .cc file to avoid the dependencies. I wanted to keep it as simple as possible for the time being. (Especially since I wasn't sure about where to place it - could as well go into globals.h...)
+
 File: runtime/class_linker.cc
 
 950
@@ -230,6 +418,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_84287a30
 Bytes: 33
 Surprised at this, does it warn ?
+
+950
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_84287a30
+UUID: af44013b_202ed2f6
+Bytes: 133
+What exactly do you mean? The test overall? Yeah, it will tell you you can't run with a 32-bit boot.oat when running 64-bit dalvikvm.
 
 2054
 Fri Jul 29 17:54:06 2016 +0000
@@ -240,6 +436,14 @@ nit: I'd slightly prefer a line break between ( and image_pointer_size_ for extr
 
 It's technically expr(expr2) and line breaking at outer expression boundaries is superior to line breaking in the middle of an inner expression
 
+2054
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_04f1ead1
+UUID: af44013b_c007ce70
+Bytes: 4
+Done
+
 File: runtime/dex_file.cc
 
 2008
@@ -249,12 +453,28 @@ UUID: 6f34c9be_6487060e
 Bytes: 21
 indentation seems off
 
+2008
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_6487060e
+UUID: af44013b_0002b660
+Bytes: 4
+Done
+
 2012
 Fri Jul 29 17:54:06 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_9f7d271a
 Bytes: 21
 indentation seems off
+
+2012
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_9f7d271a
+UUID: af44013b_2017b2a2
+Bytes: 4
+Done
 
 File: runtime/entrypoints/quick/callee_save_frame.h
 
@@ -265,6 +485,16 @@ UUID: 6f34c9be_ff8c632c
 Bytes: 73
 Seems like this could be merged into the isa pointer size we already have
 
+90
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_ff8c632c
+UUID: af44013b_800ea685
+Bytes: 325
+This was guaranteed compile-time evaluated for the save frames, so it seemed OK to use conditionals instead of lookup table, whereas the version in instruction_set is known to have to work on parameters unknown at runtime. That's the original reason not to merge.
+
+As mentioned, once we do move to C++14, this can be deleted.
+
 File: runtime/handle_scope-inl.h
 
 62
@@ -273,6 +503,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_dfa07f8f
 Bytes: 68
 using ReferencesOffset here would probably be slightly more readable
+
+62
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_dfa07f8f
+UUID: af44013b_40591e92
+Bytes: 4
+Done
 
 File: runtime/handle_scope.h
 
@@ -297,6 +535,14 @@ UUID: 6f34c9be_3fb8bbc2
 Bytes: 71
 nit: Why not NumberOfReferencesOFfset + sizeof(number_of_references_) ?
 
+87
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_3fb8bbc2
+UUID: af44013b_a0500266
+Bytes: 4
+Done
+
 File: runtime/memory_region.h
 
 181
@@ -305,6 +551,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_7fe073c0
 Bytes: 16
 nit: constexpr ?
+
+181
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_7fe073c0
+UUID: af44013b_c0550e55
+Bytes: 4
+Done
 
 File: runtime/mirror/abstract_method.cc
 
@@ -315,6 +569,14 @@ UUID: 6f34c9be_ff28e3ec
 Bytes: 43
 nit: include /* kTransactionActive */ here?
 
+36:68-36:73
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_ff28e3ec
+UUID: af44013b_e04a0ab0
+Bytes: 130
+I'd rather not. It wasn't there before, messes up alignment, and will go away when I introduce an enum for it in a follow-up CL...
+
 File: runtime/mirror/method.cc
 
 66
@@ -323,6 +585,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_7fea3371
 Bytes: 21
 indentation seems off
+
+66
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_7fea3371
+UUID: af44013b_c088aecb
+Bytes: 4
+Done
 
 File: runtime/mirror/object.h
 
@@ -333,6 +603,14 @@ UUID: 6f34c9be_bfb10b96
 Bytes: 84
 Shouldn't the typename T be at after kTransactionActive to get the defaults to work?
 
+489
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_bfb10b96
+UUID: af44013b_40759eda
+Bytes: 90
+Well, my guess is that this works because of inference? Anyways, not related to this CL...
+
 File: runtime/mirror/reference-inl.h
 
 26:52-26:53
@@ -341,6 +619,16 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_5f9baf0a
 Bytes: 19
 + sizeof something?
+
+26:52-26:53
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_5f9baf0a
+UUID: af44013b_c0b18e95
+Bytes: 126
+No. It means there are four new virtual methods in Reference. Should this be a constexpr? Probably.
+
+(Not related to this CL.)
 
 File: runtime/mirror/string-inl.h
 
@@ -351,6 +639,14 @@ UUID: 6f34c9be_5f700fdb
 Bytes: 46
 Very magical, replace with sizeof or offsetof?
 
+37:52-37:54
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_5f700fdb
+UUID: af44013b_00ac7635
+Bytes: 14
+See reference.
+
 File: runtime/native/java_lang_Class.cc
 
 141
@@ -360,12 +656,28 @@ UUID: 6f34c9be_1f14d753
 Bytes: 21
 indentation seems off
 
+141
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_1f14d753
+UUID: af44013b_20a1723f
+Bytes: 4
+Done
+
 155
 Fri Jul 29 17:54:06 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_3f119b64
 Bytes: 21
 indentation seems off
+
+155
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_3f119b64
+UUID: af44013b_609b7a0b
+Bytes: 4
+Done
 
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 
@@ -375,6 +687,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_3f57dbd1
 Bytes: 10
 constexpr?
+
+57
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_3f57dbd1
+UUID: af44013b_601e1a74
+Bytes: 4
+Done
 
 61
 Fri Jul 29 17:54:06 2016 +0000
@@ -390,4 +710,12 @@ I can see a helper here
   }
 
 This logic is also replicated in image.h iirc (with a DCHECK)
+
+61
+Mon Aug 01 22:49:04 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_ff6d439b
+UUID: af44013b_204fb28f
+Bytes: 4
+Done
 

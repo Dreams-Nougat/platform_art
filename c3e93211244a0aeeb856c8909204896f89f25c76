@@ -276,6 +276,14 @@ UUID: af44013b_80b226e1
 Bytes: 76
 Only these two here, I think. Not sure it's worth it, but I'll add a helper.
 
+172
+Tue Aug 02 00:00:50 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af44013b_80b226e1
+UUID: af44013b_c14190f7
+Bytes: 117
+I noticed it happens quite frequently in art_method and any other parameters that take a pointer_size to get offsets.
+
 File: runtime/arch/arm/fault_handler_arm.cc
 
 148:24-148:34
@@ -410,6 +418,14 @@ UUID: af44013b_a019e2e1
 Bytes: 229
 Any of these would require an -inl or .cc file to avoid the dependencies. I wanted to keep it as simple as possible for the time being. (Especially since I wasn't sure about where to place it - could as well go into globals.h...)
 
+34
+Tue Aug 02 00:00:50 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af44013b_a019e2e1
+UUID: af44013b_b37db719
+Bytes: 18
+-inl would be good
+
 File: runtime/class_linker.cc
 
 950
@@ -426,6 +442,14 @@ Parent: 6f34c9be_84287a30
 UUID: af44013b_202ed2f6
 Bytes: 133
 What exactly do you mean? The test overall? Yeah, it will tell you you can't run with a 32-bit boot.oat when running 64-bit dalvikvm.
+
+950
+Tue Aug 02 00:00:50 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af44013b_202ed2f6
+UUID: af44013b_c1e6f019
+Bytes: 227
+The StringPrintf.. it takes va_args so the enum has the same exact size as size_t and is bit-for-bit identical. So unless printf is warning here (it might not be smart enough) then it's not strictly necessary to have this cast.
 
 2054
 Fri Jul 29 17:54:06 2016 +0000
@@ -494,6 +518,14 @@ Bytes: 325
 This was guaranteed compile-time evaluated for the save frames, so it seemed OK to use conditionals instead of lookup table, whereas the version in instruction_set is known to have to work on parameters unknown at runtime. That's the original reason not to merge.
 
 As mentioned, once we do move to C++14, this can be deleted.
+
+90
+Tue Aug 02 00:00:50 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af44013b_800ea685
+UUID: af44013b_6100dc9d
+Bytes: 49
+I thought I saw c++14 flags somewhere, maybe not.
 
 File: runtime/handle_scope-inl.h
 
@@ -629,6 +661,14 @@ Bytes: 126
 No. It means there are four new virtual methods in Reference. Should this be a constexpr? Probably.
 
 (Not related to this CL.)
+
+26:52-26:53
+Tue Aug 02 00:00:50 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: af44013b_c0b18e95
+UUID: af44013b_01bf18c6
+Bytes: 66
+Well I mean shouldn't it at least be a kReferenceVtableCount = 4 ?
 
 File: runtime/mirror/string-inl.h
 

@@ -1,0 +1,250 @@
+Revision: 30d4f124151b2b9e9a9c76ba66d4f94fe3da1e3a
+Patch-set: 4
+File: compiler/utils/mips64/assembler_mips64.h
+
+35:3-35:7
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a7465276
+Bytes: 76
+This is already in mips64 name space. Change the enums to kLoadConst64Path*.
+
+58:0-61:38
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_f34f3f36
+Bytes: 256
+We're not really interested in testing paths through LoadConst32() as it is simple and we test it with a few simple hard-coded tests. Just have two Dinsu paths here (kLoadConst64PathDinsu1 and kLoadConst64PathDinsu2) as there are two paths where it's used.
+
+62:28-62:36
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_532bb3e5
+Bytes: 65
+Large bit masks are not comprehensible in decimal. Change to hex.
+
+63:0-65:49
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_deaf9794
+Bytes: 7
+Remove.
+
+68:0-69:57
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_335c6783
+Bytes: 109
+We don't need arbitrary types Rtype and Vtype. Use GpuRegister and int32_t as in the original implementation.
+
+72:0-74:6
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_d318832d
+Bytes: 105
+We're not really interested in testing paths through LoadConst32(). Remove all of these in this function.
+
+97:0-98:53
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_f34adfaf
+Bytes: 78
+Make it a non-templated static inline function with int64_t in place of Vtype.
+
+109:0-141:1
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_33838735
+Bytes: 7
+Remove.
+
+148:0-159:14
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c1c5f6a4
+Bytes: 78
+Revert to the original code. See the comments at the very end of the function.
+
+163:0-165:6
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_b36e9798
+Bytes: 478
+Get rid of the macro and hide the |= inside LoadConst64Tester::RecordLoadConst64Path(path_mask), invoke it here as a->RecordLoadConst64Path(path_mask).
+
+Make an empty private Mips64Assembler::RecordLoadConst64Path(path_mask ATTRIBUTE_UNUSED) and add a comment saying it's a function for testing purposes.
+
+I think this should be the simplest and the most readable way of doing it. The compiler should be able to get rid of the dummy call in the context of class Mips64Assembler.
+
+244:0-244:42
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_732b4f2d
+Bytes: 105
+a->LoadConst32(a, rd, value);
+a->Dinsu(rd, rd, 32, 32);
+a->RecordLoadConst64Path(kLoadConst64PathDinsu1);
+
+295:0-295:44
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: af44013b_d3e6c319
+Bytes: 105
+a->LoadConst32(a, rd, value);
+a->Dinsu(rd, rd, 32, 32);
+a->RecordLoadConst64Path(kLoadConst64PathDinsu2);
+
+298:0-337:9
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a12c829c
+Bytes: 227
+Revert this to how it was implemented originally and count it as a single kMipsPathCatchAll. This is a simple part (similar to LoadConst32()) and I think making sure we hit it and the loaded value is correct is sufficient here.
+
+338:0-372:34
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_4108262f
+Bytes: 45
+Remove. Too much complexity, poorly readable.
+
+668:0-668:50
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_0198eec1
+Bytes: 7
+Remove.
+
+File: compiler/utils/mips64/assembler_mips64_test.cc
+
+1690:7-1690:22
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_beabc382
+Bytes: 17
+LoadConst64Tester
+
+1715
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_47667628
+Bytes: 18
+Remove empty line.
+
+1716:13-1716:20
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_87706edc
+Bytes: 8
+src_mask
+
+1717:13-1717:20
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a76d7200
+Bytes: 8
+dst_mask
+
+1718
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_67637a17
+Bytes: 6
+Ditto.
+
+1740:0-1742:20
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_e17d9a18
+Bytes: 42
+Do the check first, remove the empty line.
+
+1746:0-1748:20
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_a19c825a
+Bytes: 6
+Ditto.
+
+1751:11-1751:15
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_e1e03a29
+Bytes: 5
+regs_
+
+1753:6-1753:21
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_81e93e17
+Bytes: 18
+loadconst64_paths_
+
+1754:0-1754:22
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_5ea487b6
+Bytes: 7
+Remove.
+
+1757:6-1757:18
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_5e8d672c
+Bytes: 15
+GetPathsCovered
+
+1757:19-1757:23
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_7e8a2b17
+Bytes: 6
+Remove
+
+1764:2-1764:10
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_e7568a37
+Bytes: 14
+const uint16_t
+
+1764:11-1764:15
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_27618210
+Bytes: 4
+imms
+
+1764:22-1766:60
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_c7518642
+Bytes: 81
+Move the numbers:
+
+  const uint16_t aimm[] = {
+      0, 1, 2, ...,
+      ...
+  };
+
+1768:18-1768:20
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_de987776
+Bytes: 6
+tester
+
+1771:0-1775:0
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_474f568e
+Bytes: 27
+Move outside the first for.
+
+1793:61-1793:82
+Tue Aug 02 06:14:21 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_273a62ee
+Bytes: 50
+Remove. On inequality both will be printed anyway.
+

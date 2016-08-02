@@ -1,0 +1,38 @@
+Revision: 737fac3dcd68d737f374cdcb17d83adcc4b60861
+Patch-set: 1
+File: /COMMIT_MSG
+
+7:13-7:23
+Tue Aug 02 10:42:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 942d9696_aef817e1
+Bytes: 255
+I think the commit message is a bit misleading: you're still technically allocating space for a VIXL macro assembler from/within the ART ARM64 assembler.  Maybe say something like "Make the VIXL macro assembler allocation part of ART's ARM64 assembler's"?
+
+File: compiler/optimizing/code_generator_arm64.h
+
+246:78-246:88
+Tue Aug 02 10:42:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 746022e5_d0bf74a1
+Bytes: 191
+This feels odd that the code generator has access to one of the assembler's internal fields.  Could we turn `art::arm64::Arm64Assembler::vixl_masm_` into a private member and add an accessor?
+
+File: compiler/optimizing/intrinsics_arm64.cc
+
+65:19-65:35
+Tue Aug 02 10:42:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b430dae9_0f54c9c9
+Bytes: 27
+Thanks for the refactoring!
+
+File: compiler/utils/arm64/assembler_arm64.h
+
+287:32-287:42
+Tue Aug 02 10:42:51 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8f1add55_06e9fcad
+Bytes: 82
+So I assume it is fine to have the VIXL macro assembler being default constructed?
+

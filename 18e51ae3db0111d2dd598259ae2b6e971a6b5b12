@@ -1,5 +1,41 @@
 Revision: 18e51ae3db0111d2dd598259ae2b6e971a6b5b12
 Patch-set: 1
+File: compiler/driver/compiler_driver.cc
+
+80:10-80:13
+Tue Aug 02 17:36:50 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_cd3c477e
+Bytes: 84
+too all -> to all?
+
+more importantly, why was this flag here? can we just remove it?
+
+File: compiler/driver/compiler_driver.h
+
+100:43-100:53
+Tue Aug 02 17:36:50 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_6d051bbd
+Bytes: 95
+I usually like to match par name with field name, but I noticed the others don't do that either
+
+684:49-684:60
+Tue Aug 02 17:36:50 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_8d640fbe
+Bytes: 194
+you warn on this at a few points, but why not be a bit more clear. what is incorrect, and be more specific what will happen? giving a non-existing pass name? giving the wrong set of passes? etc.
+
+File: compiler/optimizing/constant_folding.h
+
+48:25-48:29
+Tue Aug 02 17:36:50 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_adfd53a2
+Bytes: 132
+this is a bit odd, perhaps better to have one pass name, but later concatenate that with a suffix for cases that run more than once?
+
 File: compiler/optimizing/optimization_factory.cc
 
 1
@@ -20,4 +56,27 @@ Bytes: 278
 Also sounds like a good idea to have a standardized way of naming the passes which has two parts: one common to all instances (like a class name) and one that is unique.
 
 So e.g "instruction_simplifier::after_bce" would split the name and instantiate HInstructionSimplifier.
+
+File: compiler/optimizing/optimization_factory.h
+
+16
+Tue Aug 02 17:36:50 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_9f57d6cf
+Bytes: 230
+as discussed offline, I was originally under the impression we would just filter the already existing array of optimizations, but this idea is much neater. We can construct new arrays and experiment with whole new phase orderings.
+
+File: dex2oat/dex2oat.cc
+
+1100:43-1100:49
+Tue Aug 02 17:36:50 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6f34c9be_ff7d3218
+Bytes: 221
+instead of two new switches, why don't we restrict it to one, and allow for some syntax that interprets it differently, like 
+
+foo,bar,etc
+@methodfile.zip
+
+(and does it really need to be a zip file, will it be that large)
 

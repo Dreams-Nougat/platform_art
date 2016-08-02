@@ -9,6 +9,14 @@ UUID: 942d9696_aef817e1
 Bytes: 255
 I think the commit message is a bit misleading: you're still technically allocating space for a VIXL macro assembler from/within the ART ARM64 assembler.  Maybe say something like "Make the VIXL macro assembler allocation part of ART's ARM64 assembler's"?
 
+7:13-7:23
+Tue Aug 02 12:25:48 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 942d9696_aef817e1
+UUID: 8f1add55_66355041
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_arm64.h
 
 246:78-246:88
@@ -17,6 +25,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 746022e5_d0bf74a1
 Bytes: 191
 This feels odd that the code generator has access to one of the assembler's internal fields.  Could we turn `art::arm64::Arm64Assembler::vixl_masm_` into a private member and add an accessor?
+
+246:78-246:88
+Tue Aug 02 12:25:48 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 746022e5_d0bf74a1
+UUID: 8f1add55_a6074871
+Bytes: 9
+Ok, done.
 
 File: compiler/optimizing/intrinsics_arm64.cc
 
@@ -45,4 +61,14 @@ Bytes: 221
 The vixl::aarch64::Assembler's default capacity is "4 * KBytes" which is the same as kArm64BaseBufferSize.
 
 But if kArm64BaseBufferSize becomes unused, the file constants_arm64.h will be unnecessary and should be removed.
+
+287:32-287:42
+Tue Aug 02 12:25:48 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 746022e5_10f50c83
+UUID: 8f1add55_c6fc4464
+Bytes: 95
+Yes it is perfectly fine. We should really have had that earlier.
+
+Removed `constants_arm64.h`.
 

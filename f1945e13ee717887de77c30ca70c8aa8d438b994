@@ -1,0 +1,33 @@
+Revision: f1945e13ee717887de77c30ca70c8aa8d438b994
+Patch-set: 24
+File: compiler/optimizing/register_allocator_graph_color.cc
+
+356:1-356:81
+Tue Aug 02 22:52:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_41e15c27
+Bytes: 102
+Linear scan has extra invariants to maintain in this function, such as that live intervals are sorted.
+
+429:6-429:19
+Tue Aug 02 22:52:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_c1422c65
+Bytes: 155
+BlockRegister is implementation-dependent.
+One option is to have a virtual function for it, but it's not clear that all register allocators would want one.
+
+440:0-440:82
+Tue Aug 02 22:52:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_e179708f
+Bytes: 154
+This is implementation-dependent. Linear scan blocks the output register and shifts the live interval, but graph coloring simply splits the live interval.
+
+497:0-497:88
+Tue Aug 02 22:52:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_a1412843
+Bytes: 165
+This is partially implementation-dependent; linear scan has similar code, but also has to maintain the unhandled_{core,fp}_intervals_, making code sharing not ideal.
+

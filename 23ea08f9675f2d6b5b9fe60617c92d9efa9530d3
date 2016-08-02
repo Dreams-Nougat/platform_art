@@ -1,0 +1,105 @@
+Revision: 23ea08f9675f2d6b5b9fe60617c92d9efa9530d3
+Patch-set: 2
+File: /COMMIT_MSG
+
+25:13-25:19
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_c19a2cb4
+Bytes: 40
+nit: we called it bisection (not binary)
+
+File: compiler/driver/compiler_driver.cc
+
+81:22-81:56
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_e10ad0d0
+Bytes: 137
+unless we have a strong reason to keep this code around, i would vote for removing this flag and the two tests (now deadcode) that use it
+
+File: compiler/optimizing/constant_folding.h
+
+50:19-50:24
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_6cf6d794
+Bytes: 93
+see my comment in optimizing_compiler on why I would prefer to have just a base name per pass
+
+File: compiler/optimizing/optimization_factory.cc
+
+45
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_ac0d9f90
+Bytes: 57
+we don't indent inside namespace
+(whole file pretty much)
+
+76:4-76:5
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_4c519361
+Bytes: 96
+if -else if chain instead?
+safes some vertical space, since else if may appear at same line as }
+
+107:0-107:8
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_0c5ceb80
+Bytes: 18
+indent by 2, not 4
+
+155:45-155:51
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_2c752ffc
+Bytes: 221
+yes, this is a good way to deal with such dependences
+
+we could later extend this with warnings when too many phases appear in between, or when they are never consumed (although that may of course happen during bisection)
+
+158
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_cc3ca316
+Bytes: 7
+else if
+
+File: compiler/optimizing/optimization_factory.h
+
+31:0-31:2
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_8c053b6d
+Bytes: 32
+we don't indent inside namespace
+
+33:8-33:28
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_4c28b3ed
+Bytes: 76
+please provide documentation for every class
+(putting on my readability hat)
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+310
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_6cdc97df
+Bytes: 36
+we can remove the two virtuals again
+
+601
+Tue Aug 02 23:12:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 74d3c2eb_ccaee37e
+Bytes: 467
+I still find it less pretty that we need to define several pass names in the optimization pass class itself now; I would like it much better if we could simply concatenate base name with suffix here.
+
+update: Wojciech just told me that such an approach would always generate runtime code. Any way to force this to be done at compile time? Or, worst case, only concatenate in cases checker is active (since for other situations, including factory, base name suffices).
+

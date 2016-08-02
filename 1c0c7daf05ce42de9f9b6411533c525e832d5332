@@ -9,10 +9,26 @@ UUID: 8f1add55_461e9473
 Bytes: 150
 I assume we can do the j(kUnordered,.) check here. And we can move the "XOR out, out" before this COMISS, so that we don't have to jump over it later.
 
+808
+Tue Aug 02 20:49:32 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f1add55_461e9473
+UUID: 74d3c2eb_58b5d594
+Bytes: 282
+I thought about that too to avoid branching on and around NaN, but if we do the unordered check at this point (on the diff), pos Infinity (with bits 7f800000) is mapped to 0, even though it should map to maxint. Likewise, -Infinity (with bits ff800000) is then 0 and not -2147483648
+
 815
 Tue Aug 02 18:36:40 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8f1add55_c629a4a1
 Bytes: 34
 What about large negative numbers?
+
+815
+Tue Aug 02 20:49:32 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8f1add55_c629a4a1
+UUID: 74d3c2eb_15215659
+Bytes: 222
+cvtsi2ss already sets values that are too large or too small to 0x80000000. For maxint, that needs correction, for minint, that is correct rightaway (for once, an intel instruction at least does a bit what you want :-) :-)
 

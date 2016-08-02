@@ -11,6 +11,14 @@ too all -> to all?
 
 more importantly, why was this flag here? can we just remove it?
 
+80:10-80:13
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_cd3c477e
+UUID: 74d3c2eb_bb971b33
+Bytes: 46
+I have no idea, we should probably ask Andreas
+
 File: compiler/driver/compiler_driver.h
 
 100:43-100:53
@@ -20,12 +28,28 @@ UUID: 6f34c9be_6d051bbd
 Bytes: 95
 I usually like to match par name with field name, but I noticed the others don't do that either
 
+100:43-100:53
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_6d051bbd
+UUID: 74d3c2eb_f82e0940
+Bytes: 76
+Maybe we can refactor this in a followup CL, this one is getting pretty big.
+
 684:49-684:60
 Tue Aug 02 17:36:50 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_8d640fbe
 Bytes: 194
 you warn on this at a few points, but why not be a bit more clear. what is incorrect, and be more specific what will happen? giving a non-existing pass name? giving the wrong set of passes? etc.
+
+684:49-684:60
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_8d640fbe
+UUID: 74d3c2eb_b8fba1ab
+Bytes: 64
+Changed description to be more specific about pass dependencies.
 
 File: compiler/optimizing/constant_folding.h
 
@@ -35,6 +59,14 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_adfd53a2
 Bytes: 132
 this is a bit odd, perhaps better to have one pass name, but later concatenate that with a suffix for cases that run more than once?
+
+48:25-48:29
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_adfd53a2
+UUID: 74d3c2eb_38e1f128
+Bytes: 148
+We could do that but we would have to give up working with const strings, and/or introduce some complexity to HOptimization, maybe its not worth it.
 
 File: compiler/optimizing/optimization_factory.cc
 
@@ -57,6 +89,22 @@ Also sounds like a good idea to have a standardized way of naming the passes whi
 
 So e.g "instruction_simplifier::after_bce" would split the name and instantiate HInstructionSimplifier.
 
+1
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4029af5_bf79735e
+UUID: 74d3c2eb_f8a049ec
+Bytes: 18
+Good idea, thanks!
+
+1
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_4123c660
+UUID: 6f34c9be_c27331ae
+Bytes: 39
+Having though about it I agree, thanks!
+
 File: compiler/optimizing/optimization_factory.h
 
 16
@@ -65,6 +113,14 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6f34c9be_9f57d6cf
 Bytes: 230
 as discussed offline, I was originally under the impression we would just filter the already existing array of optimizations, but this idea is much neater. We can construct new arrays and experiment with whole new phase orderings.
+
+16
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_9f57d6cf
+UUID: 74d3c2eb_380a51f3
+Bytes: 8
+I agree.
 
 File: dex2oat/dex2oat.cc
 
@@ -79,4 +135,14 @@ foo,bar,etc
 @methodfile.zip
 
 (and does it really need to be a zip file, will it be that large)
+
+1100:43-1100:49
+Tue Aug 02 21:56:50 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6f34c9be_ff7d3218
+UUID: 6f34c9be_0251c968
+Bytes: 148
+I guess there is no reason to accept a zip file here, removed the option.
+
+Let's keep the file API for now and we can iterate on this in future CLs.
 

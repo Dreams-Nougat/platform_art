@@ -18,3 +18,15 @@ UUID: 14a446ca_3fcde75e
 Bytes: 312
 These two descriptions seem to cover two different issues (the first one in "libcore.java.lang.ProcessBuilderTest#testRedirectInherit", the second one in "libcore.java.lang.ProcessBuilderTest#testRedirect_nullStreams").  I would split this entry to track them separately (even if they share the same bug number).
 
+265:16-266:83
+Wed Aug 03 18:36:34 2016 +0000
+Author: Tobias Thierer <1103203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 14a446ca_3fcde75e
+UUID: 14a446ca_fff53f86
+Bytes: 440
+The point is that I don't think they're different issues.
+
+When testRedirectInherit failed, it was a native crash, unlike the previous issue we had where it failed with an ENOENT stacktrace. We only blamed it on a kernel bug because that previous issue was a kernel bug. But since nullStreams now fails with a native crash, and since it doesn't access /proc/, I no longer think that the testRedirectInherit crash is a separate issue.
+
+WDYT?
+

@@ -1,0 +1,97 @@
+Revision: ddea166f0067ea2eff000193cb87e28f58fc89f0
+Patch-set: 4
+File: runtime/arch/mips/quick_entrypoints_mips.S
+
+303:0-304:27
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_ef6289b1
+Bytes: 97
+We don't need to save/restore T9. It's a temp/scratch register used for calling runtime routines.
+
+351:0-352:26
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_a41348b1
+Bytes: 44
+We definitely don't need to save/restore AT.
+
+354:0-369:31
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_44fb647a
+Bytes: 210
+LDu/SDu is for unaligned (or, rather, 4-byte-aligned) memory locations and expands into 2 or 3 instructions. But if the locations are 8-byte-aligned (as seems to be the case here), a single ldc1/sdc1 should do.
+
+386:0-401:31
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_a4e988b2
+Bytes: 6
+Ditto.
+
+409:0-410:19
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_0f77b568
+Bytes: 6
+Ditto.
+
+457:0-458:18
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_4f1c5d1e
+Bytes: 6
+Ditto.
+
+File: runtime/arch/mips64/quick_entrypoints_mips64.S
+
+61:0-61:96
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3406aa9f_48b59fc7
+Bytes: 194
+Something isn't clean here. This macro is indeed invoked after the SETUP_GP macro which says it stores gp to t8. However, this macro is not always preceded with SETUP_GP. I wonder if it's a bug.
+
+338:0-339:27
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_0aafa37b
+Bytes: 59
+Should be t9, not t0. And we don't need to save/restore it.
+
+348:0-349:27
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b4e0da13_0c6c5704
+Bytes: 18
+424 in both places
+
+386:0-387:26
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_8af57385
+Bytes: 30
+Don't need to save/restore at.
+
+473:0-474:19
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_8a2813ef
+Bytes: 6
+Ditto.
+
+521:0-522:18
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_4a052b6a
+Bytes: 6
+Ditto.
+
+1899:4-1899:56
+Wed Aug 03 21:25:01 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 94e3d6ef_d5771ce0
+Bytes: 63
+I can't seem to find the definition of this macro. Where is it?
+

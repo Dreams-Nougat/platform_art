@@ -9,12 +9,29 @@ UUID: 74d3c2eb_cf65724a
 Bytes: 90
 I thought this flag is unrelated to the mark bit idea. Remove this or add a separate flag?
 
+1827:64-1827:87
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_cf65724a
+UUID: 94e3d6ef_1e38c9f5
+Bytes: 157
+kGrayDirtyImmuneObjects is required or else we will avoid slow paths incorrectly for the case where we read:
+image(gray) -> image(white) -> non-immune(white)
+
 1830:15-1830:31
 Wed Aug 03 01:29:21 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_fc64b621
 Bytes: 314
 I think we'd like to move the card scanning of app images out of the thread flip pause and handle the app image objects like regular non-moving objects with a mark bitmap (or some other way) eventually. To do that, I think we may want to not to set the mark bit for app image objects. We should discuss this later.
+
+1830:15-1830:31
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_fc64b621
+UUID: 94e3d6ef_de9bc107
+Bytes: 138
+I need to think if there are any issues from leaving the mark bit as 1 for this case. I think it should just be possible to use card aging
 
 File: compiler/image_writer.h
 
@@ -25,6 +42,14 @@ UUID: 74d3c2eb_bc84eeb2
 Bytes: 24
 Do we have kGCStateSize?
 
+220:6-220:67
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_bc84eeb2
+UUID: 94e3d6ef_fee6bdac
+Bytes: 4
+Done
+
 File: runtime/arch/arm/quick_entrypoints_arm.S
 
 541:19-541:53
@@ -33,6 +58,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_7c38c6f6
 Bytes: 59
 Can we have and use LOCK_WORD_GC_STATE_SHIFT to be clearer?
+
+541:19-541:53
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_7c38c6f6
+UUID: 94e3d6ef_3e3d85e6
+Bytes: 4
+Done
 
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
@@ -43,12 +76,28 @@ UUID: 74d3c2eb_5c370204
 Bytes: 5
 Same.
 
+1111:19-1111:53
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_5c370204
+UUID: 94e3d6ef_de2021b4
+Bytes: 4
+Done
+
 1796:4-1796:7
 Wed Aug 03 01:29:21 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_bcc62eb1
 Bytes: 270
 Is it better/faster to have the fast path ALLOC_OBJECT_TLAB_FAST_PATH in line 1806 in the straight-line position (change this back to cbnz and move the mark bit checking code right after .Lart_quick_alloc_object_region_tlab_class_load_read_barrier_slow_path, line 1808)?
+
+1796:4-1796:7
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_bcc62eb1
+UUID: 94e3d6ef_7e1c6d6c
+Bytes: 61
+Good question, the GC not running case should be most common.
 
 1799:16-1799:90
 Wed Aug 03 01:29:21 2016 +0000
@@ -57,6 +106,14 @@ UUID: 74d3c2eb_7cfbe6e3
 Bytes: 211
 Should this be .Lart_quick_alloc_object_region_tlab_class_load_read_barrier_slow_path instead (go straight to the slow path if class is null) rather than relying on the null check in ALLOC_OBJECT_TLAB_FAST_PATH?
 
+1799:16-1799:90
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_7cfbe6e3
+UUID: 94e3d6ef_9e0a19d0
+Bytes: 4
+Done
+
 2291:7-2291:8
 Wed Aug 03 01:29:21 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -64,12 +121,28 @@ UUID: 74d3c2eb_fc583600
 Bytes: 52
 align the space width to match the rest of the code?
 
+2291:7-2291:8
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_fc583600
+UUID: 94e3d6ef_be07d5c6
+Bytes: 4
+Done
+
 2293:15-2293:20
 Wed Aug 03 01:29:21 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_1cd3ba5a
 Bytes: 3
 x0?
+
+2293:15-2293:20
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_1cd3ba5a
+UUID: 94e3d6ef_de14a1f2
+Bytes: 4
+Done
 
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
@@ -80,12 +153,28 @@ UUID: 74d3c2eb_bcf70e28
 Bytes: 28
 Add a TODO for the fast path
 
+1033
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_bcf70e28
+UUID: 94e3d6ef_fe115dff
+Bytes: 15
+Implemented now
+
 1086:17-1086:50
 Wed Aug 03 01:29:21 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_fc4b5683
 Bytes: 5
 Same.
+
+1086:17-1086:50
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_fc4b5683
+UUID: 94e3d6ef_3e43c500
+Bytes: 4
+Done
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
@@ -96,6 +185,14 @@ UUID: 74d3c2eb_1c497a8b
 Bytes: 5
 Same.
 
+1042:17-1042:50
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_1c497a8b
+UUID: 94e3d6ef_7ef0edca
+Bytes: 4
+Done
+
 File: runtime/gc/collector/concurrent_copying-inl.h
 
 173:49-173:52
@@ -104,6 +201,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_5cdb82e4
 Bytes: 5
 zero?
+
+173:49-173:52
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_5cdb82e4
+UUID: 94e3d6ef_bef195ce
+Bytes: 4
+Done
 
 File: runtime/gc/collector/concurrent_copying.cc
 
@@ -114,6 +219,14 @@ UUID: 74d3c2eb_3c91def3
 Bytes: 64
 Surround this code with kUseBakerReadBarrier and a ScopedTiming?
 
+2241:0-2246:28
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_3c91def3
+UUID: 94e3d6ef_01ca2e46
+Bytes: 4
+Done
+
 File: runtime/gc/collector/concurrent_copying.h
 
 236:43-236:57
@@ -122,6 +235,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_fc4596a0
 Bytes: 126
 How about rb_mark_bit_stack? It's clearer it's not a 'mark stack' (where we do recursive marking on) in the traditional sense?
+
+236:43-236:57
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_fc4596a0
+UUID: 94e3d6ef_3ecd858c
+Bytes: 4
+Done
 
 File: runtime/gc/heap.cc
 
@@ -132,6 +253,14 @@ UUID: 74d3c2eb_3cf0fe92
 Bytes: 38
 Is the indentation right in this line?
 
+2547
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_3cf0fe92
+UUID: 94e3d6ef_01286e88
+Bytes: 4
+Done
+
 File: runtime/generated/asm_support_gen.h
 
 87:33-87:37
@@ -140,6 +269,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_1cc09a25
 Bytes: 14
 Use a decimal?
+
+87:33-87:37
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_1cc09a25
+UUID: 94e3d6ef_413996d8
+Bytes: 4
+Done
 
 File: runtime/lock_word-inl.h
 
@@ -152,6 +289,14 @@ gc_state?
 
 Take a unshifted value and shift it here like the old code?
 
+53:49-53:56
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_f9a608c0
+UUID: 94e3d6ef_a1a6dabe
+Bytes: 4
+Done
+
 File: runtime/lock_word.h
 
 58:5-58:26
@@ -161,12 +306,28 @@ UUID: 74d3c2eb_f9db6841
 Bytes: 86
 Update this line to clarify that the forwarding address is shifted by 3 rather than 2?
 
+58:5-58:26
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_f9db6841
+UUID: 94e3d6ef_0466bc55
+Bytes: 4
+Done
+
 108:4-108:16
 Wed Aug 03 01:29:21 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_b91400f1
 Bytes: 103
 Can you rename these to kGCStateMarkShifted and kGCStateMaskShiftedToggled to be consistent with above?
+
+108:4-108:16
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_b91400f1
+UUID: 94e3d6ef_24e1f803
+Bytes: 4
+Done
 
 136:31-136:52
 Wed Aug 03 01:29:21 2016 +0000
@@ -177,12 +338,28 @@ So now the forwarding address is shifted by 3 rather than 2, right?
 
 Consider defining a new enum (eg kForwardingAddressShift) that's identical to kObjectAlignmentShift and use it to avoid directly using kObjectAlignmentShift?
 
+136:31-136:52
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_99cd7c8e
+UUID: 94e3d6ef_a40a68cf
+Bytes: 4
+Done
+
 145:39-145:46
 Wed Aug 03 01:29:21 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_b9f880e1
 Bytes: 83
 this param rb_state was not shifted yet but now gc_bits is shifted. Any confusions?
+
+145:39-145:46
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_b9f880e1
+UUID: 94e3d6ef_243e5874
+Bytes: 4
+Done
 
 191:11-191:17
 Wed Aug 03 01:29:21 2016 +0000
@@ -193,6 +370,14 @@ GCBits() returns a unshifted value while ReadBarrierState() and MarkBitState() r
 
 Also how about GCState() to be consistent those and GetValueWithoutGCState?
 
+191:11-191:17
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_f9584800
+UUID: 94e3d6ef_af796190
+Bytes: 4
+Done
+
 File: runtime/mirror/object.h
 
 95:10-95:31
@@ -202,6 +387,14 @@ UUID: 74d3c2eb_3c879e0c
 Bytes: 82
 Can you leave a TODO to clean this up and change to "int32_t GetReadBarrierBit()"?
 
+95:10-95:31
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_3c879e0c
+UUID: 94e3d6ef_6fb3d950
+Bytes: 4
+Done
+
 File: runtime/read_barrier.h
 
 102:29-102:39
@@ -210,4 +403,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 74d3c2eb_bcb14edd
 Bytes: 40
 Can you add a TODO to remove black_ptr_?
+
+102:29-102:39
+Wed Aug 03 20:28:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 74d3c2eb_bcb14edd
+UUID: 94e3d6ef_8fb8252d
+Bytes: 4
+Done
 

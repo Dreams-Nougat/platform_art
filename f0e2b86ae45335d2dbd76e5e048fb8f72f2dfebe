@@ -1,0 +1,37 @@
+Revision: f0e2b86ae45335d2dbd76e5e048fb8f72f2dfebe
+Patch-set: 4
+File: compiler/optimizing/intrinsics_x86.cc
+
+817:2-817:23
+Wed Aug 03 11:12:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4f252a6_ee36df4b
+Bytes: 698
+Due to the limited precision, this _shall_ be rounded "according to the rounding control bits in the MXCSR register". Are we sure it will round up? Otherwise, the highest single-precision FP number below 2^31 would incorrectly yield INT_MAX due to the "Equal" in the "kAboveEqual" below.
+
+Should we instead compare directly to a 2.0f^31? Preferably as a literal? Then we could also skip the jump over the NaN:
+
+  __ xorl(out, out);
+  __ comiss(t1, codegen_->LiteralInt32Address(bit_cast<int32_t, float>(2147483648.0f), constant_area);
+  __ j(kUnordered, &done);
+  __ movl(out, Immediate(kPrimIntMax));  // Flags affected: none.
+  __ j(kAboveEqual, &done);
+  __ cvttss2si(out, t1);
+  __ Bind(&done);
+
+File: test/580-checker-round/src/Main.java
+
+48
+Wed Aug 03 11:12:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4f252a6_ce33235a
+Bytes: 84
+Please add a test for the highest float below 2^31 and for its negative counterpart.
+
+115
+Wed Aug 03 11:12:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f4f252a6_0e052b6b
+Bytes: 59
+Add highest double below 2^63 and its negative counterpart.
+

@@ -9,12 +9,28 @@ UUID: 145606ee_52d3b2d0
 Bytes: 4
 Used
 
+67:5-67:8
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_52d3b2d0
+UUID: 145606ee_18c94925
+Bytes: 4
+Done
+
 129:2-131:58
 Thu Aug 04 22:01:27 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 145606ee_72e7d6a9
 Bytes: 85
 So why don't you cache it, given that compile times are high? Does it have an impact?
+
+129:2-131:58
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_72e7d6a9
+UUID: 145606ee_78d095c3
+Bytes: 224
+I've done this in the upcoming CL (which I may have to split up into several CLs...). It did give a small bump in compile speed, along with a couple other adjustments. I'll leave this CL without the tweak, if that's alright.
 
 141:63-141:64
 Thu Aug 04 22:01:27 2016 +0000
@@ -23,12 +39,28 @@ UUID: 145606ee_9286fabe
 Bytes: 1
 &
 
+141:63-141:64
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_9286fabe
+UUID: 145606ee_b8e03d98
+Bytes: 4
+Done
+
 282:13-282:17
 Thu Aug 04 22:01:27 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 145606ee_92227abf
 Bytes: 26
 /* log_fatal_on_failure */
+
+282:13-282:17
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_92227abf
+UUID: 145606ee_38ed2d8c
+Bytes: 4
+Done
 
 500:0-500:31
 Thu Aug 04 22:01:27 2016 +0000
@@ -39,12 +71,29 @@ Add a comment.
 
 Did you check all the places where the search cache is being used? Because you're not linear scan, this optimization won't work for you.
 
+500:0-500:31
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_723fd6b8
+UUID: 145606ee_f89565df
+Bytes: 116
+Yeah, this is the only place that interval->Covers() is used.
+I'll remove the cache reset, since not necessary here.
+
 597:17-597:23
 Thu Aug 04 22:01:27 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 145606ee_b2adbef1
 Bytes: 8
 Revisit?
+
+597:17-597:23
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_b2adbef1
+UUID: 145606ee_f8364506
+Bytes: 230
+Yeah, I was hoping to get some input on this. This works in all test cases, but I thought that perhaps it might be good if the register allocation resolver could handle this case (a split at the end of a block, that is). Thoughts?
 
 732:52-732:56
 Thu Aug 04 22:01:27 2016 +0000
@@ -53,6 +102,14 @@ UUID: 145606ee_32a1ceef
 Bytes: 5
 drop?
 
+732:52-732:56
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_32a1ceef
+UUID: 145606ee_184ce99b
+Bytes: 4
+Done
+
 921:2-922:8
 Thu Aug 04 22:01:27 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,10 +117,28 @@ UUID: 145606ee_f2e02627
 Bytes: 9
 else if ?
 
+921:2-922:8
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_f2e02627
+UUID: 145606ee_18178957
+Bytes: 4
+Done
+
 950:0-951:40
 Thu Aug 04 22:01:27 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 145606ee_92443a21
 Bytes: 44
 No, is that what we're doing in linear scan?
+
+950:0-951:40
+Thu Aug 04 23:49:14 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_92443a21
+UUID: 145606ee_b863ddea
+Bytes: 247
+Looking into more, I don't think linear scan does this.
+(Graph coloring does, because globally blocked registers are represented with long fixed live intervals, for simplicity.)
+I've updated the code for this to exclude globally blocked registers.
 

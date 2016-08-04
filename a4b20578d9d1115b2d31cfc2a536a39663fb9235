@@ -17,6 +17,25 @@ UUID: 540f9ee2_99b29b94
 Bytes: 142
 Yes, see Arm64Assembler::Spill/UnspillRegisters() where we allow non-16B-aligned STP/LDP when spilling/unspilling an even number of registers.
 
+333:4-333:26
+Thu Aug 04 15:31:02 2016 +0000
+Author: Artem Serov <1089808@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 540f9ee2_99b9fb94
+UUID: 540f9ee2_199fabf7
+Bytes: 143
+Store operations that cross a 16-byte boundary ... reduce bandwidth or incur additional latency (from Cortex-A57 software optimization manual).
+
+333:4-333:26
+Thu Aug 04 15:31:02 2016 +0000
+Author: Artem Serov <1089808@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 540f9ee2_99b29b94
+UUID: 540f9ee2_39feef07
+Bytes: 276
+Actually a patch is already in place which fix this.
+"  // Since we are operating on register pairs, we would like to align on
+  // double the standard size; on the other hand, we don't want to insert
+  // an extra store, which will happen if the number of registers is even."
+
 417:47-417:48
 Thu Aug 04 12:04:03 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -32,6 +32,13 @@ when a loop is this long, I would recommend closing this with a comment such as
 
 }  // for processing_core_regs
 
+271
+Thu Aug 04 19:25:00 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34894a78_1a0fba3d
+Bytes: 208
+Does each attempt start with the full set of intervals? It seems to me all intervals that can be trivially pruned shouldn't go into the next attempt. Each attempt should be dealing with a smaller subset only.
+
 317
 Thu Aug 04 17:29:04 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,6 +59,13 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 34894a78_65174c57
 Bytes: 27
 this will be important yes!
+
+924
+Thu Aug 04 19:25:00 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 34894a78_9a772a99
+Bytes: 536
+Some idea here, if I understand your algorithm right. I'd consider the option of incrementally rebuilding the interference graph since the intervals from the split can only interfere with its neighbors (a subset of remaining nodes). With my previous comment, you can start to prune away the trivially prunable nodes after the split. And then proceed from there, dealing with a smaller and smaller interference graph. So the algorithm is more like a loop of split-prune of remaining graph, instead of attempting again with all intervals.
 
 File: compiler/optimizing/register_allocator_graph_color.h
 

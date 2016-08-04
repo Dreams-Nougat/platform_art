@@ -9,6 +9,14 @@ UUID: 94e3d6ef_ef6289b1
 Bytes: 97
 We don't need to save/restore T9. It's a temp/scratch register used for calling runtime routines.
 
+303:0-304:27
+Thu Aug 04 09:47:58 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94e3d6ef_ef6289b1
+UUID: 540f9ee2_39c38f36
+Bytes: 200
+Entrypoint(s) using this macro do not care how the caller uses registers,  so we save really everything. The only exception is K0/K1 - we don't want to mess with registers "reserved for trap handler."
+
 351:0-352:26
 Wed Aug 03 21:25:01 2016 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +30,14 @@ Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 94e3d6ef_44fb647a
 Bytes: 210
 LDu/SDu is for unaligned (or, rather, 4-byte-aligned) memory locations and expands into 2 or 3 instructions. But if the locations are 8-byte-aligned (as seems to be the case here), a single ldc1/sdc1 should do.
+
+354:0-369:31
+Thu Aug 04 09:47:58 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94e3d6ef_44fb647a
+UUID: 540f9ee2_79cd075e
+Bytes: 109
+All other entrypoints use LDu/SDu, even for aligned load/store. Feel free to clean this up in a follow-up CL.
 
 386:0-401:31
 Wed Aug 03 21:25:01 2016 +0000
@@ -53,6 +69,14 @@ UUID: 3406aa9f_48b59fc7
 Bytes: 194
 Something isn't clean here. This macro is indeed invoked after the SETUP_GP macro which says it stores gp to t8. However, this macro is not always preceded with SETUP_GP. I wonder if it's a bug.
 
+61:0-61:96
+Thu Aug 04 09:47:58 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3406aa9f_48b59fc7
+UUID: 540f9ee2_f9ef57b5
+Bytes: 98
+Oh, I thought I was fixing bad CFI but now I see I just messed with something I didn't understand.
+
 338:0-339:27
 Wed Aug 03 21:25:01 2016 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -60,12 +84,28 @@ UUID: 94e3d6ef_0aafa37b
 Bytes: 59
 Should be t9, not t0. And we don't need to save/restore it.
 
+338:0-339:27
+Thu Aug 04 09:47:58 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94e3d6ef_0aafa37b
+UUID: 540f9ee2_19e7abdc
+Bytes: 19
+Done. Saved anyway.
+
 348:0-349:27
 Wed Aug 03 21:25:01 2016 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b4e0da13_0c6c5704
 Bytes: 18
 424 in both places
+
+348:0-349:27
+Thu Aug 04 09:47:58 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b4e0da13_0c6c5704
+UUID: 540f9ee2_39ea6fa6
+Bytes: 4
+Done
 
 386:0-387:26
 Wed Aug 03 21:25:01 2016 +0000
@@ -81,6 +121,14 @@ UUID: 94e3d6ef_8a2813ef
 Bytes: 6
 Ditto.
 
+473:0-474:19
+Thu Aug 04 09:47:58 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94e3d6ef_8a2813ef
+UUID: 540f9ee2_79e4e7d5
+Bytes: 4
+Done
+
 521:0-522:18
 Wed Aug 03 21:25:01 2016 +0000
 Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -94,4 +142,12 @@ Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 94e3d6ef_d5771ce0
 Bytes: 63
 I can't seem to find the definition of this macro. Where is it?
+
+1899:4-1899:56
+Thu Aug 04 09:47:58 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 94e3d6ef_d5771ce0
+UUID: 540f9ee2_59e123c4
+Bytes: 4
+Done
 

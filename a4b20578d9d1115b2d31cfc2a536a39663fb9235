@@ -9,6 +9,14 @@ UUID: 540f9ee2_99b9fb94
 Bytes: 67
 Is this OK to use STP (and LDP) with a non 16-byte aligned address?
 
+333:4-333:26
+Thu Aug 04 13:37:06 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 540f9ee2_99b9fb94
+UUID: 540f9ee2_99b29b94
+Bytes: 142
+Yes, see Arm64Assembler::Spill/UnspillRegisters() where we allow non-16B-aligned STP/LDP when spilling/unspilling an even number of registers.
+
 417:47-417:48
 Thu Aug 04 12:04:03 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,28 @@ UUID: 540f9ee2_f9be3778
 Bytes: 17
 Nit: extra space?
 
+417:47-417:48
+Thu Aug 04 13:37:06 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 540f9ee2_f9be3778
+UUID: 540f9ee2_5982c3a6
+Bytes: 45
+Copy-pasted code. May address in a follow-up.
+
 2024:4-2024:33
 Thu Aug 04 12:04:03 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 540f9ee2_19c68b13
 Bytes: 91
 So we're unconditionally calling `artTestSuspendFromCode` now; could you add a comment why?
+
+2024:4-2024:33
+Thu Aug 04 13:37:06 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 540f9ee2_19c68b13
+UUID: 540f9ee2_b9503f3b
+Bytes: 363
+The generated code calls this entrypoint only after checking the flags, so the extra check is useless. This this brings the arm64 in line with other architectures.
+
+Note that mips, mips64 and arm with ARM_R4_SUSPEND_FLAG have code to use the SUSPEND_CHECK_INTERVAL, so they do need to check the flags. However, that's obsolete and should be removed in another CL.
 

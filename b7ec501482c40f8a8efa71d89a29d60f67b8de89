@@ -71,6 +71,16 @@ UUID: 34894a78_1a0fba3d
 Bytes: 208
 Does each attempt start with the full set of intervals? It seems to me all intervals that can be trivially pruned shouldn't go into the next attempt. Each attempt should be dealing with a smaller subset only.
 
+271
+Thu Aug 04 19:47:07 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34894a78_1a0fba3d
+UUID: 34894a78_6d7bb2d0
+Bytes: 492
+That's a really good point. Things may get trickier in my next CL where I start coalescing nodes that can be pruned trivially, but I believe what you suggest is still possible then. (One complication is that if the nodes interfering with a trivially prunable nodes are split, then it might actually open up a more preferable register for the trivially prunable node.)
+
+I'll definitely look into this, but perhaps it's best for a future CL? The current implementation is safer/simpler for now.
+
 317
 Thu Aug 04 17:29:04 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -122,6 +132,14 @@ Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 34894a78_9a772a99
 Bytes: 536
 Some idea here, if I understand your algorithm right. I'd consider the option of incrementally rebuilding the interference graph since the intervals from the split can only interfere with its neighbors (a subset of remaining nodes). With my previous comment, you can start to prune away the trivially prunable nodes after the split. And then proceed from there, dealing with a smaller and smaller interference graph. So the algorithm is more like a loop of split-prune of remaining graph, instead of attempting again with all intervals.
+
+924
+Thu Aug 04 19:47:07 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 34894a78_9a772a99
+UUID: 34894a78_8d629612
+Bytes: 232
+I definitely like the idea of using the current interference graph to help build the next interference graph. (See my other reply as well.) Perhaps this is also best left for a future CL, since the present implementation is simpler.
 
 File: compiler/optimizing/register_allocator_graph_color.h
 

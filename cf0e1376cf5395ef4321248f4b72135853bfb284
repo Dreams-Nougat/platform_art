@@ -13,6 +13,14 @@ Also I would say this is contrary to most of our existing options which don't ta
 
 So perhaps there can also be a simple --run-passes=name1,name2,name3 type of string list?
 
+9:42-9:55
+Fri Aug 05 21:05:34 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b977f3bf_23ea14df
+UUID: b977f3bf_6ea8f3df
+Bytes: 180
+The name is actually quite similar to --compiled-methods= which also accepts filename. Let's keep this for now and I will implement accepting explicit passes list in a followup CL.
+
 File: compiler/driver/compiler_options.h
 
 78
@@ -24,6 +32,14 @@ This needs to be an std::unique_ptr or just remove the pointer altogether and pa
 
 Right now the cpp file takes ownership over the pointer and this isn't stated anywhere.
 
+78
+Fri Aug 05 21:05:34 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b977f3bf_83a0c8a0
+UUID: b977f3bf_ee488369
+Bytes: 111
+I changed passes_to_run to be a const pointer (owned by someone else e.g. dex2oat), similar to verbose_methods.
+
 File: compiler/optimizing/instruction_simplifier_arm64.h
 
 87
@@ -32,6 +48,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b977f3bf_ee8f231f
 Bytes: 14
 4 space indent
+
+87
+Fri Aug 05 21:05:34 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b977f3bf_ee8f231f
+UUID: b977f3bf_8e06af77
+Bytes: 4
+Done
 
 File: compiler/optimizing/optimizing_compiler.cc
 
@@ -65,6 +89,14 @@ UUID: b977f3bf_6ea553a0
 Bytes: 53
 nit: consider a constant name such as kPassNamePrefix
 
+507:33-507:34
+Fri Aug 05 21:05:34 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b977f3bf_6ea553a0
+UUID: b977f3bf_6e531370
+Bytes: 4
+Done
+
 File: dex2oat/dex2oat.cc
 
 899
@@ -91,4 +123,12 @@ Parent: b977f3bf_c899ff0f
 UUID: b977f3bf_685eab20
 Bytes: 57
 Ok, just making sure I understand all ongoing changes :-)
+
+899
+Fri Aug 05 21:05:34 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b977f3bf_685eab20
+UUID: b977f3bf_ce9b47b6
+Bytes: 7
+Sure.:)
 

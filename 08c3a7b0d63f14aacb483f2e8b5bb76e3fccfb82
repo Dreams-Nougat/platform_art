@@ -1,0 +1,78 @@
+Revision: 08c3a7b0d63f14aacb483f2e8b5bb76e3fccfb82
+Patch-set: 1
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+1921:24-1921:35
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_f0636bea
+Bytes: 31
+"finalizable or uninitialized"?
+
+1935:89-1936:86
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_90bc77d1
+Bytes: 88
+Just to double-check, the negative array size check is already handled by this, correct?
+
+1957:72-1957:97
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_f0e5ab10
+Bytes: 134
+Talked to Hans. It may be that we can lighten this to a "dmb ishst" because we don't need to check the class status for array classes.
+
+2057:0-2057:96
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_2d9c30ae
+Bytes: 58
+"The common code for art_quick_alloc_object_*region_tlab"?
+
+2061:11-2061:32
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_2df510e8
+Bytes: 64
+Update this to say x0 contains the class if is_resolved is true?
+
+2111:3-2111:96
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_0d893421
+Bytes: 57
+"The common code for art_quick_alloc_array_*region_tlab"?
+
+2119:7-2119:9
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_708d1b26
+Bytes: 6
+x4-x7?
+
+2145:4-2145:22
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_10e5c7d2
+Bytes: 179
+I am not sure I understand this instruction, which we don't have in the object version. Why not call the slow path artReadBarrierMark below (and why make the following code dead)?
+
+File: runtime/arch/quick_alloc_entrypoints.S
+
+94:38-94:44
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_4dff2c03
+Bytes: 97
+REGION -> REGION_TLAB.
+
+There are *_region_* (non-tlab region) and *_region_tlab_* (tlab region).
+
+110:42-110:48
+Mon Aug 08 23:13:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_0df9341b
+Bytes: 32
+Likewise, REGION -> REGION_TLAB.
+

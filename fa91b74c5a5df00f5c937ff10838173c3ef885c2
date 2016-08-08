@@ -23,6 +23,13 @@ UUID: 145606ee_1514b498
 Bytes: 64
 TODO: inline the bit check Mathieu added? (here and other archs)
 
+1808
+Mon Aug 08 15:08:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b94a9396_bc3261a1
+Bytes: 89
+TODO: Make the whole loop a slow-path. It's bad to jump there and back on each iteration.
+
 File: compiler/optimizing/intrinsics_x86.cc
 
 3108:32-3108:37
@@ -31,4 +38,13 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 145606ee_9537c405
 Bytes: 25
 Is that really src_array?
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+1392
+Mon Aug 08 15:08:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 19239fed_4a1b9373
+Bytes: 118
+Note: We should shift by kReadBarrierStateShift+1 and branch on CF=1 (as we do on ARM) instead of the SHR+AND+CMP+JEQ.
 

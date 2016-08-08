@@ -1,0 +1,70 @@
+Revision: f686c3feabe3519bedd1f3001e5dd598f46946ef
+Patch-set: 3
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+1926:4-1926:36
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a53384_a4c2a29c
+Bytes: 329
+This can overflow. It think the check should be
+
+  available = end - pos;
+  if (available < data_offset) goto slow_path;
+  if (((available - data_offset) >> shift) < count) goto slow_path;
+
+Use SUBS for the first check, CMP shifted register for the second.
+Calculate data_offset = (MIRROR_INT_ARRAY_DATA_OFFSET + 1 + shift) & ~3.
+
+1932
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d9aca770_a59b7eb6
+Bytes: 78
+Assert that MIRROR_LONG_ARRAY_DATA_OFFSET == MIRROR_INT_ARRAY_DATA_OFFSET + 4.
+
+1934:0-1937:53
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99478f8f_bb154751
+Bytes: 4
+LDP?
+
+1944
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5936f710_a1b87e29
+Bytes: 18
+Where is the "+7"?
+
+2119:8-2119:9
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 990eaf7b_43526669
+Bytes: 1
+4
+
+2145:4-2145:22
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b94a9396_9cb8452a
+Bytes: 61
+This should not be here. It makes the code below unreachable.
+
+2153:0-2155:22
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a53384_24b7923e
+Bytes: 63
+Why not
+
+  ldp    x2, xLR, [sp, #16]
+  ldp    x0, x1, [sp], #32
+
+2158:7-2158:28
+Mon Aug 08 13:35:04 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39b223c6_082f0790
+Bytes: 43
+This comment is misleading if \is_resolved.
+

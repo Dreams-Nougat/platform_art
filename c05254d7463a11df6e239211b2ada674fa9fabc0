@@ -1,5 +1,18 @@
 Revision: c05254d7463a11df6e239211b2ada674fa9fabc0
 Patch-set: 1
+File: compiler/image_writer.cc
+
+1422:50-1422:58
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_15529c0f
+Bytes: 189
+Can this be replaced with the actual type or a name of a variable?
+
+If this a pointer size then you want PointerSize::k64 here.
+
+Is the DexCache no longer a mirror object after this change?
+
 File: compiler/optimizing/code_generator_mips.cc
 
 4570
@@ -10,4 +23,99 @@ Bytes: 357
 Any reason why on MIPS you decided to always take the slow path irrespective of the load kind and undid the improvements I'd put in place recently? Unlike ARM and x86?
 
 Also, what about the register input prepared by LocationsBuilderMIPS::VisitLoadString() and in dex_cache_array_fixups_mips.cc and pc_relative_fixups_mips.cc? Did you forget to adjust that?
+
+File: runtime/class_linker-inl.h
+
+71:0-71:64
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_602c70b2
+Bytes: 24
+High32Bits(index_string)
+
+72
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_4013746a
+Bytes: 23
+Low32Bits(index_string)
+
+File: runtime/interpreter/interpreter_common.h
+
+762
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_800aec27
+Bytes: 22
+High32Bits / Low32Bits
+
+File: runtime/mirror/class.h
+
+59
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_e029608e
+Bytes: 406
+Passing it around as a 64-bit int is a bit too low level. Any trivially-copyable type can be atomic.
+
+I recommend something more like this:
+
+  struct StringDexCachePair {
+    uint32_t string_index;
+    uint32_t string_pointer;
+
+    mirror::String* getStringPointer() {
+      return reinterpret_cast<mirror::String*>(string_pointer);
+    }
+  };
+
+  using StringDexCacheType = std::atomic<StringDexCachePair>;
+
+File: runtime/mirror/dex_cache-inl.h
+
+55:50-55:60
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_80342ce1
+Bytes: 24
+C-style cast breaks lint
+
+File: runtime/mirror/dex_cache.h
+
+40
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_a05e081d
+Bytes: 48
+Wasn't this copied and pasted from another file?
+
+50
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_e05ba026
+Bytes: 54
+static_assert(IsPowerOfTwo(kDexCacheStringCacheSize));
+
+155
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_80866c75
+Bytes: 94
+Why aren't the loads and stores in this place also relaxed if the loads elsewhere are relaxed?
+
+File: runtime/utils/dex_cache_arrays_layout-inl.h
+
+90:62-90:78
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_80b74c3c
+Bytes: 16
+PointerSize::k64
+
+95:40-95:56
+Mon Aug 08 21:10:51 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_40b9342b
+Bytes: 16
+PointerSize::k64
 

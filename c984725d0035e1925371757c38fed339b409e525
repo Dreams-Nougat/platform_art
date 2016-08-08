@@ -1,0 +1,33 @@
+Revision: c984725d0035e1925371757c38fed339b409e525
+Base-for-patch-set: 1
+File: cmdline/cmdline_parser_test.cc
+
+102
+Mon Aug 08 18:24:22 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_ac6da9a1
+Bytes: 111
+These test helpers are useful even if they aren't being used [currently], they aren't exactly trivial to write.
+
+File: runtime/parsed_options.cc
+
+286
+Mon Aug 08 18:24:22 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_6c4eb140
+Bytes: 127
+Why? You're adding new experimental features right now, and Nicolas wanted them to be guarded behind a flag in the first place.
+
+File: runtime/verifier/method_verifier.cc
+
+417
+Mon Aug 08 18:24:22 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b977f3bf_2cdd1936
+Bytes: 448
+You may not want to remove this, it was put in here for a reason, and that's to make development a lot simpler because you can implement the new bytecodes into the interpreter without also implementing full verifier support for it.
+
+At the same time the instructions would be completely usable from run-test, dalvikvm etc.
+
+Depending on how complicated it is to correctly verify the new bytecodes, it may not be trivial to do it within the same CL.
+

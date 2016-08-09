@@ -9,6 +9,14 @@ UUID: 39b223c6_e8d95349
 Bytes: 18
 no need for the #0
 
+1791:18-1791:21
+Tue Aug 09 20:27:55 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b223c6_e8d95349
+UUID: f98ecb40_778bc215
+Bytes: 23
+Thank you! will delete.
+
 1792:4-1792:18
 Tue Aug 09 08:57:31 2016 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,6 +26,14 @@ this instruction is not needed.
 
 ldr w2, [ ] will load the value in the lower 32bit and 0 extend the rest (upper 32bits will be 0).
 
+1792:4-1792:18
+Tue Aug 09 20:27:55 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b223c6_88d69718
+UUID: f98ecb40_978f4e20
+Bytes: 17
+Same as above. :)
+
 1794:10-1794:12
 Tue Aug 09 08:57:31 2016 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,10 +41,26 @@ UUID: 39b223c6_a8d35b27
 Bytes: 94
 Is this supposed to be a 64bit value? I was under the impression that string offsets are 32bit
 
+1794:10-1794:12
+Tue Aug 09 20:27:55 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b223c6_a8d35b27
+UUID: f98ecb40_b7be0aa4
+Bytes: 185
+It is. It's stored as a uint64_t actually in class.h, and it's set depending on the pointer size (SetFieldPtr->SetFieldPtrWithSize), so it's safer to load it with the full 64 bits here.
+
 1799:4-1799:8
 Tue Aug 09 08:57:31 2016 +0000
 Author: Serban Constantinescu <1072549@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39b223c6_48b2df00
 Bytes: 42
 is this meant to be a load exclusive pair?
+
+1799:4-1799:8
+Tue Aug 09 20:27:55 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b223c6_48b2df00
+UUID: f98ecb40_5786c610
+Bytes: 98
+Yes, it needs to be atomic and is just as fast as loading a 64 bit int and extracting lower/upper.
 

@@ -1,0 +1,37 @@
+Revision: ad7a8943089304016201346a6244badb92fe6d30
+Patch-set: 5
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+1937:0-1939:25
+Tue Aug 09 09:19:51 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39b223c6_08bce7ce
+Bytes: 141
+MIN_LARGE_OBJECT_THRESHOLD is a valid immediate for CMP, isn't it?
+
+    cmp    \xTemp1, #MIN_LARGE_OBJECT_THRESHOLD
+    bhs    \slowPathLabel
+
+1949:4-1949:27
+Tue Aug 09 09:19:51 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39b223c6_a8acbb9d
+Bytes: 181
+Since the "+7" is above and "&~7" is below, this comparison can miss the case where the required space is exactly as much as we have available. Can we move the "&~7" above this CMP?
+
+1968:72-1974:84
+Tue Aug 09 09:19:51 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39b223c6_489bbf6e
+Bytes: 26
+This comment is now bogus.
+
+File: runtime/asm_support.h
+
+231:0-231:76
+Tue Aug 09 09:19:51 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39b223c6_289a0b68
+Bytes: 117
+This should be a compile-time assertion located where it's used, i.e. directly in the assembly, using #if and #error.
+

@@ -9,6 +9,14 @@ UUID: ea77c70c_a69c2605
 Bytes: 90
 This focuses exclusively on loops. Wouldn't it be beneficial for other situations as well?
 
+1030
+Tue Aug 09 09:07:29 2016 +0000
+Author: Anton Shamin <1055300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea77c70c_a69c2605
+UUID: 39b223c6_28c1ab4d
+Bytes: 362
+This make sense for loops only, when we split interval inside the loop, and understand that we'll never use it from register anymore. We need to return value on register on backbranch. But imagine if we don't have register uses in a loop while we still think that we should fill register with value. Such situation makes fills on backbranches completely useless.
+
 1293
 Thu Jul 21 14:46:05 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,10 +24,38 @@ UUID: ea77c70c_869f2af9
 Bytes: 5
 ditto
 
+1293
+Tue Aug 09 09:07:29 2016 +0000
+Author: Anton Shamin <1055300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea77c70c_869f2af9
+UUID: 990eaf7b_638b226f
+Bytes: 58
+This focuses on loops because it's critical for loops only
+
 1695
 Thu Jul 21 14:46:05 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ea77c70c_66ab0e21
 Bytes: 168
 ConnectSiblings() doesn't look like the right place to do this kind of work. It would be better to do this by splitting the interval differently during the linear scan.
+
+1695
+Tue Aug 09 09:07:29 2016 +0000
+Author: Anton Shamin <1055300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea77c70c_66ab0e21
+UUID: 39b223c6_68cec389
+Bytes: 549
+The idea behind this place in ConnectSiblings (before the change introduced by patch) is in spilling values right after definition (interval start). However hotness of definition (and as a consequence hotness of spill) is never counted. This caused a situation when we had spills on every iteration instead of having only one right after the loop. 
+
+ConnectSiblings was changed to avoid extra spilling at definition in a loop body if possible. Change was done here because there is no interval splitting which could move definition (interval start).
+
+1695
+Tue Aug 09 09:07:29 2016 +0000
+Author: Anton Shamin <1055300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ea77c70c_66ab0e21
+UUID: 39b223c6_08c38760
+Bytes: 549
+The idea behind this place in ConnectSiblings (before the change introduced by patch) is in spilling values right after definition (interval start). However hotness of definition (and as a consequence hotness of spill) is never counted. This caused a situation when we had spills on every iteration instead of having only one right after the loop. 
+
+ConnectSiblings was changed to avoid extra spilling at definition in a loop body if possible. Change was done here because there is no interval splitting which could move definition (interval start).
 

@@ -32,6 +32,16 @@ Any reason why on MIPS you decided to always take the slow path irrespective of 
 
 Also, what about the register input prepared by LocationsBuilderMIPS::VisitLoadString() and in dex_cache_array_fixups_mips.cc and pc_relative_fixups_mips.cc? Did you forget to adjust that?
 
+4570
+Tue Aug 09 20:16:05 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b977f3bf_00e25cca
+UUID: 399f837b_2365d449
+Bytes: 450
+It's always going slow path so MIPS doesn't break with the new cache implementation. @vmarko is changing the compiler (arm, x86, and MIPS as well I believe), so all your concerns should be fixed when he uploads his patch--this is just temporary. 
+
+I didn't spend as much time on MIPS because I can't test it on my machine (emulator not working), and this slow path should be fine for the time being until a different version of this is added back in.
+
 File: runtime/class_linker-inl.h
 
 71:0-71:64

@@ -9,12 +9,28 @@ UUID: 145606ee_b5d3e804
 Bytes: 37
 move that to the end of the sentence?
 
+1589:47-1589:51
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_b5d3e804
+UUID: 5936f710_8120da57
+Bytes: 58
+Yes, that sounds better.  Done in PS2, here and elsewhere.
+
 1599:0-1601:82
 Mon Aug 08 14:07:32 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39b223c6_a8711ba5
 Bytes: 171
 I realized a bit late that we do not need a read barrier here, as `temp1` is compared against 0 and not used afterwards.  I'll update similar cases in other back ends too.
+
+1599:0-1601:82
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b223c6_a8711ba5
+UUID: 79d81bb0_cadb83e2
+Bytes: 17
+Addressed in PS2.
 
 1607:6-1607:39
 Tue Aug 09 22:16:26 2016 +0000
@@ -23,12 +39,43 @@ UUID: b927f349_149a345d
 Bytes: 103
 How about just "Non-read barrier code" so that this isn't interpreted as *Non-Baker* read barrier code.
 
+1607:6-1607:39
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_149a345d
+UUID: 59b43747_11eb0c11
+Bytes: 4
+Done
+
 1770:79-1770:80
 Tue Aug 09 22:16:26 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b927f349_f454582f
 Bytes: 88
 2 -> art::WhichPowerOf2(sizeof(art::mirror::CompressedReference<art::mirror::Object>)) ?
+
+1770:79-1770:80
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_f454582f
+UUID: 99106f07_13130c6c
+Bytes: 306
+For symmetry with
+
+  int32_t element_size = Primitive::ComponentSize(Primitive::kPrimNot);
+
+(line 1693), I introduced
+
+  uint32_t element_size_shift = Primitive::ComponentSizeShift(Primitive::kPrimNot);
+
+This is also more uniform with GenSystemArrayCopyAddresses in compiler/optimizing/intrinsics_arm64.cc.
+
+1794:4-1794:24
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39b223c6_4baf3931
+Bytes: 95
+This label should have been place before line 1785; this is fixed in the slow path code in PS2.
 
 1802:1-1803:55
 Thu Aug 04 22:33:22 2016 +0000
@@ -37,6 +84,14 @@ UUID: 145606ee_1514b498
 Bytes: 64
 TODO: inline the bit check Mathieu added? (here and other archs)
 
+1802:1-1803:55
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_1514b498
+UUID: 39b223c6_eb114daa
+Bytes: 120
+Added TODO in PS2.  I think we should implement that idea in another CL and see how it affects code size and benchmarks.
+
 1808
 Mon Aug 08 15:08:44 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,12 +99,28 @@ UUID: b94a9396_bc3261a1
 Bytes: 89
 TODO: Make the whole loop a slow-path. It's bad to jump there and back on each iteration.
 
+1808
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b94a9396_bc3261a1
+UUID: 39b223c6_cb1fa95d
+Bytes: 87
+Good point. I've introduced a slow path for that case, for ARM and other architectures.
+
 1812:7-1812:10
 Tue Aug 09 22:16:26 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b927f349_d4691c2d
 Bytes: 16
 Similar comment.
+
+1812:7-1812:10
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_d4691c2d
+UUID: 79af3bf6_d2998474
+Bytes: 4
+Done
 
 File: compiler/optimizing/intrinsics_x86.cc
 
@@ -60,6 +131,18 @@ UUID: 145606ee_9537c405
 Bytes: 25
 Is that really src_array?
 
+3108:32-3108:37
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 145606ee_9537c405
+UUID: 39b223c6_cb5d697f
+Bytes: 222
+`temp2` contains `src_index` here.
+
+`src_array` was meant to represent `src + offset`.  Accessing `src_array[src_index]` thus requires loading from `src + src_index * 4 + offset`.
+
+I've added some more comments about this.
+
 File: compiler/optimizing/intrinsics_x86_64.cc
 
 1392
@@ -68,4 +151,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 19239fed_4a1b9373
 Bytes: 118
 Note: We should shift by kReadBarrierStateShift+1 and branch on CF=1 (as we do on ARM) instead of the SHR+AND+CMP+JEQ.
+
+1392
+Wed Aug 10 15:03:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19239fed_4a1b9373
+UUID: 39b223c6_eb1ced6a
+Bytes: 174
+Thanks for the suggestion!  I added a TODO.  I would like to do that, both here and in the CodeGenerator{X86,X86_64}::GenerateReferenceLoadWithBakerReadBarrier in another CL.
 

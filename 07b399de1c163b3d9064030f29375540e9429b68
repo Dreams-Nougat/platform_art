@@ -1,0 +1,53 @@
+Revision: 07b399de1c163b3d9064030f29375540e9429b68
+Patch-set: 3
+File: compiler/optimizing/intrinsics_arm.cc
+
+45:62-45:63
+Wed Aug 10 16:59:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a8d3f4_8c54072f
+Bytes: 141
+Add a second space even if NOLINT. This is copy-pasted, so maybe do it everywhere in a cleanup CL. What is the warning we're trying to avoid?
+
+File: compiler/optimizing/intrinsics_arm64.cc
+
+154
+Wed Aug 10 16:59:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59b43747_d1eea4f0
+Bytes: 47
+Remove the extra line. (Doesn't lint complain?)
+
+File: compiler/optimizing/intrinsics_x86.cc
+
+122:0-131:70
+Wed Aug 10 16:59:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39b5c344_b090389c
+Bytes: 584
+For constant src_pos, fold it into offset. For non-constant src_pos, merge the movl and addl to leal.
+
+    // value = src_array[i + src_pos]
+    if (src_pos.IsConstant()) {
+      int32_t constant = src_pos.GetConstant()->AsIntConstant()->GetValue();
+      int32_t adjusted_offset = offset + constant * element_size;
+      __ movl(temp2, Address(src, temp1, ScaleFactor::TIMES_4, adjusted_offset));
+    } else {
+      __ leal(temp3, Address(src_pos.AsRegister<Register>(), temp1, ScaleFactor::TIMES_1, 0));
+      __ movl(temp2, Address(src, temp3, ScaleFactor::TIMES_4, offset));
+    }
+
+147:0-156:71
+Wed Aug 10 16:59:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 39cea3f0_280a2bd1
+Bytes: 119
+ditto; Maybe we should have a helper function that may or may not emit leal and returns the Address for the load/store.
+
+160:0-167:5
+Wed Aug 10 16:59:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a8d3f4_cc5e0f4b
+Bytes: 51
+x86_codegen->GenerateIntCompare(temp1_loc, length);
+

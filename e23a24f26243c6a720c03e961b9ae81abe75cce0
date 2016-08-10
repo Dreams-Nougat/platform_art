@@ -9,3 +9,26 @@ UUID: b927f349_4e27b7ba
 Bytes: 46
 You were not able to get fall-through to work?
 
+1055:4-1055:8
+Wed Aug 10 12:10:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99106f07_7341a092
+Bytes: 192
+Use ANDQ; ANDL breaks the overflow reasoning above. And we need to specify the literal as full 64 bits, so we'd be better served by "-OBJECT_ALIGNMENT_MASK" than OBJECT_ALIGNMENT_MASK_TOGGLED.
+
+1158
+Wed Aug 10 12:10:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 99f78f09_9b6e0b32
+Bytes: 195
+Do we need 16-byte stack alignment on x86-64? (At this point we don't have it because of the return address.)
+
+If we do, fix also the art_quick_alloc_object_region_tlab where this is copied from.
+
+1191
+Wed Aug 10 12:10:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59dd179f_499a0105
+Bytes: 5
+ditto
+

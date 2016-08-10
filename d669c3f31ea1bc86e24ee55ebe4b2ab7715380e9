@@ -1,0 +1,29 @@
+Revision: d669c3f31ea1bc86e24ee55ebe4b2ab7715380e9
+Patch-set: 2
+File: compiler/oat_writer.cc
+
+1195:52-1196:38
+Wed Aug 10 14:20:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 79af3bf6_52d4740f
+Bytes: 64
+I think this should be GetDexCache(patch.TargetStringDexFile());
+
+File: runtime/class_linker.cc
+
+1275:35-1275:77
+Wed Aug 10 14:20:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 59dd179f_692a6584
+Bytes: 78
+std::min(dex_file->NumStringIds(), mirror::DexCache::kDexCacheStringCacheSize)
+
+File: runtime/utils/dex_cache_arrays_layout-inl.h
+
+96:19-96:61
+Wed Aug 10 14:20:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b9a8d3f4_acb3c3b2
+Bytes: 135
+std::min(dex_file->NumStringIds(), mirror::DexCache::kDexCacheStringCacheSize), there is no reason to waste memory for small dex files.
+

@@ -9,12 +9,29 @@ UUID: b927f349_5add3534
 Bytes: 54
 Interference sounds conflicting with preventing moves.
 
+52:45-52:85
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_5add3534
+UUID: b927f349_882947f1
+Bytes: 358
+The idea is that if you coalesce a fixed output with a sibling, then the neighbors of the sibling will now have interferences with a fixed node (which may block future coalesce opportunities more than a normal merge).
+There's not enough evidence yet to say that these coalesce kinds should have lower priority, though, so I'll remove the distinction for now.
+
 53:45-53:85
 Wed Aug 10 00:00:34 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b927f349_dab145fc
 Bytes: 6
 Ditto.
+
+53:45-53:85
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_dab145fc
+UUID: b927f349_e800fb5e
+Bytes: 10
+See above.
 
 110:40-110:42
 Wed Aug 10 00:00:34 2016 +0000
@@ -23,12 +40,28 @@ UUID: b927f349_7d4a6b81
 Bytes: 15
 strange naming.
 
+110:40-110:42
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_7d4a6b81
+UUID: b927f349_c8ff3f52
+Bytes: 104
+Couldn't name it 'a', since it conflicts with the member variable 'a'. What is the preferred style here?
+
 157
 Wed Aug 10 00:00:34 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f98ecb40_f758922c
 Bytes: 60
 This is for spill at definition cost? Can you add a comment?
+
+157
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f98ecb40_f758922c
+UUID: b927f349_e869db2c
+Bytes: 4
+Done
 
 224
 Wed Aug 10 00:00:34 2016 +0000
@@ -37,12 +70,28 @@ UUID: b927f349_3dc393a4
 Bytes: 39
 DCHECK it's not in adjacent_nodes_ yet.
 
+224
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_3dc393a4
+UUID: b927f349_a84c43ce
+Bytes: 23
+Right, good idea! Done.
+
 270:51-270:56
 Wed Aug 10 00:00:34 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b927f349_fa0f6139
 Bytes: 62
 other is a little misleading since it's not interference node.
+
+270:51-270:56
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_fa0f6139
+UUID: b927f349_68470baa
+Bytes: 4
+Done
 
 360
 Wed Aug 10 00:00:34 2016 +0000
@@ -51,12 +100,29 @@ UUID: f98ecb40_c29f52f4
 Bytes: 53
 Not accurate description of the real computed weight.
 
+360
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f98ecb40_c29f52f4
+UUID: b927f349_c8941fe6
+Bytes: 4
+Done
+
 1019
 Wed Aug 10 00:00:34 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b927f349_f7d21a02
 Bytes: 79
 Seems to me even if the next sibling starts later, it still can't be clobbered.
+
+1019
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_f7d21a02
+UUID: b927f349_48780f57
+Bytes: 482
+(Is the "can't" supposed to be "can"?)
+If there's a gap between the current sibling and the next sibling, then the value really is dead there, and can be clobbered. E.g., suppose an interval is defined above a branch, but used in only one path of the branch, and there is a lifetime hole for the other branch (because of the linear block ordering). Once the dead branch is entered, there's no path back to a place where the interval is live again, and so the value can be clobbered.
 
 1324:50-1324:76
 Wed Aug 10 00:00:34 2016 +0000
@@ -65,6 +131,14 @@ UUID: f98ecb40_ce46a37b
 Bytes: 23
 plus the weight factor?
 
+1324:50-1324:76
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f98ecb40_ce46a37b
+UUID: b927f349_c8c73f69
+Bytes: 41
+Right; I've clarified this comment a bit.
+
 1331:34-1331:53
 Wed Aug 10 00:00:34 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -72,10 +146,26 @@ UUID: f98ecb40_8e4c9b9d
 Bytes: 23
 HasGreaterNodePriority?
 
+1331:34-1331:53
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f98ecb40_8e4c9b9d
+UUID: b927f349_08b777ef
+Bytes: 4
+Done
+
 1379:5-1379:52
 Wed Aug 10 00:00:34 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3914e3d3_98faf563
 Bytes: 39
 Seems not true since they become empty.
+
+1379:5-1379:52
+Wed Aug 10 01:38:52 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3914e3d3_98faf563
+UUID: b927f349_c3a3a099
+Bytes: 97
+Right; clarified this. (Nodes are not removed when *transitioning* from one worklist to another.)
 

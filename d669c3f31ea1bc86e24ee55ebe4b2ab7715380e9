@@ -9,6 +9,14 @@ UUID: 79af3bf6_52d4740f
 Bytes: 64
 I think this should be GetDexCache(patch.TargetStringDexFile());
 
+1195:52-1196:38
+Wed Aug 10 17:51:02 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79af3bf6_52d4740f
+UUID: b927f349_11cebb87
+Bytes: 24
+Yes, I will change this.
+
 File: runtime/class_linker.cc
 
 1275:35-1275:77
@@ -17,6 +25,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59dd179f_692a6584
 Bytes: 78
 std::min(dex_file->NumStringIds(), mirror::DexCache::kDexCacheStringCacheSize)
+
+1275:35-1275:77
+Wed Aug 10 17:51:02 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59dd179f_692a6584
+UUID: b927f349_b12b479a
+Bytes: 206
+All dex caches need to be of size 1024 because of assumptions other places in the code. There isn't a lot of space lost doing this, and we still have 95% savings total compared to previous string dex cache.
 
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 

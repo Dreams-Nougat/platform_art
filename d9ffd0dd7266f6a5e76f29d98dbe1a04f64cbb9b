@@ -9,12 +9,28 @@ UUID: 79bc9b97_0aa93b29
 Bytes: 124
 Might be worth a short comment inside the branch that this means it was inserted so people don't have to open c++ reference.
 
+73:38-73:44
+Wed Aug 10 00:00:47 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bc9b97_0aa93b29
+UUID: b927f349_bd26c320
+Bytes: 31
+I will add this to a future CL.
+
 85:27-85:39
 Mon Aug 08 12:04:00 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 99478f8f_bbf0a763
 Bytes: 36
 find(other) != adjacent_nodes_.end()
+
+85:27-85:39
+Wed Aug 10 00:00:47 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99478f8f_bbf0a763
+UUID: b927f349_1d36d74d
+Bytes: 31
+I will add this to a future CL.
 
 137:9-138:55
 Mon Aug 08 12:04:00 2016 +0000
@@ -23,12 +39,28 @@ UUID: 19239fed_a7dc0a3b
 Bytes: 52
 !Primitive::IsFloatingPointType(interval->GetType())
 
+137:9-138:55
+Wed Aug 10 00:00:47 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 19239fed_a7dc0a3b
+UUID: b927f349_fd051b6c
+Bytes: 43
+Good catch; I'll rector this in my next CL.
+
 210
 Mon Aug 08 12:04:00 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 39b223c6_0833871a
 Bytes: 122
 So how exactly do you guarantee that this won't loop indefinitely in production? Should we have linear scan as a fallback?
+
+210
+Wed Aug 10 00:00:47 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b223c6_0833871a
+UUID: b927f349_5da52ffb
+Bytes: 348
+See the comment above the definition of kMaxGraphColoringAttemptsDebug. Essentially, if a coloring round fails, it is guaranteed that live intervals are split, which makes the interference graph sparser. We avoid trying to split the same intervals repeatedly (and thus looping forever) by making sure that we split long intervals before short ones.
 
 225:6-225:28
 Mon Aug 08 12:04:00 2016 +0000
@@ -37,12 +69,28 @@ UUID: 79bc9b97_ea49478b
 Bytes: 134
 This seems expensive. Do you have to build it from scratch in each iteration? In how many iterations does this thing typically finish?
 
+225:6-225:28
+Wed Aug 10 00:00:47 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 79bc9b97_ea49478b
+UUID: b927f349_bac0094b
+Bytes: 131
+Very few in practice: 90% of methods take 1 iteration, ~9% take 2, ~1% take 3, and I believe 6 iterations is the highest I've seen.
+
 361:100-361:107
 Mon Aug 08 12:04:00 2016 +0000
 Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 990eaf7b_c332d657
 Bytes: 9
 long line
+
+361:100-361:107
+Wed Aug 10 00:00:47 2016 +0000
+Author: Matthew Gharrity <1108540@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 990eaf7b_c332d657
+UUID: b927f349_1d9fb7a5
+Bytes: 30
+Good catch; fixing in next CL.
 
 557
 Fri Aug 05 22:46:45 2016 +0000

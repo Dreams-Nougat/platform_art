@@ -9,3 +9,13 @@ UUID: f98ecb40_f7f5f220
 Bytes: 195
 Will this inverted mask include the stack pointer? For the graph coloring allocator, live_registers will include the stack pointer, so this may overestimate the number of slow path spills by one.
 
+728:28-728:41
+Wed Aug 10 11:21:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f98ecb40_f7f5f220
+UUID: 79af3bf6_32ff3004
+Bytes: 324
+I addressed that in PS3 by excluding blocked registers from the live_registers.
+
+I didn't look at the graph coloring in detail but the handling of blocked registers seems to waste a lot of memory (and presumably time) by constructing interference edges. It would be better to pretend that those registers simply don't exist.
+

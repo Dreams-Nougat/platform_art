@@ -48,6 +48,14 @@ UUID: b927f349_c8ff3f52
 Bytes: 104
 Couldn't name it 'a', since it conflicts with the member variable 'a'. What is the preferred style here?
 
+110:40-110:42
+Wed Aug 10 18:17:19 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_c8ff3f52
+UUID: b927f349_34e5e5d2
+Bytes: 85
+just call it node_a and node_b? or better call the member variable node_a and node_b.
+
 157
 Wed Aug 10 00:00:34 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -123,6 +131,14 @@ UUID: b927f349_48780f57
 Bytes: 482
 (Is the "can't" supposed to be "can"?)
 If there's a gap between the current sibling and the next sibling, then the value really is dead there, and can be clobbered. E.g., suppose an interval is defined above a branch, but used in only one path of the branch, and there is a lifetime hole for the other branch (because of the linear block ordering). Once the dead branch is entered, there's no path back to a place where the interval is live again, and so the value can be clobbered.
+
+1019
+Wed Aug 10 18:17:19 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_48780f57
+UUID: b927f349_948dd928
+Bytes: 262
+My understanding is this if block plus the following if block will make sure that input isn't live at (defined_by->GetLifetimePosition() + 1). Then we can do two range tests on input_interval->GetLastRange() and next_sibling->GetFirstRange(). Is that equivalent?
 
 1324:50-1324:76
 Wed Aug 10 00:00:34 2016 +0000

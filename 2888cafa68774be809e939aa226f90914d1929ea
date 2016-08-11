@@ -1,0 +1,20 @@
+Revision: 2888cafa68774be809e939aa226f90914d1929ea
+Patch-set: 4
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+1054:4-1054:8
+Thu Aug 11 09:53:30 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e3721db_d2e0a4be
+Bytes: 4
+ANDQ
+
+1078:4-1078:20
+Thu Aug 11 09:53:30 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7e3721db_32ea50a2
+Bytes: 241
+Can we just "movq %rcx, %r8" at the beginning and load the component size shift straight to %rcx?
+
+Based on previous information from Intel, XCHG is slow even when operating on registers. They didn't want to use it in parallel move resolver.
+

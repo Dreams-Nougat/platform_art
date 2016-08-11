@@ -34,6 +34,20 @@ UUID: b927f349_b12b479a
 Bytes: 206
 All dex caches need to be of size 1024 because of assumptions other places in the code. There isn't a lot of space lost doing this, and we still have 95% savings total compared to previous string dex cache.
 
+1275:35-1275:77
+Thu Aug 11 18:34:16 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b927f349_b12b479a
+UUID: fefcf12c_1ee3cd2c
+Bytes: 219
+Where do we make such assumptions? I'd expect everything to be fine if we use the min() because for
+
+    index < dex_file->NumStringIds()
+
+we would access entry at
+
+    index % 1024 < min(1024, dex_file->NumStringIds())
+
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 
 96:19-96:61

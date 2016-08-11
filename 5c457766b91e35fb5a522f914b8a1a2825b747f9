@@ -1,5 +1,19 @@
 Revision: 5c457766b91e35fb5a522f914b8a1a2825b747f9
 Patch-set: 2
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1040:0-1042:61
+Thu Aug 11 18:46:32 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ee9e168_4c664025
+Bytes: 290
+If the mov encoding allows it (something that needs to be checked, I forgot the intricacies of thumb immediate encoding), the "and" and "shift" could be combined:
+
+  mov r2, (SIZE-1) << SHIFT_VALUE
+  and r2, r2, r0 lsl SHIFT_VALUE
+
+alternatively, you can include the shift in the add below.
+
 File: runtime/asm_support.h
 
 235:8-235:38

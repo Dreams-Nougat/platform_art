@@ -100,6 +100,22 @@ UUID: 7ee9e168_8c11e864
 Bytes: 223
 Yes, for the reasons that both Igor and Andreas stated above, I decided to do 1024 for all arrays. I also talked to Nicolas about it when he was here, and he was fine with doing so. I'll find numbers and upload a statistic.
 
+1275:35-1275:77
+Thu Aug 11 18:51:51 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ee9e168_ec4bd483
+UUID: 1e69c5e4_172cf493
+Bytes: 255
+Guys, this is simple math. The function
+
+    f(x) = x%1024
+
+maps the range [0,N) to [0,min(1024,N)).
+
+So, using a valid string index, you cannot map it beyond the proposed
+
+    std::min(dex_file->NumStringIds(), mirror::DexCache::kDexCacheStringCacheSize)
+
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 
 96:19-96:61

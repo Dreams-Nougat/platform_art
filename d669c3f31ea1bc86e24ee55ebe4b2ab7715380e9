@@ -140,6 +140,20 @@ UUID: 7ee9e168_ace70c12
 Bytes: 24
 And thank you @vmarko :)
 
+1275:35-1275:77
+Thu Aug 11 19:52:01 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ee9e168_ace70c12
+UUID: 7ee9e168_ffbff80e
+Bytes: 374
+Right vmarko, was overthinking this.
+
+If the array size is <1024 at runtime, don't we still want to have a bounds check everywhere we access it that the requested index is within range?
+
+Otherwise we get a buffer overrun?
+
+Maybe there's something in another part of the system which guarantees this invariant ahead of time without needing to put it into the asm entrypoints?
+
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 
 96:19-96:61

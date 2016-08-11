@@ -154,6 +154,18 @@ Otherwise we get a buffer overrun?
 
 Maybe there's something in another part of the system which guarantees this invariant ahead of time without needing to put it into the asm entrypoints?
 
+1275:35-1275:77
+Thu Aug 11 20:53:03 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ee9e168_ffbff80e
+UUID: 7ee9e168_02547fcd
+Bytes: 651
+I think that as long as it's initialized correctly and is at least the size of the initial array, we actually don't need to do any bounds checks and could even leave the % 1024 everywhere in the code. For example, if you only have 100 indices in the original dex cache, N % 1024 is the same as N % 100 for all 0-99 possible indices. So as long as the cache is at least 100 in length here, we would never get a buffer overrun, even when we % 1024. This holds for any size < 1024.
+
+So actually, you don't need to even know what the initial size of the cache (NumStringIds()) was anywhere in the code except where it is allocated. 
+
+Am I correct on this?
+
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 
 96:19-96:61

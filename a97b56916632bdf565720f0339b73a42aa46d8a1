@@ -27,6 +27,20 @@ UUID: 7ee9e168_e998666c
 Bytes: 44
 What does the magic combination of 0/1 mean?
 
+163
+Thu Aug 11 18:19:09 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ee9e168_e998666c
+UUID: 7ee9e168_e974e6cb
+Bytes: 797
+The above comment attempts to explain the following:
+
+In the assembly entrypoints, we check to see if the index we are looking for is the same as the index loaded from the dex cache. If it is the same, we just return the pointer. To spare an additional check and potential branch in the assembly (when the 0th index (which is initialized to 0) has a pointer that is null, but still matches a string index of 0 if we are looking for that string index). So, when we SetStrings, I initialize the first index to 1 instead to avoid a: returning a pointer that is equal to 0 and b: needing to add an extra assembly branch which adds more time to the entrypoints.
+
+Does that make sense? 
+
+The pointer is initialized to 0 because anything other than a valid pointer or 0 throws a GCException in MarkSweep.
+
 File: runtime/utils/dex_cache_arrays_layout-inl.h
 
 52

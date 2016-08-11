@@ -2,6 +2,20 @@ Revision: e23a24f26243c6a720c03e961b9ae81abe75cce0
 Patch-set: 2
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
+913:0-913:58
+Thu Aug 11 01:12:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ee9e168_e82f47ed
+Bytes: 37
+Line 913 is a dup of 912. Remove one?
+
+915:36-915:41
+Thu Aug 11 01:12:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ee9e168_68245715
+Bytes: 6
+x86_64
+
 1020:4-1020:64
 Wed Aug 10 02:23:59 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,6 +30,27 @@ UUID: 99106f07_7341a092
 Bytes: 192
 Use ANDQ; ANDL breaks the overflow reasoning above. And we need to specify the literal as full 64 bits, so we'd be better served by "-OBJECT_ALIGNMENT_MASK" than OBJECT_ALIGNMENT_MASK_TOGGLED.
 
+1099
+Thu Aug 11 01:12:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ee9e168_8859db3e
+Bytes: 127
+Consider using a macro (GENERATE_ALLOC_OBJECT_REGION_TLAB) to avoid code dup between the three versions like the arm64 version?
+
+1117:0-1121:78
+Thu Aug 11 01:12:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ee9e168_280bef31
+Bytes: 150
+Reorder these so that ALLOC_OBJECT_TLAB_FAST_PATH will be in the straightline position (gc_marking = false is the most common) like the arm64 version?
+
+1150:0-1154:96
+Thu Aug 11 01:12:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ee9e168_08002b08
+Bytes: 5
+Same.
+
 1158
 Wed Aug 10 12:10:14 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,6 +59,21 @@ Bytes: 195
 Do we need 16-byte stack alignment on x86-64? (At this point we don't have it because of the return address.)
 
 If we do, fix also the art_quick_alloc_object_region_tlab where this is copied from.
+
+1158
+Thu Aug 11 01:12:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 99f78f09_9b6e0b32
+UUID: 7ee9e168_281acf76
+Bytes: 43
+We need 16-byte stack alignment for x86-64.
+
+1183:0-1187:102
+Thu Aug 11 01:12:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ee9e168_081f0b67
+Bytes: 5
+Same.
 
 1191
 Wed Aug 10 12:10:14 2016 +0000

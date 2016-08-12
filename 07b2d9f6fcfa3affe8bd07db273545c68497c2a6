@@ -22,6 +22,20 @@ And it's faster than having the fast path be inlined here?
 
 At the very least calling it "LoadStringSlowPath" seems inaccurate since it's still a fast path.
 
+5598
+Fri Aug 12 20:18:21 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dedd6d2d_f1b270f5
+UUID: dedd6d2d_f7c6e043
+Bytes: 404
+String lookup always goes to the entrypoint now instead of having inline code made by the compiler, yes.
+
+Vmarko is adding the compiler code because it is being handled differently.
+
+No, it is not faster, but it is good enough for now (looked at regression with Nicolas/etc.) until vmarko adds his code here.
+
+It is somewhat of a medium path, and I think calling it a slow path in here is still accurate.
+
 File: compiler/optimizing/code_generator_mips.cc
 
 4594:65-4594:67
@@ -30,6 +44,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dedd6d2d_0c75ff5c
 Bytes: 12
 Extra spaces
+
+4594:65-4594:67
+Fri Aug 12 20:18:21 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dedd6d2d_0c75ff5c
+UUID: dedd6d2d_771bb02b
+Bytes: 4
+Done
 
 File: runtime/class_linker-inl.h
 
@@ -62,6 +84,16 @@ When it's allocating the raw_arrays how is it doing the alignment? I think asm c
 Maybe it's unnecessary but since it's being allocated in a "chunk" I am a bit wary of this.
 
 (just put it into the initialize helper if you end up making one)
+
+1291
+Fri Aug 12 20:18:21 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dedd6d2d_d7f724be
+UUID: dedd6d2d_09c7ac41
+Bytes: 438
+The allocation for raw_arrays happens on line 2091 of this file, using layout->Size(), which is guaranteed to be aligned correctly (to 8). That check is done in dex_cache_arrays-inl.h, Alignment().
+
+(Also, it's definitely aligned correctly because the asm code would be failing (a few of the instructions depend on it being 8b aligned or else they SEGFAULT), and they are succeeding. Not to mention that the Alignment() check is passing.)
 
 1298
 Fri Aug 12 17:49:25 2016 +0000
@@ -100,6 +132,14 @@ Personally I found this comment a bit confusing, something with examples might b
    // Set the initial state for the 0th entry to be {0,1} which is guaranteed to fail the lookup string id == stored id branch.
 
 This also doubles as documentation for what the valid values are in the dex cache array. This also means putting in DCHECK(string is not null) is a good idea to enforce the invariant.
+
+1301
+Fri Aug 12 20:18:21 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dedd6d2d_6c06832a
+UUID: dedd6d2d_b719b8da
+Bytes: 4
+Done
 
 File: runtime/interpreter/interpreter_common.h
 

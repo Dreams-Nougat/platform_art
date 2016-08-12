@@ -117,6 +117,14 @@ I definitely saw the DexCacheArraysLayout::Alignment checks and they are static 
 
 The problem is because the allocation is done from the heap we have to be extra careful that it's aligned (usually malloc is aligned to max_align_t but I mean we actually use a custom allocator which theoretically could align less). *Plus* since the string is offset off of raw arrays it could still get throw off the alignment by accident if we introduce a new field at some point.
 
+1291
+Fri Aug 12 23:54:24 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dedd6d2d_a9c23801
+UUID: dedd6d2d_5ca7b4a1
+Bytes: 218
+Would this be fixed by adding a DCHECK below to make sure that the alignment is 8? Or by changing the Alignment check to be a DCHECK? The alignment check makes sure that the entire cache is 8b aligned, which is enough.
+
 1298
 Fri Aug 12 17:49:25 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

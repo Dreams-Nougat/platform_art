@@ -1,0 +1,149 @@
+Revision: 07b2d9f6fcfa3affe8bd07db273545c68497c2a6
+Patch-set: 7
+File: compiler/oat_writer.cc
+
+1197
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_f1db5045
+Bytes: 19
+nit: 1 arg per line
+
+File: compiler/optimizing/code_generator_arm.cc
+
+5598
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_f1b270f5
+Bytes: 258
+So string lookup always go to the entrypoint now instead of having inline code made by the compiler?
+
+And it's faster than having the fast path be inlined here?
+
+At the very least calling it "LoadStringSlowPath" seems inaccurate since it's still a fast path.
+
+File: runtime/class_linker-inl.h
+
+73
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_6c2923ec
+Bytes: 442
+Not sure if it's repeated elsewhere but this can probably be moved to a helper inside of the struct
+
+  struct StringDexCache... {
+     static mirror::String* lookupString(StringDexCachePair* dex_cache, uint32_t string_idx) {
+       StringDexCachePair index_string = dex_cache[string_idx % ....].load(memory_order_relaxed);
+       if (index != index_string.string_idx) return nullptr;
+       return index_string.getStringPointer();
+      }
+  }
+
+File: runtime/class_linker.cc
+
+1298
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_2c063b7b
+Bytes: 168
+Consider also moving this to a static helper inside of StringDexCache array, e..g
+
+
+   static void initialize(StringDexCachePair* array, uint32_t size) {
+      ...
+   }
+
+1301
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_6c06832a
+Bytes: 1275
+Personally I found this comment a bit confusing, something with examples might be more clear
+
+   // The array is initially [ {0,0}, {0,0}, {0,0} ... ]
+
+   // We maintain the invariant that once a dex cache entry is populated, the pointer is always non-0
+   // Any given entry would thus be:
+   // {non-0, non-0} OR {0,0}
+   // (i.e. a {0, non-0} state is an indeterminate value)
+   //
+   // It's generally sufficiently enough then to check if the
+   // lookup string index matches the stored string index (for a >0 string index) because if it's true the pointer is also non-null.
+   
+   // For the 0th entry which is a special case, the value is either
+   // {0,0} (initial state) or {NON_NULL, 0} which indicates
+   // that a valid string is stored at that index for a dex string id of 0.
+   //
+   // As an optimization, we want to avoid branching on the string pointer since it's always non-null if the string id branch succeeds (except for the 0th string id).
+   // Set the initial state for the 0th entry to be {0,1} which is guaranteed to fail the lookup string id == stored id branch.
+
+This also doubles as documentation for what the valid values are in the dex cache array. This also means putting in DCHECK(string is not null) is a good idea to enforce the invariant.
+
+File: runtime/interpreter/interpreter_common.h
+
+276
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_0c3dffbd
+Bytes: 36
+This can also use the lookup helper.
+
+File: runtime/mirror/class-inl.h
+
+906:61-906:69
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_cc495767
+Bytes: 108
+? Why?
+
+  return GetFieldPtr64<StringDexCacheType*>(DexCacheStringsOffset()) seems like it should be enough.
+
+File: runtime/mirror/dex_cache-inl.h
+
+43
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_ccbf970f
+Bytes: 46
+This can also use the lookup dex cache helper.
+
+46
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_8cbe6f15
+Bytes: 82
+nit: redundant check
+
+  if (index != string_idx) { return nullptr; }
+  return ptr;
+
+File: runtime/mirror/dex_cache.h
+
+59
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_0cca5fb8
+Bytes: 6
+? Why?
+
+File: runtime/utils/dex_cache_arrays_layout-inl.h
+
+52
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_8ce3cf2a
+Bytes: 230
+I don't think it was ever addressed where this requirement came from.
+
+I can think of a few possibilities but it would be good to know for certain which it was.
+
+It should probably be alignof(StringDexCachePair) == 8 here as well?
+
+53:16-53:24
+Fri Aug 12 17:49:25 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_ccd4f749
+Bytes: 36
+return alignof(StringDexCachePair) ?
+

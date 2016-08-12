@@ -1,0 +1,84 @@
+Revision: 9e64e8e7af8a094a72a4c78753a3e0ea291ddda0
+Patch-set: 5
+File: compiler/utils/mips64/assembler_mips64.cc
+
+1039:49-1039:50
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ed9290e_705eb026
+Bytes: 12
+add a period
+
+File: compiler/utils/mips64/assembler_mips64.h
+
+74:0-74:6
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5e8a5ddc_c1a002e5
+Bytes: 13
+static inline
+
+167:0-174:24
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3ea129ab_70e3d02b
+Bytes: 818
+Move Daddiu+Dahi/Daddiu+Dati up to just after Lui+Dahi/Lui+Dati and implement them similarly.
+
+The only practical differences between the two pairs should be:
+
+1. the beginning of the condition:
+
+    if ((value & 0xFFFF) == 0 &&
+
+changes to
+
+    if (IsInt<16>(static_cast<int32_t>(value)) &&
+
+2. Lui(rd, value >> 16) changes to Daddiu(rd, ZERO, value)
+
+3. different path constants
+
+tmp2_int32 and tmp3 go away.
+
+tmp2 goes back to where it was, to the catch-all path at the end.
+
+What this gives us: the conditions include only the original value and just one value derived from it (bit31), both clearly named, there are no cryptic temporary variables defined far away from where they are used and calculated in non-obvious ways when taken out of the context at the place of definition. No extra comments needed either.
+
+213:0-222:9
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_c04e8096
+Bytes: 26
+a->LoadConst32(rd, value);
+
+528:51-528:52
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1ede25f7_4f574d39
+Bytes: 12
+add a period
+
+File: compiler/utils/mips64/assembler_mips64_test.cc
+
+1754:0-1754:2
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fe44f189_3ec9295b
+Bytes: 15
+Just one space.
+
+1755:6-1755:22
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fe44f189_1eceed62
+Bytes: 28
+Still not loadconst64_paths_
+
+1760:2-1760:4
+Fri Aug 12 22:19:46 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7ebc8197_705c685c
+Bytes: 179
+While this is not consistent throughout the code base, it is preferred to indent array initializers with 4 spaces under the declaration, as I asked (0 under t of const and so on).
+

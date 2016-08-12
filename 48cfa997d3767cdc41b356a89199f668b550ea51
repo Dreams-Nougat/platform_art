@@ -2,10 +2,123 @@ Revision: 48cfa997d3767cdc41b356a89199f668b550ea51
 Patch-set: 12
 File: runtime/arch/arm/quick_entrypoints_arm.S
 
+1039
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_376da833
+Bytes: 127
+I think most people know what all the incoming input registers are but it wouldn't hurt to document it in a comment regardless.
+
+1043:18-1043:21
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_97a75c4f
+Bytes: 464
+This 0 should be STRING_DEX_CACHE_LEAST_SIG_BIT_MINUS_ONE
+
+or you can just leave it as 0 and remove the constant, I don't know if it buys us anything because it's not like the index will ever be not at the 0th spot unless you change the hashing algorithm (which wouldn't make sense since the IDs are contiguous so % is already pretty close to optimal without taking into account which strings are actually loaded, but then you'd probably not want to use % either).
+
+1045
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_f777c064
+Bytes: 61
+Sidenote: Too bad arm32 doesn't have 64-bit load atomicity...
+
 1048:15-1048:17
 Fri Aug 12 17:56:54 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dedd6d2d_ecb293f5
 Bytes: 105
 Need read barrier on result if USE_READ_BARRIER is defined, recommend calling artReadBarrierMark for now.
+
+File: tools/cpp-define-generator/constant_dexcache.def
+
+21
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_3780485d
+Bytes: 443
+Ok I think the point of this is that instead of
+
+
+  ptr_address = array + index * sizeof(...)
+
+it does a 
+ 
+  ptr_address = array + index << shift;
+
+right (in assembly)?
+
+That should probably be documented here as a comment.
+
+Also do we really have this convention elsewhere (vmarko?), it's a bit confusing because it's useless as a shift by itself unless followed by a ST/LD. Something like PTR_SHIFT or SIZE_SHIFT might be a superior suffix.
+
+22
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_f7d0a0cb
+Bytes: 257
+STRING_DEX_CACHE_INDEX_MASK
+
+"MASK" because it's a bit mask (needs to be &d or |d)
+
+INDEX because applies this mask (i.e. foo & mask) returns the array index into the dex cache.
+
+(or possibly ELEMENT_MASK if the ELEMENT above is referring to the same thing)
+
+23
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_d7c3a403
+Bytes: 10
+whitespace
+
+24
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_d771e4eb
+Bytes: 193
+Why is this even necessary, it's not shifted so it's just 0.
+
+It would just be the STRING_DEX_CACHE_INDEX_MASK_SHIFT at any rate if I remember our undocumented asm naming conventions correctly.
+
+File: tools/cpp-define-generator/offset_dexcache.def
+
+30
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_b747f8a9
+Bytes: 10
+whitespace
+
+32
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_b7fff800
+Bytes: 254
+This should probably go into offset_class.def but I don't feel that strongly about it.
+
+I'm surprised nobody caught me earlier, this whole file should've been offset_art_method.def because it doesn't have offsets into DexCache but into ArtMethod instead.
+
+33
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_57b8748b
+Bytes: 10
+whitespace
+
+40
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_d74484a7
+Bytes: 26
+check whitespace alignment
+
+41
+Fri Aug 12 18:31:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_f7418094
+Bytes: 26
+check whitespace alignment
 

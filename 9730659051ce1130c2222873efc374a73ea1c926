@@ -1,0 +1,26 @@
+Revision: 9730659051ce1130c2222873efc374a73ea1c926
+Patch-set: 12
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1121
+Fri Aug 12 18:48:45 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_72d49eba
+Bytes: 465
+This seems like it's too strong because cmpxchg has an implicit LOCK so it could just slow down this path unnecessarily.
+
+According to Intel Architectures Software Developer's Manual documentation Vol3A, 8.1.1:
+
+> The Pentium processor (and newer processors since) guarantees that the following additional memory operations
+will always be carried out atomically:
+> • Reading or writing a quadword aligned on a 64-bit boundary
+
+Consider MOVLPS/MOVHPS here instead.
+
+1130
+Fri Aug 12 18:48:45 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_328136aa
+Bytes: 42
+nit: align comments whitespace if possible
+

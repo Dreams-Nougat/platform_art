@@ -50,6 +50,19 @@ Not sure if it's repeated elsewhere but this can probably be moved to a helper i
 
 File: runtime/class_linker.cc
 
+1291
+Fri Aug 12 18:34:53 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dedd6d2d_d7f724be
+Bytes: 386
+When it's allocating the raw_arrays how is it doing the alignment? I think asm code relies on this to be aligned properly, do you already have a DCHECK_ALIGNED somewhere?
+
+  DCHECK_ALIGNED(strings, alignof(StringDexCacheType))
+
+Maybe it's unnecessary but since it's being allocated in a "chunk" I am a bit wary of this.
+
+(just put it into the initialize helper if you end up making one)
+
 1298
 Fri Aug 12 17:49:25 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

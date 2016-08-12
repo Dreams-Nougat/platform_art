@@ -9,6 +9,24 @@ UUID: b9a8d3f4_8c54072f
 Bytes: 141
 Add a second space even if NOLINT. This is copy-pasted, so maybe do it everywhere in a cleanup CL. What is the warning we're trying to avoid?
 
+45:62-45:63
+Fri Aug 12 11:11:59 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a8d3f4_8c54072f
+UUID: 1e0d452c_177cd4e4
+Bytes: 833
+This was copied from compiler/optimizing/code_generator_arm.cc, where it was introduced by https://android-review.googlesource.com/#/c/224428/. From the bug referenced in the CL (b/28705665), this was to avoid spurious misc-macro-parentheses warnings.
+
+Removing the NOLINT tag and building with clang-tidy enabled indeed shows this warning:
+
+  warning: macro replacement list should be enclosed in parentheses [misc-macro-parentheses]
+  /ssd2/aosp-art/art/compiler/optimizing/code_generator_arm.cc:63:34: warning: macro replacement list should be enclosed in parentheses [misc-macro-parentheses]
+  #define __ down_cast<ArmAssembler*>(codegen->GetAssembler())->
+                                   ^
+             (                                                  )
+
+I have another CL in the works to address the issue in others files.
+
 File: compiler/optimizing/intrinsics_arm64.cc
 
 154
@@ -17,6 +35,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 59b43747_d1eea4f0
 Bytes: 47
 Remove the extra line. (Doesn't lint complain?)
+
+154
+Fri Aug 12 11:11:59 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 59b43747_d1eea4f0
+UUID: 1e69c5e4_7785306c
+Bytes: 58
+Ah, missed this one. Yeah, the linter does complain. Done.
 
 File: compiler/optimizing/intrinsics_x86.cc
 
@@ -37,6 +63,14 @@ For constant src_pos, fold it into offset. For non-constant src_pos, merge the m
       __ movl(temp2, Address(src, temp3, ScaleFactor::TIMES_4, offset));
     }
 
+122:0-131:70
+Fri Aug 12 11:11:59 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39b5c344_b090389c
+UUID: 3eeda907_d0f49c88
+Bytes: 4
+Done
+
 147:0-156:71
 Wed Aug 10 16:59:43 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,10 +78,26 @@ UUID: 39cea3f0_280a2bd1
 Bytes: 119
 ditto; Maybe we should have a helper function that may or may not emit leal and returns the Address for the load/store.
 
+147:0-156:71
+Fri Aug 12 11:11:59 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 39cea3f0_280a2bd1
+UUID: 3eeda907_b0e918af
+Bytes: 4
+Done
+
 160:0-167:5
 Wed Aug 10 16:59:43 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b9a8d3f4_cc5e0f4b
 Bytes: 51
 x86_codegen->GenerateIntCompare(temp1_loc, length);
+
+160:0-167:5
+Fri Aug 12 11:11:59 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b9a8d3f4_cc5e0f4b
+UUID: 3eeda907_90ee14b3
+Bytes: 4
+Done
 

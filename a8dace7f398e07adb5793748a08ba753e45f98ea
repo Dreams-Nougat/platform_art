@@ -1,0 +1,15 @@
+Revision: a8dace7f398e07adb5793748a08ba753e45f98ea
+Patch-set: 18
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1045
+Mon Aug 15 09:40:13 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fe1dd11b_5611f4ab
+Bytes: 384
+Why use a load exclusive? Is this what was mentioned the other day, where you try to achieve atomicity?
+
+Unless other code accessing the target memory also use load/store exclusive, I don't think the 'exclusive' brings anything.
+
+Is what you want to know whether the LDRD is loads the 64 bits atomically? In this case have a look at `ArmInstructionSetFeatures::has_atomic_ldrd_strd_`.
+

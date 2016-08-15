@@ -23,3 +23,29 @@ I am not sure if we're even supporting anything older than ARMv7, is it ever the
 
 We already use LDRD/STRD elsewhere in this file assuming it is atomic.
 
+1045
+Mon Aug 15 17:27:43 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fe9071cc_3e17c9a4
+UUID: 9e6cd5b9_739340f6
+Bytes: 1408
+Ok, I had looked into this at the time of this change, and per the arm instruction manual:
+
+"LDM, LDC, LDC2, LDRD, STM, STC, STC2, STRD, PUSH, POP, RFE, SRS, VLDM, VLDR, VSTM, and VSTR instructions are executed as a sequence of word-aligned word accesses. Each 32-bit word access is guaranteed to be single-copy atomic. The architecture does not require subsequences of two or more word accesses from the sequence to be single-copy
+atomic.
+
+LDRD and STRD accesses to 64-bit aligned locations are 64-bit single-copy atomic as seen by translation table walks
+and accesses to translation tables."
+
+Further down, the manual mentions that this means there are more restrictions on where translation tables are in order for them to meet the atomicity requirements. 
+
+To be safe, I had decided to not assume that ldrd is atomic, since technically it never says that it is atomic in all cases on v7 and on. Perhaps I was too conservative--which would be awesome for me because it would reduce the time this takes pretty significantly.
+
+Also, in instruction_set_features_arm_test.cc, we perform the following: 
+
+  EXPECT_FALSE(arm7_features->AsArmInstructionSetFeatures()->HasAtomicLdrdAndStrd());
+
+This leads me to believe further that I shouldn't be assuming ldrd/strd are atomic, but again, I would love to be wrong!
+
+Do either of you have more insight on whether or not I can make this assumption given the above?
+

@@ -36,6 +36,16 @@ That's strange, Load-Exclusive should update both local and global monitor to ex
 
 Perhaps someone else has more insight? (and hopefully you're not testing on volantis which is free for any exclusive operation)
 
+1799
+Mon Aug 15 20:29:07 2016 +0000
+Author: Christina Wadsworth <1109993@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb2a4379_2e9d4756
+UUID: bb30cbe9_2c4f93c6
+Bytes: 426
+I actually had to switch from just a load-exclusive to a load, then separate the two 32-bit halves into different registers, which was 3-4 instructions total. I am happy to re measure if it's best. Also, it was the same time, so I'm happy to just switch it to be safe.
+
+And no, exclusive would have done something. Arm shot up time-wise when I changed ldrd to ldrexd (by 100%) but arm64 had no change. It was strange, I agree.
+
 1806
 Fri Aug 12 18:38:58 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

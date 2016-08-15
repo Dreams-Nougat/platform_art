@@ -67,3 +67,19 @@ UUID: 9e6cd5b9_b36eb894
 Bytes: 207
 Ok, so ldrd sounds ok to use here. If someone else will confirm for me that ldrd is ok to use here since it is a relatively important change (@igor?), I would love to switch to that (will save us time yay!).
 
+1045
+Mon Aug 15 19:59:19 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9e6cd5b9_b36eb894
+UUID: 9e6cd5b9_f9ee4fb3
+Bytes: 924
+Is it even correct even if we do assume they all have LPAE? I looked up the quote Christiana talked about (A3.5.3 in the ARM Architecture Reference Manual ARMv7-A and ARMv7-R Edition)
+
+and it seemed to imply that even if you have LPAE extension it still doesn't mean 64-bit memory accesses outside of the translation table are guaranteed to be atomic.
+
+> The Large Physical Address Extension adds this requirement to avoid the need for complex measures to avoid atomicity issues when changing translation table entries, *without  creating a requirement that all locations in the memory system are 64-bit single-copy atomic*.
+
+Is there some undocumented quirk here that all systems with LPAE have 64-bit LDRD/STRD atomicity for any memory access?
+
+I haven't looked at the other uses of these instructions in this file but maybe it's just a shorthand for 2 exclusive loads to 32-byte locations with 1 instruction instead of 2.
+

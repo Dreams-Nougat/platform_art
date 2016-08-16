@@ -91,3 +91,16 @@ UUID: 7b8573c7_82a8ba71
 Bytes: 185
 AFAIK, the implication is that 64-bit aligned LDRD/STRD are atomic. I will double check with the local expert when he comes in today. And this will likely deserve a comment in the code!
 
+1045
+Tue Aug 16 08:47:18 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7b8573c7_82a8ba71
+UUID: 7b8573c7_42f07291
+Bytes: 377
+Confirmed with our Linux Kernel memory expert: with LPAE, if the access is 64-bit aligned, it will be atomic.
+
+In the ARM ARM, this is described by the note under what you found in section 3.5.3:
+
+"The system designer must ensure that all writable memory locations that might be used to hold translations,
+such as bulk SDRAM, can be accessed with 64-bit single-copy atomicity."
+

@@ -1,0 +1,141 @@
+Revision: 07ba50b35651197d55c146e99e6f2d0eecf60441
+Patch-set: 15
+File: runtime/arch/stub_test.cc
+
+1213:2-1214:106
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_2abc337d
+Bytes: 193
+Don't do it this way. Disable the test. Look for some DISABLED_FOR or so macros.
+
+(Also, why are you turning this off if compression is off, anyways? Everything should still be working, right?)
+
+File: runtime/intern_table.cc
+
+389:2-390:100
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_aa7d83bf
+Bytes: 105
+Is this correct? Utf8String doesn't mean ASCII string, normally... (when ASCII == 0x00-0xff like you did)
+
+File: runtime/jdwp/jdwp_bits.h
+
+69:100-69:114
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_ea9ceb09
+Bytes: 12
+Line length.
+
+File: runtime/mirror/string-inl.h
+
+19:0-47:17
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_bf5ce3f5
+Bytes: 149
+Whatever automatic tool you used, it's not following our style.
+
+STL, posix, etc libraries first, in '<' '>'. Our headers separated second, with '"'.
+
+88:4-88:53
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_1f65efb0
+Bytes: 52
+Add a DCHECK for now to assert it is not compressed.
+
+90:21-90:41
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_ca380737
+Bytes: 81
+Make this a static helper in String, to keep things centralized and discoverable.
+
+121:24-121:50
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_2a019360
+Bytes: 81
+Make this a static helper in String, to keep things centralized and discoverable.
+
+184:11-184:32
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_4a06577a
+Bytes: 24
+Should not be necessary.
+
+226:16-226:18
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_8a719f11
+Bytes: 13
+Remove indent
+
+260:2-260:65
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_ea5f0b7b
+Bytes: 26
+See comment in .cc file...
+
+309:2-315:3
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_2a4f53c6
+Bytes: 105
+It's more intention-revealing if you refactor so that there is an outermost "if (kIsDebugBuild)" there...
+
+File: runtime/mirror/string.cc
+
+97:2-98:34
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_9ff9dfe3
+Bytes: 174
+Don't use commented code. Use a constexpr bool somewhere to toggle this.
+
+ constexpr bool kUseCompression = false;
+ [...]
+ const bool compressible = kUseCompression && (...);
+
+99:100-99:107
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_dfd8c77d
+Bytes: 14
+Line too long.
+
+136:74-136:75
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_3fe47333
+Bytes: 27
+Align on next line with '?'
+
+304:2-309:5
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_3f51d3e1
+Bytes: 76
+Why not two cases here, to avoid performance regression for the common case?
+
+362:8-362:21
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_df5527ce
+Bytes: 73
+Why is zero not OK? And there are no uint16_t values smaller than zero...
+
+File: runtime/utf.cc
+
+173:0-187:1
+Tue Aug 16 16:08:33 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3bd93b0e_4a65f716
+Bytes: 21
+Could use a template.
+

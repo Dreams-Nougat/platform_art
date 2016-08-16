@@ -1,0 +1,98 @@
+Revision: bb98f0a1625284063ec07c8bd82d0eaefa1442b8
+Patch-set: 17
+File: runtime/debugger.cc
+
+4330:9-4330:21
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_e3b0e6d8
+Bytes: 13
+is_compressed
+
+File: runtime/globals.h
+
+151:0-152:46
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_23c80e55
+Bytes: 64
+Put this into string.h, which sounds more like where it belongs?
+
+File: runtime/intern_table.cc
+
+390:4-397:7
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_c3b84ab9
+Bytes: 1
+?
+
+File: runtime/mirror/string-inl.h
+
+70:4-70:55
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_a3e41ed4
+Bytes: 173
+That's the wrong check. Just because compression is on doesn't mean all strings are compressed. You probably want the implication "string is compressed" --> kUseCompression.
+
+244:35-244:49
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_83064277
+Bytes: 52
+Is this correct? Shouldn't this depend on high_byte?
+
+244:100-244:103
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_c32e8af1
+Bytes: 14
+Line too long.
+
+268:100-268:101
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_63bcd67e
+Bytes: 14
+Line too long.
+
+File: runtime/mirror/string.cc
+
+369:0-379:1
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_037b12ca
+Bytes: 35
+Move to header (see comment there).
+
+File: runtime/mirror/string.h
+
+67:11-67:49
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_c3c20a02
+Bytes: 22
+Use the static helper.
+
+96:71-96:81
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_83dac2e3
+Bytes: 124
+Exposing _with_flag means that callers need to know about compression. Maybe consider another private method if you have to.
+
+176:4-177:41
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_03e6b2a8
+Bytes: 32
+Use GetCompressionFlagFromCount.
+
+184:2-188:54
+Tue Aug 16 22:25:53 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dbdd7f2d_c3704aea
+Bytes: 85
+These should be defined here so they can be inlined. May annotate with ALWAYS_INLINE.
+

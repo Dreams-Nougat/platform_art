@@ -2,6 +2,36 @@ Revision: 29b386aabba1b8a1fc356cffd95f9c14614b7586
 Patch-set: 14
 File: runtime/class_linker.cc
 
+1292
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_4e0ba7f7
+Bytes: 93
+nit: makes it non-obvious this code is debug-only, I recommend wrapping in if (kIsDebugBuild)
+
+1293
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_2efc73d7
+Bytes: 59
+nit: CHECK, not DCHECK if its inside of kIsDebugBuild guard
+
+1293
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_eea41bfb
+Bytes: 55
+nit: use CHECK if it's already guraded by kIsDebugBuild
+
+1295
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_6e066bf3
+Bytes: 56
+???
+
+Why is this store not happening for release builds?
+
 2100:2-2100:12
 Tue Aug 16 17:33:17 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,4 +46,80 @@ Parent: 3bd93b0e_b7c5e73a
 UUID: 3b1e9ba6_88d59746
 Bytes: 117
 I think it's reasonable to be a static_assert because it does make the assumption it's 8 byte aligned in the asm code
+
+2118
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_eef9bbe2
+Bytes: 21
+Why would it be null?
+
+File: runtime/mirror/dex_cache.h
+
+66
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_4ee44734
+Bytes: 16
+nit: line length
+
+67
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_eed25b5a
+Bytes: 16
+nit: line length
+
+87
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_ae5503cf
+Bytes: 59
+nit: Why is it necessary to have this extra function again?
+
+186
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_8e52bfe2
+Bytes: 58
+return GetFieldPtr64<StringDexCacheType*>(StringsOffset())
+
+274
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_ee5ffbe8
+Bytes: 16
+nit: line length
+
+File: runtime/mirror/dex_cache_test.cc
+
+45
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_2e6bd387
+Bytes: 25
+nit: 4 space extra indent
+
+File: runtime/utils/dex_cache_arrays_layout-inl.h
+
+52:24-52:32
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_ae7ea342
+Bytes: 27
+alignof(StringDexCacheType)
+
+53
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_6e65cbb0
+Bytes: 34
+return alignof(StringDexCacheType)
+
+98
+Tue Aug 16 19:57:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3b1e9ba6_ce75d75f
+Bytes: 61
+cache_size = std::min(kDexCacheStringCacheSize, num_elements)
 

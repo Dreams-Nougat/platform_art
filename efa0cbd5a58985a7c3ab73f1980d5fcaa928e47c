@@ -1,0 +1,20 @@
+Revision: efa0cbd5a58985a7c3ab73f1980d5fcaa928e47c
+Patch-set: 3
+File: runtime/thread-inl.h
+
+227:6-227:35
+Wed Aug 17 22:47:50 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb77a30c_55079625
+Bytes: 357
+Having this here doesn't seem safe because the GC thread flip may see the thread here and waits for a thread flip function to be called by the thread but the thread could get suspended again after this Locks::thread_suspend_count_lock_ critical section and block again, in which case the GC thread flip will wait for it for too long and cause timeouts, etc.
+
+File: runtime/thread_list.cc
+
+438:19-438:29
+Wed Aug 17 22:47:50 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fb77a30c_959cae09
+Bytes: 286
+Given how kSuspended is currently used in many places, it doesn't look like a good idea to use it to detect a situation where the thread is just suspended for a thread flip and will go back to kRunnable soon after (without suspending all threads or going into to a GC critical section).
+

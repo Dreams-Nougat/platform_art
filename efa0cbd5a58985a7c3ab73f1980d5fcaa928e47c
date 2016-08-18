@@ -9,6 +9,14 @@ UUID: fb77a30c_55079625
 Bytes: 357
 Having this here doesn't seem safe because the GC thread flip may see the thread here and waits for a thread flip function to be called by the thread but the thread could get suspended again after this Locks::thread_suspend_count_lock_ critical section and block again, in which case the GC thread flip will wait for it for too long and cause timeouts, etc.
 
+227:6-227:35
+Thu Aug 18 00:25:18 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fb77a30c_55079625
+UUID: bb7c4b2e_0f6a2915
+Bytes: 141
+Actually never mind. This delay risk already exists for the thread suspended at a normal suspend point (FullSuspendCheck) at low probability.
+
 File: runtime/thread_list.cc
 
 438:19-438:29

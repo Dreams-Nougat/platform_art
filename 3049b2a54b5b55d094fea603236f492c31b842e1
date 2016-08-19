@@ -23,3 +23,20 @@ I've kept all the ART-related code in AbstractMethod for now because not everyth
 
 I think it could move up in this case if we wanted to.
 
+33
+Fri Aug 19 18:39:30 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a846bf69_232a0a7c
+UUID: e8f9973d_ac94abdb
+Bytes: 741
+It's very confusing now where the actual code lives.
+
+Just looking at the APIs all the real inherited logic should come from Executable (if not on the original class that had it).
+
+The next person to come look at this will have to dig through a lot of java code in libcore and understand its intricacies of why everything was moved to AbstractMethod.
+
+--------
+I have no comment regarding the structure of the java code but it would be really good if the JNI code wasn't all just in AbstractMethod.cc .
+
+If putting it into java_lang_reflect_Executable doesn't make sense (since it doesn't really have native functions! and you can't have default natives in Java), what if we put it into the AnnotatedElements equivalent cc file (or similar)?
+

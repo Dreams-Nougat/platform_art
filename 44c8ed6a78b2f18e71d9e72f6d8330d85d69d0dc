@@ -9,6 +9,16 @@ UUID: e86a77fa_582c01fe
 Bytes: 39
 Can we add a test that covers this bug?
 
+14:6-14:21
+Mon Aug 22 20:22:41 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e86a77fa_582c01fe
+UUID: e86a77fa_b87b9552
+Bytes: 383
+Not in a CL that wouldn't add some major test infrastructure.
+
+We don't do zygote/image space testing besides the "does it load correctly?," or "does it still run without an image." Loading behavior is not tested, and is non-trivial to do for this. Even your oat-file-assistant test doesn't do this (because it is easier to write a real test for "app" dex files than the boot image).
+
 File: runtime/gc/space/image_space.cc
 
 1514:34-1515:26
@@ -18,10 +28,28 @@ UUID: c89e9321_434b9533
 Bytes: 77
 Add CHECK(!has_cache) to double check validate_oat_file is set properly here?
 
+1514:34-1515:26
+Mon Aug 22 20:22:41 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c89e9321_434b9533
+UUID: e86a77fa_98efb918
+Bytes: 344
+Not relevant, I'd think (and we did have validation off for this before). You'd get here if there was a cache image, but the cache didn't match. It felt reasonable behavior to then take the system image directly if relocation is not required.
+
+That is prior behavior (original lines 463-469), just teased apart / made a bit more legible (IMHO).
+
 1566:58-1566:64
 Mon Aug 22 17:22:46 2016 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c89e9321_8368bd8d
 Bytes: 109
 I think this was 'true' before the refactor. Though presumably it should be valid given you just compiled it?
+
+1566:58-1566:64
+Mon Aug 22 20:22:41 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c89e9321_8368bd8d
+UUID: e86a77fa_787c5d7d
+Bytes: 172
+It was, but it felt inconsistent with what we do for relocation. It's in a sense a double check - do we trust GenerateImage or not? That was my reasoning. Opinions welcome.
 

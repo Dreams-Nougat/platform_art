@@ -29,6 +29,20 @@ If kUseBakerReadBarrier is false, we should negate the result of AtomicTestAndSe
 
 File: runtime/gc/collector/concurrent_copying.cc
 
+1308:56-1308:59
+Tue Aug 23 23:17:06 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 88357b64_4c3ee0ba
+Bytes: 70
+After the offline discussion with Hans, this should be a StoreRelaxed.
+
+1582:17-1582:38
+Tue Aug 23 23:17:06 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 88357b64_ec69f4c6
+Bytes: 34
+and this should be a load acquire.
+
 1583:12-1583:43
 Tue Aug 23 22:48:18 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -37,6 +51,13 @@ Bytes: 177
 Probably related to the TODO comment above, the bitmap is written by GC only without a CAS or a release.
 
 Is this correct? The feasibility of this change seems to hinge on this.
+
+1631:17-1631:38
+Tue Aug 23 23:17:06 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 88357b64_8c4f086d
+Bytes: 34
+and this should be a load acquire.
 
 1632:12-1632:43
 Tue Aug 23 22:48:18 2016 +0000
@@ -52,12 +73,28 @@ UUID: 88357b64_d7ca7e76
 Bytes: 141
 This should be "GetReadBarrierPointer() == ReadBarrier::GrayPtr() || region_space_bitmap_->Test(obj)" aside from the correctness issue above?
 
+1672:8-1672:38
+Tue Aug 23 23:17:06 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88357b64_d7ca7e76
+UUID: 88357b64_8c762899
+Bytes: 51
+The GetReadBarrierPointer should be a load acquire.
+
 2144:4-2144:47
 Tue Aug 23 22:48:18 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 88357b64_c912e25c
 Bytes: 5
 Same.
+
+2144:4-2144:47
+Tue Aug 23 23:17:06 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88357b64_c912e25c
+UUID: 88357b64_2cb27c4a
+Bytes: 192
+The GetReadBarrierPointer() may as well be a load acquire though this may be safe without an acquire because a mutator calling this and not seeing a mark may be harmless for the GetReferent().
 
 File: runtime/gc/collector/concurrent_copying.h
 

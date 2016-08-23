@@ -9,6 +9,14 @@ UUID: a8af9fab_fb5aef2e
 Bytes: 55
 Nit: one value per line (similarly to lines 136—137).
 
+133:8-133:47
+Tue Aug 23 17:39:40 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a8af9fab_fb5aef2e
+UUID: 08ad0bb1_de5f251d
+Bytes: 4
+Done
+
 135:0-137:79
 Tue Aug 23 14:40:36 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -20,12 +28,28 @@ What about:
 
 ?
 
+135:0-137:79
+Tue Aug 23 17:39:40 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c8cbf392_d4401c69
+UUID: 08ad0bb1_be6459ee
+Bytes: 10
+Yes! Done.
+
 355:0-355:6
 Tue Aug 23 14:40:36 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 08ad0bb1_be12195b
 Bytes: 124
 BTW, why are all these functions `static`?  This seems unnecessary in a header file (and they are not class members either).
+
+355:0-355:6
+Tue Aug 23 17:39:40 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08ad0bb1_be12195b
+UUID: 08ad0bb1_1e6d8dc5
+Bytes: 180
+It might have been inherited from early `static` helpers in `.cc` files, and we carefully followed the surrounding style from there! I'll prepare a following patch to remove those.
 
 File: test/615-checker-arm64-store-zero/src/Main.java
 
@@ -36,10 +60,46 @@ UUID: 88c2db6f_7a449957
 Bytes: 112
 What about interleaving the two Checker blocks (lines 76–90 and 92–106)?  (And ditto for other cases below.)
 
+76:2-76:84
+Tue Aug 23 17:39:40 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88c2db6f_7a449957
+UUID: 08ad0bb1_5ebe7513
+Bytes: 744
+I don't think interleaving in the same test would work.
+
+    /// CHECK-START-ARM64: void Main.store_zero_to_static_fields() disassembly (after)
+    /// CHECK:             StaticFieldSet
+    /// CHECK-NEXT:        strb wzr, [x{{[0-9]+}}, #{{[0-9]+}}]
+
+    /// CHECK-START-ARM64: void Main.store_zero_to_static_fields() disassembly (after)
+    /// CHECK:             StaticFieldSet
+    /// CHECK-NEXT:        strh wzr, [x{{[0-9]+}}, #{{[0-9]+}}]
+
+We don't have a way to distinguish the `StaticFieldSet` instructions. We could instead have a full series of `CHECK` and `CHECK-NEXT`, but that would have too strong requirements on the order of IRs.
+
+I felt this was sufficient, but let's do it thoroughly: I split it per type (vim macros saved me).
+
 225
 Tue Aug 23 14:40:36 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 88c2db6f_1a3b5dca
 Bytes: 136
 I would call the test methods (`bar`, `store_zero_to_static_fields`, `store_zero_to_instance_fields`, `store_zero_to_array`s) in `main`.
+
+225
+Tue Aug 23 17:39:40 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88c2db6f_1a3b5dca
+UUID: 08ad0bb1_be8d7988
+Bytes: 4
+Done
+
+225
+Tue Aug 23 17:39:40 2016 +0000
+Author: Alexandre Rames <1052304@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88c2db6f_1a3b5dca
+UUID: 08ad0bb1_de9845c8
+Bytes: 4
+Done
 

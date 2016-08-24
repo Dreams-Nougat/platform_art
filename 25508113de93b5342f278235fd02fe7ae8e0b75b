@@ -49,3 +49,21 @@ we could have:
 
 ?
 
+4852:15-4852:18
+Wed Aug 24 16:58:34 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 08ad0bb1_a1543857
+UUID: 08f50bfe_de540559
+Bytes: 383
+Currently if two pointers are the same in the from-space, they will also be same in to-space. So I think this should be OK since component type and object class are immutable:
+
+  temp1 = array->klass_
+  temp1 = temp1->component_type_
+  temp2 = value->klass_
+  cmp temp1, temp2
+  beq do_put
+  temp1 = readbarrier(temp1)_
+  temp2 = readbarrier(temp2)
+  cmp temp1, temp2
+  bne slow_path
+

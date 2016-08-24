@@ -9,3 +9,43 @@ UUID: 88357b64_fc2689cf
 Bytes: 111
 I think this could be more optimized, you should only need to do the read barriers if the classes aren't equal.
 
+4852:15-4852:18
+Wed Aug 24 13:23:00 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 88357b64_fc2689cf
+UUID: 08ad0bb1_a1543857
+Bytes: 503
+I see.  Do you mean that instead of:
+
+  temp1 = array->klass_
+  temp1 = readbarrier(temp1)
+
+  temp1 = temp1->component_type_
+  temp1 = readbarrier(temp1)
+
+  temp2 = value->klass_
+  temp2 = readbarrier(temp2)
+
+  cmp temp1, temp2
+  bne slow_path
+
+we could have:
+
+  temp1 = array->klass_
+  temp1 = readbarrier(temp1)
+
+  temp1 = temp1->component_type_
+
+  temp2 = value->klass_
+
+  cmp temp1, temp2
+  beq do_put
+
+  temp1 = readbarrier(temp1)
+  temp2 = readbarrier(temp2)
+
+  cmp temp1, temp2
+  bne slow_path
+
+?
+

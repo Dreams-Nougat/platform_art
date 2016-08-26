@@ -11,3 +11,15 @@ maybe you should reverse the dependency?
 
 Vdex will contain the dex file, which means you can run without the oat but not without the vdex.
 
+283:1-283:34
+Fri Aug 26 17:24:40 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_1088a485
+UUID: 45052e49_b076f899
+Bytes: 783
+Thanks for raising this. I thought about doing that but decided against it. Definitely something we can revisit, though I'd try to avoid it for now (as explained below) and it would also be a major refactor.
+
+The reason why is that I'd like to keep the VDEX as simple as possible (so we minimize the risk of having to change the format at any point in the future). OAT actually provides the runtime with a lot of support, OatDexFile instances to name just one example, but that's tied to the runtime internals. We don't want that in or near the VDEX.
+
+So you are absolutely correct that interpret-only technically won't need an OAT once quickening info is in the VDEX, but I'd rather think of that scenario as running out of an uncompressed+quickened APK than the VDEX replacing OAT.
+

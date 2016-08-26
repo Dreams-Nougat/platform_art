@@ -13,3 +13,13 @@ InitTimeSpec(false, CLOCK_MONOTIC...)
 
 here instead ?
 
+634:2-634:19
+Fri Aug 26 16:17:48 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_301cc8d1
+UUID: e541c27a_da4ac45a
+Bytes: 267
+The assertion that FUTEX_WAIT takes a relative timeout is true, it's not the first piece of futex code where we did this wrong.
+
+If I read it correctly, the timeout value isn't updated on error. So if you don't use two specs, you'll potentially wait too long/forever.
+

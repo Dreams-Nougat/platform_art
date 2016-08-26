@@ -9,6 +9,42 @@ UUID: c56d9e44_245f521f
 Bytes: 18
 Technically wrong.
 
+File: compiler/image_test.cc
+
+124:19-124:27
+Fri Aug 26 17:44:58 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56d9e44_8476469a
+Bytes: 14
+Separate line.
+
+File: compiler/oat_test.cc
+
+187:49-187:58
+Fri Aug 26 17:44:58 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56d9e44_a47342a9
+Bytes: 14
+Separate line.
+
+File: compiler/oat_writer.cc
+
+444:29-444:30
+Fri Aug 26 17:44:58 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56d9e44_44b60e3f
+Bytes: 19
+Period, same below.
+
+File: compiler/oat_writer.h
+
+110:4-110:26
+Fri Aug 26 17:44:58 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56d9e44_e46d3ac6
+Bytes: 63
+Tracking bug? You're changing the default without any mentions.
+
 File: runtime/oat_file.h
 
 283:1-283:34
@@ -31,4 +67,16 @@ Thanks for raising this. I thought about doing that but decided against it. Defi
 The reason why is that I'd like to keep the VDEX as simple as possible (so we minimize the risk of having to change the format at any point in the future). OAT actually provides the runtime with a lot of support, OatDexFile instances to name just one example, but that's tied to the runtime internals. We don't want that in or near the VDEX.
 
 So you are absolutely correct that interpret-only technically won't need an OAT once quickening info is in the VDEX, but I'd rather think of that scenario as running out of an uncompressed+quickened APK than the VDEX replacing OAT.
+
+283:1-283:34
+Fri Aug 26 17:44:58 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_b076f899
+UUID: c56d9e44_44352e88
+Bytes: 426
+quickening is runtime internals. :-)
+
+How are you imagining to limit the complexity in places like the class-linker? Where is the management of "plain dex" vs "vdex-only" vs "oat+vdex" gonna happen, and how? Do you plan to drop the vdex parts and just use the existing dex & oat vectors? Do you plan to add a third vector (please don't)?
+
+I think that design has an impact and who depends on what, or where parts are stored...
 

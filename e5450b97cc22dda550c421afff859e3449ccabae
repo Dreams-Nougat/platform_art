@@ -2,6 +2,13 @@ Revision: e5450b97cc22dda550c421afff859e3449ccabae
 Patch-set: 2
 File: runtime/thread_list.cc
 
+163:1-163:44
+Fri Aug 26 17:32:19 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56d9e44_e4229aa5
+Bytes: 4
+how?
+
 634:2-634:19
 Fri Aug 26 08:39:18 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,4 +29,30 @@ Bytes: 267
 The assertion that FUTEX_WAIT takes a relative timeout is true, it's not the first piece of futex code where we did this wrong.
 
 If I read it correctly, the timeout value isn't updated on error. So if you don't use two specs, you'll potentially wait too long/forever.
+
+634:2-634:19
+Fri Aug 26 17:32:19 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e541c27a_da4ac45a
+UUID: c56d9e44_e4f9ba17
+Bytes: 609
+According to the man page:
+
+              Note: for FUTEX_WAIT, timeout is interpreted as a relative
+              value.  This differs from other futex operations, where
+              timeout is interpreted as an absolute value.  To obtain the
+              equivalent of FUTEX_WAIT with an absolute timeout, employ
+              FUTEX_WAIT_BITSET with val3 specified as
+              FUTEX_BITSET_MATCH_ANY.
+
+It seems easiest just to follow that advice rather than fixing the problems here.
+
+(I also get a deja vu feeling from looking at ComputeRelativeTimeSpec. We may have something equivalent elsewhere.)
+
+643:6-643:29
+Fri Aug 26 17:32:19 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56d9e44_844d6676
+Bytes: 65
+Check result. But Andreas' comment is the more important problem.
 

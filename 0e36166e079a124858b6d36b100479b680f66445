@@ -1,0 +1,240 @@
+Revision: 0e36166e079a124858b6d36b100479b680f66445
+Patch-set: 3
+File: runtime/gc/collector/concurrent_copying-inl.h
+
+36:61-36:74
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e541c27a_e67c4f4c
+Bytes: 63
+Add a comment why the region-space large objects aren't marked?
+
+38:53-38:60
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e541c27a_86210b58
+Bytes: 27
+Maybe "last non-sticky GC"?
+
+42:15-42:63
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e541c27a_06b17bef
+Bytes: 229
+This is because if the object may have a from-space reference, it should be dirty, and because we just need to enable the read barrier on this object for GC marking not to avoid missing the reference, correct? Expand the comment?
+
+44:51-45:22
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e541c27a_a699a779
+Bytes: 43
+Can you expand on this? I don't understand.
+
+160:10-160:19
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e541c27a_c9b164db
+Bytes: 234
+I see kNoUnEvac means we do not mark the unevac objects. Since it's passed through other functions like Scan, how about negating the meaning and renaming it to kMarkUnEvac (to avoid a double negative) or something a bit more specific?
+
+161:14-162:74
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e541c27a_89f2bc96
+Bytes: 133
+If everything in the unevac space should be marked in the mark bitmap aside from large objects, when does the second condition apply?
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+173:6-173:26
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_172334ac
+Bytes: 77
+If we create this once and never delete it, do this in the constructor maybe?
+
+178:6-178:15
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_d786dcc3
+Bytes: 72
+This case corresponds to both the non-moving space and the region space?
+
+179:45-179:65
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_77c0309d
+Bytes: 120
+Does this work for the region space? I thought the region space doesn't have the bitmaps registered in the space itself.
+
+180:34-180:50
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_b7a4884f
+Bytes: 91
+This says the region space, but is this both for the region space and the non-moving space?
+
+183:17-183:20
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_97a98427
+Bytes: 129
+This doesn't need to be Limit() because we don't care the cards that get dirty at the newly-expanded end of the non-moving space?
+
+565:9-565:13
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_979d0465
+Bytes: 15
+/* kNoUnevac */
+
+629:2-629:22
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_1a10f9a6
+Bytes: 184
+This if statement is between the two above/below blocks that are kind of related. Move this up or down by one block?
+
+(You said this needs to go before the immune space scan in person)
+
+644:48-644:68
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_daa5e19c
+Bytes: 44
+This also scans the non-moving space, right?
+
+646:9-647:67
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_5a89d11d
+Bytes: 31
+I don't follow. Can you expand?
+
+661:4-661:18
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_3a961d3e
+Bytes: 103
+Maybe rename this to done_generational_card_scanning_ or something along that line to be more specific?
+
+1378:11-1378:15
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_3a6cdd30
+Bytes: 15
+/* kNoUnEvac */
+
+1381:28-1381:44
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_bab90d8e
+Bytes: 120
+I guess this change needs to be rebased to pick up the new logic to mark the unevac space object later in this function?
+
+1382:6-1382:25
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_5ac1d1fe
+Bytes: 55
+Move this down out of the if statement blocks to dedup?
+
+1623:19-1623:33
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_ac867710
+Bytes: 170
+As we discussed, I think we should set the newly allocated flag in AllocLarge() and only clear a large object if it's newly allocated and unreachable in ClearFromSpace()?
+
+1650:8-1650:13
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_da8601c4
+Bytes: 48
+Needs a rebase to use IsMarkedUnevacFromSpace()?
+
+1653:8-1653:13
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_faaae51b
+Bytes: 124
+After a rebase, this applies to the generational case only and we need to use IsMarkedUnevacFromSpace() if non-generational?
+
+1845:16-1845:24
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_5a655116
+Bytes: 37
+Do we need to pass in kNoUnEvac here?
+
+2088:26-2088:42
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_da2a8193
+Bytes: 115
+This marks the moved object and is necessary so that we can walk the objects in the next gc, as you said in person?
+
+2123
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_3a24ddc1
+Bytes: 248
+I think we can move the above AtomicTestAndSet calls here and dedup.
+
+After a rebase, is this still okay because a mutator may be setting on the mark bitmap here even though we changed it so only the GC thread does it without a CAS in the other CL?
+
+2224
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_7a513536
+Bytes: 147
+If generational, assert this case shouldn't happen (it must be set in the bitmap)? Or is this about the large object space (which can be asserted)?
+
+2227:0-2230:5
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_fa30a5ec
+Bytes: 56
+Is a similar change necessary in AsserToSpaceInvarint()?
+
+2283:9-2283:23
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_7a45b553
+Bytes: 91
+You mentioned this in person, but some synchronization will be necessary for this variable?
+
+2286
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_5a743191
+Bytes: 92
+Also say we need to set the gray bit to trigger the read barrier for loads from this object?
+
+2291:0-2295:9
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_1af919df
+Bytes: 278
+For a sticky the mark bitmap is bound to the live bitmap, right? Then the alloc/live stack will make sure they will be marked after this GC and we don't need to mark them here?
+
+(Update: you are going to change it so that we collect the non-moving and the LOS in the sticky CC.)
+
+2299:4-2299:5
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25bd9ae6_ec090f8c
+Bytes: 238
+Can we just return here without falling through if done_scanning is true because we aren't reclaiming the non-moving or LOS object here?
+
+(Update: you are going to change it so that we collect the non-moving and the LOS in the sticky CC.)
+
+File: runtime/gc/space/region_space.cc
+
+121:53-121:54
+Sat Aug 27 00:12:38 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e541c27a_c67313a9
+Bytes: 36
+Add the kEvacModeForceAll case here?
+

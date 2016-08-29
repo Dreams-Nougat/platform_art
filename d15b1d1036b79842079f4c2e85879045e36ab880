@@ -9,12 +9,28 @@ UUID: 658a32dd_414f123e
 Bytes: 21
 Use initializer-list.
 
+43
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 658a32dd_414f123e
+UUID: c5967ec8_5c773d65
+Bytes: 4
+Done
+
 820
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45052e49_705e5052
 Bytes: 49
 (delay_slot_.gpr_outs_mask_ & (1u << rd)) == 0 &&
+
+820
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_705e5052
+UUID: c5967ec8_9c11c50d
+Bytes: 4
+Done
 
 2005:13-2006:54
 Fri Aug 26 14:46:20 2016 +0000
@@ -25,12 +41,28 @@ Avoid implicit conversion from bool to uint32_t.
 
   (...) ? 1u : 0u
 
+2005:13-2006:54
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_f071a0d9
+UUID: c5967ec8_bc168100
+Bytes: 4
+Done
+
 2460:4-2460:9
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45052e49_303de8e2
 Bytes: 8
 CHECK_EQ
+
+2460:4-2460:9
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_303de8e2
+UUID: c5967ec8_dc1b4d27
+Bytes: 4
+Done
 
 2635
 Fri Aug 26 14:46:20 2016 +0000
@@ -39,6 +71,14 @@ UUID: 45052e49_70377002
 Bytes: 54
 What about unfillable? (Here and several times below.)
 
+2635
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_70377002
+UUID: c5967ec8_5c101d01
+Bytes: 164
+It only applies to unconditional R2 branches (kUncondBranch and kLongUncondBranch). I mentioned this in the new comment near the definition of kUnfillableDelaySlot.
+
 2745:28-2745:54
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,12 +86,32 @@ UUID: 45052e49_904db49d
 Bytes: 47
 Isn't the NOP mandatory for a "forbidden" slot?
 
+2745:28-2745:54
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_904db49d
+UUID: c5967ec8_7fe4eba1
+Bytes: 845
+Conditional branches on R6 have either a delay slot (the new FPU branches bc1nez/bc1eqz (which replace the old R2 bc1t/bc1f) and the old R2 non-FPU branches (which we are not generating on R6 now)) or a forbidden slot (the new "compact" non-FPU R6 branches).
+
+Similarly to delay slots, forbidden slots cannot contain another branch instruction and a few special instructions which we don't use here. However, unlike delay slots, which are executed unconditionally, forbidden slots are executed if the branch isn't taken. Forbidden slots are a bit odd, but that's what it is.
+
+At the moment on R6 we're only filling delay slots (of bc1nez/bc1eqz) with instructions other than NOP if we can (the if clause above) and if we can't or it's a forbidden slot, we're filling it with a NOP. We'll get to using forbidden slots more effectively eventually.
+
 2870:0-2882:5
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45052e49_d020dcaf
 Bytes: 97
 Add a helper function for this. Pass an (template?) argument to distinguish between SLT and SLTU.
+
+2870:0-2882:5
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_d020dcaf
+UUID: c5967ec8_dfa41f51
+Bytes: 4
+Done
 
 File: compiler/utils/mips/assembler_mips.h
 
@@ -62,6 +122,14 @@ UUID: 25903a09_bf22b7a4
 Bytes: 24
 What does FSM stand for?
 
+720:16-720:19
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25903a09_bf22b7a4
+UUID: c5967ec8_5f72cfde
+Bytes: 103
+Finite state machine. I thought it would be pretty obvious. Anyway, I've expanded the comment(s) a bit.
+
 962:17-962:20
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,12 +137,28 @@ UUID: a59b4a32_3b4f973f
 Bytes: 113
 Shouldn't this be "Rrrc"? (In line with the "Rrrr" above, the in/out register should be represented by two "r"s.)
 
+962:17-962:20
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a59b4a32_3b4f973f
+UUID: c5967ec8_9f3c57e7
+Bytes: 4
+Done
+
 963:17-963:20
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 25903a09_5f312bed
 Bytes: 5
 Fffc?
+
+963:17-963:20
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25903a09_5f312bed
+UUID: c5967ec8_df36df04
+Bytes: 4
+Done
 
 File: compiler/utils/mips/assembler_mips_test.cc
 
@@ -85,6 +169,14 @@ UUID: 45052e49_b0027813
 Bytes: 63
 Add a comment:  // Prevents reordering ADDU above with B below.
 
+2572:2-2572:19
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_b0027813
+UUID: c5967ec8_7f214bb1
+Bytes: 4
+Done
+
 2578:2-2578:20
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -92,10 +184,26 @@ UUID: 45052e49_d0f9fc17
 Bytes: 33
 // Prevents absorbing ADDU above.
 
+2578:2-2578:20
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_d0f9fc17
+UUID: c5967ec8_bf13d369
+Bytes: 4
+Done
+
 2583:0-2584:20
 Fri Aug 26 14:46:20 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 45052e49_3008482f
 Bytes: 72
 // Even across Bind(), CodePosition() prevents absorbing the ADDU above.
+
+2583:0-2584:20
+Mon Aug 29 23:23:17 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 45052e49_3008482f
+UUID: c5967ec8_ff0d5b45
+Bytes: 4
+Done
 

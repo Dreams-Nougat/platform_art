@@ -16,6 +16,22 @@ UUID: e541c27a_9a0ddc0f
 Bytes: 114
 Our style is to use a unique_ptr immediately, which lowers the dangers of creating a leak when extending the code.
 
+42:2-42:9
+Tue Aug 30 13:44:06 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e541c27a_9a0ddc0f
+UUID: 713cb9c0_91045c70
+Bytes: 4
+Done
+
+42:47-42:49
+Tue Aug 30 13:44:06 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e541c27a_fa9ea0fd
+UUID: 713cb9c0_b1076074
+Bytes: 4
+Done
+
 70:2-74:3
 Fri Aug 26 16:26:32 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,4 +40,16 @@ Bytes: 298
 This is the point I meant where you're leaking the map. Use the unique_ptr as an argument, and release it after line 74. 
 
 Or change the DexFile::Open API to take an rvalue reference unique_ptr, maybe, to indicate passing of ownership. I think our DexFile API wrt/ MemMap is simply not good enough.
+
+70:2-74:3
+Tue Aug 30 13:44:06 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e541c27a_bae1b828
+UUID: 713cb9c0_d10ae47d
+Bytes: 449
+Adapted DexFile factories to take unique_ptr<MemMap>&& as an argument.
+
+The former (obscure and indefensible) code path saw the map being owned by a DexFile before hitting any error handling paths so non-obviously not leaked.
+
+It might be useful to adapt the factory methods in mem_map.{h,cc} to return std::unique_ptr<MemMap>, pushing the ownership all the way down. Lots of churn from doing this though. Happy to undertake in a different CL, WDYT?
 

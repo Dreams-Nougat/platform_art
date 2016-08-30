@@ -18,6 +18,14 @@ UUID: d17725bf_1428748b
 Bytes: 125
 How about keeping "REGION_" in the name for clarify until we merge this with the non-region tlab case (the TODO line below.)?
 
+2110
+Tue Aug 30 22:46:28 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d17725bf_1428748b
+UUID: d17725bf_d4e43c38
+Bytes: 4
+Done
+
 2126:0-2127:31
 Tue Aug 30 22:43:05 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -26,4 +34,15 @@ Bytes: 351
 What does it save to move the null checking code here and use ALLOC_OBJECT_TLAB_FAST_PATH_RESOLVED as the fast path for art_quick_alloc_object_region_tlab?
 
 If not much, I'd prefer keeping the old/simple style for regularity (using ALLOC_OBJECT_TLAB_FAST_PATH for art_quick_alloc_object_region_tlab and move this null check code back to where it was.)
+
+2126:0-2127:31
+Tue Aug 30 22:46:28 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d17725bf_f4b37855
+UUID: d17725bf_d4cbdc99
+Bytes: 186
+Before there could be two null checks:
+is marking -> null check -> do allocation -> null check #2
+
+If you have a strong preference it is unlikely to be a measurable performance overhead.
 

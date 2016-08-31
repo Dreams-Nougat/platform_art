@@ -40,6 +40,29 @@ http://scottmeyers.blogspot.co.uk/2014/07/should-move-only-types-ever-be-passed.
 
 I don't have a strong preference.
 
+239:68-239:70
+Wed Aug 31 16:58:05 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d163a525_54eb2ca0
+UUID: 116e1d0e_cbb835c7
+Bytes: 792
+There was a comment about this in that link. The problem is that using && parameters doesn't mean that the value was actually always moved-from (so the post-condition is ambiguous).
+
+
+  using T = ...; // non-templated T
+  T x_inst;
+
+  void f(T x);
+  f(std::move(x_inst)); // definitely moved from x
+
+  void f2(T&& x);
+  f2(std::move(x_inst));  // maybe moved from x?
+
+Also rvalue references are quite confusing to most people so we should really minimize their usage to when they're actually needed (for example move-constructors) especially because a lot of people confuse it with forwarding references (perfect forwarding) since the syntax looks similar.
+
+
+http://stackoverflow.com/questions/8114276/how-do-i-pass-a-unique-ptr-argument-to-a-constructor-or-a-function/8114913#8114913 see (D)
+
 331
 Tue Aug 30 20:08:30 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -180,6 +203,14 @@ startup
 third_party_jni
 threads
 verifier
+
+173
+Wed Aug 31 16:58:05 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d163a525_7498e86a
+UUID: 116e1d0e_cb54b556
+Bytes: 114
+Ok, thanks for looking at that, I guess if it's the same thing as DexFile.cc then it's fine to leave it like this.
 
 178
 Tue Aug 30 20:08:30 2016 +0000

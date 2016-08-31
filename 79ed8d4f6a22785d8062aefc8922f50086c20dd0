@@ -9,6 +9,14 @@ UUID: 71c75982_59b4433e
 Bytes: 104
 Doesn't this also apply to the normal tlab case (ss-tlab, gss-tlab)? If so, any testing for those cases?
 
+15:21-15:32
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71c75982_59b4433e
+UUID: 71c75982_b9fa3fd6
+Bytes: 91
+True it should apply but since the code is the same, I doubt there should be any breakages.
+
 File: runtime/arch/arm64/quick_entrypoints_arm64.S
 
 2030:0-2032:5
@@ -18,12 +26,28 @@ UUID: 71c75982_b9759f8f
 Bytes: 186
 This changes it so ALLOC_OBJECT_TLAB_FAST_PATH_RESOLVED == ALLOC_OBJECT_TLAB_FAST_PATH_INITIALIZED because we combined the tlab size check and the status check. Add a TODO for a cleanup?
 
+2030:0-2032:5
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71c75982_b9759f8f
+UUID: 71ecb90a_d1f02491
+Bytes: 4
+Done
+
 2040:100-2040:103
 Wed Aug 31 22:33:14 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51a175a9_7fce3b26
 Bytes: 48
 Not sure how strict in a .S file. Line too long?
+
+2040:100-2040:103
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51a175a9_7fce3b26
+UUID: 71c75982_99d09b1a
+Bytes: 4
+Done
 
 2045:65-2047:75
 Wed Aug 31 22:33:14 2016 +0000
@@ -36,6 +60,14 @@ There's "dmb ish" at the end of this routine. Isn't it sufficient without this f
 
 Or, if we change the dmb to an ishst and keep this fake dependency, would it work and maybe a bit faster?
 
+2045:65-2047:75
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71c75982_99f89b67
+UUID: 71c75982_f9d79742
+Bytes: 144
+I was just thinking about that, we normally check the status flag for loading static fields anyways. Maybe the false dependency is not required.
+
 File: runtime/globals.h
 
 54:24-54:36
@@ -44,6 +76,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51a175a9_9f0d9f99
 Bytes: 114
 Add somewhere a static_assert that this is greater than or equal to kDefaultTLABSize and RegionSpace::kRegionSize?
+
+54:24-54:36
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51a175a9_9f0d9f99
+UUID: 71c75982_f99f9763
+Bytes: 32
+I changed it to max int already.
 
 File: runtime/mirror/class.cc
 
@@ -54,6 +94,14 @@ UUID: 51a175a9_9fb11fea
 Bytes: 210
 Is this intentionally after the status write (which could use a comment) so that if the alloc path sees a valid object size, we would know that it's initialized as long as it has a load-acquire/fake dependency?
 
+107:0-114:3
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51a175a9_9fb11fea
+UUID: 71c75982_b93d9f80
+Bytes: 4
+Done
+
 File: runtime/mirror/class.h
 
 1465:0-1468:0
@@ -62,4 +110,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 51a175a9_bfb503cd
 Bytes: 62
 This position means we need a change in Class.java in libcore?
+
+1465:0-1468:0
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51a175a9_bfb503cd
+UUID: 71c75982_7994a743
+Bytes: 20
+Yes, will upload it.
 

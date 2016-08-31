@@ -9,6 +9,24 @@ UUID: c56d9e44_245f521f
 Bytes: 18
 Technically wrong.
 
+17:8-18:17
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7104b94d_11b9cc83
+Bytes: 53
+I don't get his comment. Could you give more details?
+
+File: build/Android.oat.mk
+
+279:44-280:45
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 111c5dae_4641d259
+Bytes: 340
+I suggest we derive the vdex-location from the oat-location. Or better said the other way around. We have way too many locations, and I don't see a good reason to specify them separately. Thoughts?
+
+I don't think we can do the same with --oat-file and --vdex-file because at some point we have to pass in descriptors. But that's ok I guess.
+
 File: compiler/image_test.cc
 
 124:19-124:27
@@ -36,6 +54,13 @@ UUID: c56d9e44_44b60e3f
 Bytes: 19
 Period, same below.
 
+463:5-463:8
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5105f548_b0e43837
+Bytes: 26
+Misleading. Get or Record?
+
 File: compiler/oat_writer.h
 
 110:4-110:26
@@ -44,6 +69,78 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c56d9e44_e46d3ac6
 Bytes: 63
 Tracking bug? You're changing the default without any mentions.
+
+110:4-110:26
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c56d9e44_e46d3ac6
+UUID: d163a525_9445c43f
+Bytes: 28
+Could you provide rationale?
+
+File: dex2oat/dex2oat.cc
+
+954:1-965:11
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 310a415e_6f84b164
+Bytes: 54
+can you write a helper? it's getting quite repetitive.
+
+1283:6-1283:98
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 11f37dac_8ec8fb9e
+Bytes: 12
+no truncate?
+
+1348:0-1352:5
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d163a525_74fbc8db
+Bytes: 12
+add helpers.
+
+1875:0-1881:9
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 91ff6d6b_9587660d
+Bytes: 5
+ditto
+
+1951:0-1959:5
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7104b94d_d14c6492
+Bytes: 5
+ditto
+
+File: patchoat/patchoat.cc
+
+453:4-453:7
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b160f11c_338a0874
+Bytes: 40
+PLOG(), and without strerror at the end.
+
+File: runtime/image.h
+
+183:0-189:25
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 111c5dae_c675c2c2
+Bytes: 7
+helper?
+
+File: runtime/oat_file.cc
+
+970:19-970:31
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b160f11c_5389847a
+Bytes: 68
+Document. I'm sure I've seen this function somewhere else in the CL.
 
 File: runtime/oat_file.h
 
@@ -79,4 +176,22 @@ quickening is runtime internals. :-)
 How are you imagining to limit the complexity in places like the class-linker? Where is the management of "plain dex" vs "vdex-only" vs "oat+vdex" gonna happen, and how? Do you plan to drop the vdex parts and just use the existing dex & oat vectors? Do you plan to add a third vector (please don't)?
 
 I think that design has an impact and who depends on what, or where parts are stored...
+
+File: runtime/oat_file_assistant.cc
+
+35:0-50:1
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b160f11c_b39d78bb
+Bytes: 89
+Add these as utilities as use them in the other parts where you do filename manipulation.
+
+File: runtime/vdex_file.h
+
+43:59-43:60
+Wed Aug 31 17:08:04 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7104b94d_513874f5
+Bytes: 5
+1? :)
 

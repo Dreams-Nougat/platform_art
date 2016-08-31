@@ -1,0 +1,65 @@
+Revision: 79ed8d4f6a22785d8062aefc8922f50086c20dd0
+Patch-set: 1
+File: /COMMIT_MSG
+
+15:21-15:32
+Wed Aug 31 22:33:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 71c75982_59b4433e
+Bytes: 104
+Doesn't this also apply to the normal tlab case (ss-tlab, gss-tlab)? If so, any testing for those cases?
+
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+2030:0-2032:5
+Wed Aug 31 22:33:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 71c75982_b9759f8f
+Bytes: 186
+This changes it so ALLOC_OBJECT_TLAB_FAST_PATH_RESOLVED == ALLOC_OBJECT_TLAB_FAST_PATH_INITIALIZED because we combined the tlab size check and the status check. Add a TODO for a cleanup?
+
+2040:100-2040:103
+Wed Aug 31 22:33:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51a175a9_7fce3b26
+Bytes: 48
+Not sure how strict in a .S file. Line too long?
+
+2045:65-2047:75
+Wed Aug 31 22:33:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 71c75982_99f89b67
+Bytes: 420
+I think a fake dependency prevents two loads from reordering. There's the object size load (x7). Is the other load some unknown future load from the class (like the status or something else) outside of this routine? 
+
+There's "dmb ish" at the end of this routine. Isn't it sufficient without this fake dependency?
+
+Or, if we change the dmb to an ishst and keep this fake dependency, would it work and maybe a bit faster?
+
+File: runtime/globals.h
+
+54:24-54:36
+Wed Aug 31 22:33:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51a175a9_9f0d9f99
+Bytes: 114
+Add somewhere a static_assert that this is greater than or equal to kDefaultTLABSize and RegionSpace::kRegionSize?
+
+File: runtime/mirror/class.cc
+
+107:0-114:3
+Wed Aug 31 22:33:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51a175a9_9fb11fea
+Bytes: 210
+Is this intentionally after the status write (which could use a comment) so that if the alloc path sees a valid object size, we would know that it's initialized as long as it has a load-acquire/fake dependency?
+
+File: runtime/mirror/class.h
+
+1465:0-1468:0
+Wed Aug 31 22:33:14 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 51a175a9_bfb503cd
+Bytes: 62
+This position means we need a change in Class.java in libcore?
+

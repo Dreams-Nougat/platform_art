@@ -9,6 +9,14 @@ UUID: 71c75982_9969bbf2
 Bytes: 126
 I guess a key idea here is to combine checking two fields, the status and the access flag (for finalizability) into one check.
 
+13
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71c75982_9969bbf2
+UUID: d1e00515_8cd3a7fd
+Bytes: 60
+Actually into 0 checks since we already need the size check.
+
 21:35-22:20
 Wed Aug 31 21:44:20 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,4 +57,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 71c75982_990e5b43
 Bytes: 169
 Did you consider changing the behavior of object_size_ (setting it early to a very large number, and set it to the valid *aligned* size later) without adding this field?
+
+1467:11-1467:39
+Wed Aug 31 23:14:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 71c75982_990e5b43
+UUID: d1e00515_ec9d8b5d
+Bytes: 165
+I think that may cause some issues when doing SizeOf on uninitialized objects. Hans had the idea of using the high bit for signalling uninitialized which could work.
 

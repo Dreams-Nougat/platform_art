@@ -11,3 +11,17 @@ Do we have any collective thoughts over using Thread::Current()->IsExceptionPend
 
 It does the same thing but I just thought this was confusing since AllocateDexMemory is *not* a jni function.
 
+101
+Wed Aug 31 17:13:42 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 116e1d0e_0b36ad3e
+UUID: 116e1d0e_0bfeadff
+Bytes: 284
+We have a lot of code that does things through JNI, just to make it trivially GC-safe.
+
+However, there's a SOA at the top - which normally indicates to use internals.
+
+Which reminds me:
+
+Nested SOAs not necessary. Annotate CreateDexFile with SHARED_REQUIRES, as you already hold it...
+

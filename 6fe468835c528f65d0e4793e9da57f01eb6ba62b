@@ -1,0 +1,20 @@
+Revision: 6fe468835c528f65d0e4793e9da57f01eb6ba62b
+Base-for-patch-set: 3
+File: runtime/thread_list.cc
+
+623:43-623:53
+Fri Aug 26 17:26:46 2016 +0000
+Author: Yabin Cui <1056364@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c56d9e44_44128e5e
+Bytes: 617
+In my understanding, here FUTEX_WAIT wants a relative timeout, but we give it an absolute timeout.
+In futex(2) man page:
+ Note: for FUTEX_WAIT, timeout is interpreted as a relative
+              value.  This differs from other futex operations, where
+              timeout is interpreted as an absolute value.  To obtain the
+              equivalent of FUTEX_WAIT with an absolute timeout, employ
+              FUTEX_WAIT_BITSET with val3 specified as
+              FUTEX_BITSET_MATCH_ANY.
+
+See how bionic uses FUTEX_WAIT_BITSET at https://android.googlesource.com/platform/bionic/+/master/libc/private/bionic_futex.h
+

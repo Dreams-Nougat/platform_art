@@ -63,6 +63,18 @@ Also rvalue references are quite confusing to most people so we should really mi
 
 http://stackoverflow.com/questions/8114276/how-do-i-pass-a-unique-ptr-argument-to-a-constructor-or-a-function/8114913#8114913 see (D)
 
+239:68-239:70
+Thu Sep 01 09:26:34 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 116e1d0e_cbb835c7
+UUID: f1efc9c0_900ada7c
+Bytes: 532
+Yes, understood. Plain std::unique_ptr<Other> works fine in the code at hand.
+
+The Chromium team have drafted some guidance that fits with the usage you suggest (https://www.chromium.org/rvalue-references, point 5).
+
+Depending on usage always consuming the wrapped pointer may or may not be desirable, e.g. the caller might want to do something else with the value wrapped by x_inst in case of failure and if they don't the wrapped value will end up being destructed anyway. As a general rule, banning this per point 5 is fine here.
+
 331
 Tue Aug 30 20:08:30 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

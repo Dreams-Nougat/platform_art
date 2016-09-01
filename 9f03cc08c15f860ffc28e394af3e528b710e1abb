@@ -16,6 +16,20 @@ UUID: 7104b94d_11b9cc83
 Bytes: 53
 I don't get his comment. Could you give more details?
 
+17:8-18:17
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7104b94d_11b9cc83
+UUID: 310a415e_d25bc280
+Bytes: 645
+Sure, this is about file management and the fact that we look for VDEX in the same folder as ART/OAT.
+
+Patchoat takes an input ART/OAT file, relocates it and writes into an output file. If the input/output paths are the same ("self-relocation"), we're done. If they're not, we need to symlink the VDEX into the same folder, under the same name as the ART/OAT only with ".vdex" extension.
+
+Patchoat already does that for PIC OAT files, btw...
+
+Maybe another point here. Please look at the changes to patchoat and installd. We need to agree what to do when installd gives patchoat FDs rather than filenames. You cannot create a symlink from an FD.
+
 File: build/Android.oat.mk
 
 279:44-280:45
@@ -27,6 +41,14 @@ I suggest we derive the vdex-location from the oat-location. Or better said the 
 
 I don't think we can do the same with --oat-file and --vdex-file because at some point we have to pass in descriptors. But that's ok I guess.
 
+279:44-280:45
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 111c5dae_4641d259
+UUID: 111c5dae_26a016a5
+Bytes: 109
+Yeah, I was thinking the same, but I'd rather not get stuck in nitty-gritty nice-to-have refactors right now.
+
 File: compiler/image_test.cc
 
 124:19-124:27
@@ -35,6 +57,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c56d9e44_8476469a
 Bytes: 14
 Separate line.
+
+124:19-124:27
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c56d9e44_8476469a
+UUID: 312321ee_caf0235b
+Bytes: 74
+This was just a quick way of making it compile. Gtests now passing in PS4.
 
 File: compiler/oat_test.cc
 
@@ -45,6 +75,14 @@ UUID: c56d9e44_a47342a9
 Bytes: 14
 Separate line.
 
+187:49-187:58
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c56d9e44_a47342a9
+UUID: 111c5dae_e6c55e85
+Bytes: 5
+ditto
+
 File: compiler/oat_writer.cc
 
 444:29-444:30
@@ -54,12 +92,28 @@ UUID: c56d9e44_44b60e3f
 Bytes: 19
 Period, same below.
 
+444:29-444:30
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c56d9e44_44b60e3f
+UUID: b160f11c_f6307e5b
+Bytes: 4
+Done
+
 463:5-463:8
 Wed Aug 31 17:08:04 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5105f548_b0e43837
 Bytes: 26
 Misleading. Get or Record?
+
+463:5-463:8
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5105f548_b0e43837
+UUID: f1efc9c0_50419259
+Bytes: 4
+Done
 
 File: compiler/oat_writer.h
 
@@ -78,6 +132,14 @@ UUID: d163a525_9445c43f
 Bytes: 28
 Could you provide rationale?
 
+110:4-110:26
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d163a525_9445c43f
+UUID: f1efc9c0_f04fde83
+Bytes: 221
+Yep, sorry about not pointing this out. No reason why this wouldn't work. I disabled it because the tables are written into the OAT through the DEX mmap (which I'm moving to the VDEX). Fixed in PS4, pending go/aog/267355.
+
 File: dex2oat/dex2oat.cc
 
 954:1-965:11
@@ -87,12 +149,28 @@ UUID: 310a415e_6f84b164
 Bytes: 54
 can you write a helper? it's getting quite repetitive.
 
+954:1-965:11
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 310a415e_6f84b164
+UUID: f1efc9c0_f097de94
+Bytes: 4
+Done
+
 1283:6-1283:98
 Wed Aug 31 17:08:04 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 11f37dac_8ec8fb9e
 Bytes: 12
 no truncate?
+
+1283:6-1283:98
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 11f37dac_8ec8fb9e
+UUID: b160f11c_16fffa51
+Bytes: 60
+Good catch, we still need it. I'm getting ahead of myself ;)
 
 1348:0-1352:5
 Wed Aug 31 17:08:04 2016 +0000
@@ -101,6 +179,14 @@ UUID: d163a525_74fbc8db
 Bytes: 12
 add helpers.
 
+1348:0-1352:5
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d163a525_74fbc8db
+UUID: d1272549_74528869
+Bytes: 42
+Went with a loop over the storage vectors.
+
 1875:0-1881:9
 Wed Aug 31 17:08:04 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -108,12 +194,28 @@ UUID: 91ff6d6b_9587660d
 Bytes: 5
 ditto
 
+1875:0-1881:9
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 91ff6d6b_9587660d
+UUID: 91ff6d6b_3544bafd
+Bytes: 4
+Done
+
 1951:0-1959:5
 Wed Aug 31 17:08:04 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7104b94d_d14c6492
 Bytes: 5
 ditto
+
+1951:0-1959:5
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7104b94d_d14c6492
+UUID: d163a525_f726bad3
+Bytes: 4
+Done
 
 File: patchoat/patchoat.cc
 
@@ -124,6 +226,14 @@ UUID: b160f11c_338a0874
 Bytes: 40
 PLOG(), and without strerror at the end.
 
+453:4-453:7
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b160f11c_338a0874
+UUID: 5105f548_b36e02f6
+Bytes: 4
+Done
+
 File: runtime/image.h
 
 183:0-189:25
@@ -133,6 +243,14 @@ UUID: 111c5dae_c675c2c2
 Bytes: 7
 helper?
 
+183:0-189:25
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 111c5dae_c675c2c2
+UUID: 7104b94d_f1dfe825
+Bytes: 4
+Done
+
 File: runtime/oat_file.cc
 
 970:19-970:31
@@ -141,6 +259,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b160f11c_5389847a
 Bytes: 68
 Document. I'm sure I've seen this function somewhere else in the CL.
+
+970:19-970:31
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b160f11c_5389847a
+UUID: f1efc9c0_102eeab2
+Bytes: 14
+Now in utils.h
 
 File: runtime/oat_file.h
 
@@ -186,6 +312,14 @@ UUID: b160f11c_b39d78bb
 Bytes: 89
 Add these as utilities as use them in the other parts where you do filename manipulation.
 
+35:0-50:1
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b160f11c_b39d78bb
+UUID: 310a415e_d232a248
+Bytes: 10
+Yep, done.
+
 File: runtime/vdex_file.h
 
 43:59-43:60
@@ -194,4 +328,12 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7104b94d_513874f5
 Bytes: 5
 1? :)
+
+43:59-43:60
+Thu Sep 01 15:53:51 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7104b94d_513874f5
+UUID: f1efc9c0_302966ab
+Bytes: 18
+Meh, still in beta
 

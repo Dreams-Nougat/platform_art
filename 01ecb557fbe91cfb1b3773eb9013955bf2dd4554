@@ -1,0 +1,18 @@
+Revision: 01ecb557fbe91cfb1b3773eb9013955bf2dd4554
+Patch-set: 2
+File: compiler/driver/compiler_driver.cc
+
+1675:0-1677:5
+Fri Sep 02 15:55:41 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96e9236c_4264d218
+Bytes: 61
+This is wrong. This is the case when we did not devirtualize.
+
+1755:0-1758:7
+Fri Sep 02 15:55:41 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 16fd3327_9ed8fde5
+Bytes: 435
+There are many reasons why we go through the DexCache. For example, the class may not be initialized yet, so circumventing the trampoline from DexCache could skip the <clinit>() call. We would also have to change Optimizing (luckily, Quick is gone) to avoid folding ClinitCheck into InvokeStaticOrDirect in PrepareForRegisterAllocation. But keeping the ClinitCheck may actually hurt performance well beyond the gains of the sharpening.
+

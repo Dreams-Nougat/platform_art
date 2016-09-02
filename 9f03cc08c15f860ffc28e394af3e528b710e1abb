@@ -30,6 +30,20 @@ Patchoat already does that for PIC OAT files, btw...
 
 Maybe another point here. Please look at the changes to patchoat and installd. We need to agree what to do when installd gives patchoat FDs rather than filenames. You cannot create a symlink from an FD.
 
+17:8-18:17
+Fri Sep 02 11:59:10 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 310a415e_d25bc280
+UUID: 91668dcf_3ad0c1be
+Bytes: 440
+Got it.
+
+That's a tricky point. I don't think the symlink strategy is viable. As you said installd always passes descriptors and that's unlikely to change. Also, you'll not have the permissions to create links there (unlikely to change as well).
+
+I think we'll need to accept a hard copy for now. Or be prepared to handle the complexity of a different vdex location.
+
+Given that a hard copy is not actually a regression I'd start with that.
+
 File: build/Android.oat.mk
 
 279:44-280:45
@@ -48,6 +62,22 @@ Parent: 111c5dae_4641d259
 UUID: 111c5dae_26a016a5
 Bytes: 109
 Yeah, I was thinking the same, but I'd rather not get stuck in nitty-gritty nice-to-have refactors right now.
+
+279:44-280:45
+Fri Sep 02 11:59:10 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 111c5dae_26a016a5
+UUID: 1191bdce_dec8a51b
+Bytes: 640
+I think this qualifies for more than nitty-gritty details.
+
+Once you introduce the concept is hard to get rid of it. Based on my personal experience wil "*-location" I think this will be a headache. (dex-location, oat-location, vdex-location...)
+
+Particular places were the management of different keys will be tricky and complex:
+
+- class linker: once you move to implement vdex without having an oat file things will get tricky. What's the plan forward for that?
+
+- profiling: different keys will make profiling matching a pain. Right now we're based on the dex location, but I expect we might need to change that in the presence of vdex.
 
 File: compiler/image_test.cc
 

@@ -9,6 +9,16 @@ UUID: 51833587_40af4e82
 Bytes: 53
 If we failed to open, won't the message be lost here?
 
+247:55-247:64
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 51833587_40af4e82
+UUID: 312fa172_a74caac6
+Bytes: 302
+The external callers of the DexFile::Open* methods throw a java IO exception if open fails using the error message.
+
+Not sure if the comment refers to the case when verify == true and dex_file == nullptr? The verifier could overwrite the message in this case so added a check that dex_file is not null.
+
 File: runtime/native/dalvik_system_InMemoryDexClassLoader_DexData.cc
 
 83:44-83:49
@@ -18,12 +28,28 @@ UUID: 312fa172_47312e5d
 Bytes: 9
 dex file?
 
+83:44-83:49
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 312fa172_47312e5d
+UUID: 312fa172_c7f35e89
+Bytes: 108
+Done. I'm clearly the only one who thinks a bag of bytes that comes from a file could be called an image :-)
+
 132:0-132:76
 Fri Sep 02 09:21:51 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 318881a4_dfe5fbcc
 Bytes: 133
 Should that be a DCHECK? You're creating a ScopedObjectAccess just for it, so might make sense to wrap it under a if (kIsDebugBuild).
+
+132:0-132:76
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 318881a4_dfe5fbcc
+UUID: 312fa172_c76a7e15
+Bytes: 164
+Done. Naively I'd prefer a stronger check as it'd be a pretty fundamental mistake that's not triggered deterministically and extremely unlikely to be perf critical.
 
 138:0-142:3
 Fri Sep 02 09:21:51 2016 +0000
@@ -32,12 +58,28 @@ UUID: b11ab155_e39cd25f
 Bytes: 15
 Comment please.
 
+138:0-142:3
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b11ab155_e39cd25f
+UUID: 312fa172_87608637
+Bytes: 106
+Removed. No longer reachable with current finalization path. Would have indicated a logic error otherwise.
+
 145:0-145:53
 Fri Sep 02 09:21:51 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 312fa172_e7214210
 Bytes: 55
 Move this after the if? (it won't create an exception).
+
+145:0-145:53
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 312fa172_e7214210
+UUID: 312fa172_a7658a46
+Bytes: 4
+Done
 
 161:6-161:34
 Fri Sep 02 09:21:51 2016 +0000
@@ -46,6 +88,14 @@ UUID: 91668dcf_7ad799dd
 Bytes: 47
 I don't understand this comment. What DexCache?
 
+161:6-161:34
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 91668dcf_7ad799dd
+UUID: 312fa172_e7f86268
+Bytes: 112
+Removed comment. It's referring to the internals of the linker and the cache used when checking in uninitialize.
+
 166:53-166:60
 Fri Sep 02 09:21:51 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,10 +103,26 @@ UUID: 312fa172_27243a1c
 Bytes: 37
 What's dexData? Please add a comment.
 
+166:53-166:60
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 312fa172_27243a1c
+UUID: 312fa172_070e5693
+Bytes: 4
+Done
+
 156:0-171:7
 Fri Sep 02 09:21:51 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 312fa172_07273623
 Bytes: 19
 indentation is off.
+
+156:0-171:7
+Fri Sep 02 10:44:26 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 312fa172_07273623
+UUID: 312fa172_270b5a84
+Bytes: 4
+Done
 

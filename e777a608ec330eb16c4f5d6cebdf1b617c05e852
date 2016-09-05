@@ -1,5 +1,14 @@
 Revision: e777a608ec330eb16c4f5d6cebdf1b617c05e852
 Patch-set: 1
+File: /COMMIT_MSG
+
+14:0-14:35
+Mon Sep 05 12:45:24 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96e9236c_058014a5
+Bytes: 41
+Checker test. Grep for CHECK in run-test.
+
 File: compiler/optimizing/prepare_for_register_allocation.cc
 
 153:15-153:24
@@ -15,4 +24,14 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 718af9dc_442de09a
 Bytes: 223
 So I think I need to change the IsInDexCache to IsInitialized or similar for it to be correct for the IsFromInlinedInvoke case. If it is initialized and does not need access checks the load class should never throw I think.
+
+153:40-153:52
+Mon Sep 05 12:45:24 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 718af9dc_442de09a
+UUID: 36b797b7_475ace55
+Bytes: 259
+So the existing code seems too conservative, right? The case you want to optimize is coming from an inlined invoke and allocating a class you know the callee has access to.
+
+Shouldn't you just move the IsFromInlinedInvoke and combine it with NeedsAccessCheck?
 

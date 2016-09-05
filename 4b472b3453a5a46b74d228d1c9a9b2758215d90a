@@ -18,12 +18,28 @@ UUID: 76ee6f74_473d02ed
 Bytes: 5
 const
 
+1232:2-1232:10
+Mon Sep 05 11:19:39 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76ee6f74_473d02ed
+UUID: b6ff0722_bb2f47f8
+Bytes: 4
+Done
+
 1244:2-1244:10
 Fri Sep 02 17:34:08 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76ee6f74_2742fe60
 Bytes: 5
 const
+
+1244:2-1244:10
+Mon Sep 05 11:19:39 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76ee6f74_2742fe60
+UUID: 36b797b7_27fa3a5e
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm.cc
 
@@ -44,6 +60,16 @@ UUID: 3642374d_32afee36
 Bytes: 258
 Even if we don't do this, for correctness it will still be fine, right? Just want to make sure, since some of the cases below it seems to me we can have two slow paths, like HLoadString can have both a baker-read-barrier slow path and a null-check slow path.
 
+4000:4-4000:89
+Mon Sep 05 11:19:39 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3642374d_32afee36
+UUID: 91668dcf_ba53f1de
+Bytes: 309
+Overestimating the necessary spill size leads to suboptimal but working code. That's what we were generally doing before this CL.
+
+For HLoadString/HLoadClass, we're also checking "!load->NeedsEnvironment()" so that we don't underestimate the necessary spill size; underestimating would lead to incorrect code.
+
 File: compiler/optimizing/register_allocator_graph_color.cc
 
 19:0-20:23
@@ -52,4 +78,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 91668dcf_9a0f0d43
 Bytes: 65
 Leftovers from PS5. I'll wait for other comments before removing.
+
+19:0-20:23
+Mon Sep 05 11:19:39 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 91668dcf_9a0f0d43
+UUID: 16fd3327_1e374d08
+Bytes: 4
+Done
 

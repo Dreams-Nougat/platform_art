@@ -70,6 +70,33 @@ Overestimating the necessary spill size leads to suboptimal but working code. Th
 
 For HLoadString/HLoadClass, we're also checking "!load->NeedsEnvironment()" so that we don't underestimate the necessary spill size; underestimating would lead to incorrect code.
 
+File: compiler/optimizing/locations.h
+
+652:7-652:36
+Mon Sep 05 11:20:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36b797b7_47496eb4
+Bytes: 19
+bool has_custom_...
+
+667:0-668:45
+Mon Sep 05 11:20:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36b797b7_674ef2bf
+Bytes: 215
+Should we make this always valid, so that we don't need the flag?
+
+Also, we could make it empty for non-calling instruction, which would make the code cleaner whenever it needs to know which registers to save. WDYT?
+
+File: compiler/optimizing/register_allocation_resolver.cc
+
+47:0-65:3
+Mon Sep 05 11:20:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36b797b7_07437696
+Bytes: 52
+Maybe add a helper ComputeMaximumSafepointSpillSize.
+
 File: compiler/optimizing/register_allocator_graph_color.cc
 
 19:0-20:23

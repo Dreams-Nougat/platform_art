@@ -1,0 +1,13 @@
+Revision: fbc61389c56be3f77eba770b6970bda25e40bed9
+Patch-set: 16
+File: dex2oat/dex2oat.cc
+
+1259:5-1259:96
+Tue Sep 06 15:17:25 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3655d739_57ffacc5
+Bytes: 195
+That's not the reason. It's because we move the descriptor to oat_files_ (see line 1263). Then we close everything.
+
+installd always execs commands so all descriptors must be closed here as well.
+

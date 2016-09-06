@@ -30,6 +30,46 @@ The actual disassembly is:
 
 In other words, T3 encoding, and 511 can't be represented in both T1 or T2.
 
+40:28-40:46
+Tue Sep 06 15:47:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b11ab155_89289da8
+UUID: 91668dcf_7d6793df
+Bytes: 112
+In the manual, the T3 encoding is shown as
+
+  MOVW<c> <Rd>, #<imm16>
+
+Why isn't vixl disassembling it as "movw"?
+
+122
+Tue Sep 06 15:47:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 166e130e_f65d2077
+Bytes: 138
+Yeah, I got this test wrong. Can you move the "MOVS ., #0" to line 118 as CHECK-NEXT, please? It looks pretty confusing the way it is now.
+
+127
+Tue Sep 06 15:47:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36b797b7_4a2893a5
+Bytes: 86
+(Optimization opportunity: allow HAnd to generate UBFX. Then the 511 can be embedded.)
+
+169
+Tue Sep 06 15:47:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 166e130e_164edcbd
+Bytes: 36
+Add "CHECK-NEXT: movs {{r\d+}}, #0"?
+
+219
+Tue Sep 06 15:47:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96e9236c_888c3be7
+Bytes: 36
+Add "CHECK-NEXT: movs {{r\d+}}, #0"?
+
 221:0-221:70
 Mon Sep 05 19:48:16 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -54,6 +94,18 @@ Not exactly. Here is the original disassembly before this change:
 As you can see, the only reason the test passed is because the second eor instruction has the ".w" suffix, and the checker rule on line 220 (in the original) looks just for "eor" (contrary to the previous rule). The new disassembler drops the suffix, hence the test fails, although nothing has changed in the generated code.
 
 I am not sure what the exact intention behind the rule on line 220 is, but it seems that the test case should be fixed/improved, which I'd rather do in a separate patch. Here you just see the quick change that makes the test pass.
+
+221:0-221:70
+Tue Sep 06 15:47:44 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 318881a4_85b406ee
+UUID: 166e130e_16c37cff
+Bytes: 250
+Yeah, there's plenty of CHECK-NOTs that are missing the "{{(\.w)?}}". So, they are not really checking what they should.
+
+Why does the vixl disassembler omit the ".w"? It's explicit in the manual, for example
+
+    EOR{S}.W <Rd>, <Rn>, <Rm>{, <shift>}
 
 231:28-231:53
 Tue Sep 06 14:36:02 2016 +0000

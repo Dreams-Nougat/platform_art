@@ -1,0 +1,54 @@
+Revision: 990ff77d1c0ceecf63ad5ad405983e256a00ad4d
+Patch-set: 1
+File: runtime/gc/accounting/card_table-inl.h
+
+31:19-31:27
+Tue Sep 06 23:38:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 962843c7_19f577e8
+Bytes: 80
+This only handles the edge cases, most of the cards are still going to be CASed.
+
+32:7-32:14
+Tue Sep 06 23:38:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 962843c7_1921f761
+Bytes: 394
+I think this is broken for the case where it goes from
+dirty - 1 to clean. If you don't use a CAS you can lose a write to the card table.
+
+I.e.
+
+old_value = kCardDirty - 1, new_value = 0 
+
+*address == kCardDirty - 1 is true
+
+// Mutator goes and writes card back to kCardDirty and writes some field in.
+
+*address gets incorrectly set to 0 and doesn't get scanned even though it should have been.
+
+174:30-174:56
+Tue Sep 06 23:38:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 962843c7_d9eabffe
+Bytes: 17
+Main CAS is here.
+
+File: runtime/gc/accounting/card_table.h
+
+102
+Tue Sep 06 23:38:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 962843c7_79d3d357
+Bytes: 24
+Args are misaligned now.
+
+File: runtime/gc/heap.cc
+
+3377
+Tue Sep 06 23:38:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 962843c7_595d2fe8
+Bytes: 10
+Misaligned
+

@@ -9,7 +9,26 @@ UUID: 765f4f59_b90eff90
 Bytes: 170
 I'd prefer you hide this in the cc file. There's not a large benefit of keeping the field a non-pointer, and this way the vixl headers pollute the main disassembler file.
 
+22:0-29:26
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765f4f59_b90eff90
+UUID: 36b797b7_0a437b96
+Bytes: 4
+Done
+
 File: test/538-checker-embed-constants/src/Main.java
+
+40:28-40:46
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b11ab155_89289da8
+Bytes: 127
+The actual disassembly is:
+
+ f24010ff	mov r0, #511
+
+In other words, T3 encoding, and 511 can't be represented in both T1 or T2.
 
 221:0-221:70
 Mon Sep 05 19:48:16 2016 +0000
@@ -17,4 +36,77 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 765f4f59_f9087785
 Bytes: 36
 Why? This is changing the test spec.
+
+221:0-221:70
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765f4f59_f9087785
+UUID: 318881a4_85b406ee
+Bytes: 780
+Not exactly. Here is the original disassembly before this change:
+
+ 24010ff       movw    r0, #511
+ 2100          movs    r1, #0
+ ea820000      eor.w   r0, r2, r0
+ ea830101      eor.w   r1, r3, r1
+ 4770          bx      lr
+
+As you can see, the only reason the test passed is because the second eor instruction has the ".w" suffix, and the checker rule on line 220 (in the original) looks just for "eor" (contrary to the previous rule). The new disassembler drops the suffix, hence the test fails, although nothing has changed in the generated code.
+
+I am not sure what the exact intention behind the rule on line 220 is, but it seems that the test case should be fixed/improved, which I'd rather do in a separate patch. Here you just see the quick change that makes the test pass.
+
+231:28-231:53
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 36b797b7_8adbebe1
+Bytes: 485
+The current disassembler has the limitation that all immediate operands have to be printed either signed or unsigned, so we have decided to be consistent with LLVM, and to print unsigned. However, we do realize that the best format depends on instruction type (e.g. signed for addition, but unsigned for bitwise operations), so the VIXL team is considering extending the disassembler.
+
+The actual disassembly is:
+
+ f04f31ff	mov r1, #-1
+
+In other words, T2 encoding outside an IT block.
+
+286:28-286:61
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b11ab155_0904ad20
+Bytes: 238
+The ARM ARM makes specifying the destination register optional if it is the same as the immediately following it source register.
+
+The actual disassembly is:
+
+ ea417192	orr r1, r2, lsr #30
+
+In other words, T2 encoding outside an IT block.
+
+343:28-343:50
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 96e9236c_28488fad
+Bytes: 59
+This is the preferred disassembly according to the ARM ARM.
+
+543:36-543:65
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 318881a4_a8c47f36
+Bytes: 134
+The actual disassembly is:
+
+ f6037bff	add r11, r3, #4095
+
+In other words, T4 encoding, and 4095 can't be represented in T1, T2 and T3.
+
+546:36-546:65
+Tue Sep 06 14:36:02 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 166e130e_b60e0891
+Bytes: 134
+The actual disassembly is:
+
+ f6a30b03	sub r11, r3, #2051
+
+In other words, T4 encoding, and 4095 can't be represented in T1, T2 and T3.
 

@@ -9,3 +9,19 @@ UUID: 16fd3327_3ecd6980
 Bytes: 97
 To prevent this, could you update the test to only have one deoptimize with an empty loop header?
 
+63:70-64:79
+Tue Sep 06 10:07:06 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fd3327_3ecd6980
+UUID: 166e130e_96866c11
+Bytes: 475
+I don't understand how reducing the number of Deoptimize instructions is related to this comment. I'm referring to the rewrite I advocated at
+
+    https://android-review.googlesource.com/#/c/248205/1/compiler/optimizing/bounds_check_elimination.cc@1339
+
+(I guess I could get rid of the null check Deoptimize with
+
+  if (array == null) return;
+
+but the two BCE Deoptimize instructions are inevitably there in the "BCE (after)" even though one of them is later removed by DCE.)
+

@@ -25,3 +25,21 @@ UUID: f6741f0d_e54d368c
 Bytes: 132
 Name what? This is just behavior. The problem I have with such variables is that they don't scale if everyone starts doing the same.
 
+271:0-271:39
+Wed Sep 07 15:11:56 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6741f0d_e54d368c
+UUID: 962843c7_a787dd45
+Bytes: 354
+I think that's bogus. I'd have to write
+
+  MoreErrorInfo(pid, false /* sig_quit_on_fail */)
+
+and
+
+  if (!result && (false) /* sig_quit_on_fail */)
+
+This is in the end exactly the same, except a named variable makes sure that across the code there is one common definition.
+
+(For numbers we almost always ask to put "magic values" into named variables...)
+

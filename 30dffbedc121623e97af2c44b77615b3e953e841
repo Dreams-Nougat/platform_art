@@ -26,6 +26,26 @@ UUID: 76890f3e_8cb2e7eb
 Bytes: 187
 They are declared virtual in the CustomDisassembler::DisassemblerStream (enforced by OVERIDE), so they will be picked up. (And do not use covariant returns without a good reason, please.)
 
+85
+Wed Sep 07 20:30:02 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76890f3e_8cb2e7eb
+UUID: d64e3b0b_dc44ed00
+Bytes: 632
+Ok, I took a look at disasm-aarch32.h where it seems all the virtual operators were coming from.
+
+Everything just calls os << parameter where os is an ostream.
+
+Therefore perhaps wouldn't it be more generic (and less confusing) if it simply overloaded ostream?
+
+   std::ostream& operator<<(std::ostream& os, const PrintLabel& label) {
+      ...
+      os << "pc, #" << ....;
+      return os;
+   }
+
+and so on? Perhaps there is a reason not to do this, if the output is different based on the subclass of DisassemblerStream (e.g. arm vs arm64), in which case I don't understand why is there a templated operator<< which is not virtual?
+
 152
 Wed Sep 07 18:11:45 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>

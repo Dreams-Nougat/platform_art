@@ -38,3 +38,20 @@ UUID: 962843c7_d3bc5e27
 Bytes: 187
 CStringAndUtf16Length, I think the length of the new type is longer than a pair and less intention revealing. If you care what the uint32_t value is you really should be reading the code.
 
+1082:2-1082:34
+Wed Sep 07 18:01:28 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 962843c7_d3bc5e27
+UUID: 76ecaf0a_54b30259
+Bytes: 361
+I think a struct would be the most intention revealing
+
+  struct CStringAndUtf16Length {
+     const char* string;
+     uint32_t length;  // why not size_t ?
+  };
+
+Maybe even something shorter for the name like DexUtf16String.
+
+This would have the same exact memory/performance as a pair and now people have something to grep for when they want to read the code.
+

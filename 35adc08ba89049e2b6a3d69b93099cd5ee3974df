@@ -107,6 +107,22 @@ Why does the vixl disassembler omit the ".w"? It's explicit in the manual, for e
 
     EOR{S}.W <Rd>, <Rn>, <Rm>{, <shift>}
 
+221:0-221:70
+Wed Sep 07 11:03:01 2016 +0000
+Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 166e130e_16c37cff
+UUID: 96992396_42db320b
+Bytes: 563
+I am still a little bit puzzled by this test. What's the intention? That there are a couple of MOVs followed by exactly two EORs? So, would the following work (using pre-ARMv8 syntax):
+
+ /// CHECK-START-ARM: long Main.xor511(long) disassembly (after)
+ /// CHECK:                movw {{r\d+}}, #511
+ /// CHECK-NEXT:           movs {{r\d+}}, #0
+ /// CHECK-NOT:            eor{{(\.w)?}}
+ /// CHECK:                eor{{(\.w)?}} {{r\d+}}, {{r\d+}}, {{r\d+}}
+ /// CHECK-NEXT:           eor{{(\.w)?}} {{r\d+}}, {{r\d+}},{{r\d+}}
+ /// CHECK-NOT:            eor{{(\.w)?}}
+
 231:28-231:53
 Tue Sep 06 14:36:02 2016 +0000
 Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>

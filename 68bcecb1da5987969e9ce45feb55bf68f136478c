@@ -9,12 +9,34 @@ UUID: b11ab155_e9ff51c4
 Bytes: 37
 What is the correct thing to do here?
 
+1449:7-1449:11
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b11ab155_e9ff51c4
+UUID: 769e6f7e_813dba1d
+Bytes: 595
+Removed comment for now. Is this something we should DCHECK for, or even treat as fatal? May indicate file corruption (e.g. annotation info not matching up with actual method info) or a layer above not checking something it should.
+
+Returning nullptr is permissive, which seems reasonable and in keeping with some of the existing code. Shout if you disagree.
+
+Same for above? Do they indicate a corrupt dex file if these structures are missing, or is null valid?
+
+FYI - For the AnnotationSetRefItem / AnnotationSetItem lookup I found examples where we don't bother with null checks so I omitted.
+
 1457:46-1458:62
 Tue Sep 06 18:07:36 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 765f4f59_02b690f7
 Bytes: 37
 Style nit: single parameter per line.
+
+1457:46-1458:62
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765f4f59_02b690f7
+UUID: b66aa72b_c3acb68e
+Bytes: 4
+Done
 
 File: runtime/mirror/accessible_object.h
 
@@ -25,6 +47,14 @@ UUID: 16fd3327_a15a787b
 Bytes: 52
 Comment may be inaccurate now: it wasn't just Field.
 
+50:5-50:12
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 16fd3327_a15a787b
+UUID: 1678d3fe_a6226610
+Bytes: 4
+Done
+
 File: runtime/mirror/field.h
 
 102:10-102:17
@@ -34,12 +64,32 @@ UUID: 318881a4_c891c300
 Bytes: 24
 Looking for suggestions.
 
+102:10-102:17
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 318881a4_c891c300
+UUID: 96992396_82b37af1
+Bytes: 143
+I've put in a not-very-useful comment. May just be better to remove, or provide more detail. Not sure I want to explain alignment here, though.
+
 103:19-103:20
 Tue Sep 06 18:07:36 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 765f4f59_6d85bd07
 Bytes: 59
 I'm surprised an explicit padding of two is necessary here.
+
+103:19-103:20
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765f4f59_6d85bd07
+UUID: 769e6f7e_2106ee78
+Bytes: 787
+I understand it's needed to match alignment between Java and C++, and I understand there is an algorithm for aligning / padding, but I'm mostly relying on the tests to tell me if something is wrong. Let me know if there's something fishy going on. Think it's related to references always going first and needing to be aligned to word boundaries, but that's only a superficial / hand-wavey understanding.
+
+This at least seems consistent with what was there before:
+
+Previously the padding of 3 was needed in accessible_object, and that was valid / shared by all subclasses. Now the executable has its own Java fields the padding/layout for it (and its subclasses) is different. Field hasn't changed, so the 1 (from accessible_object) + 2 (for field) is at least mathematically consistent.
 
 File: runtime/native/java_lang_reflect_Parameter.cc
 
@@ -57,6 +107,14 @@ UUID: 765f4f59_ad86b510
 Bytes: 28
 Style nit: No C-style casts.
 
+49:38-49:48
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765f4f59_ad86b510
+UUID: 1678d3fe_666f8e24
+Bytes: 4
+Done
+
 65:16-65:47
 Tue Sep 06 18:07:36 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -64,10 +122,26 @@ UUID: 765f4f59_adafd580
 Bytes: 13
 One per line.
 
+65:16-65:47
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765f4f59_adafd580
+UUID: 96992396_e2c8064b
+Bytes: 4
+Done
+
 66:101-66:104
 Tue Sep 06 18:07:36 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 765f4f59_cdb209ed
 Bytes: 14
 Line too long.
+
+66:101-66:104
+Wed Sep 07 10:14:00 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 765f4f59_cdb209ed
+UUID: 76890f3e_69cda526
+Bytes: 275
+We don't seem to care about long lines during registration. I did my best by splitting over multiple lines, but all others I say (e.g. VMClassLoader, Proxy, Constructor) didn't bother even doing that. Couldn't find a single example of where somebody had broken up the string.
 

@@ -2,6 +2,17 @@ Revision: 84a627f1632cb11a089754d14d01626b2227556d
 Patch-set: 1
 File: test/538-checker-embed-constants/src/Main.java
 
+105:28-105:31
+Thu Sep 08 11:42:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bfd0a27_1ef74d75
+Bytes: 276
+and{{(\.w)?}} here and lines 109, 132, 135, 145, 149.
+Also for BIC on lines 106, 110, 120, 124, 133, 136, 146, 150.
+Also for ORR on lines 158, 161, 184, 188, 198, 202.
+Also for EOR on lines 211, 213, 259, 262.
+(Note that ORN has no 16-bit version, so there's no ORN.W either.)
+
 116:6-116:65
 Thu Sep 08 10:15:00 2016 +0000
 Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -9,10 +20,27 @@ UUID: 8b373ada_724a18af
 Bytes: 130
 I am still a little bit puzzled by this test; what is its intention? That there are a couple of MOVs followed by exactly two ANDs?
 
+116:6-116:65
+Thu Sep 08 11:42:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b373ada_724a18af
+UUID: 0bfd0a27_5e4f15bd
+Bytes: 145
+This tests that the constant 511 is materialized before being used by HAnd, i.e. the constant 511 is not erroneously embedded in the instruction.
+
 119:2-120:31
 Thu Sep 08 10:15:00 2016 +0000
 Author: Anton Kirilov <1084448@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2bf48e40_7ff88f66
 Bytes: 155
 I feel that this is redundant, and I can just remove it, and change line 121 to a "CHECK-NEXT", but I have decided to keep the rules close to the original.
+
+119:2-120:31
+Thu Sep 08 11:42:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bf48e40_7ff88f66
+UUID: 0bfd0a27_3e6d692f
+Bytes: 250
+The intent is to check that there is no additional AND/BIC other than the emitted HAnd.
+Note that CHECK-NEXT would not work because of the interleaving HIR which I didn't want to add to the test; the ParallelMove isn't even in the same block as HAnd.
 

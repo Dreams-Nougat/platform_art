@@ -9,6 +9,14 @@ UUID: 360b17ab_470c6e98
 Bytes: 45
 Is this getting caught by the existing tests?
 
+103
+Thu Sep 08 12:08:08 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 360b17ab_470c6e98
+UUID: 0bfd0a27_bea3b94d
+Bytes: 35
+Yes. It's needed to pass the tests.
+
 File: runtime/native/java_lang_reflect_Parameter.cc
 
 28
@@ -18,6 +26,20 @@ UUID: 360b17ab_876ee625
 Bytes: 121
 I'm a little confused, how were we getting parameters annotations before? Why did we need to add new DexFile code for it?
 
+28
+Thu Sep 08 12:08:08 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 360b17ab_876ee625
+UUID: 0bfd0a27_9ea0fd41
+Bytes: 547
+We only had a single method to grab all annotations for all parameters in one go.
+
+It looks like elsewhere (other AnnotatedElements) the "look for this specific annotation" is implemented natively, I assume to avoid the expense of materializing all the information to java objects to throw most of it away after filtering in Java.
+
+I was happy enough to follow the pattern.
+
+That said, I haven't bothered with the "get all annotations for parameter X", but we could if we wanted (probably as a follow up). We're currently doing what upstream does.
+
 63
 Wed Sep 07 18:17:22 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -26,4 +48,14 @@ Bytes: 77
 line length
 
 also I am planning on deprecating the ! usage at some point soon
+
+63
+Thu Sep 08 12:08:08 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 360b17ab_a71b2ade
+UUID: 0bfd0a27_7e59b15d
+Bytes: 220
+As mentioned on earlier PS: nowhere else bothers. This is consistent (although I've done what I can by splitting it over several lines, nobody else bothers to do that, even).
+
+Regarding "!" deprecation: ack / roger that.
 

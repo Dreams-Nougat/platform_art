@@ -112,3 +112,36 @@ UUID: ab0ebe7a_c9a675ad
 Bytes: 199
 It is just making explicit that we expect the truncation of the number when it is converted to the uint16_t this function expects. It is done the same way many other places in this function and file.
 
+7187:39-7187:45
+Fri Sep 09 18:10:21 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab0ebe7a_c9a675ad
+UUID: ab0ebe7a_c92b15ed
+Bytes: 954
+I see..
+
+   static_cast<uint16_t>(i)
+
+is much more clear then. It does the same exact thing because a cast to an unsigned value is the modulus 2^sizeof.
+
+And it's more readable. And there's less magic.
+
+0xFFFF seems like some java-ism to go from int/long to short because they don't have proper unsigned types.
+
+Look at what it does, I made the implicit conversions explicit:
+
+   0xFFFF & i -> 0xFFFF has to be converted to size_t first
+   (size_t)(0xFFFF) & i
+   // and 0xFFFF is a signed int here so we have to consider (a) signed int32->unsigned32 and 
+   // (b) signed int32 -> unsigned int64 depending on arch
+   Now the whole type is size_t.
+   (uint16_t)((size_t)(0xFFFF) & i)
+   and it has to do an implicit uint16_t conversion anyway because the type of the expression doesn't
+    match function parameter.
+
+Plus we have to worry about this magic number 0xFFFF. VS:
+
+   static_cast<uint16_t>(i)
+
+No implicit hidden conversions, no magic numbers.
+

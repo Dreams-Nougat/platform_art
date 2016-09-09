@@ -1,0 +1,20 @@
+Revision: 6ba99b09a5be6e448e3f5139d846b08e9188425e
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm.cc
+
+196
+Fri Sep 09 16:31:41 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb6a76fa_9502e415
+Bytes: 483
+We can simply extract contiguous ranges of 1s from fp_spills:
+
+  while (fp_spills != 0u) {
+    uint32_t begin = CTZ(fp_spills);
+    uint32_t tmp = fp_spills + (1u << begin);
+    fp_spills &= tmp;  // Clear the contiguous range of 1s.
+    uint32_t end = (tmp == 0u) ? 32u : CTZ(tmp);  // CTZ(0) is undefined.
+    stack_offset = SaveContiguousSRegisterList(begin, end - 1, codegen, stack_offset);
+  }
+  DCHECK_LE(stack_offset, codegen->GetFrameSize() - codegen->FrameEntrySpillSize());
+

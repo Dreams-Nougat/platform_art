@@ -9,10 +9,26 @@ UUID: ab607e1c_13f38c9a
 Bytes: 78
 what is this for ? should this be a CHECK(input_filename != output_filename) ?
 
+156:1-158:3
+Fri Sep 09 09:33:37 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_13f38c9a
+UUID: ab607e1c_53ed04b5
+Bytes: 238
+Nope, that's for self-relocation (input OAT == output OAT). In that case patchoat will open the input file, keep the FD, unlink it and create and open a new OAT in its place. VDEX does not need relocation, so there's simply nothing to do.
+
 161:2-161:34
 Fri Sep 09 09:22:37 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ab607e1c_33ee88b6
 Bytes: 118
 no error checking for the unlink ? It will give a better error message than the failing symlink that is error checked.
+
+161:2-161:34
+Fri Sep 09 09:33:37 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_33ee88b6
+UUID: 4b054249_f0c40034
+Bytes: 250
+This function is adapted from ReplaceOatFileWithSymlink (line 466). I guess the author didn't care about possible low-level issues and skipped checking for errors so that they wouldn't need to test whether the file exists first. Happy to change that.
 

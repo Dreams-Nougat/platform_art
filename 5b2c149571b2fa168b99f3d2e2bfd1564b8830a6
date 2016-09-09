@@ -17,3 +17,34 @@ UUID: ab0ebe7a_86f46c4e
 Bytes: 42
 no but added things to make it more clear.
 
+6545
+Fri Sep 09 17:36:07 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_6644d09e
+Bytes: 452
+nit: don't need two functions
+
+  std::reference_wrapper<const ScopedArenaVector<ArtMethod*>> lists[] = {std::cref(list), std::cref(rest)...};
+
+  for (auto&& list_wrapper : lists) { 
+      const ScopedArenaVector<ArtMethod*>& list = list_wrapper.get();
+  // existing code
+  }
+
+  // or just use a pointer instead of reference_wrapper. key is that arrays of references are illegal
+  // but by using an array we can avoid recursively calling this function.
+
+6605
+Fri Sep 09 17:36:07 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_e6f1e05c
+Bytes: 75
+nit: separating into 2 CHECKs will make it easier to determine which failed
+
+7187:39-7187:45
+Fri Sep 09 17:36:07 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_a61ec879
+Bytes: 69
+Can you turn this into a named constant? 0xFFFF seems pretty magical.
+

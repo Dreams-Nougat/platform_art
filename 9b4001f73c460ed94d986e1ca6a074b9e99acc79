@@ -1,5 +1,94 @@
 Revision: 9b4001f73c460ed94d986e1ca6a074b9e99acc79
 Patch-set: 1
+File: runtime/gc/system_weak.h
+
+31:15-31:34
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_09f88ddc
+Bytes: 119
+Since it's a bit wordy, we could try to shorten the names like Allow, Disallow, Broadcast, Sweep and Wait, for example?
+
+72:8-72:28
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_69c7810b
+Bytes: 38
+This has to be public for annotations?
+
+File: runtime/gc/system_weak_test.cc
+
+68:7-68:17
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_49cc452e
+Bytes: 51
+Can this be part of the SystemWeakHolder interface?
+
+69
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_49e3a599
+Bytes: 118
+May not matter for this test, but do we want to lock allow_disallow_lock_ around this function like the existing ones?
+
+87:24-87:43
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_e92251b1
+Bytes: 593
+Regarding the synchronization around AddSystemWeakHolder():
+
+- I think a suspend-all isn't sufficient and it must be a ScopedGCCriticalSection because we could suspend all threads in the middle of a GC, which would break/race with GC's system weak handling. This is sort of like adding an app image space.
+
+- Do we want to support adding a new holder dynamically? Or, is it enough to (statically) add each to the runtime (that is, add at startup) as a need arises? An option is to leave some holders added at startup but empty when not in use. This would work around the synchronization issue.
+
+102:0-104:35
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_69994124
+Bytes: 211
+Does this fail with the CC build because allow/disallow are called only if the read barrier is disabled.
+
+Also fail with SS? I think the SS collector doesn't call these at all as it's not a concurrent collector?
+
+107:25-107:42
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_897f5db2
+Bytes: 13
+Use IsNull()?
+
+126:0-129:35
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_c98955d3
+Bytes: 5
+Same.
+
+132:25-132:42
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_29b62993
+Bytes: 9
+IsNull()?
+
+134
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_292c69a4
+Bytes: 220
+If it's manageable, it might make sense to add a test that exercises WaitForAllowance. Maybe if it's possible to spawn a thread, one thread invoking GC in a loop and another accessing the weak in a loop? Or leave a TODO?
+
+File: runtime/runtime.cc
+
+1717:0-1721:3
+Fri Sep 09 18:54:46 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab0ebe7a_497d6573
+Bytes: 246
+I think we could try to convert the above four to the SystemWeakHolder style later, but it's also an option to leave them as is (at least for now), because some of them have some custom behavior, and focus here on the other/extended system weaks?
+
 File: runtime/runtime.h
 
 891:45-891:58

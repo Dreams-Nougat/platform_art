@@ -1,0 +1,185 @@
+Revision: c4fabee34faef121412e71db4719e6b56d30ec57
+Patch-set: 1
+File: compiler/dex/verified_method.cc
+
+234:0-247:55
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb6a76fa_b5560059
+Bytes: 128
+I'd record those, aren't these for dex2dex? We talked about re-doing the extraction + verification when this optimization fails.
+
+File: compiler/driver/compiler_driver.cc
+
+728:39-728:66
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b50e248_f82eb1fe
+Bytes: 42
+Id put a comment everywhere you pass null.
+
+1887:66-1887:76
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb63f225_74990824
+Bytes: 30
+I'd prefer making it explicit.
+
+File: dex2oat/dex2oat.cc
+
+1570:0-1572:5
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b6eea0d_96cdcc2a
+Bytes: 15
+Comment please.
+
+File: runtime/class_linker.cc
+
+3813:0-3813:87
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab607e1c_13454c6b
+Bytes: 283
+Could the verifier fetch it from the compiler instead? This will allow this file to stay clean, and not know about verifier deps.
+
+Actually, looking at the verifier changes now, I think i'd really prefer if we could do:
+
+Runtime::Current()->GetCompiler()->GetVerifiedDeps()->Record()
+
+File: runtime/utils.cc
+
+445:0-450:3
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b50e248_d82bedec
+Bytes: 10
+unrelated?
+
+File: runtime/verifier/method_verifier.cc
+
+3643:0-3646:3
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b6eea0d_f6da40dc
+Bytes: 28
+why not in the if line 3640?
+
+3644:0-3646:3
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab607e1c_533fc4e4
+Bytes: 111
+I'd add helpers on the Verifier class to avoid all these null checks. MaybeAddClassResultion(class_idx, klass).
+
+3766:6-3767:84
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b556e39_57720c0c
+Bytes: 25
+Unrelated to vdex, right?
+
+4067:2-4070:15
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bf34aac_aea97732
+Bytes: 16
+why this change?
+
+File: runtime/verifier/method_verifier.h
+
+769:24-769:83
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8bff3a6b_d2ee247e
+Bytes: 44
+Add that it's only used for AOT compilation.
+
+File: runtime/verifier/verifier_deps.cc
+
+43:29-43:38
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b556e39_97530469
+Bytes: 80
+Yuck, can'yout you actually write the code for creation (and spare the comment?)
+
+86:0-86:24
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb6a76fa_354af0ad
+Bytes: 16
+How can that be?
+
+143:0-145:3
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb6a76fa_154ff4bd
+Bytes: 7
+comment
+
+148:0-150:3
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b556e39_f7608033
+Bytes: 7
+comment
+
+156:9-156:53
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ebefd6c0_cdc16922
+Bytes: 30
+cryptic, please add a comment.
+
+163:6-163:23
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b04c64d_71f2d885
+Bytes: 45
+comment (here and below for the null checks).
+
+217:0-217:32
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab607e1c_93503c26
+Bytes: 30
+Say why it's ok not to record.
+
+223:30-223:35
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab607e1c_f34d3090
+Bytes: 4
+Add?
+
+241:0-275:3
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ebefd6c0_2dee2db6
+Bytes: 22
+Add a helper for this?
+
+292:2-292:15
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab607e1c_d34ab475
+Bytes: 46
+Is that really what you think of VerifierDeps?
+
+File: runtime/verifier/verifier_deps.h
+
+32:0-37:76
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ab607e1c_b353b831
+Bytes: 58
+Move that out of verifer_deps.h (eg put it in verifier.h).
+
+38:0-39:20
+Fri Sep 09 12:54:44 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8bff3a6b_f28c08e5
+Bytes: 19
+High-level comment.
+

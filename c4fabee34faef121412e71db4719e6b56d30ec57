@@ -9,6 +9,14 @@ UUID: eb6a76fa_b5560059
 Bytes: 128
 I'd record those, aren't these for dex2dex? We talked about re-doing the extraction + verification when this optimization fails.
 
+234:0-247:55
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb6a76fa_b5560059
+UUID: cb63f225_d4257cca
+Bytes: 22
+Will get recorded now.
+
 File: compiler/driver/compiler_driver.cc
 
 728:39-728:66
@@ -18,12 +26,28 @@ UUID: 4b50e248_f82eb1fe
 Bytes: 42
 Id put a comment everywhere you pass null.
 
+728:39-728:66
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b50e248_f82eb1fe
+UUID: cb63f225_3412f06a
+Bytes: 17
+No longer needed.
+
 1887:66-1887:76
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb63f225_74990824
 Bytes: 30
 I'd prefer making it explicit.
+
+1887:66-1887:76
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb63f225_74990824
+UUID: 8bff3a6b_f24d2890
+Bytes: 17
+No longer needed.
 
 File: dex2oat/dex2oat.cc
 
@@ -33,6 +57,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b6eea0d_96cdcc2a
 Bytes: 15
 Comment please.
+
+1570:0-1572:5
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b6eea0d_96cdcc2a
+UUID: cb63f225_1417f45a
+Bytes: 4
+Done
 
 File: runtime/class_linker.cc
 
@@ -47,6 +79,14 @@ Actually, looking at the verifier changes now, I think i'd really prefer if we c
 
 Runtime::Current()->GetCompiler()->GetVerifiedDeps()->Record()
 
+3813:0-3813:87
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_13454c6b
+UUID: ab607e1c_3312086b
+Bytes: 4
+Done
+
 File: runtime/utils.cc
 
 445:0-450:3
@@ -55,6 +95,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4b50e248_d82bedec
 Bytes: 10
 unrelated?
+
+445:0-450:3
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b50e248_d82bedec
+UUID: 4b50e248_38630946
+Bytes: 68
+Used to make tests more readable. Would you prefer not adding these?
 
 File: runtime/verifier/method_verifier.cc
 
@@ -72,6 +120,26 @@ UUID: ab607e1c_533fc4e4
 Bytes: 111
 I'd add helpers on the Verifier class to avoid all these null checks. MaybeAddClassResultion(class_idx, klass).
 
+3643:0-3646:3
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b6eea0d_f6da40dc
+UUID: 2b556e39_17c254fb
+Bytes: 532
+Line 3640 tests whether we resolved a class which hasn't been in the dex cache until now. If so, it stores it in the dex cache.
+
+I presume that what you mean is to put it in the branch so as to not record the same resolution multiple times? I'd prefer to deduplicate that on the VerifierDeps side rather than assume that the dex cache is empty before the verifier is invoked.
+
+This way `klass` always holds the resolved class or nullptr if unresolved after line 3643 and we pass that to VerifierDeps to do whatever it wants with it.
+
+3644:0-3646:3
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_533fc4e4
+UUID: 2b556e39_f737e036
+Bytes: 4
+Done
+
 3766:6-3767:84
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -79,12 +147,30 @@ UUID: 2b556e39_57720c0c
 Bytes: 25
 Unrelated to vdex, right?
 
+3766:6-3767:84
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b556e39_57720c0c
+UUID: ebefd6c0_2df8ed65
+Bytes: 104
+Yep. I've refactored the code a little bit and thought that this wasn't obvious and worthy of a comment.
+
 4067:2-4070:15
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0bf34aac_aea97732
 Bytes: 16
 why this change?
+
+4067:2-4070:15
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bf34aac_aea97732
+UUID: 0bf34aac_ce4a0376
+Bytes: 298
+Because it was using Class::IsAssignableFrom rather than RegType::IsAssignableFrom like the rest of the verifier. And I collect the dependencies inside RegType.
+
+I'd keep it no matter what because Class::IsAssignableFrom actually corresponds to RegType::IsStrictlyAssignableFrom, so less ambiguity.
 
 File: runtime/verifier/method_verifier.h
 
@@ -95,6 +181,14 @@ UUID: 8bff3a6b_d2ee247e
 Bytes: 44
 Add that it's only used for AOT compilation.
 
+769:24-769:83
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8bff3a6b_d2ee247e
+UUID: 6b04c64d_1168ac1e
+Bytes: 8
+Removed.
+
 File: runtime/verifier/verifier_deps.cc
 
 43:29-43:38
@@ -104,12 +198,28 @@ UUID: 2b556e39_97530469
 Bytes: 80
 Yuck, can'yout you actually write the code for creation (and spare the comment?)
 
+43:29-43:38
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b556e39_97530469
+UUID: 2b556e39_7763d012
+Bytes: 218
+Please suggest a cleaner way. I don't want the DexFileDeps class to be copyable, assignable or movable. Gives me confidence that there will be exactly one instance per dex file and it will always reside inside the map.
+
 86:0-86:24
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb6a76fa_354af0ad
 Bytes: 16
 How can that be?
+
+86:0-86:24
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb6a76fa_354af0ad
+UUID: ab607e1c_13df0c5c
+Bytes: 46
+Testing. I got rid of it, makes thing cleaner.
 
 143:0-145:3
 Fri Sep 09 12:54:44 2016 +0000
@@ -118,12 +228,28 @@ UUID: eb6a76fa_154ff4bd
 Bytes: 7
 comment
 
+143:0-145:3
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb6a76fa_154ff4bd
+UUID: eb6a76fa_b51e007a
+Bytes: 4
+Done
+
 148:0-150:3
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b556e39_f7608033
 Bytes: 7
 comment
+
+148:0-150:3
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b556e39_f7608033
+UUID: cb63f225_b49ba0c2
+Bytes: 96
+Turned into a DCHECK. Can this actually ever be null? I don't think so, was just being cautious.
 
 156:9-156:53
 Fri Sep 09 12:54:44 2016 +0000
@@ -132,12 +258,28 @@ UUID: ebefd6c0_cdc16922
 Bytes: 30
 cryptic, please add a comment.
 
+156:9-156:53
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebefd6c0_cdc16922
+UUID: 0b6eea0d_f64d2090
+Bytes: 4
+Done
+
 163:6-163:23
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6b04c64d_71f2d885
 Bytes: 45
 comment (here and below for the null checks).
+
+163:6-163:23
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b04c64d_71f2d885
+UUID: 6b04c64d_f1da48dc
+Bytes: 4
+Done
 
 217:0-217:32
 Fri Sep 09 12:54:44 2016 +0000
@@ -146,12 +288,28 @@ UUID: ab607e1c_93503c26
 Bytes: 30
 Say why it's ok not to record.
 
+217:0-217:32
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_93503c26
+UUID: 0b6eea0d_566854ed
+Bytes: 4
+Done
+
 223:30-223:35
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ab607e1c_f34d3090
 Bytes: 4
 Add?
+
+223:30-223:35
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_f34d3090
+UUID: ebefd6c0_6d6dd52e
+Bytes: 4
+Done
 
 241:0-275:3
 Fri Sep 09 12:54:44 2016 +0000
@@ -160,12 +318,29 @@ UUID: ebefd6c0_2dee2db6
 Bytes: 22
 Add a helper for this?
 
+241:0-275:3
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebefd6c0_2dee2db6
+UUID: ebefd6c0_0d68911e
+Bytes: 160
+Removed and now stored with the dex file given as context.
+We'll revisit this as part of the "compression" of dependencies, i.e. deduplicating across dex files.
+
 292:2-292:15
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ab607e1c_d34ab475
 Bytes: 46
 Is that really what you think of VerifierDeps?
+
+292:2-292:15
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_d34ab475
+UUID: 4b50e248_b83d591d
+Bytes: 4
+Done
 
 File: runtime/verifier/verifier_deps.h
 
@@ -176,10 +351,26 @@ UUID: ab607e1c_b353b831
 Bytes: 58
 Move that out of verifer_deps.h (eg put it in verifier.h).
 
+32:0-37:76
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ab607e1c_b353b831
+UUID: 2b556e39_17bb747b
+Bytes: 4
+Done
+
 38:0-39:20
 Fri Sep 09 12:54:44 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8bff3a6b_f28c08e5
 Bytes: 19
 High-level comment.
+
+38:0-39:20
+Fri Sep 09 16:14:29 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8bff3a6b_f28c08e5
+UUID: eb6a76fa_b553a031
+Bytes: 4
+Done
 

@@ -1,0 +1,70 @@
+Revision: 9bed3ca54a08e0687ebc6c94349fa0cce300ae7d
+Patch-set: 5
+File: compiler/dex/quick_compiler_callbacks.h
+
+53:45-53:46
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb4e920b_9ce745d6
+Bytes: 6
+const?
+
+File: runtime/verifier/verifier_deps.cc
+
+28:0-29:41
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b0baeaa_e7f7e274
+Bytes: 113
+Isn't that known from the start? It'd be good to avoid the lock, so that you can also avoid it in GetDexFileDeps.
+
+112:0-112:50
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b0baeaa_272f3afd
+Bytes: 158
+Why is it ok to have *all* array classes (and according to your comments synthesized classes too) say they're part of the classpath? Maybe expand the comment.
+
+138:31-138:86
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b0baeaa_072c3604
+Bytes: 93
+So I guess the dependencies of that dex file will be guaranteed to be in its associated vdex?
+
+156:0-160:3
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb74360d_2583ce70
+Bytes: 216
+If you make GetDexFileDeps lock free, you can make this the first thing (add a helper btw, as this check is done my a few methods) and avoid taking the lock. You can also move the IsInClassPath check out of the lock.
+
+File: runtime/verifier/verifier_deps.h
+
+37:14-37:23
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bad0ab1_feed41b9
+Bytes: 365
+You mean "compiled" here right? There's something very confusing in this file around:
+- classes in dex files being compiled
+- classes in dex file from the classpath
+
+It seems those sets are different right? (see your IsInClasspath implementation : return (GetDexFileDeps(*dex_file) == nullptr);).
+
+It would be good to also document what those sets of dex files are.
+
+49:16-49:53
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b0baeaa_47222e15
+Bytes: 42
+Iffy, what does that mean if this is null?
+
+194:0-194:68
+Sun Sep 11 20:52:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bad0ab1_1ec22d26
+Bytes: 16
+Comments please.
+

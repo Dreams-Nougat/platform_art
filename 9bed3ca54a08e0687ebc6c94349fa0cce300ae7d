@@ -25,6 +25,20 @@ UUID: 2b0baeaa_272f3afd
 Bytes: 158
 Why is it ok to have *all* array classes (and according to your comments synthesized classes too) say they're part of the classpath? Maybe expand the comment.
 
+112:0-112:50
+Mon Sep 12 15:11:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b0baeaa_272f3afd
+UUID: 2b0baeaa_87cb8616
+Bytes: 526
+Good point. Maybe that's something worth discussing first.
+
+I'm being conservative here. This will pass for all arrays, including (a) primitive component classes, (b) framework component classes, (c) component classes from the compiled DEX files.
+
+(b) is what we definitely want, no discussion there.
+
+But(a) and (c) are not crystal clear. They technically do not depend on the framework's bytecode, but they do depend on the access flags assigned to them by the VM (derived from the component class). Is that worth recording?
+
 138:31-138:86
 Sun Sep 11 20:52:36 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -32,12 +46,30 @@ UUID: 2b0baeaa_072c3604
 Bytes: 93
 So I guess the dependencies of that dex file will be guaranteed to be in its associated vdex?
 
+138:31-138:86
+Mon Sep 12 15:11:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b0baeaa_072c3604
+UUID: 2b0baeaa_87e26694
+Bytes: 305
+Exactly. This is here because the classpath can contain DEX files without an OAT file. When resolving classes form those, the MethodVerifier will recursively verify them as well but we don't care about their dependencies.
+
+This should not happen on the device, btw. And the boot image has no dependencies.
+
 156:0-160:3
 Sun Sep 11 20:52:36 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb74360d_2583ce70
 Bytes: 216
 If you make GetDexFileDeps lock free, you can make this the first thing (add a helper btw, as this check is done my a few methods) and avoid taking the lock. You can also move the IsInClassPath check out of the lock.
+
+156:0-160:3
+Mon Sep 12 15:11:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb74360d_2583ce70
+UUID: 2b0baeaa_47ceae25
+Bytes: 4
+Done
 
 File: runtime/verifier/verifier_deps.h
 
@@ -54,12 +86,30 @@ It seems those sets are different right? (see your IsInClasspath implementation 
 
 It would be good to also document what those sets of dex files are.
 
+37:14-37:23
+Mon Sep 12 15:11:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bad0ab1_feed41b9
+UUID: 2b0baeaa_e7bc828c
+Bytes: 33
+Done. Let me know if it's enough.
+
 49:16-49:53
 Sun Sep 11 20:52:36 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b0baeaa_47222e15
 Bytes: 42
 Iffy, what does that mean if this is null?
+
+49:16-49:53
+Mon Sep 12 15:11:36 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b0baeaa_47222e15
+UUID: 2b0baeaa_075e7670
+Bytes: 393
+IIUC, the thread safety analysis is static and incredibly dumb about aliasing, so I'm really just trying to make it happy with this lock so I can keep the mutator_lock condition and don't have to switch it off completely. 
+
+Is there a better way of doing this? For instance, it would be a lot clearer if the singleton was defined and accessible from here rather than through the Runtime class.
 
 194:0-194:68
 Sun Sep 11 20:52:36 2016 +0000

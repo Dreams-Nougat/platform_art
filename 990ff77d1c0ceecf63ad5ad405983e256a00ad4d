@@ -43,6 +43,17 @@ UUID: 8b9bba7b_c0873c68
 Bytes: 113
 I don't believe this code is used for cleaning (you can see the uses of the code because I renamed the function).
 
+32:7-32:14
+Mon Sep 12 22:38:15 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b9bba7b_c0873c68
+UUID: 8b9bba7b_26c8209e
+Bytes: 354
+MarkSweep.cc calls
+  heap_->ProcessCards(GetTimings(), false, true, GetGcType() != kGcTypeSticky);
+
+Which has process_alloc_space_cards == true and clear_alloc_space_cards == false for sticky GC. This can get cause cards to get cleared for back to back sticky GC. This is done concurrently, so the non atomic version may cause objects to not get scanned.
+
 174:30-174:56
 Tue Sep 06 23:38:02 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>

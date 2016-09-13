@@ -1,0 +1,11 @@
+Revision: 5faa2314d91954f7481f1b32c5a86d426d6af2cf
+Patch-set: 1
+File: compiler/optimizing/code_generator_mips.cc
+
+1979:38-1979:56
+Tue Sep 13 20:12:29 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b884673_31ef507c
+Bytes: 325
+If you're storing the same constant to several locations (array elements or fields), the assembler will have to repeatedly materialize it. It may be better to leave that to the parallel move as it was done before. For example, arm64 uses a constant only when it can use the zero register, checking IsConstantZeroBitPattern().
+

@@ -9,3 +9,11 @@ UUID: 6b884673_31ef507c
 Bytes: 325
 If you're storing the same constant to several locations (array elements or fields), the assembler will have to repeatedly materialize it. It may be better to leave that to the parallel move as it was done before. For example, arm64 uses a constant only when it can use the zero register, checking IsConstantZeroBitPattern().
 
+1979:38-1979:56
+Tue Sep 13 20:50:26 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b884673_31ef507c
+UUID: 8be1fa42_4896734b
+Bytes: 325
+If that's what's happening, I can redo it for 0 and +0.0 only. However, loading floats into registers is a tad expensive in terms of instruction count, so if a constant isn't reused, it's better to store it directly. Is there a way to find out whether or not a constant has more than one uses, at the locations builder level?
+

@@ -34,6 +34,14 @@ UUID: 2b0baeaa_aa988f21
 Bytes: 82
 Where would you like to put it? It's used by both MethodVerifier and VerifierDeps.
 
+68:0-73:2
+Tue Sep 13 15:25:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b0baeaa_aa988f21
+UUID: 8b9bba7b_6a68268a
+Bytes: 103
+Could you create an enum header? I was asking because the API of MethodVerifier doesn't seem to use it.
+
 File: runtime/verifier/verifier_deps.cc
 
 266:0-303:1
@@ -52,6 +60,14 @@ Bytes: 239
 I fully agree that this is passing more than is needed. I went with it because I followed the precedent of passing MethodVerifier* to RegisterLine.
 
 I've now changed these methods to take DexFile& but still pass MethodVerifier* to RegType.
+
+266:0-303:1
+Tue Sep 13 15:25:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b0baeaa_4aa7d35b
+UUID: 8b9bba7b_8a746a63
+Bytes: 82
+Thanks. It was an open question (maybe you need the whole thing at some point?)...
 
 File: runtime/verifier/verifier_deps.h
 
@@ -84,4 +100,12 @@ Parent: 8b9bba7b_2869d4b5
 UUID: 2ba48eca_a267a01c
 Bytes: 332
 Could you be more specific about what you actually want me to do here? I've turned the map value type into unique_ptr which gets rid of the yucky initialization and made the constructors of the structs more explicit. I don't want to move these to the .cc file because then I'd have to move a lot of code from the _test.cc there too.
+
+106:0-164:4
+Tue Sep 13 15:25:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2ba48eca_a267a01c
+UUID: 8b9bba7b_aa792e5b
+Bytes: 384
+I was wondering why the definition of the structs needed to be here (if the map maps to a pointer instead, you can forward-declare it). test is a valid answer (though I don't think it's necessary to look at the map content - I'd have thought testing the behavior of the public API should be enough). (Bigger theme is to keep headers as small as possible for compile-time yada yada...)
 

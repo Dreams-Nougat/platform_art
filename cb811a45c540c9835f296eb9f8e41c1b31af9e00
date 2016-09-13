@@ -9,6 +9,14 @@ UUID: 8be1fa42_02e8caa5
 Bytes: 99
 Would it make sense to make this more explicit? Have -Xprivileged-zygote and -Xunprivileged-zygote?
 
+70
+Tue Sep 13 19:53:27 2016 +0000
+Author: Robert Sesek <1042203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be1fa42_02e8caa5
+UUID: 4b1462d4_9b3f4f75
+Bytes: 95
+When writing this, I was thinking -Xzygote=<privileged|unprivileged>. Do you have a preference?
+
 File: runtime/runtime.cc
 
 684:0-724:1
@@ -17,4 +25,12 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8be1fa42_e29a0660
 Bytes: 145
 I was discussing with bdc a couple weeks ago. Why is any of this here? Can we move this to frameworks code? Then we might not need the flag here.
+
+724
+Tue Sep 13 19:53:27 2016 +0000
+Author: Robert Sesek <1042203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be1fa42_e29a0660
+UUID: 4b1462d4_fb23eb69
+Bytes: 353
+I think so. It looks like it could move to com_android_internal_os_Zygote_nativeUnmountStorageOnInit. This code was originally added here: https://android.googlesource.com/platform/art/+/bd86bccf1b47f1151842152ee52cf5d46d6b34ab%5E%21/#F12 from dalvik_system_Zygote.cc. And that file looks like it became com_android_internal_os_Zygote.cpp in frameworks.
 

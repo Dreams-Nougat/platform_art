@@ -9,6 +9,14 @@ UUID: 8b9bba7b_8861e0db
 Bytes: 87
 This is ugly as hell, and pulling in the compiler-callbacks header. Reconsider, please.
 
+164:2-166:3
+Tue Sep 13 11:50:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b9bba7b_8861e0db
+UUID: 2b0baeaa_2aa49f54
+Bytes: 4
+Done
+
 File: runtime/verifier/method_verifier.h
 
 68:0-73:2
@@ -17,6 +25,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8b9bba7b_e87fccb0
 Bytes: 17
 Why is this here?
+
+68:0-73:2
+Tue Sep 13 11:50:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b9bba7b_e87fccb0
+UUID: 2b0baeaa_aa988f21
+Bytes: 82
+Where would you like to put it? It's used by both MethodVerifier and VerifierDeps.
 
 File: runtime/verifier/verifier_deps.cc
 
@@ -27,6 +43,16 @@ UUID: 8b9bba7b_08bfb01a
 Bytes: 98
 You only ever get the dex file from the verifier? Any reason why to pass the whole verifier, then?
 
+266:0-303:1
+Tue Sep 13 11:50:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b9bba7b_08bfb01a
+UUID: 2b0baeaa_4aa7d35b
+Bytes: 239
+I fully agree that this is passing more than is needed. I went with it because I followed the precedent of passing MethodVerifier* to RegisterLine.
+
+I've now changed these methods to take DexFile& but still pass MethodVerifier* to RegType.
+
 File: runtime/verifier/verifier_deps.h
 
 57:6-57:62
@@ -36,10 +62,26 @@ UUID: 8b9bba7b_4859b85d
 Bytes: 50
 Yuck. This should be a global lock in Locks, then.
 
+57:6-57:62
+Tue Sep 13 11:50:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b9bba7b_4859b85d
+UUID: eba996a7_0063e845
+Bytes: 4
+Done
+
 106:0-164:4
 Mon Sep 12 18:36:22 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8b9bba7b_2869d4b5
 Bytes: 86
 A lot of complexity here just because you want to allocate the map inline. Reconsider?
+
+106:0-164:4
+Tue Sep 13 11:50:34 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b9bba7b_2869d4b5
+UUID: 2ba48eca_a267a01c
+Bytes: 332
+Could you be more specific about what you actually want me to do here? I've turned the map value type into unique_ptr which gets rid of the yucky initialization and made the constructors of the structs more explicit. I don't want to move these to the .cc file because then I'd have to move a lot of code from the _test.cc there too.
 

@@ -11,3 +11,13 @@ This is surprising, is that because this_object is pointed by another object? I 
 
 How about just making this handle wrapper at the beginning of the method? It's also doing it line 490, so you'd spare some duplicated code.
 
+559:0-559:78
+Wed Sep 14 20:06:02 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b820684_019e2a0c
+UUID: 8be1fa42_33b55483
+Bytes: 344
+True, there are a few places that it is the callee's job to fix up the caller's object if it moves. The main reason for this is to avoid handle overhead. DoInvoke calls FindMethodFromCode and is probably somewhat performance critical in the interpreter.
+
+Are you OK with leaving it this way to avoid creating the handle in the unless necessary?
+

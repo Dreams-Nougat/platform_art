@@ -9,6 +9,27 @@ UUID: 8be1fa42_c930c2f7
 Bytes: 245
 ruhler, any comments on this? I wonder whether your planned work to make things correctly synchronize obviates the need for any of this (as we don't really care which zygote would create the boot image, as long as they don't collide doing it)...
 
+0
+Wed Sep 14 07:47:35 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be1fa42_c930c2f7
+UUID: 0b7a6a68_96744c2b
+Bytes: 1552
+What are the symptoms this CL is trying to resolve?
+
+My "planned" work for b/30971238 regards the case when there are two zygotes both with permission to generate the boot image. But in this case, it sounds like the unprivileged zygote would not have permission to create the boot image in the first place? In that case, we don't have same "race to generate" issue as described in b/30971238.
+
+I assume the symptoms this CL is trying to resolve is that without root permissions you get logcat messages that suggest something went wrong, either due to permissions issues or selinux denials. The goal is not to cause misleading logcat messages, right?
+
+Looking through the code, it appears to me the IsZygote flag is used for 3 different reasons:
+1. To indicate that processes will be forked from this process, so it is not acceptable to create any threads.
+2. To indicate what level of permissions this process has, so it can avoid performing actions that it knows would fail and lead to misleading log messages.
+3. Andreas's hack to address the "race to generate" issue.
+
+I think "zygote-privileged" and "zygote-unprivileged" flags are decent ways to indicate and distinguish between (1) and (2). Alternatively it may be useful to reorganize the flags into separate "zygote" and "privileged" flags, which allow for the option of a privileged non-zygote process that could make sense for test cases. I'm not sure.
+
+Regardless of what flags are used, I would like to see them clearly documented so the meaning and intention of the flags are well defined.
+
 File: runtime/parsed_options.cc
 
 69:7-70:29

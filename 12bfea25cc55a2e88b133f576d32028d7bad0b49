@@ -1,0 +1,13 @@
+Revision: 12bfea25cc55a2e88b133f576d32028d7bad0b49
+Patch-set: 1
+File: runtime/entrypoints/entrypoint_utils-inl.h
+
+559:0-559:78
+Wed Sep 14 18:57:22 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b820684_019e2a0c
+Bytes: 338
+This is surprising, is that because this_object is pointed by another object? I guess the reason we have a '**' for the object was to protect about it being moved, right? Should that be cleaned up?
+
+How about just making this handle wrapper at the beginning of the method? It's also doing it line 490, so you'd spare some duplicated code.
+

@@ -17,3 +17,13 @@ UUID: 8be1fa42_4896734b
 Bytes: 325
 If that's what's happening, I can redo it for 0 and +0.0 only. However, loading floats into registers is a tad expensive in terms of instruction count, so if a constant isn't reused, it's better to store it directly. Is there a way to find out whether or not a constant has more than one uses, at the locations builder level?
 
+1979:38-1979:56
+Wed Sep 14 10:52:50 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8be1fa42_4896734b
+UUID: cb9692c8_bcba0175
+Bytes: 150
+!const_instr->GetUses().empty() && !const_instr->GetUses().HasExactlyOneElement()
+
+Or you can walk over the uses and have a more elaborate heuristics.
+

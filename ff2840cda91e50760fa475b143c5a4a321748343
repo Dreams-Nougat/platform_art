@@ -43,3 +43,17 @@ UUID: eb76f682_98ed59bb
 Bytes: 197
 What happens to the tests below if the classes are not resolved? Do they still make sense? Should you just return instead with a comment that the verified method will be marked "verify-at-runtime"?
 
+206:0-207:78
+Thu Sep 15 12:12:08 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_98ed59bb
+UUID: eb76f682_d86c3135
+Bytes: 362
+The tests below are all fine:
+ - IsObjectClass = (GetSuperclass() == nullptr)
+ - IsInterface - from access flags
+ - IsArrayClass - (GetComponentType() == nullptr)
+ - IsAssignableFrom - uses IsSubClass and Implements, both should be okay
+
+Either way, testing for IsResolved, as we found some time ago, is non-deterministic. So we should record these dependencies.
+

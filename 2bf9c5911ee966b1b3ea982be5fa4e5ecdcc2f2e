@@ -9,6 +9,14 @@ UUID: f6741f0d_c5503a29
 Bytes: 77
 Does the new code generator already support (existing) intrinsics generation?
 
+26:0-27:27
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6741f0d_c5503a29
+UUID: 4b5c6205_780401b9
+Bytes: 263
+No. We will upstream a port of the existing intrinsics (intrinsics_arm_vixl.cc) and replace them (rename to intrinsics_arm.cc) when we reach parity, in much the same way as we are doing for the code generator. Let us know if you would prefer a different approach.
+
 40:0-40:52
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 567a4bf7_a83f9bc2
 Bytes: 84
 Is this really needed, given that `vixl32` is alreay a shortcut for `vixl::aarch32`?
 
+40:0-40:52
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 567a4bf7_a83f9bc2
+UUID: 6bdda69f_ec25c3b6
+Bytes: 94
+This is for the condition code. vixl32::eq, vixl32::lt etc. are less readable than eq, lt etc.
+
 57:50-57:51
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb76f682_18b069e1
 Bytes: 7
 Nit: 4u
+
+57:50-57:51
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_18b069e1
+UUID: eb76f682_383b6528
+Bytes: 4
+Done
 
 397:2-397:47
 Thu Sep 15 10:22:21 2016 +0000
@@ -36,12 +60,28 @@ This change is recent, but can this be turned into:
 
 ?
 
+397:2-397:47
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f6a97fa7_bd769f99
+UUID: 6b820684_c109a239
+Bytes: 4
+Done
+
 625:6-625:31
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb63f225_d4929ca2
 Bytes: 79
 Nit: Add parentheses.  Also, the whole instruction should fit on a single line.
+
+625:6-625:31
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb63f225_d4929ca2
+UUID: eb76f682_58382129
+Bytes: 4
+Done
 
 627:6-627:32
 Thu Sep 15 10:22:21 2016 +0000
@@ -50,12 +90,30 @@ UUID: cb63f225_34f31004
 Bytes: 6
 Ditto.
 
+627:6-627:32
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb63f225_34f31004
+UUID: eb76f682_7835dd2d
+Bytes: 4
+Done
+
 647:6-647:61
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ebefd6c0_ed370537
 Bytes: 165
 This conditions differs from the one in compiler/optimizing/code_generator_arm.cc; is this on purpose?  (Maybe VIXL does not provide a `IsLinked` method for labels?)
+
+647:6-647:61
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ebefd6c0_ed370537
+UUID: 0b7a6a68_16403c37
+Bytes: 170
+It was intentional.
+
+I have patched VIXL to provide an IsLinked() equivalent in the aarch32 Label and made a note to amend the code here when we do the next VIXL release.
 
 686:0-687:34
 Thu Sep 15 10:22:21 2016 +0000
@@ -68,6 +126,14 @@ Move this into a
 
 block?  Or maybe the definition of `cond_val` at its unique use site?
 
+686:0-687:34
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_d5d31c53
+UUID: eb76f682_18f86942
+Bytes: 4
+Done
+
 806:61-806:62
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -75,12 +141,28 @@ UUID: eb76f682_f89acd5f
 Bytes: 7
 Nit: 3u
 
+806:61-806:62
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_f89acd5f
+UUID: 4b5c6205_3893695b
+Bytes: 4
+Done
+
 1195:0-1198:21
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb76f682_38ad258c
 Bytes: 26
 Nit: Put on a single line.
+
+1195:0-1198:21
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_38ad258c
+UUID: cb9692c8_9f58d75c
+Bytes: 4
+Done
 
 1259:10-1259:67
 Thu Sep 15 10:22:21 2016 +0000
@@ -93,12 +175,30 @@ Shouldn't this be
 
 i.e., destination data type then source data type (and likewise in other uses below)?  (The VIXL documentation is a bit scarce about this.)
 
+1259:10-1259:67
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b5c6205_58965d99
+UUID: eb76f682_988e39e0
+Bytes: 210
+Yes. It's destination first, as in the ARM ARM.
+
+codegen_tests doesn't explicitly test these FP code paths. I could replace them with TODO_VIXL32(FATAL) until a later patch can explicitly prove them via a test?
+
 1268:0-1271:77
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb76f682_78a79da9
 Bytes: 26
 Nit: Put on a single line.
+
+1268:0-1271:77
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_78a79da9
+UUID: eb76f682_d898b123
+Bytes: 4
+Done
 
 1322:0-1325:22
 Thu Sep 15 10:22:21 2016 +0000
@@ -107,12 +207,28 @@ UUID: eb76f682_98c6393f
 Bytes: 6
 Ditto.
 
+1322:0-1325:22
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_98c6393f
+UUID: eb76f682_f89d6d10
+Bytes: 4
+Done
+
 2021:0-2022:52
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb76f682_78c23d27
 Bytes: 26
 Nit: Put on a single line.
+
+2021:0-2022:52
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_78c23d27
+UUID: eb76f682_188309b6
+Bytes: 4
+Done
 
 2029:0-2029:26
 Thu Sep 15 10:22:21 2016 +0000
@@ -121,12 +237,28 @@ UUID: eb76f682_d8e7d1d4
 Bytes: 24
 Nit: Indentation is off.
 
+2029:0-2029:26
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_d8e7d1d4
+UUID: eb76f682_3880c5a6
+Bytes: 4
+Done
+
 2053:0-2053:23
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb76f682_f8ec8dbb
 Bytes: 6
 Ditto.
+
+2053:0-2053:23
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_f8ec8dbb
+UUID: eb76f682_588d81dd
+Bytes: 4
+Done
 
 2135:47-2135:63
 Thu Sep 15 10:22:21 2016 +0000
@@ -135,12 +267,28 @@ UUID: eb76f682_38dfe5f7
 Bytes: 26
 Nit: Move after `int reg`.
 
+2135:47-2135:63
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_38dfe5f7
+UUID: eb76f682_788a3dc8
+Bytes: 4
+Done
+
 2139:49-2139:65
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb76f682_58dca100
 Bytes: 6
 Ditto.
+
+2139:49-2139:65
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_58dca100
+UUID: eb76f682_98b55988
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm_vixl.h
 
@@ -151,12 +299,28 @@ UUID: 367f97e8_c732feaa
 Bytes: 121
 This macro seems to be only used in ` compiler/optimizing/code_generator_arm_vixl.cc`, so I'd move this definition there.
 
+50:8-50:19
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 367f97e8_c732feaa
+UUID: eb76f682_d8afd135
+Bytes: 4
+Done
+
 52:8-52:40
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 56a16ba9_3016a861
 Bytes: 44
 I would #undef this at the end of this file.
+
+52:8-52:40
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56a16ba9_3016a861
+UUID: eb76f682_18aa2926
+Bytes: 4
+Done
 
 81:8-81:42
 Thu Sep 15 10:22:21 2016 +0000
@@ -165,12 +329,28 @@ UUID: 56a16ba9_500b2c34
 Bytes: 6
 Ditto.
 
+81:8-81:42
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 56a16ba9_500b2c34
+UUID: eb76f682_f8b48d88
+Bytes: 4
+Done
+
 182:8-182:46
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 76890f3e_898ad94c
 Bytes: 56
 Factor this macro definition with the one from line 214?
+
+182:8-182:46
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76890f3e_898ad94c
+UUID: eb76f682_f8672d1b
+Bytes: 4
+Done
 
 189:8-189:48
 Thu Sep 15 10:22:21 2016 +0000
@@ -179,12 +359,28 @@ UUID: 76890f3e_e9819530
 Bytes: 60
 Likewise, factor this definition with the one from line 221?
 
+189:8-189:48
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 76890f3e_e9819530
+UUID: eb76f682_186dc9fc
+Bytes: 4
+Done
+
 267:2-267:10
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 96992396_025aca54
 Bytes: 5
 Drop.
+
+267:2-267:10
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 96992396_025aca54
+UUID: eb76f682_78a15d44
+Bytes: 4
+Done
 
 File: compiler/optimizing/common_arm.h
 
@@ -194,4 +390,12 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 367f97e8_a7350a96
 Bytes: 106
 `vixl32` is an alias of `vixl::aarch32`; I think we should consistently use one or the other in this file.
+
+57:9-57:15
+Thu Sep 15 15:14:03 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 367f97e8_a7350a96
+UUID: eb76f682_386a85e5
+Bytes: 60
+Agreed, and vixl::aarch32 makes the header more independent.
 

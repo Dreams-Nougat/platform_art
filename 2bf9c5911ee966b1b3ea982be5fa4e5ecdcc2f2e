@@ -17,6 +17,14 @@ UUID: 4b5c6205_780401b9
 Bytes: 263
 No. We will upstream a port of the existing intrinsics (intrinsics_arm_vixl.cc) and replace them (rename to intrinsics_arm.cc) when we reach parity, in much the same way as we are doing for the code generator. Let us know if you would prefer a different approach.
 
+26:0-27:27
+Thu Sep 15 16:02:48 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b5c6205_780401b9
+UUID: eb76f682_f82acd85
+Bytes: 32
+Alright; this sounds good to me.
+
 40:0-40:52
 Thu Sep 15 10:22:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -31,6 +39,14 @@ Parent: 567a4bf7_a83f9bc2
 UUID: 6bdda69f_ec25c3b6
 Bytes: 94
 This is for the condition code. vixl32::eq, vixl32::lt etc. are less readable than eq, lt etc.
+
+40:0-40:52
+Thu Sep 15 16:02:48 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bdda69f_ec25c3b6
+UUID: eb76f682_78379de7
+Bytes: 98
+I see.  What about importing the condition codes used in this file instead of the whole namespace?
 
 57:50-57:51
 Thu Sep 15 10:22:21 2016 +0000
@@ -184,6 +200,16 @@ Bytes: 210
 Yes. It's destination first, as in the ARM ARM.
 
 codegen_tests doesn't explicitly test these FP code paths. I could replace them with TODO_VIXL32(FATAL) until a later patch can explicitly prove them via a test?
+
+1259:10-1259:67
+Thu Sep 15 16:02:48 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_988e39e0
+UUID: eb76f682_3848c557
+Bytes: 272
+I think it is fine as it is now.
+
+IIRC, we said we would review this CL as you extend it and keep it unmerged until the VIXL-based code generator is on par with the original AArch32 code generator.  I think we can wait for its completion before testing it using run-tests.
 
 1268:0-1271:77
 Thu Sep 15 10:22:21 2016 +0000

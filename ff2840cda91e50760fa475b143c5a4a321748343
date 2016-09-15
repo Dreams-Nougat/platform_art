@@ -65,3 +65,19 @@ UUID: eb76f682_9849d9bb
 Bytes: 51
 OK, please add all of this as comments in the file.
 
+206:0-207:78
+Thu Sep 15 15:18:39 2016 +0000
+Author: David Brazdil <1059815@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb76f682_9849d9bb
+UUID: eb76f682_7826bdd6
+Bytes: 459
+So here's the deal...
+
+What we really need is a guarantee that `destination` and `source` did not have any linkage issues. If a class had at any point the status "resolved", that holds.
+
+Now that is fine for both callers of AddAssignability but didn't use to hold for the optimization. So what I've done is test for IsResolved and optimize if it is.
+
+I've added a gtest that tests both situations (when we can / cannot optimize).
+
+Also added comments in here.
+

@@ -90,6 +90,18 @@ Ah yes :( So unfortunately, we don't have the infrastructure (yet?) for testing 
 
 How about if the HLoadClass is on the current method?
 
+18:0-20:24
+Fri Sep 16 20:40:45 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 708af7dc_e1b0a6e4
+UUID: cb1db24e_59b58538
+Bytes: 468
+Actually, we do compile against a boot image. Maybe I can just use a class in the image instead of one in the test.
+
+The main problem with that is that the environment doesn't seem to get reset for those classes. HLoadClass::SetLoadKindInternal(kBootImageAddress) ends up leaving the environment since the (!IsReferrersClass() && !IsInDexCache()) is false even though that load type does not depend on the dex cache.
+
+Worth fixing so that we can add a regression test?
+
 50:0-50:29
 Wed Sep 14 21:55:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -1,6 +1,36 @@
 Revision: d1048da4cb7e79fb069ecfcb8b823153a616d633
 Patch-set: 15
+File: /COMMIT_MSG
+
+7
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_16de7acd
+Bytes: 41
+and x84_64 (first line is displayed most)
+
+13
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_d6e3029b
+Bytes: 40
+I don't think this build line is needed.
+
+14:22-14:26
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_f6939e03
+Bytes: 129
+did you also run the tests with both mirror::kUseStringCompression = false (default now) and true? If so, please add to this line
+
 File: compiler/optimizing/code_generator_x86.cc
+
+5077:18-5077:39
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_f95d514a
+Bytes: 187
+I like what you did below putting this in a boolean with a more intuitive name (even though you need the value here only once, it documents itself through the name then and is consistent)
 
 5082
 Fri Sep 16 14:21:08 2016 +0000
@@ -8,6 +38,34 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0462f6a_431506a9
 Bytes: 15
 Same as x86-64.
+
+5082:49-5082:52
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_796a41e6
+Bytes: 151
+both following true/else contain cmpl, so you can move that up; also, you could compare directly with 0 immediate saving the movl and even the register
+
+5085
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_b974b9c3
+Bytes: 137
+omit the _1 and _2, they are local variables just in scope of the true/else; your name implies there are two labels in the generated code
+
+5094
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_f909d138
+Bytes: 174
+it feels you could move most of the true/false branch into one block of code, only making a difference in the movzxb and movzwx instructions; that way less code is duplicated
+
+5105
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_393a89ed
+Bytes: 98
+I would not use capitals for String Compression everywhere, unless this is a true name we gave it?
 
 5596:0-5599:7
 Fri Sep 16 14:21:08 2016 +0000
@@ -17,6 +75,20 @@ Bytes: 12
 Unnecessary.
 
 File: compiler/optimizing/code_generator_x86_64.cc
+
+35:17-35:18
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_f9de315d
+Bytes: 30
+was this for debugging? remove
+
+4581
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_dc4963ba
+Bytes: 44
+from here on, same comments as I gave in x86
 
 4586
 Fri Sep 16 14:21:08 2016 +0000
@@ -65,6 +137,14 @@ UUID: 305b1f41_67137270
 Bytes: 20
 and compression tags
 
+1406:14-1406:21
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_67137270
+UUID: cb1db24e_5cd1f3c0
+Bytes: 163
+is it ever possible that two identical strings are compressed and not compressed at the same time (I hope not :-). In any case, it is good to comment on that here.
+
 1410
 Fri Sep 16 14:21:08 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -79,6 +159,13 @@ UUID: 305b1f41_270d7a4a
 Bytes: 90
 Check if strings are compressed (either both are or neither is thanks to the check above).
 
+1418:21-1418:31
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_fcc1bff7
+Bytes: 13
+period at end
+
 1429:0-1430:29
 Fri Sep 16 14:21:08 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -92,6 +179,13 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_c7033e1b
 Bytes: 17
 or 4 (compressed)
+
+1536
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_9cdb6be1
+Bytes: 13
+period at end
 
 1537
 Fri Sep 16 14:21:08 2016 +0000
@@ -116,6 +210,20 @@ UUID: 305b1f41_07139665
 Bytes: 143
 Input string_obj is clobbered! Do we have a pre-existing bug here? (Or, how are we telling the register allocator that the input is clobbered?)
 
+1587
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_1cde9bcd
+Bytes: 6
+period
+
+1749
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_3ce3579b
+Bytes: 6
+period
+
 1750:2-1750:43
 Fri Sep 16 14:21:08 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -137,10 +245,68 @@ UUID: 305b1f41_c73d7eca
 Bytes: 4
 copy
 
+1768
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_5cf81343
+Bytes: 6
+period
+
 1805:12-1805:16
 Fri Sep 16 14:21:08 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 30907f09_dfaa1b24
 Bytes: 4
 copy
+
+1805:12-1805:16
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30907f09_dfaa1b24
+UUID: cb1db24e_9cf28b5f
+Bytes: 10
+and period
+
+1810
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_dc8ec3e0
+Bytes: 4
+same
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+1643
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_fc937f03
+Bytes: 29
+here and below, period at end
+
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1978
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_3cb51783
+Bytes: 7
+no tabs
+
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+2102
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_5caad326
+Bytes: 7
+no tabs
+
+File: test/609-checker-x86-bounds-check/src/Main.java
+
+82
+Fri Sep 16 20:27:37 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cb1db24e_bca10747
+Bytes: 83
+wait, isn't this conditional on setting the feature on? you presubmit passed though
 

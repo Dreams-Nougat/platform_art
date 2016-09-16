@@ -1,0 +1,146 @@
+Revision: d1048da4cb7e79fb069ecfcb8b823153a616d633
+Patch-set: 15
+File: compiler/optimizing/code_generator_x86.cc
+
+5082
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0462f6a_431506a9
+Bytes: 15
+Same as x86-64.
+
+5596:0-5599:7
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d049e37c_04e4b6a0
+Bytes: 12
+Unnecessary.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+4586
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_a72dea03
+Bytes: 220
+You need
+
+  codegen_->MaybeRecordImplicitNullCheck(instruction);
+
+here instead of later after the switch.
+
+And why not directly
+
+  __ cmpl(Address(obj, count_offset), Immediate(0))
+
+? That way we can avoid the temporary.
+
+5040
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_87d666b7
+Bytes: 86
+Maybe this optimization isn't so useful for string compression and should be disabled.
+
+5068:0-5071:7
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 708af7dc_41f87262
+Bytes: 56
+Unnecessary. This has already been done for ArrayLength.
+
+File: compiler/optimizing/intrinsics_x86.cc
+
+1404:10-1404:16
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d049e37c_64580a5a
+Bytes: 19
+and compression tag
+
+1406:14-1406:21
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_67137270
+Bytes: 20
+and compression tags
+
+1410
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_47186e88
+Bytes: 42
+Zero-length string is uncompressed, right?
+
+1418:2-1418:31
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_270d7a4a
+Bytes: 90
+Check if strings are compressed (either both are or neither is thanks to the check above).
+
+1429:0-1430:29
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_07127668
+Bytes: 43
+This can be merged to addl (0x8000000 + 3).
+
+1434:59-1434:60
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_c7033e1b
+Bytes: 17
+or 4 (compressed)
+
+1537
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_871e6666
+Bytes: 230
+It would be cleaner if we instead checked the flag right here and split the code below into two separate paths.
+
+Note that the zero-length check can be done before this, assuming that zero-length string is considered uncompressed.
+
+1545:18-1545:29
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_67049221
+Bytes: 11
+comparison?
+
+1551:12-1551:22
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_07139665
+Bytes: 143
+Input string_obj is clobbered! Do we have a pre-existing bug here? (Or, how are we telling the register allocator that the input is clobbered?)
+
+1750:2-1750:43
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0462f6a_034a6ea9
+Bytes: 73
+Don't load the tag into a register, do the comparison against the memory.
+
+1758:41-1758:45
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_672db29f
+Bytes: 4
+typo
+
+1765:12-1765:16
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 305b1f41_c73d7eca
+Bytes: 4
+copy
+
+1805:12-1805:16
+Fri Sep 16 14:21:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30907f09_dfaa1b24
+Bytes: 4
+copy
+

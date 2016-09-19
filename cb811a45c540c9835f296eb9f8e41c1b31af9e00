@@ -30,6 +30,35 @@ I think "zygote-privileged" and "zygote-unprivileged" flags are decent ways to i
 
 Regardless of what flags are used, I would like to see them clearly documented so the meaning and intention of the flags are well defined.
 
+0
+Mon Sep 19 17:12:19 2016 +0000
+Author: Robert Sesek <1042203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b7a6a68_96744c2b
+UUID: 30423f4d_12c98a6c
+Bytes: 2378
+> What are the symptoms this CL is trying to resolve?
+ > 
+ > My "planned" work for b/30971238 regards the case when there are two zygotes both with permission to generate the boot image. But in this case, it sounds like the unprivileged zygote would not have permission to create the boot image in the first place? In that case, we don't have same "race to generate" issue as described in b/30971238.
+ > 
+ > I assume the symptoms this CL is trying to resolve is that without root permissions you get logcat messages that suggest something went wrong, either due to permissions issues or selinux denials. The goal is not to cause misleading logcat messages, right?
+
+We are introducing a new zygote process type for creating WebView renderers. Since it's going to be a specialization of the system zygote, it doesn't need to write the boot marker or have direct write access to the Dalvik cache. The runtime in some cases choses to abort if it doesn't have permission to do certain privileged operations, so we're adding this flag to skip privileged ops.
+
+I'm not too familiar with b/30971238 so I can't comment on that (your #3 below).
+
+ > Looking through the code, it appears to me the IsZygote flag is used for 3 different reasons:
+ > 1. To indicate that processes will be forked from this process, so it is not acceptable to create any threads.
+ > 2. To indicate what level of permissions this process has, so it can avoid performing actions that it knows would fail and lead to misleading log messages.
+ > 3. Andreas's hack to address the "race to generate" issue.
+ > 
+ > I think "zygote-privileged" and "zygote-unprivileged" flags are decent ways to indicate and distinguish between (1) and (2). Alternatively it may be useful to reorganize the flags into separate "zygote" and "privileged" flags, which allow for the option of a privileged non-zygote process that could make sense for test cases. I'm not sure.
+
+The first version of the patch set did your latter suggestion, but per review advice I've switched it to the former to make things more explicit. I don't have a preference so will defer to you all.
+
+ > Regardless of what flags are used, I would like to see them clearly documented so the meaning and intention of the flags are well defined.
+
+I left documentation around the member variables in runtime.h. Is there another place you'd like this to be documented?
+
 File: runtime/parsed_options.cc
 
 69:7-70:29

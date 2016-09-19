@@ -17,12 +17,30 @@ UUID: 30907f09_ff0effea
 Bytes: 99
 Agree. We already have a build-only option, and dry-run with the current comment sounds equivalent.
 
+59
+Mon Sep 19 18:10:19 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30907f09_ff0effea
+UUID: cb1db24e_ec4586fc
+Bytes: 100
+I adjusted the comment a bit. build-only is run-test option, run-test-jar's job is running the test.
+
 508:0-508:54
 Mon Sep 19 12:37:04 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f09507fc_7d099735
 Bytes: 58
 Why this change? It's supposedly already done at line 479.
+
+508:0-508:54
+Mon Sep 19 18:10:19 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f09507fc_7d099735
+UUID: cb1db24e_eca02602
+Bytes: 319
+This is so cmdline.sh can be called multiple times with different options to rerun the test with recompiling. It is not necessary for the usual testing flow where we only run cmdline.sh once, it doesn't hurt though.
+
+This line used to be added at the run-test level via a sed call in patchset 5, do you prefer that way?
 
 File: test/run-test
 
@@ -33,6 +51,14 @@ UUID: 305b1f41_8ad9cb10
 Bytes: 132
 this will have the effect of accepting  "--prebuild --bisection-search", which isn't great. How about forcing passing --no-prebuild?
 
+354:0-354:26
+Mon Sep 19 18:10:19 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_8ad9cb10
+UUID: cb1db24e_2c579ec9
+Bytes: 17
+Good point, done.
+
 908:63-908:79
 Mon Sep 19 12:37:04 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,10 +66,26 @@ UUID: f09507fc_1d0e533f
 Bytes: 19
 Requires a comment.
 
+908:63-908:79
+Mon Sep 19 18:10:19 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f09507fc_1d0e533f
+UUID: cb1db24e_2cab1ee5
+Bytes: 4
+Done
+
 920:54-920:65
 Fri Sep 16 21:02:26 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb1db24e_5c881359
 Bytes: 23
 why is it listed twice?
+
+920:54-920:65
+Mon Sep 19 18:10:19 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_5c881359
+UUID: cb1db24e_d17f8136
+Bytes: 173
+--runtime-option '"$@"' is to make the generated cmdline.sh script forward its arguments to dalvikvm. "$@" is to pass additional arguments to run-test-jar, same as line 847.
 

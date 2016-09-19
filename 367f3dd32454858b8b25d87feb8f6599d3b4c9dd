@@ -18,6 +18,14 @@ UUID: 305b1f41_8703066a
 Bytes: 69
 Did you file a bug? These comments belong more to a bug than in code.
 
+365:2-368:69
+Mon Sep 19 18:45:16 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_8703066a
+UUID: cb1db24e_2757b7c9
+Bytes: 10
+b/31592276
+
 394:0-394:67
 Fri Sep 16 10:15:00 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +33,46 @@ UUID: 305b1f41_67625243
 Bytes: 46
 So why not using it? Please add more comments.
 
+394:0-394:67
+Mon Sep 19 18:45:16 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_67625243
+UUID: cb1db24e_6788cf59
+Bytes: 215
+I just changed the old code minimally for now (see line 293 from Base).
+
+I didn't realize it was actually sizeof(IRTSegmentState) until almost the end so I dropped a comment in here to remind myself to fix it later.
+
 413:0-413:73
 Fri Sep 16 10:15:00 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_47674e51
 Bytes: 119
 What's the action item here? Please add comments. I think I already commented that I don't mind having this duplicated.
+
+413:0-413:73
+Mon Sep 19 18:45:16 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_47674e51
+UUID: cb1db24e_a7348794
+Bytes: 525
+all the "identical to x86_64" means we should combine all those functions into one and introduce smaller functions to denote the differnce
+
+So for example we'd have a base
+
+   size_t OutArgSize() // in Jnicallingconvention
+   {
+     return RoundUp(NumberOfOutgoingStackArgs() * kFramePointerSize + GetStackPadding(),
+                 kStackAlignment
+   }
+
+and a 
+
+    virtual size_t GetStackPadding() { return 0; }
+
+which would only be overridden for ARM to 
+
+   virtual size_t GetStackPadding() override { return padding_; }
 
 448:3-451:53
 Fri Sep 16 10:15:00 2016 +0000
@@ -45,6 +87,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_276c5a31
 Bytes: 49
 Please don't submit code that has this.What's XX?
+
+481:0-481:67
+Mon Sep 19 18:45:16 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_276c5a31
+UUID: cb1db24e_67e44f00
+Bytes: 130
+Must have forgotten to remove. I was hoping someone would catch things like this and tell me what what it was actually doing here.
 
 488:0-488:59
 Fri Sep 16 10:15:00 2016 +0000
@@ -86,6 +136,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_875c2678
 Bytes: 43
 Maybe file a bug? Or is that fixed already?
+
+373:0-373:73
+Mon Sep 19 18:45:16 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_875c2678
+UUID: cb1db24e_07c0fb41
+Bytes: 23
+Still need MIPS support
 
 File: compiler/jni/quick/jni_compiler.cc
 

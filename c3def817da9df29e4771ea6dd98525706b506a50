@@ -19,6 +19,24 @@ Bytes: 129
 
 Any reason you cannot use the art/tools/art script?
 
+362
+Mon Sep 19 23:33:20 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_4a7205a4
+UUID: f0ac2770_65cb4648
+Bytes: 4
+Done
+
+362
+Mon Sep 19 23:33:20 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10545b0d_2627b6c1
+UUID: f0ac2770_057e1209
+Bytes: 147
+No worries.
+
+If we go ahead with this CL we cannot use art on device because we rely on pid of the process we start being equal to pid of dalvikvm.
+
 File: tools/bisection_search/common.py
 
 73
@@ -28,12 +46,28 @@ UUID: cb1db24e_4a192582
 Bytes: 32
 not a valid log severity symbol?
 
+73
+Mon Sep 19 23:33:20 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_4a192582
+UUID: cb1db24e_87222b12
+Bytes: 4
+Done
+
 384
 Fri Sep 16 22:46:59 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cb1db24e_1f0f6d3c
 Bytes: 13
 period at end
+
+384
+Mon Sep 19 23:33:20 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_1f0f6d3c
+UUID: cb1db24e_e7f75f74
+Bytes: 4
+Done
 
 394
 Fri Sep 16 22:46:59 2016 +0000
@@ -42,6 +76,14 @@ UUID: cb1db24e_3f14294a
 Bytes: 6
 period
 
+394
+Mon Sep 19 23:33:20 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_3f14294a
+UUID: cb1db24e_07fd5b55
+Bytes: 4
+Done
+
 417
 Fri Sep 16 22:46:59 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,6 +91,14 @@ UUID: cb1db24e_8a55dded
 Bytes: 100
 perhaps put this as a TODO:
 also add some of the suggestions you mentioned, so we don't forget these
+
+417
+Mon Sep 19 23:33:20 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_8a55dded
+UUID: f0ac2770_08e947a9
+Bytes: 4
+Done
 
 427:0-427:65
 Mon Sep 19 09:22:43 2016 +0000
@@ -60,4 +110,21 @@ So the reason this works for you is:
 2) The tests are being run sequentially, so you can easily fetch the pid of the last run.
 
 Is that correct? Might make sense to add a few comments here.
+
+427:0-427:65
+Mon Sep 19 23:33:20 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0462f6a_03402e58
+UUID: cb1db24e_a20715bd
+Bytes: 890
+This works by grabbing PID of command we execute and then using this PID to filter dex2oat instances spawned by process with this pid.
+
+It should work no matter what happens in the background, even if we run tests in parallel.
+
+It wont work if we use --raw-cmd switch to run a wrapper script that spawns dalvikvm as separate process (e.g. art). I updated the README to reflect that. It also won't work if dex2oat is run in non verbose mode.
+
+Potential problems include skipping some logs if we kill the logcat process too early (for now we kill it as soon as runtime returns with its output). This was never a problem during my tests though.
+
+
+Overall this is pretty messy, but I can't think of anything better. Perfect way would be to make runtime print logs to stderr/file rather then logcat, but my attempt to get this kind of CL in failed as it introduces logging overhead for everyone.
 

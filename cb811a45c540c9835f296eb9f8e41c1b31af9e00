@@ -59,6 +59,18 @@ The first version of the patch set did your latter suggestion, but per review ad
 
 I left documentation around the member variables in runtime.h. Is there another place you'd like this to be documented?
 
+0
+Mon Sep 19 17:48:43 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30423f4d_12c98a6c
+UUID: cb1db24e_ac554eed
+Bytes: 683
+But what are these "privileged operations?" Right now it's boot image creation only. Are there other things that are not in this CL (it would be *highly* relevant for the design)?
+
+The question then is: why and how is it not allowed to create the boot image? If it's on an ACL/selinux basis, why do we need to track this ourselves? Is that really just to suppress the messages?
+
+If the webview zygote is actually root and technically has rights to write, then Richard's work becomes relevant. At that point the question would be: why do we have to restrict which zygote writes the boot image, if there's no observable difference in the end (when things are correctly "synchronized")?
+
 File: runtime/parsed_options.cc
 
 69:7-70:29

@@ -349,6 +349,21 @@ UUID: cb1db24e_0bc56f51
 Bytes: 145
 I tried for an example if ECX is 1, ((1 AND INT32_MAX) + 3) is 4, meanwhile (1 + 134217728 + 3) is 134217732. Is this aligned with what you mean?
 
+1429:0-1430:29
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_0bc56f51
+UUID: 30907f09_e2cf481f
+Bytes: 320
+It seems I wrote one zero too few, it should have been 0x80000000.
+
+We know that the highest bit in ECX is set here (for example 0x80000001 instead of 1), so in 32-bit arithmetic
+
+    ECX & 0x7fffffff = ECX + 0x80000000
+    (ECX & 0x7fffffff) + 3 = ECX + (0x80000000 + 3)
+
+and we can then do one addition instead of two.
+
 1434:59-1434:60
 Fri Sep 16 14:21:08 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -425,6 +440,14 @@ Parent: 305b1f41_07139665
 UUID: cb1db24e_3dc7ce0b
 Bytes: 230
 It is on purpose I guess by looking at the CreateStringIndexOfLocations with comment "As we clobber EDI during execution anyways, also use it as the output". I have no further information though how this will affected the process.
+
+1551:12-1551:22
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_3dc7ce0b
+UUID: 30907f09_a2d940e9
+Bytes: 93
+Ah, I see, that's a dirty trick. But we must still avoid clobbering the start_index register.
 
 1587
 Fri Sep 16 20:27:37 2016 +0000

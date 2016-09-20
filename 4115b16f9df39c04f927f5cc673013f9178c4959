@@ -55,6 +55,14 @@ https://google.github.io/styleguide/cppguide.html#Function_Parameter_Ordering
 
 "Usually" so not a hard rule. But I know for me a const pointers always make me wonder why it's not a const.
 
+1597:58-1597:95
+Tue Sep 20 14:05:52 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 708af7dc_c131e2a4
+UUID: f050a71d_886677bd
+Bytes: 167
+But this is an input parameter that is a pointer, so it's already a violation of the soft rule. Making it const is, in my opinion, in line with the intent of the rule.
+
 File: dex2oat/dex2oat.cc
 
 1776
@@ -71,4 +79,12 @@ Parent: 508b33e0_834c4028
 UUID: b0462f6a_c63b4424
 Bytes: 49
 Flush is happening line 1856, is that not enough?
+
+1776
+Tue Sep 20 14:05:52 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0462f6a_c63b4424
+UUID: 30907f09_027fccb2
+Bytes: 219
+But that's not a Flush() on the buffered vdex_out and there may be an error ignored by BufferedOutputStream::~BufferedOutputStream(). We should not rely on subsequent operations on underlying File also reporting errors.
 

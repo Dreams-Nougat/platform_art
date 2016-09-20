@@ -1,0 +1,69 @@
+Revision: f7bf04097e00bf11bf7ce270d28d7e30a180e5d4
+Patch-set: 4
+File: runtime/openjdkjvmti/OpenjdkJvmTi.cc
+
+48:8-48:23
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_53da8768
+Bytes: 77
+I'd prefer the JNI style CHECK_NON_NULL_ARGUMENT() - how about we reuse that?
+
+74:0-75:25
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_336fcb90
+Bytes: 211
+This seems problematic: either fail on size == 0 (under the assumption that it's likely an unintended mistake) or return a non-null, ideally unique pointer if you want a permissive semantic (I prefer the former)
+
+84:0-86:5
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_33282b45
+Bytes: 61
+free(nullptr) already does this so no need for the extra code
+
+742:0-744:38
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_13f96fac
+Bytes: 62
+what's wrong with *capabilities_ptr = kPotentialCapabilities ?
+
+870:0-872:38
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_339a6abe
+Bytes: 90
+same deal, a simple assignment should do the trick (and safer than memcpy'ing bits around)
+
+File: runtime/openjdkjvmti/art_jvmti.h
+
+46:7-46:18
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_13696fee
+Bytes: 90
+Can we follow the JNI precedence for naming (JNIEnvExt / JNIEnv) ? How about JvmtiEnvExt ?
+
+54:4-55:79
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_1315ef45
+Bytes: 64
+why value-initialize capabilities in the initializers list then?
+
+76:24-76:46
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_f3037268
+Bytes: 63
+I think "supported" sounds better than "potential" in this case
+
+77:4-77:21
+Tue Sep 20 23:16:02 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f0ac2770_13b16f4d
+Bytes: 108
+the designated initializers are technically C-only so it makes this header non-portable when it comes to C++
+

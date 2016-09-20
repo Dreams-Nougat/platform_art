@@ -1,0 +1,245 @@
+Revision: 9ecf83e2b46048479b06241e2513fe201ddaf1b6
+Patch-set: 17
+File: compiler/optimizing/code_generator_x86.cc
+
+5041:0-5046:9
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f09507fc_bdecff1d
+Bytes: 37
+Use CodeGeneratorX86::ArrayAddress().
+
+5049:0-5054:9
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30907f09_2245309b
+Bytes: 5
+ditto
+
+5434:0-5437:5
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508b33e0_430158dc
+Bytes: 109
+The constant should be just length, right? It should not contain the compression tag, so this is unnecessary.
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+4506:0-4511:9
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0462f6a_86d9cc10
+Bytes: 40
+Use CodeGeneratorX86_X64::ArrayAddress()
+
+4514:0-4519:9
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30907f09_e23e6816
+Bytes: 5
+ditto
+
+4878:0-4881:5
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30907f09_023cac1b
+Bytes: 12
+Unnecessary.
+
+File: compiler/optimizing/intrinsics_x86.cc
+
+1420:0-1432:29
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d049e37c_aa06cb79
+Bytes: 588
+We can save a JMP here.
+
+  __ cmpl(ecx, Immediate(0));
+  __ j(kGreaterEqual, &string_not_compressed);
+  // Divide string length by 2, rounding up, and continue as if uncompressed.
+  // Merge clearing the compression flag (+0x80000000) with +1 for rounding.
+  __ addl(ecx, Immediate(0x80000001));
+  __ shrl(ecx, Immediate(1));
+  __ Bind(&string_not_compressed);
+  // Divide string length by 2 to compare characters 2 at a time and adjust for lengths not
+  // divisible by 2.
+  __ addl(ecx, Immediate(1));
+  __ shrl(ecx, Immediate(1));
+
+Not sure what impact that would have on speed though.
+
+1565:12-1565:23
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30907f09_c2d6c4b8
+Bytes: 110
+We must not clobber the start_index, so the string_obj calculation needs to come before we modify the counter.
+
+1574:9-1574:17
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f09507fc_ddceabac
+Bytes: 95
+kGreaterEqual? (Not that it matters, it cannot be zero with the current representation anyway.)
+
+1591
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9085abca_48f89362
+Bytes: 115
+We need to check if EAX is ASCII and branch to not_found_label otherwise. We do not want to match 0x100+'a' to 'a'.
+
+1777:0-1781:3
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10545b0d_c6f8e2aa
+Bytes: 37
+Use CodeGeneratorX86::ArrayAddress().
+
+1782:2-1782:29
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10545b0d_a605e6b8
+Bytes: 140
+Avoid this JMP by moving the LEA after copy_uncompressed and change the conditional jump above to
+
+  __ j(kGreaterEqual, copy_uncompressed);
+
+1784:0-1788:3
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d049e37c_0a1f1fc9
+Bytes: 37
+Use CodeGeneratorX86::ArrayAddress().
+
+1799:0-1800:21
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0462f6a_c620e40d
+Bytes: 61
+Add a comment: // TODO: Add support for LOOP to X86Assembler.
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+1579:2-1579:25
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 708af7dc_e111860b
+Bytes: 45
+Always false with the current representation.
+
+1593
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f050a71d_2879c387
+Bytes: 20
+Save a JMP, see x86.
+
+1731:12-1731:23
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f050a71d_c86fcfba
+Bytes: 32
+start_index cannot be clobbered.
+
+1739:9-1739:17
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0462f6a_a606087a
+Bytes: 14
+kGreaterEqual?
+
+1754:2-1754:19
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508b33e0_a390644d
+Bytes: 22
+Check if EAX is ASCII.
+
+1933:0-1938:3
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f09507fc_fd5cc7ea
+Bytes: 40
+Use CodeGeneratorX64_64::ArrayAddress().
+
+1939:2-1939:29
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f050a71d_68a0db00
+Bytes: 24
+Avoid this JMP, see x86.
+
+1941:0-1946:3
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f09507fc_9d690390
+Bytes: 40
+Use CodeGeneratorX64_64::ArrayAddress().
+
+1955:0-1956:21
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f050a71d_88baf725
+Bytes: 64
+Add a comment: // TODO: Add support for LOOP to X86_64Assembler.
+
+File: runtime/arch/x86/quick_entrypoints_x86.S
+
+1993:0-1994:25
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 10545b0d_06d03a16
+Bytes: 5
+JECXZ
+
+1997:4-1997:22
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508b33e0_03ab5090
+Bytes: 117
+SUB yields the same flags and we wouldn't have to do the subtraction afterwards, just move it to the output register.
+
+2001:0-2002:89
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f050a71d_c8990fca
+Bytes: 131
+Move .Lloop_comparison_this_compressed: after the JECXZ above, then
+
+    loop .Lloop_comparison_this_compressed
+    jmp keep_length
+
+2019:4-2019:22
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f09507fc_3d2d4f55
+Bytes: 3
+SUB
+
+2023:0-2024:89
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30907f09_622a58a2
+Bytes: 4
+LOOP
+
+2034:0-2035:25
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508b33e0_a3b704f1
+Bytes: 49
+JE to .Lkeep_length and move the two MOVZXB here.
+
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+2109
+Tue Sep 20 15:00:14 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 508b33e0_e3966c4b
+Bytes: 94
+Please add code comments as on x86.
+
+Address the same comments as on quick_entrypoints_x86.S .
+

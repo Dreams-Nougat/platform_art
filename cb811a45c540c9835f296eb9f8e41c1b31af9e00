@@ -114,6 +114,14 @@ UUID: 30423f4d_c327b6d2
 Bytes: 149
 Yes, we do need to pass the -Xzygote flag, otherwise Runtime::Start() calls InitNonZygoteOrPostFork(), which starts threads and makes forking unsafe.
 
+0
+Tue Sep 20 15:08:49 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30423f4d_c327b6d2
+UUID: f0ac2770_5f585359
+Bytes: 304
+Why are there selinux denials? Only the root user is allowed to write into the ISA directories, and only root user + group (nnk, why is that?) are allowed to write into /data/dalvik-cache. To me, if that's all, it seems like we'd be able to live without the flag by first doing a stat on the directory...
+
 File: runtime/parsed_options.cc
 
 69:7-70:29

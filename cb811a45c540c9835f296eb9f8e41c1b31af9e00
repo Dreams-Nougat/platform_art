@@ -106,6 +106,14 @@ Just to double check: do you need to use a zygote flag at all for the Webview zy
 
 I would like to see more detailed documentation for the flags in parsed_options.cc ParsedOptions::Usage that shows up when you run dalvikvm -help, for example.
 
+0
+Tue Sep 20 14:36:41 2016 +0000
+Author: Robert Sesek <1042203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_8a72ebd6
+UUID: 30423f4d_c327b6d2
+Bytes: 149
+Yes, we do need to pass the -Xzygote flag, otherwise Runtime::Start() calls InitNonZygoteOrPostFork(), which starts threads and makes forking unsafe.
+
 File: runtime/parsed_options.cc
 
 69:7-70:29

@@ -9,12 +9,30 @@ UUID: f0ac2770_53da8768
 Bytes: 77
 I'd prefer the JNI style CHECK_NON_NULL_ARGUMENT() - how about we reuse that?
 
+48:8-48:23
+Tue Sep 20 23:54:02 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_53da8768
+UUID: f0ac2770_16887c1e
+Bytes: 109
+We use CHECK in other parts of art to denote critical runtime assertions. Using CHECK_*** would be confusing.
+
 74:0-75:25
 Tue Sep 20 23:16:02 2016 +0000
 Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0ac2770_336fcb90
 Bytes: 211
 This seems problematic: either fail on size == 0 (under the assumption that it's likely an unintended mistake) or return a non-null, ideally unique pointer if you want a permissive semantic (I prefer the former)
+
+74:0-75:25
+Tue Sep 20 23:54:02 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_336fcb90
+UUID: f0ac2770_d6c3c429
+Bytes: 140
+This is the specified behavior https://docs.oracle.com/javase/7/docs/platform/jvmti/jvmti.html#Allocate
+
+Also this is already merged so OOS.
 
 84:0-86:5
 Tue Sep 20 23:16:02 2016 +0000
@@ -23,12 +41,32 @@ UUID: f0ac2770_33282b45
 Bytes: 61
 free(nullptr) already does this so no need for the extra code
 
+84:0-86:5
+Tue Sep 20 23:54:02 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_33282b45
+UUID: f0ac2770_b6f40883
+Bytes: 71
+OOS.
+
+defensive programming.
+
+Also IIRC that is implementation defined.
+
 742:0-744:38
 Tue Sep 20 23:16:02 2016 +0000
 Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0ac2770_13f96fac
 Bytes: 62
 what's wrong with *capabilities_ptr = kPotentialCapabilities ?
+
+742:0-744:38
+Tue Sep 20 23:54:02 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_13f96fac
+UUID: 5037b30c_a0ad1a8d
+Bytes: 4
+Done
 
 870:0-872:38
 Tue Sep 20 23:16:02 2016 +0000
@@ -45,6 +83,14 @@ Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0ac2770_13696fee
 Bytes: 90
 Can we follow the JNI precedence for naming (JNIEnvExt / JNIEnv) ? How about JvmtiEnvExt ?
+
+46:7-46:18
+Tue Sep 20 23:54:02 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_13696fee
+UUID: f0ac2770_b6e08820
+Bytes: 3
+OOS
 
 54:4-55:79
 Tue Sep 20 23:16:02 2016 +0000
@@ -66,4 +112,12 @@ Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0ac2770_13b16f4d
 Bytes: 108
 the designated initializers are technically C-only so it makes this header non-portable when it comes to C++
+
+77:4-77:21
+Tue Sep 20 23:54:02 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_13b16f4d
+UUID: f0ac2770_56fcb4cf
+Bytes: 60
+Don't care. We only compile on Clang and that supports this.
 

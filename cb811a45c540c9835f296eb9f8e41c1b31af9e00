@@ -122,6 +122,20 @@ UUID: f0ac2770_5f585359
 Bytes: 304
 Why are there selinux denials? Only the root user is allowed to write into the ISA directories, and only root user + group (nnk, why is that?) are allowed to write into /data/dalvik-cache. To me, if that's all, it seems like we'd be able to live without the flag by first doing a stat on the directory...
 
+0
+Tue Sep 20 19:25:22 2016 +0000
+Author: Robert Sesek <1042203@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_5f585359
+UUID: 30423f4d_63092a36
+Bytes: 604
+> Why are there selinux denials?
+
+I'm not sure why there's denials for the dalvik-cache writes but not the boot marker. The SELinux denials also only get printed if the webview_zygote tries to race the creation of the boot image, but not if it gets started later in boot.
+
+> it seems like we'd be able to live without the flag by first doing a stat on the directory...
+
+If you're OK with just an access check, then that will work as well. Updated to just add a check in ImageCreationAllowed(). It won't short-circuit the boot marker warning, but that doesn't create an SELinux error, for whatever reason.
+
 File: runtime/parsed_options.cc
 
 69:7-70:29

@@ -17,3 +17,18 @@ UUID: 10545b0d_e6e51e36
 Bytes: 97
 Scratch this, DCE will remove it. Can you add another CHECK section that makes sure it's removed?
 
+1202:0-1202:60
+Tue Sep 20 13:23:56 2016 +0000
+Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10545b0d_e6e51e36
+UUID: 305b1f41_4a5193d4
+Bytes: 434
+I tested that it works after adding the new section below:
+
+  /// CHECK-START: boolean Main.$noinline$NotNotBool(boolean) dead_code_elimination$final (after)
+  /// CHECK-DAG:     <<Arg:z\d+>>       ParameterValue
+  /// CHECK-DAG:                        Return [<<Arg>>]
+
+
+Do you mind if we keep the code as is in the cherry-pick (that's easier for the new Jack release) and do the follow-up above after the switch to new Jack is done?
+

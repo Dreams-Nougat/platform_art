@@ -9,3 +9,34 @@ UUID: cb1db24e_f1d9dd77
 Bytes: 30
 $NEED_DEX instead of $USE_JACK
 
+546
+Tue Sep 20 07:39:04 2016 +0000
+Author: Søren Gjesse <1121678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cb1db24e_f1d9dd77
+UUID: 305b1f41_aa75afc2
+Bytes: 1389
+Seems like both should be checked, as NEED_DEX is only set to false when --jvm is passed, so it is still true for the default Jack configuration.
+
+Also this does not solve the problem with running exactly these tests with --jvm, as most custom build scripts does not check NEED_DEX before running dx.
+
+So runing
+
+  art/test/run-test --jvm 003-omnibus-opcodes
+
+without any changes fails, as it invokes dx.
+
+I have updated the build script for 003-omnibus-opcodes - should I update the others as well?
+
+These are the custom build scripts that already check for NEED_DEX:
+
+  find art/test -name build | xargs grep NEED_DEX
+  art/test/555-checker-regression-x86const/build:  if [ ${NEED_DEX} = "true" ]; then
+  art/test/127-checker-secondarydex/build:  if [ ${NEED_DEX} = "true" ]; then
+  art/test/091-override-package-private-method/build:  if [ ${NEED_DEX} = "true" ]; then
+  art/test/131-structural-change/build:  if [ ${NEED_DEX} = "true" ]; then
+  art/test/138-duplicate-classes-check2/build:elif [ ${NEED_DEX} = "true" ]; then
+  art/test/551-checker-shifter-operand/build:    if [ ${NEED_DEX} = "true" ]; then
+  art/test/551-checker-shifter-operand/build:    if [ ${NEED_DEX} = "true" -a ${SKIP_DX_MERGER} = "false" ]; then
+  art/test/551-checker-shifter-operand/build:    if [ ${NEED_DEX} = "true" ]; then
+  art/test/551-checker-shifter-operand/build:elif [ ${NEED_DEX} = "true" ]; then
+

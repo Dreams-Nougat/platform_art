@@ -37,6 +37,14 @@ I've asked the same question on the internal change, and Alexey did say:
 
 Which makes sense if libcrypto is not loaded on device, but I guess it always is?
 
+177:0-178:1
+Tue Sep 20 21:05:25 2016 +0000
+Author: Brian Carlstrom <1003723@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30907f09_e217484e
+UUID: f0ac2770_02411b3c
+Bytes: 330
+i guess your point is that linking against it dynamically affects dex2oat startup time, though it should be pretty small as the file will be mapped in for other processes, so there won't be an i/o cost, just dynamic linking for symbol used. and if that is the real concern, you could use dlopen/dlsym for the symbol lookup lazily.
+
 File: compiler/elf_builder.h
 
 78:40-78:42

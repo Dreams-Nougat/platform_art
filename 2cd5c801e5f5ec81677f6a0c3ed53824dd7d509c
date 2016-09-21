@@ -68,6 +68,16 @@ UUID: 909beb7b_b21aa083
 Bytes: 144
 Somehow when I change the andl + addl into __ addl(rcx, Immediate(0x80000001)), it's broken. Is there any possiblity it's not treated as 32-bit?
 
+1588:0-1590:29
+Wed Sep 21 23:53:47 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 909beb7b_b21aa083
+UUID: d0b2c310_0b62e941
+Bytes: 103
+The following gives you the right encoding:
+
+__ addl(rcx, Immediate(static_cast<int32_t>(0x80000001)));
+
 1644:0-1645:51
 Wed Sep 21 09:03:49 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

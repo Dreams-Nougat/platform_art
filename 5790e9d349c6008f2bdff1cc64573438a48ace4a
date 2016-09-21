@@ -139,6 +139,14 @@ Good point. They don't escape, so I was wasting bytes for nothing! Fixed.
 
 By the way, we don't seem to do this very often, right? I could only find one other instance in the just introduced graph coloring reg allocator?
 
+162:0-162:59
+Wed Sep 21 21:35:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0b2c310_65a87c2b
+UUID: 909beb7b_7212f869
+Bytes: 141
+Yeah, initially we only used one arena for simplicity, but we should really revisit each pass and change to use more pass-level scoped arena.
+
 209:54-209:57
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -299,6 +307,14 @@ Parent: 305b1f41_cd511d2b
 UUID: d0b2c310_85aee89e
 Bytes: 117
 I am not sure I understand completely, but this seems sufficiently general? (basically I make the method re-entrant).
+
+526:0-526:24
+Wed Sep 21 21:35:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0b2c310_85aee89e
+UUID: 909beb7b_92067c2c
+Bytes: 268
+It's just that it feels cleaner to have one method that creates and returns the linear order, and one other method that sets it in the graph. The loop pass would just call the one that creates, whereas the liveness will call the creation and then sets it in the graph.
 
 File: test/618-checker-induction/src/Main.java
 

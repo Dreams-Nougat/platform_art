@@ -9,6 +9,18 @@ UUID: 305b1f41_4d5d2d48
 Bytes: 39
 What prevents using induction analysis?
 
+27:0-27:62
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_4d5d2d48
+UUID: d0b2c310_02dbee6f
+Bytes: 419
+I am mostly using induction analysis information (see below to get last value), but this is a quick cycle recognizer for the simple case.
+
+I plan to replace this with a general cycle operation by storing the cycle during analysis and reusing it here (rather than finding it again), but this requires a bit more work getting this from induction analysis to here.
+
+This CL is really just a start, to get the ball rolling.
+
 55:20-55:52
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,12 +30,28 @@ check if `block` is the header of an empty loop.
 
 But actually the name of the method is good enough and doesn't require a comment IMO.
 
+55:20-55:52
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_2d62f90f
+UUID: d0b2c310_c2d4e63e
+Bytes: 4
+Done
+
 60:0-60:47
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_ed6bc1e6
 Bytes: 2
 :)
+
+60:0-60:47
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_ed6bc1e6
+UUID: d0b2c310_a2d9da74
+Bytes: 4
+Done
 
 63:24-63:49
 Tue Sep 20 21:23:52 2016 +0000
@@ -39,6 +67,14 @@ UUID: 305b1f41_cd68fdec
 Bytes: 24
 ditto about the comment.
 
+84:3-84:51
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_cd68fdec
+UUID: d0b2c310_45f34066
+Bytes: 4
+Done
+
 91:0-91:51
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,12 +84,28 @@ ditto
 
 But a comment on what conditions can a pre header can be removed could be nice.
 
+91:0-91:51
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_ad75c9c2
+UUID: d0b2c310_c25506c2
+Bytes: 94
+removed, conditions are documented below; is that                      description sufficient?
+
 110:10-110:43
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_8d7205d7
 Bytes: 128
 Since you're changing the block, I'd suggest changing the method name / re-arrange the code to convey it's not just a predicate.
+
+110:10-110:43
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_8d7205d7
+UUID: d0b2c310_625d12e4
+Bytes: 4
+Done
 
 145:0-145:51
 Tue Sep 20 21:23:52 2016 +0000
@@ -62,12 +114,30 @@ UUID: 305b1f41_6d411160
 Bytes: 62
 Expand the comment on why you need the graph to be linearized?
 
+145:0-145:51
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_6d411160
+UUID: d0b2c310_058e58e0
+Bytes: 4
+Done
+
 162:0-162:59
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f09507fc_1dcbb36f
 Bytes: 84
 Do the LoopNode escape this pass? You might consider having your own ArenaAllocator.
+
+162:0-162:59
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f09507fc_1dcbb36f
+UUID: d0b2c310_65a87c2b
+Bytes: 220
+Good point. They don't escape, so I was wasting bytes for nothing! Fixed.
+
+By the way, we don't seem to do this very often, right? I could only find one other instance in the just introduced graph coloring reg allocator?
 
 209:54-209:57
 Tue Sep 20 21:23:52 2016 +0000
@@ -76,6 +146,14 @@ UUID: 305b1f41_4d464d7a
 Bytes: 11
 environment
 
+209:54-209:57
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_4d464d7a
+UUID: d0b2c310_c53ab0f4
+Bytes: 4
+Done
+
 220:54-220:57
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -83,12 +161,28 @@ UUID: 305b1f41_2d3b19fa
 Bytes: 11
 environment
 
+220:54-220:57
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_2d3b19fa
+UUID: d0b2c310_a53fa4e2
+Bytes: 4
+Done
+
 224:42-224:45
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_0d405558
 Bytes: 11
 environment
+
+224:42-224:45
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_0d405558
+UUID: d0b2c310_6552bc30
+Bytes: 4
+Done
 
 231:24-231:39
 Tue Sep 20 21:23:52 2016 +0000
@@ -104,6 +198,14 @@ UUID: 508b33e0_c6d9f60f
 Bytes: 81
 Although I think I understand this comment :) you might want to be more explicit.
 
+235:0-235:35
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 508b33e0_c6d9f60f
+UUID: d0b2c310_651bdc8a
+Bytes: 4
+Done
+
 251:0-253:3
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -111,12 +213,28 @@ UUID: b0462f6a_a62168b0
 Bytes: 130
 I guess this guarding against body branching to the exit too? Please add a comment (I think single exit is not really clear here).
 
+251:0-253:3
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0462f6a_a62168b0
+UUID: d0b2c310_0504181f
+Bytes: 4
+Done
+
 254:25-254:27
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f050a71d_6bf9f568
 Bytes: 32
 nit: replace the parens with ':'
+
+254:25-254:27
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f050a71d_6bf9f568
+UUID: d0b2c310_857388a7
+Bytes: 4
+Done
 
 File: compiler/optimizing/loop_optimization.h
 
@@ -127,6 +245,14 @@ UUID: f09507fc_7dd67718
 Bytes: 2
 as
 
+30:35-30:36
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f09507fc_7dd67718
+UUID: d0b2c310_02564eff
+Bytes: 4
+Done
+
 45:40-45:41
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -134,12 +260,28 @@ UUID: d049e37c_4a099735
 Bytes: 9
 loop_info
 
+45:40-45:41
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d049e37c_4a099735
+UUID: d0b2c310_824a5e4f
+Bytes: 74
+Done (well, at least made it lp_info, since we still have loop_info below)
+
 51:21-51:22
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 508b33e0_a6dcf200
 Bytes: 6
 const?
+
+51:21-51:22
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 508b33e0_a6dcf200
+UUID: d0b2c310_4297b695
+Bytes: 4
+Done
 
 File: compiler/optimizing/nodes.cc
 
@@ -150,6 +292,14 @@ UUID: 305b1f41_cd511d2b
 Bytes: 169
 Since liveness analysis will create a new linear order, should this method just return the linear order (without updating the field), and only liveness update the field?
 
+526:0-526:24
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_cd511d2b
+UUID: d0b2c310_85aee89e
+Bytes: 117
+I am not sure I understand completely, but this seems sufficiently general? (basically I make the method re-entrant).
+
 File: test/618-checker-induction/src/Main.java
 
 85:0-85:15
@@ -159,10 +309,26 @@ UUID: 30907f09_622d789f
 Bytes: 61
 Check that this is still here? (applies to other tests below)
 
+85:0-85:15
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 30907f09_622d789f
+UUID: d0b2c310_45b8e0df
+Bytes: 4
+Done
+
 153:0-153:44
 Tue Sep 20 21:23:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 305b1f41_ad4ee988
 Bytes: 54
 CHECK the value returned? (here and other tests below)
+
+153:0-153:44
+Wed Sep 21 21:28:05 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 305b1f41_ad4ee988
+UUID: d0b2c310_6594fc41
+Bytes: 108
+ok (note that I also do that functionally by running the method; but I can CHECK explicitly on that as well)
 

@@ -191,6 +191,14 @@ UUID: f0ac2770_9d79ee22
 Bytes: 78
 yeah it is. It puts the dex file into the array at index 1 and copys the rest.
 
+173:31-173:53
+Wed Sep 21 09:27:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_9d79ee22
+UUID: 7089173e_e98ef528
+Bytes: 129
+Sure, but it still creates a new array. InsertDexFileIntoArray for me means you're going to put the dex file in the passed array.
+
 182:2-182:22
 Tue Sep 20 20:33:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -205,6 +213,14 @@ Parent: b0462f6a_a600480f
 UUID: f0ac2770_a2eda7f0
 Bytes: 36
 It's the first element of the array.
+
+182:2-182:22
+Wed Sep 21 09:27:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_a2eda7f0
+UUID: 10ca9b6e_f6034068
+Bytes: 117
+OK, but oat-dex is not a well known notion. I suggest: "copy the {oat, dex} pair in the first entry of the new array.
 
 183:25-183:29
 Tue Sep 20 20:33:12 2016 +0000
@@ -296,6 +312,14 @@ UUID: f0ac2770_fdf82243
 Bytes: 85
 no this is having an unexpected class_loader type. We should have noticed this above.
 
+236:0-237:37
+Wed Sep 21 09:27:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_fdf82243
+UUID: 909beb7b_f2c0a81f
+Bytes: 103
+I see, then I agree those can stay CHECKs (or DCHECK, but we can have this in a separate conversation).
+
 256:0-256:95
 Tue Sep 20 20:33:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -311,6 +335,14 @@ UUID: f0ac2770_bdf2aa5f
 Bytes: 21
 Just for cleanliness.
 
+256:0-256:95
+Wed Sep 21 09:27:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_bdf2aa5f
+UUID: 50a173a9_b0b618d5
+Bytes: 109
+Then I suggest: "It would be cleaner to put it into the used dex file ..., but it's more annoying because..."
+
 292:33-292:41
 Tue Sep 20 20:33:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -325,6 +357,16 @@ Parent: 305b1f41_2db1d998
 UUID: f0ac2770_7d58b259
 Bytes: 18
 change the method.
+
+292:33-292:41
+Wed Sep 21 09:27:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_7d58b259
+UUID: f08b4731_cddce902
+Bytes: 139
+You mean env->Allocate?
+
+Then you are taking about the memory returned by it? How do you plan on doing this knowing it's at the page level?
 
 305:0-305:99
 Tue Sep 20 20:33:12 2016 +0000
@@ -371,6 +413,14 @@ Parent: 305b1f41_cda7dd5b
 UUID: f0ac2770_dd7206d8
 Bytes: 54
 We are currently assuming inlining must not be enabled
+
+331
+Wed Sep 21 09:27:36 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_dd7206d8
+UUID: 108ffb3e_4e1ab3d9
+Bytes: 178
+Do you plan on checking it? Making this assumption will very likely confuse everyone trying it, as it's very brittle to write scripts that ensure all used oat files don't inline.
 
 332:48-332:53
 Tue Sep 20 20:33:12 2016 +0000

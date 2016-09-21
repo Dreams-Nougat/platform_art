@@ -29,12 +29,40 @@ ditto
 
 File: compiler/optimizing/intrinsics_x86_64.cc
 
+1588:0-1590:29
+Wed Sep 21 10:44:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50a173a9_50d08cf0
+Bytes: 42
+Comment has been updated but code has not.
+
 1644:0-1645:51
 Wed Sep 21 09:03:49 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 909beb7b_d2aac471
 Bytes: 15
 ditto: use TMP?
+
+1694:5-1694:7
+Wed Sep 21 10:44:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 909beb7b_92e2fcc3
+Bytes: 18
+Remove two spaces.
+
+1933:27-1933:28
+Wed Sep 21 10:44:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f08b4731_cd2dc903
+Bytes: 20
+Break the line here.
+
+1950:27-1950:28
+Wed Sep 21 10:44:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 70a037a6_5197b439
+Bytes: 20
+Break the line here.
 
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
@@ -44,6 +72,35 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 909beb7b_f2a7c8a8
 Bytes: 38
 Check if kUseStringCompression is set?
+
+2009:0-2016:73
+Wed Sep 21 10:44:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30b15ff2_37677852
+Bytes: 457
+We could play even more tricks here:
+
+    addl    LITERAL(1), %esi                    // ++this_cur_char (8-bit)
+    addl    LITERAL(2), %edi                    // ++that_cur_char (16-bit)
+    subl    %ebx, %edx                          // if (*(this_cur_char) == *(that_cur_char) &&
+    loope   .Lloop_comparison_this_compressed   //     more_to_compare) continue;
+    cmovne  %edx, %eax                          // If we found a difference, move it to eax
+
+2064:0-2064:13
+Wed Sep 21 10:44:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30a6bfc4_4f970d3a
+Bytes: 303
+Some branches that lead here do want to keep the length difference as the return value but other branches do not. So this should be renamed .Lkeep_length -> .Lstring_compareto_return . Alternatively, we could have two labels at the same place and pick the target label based on the intent of the branch.
+
+2069:0-2074:25
+Wed Sep 21 10:44:23 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30a6bfc4_2fa2c9a0
+Bytes: 498
+Since you got rid of the second "return" (POP+POP+ret), please change the JNE at line 2063 to JE (change target to .Lkeep_length) and move this section after that. That way we not only avoid the extra JMP but we also get valid CFI without explicit .cfi_remember_state/.cfi_restore_state (that was previously broken).
+
+Then rename .Lnot_equal -> .Lstring_compareto_equal . I think all the local labels should have the "string_compareto" prefix (I wouldn't use the full "art_quick_string_compareto").
 
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 

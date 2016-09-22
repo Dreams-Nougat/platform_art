@@ -29,3 +29,11 @@ At irreducible loop headers we currently force all (non-constant?) dalvik regist
 
 Note that for OSR, we treat all loops as irreducible even though they are not and they could be dealt with differently. However, all loop headers in OSR mode are kind of a method entry and PC-relative bases calculated before the loop header would not be valid if we enter through OSR.
 
+4244:0-4245:28
+Thu Sep 22 10:22:33 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 101e1b18_b6ee88b2
+UUID: 30195f0f_b7f7c873
+Bytes: 484
+If you want to simply enable PC-relative loads for irreducible loop on mips, you need to remove MipsAssembler::pc_rel_base_label_ and keep that information in the codegen attached to HMipsComputeBaseMethodAddress, so that you can use multiple HMipsComputeBaseMethodAddress instructions. Then you can simply create a HMipsComputeBaseMethodAddress just before each instruction that needs it, though I have a plan to implement a smarter distribution of the PC-relative bases for x86/arm.
+

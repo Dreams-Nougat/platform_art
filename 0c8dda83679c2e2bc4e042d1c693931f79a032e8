@@ -9,3 +9,23 @@ UUID: 503b335a_26df0226
 Bytes: 334
 Vladimir, could you please educate me on what irreducible loops are and how they're related to PC-relative loads of strings, classes and other things? Namely, why we're currently avoiding some (but not all) PC-relative loads in the presence of such loops? I wonder if some PC-relative loads could be enabled despite irreducible loops.
 
+4244:0-4245:28
+Thu Sep 22 09:58:20 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 503b335a_26df0226
+UUID: 101e1b18_b6ee88b2
+Bytes: 1011
+Irreducible loops are loops where there isn't a single block through which the loop is entered. For example
+
+    B1 -> B2, B3
+    B2 -> B3, B4  // loop header?
+    B3 -> B4      // loop header?
+    B4 -> B5, B2  // conditional loop exit
+    B5 -> ...
+
+Note that in this case, we could clone the B2 into two blocks and, after rearranging edges, we would have a natural loop with header B3 but there are situations where this may not be possible.
+
+At irreducible loop headers we currently force all (non-constant?) dalvik registers into memory and assume that there are no other live variables (except for the ArtMethod* stored at the bottom of the stack). So the PC-relative base would not be preserved across the loop header.
+
+Note that for OSR, we treat all loops as irreducible even though they are not and they could be dealt with differently. However, all loop headers in OSR mode are kind of a method entry and PC-relative bases calculated before the loop header would not be valid if we enter through OSR.
+

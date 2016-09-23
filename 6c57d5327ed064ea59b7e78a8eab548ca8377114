@@ -42,3 +42,17 @@ LogMessage is in a CC file so we have to call LogMessage constructor from anothe
 
 At the very least getting the logging stream should be a new API call. Better yet we could have custom stream type. And best yet we could plug-in a user-provided log filter to determine whether or not a message should hit the stream (before we lose the file/line/severity/etc information). Of course it should be nicely inline/templatized to avoid expensive library calls when filtering is disabled.
 
+97
+Fri Sep 23 17:45:38 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_18c6940f
+UUID: b0938fd9_987624cc
+Bytes: 257
+Blergh, screwed up the field alignment
+
+  std::aligned_storage<sizeof(LogMessage), alignof(LogMessage)> log_message_;
+  bool would_log_;
+  std::ostream* os_;
+
+in the debugging case where it doesn't get inlined and the bool up front would screw up alignment.
+

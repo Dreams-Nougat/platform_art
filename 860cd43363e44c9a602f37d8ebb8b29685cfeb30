@@ -1,0 +1,26 @@
+Revision: 860cd43363e44c9a602f37d8ebb8b29685cfeb30
+Patch-set: 2
+File: runtime/dex_file_annotations.cc
+
+1053:1-1055:3
+Fri Sep 23 09:04:34 2016 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_a90b7d84
+Bytes: 264
+for most of the null returns below this point :
+
+Do we have a pending exception when Get() == nullptr here ? These are serious issues and we should either throw an exception or abort the VM.
+
+If there's a pending exception, you might want to mark these as UNLIKELY
+
+File: runtime/native/java_lang_reflect_Executable.cc
+
+140:3-161:32
+Fri Sep 23 09:04:34 2016 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_c9559154
+Bytes: 414
+just an observation: this is an odd mix of public JNI API and internal runtime API. you're using env->NewObject and then soa.Decode<> on that object. can't say OTTMH if there's a better way.
+
+also, i don't understand the push & pop of the local frame. isn't popping the local frame equivalent to calling env->DeleteLocalRef after you Set ? (i'm sure i missed something, but i'm waiting for you to tell me what :) )
+

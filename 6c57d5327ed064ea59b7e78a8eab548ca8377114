@@ -56,3 +56,21 @@ Blergh, screwed up the field alignment
 
 in the debugging case where it doesn't get inlined and the bool up front would screw up alignment.
 
+97
+Fri Sep 23 17:55:07 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_987624cc
+UUID: b0938fd9_5873bca7
+Bytes: 463
+One more thing, if we don't care about performance at all (which was the upfront assumption)
+
+The much cleaner way is simply to change the LogFunction that's passed to InitLogging to filter the severity there.
+
+   void ArtLoggingFunction(LogId, LogSeverity severity, const char*, const char*, unsigned int, const char*) {
+      if (WOULD_LOG_SEVERITY(severity)) {
+          INIT_LOGGING_DEFAULT_LOGGER(...);
+      }
+   }
+
+   InitLogging(argv, ArtLoggingFunction);
+

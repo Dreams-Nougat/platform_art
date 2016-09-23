@@ -13,6 +13,60 @@ Do we have a pending exception when Get() == nullptr here ? These are serious is
 
 If there's a pending exception, you might want to mark these as UNLIKELY
 
+1053:1-1055:3
+Fri Sep 23 13:47:58 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85656bf7_a90b7d84
+UUID: 85656bf7_0945e96a
+Bytes: 165
+FindArrayClass ends with an AssertPendingException() so yes. Nobody else was doing anything special for this so I had assumed it was the case. Good to check, though.
+
+1065:11-1065:16
+Fri Sep 23 13:47:58 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_c956b127
+Bytes: 1527
+This could enqueue an error here. The general strategy for these kind of cases (malformed system annotations) seems to be to ignore them, so I'm consistent.
+
+i.e.
+GetInnerClassFlags
+GetSignatureValue
+GetThrowsValue
+GetAnnotationDefaultValue
+GetDeclaringClass
+GetEnclosingClass
+GetEnclosingMethod
+GetInnerClass
+
+Given we don't (AFAIK) verify system annotations at verification / class load time at all, and this would happen at runtime I'm guessing throwing a VerifyError at this point would be inappropriate.
+
+GenericSignatureFormatError (a subclass of ClassFormatError) is similar and is thrown at runtime during reflection if the *contents* of a well formed system annotation is found to be junk. I don't think it warrants declaring a subclass so if we do decide to make badly formed system annotations an error I'd suggest throwing ClassFormatError.
+
+There's a small chance it would throw up some error cases due to tools like proguard not behaving that we previously ignored if we fix "malformed system annotation" generally. Seems unlikely, but perhaps best to do as a follow up. I'll create a bug if ART folks agree it's something to fix generally.
+
+[Not sure how the runtime folks feel about adding validation of system annotation at verification / class load time. I'm guessing they'd be against anything that slows down verification / classload. ART folks feel free to chime in: if we declared that we should be syntax checking system annotations at verification time I'd suggest that should be treated a another bug.]
+
+1070:11-1070:16
+Fri Sep 23 13:47:58 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_e9597559
+Bytes: 55
+Nobody else seems to bother with this, so have removed.
+
+1085:11-1085:16
+Fri Sep 23 13:47:58 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_8950b929
+Bytes: 9
+As above.
+
+1088:6-1088:24
+Fri Sep 23 13:47:58 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_a9537d35
+Bytes: 21
+Removed this one too.
+
 File: runtime/native/java_lang_reflect_Executable.cc
 
 140:3-161:32
@@ -41,4 +95,12 @@ Bytes: 324
 Rather than being an odd mix, I saw this as "preparing the JNI object for return. This was the point where objects go from internal provided by things like annotations:: code to external for return.
 
 Sounds like it's easier to continue in the ART world a while longer and do a final translation at the end. I'll take a look.
+
+140:3-161:32
+Fri Sep 23 13:47:58 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c546836b_e3ad1288
+UUID: 85656bf7_c9047127
+Bytes: 177
+Oh: I went with push / pop over deletelocalref because it meant not having to keep track of the Parameter / String directly. Seemed easier but may carry a cost I'm not aware of.
 

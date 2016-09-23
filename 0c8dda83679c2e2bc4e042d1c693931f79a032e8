@@ -37,3 +37,11 @@ UUID: 30195f0f_b7f7c873
 Bytes: 484
 If you want to simply enable PC-relative loads for irreducible loop on mips, you need to remove MipsAssembler::pc_rel_base_label_ and keep that information in the codegen attached to HMipsComputeBaseMethodAddress, so that you can use multiple HMipsComputeBaseMethodAddress instructions. Then you can simply create a HMipsComputeBaseMethodAddress just before each instruction that needs it, though I have a plan to implement a smarter distribution of the PC-relative bases for x86/arm.
 
+4244:0-4245:28
+Fri Sep 23 21:46:53 2016 +0000
+Author: Alexey Frunze <1057043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 101e1b18_b6ee88b2
+UUID: b0938fd9_507e3070
+Bytes: 269
+So, if a special base register isn't needed and there are only true PC-relative loads/arithmetics involved (e.g. on R6), I can safely relax the logic to allow some optimizations in static/direct calls and string/class loads irrespective of the irreducible loops, right?
+

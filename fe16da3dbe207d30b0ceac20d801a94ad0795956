@@ -47,6 +47,16 @@ so we'd have to wrap both of this with
 
 or similar. I'm not sure if that would work either , it depends on what type the call sites of that macro expect.
 
+95:7-95:20
+Fri Sep 23 15:51:04 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_dae9847c
+UUID: 85656bf7_a94edd63
+Bytes: 335
+Line 100 expands to a statement that conditionally calls LoggingDummyMessage::GetStream().
+
+This method returns a reference to a std::ostream. The suggestion was to change the type of LoggingDummyMessage::dummy_ to an entirely new flavor of ostream class that simply discards the output without buffering. No wrapper, no type mismatch.
+
 File: runtime/jni_env_ext-inl.h
 
 35:1-35:32

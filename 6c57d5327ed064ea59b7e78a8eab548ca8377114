@@ -92,3 +92,13 @@ UUID: b0938fd9_380190de
 Bytes: 260
 I don't think that way is cleaner, because it overrides any choice a top-level tool might have made wrt/ where it wants to log (e.g., certain interns might have installed Stderr logging even on device). There's no API to get the current logging function (yet).
 
+97
+Fri Sep 23 18:34:50 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_380190de
+UUID: b0938fd9_7347bb48
+Bytes: 283
+Yeah, I didn't realize our existing logging was just as bad performance wise.
+
+Regarding "overrides any choice.." you're already doing that by calling InitLogging explicitly. We have to statically link to avoid making this conscious choice to screw over everyone else in app_process.
+

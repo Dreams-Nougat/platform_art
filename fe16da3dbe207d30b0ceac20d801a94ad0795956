@@ -27,6 +27,26 @@ UUID: 85656bf7_491c01dc
 Bytes: 171
 It might be "nice to have" a corresponding dummy stream that had no-ops for the overloads of operator<< to avoid doing the string manipulation work for discarded messages.
 
+95:7-95:20
+Fri Sep 23 14:49:29 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85656bf7_491c01dc
+UUID: b0938fd9_dae9847c
+Bytes: 373
+That's non-trivial, see line 100.
+
+LOG_STREAM_S returns an std::ostream so the types won't match
+
+   BOOL ? OSTREAM : NOT_OSTREAM
+
+will give a compilation error
+
+so we'd have to wrap both of this with
+
+   BOOL ? WRAPPED_STREAM(OSTREAM) : WRAPPED_STREAM(NONE)
+
+or similar. I'm not sure if that would work either , it depends on what type the call sites of that macro expect.
+
 File: runtime/jni_env_ext-inl.h
 
 35:1-35:32

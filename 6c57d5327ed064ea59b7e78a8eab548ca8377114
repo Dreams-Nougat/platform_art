@@ -1,0 +1,44 @@
+Revision: 6c57d5327ed064ea59b7e78a8eab548ca8377114
+Patch-set: 4
+File: runtime/base/logging.h
+
+97
+Fri Sep 23 17:42:26 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0938fd9_18c6940f
+Bytes: 1619
+I think you would want ART_LOG_STREAM to return a wrapped stream-like struct
+
+  struct MaybeLogStream {
+    explicit MaybeLogStream(bool would_log) ALWAYS_INLINE {
+      if (would_log) {
+        os_ = (new (&log_message_) (LogMessage(__FILE__, __LINE__, severity_, -1)).stream();
+        // avoid creating expensive LogMessage unless its actually necessary
+        // avoid any dynamic allocation on the fast path
+      }
+      would_log_ = would_log;
+    }
+
+    template <typename T>
+    MaybeLogStream& operator<<(const T& any) ALWAYS_INLINE {
+       if (would_log_) {
+           os_ << any;
+       }
+    }
+
+    bool would_log_;
+    char[sizeof(LogMessage]] log_message_;
+    std::ostream* os_;
+  };
+
+   #define ART_LOG_STREAM_S(severity) MaybeLogStream(WOULD_LOG_SEVERITY(severity))
+
+Yes this does look ugly.. but the API is quite unsuited to what we wanted to do, which is why I was saying we might be  better off fixing base/logging.h. 
+
+----
+Further explanation:
+
+LogMessage is in a CC file so we have to call LogMessage constructor from another library (eww a library call, and it even does a malloc inside, why??) **just** to get the stream (and it . Obviously we want to avoid this unless we actually need to.
+
+At the very least getting the logging stream should be a new API call. Better yet we could have custom stream type. And best yet we could plug-in a user-provided log filter to determine whether or not a message should hit the stream (before we lose the file/line/severity/etc information). Of course it should be nicely inline/templatized to avoid expensive library calls when filtering is disabled.
+

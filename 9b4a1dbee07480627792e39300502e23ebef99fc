@@ -17,6 +17,14 @@ UUID: b0938fd9_1bcf7ba9
 Bytes: 54
 The static binaries make this impossible. I tried. :-(
 
+51
+Fri Sep 23 14:49:29 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_1bcf7ba9
+UUID: b0938fd9_1ae4cca0
+Bytes: 75
+Why can't we inherit this configuration I mean? This seems like a BP issue.
+
 File: runtime/base/logging.h
 
 88
@@ -38,6 +46,16 @@ This is to emulate our behavior below with ART_LOG_STREAM - which always returns
 
 (Regrettably you can't return a non-const reference to a temporary in C++, so this helper is the way around that. If you have a better idea [and yeah, could optimize this to not ever store anything, this is just the simplest implementation], just let me know.)
 
+88
+Fri Sep 23 14:49:29 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_3b5d17e5
+UUID: b0938fd9_3af98846
+Bytes: 323
+I took a quick look at base/logging.h and it seems like most of our changes from this file should go there instead, I don't like the way it's done now because there's no way to discard messages without concatenating them first into an ostream.
+
+We could provide our own custom LoggerBase (?) but then it does too much work.
+
 100:26-100:37
 Thu Sep 22 20:40:24 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -52,6 +70,14 @@ Parent: b0938fd9_fb664f21
 UUID: b0938fd9_9b4b8b28
 Bytes: 185
 There's a corresponding change. LOG_STREAM_S takes a severity as a fully qualified LogSeverity. It's required because our usage with a ternary for log level wasn't supported in libbase.
+
+100:26-100:37
+Fri Sep 23 14:49:29 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_9b4b8b28
+UUID: b0938fd9_9ad7fcb3
+Bytes: 47
+Sounds like it should be named ART_LOG_STREAM_S
 
 121
 Thu Sep 22 20:40:24 2016 +0000

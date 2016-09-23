@@ -25,6 +25,14 @@ UUID: b0938fd9_1ae4cca0
 Bytes: 75
 Why can't we inherit this configuration I mean? This seems like a BP issue.
 
+51
+Fri Sep 23 15:58:27 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_1ae4cca0
+UUID: b0938fd9_9a945c91
+Bytes: 68
+Because you cannot mix static and shared libbase in a static binary.
+
 File: runtime/base/logging.h
 
 88
@@ -56,6 +64,20 @@ I took a quick look at base/logging.h and it seems like most of our changes from
 
 We could provide our own custom LoggerBase (?) but then it does too much work.
 
+88
+Fri Sep 23 15:58:27 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_3af98846
+UUID: b0938fd9_1a5becf4
+Bytes: 395
+I do not understand, honestly, what you want to say. They don't have a need for using LOG as a source of an ostream, and they'd definitely not want to keep an ostringstream for results.
+
+I probably should rewrite the tests to use ostringstream and dump the results to LOG(INFO) for simplicity. The other cases could be made explicit through
+
+ if (WOULD_LOG_SEVERITY()) {
+    ...(LOG_STREAM())
+ }
+
 100:26-100:37
 Thu Sep 22 20:40:24 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -78,6 +100,14 @@ Parent: b0938fd9_9b4b8b28
 UUID: b0938fd9_9ad7fcb3
 Bytes: 47
 Sounds like it should be named ART_LOG_STREAM_S
+
+100:26-100:37
+Fri Sep 23 15:58:27 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_9ad7fcb3
+UUID: b0938fd9_3a126810
+Bytes: 12
+Done in PS3.
 
 121
 Thu Sep 22 20:40:24 2016 +0000

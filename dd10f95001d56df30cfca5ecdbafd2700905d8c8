@@ -11,6 +11,18 @@ This script only runs on the host (see line 1 where its specified to be bash).
 
 What does the path look like for when it runs on the device? Shouldn't it also includde /data/tmp? I'd be more worried about PATH_MAX in that case. That checking seems like it should go into run-test-jar .
 
+697
+Fri Sep 23 22:53:54 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_30dfe4c9
+UUID: b0938fd9_53cb9a15
+Bytes: 275
+Script runs on host but dalvikvm can run on device and thats where it will try to generate vdex files in no-prebuild mode.
+
+On device it looks like /data/run-test/test-<PID>. I guess it's really short so there is no reason to check in that case.
+
+Moved check to run-test-jar.
+
 704:24-704:41
 Fri Sep 23 21:35:26 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -19,4 +31,14 @@ Bytes: 117
 NAME_MAX is for the filename size (basename whatever)
 
 PATH_MAX is for the path size (full path) and its usually 1024
+
+704:24-704:41
+Fri Sep 23 22:53:54 2016 +0000
+Author: Wojciech Staszkiewicz <1067043@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_70f96c45
+UUID: b0938fd9_134cb225
+Bytes: 155
+vdex filename is constructed by taking VDEX_PATH and changing every / to @ so it is NAME_MAX that we care about.
+
+I updated the comment to be more verbose.
 

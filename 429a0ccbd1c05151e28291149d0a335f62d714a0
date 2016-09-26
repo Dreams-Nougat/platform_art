@@ -1,0 +1,15 @@
+Revision: 429a0ccbd1c05151e28291149d0a335f62d714a0
+Patch-set: 6
+File: runtime/native/java_lang_reflect_Executable.cc
+
+82:20-82:45
+Mon Sep 26 13:53:42 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_ecad0388
+Bytes: 350
+I have modified this code to delay use of JNI until the last moment. All code prior to the final line sticks with ART runtime / mirror classes.
+
+The code also switched to using MutableHandle at the suggestion of ngeoffray@ to
+(1) Allow the GetParameterMetadataForMethod to use handles.
+(2) Avoid the creation of a StackHandleScope inside of the loop.
+

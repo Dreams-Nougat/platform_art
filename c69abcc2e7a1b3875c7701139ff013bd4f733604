@@ -9,6 +9,16 @@ UUID: b0938fd9_acf63854
 Bytes: 1
 ?
 
+40
+Mon Sep 26 17:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_acf63854
+UUID: b0938fd9_ec804030
+Bytes: 174
+dlmalloc uses a DEBUG define to help debugging. As it's a c file, they don't undef. The define then interferes with the LOG macro lambda.
+
+I could move the undef to malloc.c.
+
 File: runtime/jni_internal.cc
 
 2230
@@ -17,6 +27,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0938fd9_8cab3c28
 Bytes: 55
 Wow what a mess, relying on destructor order to abort..
+
+2230
+Mon Sep 26 17:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_8cab3c28
+UUID: b0938fd9_8c125c0e
+Bytes: 129
+I could rewrite both lines to be FATAL_WITHOUT_ABORT, and then a conditional LOG(FATAL), if you prefer. This is just inherited...
 
 File: runtime/verifier/method_verifier.cc
 
@@ -27,6 +45,14 @@ UUID: b0938fd9_ac3e38c3
 Bytes: 28
 nit: indentation is off here
 
+444
+Mon Sep 26 17:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_ac3e38c3
+UUID: b0938fd9_2c4ce825
+Bytes: 4
+Done
+
 File: test/099-vmdebug/check
 
 18
@@ -35,6 +61,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0938fd9_2c5b0827
 Bytes: 1
 ?
+
+18
+Mon Sep 26 17:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_2c5b0827
+UUID: b0938fd9_8c3b3c86
+Bytes: 117
+Base/logging prints the program name correctly (don't know why we ever printed art, when it was running dalvikvm...).
 
 File: test/119-noimage-patchoat/check
 
@@ -45,6 +79,14 @@ UUID: b0938fd9_6c6510e5
 Bytes: 1
 ?
 
+18
+Mon Sep 26 17:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_6c6510e5
+UUID: b0938fd9_ec3200a8
+Bytes: 5
+Ditto
+
 File: test/143-string-value/check
 
 18
@@ -53,6 +95,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: b0938fd9_8c4a5c4f
 Bytes: 1
 ?
+
+18
+Mon Sep 26 17:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_8c4a5c4f
+UUID: b0938fd9_0ce80cdf
+Bytes: 5
+Ditto
 
 File: test/149-suspend-all-stress/suspend_all.cc
 
@@ -64,4 +114,12 @@ Bytes: 45
 ????
 
 if (0) instead so at least it compiles?
+
+52
+Mon Sep 26 17:25:24 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_ac471847
+UUID: b0938fd9_2cedc8ee
+Bytes: 23
+OK, I'll clean this up.
 

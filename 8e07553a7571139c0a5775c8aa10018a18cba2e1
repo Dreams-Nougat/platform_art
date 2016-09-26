@@ -14,3 +14,24 @@ Also note that the name/desc needs to be padded to word size.
 
 Can you please test that the build-id works for ARM64?
 
+495:21-495:29
+Mon Sep 26 17:57:24 2016 +0000
+Author: Alexey Alexandrov <1122300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2554bf0d_462f5293
+UUID: b0938fd9_6af89063
+Bytes: 538
+According to Elf spec it is always 4 bytes.  It seems to work OK for 64-bit:
+
+$ adb pull /system/framework/arm64/boot.oat
+[100%] /system/framework/arm64/boot.oat
+
+$ readelf -n boot.oat
+Displaying notes found at file offset 0x000003c0 with length 0x00000024:
+  Owner                 Data size	Description
+  GNU                  0x00000014	NT_GNU_BUILD_ID (unique build ID bitstring)
+    Build ID: 57f2052d4afe52af4bd6c707d942bd0671c465de
+
+
+
+name and size have multiple of 4 length here.  Added a static assert to document / enforce better.
+

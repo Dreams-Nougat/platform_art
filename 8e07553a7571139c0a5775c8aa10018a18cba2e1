@@ -43,3 +43,23 @@ UUID: 85656bf7_cca0ff3e
 Bytes: 82
 Can you point me to the 64-bit ELF documentation that you are using for reference?
 
+495:21-495:29
+Mon Sep 26 18:32:07 2016 +0000
+Author: Alexey Alexandrov <1122300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85656bf7_cca0ff3e
+UUID: a5bc2f98_6a779764
+Bytes: 722
+I used http://flint.cs.yale.edu/cs422/doc/ELF_Format.pdf.  It mentions 64-bit in some sections, so I'd assume it to call out bitness specific type sizes, and the section on the notes does not.
+
+I'm also seeing these being 32-bit on my 64-bit host:
+
+$ file /bin/ls
+/bin/ls: ELF 64-bit LSB  executable, x86-64, version 1 (SYSV), dynamically linked (uses shared libs), for GNU/Linux 2.6.24, BuildID[sha1]=8d0966ce81ec6609bbf4aa439c77138e2f48a471, stripped
+
+$ readelf -x .note.gnu.build-id /bin/ls
+
+Hex dump of section '.note.gnu.build-id':
+  0x00400274 04000000 14000000 03000000 474e5500 ............GNU.
+  0x00400284 8d0966ce 81ec6609 bbf4aa43 9c77138e ..f...f....C.w..
+  0x00400294 2f48a471                            /H.q
+

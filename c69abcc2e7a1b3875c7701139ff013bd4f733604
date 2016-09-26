@@ -19,6 +19,14 @@ dlmalloc uses a DEBUG define to help debugging. As it's a c file, they don't und
 
 I could move the undef to malloc.c.
 
+40
+Mon Sep 26 17:30:01 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_ec804030
+UUID: b0938fd9_4f6046d7
+Bytes: 34
+but why wasn't it required before?
+
 File: runtime/jni_internal.cc
 
 2230
@@ -35,6 +43,22 @@ Parent: b0938fd9_8cab3c28
 UUID: b0938fd9_8c125c0e
 Bytes: 129
 I could rewrite both lines to be FATAL_WITHOUT_ABORT, and then a conditional LOG(FATAL), if you prefer. This is just inherited...
+
+2230
+Mon Sep 26 17:30:01 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_8c125c0e
+UUID: b0938fd9_2f84da76
+Bytes: 269
+?
+
+  if(!return_errors) LOG(FATAL);
+
+Can we just abort directly somehow?
+
+  if(!return_errors) FATAL_ABORT;
+
+That definitely seems cleaner since LOG(FATAL) is still slightly confusing (it's not seemingly logging anything; does it just make an empty newline in logcat?).
 
 File: runtime/verifier/method_verifier.cc
 

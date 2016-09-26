@@ -34,6 +34,14 @@ UUID: 90bccb98_6a1557a9
 Bytes: 96
 I could copy sha1.h / sha1.c over and use that but there were objections against that from enh@.
 
+22:0-24:6
+Mon Sep 26 15:07:11 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 90bccb98_6a1557a9
+UUID: 85656bf7_2cf8bb61
+Bytes: 95
+Personally, I share Andreas' sentiment, but I have no strong objection to the library approach.
+
 130:1-131:62
 Mon Sep 19 21:24:15 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -63,6 +71,16 @@ Parent: cb1db24e_6bca596d
 UUID: f0ac2770_45ef2ab1
 Bytes: 206
 It's idempotent wrt to a dex2oat invocation for an identical input.  I didn't consider build ID calculation over the same file again as practical.  I can skip the build ID section content here if preferred.
+
+292:0-307:30
+Mon Sep 26 15:07:11 2016 +0000
+Author: David Srbecky <1065473@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0ac2770_45ef2ab1
+UUID: 85656bf7_cc0ebf96
+Bytes: 396
+I am happy with this.  I have seen this definition of hash before and I like it (i.e. hash over the whole file with the hash field set to zeros).
+
+In terms of implementation, the caller (End()) could explicitly set the build ID to zeros, or we could even move the WriteBuildId calls down to this method to make it foolproof.  I think it is overkill and I would keep it as it, but it is an option.
 
 310:2-310:14
 Mon Sep 19 21:24:15 2016 +0000

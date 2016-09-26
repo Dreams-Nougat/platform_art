@@ -27,6 +27,20 @@ UUID: b0938fd9_4f6046d7
 Bytes: 34
 but why wasn't it required before?
 
+40
+Mon Sep 26 17:35:49 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_4f6046d7
+UUID: b0938fd9_8f896e5e
+Bytes: 215
+It seems to screw up with SEVERITY_LAMBDA stuff, because that will replace the LOG(FATAL) below with
+
+ [...]
+ using ::android::base::0
+ [...]
+
+It would have been broken before if there was a LOG(DEBUG) in this file.
+
 File: runtime/jni_internal.cc
 
 2230
@@ -59,6 +73,16 @@ Can we just abort directly somehow?
   if(!return_errors) FATAL_ABORT;
 
 That definitely seems cleaner since LOG(FATAL) is still slightly confusing (it's not seemingly logging anything; does it just make an empty newline in logcat?).
+
+2230
+Mon Sep 26 17:35:49 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_2f84da76
+UUID: b0938fd9_0fe8fede
+Bytes: 277
+Could call Runtime::Abort(), but we usually do this implicitly as part of LOG(FATAL).
+
+The right thing is probably to re-order the statements. The advantage of LOG(FATAL) is that it will also set the abort message correctly (which looks like it should be "Failed to register").
 
 File: runtime/verifier/method_verifier.cc
 

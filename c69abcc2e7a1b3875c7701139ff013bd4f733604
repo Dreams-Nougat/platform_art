@@ -73,6 +73,22 @@ UUID: b0938fd9_aacd3828
 Bytes: 29
 (+enh +jmgao - any comments?)
 
+40
+Mon Sep 26 18:02:47 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_aacd3828
+UUID: a5bc2f98_ca2a43e7
+Bytes: 561
+Looking at it another way, having all the usings explicitly means that anyone re-defining any of the log severity symbols as a macro will instantly get an error as soon as they try to use LOG, LOG_STREAM, etc
+
+(as opposed to getting an error only if they use that same exact severity).
+
+So will actually make the error checking earlier and more robust if we leave SEVERITY_LAMBDA as-is.
+
+--------------
+
+As far as the art fix goes we should just probably leave a comment here saying this should always go last (#include order) and explain why there's an #undef.
+
 File: runtime/jni_internal.cc
 
 2230

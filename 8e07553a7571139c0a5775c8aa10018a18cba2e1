@@ -73,3 +73,19 @@ Elf-32 is a container format - it can store code for 64-bit processor - hence th
 
 Elf-64 is not part of the initial Elf-32 spec.  You need to find it as separate document. Eg: https://www.uclibc.org/docs/elf-64-gen.pdf
 
+495:21-495:29
+Mon Sep 26 19:44:47 2016 +0000
+Author: Alexey Alexandrov <1122300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 85656bf7_6c5fd34a
+UUID: e5638725_f4d878ec
+Bytes: 472
+Ah, that does say 8 bytes...  But, that seems a draft so it could be wrong / OOD?
+
+Looking at the current source of BFD, like https://sourceware.org/git/?p=binutils.git;a=blob_plain;f=bfd/elf.c, I can see
+
+in.namesz = H_GET_32 (abfd, xnp->namesz);
+
+which seems to imply it is 32-bit?  Also, as I mentioned, the notes seem to have 4 bytes for namesz and descsz for class=ELF64 files on my Linux 64-bit machine and for AArch64 boot.oat file.
+
+Am I grossly missing something?
+

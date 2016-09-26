@@ -99,3 +99,26 @@ Oh, I missed the fact that it is just a draft.  Any luck finding the real thing?
 
 In any case, could you please check the hexdump of the note section for libraries that we compile for 64-bit android (e.g. libart.so).  If 32-bit values are generated there, I am happy matching it whatever the spec says.
 
+495:21-495:29
+Mon Sep 26 20:11:23 2016 +0000
+Author: Alexey Alexandrov <1122300@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25e11fe5_3e78291b
+UUID: 85bbabd0_19e8eba1
+Bytes: 577
+$ adb pull /system/lib64/libart.so
+[100%] /system/lib64/libart.so
+
+$ file libart.so 
+libart.so: ELF 64-bit LSB  shared object, ARM aarch64, version 1 (SYSV), dynamically linked, BuildID[md5/uuid]=3e4ca548c9f99777a5fe7dad4e20a65d, not stripped
+
+$ readelf -x .note.gnu.build-id libart.so 
+
+Hex dump of section '.note.gnu.build-id':
+  0x00024218 04000000 10000000 03000000 474e5500 ............GNU.
+  0x00024228 3e4ca548 c9f99777 a5fe7dad 4e20a65d >L.H...w..}.N .]
+
+
+> Any luck finding the real thing?
+
+Not really, the source of libbfd seems to be the most likely source of truth.
+

@@ -41,6 +41,20 @@ It seems to screw up with SEVERITY_LAMBDA stuff, because that will replace the L
 
 It would have been broken before if there was a LOG(DEBUG) in this file.
 
+40
+Mon Sep 26 17:43:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_8f896e5e
+UUID: b0938fd9_4a975439
+Bytes: 342
+That seems like (ideally, but not necessarily) an upstream fix?
+
+  "using namespace ::android::base;"
+
+inside of the macro like I suggested originally. Now we even have a justification because it screws with other libraries that can redefine those common macro names.
+
+I'm worried otherwise we might lose debugging functionality from dlmalloc
+
 File: runtime/jni_internal.cc
 
 2230
@@ -83,6 +97,16 @@ Bytes: 277
 Could call Runtime::Abort(), but we usually do this implicitly as part of LOG(FATAL).
 
 The right thing is probably to re-order the statements. The advantage of LOG(FATAL) is that it will also set the abort message correctly (which looks like it should be "Failed to register").
+
+2230
+Mon Sep 26 17:43:04 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b0938fd9_0fe8fede
+UUID: b0938fd9_caab6475
+Bytes: 148
+Agreed, lets just reorder the messages.
+
+I think I've seen this particular abort before and was very confused with a class dump at the abort reason.
 
 File: runtime/verifier/method_verifier.cc
 

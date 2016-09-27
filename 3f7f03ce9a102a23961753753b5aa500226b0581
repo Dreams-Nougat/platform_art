@@ -25,6 +25,21 @@ UUID: 05d89b6b_02a418b4
 Bytes: 184
 Is there a way to cover all suspend points by instrumenting in a few well-defined points like, for example, CheckSuspend(), TransitionFromRunnableToSuspended() and the allocation path?
 
+2381:0-2381:31
+Tue Sep 27 18:13:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05d89b6b_02a418b4
+UUID: 05d89b6b_76560161
+Bytes: 192
+Not 100% since things like
+
+if (sometimes) {
+DoSuspension();
+}
+AccessStaleHandle();
+
+Might pass even though they are not correct. I'll try to put this at most places that could cause problems.
+
 File: runtime/mirror/obj_ptr.h
 
 32:31-32:51
@@ -34,12 +49,28 @@ UUID: 05d89b6b_a2fd449b
 Bytes: 42
 Comment on where a race condition happens?
 
+32:31-32:51
+Tue Sep 27 18:13:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05d89b6b_a2fd449b
+UUID: 05d89b6b_3660792a
+Bytes: 89
+I think we only access from a single thread so it should be OK, maybe ill delete comment.
+
 88:47-88:48
 Tue Sep 27 17:58:19 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05d89b6b_82348894
 Bytes: 43
 Maybe also print the pointer value as well?
+
+88:47-88:48
+Tue Sep 27 18:13:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05d89b6b_82348894
+UUID: 05d89b6b_f6bf917a
+Bytes: 4
+Done
 
 File: runtime/thread-inl.h
 
@@ -75,10 +106,26 @@ UUID: 05d89b6b_36d3d9f7
 Bytes: 76
 Is there a way to turn this into a no-op (no overhead) in a non-debug build?
 
+474:0-480:3
+Tue Sep 27 18:13:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05d89b6b_36d3d9f7
+UUID: 05d89b6b_f68d51e6
+Bytes: 187
+The test relies on it and I did not disable it for NDEBUG. The current callers are common enough to cause performance problems. For object allocation I will guard it behind kIsDebugBuild.
+
 1539:47-1539:89
 Tue Sep 27 17:58:19 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 05d89b6b_c2cf307c
 Bytes: 91
 Why not put this in the packed struct? And how is the cross compilation no-access enforced?
+
+1539:47-1539:89
+Tue Sep 27 18:13:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 05d89b6b_c2cf307c
+UUID: 05d89b6b_56f0a555
+Bytes: 157
+Putting stuff in packed struct can change offsets and require more changes. Only things that are access from compiled code / entrypoints should be there IMO.
 

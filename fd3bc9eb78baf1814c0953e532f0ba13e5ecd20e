@@ -1,0 +1,84 @@
+Revision: fd3bc9eb78baf1814c0953e532f0ba13e5ecd20e
+Patch-set: 1
+File: benchmark/jobject-benchmark/jobject_benchmark.cc
+
+31
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_d9e6b5a4
+Bytes: 48
+Why not just change JNIEnvExt to take a ObjPtr ?
+
+File: compiler/driver/compiler_driver-inl.h
+
+40
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_19e16d8b
+Bytes: 50
+Why not change ScopedObjectAccess to take ObjPtr ?
+
+File: runtime/check_jni.cc
+
+277
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_d98d15e7
+Bytes: 57
+Ideally these would all take ObjPtr instead of an Object*
+
+337
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_19984d25
+Bytes: 57
+Ideally these would all take ObjPtr instead of an Object*
+
+368
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_597ac5c1
+Bytes: 165
+You're probably missing the static operator != which flips rhs/lhs. This should be fixed in object_pointer.h and not by flipping the directions around in the usages.
+
+652:6-652:12
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_19afad31
+Bytes: 122
+Ugh.  I guess this is what we have to do.
+
+But in the future maybe we can make AbortF use templates instead of va_args ...
+
+File: runtime/jni_internal.cc
+
+127
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_999b9d16
+Bytes: 34
+why not ObjPtr<mirror::Class> c
+
+?
+
+187
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_f95e114c
+Bytes: 35
+Ideally Handle would take an ObjPtr
+
+285
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_d963550c
+Bytes: 41
+Ideally SetException would take an ObjPtr
+
+420
+Wed Sep 28 23:33:13 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_3969c9ed
+Bytes: 29
+Ideally these all take ObjPtr
+

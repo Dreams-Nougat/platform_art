@@ -1,0 +1,33 @@
+Revision: 2c5780066b6b090083410df8071fb0133260889e
+Patch-set: 6
+File: test/etc/run-test-jar
+
+415
+Wed Sep 28 18:32:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_e412ef6c
+Bytes: 86
+Add 
+
+  # See NAME_MAX in kernel <linux/limits.h>
+
+for each constant defined like this
+
+418
+Wed Sep 28 18:32:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_442143b9
+Bytes: 272
+It's going to underestimate the allowed maximum length now
+
+The file name only should be compared against NAME_MAX (e.g. basename "some/path/foo.bar" -> foo.bar)
+
+The full absolute path (e.g. readlink -f "foo.bar" -> /some/path/foo.bar) should be compared against PATH_MAX
+
+421
+Wed Sep 28 18:32:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e5c1c7c3_84217baa
+Bytes: 80
+There should be one comparison against the path and another against the basename
+

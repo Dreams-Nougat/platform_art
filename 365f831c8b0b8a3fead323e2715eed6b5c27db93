@@ -1,5 +1,21 @@
 Revision: 365f831c8b0b8a3fead323e2715eed6b5c27db93
 Patch-set: 16
+File: compiler/optimizing/code_generator_arm64.cc
+
+2079:11-2079:15
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 452ff370_27b27ae0
+Bytes: 3
+LDR
+
+2114:11-2114:15
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 452ff370_07b576c7
+Bytes: 3
+LDR
+
 File: compiler/optimizing/instruction_simplifier_arm.cc
 
 55:0-58:3
@@ -9,7 +25,64 @@ UUID: 02fa5131_ddab2b70
 Bytes: 78
 I'd do that first, as the checks line 47 don't apply to kUseStringCompression.
 
+55:0-58:3
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02fa5131_ddab2b70
+UUID: e2029df6_9c5ec574
+Bytes: 222
+Add a TODO that we should instead implement reading the length+compression from a negative offset (count_offset-data_offset). I think the Thumb2Assembler does not support the T4 encoding of "LDR (immediate)" at the moment.
+
+File: compiler/optimizing/instruction_simplifier_arm64.cc
+
+143:0-146:3
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_7c4d39c5
+Bytes: 239
+Add a TODO that we should instead implement reading the length+compression from a negative offset (count_offset-data_offset) using LDP and clobbering an extra temporary. Note that "LDR (immediate)" does not have a "signed offset" encoding.
+
+File: compiler/optimizing/intrinsics.cc
+
+383:13-383:92
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25283f69_4635b244
+Bytes: 18
+Re-enable, please.
+
 File: compiler/optimizing/intrinsics_arm.cc
+
+1092:0-1093:41
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2ff5921_1b463b79
+Bytes: 62
+If kUseStringCompression, load these directly to temp3, temp4.
+
+1174:4-1174:37
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62086d1c_985ed574
+Bytes: 321
+We need to branch earlier, because the CMP at line 1169 needs to be LSR#3 for compressed strings.
+
+Alternatively, we could extract the compression bit to temp4 and use
+
+    __ Lsl(temp1, temp1, temp4);
+
+before line 1169 and compensate with
+
+    __ Lsr(temp1, temp1, temp4);
+
+after the BIC 0xf (not branching for BIC 0x7).
+
+1186:0-1187:17
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 222675ad_f62960f2
+Bytes: 77
+For compressed strings, we need UXTB (or UBFX ..., #0, #8; or AND ..., #255).
 
 1313:0-1323:20
 Wed Sep 28 08:34:38 2016 +0000
@@ -17,4 +90,50 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e2029df6_fcdca909
 Bytes: 31
 Guard by kUseStringCompression.
+
+2443:0-2445:34
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2ff5921_3bc45708
+Bytes: 181
+Move the ADD just before the compressed_string_loop change the conditional branch to jump to the ADD on the opposite condition. That way we don't need the unconditional branch here.
+
+File: compiler/optimizing/intrinsics_arm64.cc
+
+1278:0-1279:48
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25283f69_c6928206
+Bytes: 62
+If kUseStringCompression, load these directly to temp3, temp5.
+
+1356:0-1357:35
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 25283f69_267a76c1
+Bytes: 90
+TBZ; we need to branch earlier as the CMP at line 1351 needs LSR#3 for compressed strings.
+
+1370:0-1371:35
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 62086d1c_98fff5f5
+Bytes: 3
+TBZ
+
+1935:0-1937:34
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2126545_fa57095c
+Bytes: 81
+Move the ADD and change the conditional branch to avoid the unconditional branch.
+
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+2397:0-2398:37
+Wed Sep 28 14:48:47 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c2ff5921_5b31630e
+Bytes: 4
+TBNZ
 

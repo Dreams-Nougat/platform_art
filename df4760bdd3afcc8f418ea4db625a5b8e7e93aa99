@@ -1,0 +1,26 @@
+Revision: df4760bdd3afcc8f418ea4db625a5b8e7e93aa99
+Patch-set: 12
+File: compiler/optimizing/code_generator_arm.cc
+
+4647:0-4675:25
+Fri Sep 23 02:20:44 2016 +0000
+Author: Jessica Handojo <1113370@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: b0938fd9_105bd2f4
+Bytes: 823
+This code doesn't work for charAt compressed for segmentation fault. I go through the dump oat file and found generated code like this
+
+0x70a746e4: f0234300      bic r3, #2147483648
+0x70a746e8: 4298          cmp r0, r3
+0x70a746ea: d226          bcs 0x70a7473a
+0x70a746ec: 3110          adds r1, #16
+0x70a746ee: 688a          ldr r2, [r1, #8]
+0x70a746f0: 2a00          cmp r2, #0
+0x70a746f2: da01          bge 0x70a746f8
+0x70a746f4: 5c08          ldrb r0, [r1, r0]
+0x70a746f6: e001          b 0x70a746fc
+0x70a746f8: f8310010      ldrh r0, [r1, r0, lsl #1]
+
+It doesn't load the length from right register. It's loading from r1 which already added by 16. I wonder why the obj is added by 16, meanwhile in the code, the one that we add is temp instead of obj and I load it from obj (line 4665).
+
+This also happens to the ARM64.
+

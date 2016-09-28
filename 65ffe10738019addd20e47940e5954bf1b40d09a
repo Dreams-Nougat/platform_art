@@ -11,3 +11,13 @@ Do we need to use the expensive PrettyMethod()?
 
 We could put together hashes from the name, argument types and return type without translating "Lpackage/Class;" to package.Class, "I" to "int", etc., and without doing heap allocations for the std::string.
 
+36:35-36:61
+Wed Sep 28 15:33:28 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2029df6_1cfe354e
+UUID: e5c1c7c3_0bb11e4e
+Bytes: 403
+See comment on PS1. I'd rather keep this simple for now. I think we can get a factor of 3 or so faster (just taking Compute...(GetDeclaringClassDescriptor()) takes 10% of this), but we'll still be three orders of magnitude slower. Is a follow-up OK with you?
+
+I want to try Hash(classname) + method_index, which would lose some stability (wrt/ methods in the interface), but should stay at the 10% mark.
+

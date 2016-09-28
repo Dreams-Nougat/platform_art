@@ -32,3 +32,174 @@ UUID: 85656bf7_4903e171
 Bytes: 143
 I haven't looked too closely at the generated code, but isn't it the intermediate address instruction you need to change how it generates code?
 
+File: compiler/optimizing/code_generator_arm64.cc
+
+2081:0-2082:37
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_49c2c14e
+Bytes: 3
+TBZ
+
+2117:0-2118:37
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2554bf0d_06139a72
+Bytes: 3
+TBZ
+
+File: compiler/optimizing/intrinsics_arm.cc
+
+1042
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_49a9a18c
+Bytes: 54
+Use the feature flag to guard everything in this file.
+
+1103:9-1103:14
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 858acbd9_413cf2e5
+Bytes: 72
+You renamed this to temp3 but kept temp1 in the loop at lines 1117-1132.
+
+1104:0-1106:35
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a56eefe7_5a46157c
+Bytes: 445
+The comment is good but you're jumping a to a different implementation anyway. For compressed comparison, we should indeed use the same loop as for uncompressed. All we need to do is pre-process with "length = (length + 1) / 2" and then split the post-processing after the CLZ at line 1140 because the following code needs LSR#3 in instead of LSR#4 (line 1151), BIC#7 instead of BIC#0xf (line 1154) and UXTBs instead of MOVTs (lines 1157, 1158).
+
+1165:0-1166:46
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e549c77c_c768e0af
+Bytes: 77
+You may as well add the "str" and "arg" and use the post-indexed loads below.
+
+1169:0-1170:32
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_4c788f1b
+Bytes: 118
+This comparison should not be repeated inside the loop. It should be done in pre-processing and post-processing steps.
+
+1282:0-1283:24
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6556b716_cb834904
+Bytes: 3
+BIC
+
+1294:2-1294:40
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 658b17e1_e097424b
+Bytes: 241
+Move this just before the loop. Then you don't need the MOV above (line 1293; just use temp1 for CMP at line 1296), or the compression flag removal below (lines 1300-1301; the length is already in temp after removing the MOV from line 1293).
+
+2438:2-2438:32
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4569b3e3_37afb832
+Bytes: 191
+Reorder the things above, so that we don't need to repeat the comparison. (The ADD+ADD+SUBS+BEQ sequence above is completely independent from the src_ptr calculation and can be done earlier.)
+
+File: compiler/optimizing/intrinsics_arm64.cc
+
+1226
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 658b17e1_c3d248f1
+Bytes: 29
+Hide behind the feature flag.
+
+1289:0-1290:35
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 85656bf7_4c1c0fdc
+Bytes: 4
+TBNZ
+
+1293:0-1295:35
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e549c77c_e7babc28
+Bytes: 76
+Use the same loop as uncompressed comparison, with pre- and post-processing.
+
+1467:0-1468:24
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c546836b_265b382d
+Bytes: 3
+AND
+
+1472:2-1472:30
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5850fca_a29b7ec6
+Bytes: 21
+Move before the loop.
+
+1925:2-1925:27
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a56eefe7_fab7e93d
+Bytes: 41
+Reorder code above to avoid repeated CMP.
+
+File: runtime/arch/arm/quick_entrypoints_arm.S
+
+1713
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4569b3e3_97532436
+Bytes: 29
+Hide behind the feature flag.
+
+1718:0-1723:16
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5850fca_82fafad2
+Bytes: 100
+No need to extract the flag if you keep the original value alive. And use BIC to extract the length.
+
+1739:0-1744:16
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a56eefe7_7afaf9d5
+Bytes: 72
+This can be pushed down to individual branches below (as done on ARM64).
+
+File: runtime/arch/arm64/quick_entrypoints_arm64.S
+
+2381
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c546836b_4693d4b3
+Bytes: 29
+Hide behind the feature flag.
+
+2386:0-2391:20
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6556b716_ab0b7584
+Bytes: 100
+No need to extract the flag if you keep the original value alive. And use AND to extract the length.
+
+2477:0-2477:29
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a5850fca_22d68e4b
+Bytes: 27
+.Lstring_indexof_compressed
+
+2481:0-2481:11
+Mon Sep 26 15:51:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a56eefe7_faccc9b7
+Bytes: 32
+.Lstring_indexof_compressed_loop
+

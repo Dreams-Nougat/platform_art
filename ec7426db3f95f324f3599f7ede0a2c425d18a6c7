@@ -1,0 +1,24 @@
+Revision: ec7426db3f95f324f3599f7ede0a2c425d18a6c7
+Patch-set: 29
+File: compiler/optimizing/intrinsics_x86.cc
+
+1799:14-1799:22
+Wed Sep 28 09:36:07 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a2126545_baa87174
+Bytes: 233
+Must not clobber dstBegin. Since we may not have another spare register, we should PUSH EAX, use EAX for the copy and then POP EAX.
+
+Also add a TODO comment to use LODSB/STOSW (not supported by X86Assembler) with AH initialized to 0.
+
+File: compiler/optimizing/intrinsics_x86_64.cc
+
+1947:14-1947:22
+Wed Sep 28 09:36:07 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 222675ad_b68f6828
+Bytes: 129
+Must not clobber dstBegin. Use another temporary.
+
+Add a TODO comment about selecting RAX as the temporary and using LODSB/STOSW.
+

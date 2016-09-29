@@ -1,0 +1,141 @@
+Revision: a076fe7b5eb85d05e06e8eff6a77cd2b568e407a
+Patch-set: 20
+File: compiler/optimizing/intrinsics_arm.cc
+
+1118
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_9f09178d
+Bytes: 201
+Hmm, sharing the loop for compressed and uncompressed compare is actually more complicated than I previously realized. But let's try to get this right. I'll just add comments with the exact code below.
+
+1119:0-1125:31
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_7f640b47
+Bytes: 252
+Replace with
+
+  // For string compression, calculate the number of bytes to compare (not chars).
+  // This could in theory exceed INT32_MAX, so treat temp0 as unsigned.
+  __ cmp(temp4, ShifterOperand(0));
+  __ it(GE);
+  __ add(temp0, temp0, temp0, GE);
+
+1135
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_9f5eb774
+Bytes: 39
+Insert
+
+  Label find_char_diff_2nd_cmp;
+
+1143:0-1143:42
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_5f694f1b
+Bytes: 7
+Remove.
+
+1148:0-1148:28
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_1f73c70f
+Bytes: 51
+Replace with
+
+   __ b(&find_char_diff_2nd_cmp, NE);
+
+1150:0-1152:18
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_df543f5a
+Bytes: 232
+Replace with
+
+  // With string compression, we have compared 8 bytes, otherwise 4 chars.
+  __ subs(temp0, temp0, ShifterOperand(mirror::kUseStringCompression ? 8 : 4));
+  __ b(&loop, HI);  // Treating temp0 as unsigned in all cases.
+
+1154
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_bf617332
+Bytes: 415
+Insert
+
+  __ Bind(&find_char_diff_2nd_cmp);
+  if (mirror::kUseStringCompression) {
+    __ subs(temp0, temp0, 4);  // 4 bytes previously compared.
+    __ b(&end, LS);  // Was the second comparison fully beyond the end?
+  } else {
+    // Without string compression, we can start treating temp0 as signed
+    // and rely on the signed comparison below.
+    __ sub(temp0, temp0, 2);  // 2 chars previously compared.
+  }
+
+1155:21-1155:28
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_7f4d2bc5
+Bytes: 7
+Remove.
+
+1162:23-1162:30
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_5f526f69
+Bytes: 7
+Remove.
+
+1163:6-1163:66
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_5fbf0f7c
+Bytes: 101
+Replace with "without string compression, it could be < 1 if a difference is found by the second CMP"
+
+1166:4-1166:5
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_1f4ce7c5
+Bytes: 38
+Insert: "Without string compression, "
+
+1167
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_ff401b8c
+Bytes: 110
+Insert:
+
+  // With string compression, (temp1 >> 3) = byte where the difference occurs, in the interval [0,3].
+
+1169:27-1169:28
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_df3d5f18
+Bytes: 46
+Replace with "(kUseStringCompression ? 3 : 4)"
+
+1171:0-1172:17
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_9f37d736
+Bytes: 226
+Replace with
+
+  // The comparison is unsigned for string compression, otherwise signed.
+  __ cmp(temp0, ShifterOperand(temp1, LSR, mirror::kUseStringCompression ? 3 : 4));
+  __ b(&end, mirror::kUseStringCompression ? LS : LE);
+
+File: compiler/optimizing/intrinsics_arm64.cc
+
+1306
+Thu Sep 29 19:17:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e2029df6_3fc44308
+Bytes: 68
+Can you "copy" my suggestions from ARM String.compareTo() intrinsic?
+

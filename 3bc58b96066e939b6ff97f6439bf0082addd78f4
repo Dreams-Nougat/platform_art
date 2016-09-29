@@ -11,3 +11,36 @@ What failures did you see without this?
 
 Looking at PrintStream.println(String), I see that it synchronizes on "this".
 
+44:15-44:18
+Thu Sep 29 10:35:59 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 62086d1c_5ba03791
+UUID: e2029df6_1c275572
+Bytes: 949
+See the buildbot failure on fugu email thread:
+
+/b/build/slave/fugu-ndebug/build/art/test/054-uncaught: FAILED!
+ 
+#################### info
+# This is a miscellaneous test that was imported into the new-at-the-time
+# runtime test framework. The test is intended to exercise basic features,
+# and as such cannot be build on top of junit, since failure of such basic
+# features might disrupt junit.
+# 
+# TODO: Real description goes here.
+#################### diffs
+--- expected.txt	2016-06-08 02:36:33.444996010 -0700
++++ output.txt	2016-09-28 17:33:36.089894534 -0700
+@@ -12,8 +12,8 @@
+ Uncaught exception THREAD!
+ java.lang.NullPointerException: Hi diddly-ho, neighborino.
+ 	at Main.catchTheUncaught(Main.java:63)
+-	at Main$Helper.run(Main.java:74)
+-Test 1
++	at Main$Helper.run(Main.java:74)Test 1
++
+ Uncaught exception DEFAULT!
+ java.lang.NullPointerException: Hi diddly-ho, neighborino.
+ 	at Main.catchTheUncaught(Main.java:63)
+####################
+

@@ -9,6 +9,14 @@ UUID: 25283f69_06e9fa0a
 Bytes: 136
 Could you share the code and add a helper that will return you the right LinkerPatch wheter it's boot or not? (ditto for other codegens)
 
+7039:0-7079:5
+Thu Sep 29 12:58:45 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25283f69_06e9fa0a
+UUID: 82172137_798f8787
+Bytes: 47
+I did a different kind of refactoring, see PS8.
+
 File: compiler/optimizing/code_generator_arm.h
 
 627:0-628:32
@@ -18,6 +26,14 @@ UUID: e2029df6_5c783d52
 Bytes: 162
 Could you put the info in HGraph? Or I think you could even pass it to the code generator constructor. Seems silly to realize what we're compiling during codegen.
 
+627:0-628:32
+Thu Sep 29 12:58:45 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e2029df6_5c783d52
+UUID: 62086d1c_9bd36ff6
+Bytes: 97
+Shouldn't we add that information to the CompilerOptions? The codegen already has access to that.
+
 File: compiler/utils/arm/assembler_thumb2.cc
 
 2464:0-2464:35
@@ -26,4 +42,19 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c2ff5921_7b73ff79
 Bytes: 73
 Are you disabling this because it's dead code or because it doesn't work?
+
+2464:0-2464:35
+Thu Sep 29 12:58:45 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c2ff5921_7b73ff79
+UUID: 82172137_f9b95734
+Bytes: 455
+Because it doesn't make sense to emit load literal for a ShifterOperand that specifies a register shift. Load literal is handled above for ad.IsImmediate() if you need it but we're using Fixups for literals anyway.
+
+I was trying to use
+
+    LDR r0, [PC, IP]
+    STR r0, [PC, IP]
+
+and I was getting a SIGILL for the STR, so I looked it up in the manual and there are no such instructions. And then I found this code path that just didn't make sense at all.
 

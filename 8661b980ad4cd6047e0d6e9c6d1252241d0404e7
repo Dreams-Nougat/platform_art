@@ -9,3 +9,18 @@ UUID: 25f59ffe_fef74170
 Bytes: 72
 Should this be 4? boot_class_loader, return_clazz, param_classes, param.
 
+47:19-47:20
+Thu Sep 29 12:12:35 2016 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 25f59ffe_fef74170
+UUID: 452ff370_27427a3a
+Bytes: 256
+It's 5 :
+
+boot_class_loader
+return_class
+param_classes
+param x 2 (~Handle doesn't do anything special - handles allocated by StackHandleScopes remain visible to the GC until ~StackHandleScope.)
+
+I'll change the CHECK on line 40 to be CHECK_LT(, 3u) though.
+

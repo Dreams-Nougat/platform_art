@@ -9,6 +9,14 @@ UUID: e5c1c7c3_d9e6b5a4
 Bytes: 48
 Why not just change JNIEnvExt to take a ObjPtr ?
 
+31
+Thu Sep 29 01:02:18 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5c1c7c3_d9e6b5a4
+UUID: e5c1c7c3_bca80776
+Bytes: 4
+TODO
+
 File: compiler/driver/compiler_driver-inl.h
 
 40
@@ -18,6 +26,14 @@ UUID: e5c1c7c3_19e16d8b
 Bytes: 50
 Why not change ScopedObjectAccess to take ObjPtr ?
 
+40
+Thu Sep 29 01:02:18 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5c1c7c3_19e16d8b
+UUID: e5c1c7c3_f93f3173
+Bytes: 68
+You mean add operator MirrorType? I'd rather not have that operator.
+
 File: runtime/check_jni.cc
 
 277
@@ -26,6 +42,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e5c1c7c3_d98d15e7
 Bytes: 57
 Ideally these would all take ObjPtr instead of an Object*
+
+277
+Thu Sep 29 01:02:18 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5c1c7c3_d98d15e7
+UUID: e5c1c7c3_593125a2
+Bytes: 133
+Yes but I want it to be incremental and not every single place in one CL. I think I can fix up ones like IsValidObjectAddress though.
 
 337
 Wed Sep 28 23:33:13 2016 +0000
@@ -40,6 +64,14 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e5c1c7c3_597ac5c1
 Bytes: 165
 You're probably missing the static operator != which flips rhs/lhs. This should be fixed in object_pointer.h and not by flipping the directions around in the usages.
+
+368
+Thu Sep 29 01:02:18 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5c1c7c3_597ac5c1
+UUID: e5c1c7c3_f9ee11e6
+Bytes: 82
+Yes, is implementing both operators preferred? Eventually we should only need one.
 
 652:6-652:12
 Wed Sep 28 23:33:13 2016 +0000
@@ -60,6 +92,14 @@ Bytes: 34
 why not ObjPtr<mirror::Class> c
 
 ?
+
+127
+Thu Sep 29 01:02:18 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e5c1c7c3_999b9d16
+UUID: e5c1c7c3_fc99df75
+Bytes: 83
+Can I do that in another CL? Otherwise I will end up converting everything at once.
 
 187
 Wed Sep 28 23:33:13 2016 +0000

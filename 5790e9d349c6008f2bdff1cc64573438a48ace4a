@@ -382,6 +382,16 @@ So instead of having the new pass set something that will become invalid right a
 
 Note that having the linear order in the graph is primarily a convenience way of accessing it in liveness/RA/Codegen. We could record the linear order in the codegen class instead.
 
+526:0-526:24
+Fri Sep 30 16:20:41 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 452ff370_c70d1e4e
+UUID: a28505ca_9d47b477
+Bytes: 592
+That would mean that reverse_post_order_ and      linear_order_ become very different. Incrementally keeping the linear_order_ up to date would make them more similar, but i am not sure we want to go there. Also this would mean that some (all?) HXXXXOrderIterator now need to provide a different constructor (want that takes the order, not the graph). And finally, we need a setter on the linear order. Is that really simpler than what I have now?
+
+If you really want to avoid the "getting stale" property, we should do a major refactoring to restrict ownership of orders and their iterators.
+
 File: test/618-checker-induction/src/Main.java
 
 85:0-85:15

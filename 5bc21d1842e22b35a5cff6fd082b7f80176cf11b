@@ -9,3 +9,15 @@ UUID: a28505ca_30580a8b
 Bytes: 441
 I'm always hesitant to encode this level of build system knowledge into module makefiles, because it leaves a ton of places that need cleaning up later when it is changed.  Can you clarify what you need to accomplish here?  Are you actually trying to avoid installing the translated one, or is it using the wrong directory?  Would putting some logic to correctly define a variable for the fake-libs directory in the build solve your problem?
 
+28
+Fri Sep 30 19:54:57 2016 +0000
+Author: Victor Khimenko <1069991@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a28505ca_30580a8b
+UUID: a2318518_22bf4e7d
+Bytes: 431
+It's installed into wrong directory (into fake-libs64 instead of fake-libs) and thus is not found at runtime.
+
+I'm not saying that's good change, I'm open for any suggestions, my goal here is simple: I want to make sure that x86+arm build works in more-or-less the same way pure x86 build works - except now it's possible to build same arm libraries.
+
+This breaks with few packages which assume that TARGET_2ND_ARCH == 64/32 build.
+

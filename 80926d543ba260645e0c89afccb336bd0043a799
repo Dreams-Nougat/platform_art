@@ -9,6 +9,16 @@ UUID: a28505ca_6ba0d8ed
 Bytes: 185
 Any reason we can't use caller->GetDexCache()? I think if there are multiple dex cache using the same oat file it should have multiple copies of the same oat file instead of shared bss.
 
+69
+Mon Oct 03 17:09:39 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a28505ca_6ba0d8ed
+UUID: 62b22dc7_e83b93d1
+Bytes: 350
+Because all the GC roots from the oat file are attributed to the dex cache for the first OatDexFile.
+
+I think this is actually wrong because one could register some dex files for the oat file, omitting the dex file for the first OatDexFile. Then we would not walk the GC roots at all. I'm rewriting this, adding a list of OatFiles to the class table.
+
 90:70-90:80
 Mon Oct 03 16:34:41 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>

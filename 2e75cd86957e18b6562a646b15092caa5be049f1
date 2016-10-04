@@ -9,3 +9,11 @@ UUID: 2204b597_c6f2a2cc
 Bytes: 74
 Should the flip_function be GUARDED_BY(Locks::thread_suspend_count_lock_)?
 
+1008:62-1008:75
+Tue Oct 04 20:28:03 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2204b597_c6f2a2cc
+UUID: 02a09108_0d27711f
+Bytes: 295
+I'd like to avoid it as that would mean mutators would have to contend on the lock when getting the flip function in Thread::TransitionFromRunnableToSuspended(). I think it's safe to get the flip function without acquiring the lock there because flip function is set while threads are suspended.
+

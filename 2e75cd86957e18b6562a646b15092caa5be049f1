@@ -25,3 +25,11 @@ UUID: c21af956_4355a619
 Bytes: 97
 But you are relying on the Locks::thread_suspend_count_lock_ for the visibility here, aren't you?
 
+1008:62-1008:75
+Wed Oct 05 17:46:16 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c21af956_4355a619
+UUID: 02a09108_acbe167d
+Bytes: 310
+I think I am (unless waking up from a futex wait is enough.) It's GUARDED_BY(Locks::thread_suspend_count_lock_) in that sense. But I'd like to not put GUARDED_BY there to avoid needing to acquire the lock in TransitionFromSuspendedToRunnable to satisfy the annotation constraint where I think it's safe not to.
+

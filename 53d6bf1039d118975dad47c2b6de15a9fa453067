@@ -61,3 +61,15 @@ UUID: 7f3c88c0_d454121f
 Bytes: 144
 A lot of places only use mirror::Object and don't need casts. I can delete this since there is already an implicit templated ObjPtr constructor.
 
+29:38-29:56
+Wed Oct 05 20:44:29 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3c88c0_d454121f
+UUID: 7f3c88c0_9a2fd1f6
+Bytes: 399
+Yes, I see the implicit constructor, so we don't need this particular line changed then?
+
+However you should fix ObjPtr::ObjPtr to do a compile-time type check with std::is_base_of, right now it lets you do implicit downcasts which is unsafe.
+
+Downcasting should be the same as the existing mirror downcasting, it should do a runtime check (either regular CHECK or DCHECK) and it should be explicit.
+

@@ -17,3 +17,11 @@ UUID: 02a09108_0d27711f
 Bytes: 295
 I'd like to avoid it as that would mean mutators would have to contend on the lock when getting the flip function in Thread::TransitionFromRunnableToSuspended(). I think it's safe to get the flip function without acquiring the lock there because flip function is set while threads are suspended.
 
+1008:62-1008:75
+Wed Oct 05 14:03:11 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02a09108_0d27711f
+UUID: c21af956_4355a619
+Bytes: 97
+But you are relying on the Locks::thread_suspend_count_lock_ for the visibility here, aren't you?
+

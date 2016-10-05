@@ -33,3 +33,20 @@ UUID: 02a09108_acbe167d
 Bytes: 310
 I think I am (unless waking up from a futex wait is enough.) It's GUARDED_BY(Locks::thread_suspend_count_lock_) in that sense. But I'd like to not put GUARDED_BY there to avoid needing to acquire the lock in TransitionFromSuspendedToRunnable to satisfy the annotation constraint where I think it's safe not to.
 
+1008:62-1008:75
+Wed Oct 05 21:39:20 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 02a09108_acbe167d
+UUID: 9f85bcca_a27dbe3e
+Bytes: 323
+If this can never actually be read concurrently with an update, it should be fine to read it without a lock. Whatever communication is used to wake up a thread after suspension (futex wake presumably), or to let the suspending thread know we are suspended, should provide the required synchronization/visibility guarantees.
+
+File: runtime/thread.h
+
+234:6-234:50
+Wed Oct 05 21:39:20 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9f85bcca_22220eab
+Bytes: 171
+I think we should always document cases in which this lock is temporarily released by the function, since that may break atomicity in the caller. Hopefully that's OK here?
+

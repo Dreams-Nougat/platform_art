@@ -1,0 +1,33 @@
+Revision: 01b9d192a07739d722d68591a2706a128ec8292f
+Patch-set: 3
+File: compiler/optimizing/linear_order.h
+
+33:6-33:30
+Wed Oct 05 17:27:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c21af956_235b4af9
+Bytes: 419
+Let's replace all loops using this iterator with
+
+    for (HBasicBlock* block : MakeIterationRange(order.rbegin(), order.rend())) { ... }
+
+or even define a helper function template ReverseRange() that takes a container by reference, static_assert()s that iterators are bidirectional and returns the range using std::reverse_iterator<>s created from end() and begin(), not relying on the presence of rbegin() and rend().
+
+55:6-55:26
+Wed Oct 05 17:27:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c21af956_e35852ff
+Bytes: 94
+Let's replace all loops using this iterator with
+
+    for (HBasicBlock* block : order) { ... }
+
+File: compiler/optimizing/loop_optimization.cc
+
+136:14-136:15
+Wed Oct 05 17:27:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c21af956_83723e74
+Bytes: 13
+Remove space.
+

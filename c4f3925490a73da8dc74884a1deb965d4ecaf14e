@@ -1,0 +1,31 @@
+Revision: c4f3925490a73da8dc74884a1deb965d4ecaf14e
+Patch-set: 2
+File: runtime/class_linker.cc
+
+3374:16-3374:29
+Thu Oct 06 21:20:46 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfe360ef_af5c01f0
+Bytes: 160
+I think you could just put this into DecodeJObject or have an overload DecodeJObjectAs, it's repeating a lot and it would be shorter/simpler as a single helper.
+
+File: runtime/entrypoints/quick/quick_jni_entrypoints.cc
+
+135
+Thu Oct 06 21:20:46 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfe360ef_2f70f168
+Bytes: 103
+?
+
+Why not just add an implicit constructor for nullptr_t in ObjPtr? Does that still give a type error?
+
+File: runtime/obj_ptr.h
+
+140
+Thu Oct 06 21:20:46 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bfe360ef_2f42b1f8
+Bytes: 102
+Can this do a  DCHECK(IsAssignableFrom) somehow? It always bothered me the old down_cast was not safe.
+

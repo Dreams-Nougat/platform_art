@@ -34,3 +34,11 @@ UUID: 7f3ac856_6ab38b03
 Bytes: 70
 I don't think it makes a difference since word stores are non tearing.
 
+90:11-90:39
+Fri Oct 07 22:51:15 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7f3ac856_6ab38b03
+UUID: 7f3ac856_1090f2fb
+Bytes: 381
+I think this is good enough to prevent the memcpy recognition. But it's not entirely correct, since a perverse, but conforming, compiler could still, for example, load *src_bytes a byte at a time. If those bytes were concurrently updated by a word-sized write, I could still observe "word-tearing", as some byte reads would see the before value, and some could see the after value.
+

@@ -9,6 +9,16 @@ UUID: 3f23f0ed_a799aa80
 Bytes: 40
 This doesn't look more convenient to me.
 
+85:8-85:68
+Fri Oct 07 17:14:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3f23f0ed_a799aa80
+UUID: 7fec880a_a5fb16a4
+Bytes: 226
+Well without the using it becomes a huge mess of "typename JNIMacroAssembler<kPointerSize>::UnaryCondition::kNotZero" 
+
+I agree with the general thought here, I will just move it out of the class so it's not behind a template.
+
 86:2-86:76
 Fri Oct 07 01:54:22 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -87,6 +97,14 @@ UUID: 9fc21c70_fa4d49c9
 Bytes: 58
 Nit: Fit on a single line? (Likewise in other assemblers.)
 
+234:31-236:36
+Fri Oct 07 17:14:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fc21c70_fa4d49c9
+UUID: 7fec880a_05d42210
+Bytes: 78
+This is fine, 1 per line is allowed (and it requires less reformatting later).
+
 File: compiler/utils/arm64/jni_macro_assembler_arm64.cc
 
 642:0-642:32
@@ -140,6 +158,14 @@ I guess these methods are not abstract because not all JNI assemblers implement 
 
 to make sure they're not called?
 
+208:76-208:82
+Fri Oct 07 17:14:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fc21c70_5a267524
+UUID: 7fec880a_a5d2f621
+Bytes: 125
+Maybe I'll just add this to the mips compiler only since I already had to make other changes there to get it to even compile.
+
 210:35-210:44
 Fri Oct 07 01:54:22 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -157,6 +183,13 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9fc21c70_baf59169
 Bytes: 24
 Nit: Indentation is off.
+
+281:6-281:25
+Fri Oct 07 17:14:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7fec880a_45e22af0
+Bytes: 41
+This should be JNIMacroLabelCommon (typo)
 
 File: compiler/utils/x86/jni_macro_assembler_x86.cc
 
@@ -233,6 +266,14 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9fc21c70_3a3ce117
 Bytes: 33
 Factor this with lines 605–616?
+
+627:0-638:3
+Fri Oct 07 17:14:52 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9fc21c70_3a3ce117
+UUID: 7fec880a_65b08ef5
+Bytes: 129
+Going to delete the BinaryCondition one since nothing is using it and kZero/kNotZero aren't even binary conditions to begin with.
 
 646:5-646:8
 Fri Oct 07 01:54:22 2016 +0000

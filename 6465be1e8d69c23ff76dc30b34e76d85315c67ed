@@ -59,6 +59,25 @@ UUID: 1c2b9a7f_0e284b87
 Bytes: 179
 Since we allocate the JIT code and data areas together and within 1GiB, we could use a PC-relative addressing mode on x86-64 if we reserve both data and code area before patching.
 
+288
+Tue Oct 11 22:48:50 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f7aac68_67a36d4c
+Bytes: 811
+As we discussed previously, it would be ideal if we can assert that accessing the literals while the system weak access is disabled wouldn't cause an object to be marked (as they should be already marked) to sanity-check the rationale behind the special JIT literal handling.
+
+But I think it's not easy to assert that because the reader side doesn't have an easy place to put a DCHECK on (the PC-relative load in the compiled code, or requires an extra special read barrier slow path entrypoint for CC).
+
+Does anyone have an idea of how we can assert that or something close to it?
+
+CC has 
+
+    CHECK(self == thread_running_gc_)
+        << "Only GC-running thread should access the mark stack "
+        << "in the GC exclusive mark stack mode";
+
+at least even though it doesn't cover the entire window of time.
+
 299:6-299:36
 Tue Oct 11 22:23:52 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>

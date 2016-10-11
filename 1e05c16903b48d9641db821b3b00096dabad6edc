@@ -1,0 +1,281 @@
+Revision: 1e05c16903b48d9641db821b3b00096dabad6edc
+Patch-set: 3
+File: compiler/optimizing/inliner.cc
+
+281:5-281:62
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c6576f4_c980f1fd
+Bytes: 4
+Why?
+
+264:0-295:17
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c606ae6_aaa6cfa9
+Bytes: 135
+Why is that not just:
+IsAotCompiler() return false;
+IsCompilingOsr() return false;
+return resolved_method->GetSingleImplementation()
+
+?
+
+337:38-337:69
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c6576f4_898af917
+Bytes: 12
+This is odd.
+
+478:15-478:34
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_ae31375a
+Bytes: 73
+Unused? (would make sense given you're not returning the right thing :)).
+
+484:6-484:63
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_0e23ab17
+Bytes: 50
+Isn't a HPArameterValue always in the entry block?
+
+490:11-490:15
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c5bfe40_27933a53
+Bytes: 6
+false?
+
+493:9-493:14
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c547a0d_c624621e
+Bytes: 5
+true?
+
+File: compiler/optimizing/inliner.h
+
+125:5-125:12
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c6576f4_e983b507
+Bytes: 6
+Return
+
+File: compiler/optimizing/nodes.h
+
+670:7-670:20
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c606ae6_8aa30b9a
+Bytes: 10
+ArenasSet.
+
+2852:42-2852:58
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c5bfe40_e7ac028e
+Bytes: 105
+Is that correct? That means they'll be gvn'ed, but it looks to me you can only GVN within suspend points.
+
+File: runtime/art_method.cc
+
+59:1-61:17
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_8e079b7a
+Bytes: 52
+Looks like SetSingleImplementation implemented this>
+
+File: runtime/base/mutex.h
+
+622:16-622:49
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_4e6bf317
+Bytes: 27
+This lock is actually dead.
+
+File: runtime/class_linker.cc
+
+5238:0-5239:31
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c6576f4_499e415b
+Bytes: 92
+Share it with the other call? If you cannot (maybe due to status flag?) please add comments.
+
+5717:1-5717:21
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_6eb8ef91
+Bytes: 26
+Need a high-level comment.
+
+5782:0-5782:56
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc3022eb_6ceb5ba1
+Bytes: 26
+Why do you need a context?
+
+5804:26-5804:31
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c56f215_a8a6dba9
+Bytes: 35
+How about passing super_class here?
+
+5805:0-5805:30
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_8e60bb2e
+Bytes: 89
+nit: I wouldn't pass this, it's only used in DCHECKS that could be done at the call site.
+
+5859:35-5859:38
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dc3022eb_2ccc3361
+Bytes: 5
+drop?
+
+5885:45-5885:59
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_ce56c35e
+Bytes: 14
+implementation
+
+5931:54-5932:35
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_ee429f94
+Bytes: 121
+IsAotCompiler is dex2oat. So this comment is more about "no need to go further, as the AotCompiler doesn't run any code."
+
+5941:8-5941:76
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_ce3fe30c
+Bytes: 51
+Can't you do for (const auto& entry : dependents) ?
+
+8793:44-8793:67
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c6576f4_e9acd58d
+Bytes: 20
+How can that happen?
+
+8803:42-8803:66
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc27a6af_ada6dda9
+Bytes: 5
+ditto
+
+File: runtime/class_linker.h
+
+673:0-685:76
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_0e75ebef
+Bytes: 105
+How about moving CHA related things to its own class, and make it a proper first class entity in Runtime?
+
+1216:12-1216:26
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_ee597f8e
+Bytes: 14
+implementation
+
+1217:0-1218:86
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c421e4d_cfa91d7c
+Bytes: 30
+Should be guarded by cha_lock.
+
+File: runtime/jit/jit_code_cache.cc
+
+355:10-355:46
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c6576f4_a9a6dda9
+Bytes: 53
+You can DCHECK that, the JIT doesn't run for dex2oat.
+
+366:0-386:5
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c606ae6_cadb430c
+Bytes: 47
+How about moving this out of the internal lock?
+
+396:0-398:5
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c56f215_28cc2b61
+Bytes: 5
+ditto
+
+File: runtime/jit/jit_code_cache.h
+
+102:22-102:54
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_2ec2e7ff
+Bytes: 80
+drop that flag and just assume there's none if the implmenetation_list is empty?
+
+103:22-103:84
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c547a0d_466bd217
+Bytes: 5
+const
+
+File: runtime/modifiers.h
+
+70:0-74:86
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_cec8031d
+Bytes: 89
+Could you check somewhere that a single implementation never conflicts with an intrinsic?
+
+File: test/616-cha/src/Main.java
+
+2:17-2:21
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c421e4d_8fa3159a
+Bytes: 4
+2016
+
+85:0-85:57
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc2d2e96_4bc76541
+Bytes: 73
+Add a comment what gets inlined here and would require to be ivnalidated.
+
+118:0-121:5
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1c2b9a7f_aed5b7b2
+Bytes: 8
+comment.
+
+131:0-134:28
+Tue Oct 11 13:10:52 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c56f215_e8b5f3c7
+Bytes: 27
+The boot classpath jitting?
+

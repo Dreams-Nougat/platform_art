@@ -18,6 +18,19 @@ UUID: 1c2b9a7f_6e17cf60
 Bytes: 149
 Sharpening does not currently allow such fallback because it determines the address for kDexCacheAddress before calling GetSupportedLoadStringKind().
 
+File: compiler/optimizing/code_generator_x86_64.cc
+
+5443
+Tue Oct 11 22:23:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f7aac68_9697e196
+Bytes: 84
+Does it make sense to have 
+
+DCHECK(Runtime::Current()->UseJitCompilation());
+
+here?
+
 File: compiler/optimizing/nodes.h
 
 5725:21-5725:47
@@ -46,6 +59,13 @@ UUID: 1c2b9a7f_0e284b87
 Bytes: 179
 Since we allocate the JIT code and data areas together and within 1GiB, we could use a PC-relative addressing mode on x86-64 if we reserve both data and code area before patching.
 
+299:6-299:36
+Tue Oct 11 22:23:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1f7aac68_d62cf9a1
+Bytes: 113
+Can we put a comment why this DCHECK holds? Because the strings are always strongly-interned and should be alive?
+
 File: runtime/runtime.cc
 
 488:0-490:3
@@ -54,4 +74,18 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1f7aac68_7030909c
 Bytes: 164
 Please add code comments here (or elsewhere) why you think it's OK to not follow the full system-weak setup (which requires access to be blocked in certain phases).
+
+488:0-490:3
+Tue Oct 11 22:23:52 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_7030909c
+UUID: 1f7aac68_2c76bcfb
+Bytes: 991
+I think the rationale that we discussed on why we don't currently need to block access to the literal tables is the following:
+
+The literal classes and strings must be strongly-reachable (from the class loader and from the intern table) and marked by the time the system weaks handling happens. So, it's fine to access the literal system weaks (without getting blocked) while the system weaks handling is ongoing because accessing them doesn't change the liveness of the objects and allows the marking to be safely terminated. In general, accessing a system weak may revive an otherwise dead object into a live object, which would interfere with the termination of marking.
+
+The only exception is the class unloading case for literal classes. But when the literal classes become unreachable as a result of class unloading, we won't be accessing the literal classes because the JIT'ed code that accesses them must not be running at that point because of the class unloading.
+
+Is this correct?
 

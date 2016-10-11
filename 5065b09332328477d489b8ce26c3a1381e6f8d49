@@ -9,10 +9,26 @@ UUID: ff9f98ca_53a3dc99
 Bytes: 98
 Why would this matter if it was compiled with clang or not? The ABI should be the same regardless.
 
+2149:0-2152:36
+Tue Oct 11 13:22:59 2016 +0000
+Author: Goran Jakovljevic <1067943@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff9f98ca_53a3dc99
+UUID: 7f0f28e3_39154f4a
+Bytes: 445
+Thing is that gcc doesn't move variables i7 and i8 from their original locations on stack when it uses them here and clang does. In both cases ABI is the same, but after that, they differ. When compiled with gcc, this test exercise what we wanted (that 4-bytes stack arguments are properly sign extended). On the other hand, clang moves 4-byte arguments in different locations where it is not obligated to do sign-extension, and this test fails.
+
 2167:15-2167:34
 Mon Oct 10 17:17:17 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ff9f98ca_50bab2d5
 Bytes: 56
 Was CURRENT_JNI_WRAPPER the reason this was not working?
+
+2167:15-2167:34
+Tue Oct 11 13:22:59 2016 +0000
+Author: Goran Jakovljevic <1067943@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ff9f98ca_50bab2d5
+UUID: 1ff54cfe_9e2c3da1
+Bytes: 25
+No. See previous comment.
 

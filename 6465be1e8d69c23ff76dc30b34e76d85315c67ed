@@ -49,6 +49,14 @@ UUID: fc27a6af_4df09989
 Bytes: 146
 I don't think this needs an environment, we're using it only when the string is already resolved and then we don't have the slow path with a call.
 
+5725:21-5725:47
+Wed Oct 12 12:41:25 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc27a6af_4df09989
+UUID: 5c37d20c_208f4ae1
+Bytes: 113
+Yup, that's what the code here is doing: return false to NeedsEnvironment if the load kind is kJitTableAddress :)
+
 File: compiler/optimizing/optimizing_compiler.cc
 
 1142:0-1144:98
@@ -59,6 +67,16 @@ Bytes: 116
 Can we avoid this temporary storage? For example by writing directly to the literal_data?
 (Note: Missing OOM check.)
 
+1142:0-1144:98
+Wed Oct 12 12:41:25 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_ee217fbd
+UUID: 5c37d20c_e0eba267
+Bytes: 463
+We cannot avoid the temporary storage for now (I'll add a comment). The literal_data will only be visited by GC once the OatQuickMethodHeader is registered within the jit code cache. That only happens during CommitCode (called in this method line 1160).
+
+We can think of how to turn this around, and make the literal_data allocation visible to the GC in a safe way with regards to the jit code cache collection. But I think such a change would deserve its own CL.
+
 File: runtime/jit/jit_code_cache.cc
 
 83:2-83:68
@@ -67,6 +85,18 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_0e284b87
 Bytes: 179
 Since we allocate the JIT code and data areas together and within 1GiB, we could use a PC-relative addressing mode on x86-64 if we reserve both data and code area before patching.
+
+83:2-83:68
+Wed Oct 12 12:41:25 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_0e284b87
+UUID: 5c37d20c_809456f2
+Bytes: 256
+Good point.
+
+Problem is reserving the code area before patching implies more ScopedCodeCacheWrite windows. Or a refactoring of the code generators to understand there's one buffer where things are emitted, and one final buffer.
+
+I'll add that as a comment.
 
 288
 Tue Oct 11 22:48:50 2016 +0000
@@ -132,4 +162,12 @@ Parent: 1f7aac68_ecd84448
 UUID: 1f7aac68_c770c134
 Bytes: 62
 I think we should add a comment about the rationale somewhere.
+
+488:0-490:3
+Wed Oct 12 12:41:25 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_c770c134
+UUID: 5c37d20c_60995226
+Bytes: 50
+Will do. Note that this is still under discussion.
 

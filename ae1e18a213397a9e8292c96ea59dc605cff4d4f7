@@ -9,6 +9,16 @@ UUID: dc63c225_14025470
 Bytes: 95
 I'd move this to AttachAgent, to also explain why you're not guarding the agent list by a lock.
 
+502:0-503:70
+Wed Oct 12 18:03:09 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc63c225_14025470
+UUID: 9c286ac7_f33c021a
+Bytes: 314
+Thanks, I'll move the comment. This change is just the basic plumbing and we'll need to revisit the threading model for agents before starting to sprinkle locks around, thus the TODO comment.
+
+Note that the attaching is not going to be fully functional until we sort out the experiments/jvmti plugin story as well.
+
 File: runtime/parsed_options.cc
 
 617:9-617:14
@@ -18,12 +28,28 @@ UUID: 5c37d20c_e08442c0
 Bytes: 6
 const?
 
+617:9-617:14
+Wed Oct 12 18:03:09 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_e08442c0
+UUID: 9c286ac7_936ca6fc
+Bytes: 4
+Done
+
 624:9-624:15
 Wed Oct 12 12:59:01 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7cc1f61c_e956355e
 Bytes: 6
 const?
+
+624:9-624:15
+Wed Oct 12 18:03:09 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7cc1f61c_e956355e
+UUID: 9c286ac7_f379a2b8
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -34,6 +60,16 @@ UUID: 5c37d20c_c0a65e5d
 Bytes: 43
 Why? Shouldn't you just throw an exception?
 
+1313:0-1314:22
+Wed Oct 12 18:03:09 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_c0a65e5d
+UUID: 9c286ac7_933946db
+Bytes: 266
+If an agent initialization fails, which should be a rare situation, we might be in an inconsistent state and fast-failing seems a better option than propagating an exception.
+
+The existing agent load path does the same thing (see the startup agents path right above)
+
 File: runtime/ti/agent.h
 
 89:25-90:39
@@ -42,4 +78,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_a0a35a4b
 Bytes: 29
 out arguments should be last.
+
+89:25-90:39
+Wed Oct 12 18:03:09 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_a0a35a4b
+UUID: 9c286ac7_d333bef6
+Bytes: 4
+Done
 

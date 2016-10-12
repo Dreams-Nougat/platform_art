@@ -36,6 +36,16 @@ Devirtualization introduces a deoptimization point which has its overhead. So it
 
 I tried to be conservative here. If we want to take the overhead of a deoptimization point, say in return for inlining a few accessors, we can do so. A deoptimization point can hold some registers live plus a slow path, on the other hand inlining accessors can reduce code size, and can avoid doing things like caller-saves. So we can certainly be more aggressive.
 
+281:5-281:62
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_7dc3089f
+UUID: 3cb77eb7_87d8c610
+Bytes: 388
+Ok, I see. I think this needs to be separated from this CHA change. Basically for such invokes we want everything that dominates it up until the branching point to be dead and do a HDeoptimize.
+
+So IMO it's fine for now if you add this CHA HDeoptimize at the call site. You're only going to add the HDeoptimize if you inline, and we assume what we decide on inlining is always beneficial.
+
 264:0-295:17
 Tue Oct 11 13:10:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -71,6 +81,16 @@ UUID: 1f7aac68_9ddf0428
 Bytes: 120
 Maybe I should just pass true here? Just changed it back to true as in old code. Please let me know if that's not right.
 
+337:38-337:69
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_9ddf0428
+UUID: 5c37d20c_c0b5bec8
+Bytes: 266
+One needs to do the rtp. The place where we pass false is because the rtp is done afterwards. So here, yes, you need to pass true.
+
+Maybe we should clean this up and remove the flag. Just explicitly do the rtp, there are only 2 callers of TryInlineAndReplace anyway.
+
 478:15-478:34
 Tue Oct 11 13:10:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -85,6 +105,14 @@ Parent: 1c2b9a7f_ae31375a
 UUID: 1f7aac68_ddaa5c84
 Bytes: 183
 I originally called it CanCHAGuardBeEliminated(). So that's why it's all opposite now. I also deleted the line that called it. I just fixed the logic and added back the calling place.
+
+478:15-478:34
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_ddaa5c84
+UUID: 5c37d20c_a0b23adc
+Bytes: 66
+Mind doing it in another CL? So this CL only focuses on basic CHA?
 
 484:6-484:63
 Tue Oct 11 13:10:52 2016 +0000
@@ -102,6 +130,14 @@ Bytes: 402
 I wanted to make sure it's a parameter of the outermost_graph since the pre-existence condition is only true for that method. I'll add some comment.
 
 Maybe we should just do guard elimination after all inlining is done, say in the final simplifying pass. The guard needs to know receiver though which is lost after inlining. This is a place where we can easily prune out some parameter receiver guards.
+
+484:6-484:63
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_407f3faf
+UUID: 5c37d20c_40eb6ea0
+Bytes: 144
+So an HGraph has only HParameterValue for itself. Inlined methods don't add HParameterValue, they just get replaced with their actual arguments.
 
 490:11-490:15
 Tue Oct 11 13:10:52 2016 +0000
@@ -196,6 +232,16 @@ Parent: 3c5bfe40_e7ac028e
 UUID: 1f7aac68_8004f726
 Bytes: 136
 CanBeMoved() is not overridden and still returns false so it should not be gvn'ed. It doesn't write to heap so there is no side effects.
+
+2852:42-2852:58
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_8004f726
+UUID: 5cb272c6_08938752
+Bytes: 189
+I think you can do CanBeMoved and the side effects only depend on GC.
+
+But let's do that in another change. Can you at least put the CanBeMoved()  { return false; } here, and add a comment?
 
 File: runtime/art_method.cc
 
@@ -511,6 +557,16 @@ UUID: 1f7aac68_13fbe35d
 Bytes: 255
 This flag isn't needed if all CHA guards can be eliminated. So there is no need to init the flag at frame entry. The dependency however still needs to be registered. So the two values may diverge later after we implement fully the guard elimination logic.
 
+102:22-102:54
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_13fbe35d
+UUID: 5c37d20c_20f0ea88
+Bytes: 255
+Ah yes, so the dependency makes sure even if we manage to eliminate the CHA guard, we will need to update the entrypoint of the method to not call the wronly optimize method. Correct?
+
+Could you please add a comment for this method about this distinction?
+
 103:22-103:84
 Tue Oct 11 13:10:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -559,6 +615,14 @@ Parent: 1f7aac68_eb7af110
 UUID: 1f7aac68_932a9395
 Bytes: 145
 We just need 4 bytes for our purpose regardless of architecture. Frame size calculation will automatically do alignment for the final frame size.
+
+70
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_932a9395
+UUID: 5c37d20c_80e576cd
+Bytes: 26
+I'd add that as a comment.
 
 File: test/616-cha/src/Main.java
 

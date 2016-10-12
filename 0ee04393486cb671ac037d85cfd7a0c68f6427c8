@@ -1,0 +1,59 @@
+Revision: 0ee04393486cb671ac037d85cfd7a0c68f6427c8
+Patch-set: 4
+File: runtime/class_linker.cc
+
+5185:0-5185:60
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c37d20c_60eaf29a
+Bytes: 25
+Can you also explain why?
+
+5946:19-5946:23
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c37d20c_c0de5efe
+Bytes: 6
+auto&?
+
+File: runtime/jit/jit_code_cache.cc
+
+369:4-388:5
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c37d20c_a0db5a0c
+Bytes: 83
+I think you can scope the cha_lock? And release it before taking the internal lock?
+
+File: runtime/modifiers.h
+
+111:0-111:78
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c37d20c_00d96613
+Bytes: 188
+Actually, the intrinsic flag is misleading as it will take the last few bits to store the intrinsic id. So you'd need to static_assert with kAccFlagsNotUsedByIntrinsic or kAccMaxIntrinsic.
+
+File: test/616-cha/src/Main.java
+
+83:0-83:62
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c37d20c_20190ae9
+Bytes: 48
+Also add a comment why you want to be suspended?
+
+127:0-131:5
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c37d20c_e0d562d9
+Bytes: 62
+We have ensureJitted shared across tests, you should use this.
+
+141:3-144:28
+Wed Oct 12 09:14:10 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5c37d20c_40140eb3
+Bytes: 75
+Drop, ensureJitted will ensure the methods you're interested in are jitted.
+

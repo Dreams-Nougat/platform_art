@@ -18,6 +18,14 @@ UUID: 5c37d20c_e0d282c7
 Bytes: 111
 Could we drop this class? It looks like the test NoStackHandleScope could actually extend FixedSizeHandleScope?
 
+91:16-91:27
+Wed Oct 12 17:02:01 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_e0d282c7
+UUID: 9c286ac7_6d0031df
+Bytes: 88
+It is still used a few places like jni compiler / stack walking. OK to leave it for now?
+
 278:66-278:82
 Wed Oct 12 12:30:54 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +33,28 @@ UUID: 5c37d20c_80dbb6df
 Bytes: 20
 FixedSizeHandleScope
 
+278:66-278:82
+Wed Oct 12 17:02:01 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_80dbb6df
+UUID: 9c286ac7_4d056ded
+Bytes: 4
+Done
+
 302:51-302:52
 Wed Oct 12 12:30:54 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_60e0328a
 Bytes: 48
 Am fine with it but any reason for the increase?
+
+302:51-302:52
+Wed Oct 12 17:02:01 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_60e0328a
+UUID: 9c286ac7_edf381f7
+Bytes: 24
+I'll lower it back down.
 
 File: runtime/handle_scope_test.cc
 
@@ -41,10 +65,36 @@ UUID: 5c37d20c_40e1ae8f
 Bytes: 14
 handle scopes.
 
+76:40-76:53
+Wed Oct 12 17:02:01 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_40e1ae8f
+UUID: 9c286ac7_6d6b117f
+Bytes: 4
+Done
+
 84:22-84:27
 Wed Oct 12 12:30:54 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1cb0fabd_a684e6be
 Bytes: 129
 Could you make this destruct after `hs`? It will be a more interesting test. The current setup should have worked before as well.
+
+84:22-84:27
+Wed Oct 12 17:02:01 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1cb0fabd_a684e6be
+UUID: 9c286ac7_2d71196f
+Bytes: 267
+Actually, it should not have worked before since we do:
+hs.Add
+
+inner.Add
+
+hs.Add (100+ times).
+
+It would make a chain like: hs -> inner -> hs -> hs ...
+but it would free in this order: inner -> hs -> hs ...
+
+If inner is the outer one, it would have work fine before.
 

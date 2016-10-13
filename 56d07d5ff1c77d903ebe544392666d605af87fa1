@@ -46,3 +46,11 @@ Bytes: 469
 
 The only AssertNoThreadSuspension here is one that covers the creation of a shadow frame, and that's present in all other places where the SF is created as well.)
 
+773:0-775:46
+Thu Oct 13 22:25:13 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_a35884f9
+UUID: dc63c225_341af02e
+Bytes: 252
+I actually think you don't need it. The other places use AssertNoThreadSuspension because they are holding references in some native arrays. This is not the case for this code, where the arguments to put to the ShadowFrame are from another ShadowFrame.
+

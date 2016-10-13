@@ -9,12 +9,28 @@ UUID: 5c37d20c_60eaf29a
 Bytes: 25
 Can you also explain why?
 
+5185:0-5185:60
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_60eaf29a
+UUID: bcbc4ecf_bcdb650c
+Bytes: 76
+Ok, just added some comments about doing it before instantiation is allowed.
+
 5946:19-5946:23
 Wed Oct 12 09:14:10 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_c0de5efe
 Bytes: 6
 auto&?
+
+5946:19-5946:23
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_c0de5efe
+UUID: bcbc4ecf_3c02f570
+Bytes: 4
+Done
 
 File: runtime/jit/jit_code_cache.cc
 
@@ -25,6 +41,14 @@ UUID: 5c37d20c_a0db5a0c
 Bytes: 83
 I think you can scope the cha_lock? And release it before taking the internal lock?
 
+369:4-388:5
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_a0db5a0c
+UUID: bcbc4ecf_3c6bd518
+Bytes: 226
+Registering dependency and setting method entrypoint/osr map has to be both under cha_lock. Otherwise some class linking can invalidate the dependents, but then JIT will still set the entry point below. I'll add some comments.
+
 File: runtime/modifiers.h
 
 111:0-111:78
@@ -33,6 +57,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_00d96613
 Bytes: 188
 Actually, the intrinsic flag is misleading as it will take the last few bits to store the intrinsic id. So you'd need to static_assert with kAccFlagsNotUsedByIntrinsic or kAccMaxIntrinsic.
+
+111:0-111:78
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_00d96613
+UUID: bcbc4ecf_bc39a5da
+Bytes: 115
+Looks like I can't use my flag now? There are also other conflicts like kAccMustCountLocks, etc. How do I solve it?
 
 File: test/616-cha/src/Main.java
 
@@ -43,6 +75,14 @@ UUID: 5c37d20c_20190ae9
 Bytes: 48
 Also add a comment why you want to be suspended?
 
+83:0-83:62
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_20190ae9
+UUID: bcbc4ecf_3cdf5060
+Bytes: 62
+added "so we can test suspending and deopting another thread".
+
 127:0-131:5
 Wed Oct 12 09:14:10 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -50,10 +90,26 @@ UUID: 5c37d20c_e0d562d9
 Bytes: 62
 We have ensureJitted shared across tests, you should use this.
 
+127:0-131:5
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_e0d562d9
+UUID: bcbc4ecf_bc84404a
+Bytes: 20
+Great to know. Done.
+
 141:3-144:28
 Wed Oct 12 09:14:10 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_40140eb3
 Bytes: 75
 Drop, ensureJitted will ensure the methods you're interested in are jitted.
+
+141:3-144:28
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_40140eb3
+UUID: bcbc4ecf_dc81fc38
+Bytes: 4
+Done
 

@@ -18,6 +18,38 @@ UUID: 5c37d20c_a3a9a47c
 Bytes: 1
 2
 
+File: compiler/jni/quick/jni_compiler.cc
+
+326
+Thu Oct 13 17:24:18 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bcafeeab_7b9b7f77
+Bytes: 152
+@ngeoffray:
+
+> Could you point to the code that was broken before?
+
+See this? We set FastStart here regardless of whether or not it returns a reference.
+
+525
+Thu Oct 13 17:24:18 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bcafeeab_3ea725a9
+Bytes: 792
+@ngeoffray:
+
+> Could you point to the code that was broken before?
+
+And here we weren't setting a FastEnd if there were references being returned.
+
+Right. Now if we look at the JNI entrypoint code, a FastStart skips the state transition, but a regular End does not.
+
+In the bug referenced in the commit message, the problem is that we get a LOG(FATAL) when we try to do a state transition from suspended to runnable but we're already runnable.
+
+I initially was setting the FastNative flags lazily so this *just worked* correctly (in End it would've checked it dynamically and skip the state transition) but at some point changed it and never got around to fixing the entrypoints.
+
+I mentioned this on the slides from Tues by the way, just didn't expect to hit this in a real bug the next day.
+
 File: runtime/thread.h
 
 1505:0-1510:32
@@ -44,4 +76,12 @@ Parent: bcbc4ecf_df564e5e
 UUID: fcac0670_eba3854a
 Bytes: 37
 Do we have a static_assert somewhere?
+
+1505:0-1510:32
+Thu Oct 13 17:24:18 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcac0670_eba3854a
+UUID: bcafeeab_1e2fc9f6
+Bytes: 137
+runtime/arch/arm/quick_entrypoints_arm.S:#error "Thread::thread_local_pos/end must be consecutive and are 8 byte aligned for performance"
 

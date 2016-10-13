@@ -46,6 +46,14 @@ Ok, I see. I think this needs to be separated from this CHA change. Basically fo
 
 So IMO it's fine for now if you add this CHA HDeoptimize at the call site. You're only going to add the HDeoptimize if you inline, and we assume what we decide on inlining is always beneficial.
 
+281:5-281:62
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cb77eb7_87d8c610
+UUID: bcbc4ecf_59a183a5
+Bytes: 64
+Ok, I just changed to always do it regardless of profiling info.
+
 264:0-295:17
 Tue Oct 11 13:10:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -114,6 +122,14 @@ UUID: 5c37d20c_a0b23adc
 Bytes: 66
 Mind doing it in another CL? So this CL only focuses on basic CHA?
 
+478:15-478:34
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_a0b23adc
+UUID: bcbc4ecf_1c99b971
+Bytes: 21
+Ok, just took it out.
+
 484:6-484:63
 Tue Oct 11 13:10:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -138,6 +154,15 @@ Parent: 1f7aac68_407f3faf
 UUID: 5c37d20c_40eb6ea0
 Bytes: 144
 So an HGraph has only HParameterValue for itself. Inlined methods don't add HParameterValue, they just get replaced with their actual arguments.
+
+484:6-484:63
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_40eb6ea0
+UUID: bcbc4ecf_dca661ab
+Bytes: 158
+That's for the final graph. It's still possible for a parameter to be on callee_graph?
+Anyway, I'll do the elimination in a separate CL so we can do it right.
 
 490:11-490:15
 Tue Oct 11 13:10:52 2016 +0000
@@ -242,6 +267,14 @@ Bytes: 189
 I think you can do CanBeMoved and the side effects only depend on GC.
 
 But let's do that in another change. Can you at least put the CanBeMoved()  { return false; } here, and add a comment?
+
+2852:42-2852:58
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cb272c6_08938752
+UUID: bcbc4ecf_bcb285dc
+Bytes: 4
+Done
 
 File: runtime/art_method.cc
 
@@ -567,6 +600,14 @@ Ah yes, so the dependency makes sure even if we manage to eliminate the CHA guar
 
 Could you please add a comment for this method about this distinction?
 
+102:22-102:54
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_20f0ea88
+UUID: bcbc4ecf_5c66d120
+Bytes: 15
+Added comments.
+
 103:22-103:84
 Tue Oct 11 13:10:52 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -623,6 +664,14 @@ Parent: 1f7aac68_932a9395
 UUID: 5c37d20c_80e576cd
 Bytes: 26
 I'd add that as a comment.
+
+70
+Thu Oct 13 10:56:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1f7aac68_932a9395
+UUID: bcbc4ecf_3c575500
+Bytes: 4
+Done
 
 File: test/616-cha/src/Main.java
 

@@ -58,6 +58,21 @@ UUID: dc63c225_d47bbc45
 Bytes: 159
 Oh tricky. Things being spread here doesn't really help. You could consider a refactoring where the decisions of which entry points to use are closer together.
 
+525
+Thu Oct 13 22:38:12 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc63c225_d47bbc45
+UUID: fc73265a_109b2ac6
+Bytes: 312
+I could factor those out into a helper function something like this
+
+  template <PointerSize kPointerSize>
+  ThreadOffset<kPointerSize> GetJniEntrypointOffset(bool is_fast, bool start_or_end, bool reference_return, bool synchronized) {
+    // giant if-else here
+  }
+
+If that would be an appropriately better way?
+
 File: runtime/thread.h
 
 1505:0-1510:32

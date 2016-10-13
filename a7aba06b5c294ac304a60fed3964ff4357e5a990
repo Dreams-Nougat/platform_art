@@ -1,0 +1,13 @@
+Revision: a7aba06b5c294ac304a60fed3964ff4357e5a990
+Patch-set: 7
+File: runtime/interpreter/interpreter_common.cc
+
+767:0-772:77
+Thu Oct 13 22:25:13 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5cb272c6_28fbeba4
+Bytes: 276
+I don't think this will work. You need to use ScopedStackedShadowFramePusher to make sure the GC will see the shadow frame under construction when this code is being suspended during PerformArgumentConverstions.
+
+And confirming: you don't need the no suspension asserts above.
+

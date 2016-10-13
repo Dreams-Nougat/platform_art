@@ -9,12 +9,30 @@ UUID: 1c2b9a7f_4e61b306
 Bytes: 145
 Why not implementing and using CodeGeneratorARMVIXL::SaveFloatingPointRegister here?  Or maybe this is included in the TODO from lines 100–101?
 
+110:0-111:43
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_4e61b306
+UUID: 7cc1f61c_c97d71b7
+Bytes: 346
+StoreSToOffset is one of the helpers we recently discussed removing in a (near) future patch because there are options in VIXL (like Vstr, in this case) that negate their utility.
+
+This is, I think, the exception in this initial patch where we've just used VIXL directly instead of trying to minimize the diff between this and code_generator_arm.
+
 114:0-115:37
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_2e666720
 Bytes: 6
 Ditto.
+
+114:0-115:37
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_2e666720
+UUID: 1cb0fabd_065cda1e
+Bytes: 39
+As above. Vstr does everything we need.
 
 144:0-145:37
 Wed Oct 12 13:42:21 2016 +0000
@@ -23,12 +41,28 @@ UUID: 7c6576f4_89bc39b0
 Bytes: 6
 Ditto.
 
+144:0-145:37
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c6576f4_89bc39b0
+UUID: dc63c225_54c7ac0e
+Bytes: 9
+As above.
+
 159:0-160:43
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_ce6c83fd
 Bytes: 75
 Same question regarding CodeGeneratorARMVIXL::RestoreFloatingPointRegister.
+
+159:0-160:43
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_ce6c83fd
+UUID: bcc9ae46_4b450570
+Bytes: 68
+As above, Vldr does everything RestoreFloatingPointRegister used to.
 
 163:0-164:37
 Wed Oct 12 13:42:21 2016 +0000
@@ -37,12 +71,28 @@ UUID: dc3022eb_8c2e87f8
 Bytes: 6
 Ditto.
 
+163:0-164:37
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc3022eb_8c2e87f8
+UUID: 9c314a19_8200dadf
+Bytes: 9
+As above.
+
 193:0-194:37
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c421e4d_6feb51a1
 Bytes: 39
 Isn't this already covered by line 192?
+
+193:0-194:37
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c421e4d_6feb51a1
+UUID: bcc9ae46_6b4a4181
+Bytes: 12
+Yes, thanks!
 
 200:0-201:73
 Wed Oct 12 13:42:21 2016 +0000
@@ -51,12 +101,30 @@ UUID: 1c2b9a7f_0e3debde
 Bytes: 27
 Nit: Fits on a single line.
 
+200:0-201:73
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_0e3debde
+UUID: fcac0670_e8b2abdd
+Bytes: 4
+Done
+
 250:11-250:58
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_ce1ec37d
 Bytes: 139
 Out of curiosity, how do you plan to do this?  Are you thinking about exercising this in a test, or maybe instrumenting the generated code?
+
+250:11-250:58
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_ce1ec37d
+UUID: 5c37d20c_c0365e9b
+Bytes: 245
+I think we would try to exercise this in a test.
+
+We will track it as part our "parity with current backend" effort (made up of essentially everything marked TODO(VIXL), which I have added here. in addition to performance and related profiling).
 
 351:0-354:42
 Wed Oct 12 13:42:21 2016 +0000
@@ -65,12 +133,28 @@ UUID: 1c2b9a7f_8e28bb9d
 Bytes: 27
 Nit: Fits on a single line.
 
+351:0-354:42
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_8e28bb9d
+UUID: 5c37d20c_006686bb
+Bytes: 4
+Done
+
 684:0-686:66
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_ee13bf65
 Bytes: 27
 Nit: Fits on a single line.
+
+684:0-686:66
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_ee13bf65
+UUID: 5c37d20c_e06282a5
+Bytes: 4
+Done
 
 752:79-752:83
 Wed Oct 12 13:42:21 2016 +0000
@@ -83,12 +167,28 @@ Nit:
 
 Also, put this argument on its own line.
 
+752:79-752:83
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_ce42433c
+UUID: 5c37d20c_4071ae6d
+Bytes: 4
+Done
+
 788:58-788:65
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_8e4c3b6e
 Bytes: 28
 Was this left intentionally?
+
+788:58-788:65
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_8e4c3b6e
+UUID: 5c37d20c_20762a67
+Bytes: 20
+No, it's not needed.
 
 806:2-806:8
 Wed Oct 12 13:42:21 2016 +0000
@@ -97,12 +197,28 @@ UUID: dc3022eb_6c00fb10
 Bytes: 19
 Nit: Use DCHECK_EQ.
 
+806:2-806:8
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc3022eb_6c00fb10
+UUID: 5c37d20c_806bb67d
+Bytes: 4
+Done
+
 824:49-824:70
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_6e7b4f7f
 Bytes: 35
 Doesn't this need ATTRIBUTE_UNUSED?
+
+824:49-824:70
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_6e7b4f7f
+UUID: 7cc1f61c_e97ab5bc
+Bytes: 65
+Yes. And I thought missing that would cause a compilation error..
 
 825:29-825:35
 Wed Oct 12 13:42:21 2016 +0000
@@ -111,12 +227,28 @@ UUID: 1c2b9a7f_0e7a8b77
 Bytes: 6
 Ditto?
 
+825:29-825:35
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_0e7a8b77
+UUID: 1cb0fabd_467bb27e
+Bytes: 4
+Done
+
 830:4-830:5
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_4e809367
 Bytes: 7
 Nit: 0u
+
+830:4-830:5
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_4e809367
+UUID: 5c37d20c_a0819a39
+Bytes: 4
+Done
 
 831:4-831:5
 Wed Oct 12 13:42:21 2016 +0000
@@ -125,12 +257,28 @@ UUID: 1c2b9a7f_2e754789
 Bytes: 6
 Ditto.
 
+831:4-831:5
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_2e754789
+UUID: 5c37d20c_007fa635
+Bytes: 4
+Done
+
 914:9-914:13
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c56f215_e8429394
 Bytes: 101
 So, I assume VIXL now deduces the width of the operation (F32 or F64) from the inputs and/or outputs?
+
+914:9-914:13
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c56f215_e8429394
+UUID: 5c37d20c_401a4e2f
+Bytes: 133
+Yes. And not just Vcmp. You can take a look at the last VIXL release to see other members of the FP interface that benefit from this.
 
 2614:32-2614:45
 Wed Oct 12 13:42:21 2016 +0000
@@ -139,12 +287,28 @@ UUID: 5c37d20c_40b36e9f
 Bytes: 27
 Nit: One argument per line.
 
+2614:32-2614:45
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_40b36e9f
+UUID: 1cb0fabd_267a3678
+Bytes: 4
+Done
+
 2640:32-2640:45
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_20b8ea77
 Bytes: 6
 Ditto.
+
+2640:32-2640:45
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_20b8ea77
+UUID: 5cb272c6_c8a6cf5d
+Bytes: 4
+Done
 
 2814:19-2814:70
 Wed Oct 12 13:42:21 2016 +0000
@@ -153,12 +317,30 @@ UUID: 5c37d20c_8066161e
 Bytes: 157
 The implicit null checks above are only done for the reference (line 2763) and double (line 2795) cases; the null check from line 2815 addresses other cases.
 
+2814:19-2814:70
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_8066161e
+UUID: 9ccdca7b_82239a15
+Bytes: 4
+Done
+
 3123:51-3123:55
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_402eceb1
 Bytes: 42
 Should this be temporarily set to `false`?
+
+3123:51-3123:55
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_402eceb1
+UUID: 5c37d20c_60295244
+Bytes: 161
+Technically, yes.
+
+Elsewhere, we have left the empty `if (kReadBarrier..)` paths in place as stubs for supporting them later. What do you think to this approach?
 
 3145:0-3147:45
 Wed Oct 12 13:42:21 2016 +0000
@@ -167,12 +349,28 @@ UUID: 7cc1f61c_e93f150c
 Bytes: 27
 Nit: Fits on a single line.
 
+3145:0-3147:45
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7cc1f61c_e93f150c
+UUID: bcc9ae46_eb55d11a
+Bytes: 4
+Done
+
 3175:0-3178:60
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5c37d20c_c0213ebe
 Bytes: 11
 Nit: Ditto.
+
+3175:0-3178:60
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_c0213ebe
+UUID: 1cb0fabd_c66ec2bc
+Bytes: 4
+Done
 
 3285
 Wed Oct 12 13:42:21 2016 +0000
@@ -187,6 +385,14 @@ Maybe add:
 
 ?
 
+3285
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c37d20c_002cc6b0
+UUID: fcac0670_48141fb3
+Bytes: 4
+Done
+
 3288:6-3288:49
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -194,12 +400,28 @@ UUID: bca28e7a_a39dba08
 Bytes: 27
 Nit: One argument per line.
 
+3288:6-3288:49
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bca28e7a_a39dba08
+UUID: 7cc1f61c_898779c3
+Bytes: 4
+Done
+
 3318
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cb77eb7_e71e627d
 Bytes: 30
 Nit: Remove blank line (3318).
+
+3318
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cb77eb7_e71e627d
+UUID: 5cb272c6_a89d9b08
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm_vixl.h
 
@@ -210,12 +432,28 @@ UUID: 1c2b9a7f_6e4fcfc1
 Bytes: 103
 This does not seem to be used outside of compiler/optimizing/code_generator_arm_vixl.cc; move it there?
 
+67:0-67:51
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_6e4fcfc1
+UUID: 1cb0fabd_a665c6d7
+Bytes: 4
+Done
+
 73:88-73:94
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_0e4e0bc2
 Bytes: 40
 I think the original version was better.
+
+73:88-73:94
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_0e4e0bc2
+UUID: 5c37d20c_83cc6063
+Bytes: 4
+Done
 
 329:37-329:58
 Wed Oct 12 13:42:21 2016 +0000
@@ -224,12 +462,28 @@ UUID: 1c2b9a7f_8e39db28
 Bytes: 29
 Nit: `requires_read_barrier`.
 
+329:37-329:58
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_8e39db28
+UUID: dc63c225_14e6d4a8
+Bytes: 4
+Done
+
 419:29-419:35
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_4e8f73e0
 Bytes: 11
 Nit: 32-bit
+
+419:29-419:35
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_4e8f73e0
+UUID: 9c314a19_e2c9e6a5
+Bytes: 4
+Done
 
 File: compiler/optimizing/common_arm.h
 
@@ -240,12 +494,28 @@ UUID: 1c2b9a7f_2ee547cb
 Bytes: 12
 << reg_code;
 
+78:28-78:29
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_2ee547cb
+UUID: 5c37d20c_63d15cf7
+Bytes: 4
+Done
+
 171:16-171:32
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_8ed55bda
 Bytes: 57
 What about `LocationFromPair`?  Or simply `LocationFrom`?
+
+171:16-171:32
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_8ed55bda
+UUID: 5c37d20c_a3b244dc
+Bytes: 4
+Done
 
 File: compiler/utils/arm/assembler_arm_vixl.cc
 
@@ -256,10 +526,28 @@ UUID: 1c2b9a7f_4e19b3e7
 Bytes: 30
 Please document this constant.
 
+349:21-349:38
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_4e19b3e7
+UUID: 5c37d20c_e3072c79
+Bytes: 84
+I will add a comment.
+
+We prefer Str to Add/Stm where the resulting code is smaller.
+
 358:8-358:12
 Wed Oct 12 13:42:21 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1c2b9a7f_6e66af53
 Bytes: 51
 Maybe DCHECK that `base` is not a member of `regs`?
+
+358:8-358:12
+Thu Oct 13 10:37:07 2016 +0000
+Author: Scott Wakeling <1076052@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c2b9a7f_6e66af53
+UUID: 5c37d20c_030b3087
+Bytes: 4
+Done
 

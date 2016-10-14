@@ -19,3 +19,31 @@ Yeah we could add this in there. Does the marking bit ever get set if it's not a
 
 Also to check the mark bit from JNI, it's a bit slower than the tls32 guard because we have to do additional masking operations and the thread is already likely in cache because we have to look up the JNIEnv etc, but the class won't be.
 
+32:47-32:57
+Fri Oct 14 21:19:02 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c2bff7f_2e7f87d1
+UUID: 3c2bff7f_d1cb06a9
+Bytes: 463
+The mark bit may still be set after is_gc_marking is turned back to false when the marking phase is done. The mark bits are cleared in another phase after the marking phase.
+
+As long as we do the fast path check nested, as in,
+
+if (is_gc_marking) {
+  if (ref.mark_bit == 0) {
+    <take-slow-path>
+  }
+}
+
+I think it should be correct.
+
+I agree with the extra overhead of masking and possibility of a cache miss. At least, I think arm64 tbz avoids the need to mask.
+
+32:47-32:57
+Fri Oct 14 21:19:02 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c2bff7f_ae56d770
+UUID: 3c2bff7f_915d7e60
+Bytes: 69
+Noted the idea of checking the mark bit in the JNI stub in b/30437917
+

@@ -1,0 +1,66 @@
+Revision: 9eeda03e40c1f50829e544176a557ee7946a7cd9
+Patch-set: 1
+File: runtime/indirect_reference_table.cc
+
+83
+Fri Oct 14 15:01:10 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc73265a_397acaad
+Bytes: 80
+What if the error message is null, can it just abort with the old messages then?
+
+File: runtime/indirect_reference_table.h
+
+267
+Fri Oct 14 15:01:10 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc73265a_19610e08
+Bytes: 251
+Can you leave the old IsValid method here?
+
+I think that's a much clearer pattern to use then checking if the error message is non-empty.
+
+  //example
+  IndirectReferenceTable irt(&error_msg);
+  if (!irt.IsValid()) {
+     LOG(ERROR) << error_msg;
+   }
+
+268
+Fri Oct 14 15:01:10 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc73265a_b9655a14
+Bytes: 27
+nit: one parameter per line
+
+File: runtime/java_vm_ext.h
+
+49
+Fri Oct 14 15:01:10 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc73265a_194a6e80
+Bytes: 152
+Can you add a separate method for this?
+
+   std::unique_ptr<JavaVMExt> Create(Runtime* runtime, ...)
+
+and it will return null if it fails to initialize?
+
+File: runtime/jni_env_ext.h
+
+37
+Fri Oct 14 15:01:10 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc73265a_b93ebae2
+Bytes: 9
+comments?
+
+File: runtime/thread.cc
+
+698
+Fri Oct 14 15:01:10 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fc73265a_99565e25
+Bytes: 44
+Why even have it if it's going to be unused?
+

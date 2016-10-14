@@ -11,6 +11,25 @@ Could you put some more context in the description? What made them empty? Or hav
 
 Also, is that for boot image or app image or both?
 
+7:13-7:56
+Fri Oct 14 10:28:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bca52e1d_8b9d0d5f
+UUID: 3cd3fe97_07aab66f
+Bytes: 837
+What extra context do you need? If they are empty, don't write them. Period.
+
+Some have probably been empty since the multi-image change. For example grepping for these sections and image location in the boot image oatdump we had
+
+    IMAGE LOCATION: out/target/product/flounder/dex_bootjars/system/framework/boot-ims-common.art
+    IMAGE SECTION SectionInternedStrings: size=4040 range=40432-44472
+    IMAGE SECTION SectionClassTable: size=40 range=44472-44512
+    IMAGE LOCATION: out/target/product/flounder/dex_bootjars/system/framework/boot-apache-xml.art
+    IMAGE SECTION SectionInternedStrings: size=40 range=66776-66816
+    IMAGE SECTION SectionClassTable: size=40 range=66816-66856
+
+where size=40 indicates just the basic fields and 0 entries, see HashSet<>::WriteToMemory(). App images can theoretically also have empty tables.
+
 File: runtime/intern_table.cc
 
 36:6-36:35
@@ -19,4 +38,12 @@ Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_c1cbc649
 Bytes: 21
 Can also delete this?
+
+36:6-36:35
+Fri Oct 14 10:28:10 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_c1cbc649
+UUID: bcbe0e35_83017e6e
+Bytes: 4
+Done
 

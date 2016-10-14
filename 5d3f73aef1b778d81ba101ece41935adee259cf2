@@ -1,0 +1,22 @@
+Revision: 5d3f73aef1b778d81ba101ece41935adee259cf2
+Patch-set: 2
+File: runtime/gc/reference_queue.h
+
+108:15-108:72
+Fri Oct 14 22:08:53 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c2bff7f_37ec7aa0
+Bytes: 223
+Does this happen often? We could have a ConcurrentObjPtr that only lets you view it when the lock is held as an additional safety requirement.
+
+Not sure if the thread incrementing generation logic would still work the same.
+
+File: runtime/gc/reference_queue_test.cc
+
+54
+Fri Oct 14 22:08:53 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c2bff7f_f705d276
+Bytes: 71
+Can you change these to be std::set<ObjPtr<mirror::Reference>> instead?
+

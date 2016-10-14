@@ -9,3 +9,13 @@ UUID: 3c2bff7f_ae56d770
 Bytes: 67
 Probably better to just check this in the actual JNI compiled code?
 
+32:47-32:57
+Fri Oct 14 20:12:39 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c2bff7f_ae56d770
+UUID: 3c2bff7f_2e7f87d1
+Bytes: 393
+Yeah we could add this in there. Does the marking bit ever get set if it's not also tls32.is_marking==true ? How would we measure a performance difference?
+
+Also to check the mark bit from JNI, it's a bit slower than the tls32 guard because we have to do additional masking operations and the thread is already likely in cache because we have to look up the JNIEnv etc, but the class won't be.
+

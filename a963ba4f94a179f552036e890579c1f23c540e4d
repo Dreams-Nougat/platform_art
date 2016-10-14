@@ -9,6 +9,13 @@ UUID: bcafeeab_db53b369
 Bytes: 177
 Must, should, or ought to? The name alone is very ambiguous, and the comment does unfortunately not help much. Please be more precise what the semantics of having this flag are.
 
+2867:54-2867:58
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bcbe0e35_23dfeafb
+Bytes: 12
+DependsOnGC.
+
 File: runtime/cha.cc
 
 98
@@ -31,6 +38,13 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_9b976b3c
 Bytes: 18
 remove "Basically"
+
+209:7-210:38
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bca52e1d_4ba4c5a1
+Bytes: 123
+If it's native, it's not abstract, so you're not using the native entry point for keeping the single implementation, right?
 
 240
 Thu Oct 13 16:33:51 2016 +0000
@@ -69,6 +83,13 @@ UUID: 1c78fafe_266bd618
 Bytes: 34
 use a typedef for this large type?
 
+36:61-36:74
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcc886e8_45bdcaa9
+Bytes: 8
+private?
+
 39
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -76,7 +97,35 @@ UUID: bcafeeab_fb6f8f52
 Bytes: 67
 You use returns, add, remove, and update. Use one form consistently
 
+50:7-50:13
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cd3fe97_c7d09ef6
+Bytes: 22
+UpdateAfterLoadingOf ?
+
+45:0-50:81
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bcbe0e35_63d9e213
+Bytes: 8
+Private?
+
+70:18-70:64
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3cd3fe97_87c6a642
+Bytes: 214
+Add a comment why you need the pair: one is for invalidating the entrypoint of the ArtMethod, the other is for invalidating code in the stack (that is potentially not the entrypoint of its corresponding ArtMethod).
+
 File: runtime/class_linker.h
+
+674:24-674:25
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fcc886e8_a5eabe9a
+Bytes: 1
+*
 
 1191
 Thu Oct 13 16:33:51 2016 +0000
@@ -84,6 +133,20 @@ Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_fbfc2f57
 Bytes: 95
 this is a monster decl that could benefit from some typedefs in cha (see my comments there too)
+
+1188:0-1192:39
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bca52e1d_abc1e92e
+Bytes: 7
+Remove.
+
+1204:0-1204:30
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bcbe0e35_a313daca
+Bytes: 54
+Any reason this is in class linker instead of Runtime?
 
 File: test/616-cha/src/Main.java
 
@@ -94,10 +157,32 @@ UUID: bcafeeab_5b57a35a
 Bytes: 177
 what exactly is this testing? would this test pass if we had no cha? if so, can we make a checker test on something [probably hard]; if not, document better where what is tested
 
+80:0-82:5
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcc102c4_44082e89
+Bytes: 48
+This isn't true, we do run interpret-only tests.
+
+155:0-158:28
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcc102c4_a465a246
+Bytes: 36
+I think you can get rid of this now.
+
 182
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_9b740bf5
 Bytes: 84
 constructs like this make me very nervous. are we setting up a chance for flakiness?
+
+182
+Fri Oct 14 09:49:48 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_9b740bf5
+UUID: bca52e1d_8bc6ad42
+Bytes: 82
+Yeah, we could have a handshake to make sure the thread is where we want it to be.
 

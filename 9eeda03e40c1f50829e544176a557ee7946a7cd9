@@ -9,6 +9,16 @@ UUID: fc73265a_397acaad
 Bytes: 80
 What if the error message is null, can it just abort with the old messages then?
 
+83
+Mon Oct 17 09:33:17 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc73265a_397acaad
+UUID: bcbe0e35_c67424f6
+Bytes: 254
+error_msg should not be null. Would it help to state that explicitly in the comments or add a CHECK for it?
+
+I do not want abort to be called in the constructor. What to do about the error should be the responsibility of the caller, not this constructor.
+
 File: runtime/indirect_reference_table.h
 
 267
@@ -26,12 +36,30 @@ I think that's a much clearer pattern to use then checking if the error message 
      LOG(ERROR) << error_msg;
    }
 
+267
+Mon Oct 17 09:33:17 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc73265a_19610e08
+UUID: bca52e1d_6b2c21b2
+Bytes: 446
+The nice thing about using the error_msg to tell if the object is valid is there is no question about lock safety. Are locks required to call IsValid? What if it's called right after the object is constructed?
+
+On the other hand, I can see how calling IsValid explicitly makes the code easier to follow. I switched to using IsValid. I would be interested in your thoughts on whether it is an improvement overall, given the question about locking.
+
 268
 Fri Oct 14 15:01:10 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fc73265a_b9655a14
 Bytes: 27
 nit: one parameter per line
+
+268
+Mon Oct 17 09:33:17 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc73265a_b9655a14
+UUID: bcbe0e35_66645043
+Bytes: 4
+Done
 
 File: runtime/java_vm_ext.h
 
@@ -46,6 +74,14 @@ Can you add a separate method for this?
 
 and it will return null if it fails to initialize?
 
+49
+Mon Oct 17 09:33:17 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc73265a_194a6e80
+UUID: bcbe0e35_267ed8b2
+Bytes: 19
+Good catch, thanks.
+
 File: runtime/jni_env_ext.h
 
 37
@@ -55,6 +91,14 @@ UUID: fc73265a_b93ebae2
 Bytes: 9
 comments?
 
+37
+Mon Oct 17 09:33:17 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc73265a_b93ebae2
+UUID: bcbe0e35_4685d4b8
+Bytes: 63
+Can you elaborate on what you're looking for? Is it better now?
+
 File: runtime/thread.cc
 
 698
@@ -63,4 +107,12 @@ Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fc73265a_99565e25
 Bytes: 44
 Why even have it if it's going to be unused?
+
+698
+Mon Oct 17 09:33:17 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fc73265a_99565e25
+UUID: bcbe0e35_06575c5b
+Bytes: 209
+I am preserving the existing behavior of ignoring the error message. I think its worth considering whether the error should be returned or propagated from here, but I would prefer to leave that for a later CL.
 

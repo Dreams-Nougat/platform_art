@@ -19,6 +19,14 @@ error_msg should not be null. Would it help to state that explicitly in the comm
 
 I do not want abort to be called in the constructor. What to do about the error should be the responsibility of the caller, not this constructor.
 
+83
+Mon Oct 17 15:32:15 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcbe0e35_c67424f6
+UUID: 5c6993e3_2c13e73f
+Bytes: 19
+CHECK would be good
+
 File: runtime/indirect_reference_table.h
 
 267
@@ -45,6 +53,32 @@ Bytes: 446
 The nice thing about using the error_msg to tell if the object is valid is there is no question about lock safety. Are locks required to call IsValid? What if it's called right after the object is constructed?
 
 On the other hand, I can see how calling IsValid explicitly makes the code easier to follow. I switched to using IsValid. I would be interested in your thoughts on whether it is an improvement overall, given the question about locking.
+
+267
+Mon Oct 17 15:32:15 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bca52e1d_6b2c21b2
+UUID: 5c6993e3_2c9c47a6
+Bytes: 1005
+IsValid can be documented as being constructed correctly, and not needing any thread checks because it should just be an IsValid const that only reads other const fields.
+
+I'm not sure that as-is an IRT can ever into an invalid state (after the constructor). The most that can happen is that the capacity is full but that's still valid its just that more adds will fail.
+
+
+-------------------
+
+The other more complicated way is to do something like
+
+   static IndirectReferenceTable* Create(void* storage, ....) {
+        auto ptr = new (storage) IndirectReferenceTable(....);
+        if (ptr.check_some_field == false) { 
+          return nullptr;
+        }
+        return ptr;
+   }
+   // also need to call the destructor explicitly then. ugh.
+
+and then that still lets us use in-place storage, but I don't really like this because then the thread.h would  have to change to use char[sizeof(IRT)] as the storage and a bunch of helpers would have to be exposed instead of accessing it directly as a field.
 
 268
 Fri Oct 14 15:01:10 2016 +0000
@@ -99,6 +133,14 @@ UUID: bcbe0e35_4685d4b8
 Bytes: 63
 Can you elaborate on what you're looking for? Is it better now?
 
+37
+Mon Oct 17 15:32:15 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcbe0e35_4685d4b8
+UUID: 5c6993e3_0cfaa3cc
+Bytes: 26
+Thanks, it looks good now.
+
 File: runtime/thread.cc
 
 698
@@ -115,4 +157,12 @@ Parent: fc73265a_99565e25
 UUID: bcbe0e35_06575c5b
 Bytes: 209
 I am preserving the existing behavior of ignoring the error message. I think its worth considering whether the error should be returned or propagated from here, but I would prefer to leave that for a later CL.
+
+698
+Mon Oct 17 15:32:15 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcbe0e35_06575c5b
+UUID: 5c6993e3_cc034be6
+Bytes: 146
+Isn't this the same OutOfMemory type of situation? When new thread is allocated it fails to make JNIEnvExt and so can't fully create a new Thread?
 

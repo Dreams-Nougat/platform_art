@@ -62,6 +62,14 @@ UUID: dcf58392_ad8cd4c2
 Bytes: 42
 Is this ever a problem if prev_state == 0?
 
+126
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_ad8cd4c2
+UUID: dcf58392_48f8bea7
+Bytes: 259
+Not for prev_state. But for the current state. We will always try to recover holes when the table is empty. Considering that the thread code is adding the thread as a local ref, I think this is not important in practice (also, the loop is empty in that case).
+
 127
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -80,6 +88,16 @@ In other words why does it need to be so complicated instead of just saying
    current_num_holes_ = new_hole_at_or_above
 
 ?
+
+127
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_2dfd8400
+UUID: dcf58392_28bf32b5
+Bytes: 283
+You don't need to set it to an actual hole. If you did, then you'd have to keep it correct, which means another scan in Add() when filling the hole.
+
+Instead, it "just" denotes the segment that any current_num_holes_ hole is in, which must be invalidated when that segment is popped.
 
 135:41-135:54
 Tue Oct 18 18:14:48 2016 +0000
@@ -102,6 +120,14 @@ UUID: dcf58392_0d3a488b
 Bytes: 170
 nit: This is the same exact code as in RecoverHoleCount, I think if it was extracted into a separate function (e.g. CountCurrentNumberOfHoles()) it would be more readable
 
+139:0-144:5
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_0d3a488b
+UUID: dcf58392_08935642
+Bytes: 56
+I wanted it separate for test clarity, but sure, can do.
+
 153
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -110,6 +136,16 @@ Bytes: 257
 Why isn't it just using new(nothrow) ? Is it for the name? If it's for the name, I want to know if it's a global/weak/local table specifically and not that it's merely an IRT.
 
 This will waste most of the page if it never grows past 512, I assume that's OK?
+
+153
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_edcedc3f
+UUID: dcf58392_a3c7c52f
+Bytes: 196
+Note that IrtEntry is storing right now 16B. So you're not wasting padding.
+
+And yes, it's for the ashmem naming, so it can be attributed. Specific naming makes sense, but shouldn't be in this CL.
 
 179:9-179:17
 Tue Oct 18 18:14:48 2016 +0000
@@ -131,6 +167,14 @@ According to JNI spec:
 
 Also did you update EnsureLocalCapacity for this new dynamic capacity? The old code would fail if asking for >512 capacity.
 
+187
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_cdba0075
+UUID: dcf58392_a3dea5f5
+Bytes: 68
+No, EnsureLocalCapacity isn't fixed, yet. That's a dependent change.
+
 195:16-195:32
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -146,6 +190,14 @@ Bytes: 190
 These names are very confusing, but I see they are the original names.
 
 Can you at least add a comment for them explaining that it's an upper/lower bound and also if its inclusive/exclusive?
+
+266
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_6d45cc5e
+UUID: dcf58392_03cfb93d
+Bytes: 21
+I'll clean things up.
 
 303:29-303:31
 Tue Oct 18 18:14:48 2016 +0000
@@ -170,12 +222,28 @@ UUID: dcf58392_cab4a6da
 Bytes: 57
 This giant block of comments probably needs to be updated
 
+137
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_cab4a6da
+UUID: dcf58392_e31eedd4
+Bytes: 70
+Yes. Please note the RFC state, for the final CL I'll update the blob.
+
 190
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf58392_6ad01209
 Bytes: 86
 I'd prefer if this was a struct with a name for what the value represents as the field
+
+190
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_6ad01209
+UUID: dcf58392_43f70170
+Bytes: 98
+Ugh, that will require broader changes, or a memset in the functions here. I'll see what I can do.
 
 258
 Tue Oct 18 18:14:48 2016 +0000
@@ -185,6 +253,14 @@ Bytes: 163
 This could be a subclass that allows resizing or templates (or both).
 
 Subclasses probably make more sense if we had lock annotations, otherwise it doesn't matter.
+
+258
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_cd8200e6
+UUID: dcf58392_a3634557
+Bytes: 146
+I wanted to keep things structured similarly right now, so that Add and Remove functionality is in one place. If you prefer, I'll break it up now.
 
 362:44-362:54
 Tue Oct 18 18:20:34 2016 +0000
@@ -212,6 +288,14 @@ we should be using 28 bits here and not 18.
 
 Easy fix.
 
+362:63-362:68
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_08bcf6bc
+UUID: dcf58392_c330114d
+Bytes: 72
+Yes, that's my intent. I don't know why serialChunk was ever this large.
+
 366
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -237,12 +321,28 @@ For example it's pretty non obvious current_num_holes_ is only the holes between
 
 I'm still not sure what the hole_at_or_above_ means since its only possible values appear to be either 0 or prev_state
 
+396
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_4d11f076
+UUID: dcf58392_c3de51c4
+Bytes: 107
+I want this to be opaque here, it's an implementation detail. There will be a comment blurb in the cc file.
+
 398:0-399:29
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcf58392_cdb040c6
 Bytes: 116
 I am not a fan of this, I would prefer if we had lock annotations or at least lock asserts everywhere it made sense.
+
+398:0-399:29
+Tue Oct 18 18:34:50 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_cdb040c6
+UUID: dcf58392_a396a5d4
+Bytes: 160
+That isn't as simple as you think. What is the lock? What you technically want is to store the Thread* here, and compare the Thread that's making modifications.
 
 File: runtime/jni_env_ext.cc
 

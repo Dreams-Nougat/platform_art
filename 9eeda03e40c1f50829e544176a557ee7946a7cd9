@@ -27,6 +27,14 @@ UUID: 5c6993e3_2c13e73f
 Bytes: 19
 CHECK would be good
 
+83
+Tue Oct 18 14:35:24 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c6993e3_2c13e73f
+UUID: dcaf43ab_1b8a3bfd
+Bytes: 4
+Done
+
 File: runtime/indirect_reference_table.h
 
 267
@@ -79,6 +87,14 @@ The other more complicated way is to do something like
    // also need to call the destructor explicitly then. ugh.
 
 and then that still lets us use in-place storage, but I don't really like this because then the thread.h would  have to change to use char[sizeof(IRT)] as the storage and a bunch of helpers would have to be exposed instead of accessing it directly as a field.
+
+267
+Tue Oct 18 14:35:24 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c6993e3_2c9c47a6
+UUID: dcaf43ab_fb954f1c
+Bytes: 4
+Done
 
 268
 Fri Oct 14 15:01:10 2016 +0000
@@ -165,4 +181,12 @@ Parent: bcbe0e35_06575c5b
 UUID: 5c6993e3_cc034be6
 Bytes: 146
 Isn't this the same OutOfMemory type of situation? When new thread is allocated it fails to make JNIEnvExt and so can't fully create a new Thread?
+
+698
+Tue Oct 18 14:35:24 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5c6993e3_cc034be6
+UUID: dcaf43ab_1b70fbf7
+Bytes: 386
+This case corresponds to the case where AttachCurrentThread is called. In that case, we return a JNI error code to indicate an error occurred. As I understand it, the JNI spec says we could additionally throw a Java exception in this case, but the existing behavior was to return a JNI error code without throwing an exception. I would prefer to preserve that existing behavior for now.
 

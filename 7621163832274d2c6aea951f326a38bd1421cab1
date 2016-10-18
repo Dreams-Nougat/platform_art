@@ -9,3 +9,20 @@ UUID: dcaf43ab_bb76a7b8
 Bytes: 316
 I was wondering whether we needed a DMB ISH barrier here (and one after the loop, on line 780), but because we're implementing a strong CAS with relaxed memory ordering, I thought they were not needed.  (Clang seems to generate similar code, without DMBs, for such a strong relaxed CAS).  Is this a valid assumption?
 
+751
+Tue Oct 18 20:21:10 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcaf43ab_bb76a7b8
+UUID: dcf58392_de9bc45b
+Bytes: 77
+I think so, as I understand, we don't need a fence/barrier for a relaxed CAS.
+
+File: compiler/optimizing/code_generator_arm64.cc
+
+763:7-763:12
+Tue Oct 18 20:21:10 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_f9897a08
+Bytes: 133
+I think we don't need fences (acquire/release) in this relaxed CAS. Is that what clang emits? Use ldxr/stxr (without fences) instead?
+

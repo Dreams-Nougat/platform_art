@@ -282,6 +282,25 @@ UUID: dcf58392_23111502
 Bytes: 133
 I *dislike* that we give a wrong interface to the outside. I want the caller to not pretend that the state is a uint32_t if it isn't.
 
+190
+Tue Oct 18 20:04:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_23111502
+UUID: dcf58392_1e238c6d
+Bytes: 544
+What do you mean by that?
+
+Everything should use "IRTSegmentState" instead of uint32_t wherever we currently have a cookie.
+
+However I wouldn't bother with that kind of a cleanup right now since it's not really worth it for this change.
+
+You did update a few places to do it already and they're better off for it.
+
+
+------
+
+Whether it's using a typedef or a struct doesn't seem like it matters too much, in fact with a struct it makes it harder to mix it up with a uint32_t since we can't just convert between one and the other interchangeably.
+
 258
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -406,6 +425,14 @@ Parent: dcf58392_c3b2d132
 UUID: dcf58392_03e5f9ee
 Bytes: 117
 Plan is to not allow resizing for global/weaks, at least with this CL. There will be a kind CHECK in the constructor.
+
+398:0-399:29
+Tue Oct 18 20:04:32 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_03e5f9ee
+UUID: dcf58392_9e781c70
+Bytes: 58
+It's not thread safe to add/remove regardless of resizing.
 
 File: runtime/jni_env_ext.cc
 

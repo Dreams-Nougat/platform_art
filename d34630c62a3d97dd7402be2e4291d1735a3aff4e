@@ -128,6 +128,13 @@ UUID: dcf58392_08935642
 Bytes: 56
 I wanted it separate for test clarity, but sure, can do.
 
+149
+Tue Oct 18 18:43:35 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_2382b54c
+Bytes: 193
+I also see no calls anywhere to make this smaller, I think this also needs to shrink occasionally to free up space. Either in GC or when you call remove and the capacity/used ratio is too much.
+
 153
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -245,6 +252,20 @@ UUID: dcf58392_43f70170
 Bytes: 98
 Ugh, that will require broader changes, or a memset in the functions here. I'll see what I can do.
 
+190
+Tue Oct 18 18:43:35 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_43f70170
+UUID: dcf58392_43c0a188
+Bytes: 134
+I think if it was
+
+    struct IRTSegmentState {
+          uint32_t topIndex;
+    };
+
+then most of the code would be the same as before
+
 258
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -329,6 +350,14 @@ UUID: dcf58392_c3de51c4
 Bytes: 107
 I want this to be opaque here, it's an implementation detail. There will be a comment blurb in the cc file.
 
+396
+Tue Oct 18 18:43:35 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_c3de51c4
+UUID: dcf58392_03d69951
+Bytes: 133
+I don't think that matters, anything in private is an implementation detail, that's just how C++ is. Why not document it here anyway?
+
 398:0-399:29
 Tue Oct 18 18:14:48 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -343,6 +372,16 @@ Parent: dcf58392_cdb040c6
 UUID: dcf58392_a396a5d4
 Bytes: 160
 That isn't as simple as you think. What is the lock? What you technically want is to store the Thread* here, and compare the Thread that's making modifications.
+
+398:0-399:29
+Tue Oct 18 18:43:35 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_a396a5d4
+UUID: dcf58392_c3b2d132
+Bytes: 138
+For global/weak its just the actual mutex lock.
+
+For local IRTs then yes we'd want to compare the thread, but I'm less worried about that.
 
 File: runtime/jni_env_ext.cc
 

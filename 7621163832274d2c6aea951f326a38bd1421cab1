@@ -1,0 +1,11 @@
+Revision: 7621163832274d2c6aea951f326a38bd1421cab1
+Patch-set: 2
+File: compiler/optimizing/code_generator_arm.cc
+
+751
+Tue Oct 18 16:00:03 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcaf43ab_bb76a7b8
+Bytes: 316
+I was wondering whether we needed a DMB ISH barrier here (and one after the loop, on line 780), but because we're implementing a strong CAS with relaxed memory ordering, I thought they were not needed.  (Clang seems to generate similar code, without DMBs, for such a strong relaxed CAS).  Is this a valid assumption?
+

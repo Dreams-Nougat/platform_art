@@ -1,0 +1,229 @@
+Revision: d34630c62a3d97dd7402be2e4291d1735a3aff4e
+Patch-set: 1
+File: runtime/indirect_reference_table.cc
+
+100:51-100:61
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_6d666cd9
+Bytes: 79
+nit: lets be consistent about calling this prev_state vs bottomIndex everywhere
+
+100
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_4d9c50f9
+Bytes: 188
+I think you'd want a comment here, with especial emphasis on  why the second || check is necessary.
+
+IIRC it was something about top index staying the same after doing a PopLocalReferences
+
+101:50-101:85
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_68f81a11
+Bytes: 245
+nit: I personally find !(hole_at_or-above < segment_state_) a bit less confusing to reason about.
+
+Maybe it will make more sense as-is with more comments. The way I thought about it is that "the hole is only valid whilst its under the top index"
+
+102:11-102:19
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_6d84aca3
+Bytes: 14
+nit: top_index
+
+104:11-104:16
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_2d9904c8
+Bytes: 38
+nit: new_num_holes is more elucidating
+
+105
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_2da10431
+Bytes: 82
+nit: Comment here, e.g. "Count null references in current frame = number of holes"
+
+123:8-123:26
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_8d4d98b3
+Bytes: 46
+nit: confused me, can you just use count here?
+
+126
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_ad8cd4c2
+Bytes: 42
+Is this ever a problem if prev_state == 0?
+
+127
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_2dfd8400
+Bytes: 538
+I'm not really sure I understand the hole_at_or_above logic?
+
+Unlike in Remove where it actually sets it to a real index that is a hole, if hole_at_or_above_ == prev_state then it's not set to a real hole. I'm not sure I understand the need for that extra possible semantic value?
+
+In other words why does it need to be so complicated instead of just saying
+
+   size_t new_hole_at_or_above = 0;
+   for each hole@index between prev_state and top_index do:
+      new_hole_at_or_above = index
+
+   current_num_holes_ = new_hole_at_or_above
+
+?
+
+135:41-135:54
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_cd87a05d
+Bytes: 23
+nit: expected_num_holes
+
+137:43-137:51
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_0d82484c
+Bytes: 14
+nit: top_index
+
+139:0-144:5
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_0d3a488b
+Bytes: 170
+nit: This is the same exact code as in RecoverHoleCount, I think if it was extracted into a separate function (e.g. CountCurrentNumberOfHoles()) it would be more readable
+
+153
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_edcedc3f
+Bytes: 257
+Why isn't it just using new(nothrow) ? Is it for the name? If it's for the name, I want to know if it's a global/weak/local table specifically and not that it's merely an IRT.
+
+This will waste most of the page if it never grows past 512, I assume that's OK?
+
+179:9-179:17
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_ed71bc8d
+Bytes: 14
+nit: top_index
+
+187
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_cdba0075
+Bytes: 372
+This (and other places resizing fails) should probably be calling FatalError, although I can't say this with 100% confidence
+
+According to JNI spec:
+
+> The VM calls FatalError if no more local references can be created beyond the ensured capacity.
+
+Also did you update EnsureLocalCapacity for this new dynamic capacity? The old code would fail if asking for >512 capacity.
+
+195:16-195:32
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_edd89cd7
+Bytes: 37
+nit: use a variable instead of just 2
+
+266
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_6d45cc5e
+Bytes: 190
+These names are very confusing, but I see they are the original names.
+
+Can you at least add a comment for them explaining that it's an upper/lower bound and also if its inclusive/exclusive?
+
+303:29-303:31
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_08a1967a
+Bytes: 72
+nit: It's actually scanning down from the top, this comment is outdated?
+
+316:65-316:84
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_2800d262
+Bytes: 59
+Does anyone know why these reads are without read barriers?
+
+File: runtime/indirect_reference_table.h
+
+137
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_cab4a6da
+Bytes: 57
+This giant block of comments probably needs to be updated
+
+190
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_6ad01209
+Bytes: 86
+I'd prefer if this was a struct with a name for what the value represents as the field
+
+258
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_cd8200e6
+Bytes: 163
+This could be a subclass that allows resizing or templates (or both).
+
+Subclasses probably make more sense if we had lock annotations, otherwise it doesn't matter.
+
+366
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_6d95cc18
+Bytes: 84
+I assume this returns false and set the error message, but maybe update the comment?
+
+369
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_ada69493
+Bytes: 9
+comments?
+
+396
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_4d11f076
+Bytes: 299
+I think all of these need comments for what the value represents.
+
+For example it's pretty non obvious current_num_holes_ is only the holes between the current and previous frame.
+
+I'm still not sure what the hole_at_or_above_ means since its only possible values appear to be either 0 or prev_state
+
+398:0-399:29
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_cdb040c6
+Bytes: 116
+I am not a fan of this, I would prefer if we had lock annotations or at least lock asserts everywhere it made sense.
+
+File: runtime/jni_env_ext.cc
+
+72
+Tue Oct 18 18:14:48 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_a8404250
+Bytes: 45
+nit: comments for the magic true/false please
+

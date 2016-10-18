@@ -190,3 +190,18 @@ UUID: dcaf43ab_1b70fbf7
 Bytes: 386
 This case corresponds to the case where AttachCurrentThread is called. In that case, we return a JNI error code to indicate an error occurred. As I understand it, the JNI spec says we could additionally throw a Java exception in this case, but the existing behavior was to return a JNI error code without throwing an exception. I would prefer to preserve that existing behavior for now.
 
+698
+Tue Oct 18 18:22:28 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcaf43ab_1b70fbf7
+UUID: dcf58392_687e5a5f
+Bytes: 479
+Not throwing is probably fine.
+
+However if we just return the error code and nothing else, even though we're spec-compliant, doesn't it mean that it will just invisibly fail and that's it?
+
+Doesn't it seem like it should log so at least the user can debug somehow?
+
+---
+If there's currently no way to recover AttachCurrentThread failure information then it would be good if it at least logged here. The semantics will be preserved then so in that case there would be no downside.
+

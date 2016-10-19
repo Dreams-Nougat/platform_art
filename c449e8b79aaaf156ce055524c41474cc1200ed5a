@@ -9,3 +9,17 @@ UUID: dcf58392_bc1a36e0
 Bytes: 175
 What code does this optimization refer to? We don't do the double-store (storing null to the reference array when storing a non-reference to a vreg) for non-moving collectors?
 
+458:0-459:93
+Wed Oct 19 17:53:02 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_bc1a36e0
+UUID: dcf58392_bc84f6a3
+Bytes: 581
+Look at SetVReg[Primitive] in stack.h. The comments are from there and I also put it on the AssignRegister side.
+
+If it's a non-moving collector then it skips clearing the reference array element for that vreg.
+
+Basically in rare cases the primitive value == the reference value, and in that case it's indistinguishable from a real reference. For non-moving collectors that seems not to matter (it just adds an extra root) much because it won't have to rewrite the value.
+
+For moving collectors it's a problem since if we moved it then the primitive value would incorrectly change.
+

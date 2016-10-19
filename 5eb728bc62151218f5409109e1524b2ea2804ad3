@@ -9,12 +9,28 @@ UUID: 7c0657a0_68698316
 Bytes: 47
 Nit: Baker (here and in other code generators).
 
+461:17-461:22
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_68698316
+UUID: 7c0657a0_e81e9378
+Bytes: 4
+Done
+
 5739:19-5739:24
 Wed Oct 19 13:34:16 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_0870c7f7
 Bytes: 6
 Ditto.
+
+5739:19-5739:24
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_0870c7f7
+UUID: 7c0657a0_c823cfc0
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm64.cc
 
@@ -25,12 +41,28 @@ UUID: 7c0657a0_68062384
 Bytes: 6
 const?
 
+385:0-386:36
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_68062384
+UUID: 7c0657a0_08e3275d
+Bytes: 4
+Done
+
 4304:15-4304:19
 Wed Oct 19 13:34:16 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_889a77f9
 Bytes: 110
 Maybe add an explanation similar to the one from compiler/optimizing/code_generator_arm.cc, lines 5729–5730?
+
+4304:15-4304:19
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_889a77f9
+UUID: 7c0657a0_e8ba1319
+Bytes: 132
+That's not really applicable here. It's fully handled by the slow path where the comments at lines 344 and 364 should be sufficient.
 
 File: runtime/arch/arm/quick_entrypoints_arm.S
 
@@ -41,6 +73,16 @@ UUID: 7c0657a0_08c207ec
 Bytes: 58
 Why do we save R12 (IP) here? Is this for padding reasons?
 
+1111:16-1111:19
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_08c207ec
+UUID: 7c0657a0_a8289b9d
+Bytes: 392
+This is preparing the top of the stack for the slow-path call below and the kSaveEverything ABI is to store IP right below LR.
+
+We could avoid storing r10 because we don't need the stack alignment here and we could use IP instead but I decided to keep the stack aligned. (It would have an advantage if the slow path to .Lslow_rb_art_quick_read_barrier_mark_reg00 was a call rather than jump.)
+
 1982
 Wed Oct 19 13:34:16 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,12 +90,28 @@ UUID: 9c15cbc1_09fd6949
 Bytes: 78
 Maybe augment the documentation to warn that `reg` should not be `r12` (`ip`)?
 
+1982
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9c15cbc1_09fd6949
+UUID: 7c0657a0_6833c311
+Bytes: 4
+Done
+
 2006:90-2006:96
 Wed Oct 19 10:33:27 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_28002b63
 Bytes: 15
 Explain why ip?
+
+2006:90-2006:96
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_28002b63
+UUID: 7c0657a0_882dd7ad
+Bytes: 4
+Done
 
 File: runtime/arch/x86/quick_entrypoints_x86.S
 
@@ -64,6 +122,14 @@ UUID: 7c0657a0_08fd6749
 Bytes: 55
 How about RESTORE_SAVE_EVERYTHING_FRAME_GRPS_EXCEPT_EAX
 
+300:7-300:47
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_08fd6749
+UUID: 7c0657a0_e89333a7
+Bytes: 4
+Done
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 364:7-364:47
@@ -73,6 +139,14 @@ UUID: 7c0657a0_c85d0f95
 Bytes: 5
 ditto
 
+364:7-364:47
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_c85d0f95
+UUID: 7c0657a0_c8986fc6
+Bytes: 4
+Done
+
 404:18-404:21
 Wed Oct 19 13:34:16 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -80,12 +154,28 @@ UUID: 7c0657a0_88ccb71c
 Bytes: 5
 Drop?
 
+404:18-404:21
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_88ccb71c
+UUID: 7c0657a0_a88d3b82
+Bytes: 4
+Done
+
 415:18-415:21
 Wed Oct 19 13:34:16 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5cf273e7_aff1b92b
 Bytes: 6
 Ditto?
+
+415:18-415:21
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5cf273e7_aff1b92b
+UUID: 7c0657a0_889277a0
+Bytes: 4
+Done
 
 File: runtime/entrypoints/quick/quick_dexcache_entrypoints.cc
 
@@ -103,4 +193,20 @@ Parent: 7c0657a0_a862db52
 UUID: 7c0657a0_48dfdfc0
 Bytes: 75
 Also, maybe add a TODO in the LoadString parts of the MIPS code generators?
+
+65:6-66:83
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_a862db52
+UUID: 7c0657a0_087fa783
+Bytes: 72
+I think a helper function would be an overkill. I'll add a TODO comment.
+
+65:6-66:83
+Wed Oct 19 16:31:56 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_48dfdfc0
+UUID: 7c0657a0_48859f53
+Bytes: 65
+MIPS already has a TODO. MIPS64 supports only kDexCacheViaMethod.
 

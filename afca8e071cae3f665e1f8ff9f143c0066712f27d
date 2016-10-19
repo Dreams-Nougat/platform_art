@@ -1,0 +1,52 @@
+Revision: afca8e071cae3f665e1f8ff9f143c0066712f27d
+Patch-set: 2
+File: runtime/gc/accounting/space_bitmap.cc
+
+128
+Wed Oct 19 19:20:48 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_3a6806cf
+Bytes: 71
+Is memset not usable here even if this isn't an object or a heap space?
+
+140:46-140:68
+Wed Oct 19 19:20:48 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_fa84be5a
+Bytes: 114
+Is this multiplication necessary? Aren't page_begin/page_end actual addresses where a diff would be the byte size?
+
+File: runtime/gc/collector/concurrent_copying.cc
+
+174:6-174:36
+Wed Oct 19 19:20:48 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_9a093a11
+Bytes: 204
+Can you add a comment along the line of: it's safe (not racy) to clear here without suspending threads because the bitmap is consulted by the region space walk which can happen only when gc isn't running.
+
+1602:4-1602:37
+Wed Oct 19 19:20:48 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_faf95ed8
+Bytes: 99
+We clear the field but not the bitmap itself (we do it in BindBitmaps above.) Clarify this comment?
+
+File: runtime/gc/heap.cc
+
+2494:11-2494:24
+Wed Oct 19 19:20:48 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_5a07d2f4
+Bytes: 75
+We don't have sticky CC (yet). Remove "in case the next GC is young gen." ?
+
+File: runtime/gc/space/region_space.cc
+
+63:49-63:63
+Wed Oct 19 19:20:48 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf58392_baefd603
+Bytes: 39
+Change this to something more sensible?
+

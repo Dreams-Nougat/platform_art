@@ -9,3 +9,15 @@ UUID: 7c0657a0_e8bc53a6
 Bytes: 100
 Is that correct? From there, we don't know if the subclass is overriding the package private method.
 
+5630:0-5637:7
+Wed Oct 19 17:48:58 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_e8bc53a6
+UUID: dcf58392_5c54f211
+Bytes: 435
+The check is correct. The problem we were having is that we were removing the method from the map and adding it at the end of the vtable. If there is another method later that this method actually does override we miss it. So to fix this we just skip checking for methods that override if there is no way for the supermethod to be overriden.
+
+as this says "might have been". 
+
+I wouldn't be opposed to just removing this vlog entierly.
+

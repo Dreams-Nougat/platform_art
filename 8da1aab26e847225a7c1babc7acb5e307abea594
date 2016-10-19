@@ -11,6 +11,59 @@ Where is this code?
 
 Can you show a deadlock thread dump (stack traces)?
 
+11:0-11:104
+Wed Oct 19 05:41:42 2016 +0000
+Author: rock.yeh <1126253@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf58392_edb7fcb7
+UUID: 3ce13fe5_be019922
+Bytes: 2760
+Main thread: (a) waiting Locks::heap_bitmap_lock_
+"com.android.mms" sysTid=8768
+  #00 pc 000173f4  /system/lib/libc.so (syscall+28)
+  #01 pc 000b5b61  /system/lib/libart.so (_ZN3art17ReaderWriterMutex13ExclusiveLockEPNS_6ThreadE+200)
+  #02 pc 00196a25  /system/lib/libart.so (_ZN3art2gc4Heap16ClampGrowthLimitEv+436)   --------------(a)
+  #03 pc 005d917f  /system/framework/arm/boot-core-libart.oat (offset 0x47b000) (dalvik.system.VMRuntime.clampGrowt
+hLimit+74)
+  #04 pc 0172ae9f  /system/framework/arm/boot-framework.oat (offset 0x16aa000) (android.app.ActivityThread.handleBi
+ndApplication+4098)
+  #05 pc 01724595  /system/framework/arm/boot-framework.oat (offset 0x16aa000) (android.app.ActivityThread.-wrap2+4
+8)
+#06 pc 01721561  /system/framework/arm/boot-framework.oat (offset 0x16aa000) (android.app.ActivityThread$H.handle
+Message+3892)
+  #07 pc 0171e1eb  /system/framework/arm/boot-framework.oat (offset 0x16aa000) (android.os.Handler.dispatchMessage+
+110)
+  #08 pc 01ced55d  /system/framework/arm/boot-framework.oat (offset 0x16aa000) (android.os.Looper.loop+1928)
+  #09 pc 017326df  /system/framework/arm/boot-framework.oat (offset 0x16aa000) (android.app.ActivityThread.main+754
+)
+
+void Heap::ClampGrowthLimit() {
+  // Use heap bitmap lock to guard against races with BindLiveToMarkBitmap.
+  ScopedObjectAccess soa(Thread::Current());
+  WriterMutexLock mu(soa.Self(), *Locks::heap_bitmap_lock_);   --------------(a)
+..
+}
+
+HeapTaskDaemon thread: (b) checking thread state is not kRunnable
+"HeapTaskDaemon" sysTid=8779
+  #00 pc 0004a7a8  /system/lib/libc.so (sched_yield+12)
+  #01 pc 0033beb9  /system/lib/libart.so (_ZN3art10ThreadList13RunCheckpointEPNS_7ClosureE+1560)         ------------------  (b)
+  #02 pc 00173e8f  /system/lib/libart.so (_ZN3art2gc9collector9MarkSweep19MarkRootsCheckpointEPNS_6ThreadEb+86)
+  #03 pc 00174635  /system/lib/libart.so (_ZN3art2gc9collector9MarkSweep9MarkRootsEPNS_6ThreadE+140)
+  #04 pc 0017380b  /system/lib/libart.so (_ZN3art2gc9collector9MarkSweep12MarkingPhaseEv+122)
+  #05 pc 001736ad  /system/lib/libart.so (_ZN3art2gc9collector9MarkSweep9RunPhasesEv+144)
+  #06 pc 0016e435  /system/lib/libart.so (_ZN3art2gc9collector16GarbageCollector3RunENS0_7GcCauseEb+248)
+  #07 pc 0019194d  /system/lib/libart.so (_ZN3art2gc4Heap22CollectGarbageInternalENS0_9collector6GcTypeENS0_7GcCauseEb+2364)
+  #08 pc 0019722d  /system/lib/libart.so (_ZN3art2gc4Heap12ConcurrentGCEPNS_6ThreadEb+68)
+  #09 pc 0019bd63  /system/lib/libart.so (_ZN3art2gc4Heap16ConcurrentGCTask3RunEPNS_6ThreadE+18)
+
+size_t ThreadList::RunCheckpoint(Closure* checkpoint_function) {
+...
+      do {
+        ThreadSuspendSleep(kThreadSuspendInitialSleepUs);     
+      } while (!thread->IsSuspended());                    ----------------- (b)
+...
+}
+
 File: runtime/gc/heap.cc
 
 2019:11-2019:53

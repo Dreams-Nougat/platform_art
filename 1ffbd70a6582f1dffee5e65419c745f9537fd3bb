@@ -1,0 +1,64 @@
+Revision: 1ffbd70a6582f1dffee5e65419c745f9537fd3bb
+Patch-set: 1
+File: /COMMIT_MSG
+
+15:0-35:32
+Thu Oct 20 12:48:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c0657a0_2bbb85a9
+Bytes: 87
+Nit: Could you please sort this list?
+
+Also, I think you forgot to add "053-wait-some".
+
+File: compiler/optimizing/code_generator_arm_vixl.cc
+
+491:0-492:62
+Thu Oct 20 12:48:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 9c15cbc1_e96c55ec
+Bytes: 219
+Could you add a comment about these new lines?  I understand that the first one is directly related to lines 517–520, but I'm not sure about the second one; is this a second D register reserved for the code generator?
+
+2224:32-2224:34
+Thu Oct 20 12:48:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf663e5_e36c72ec
+Bytes: 37
+Maybe initialize to `vixl32::kNever`?
+
+2240:9-2240:96
+Thu Oct 20 12:48:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcdd835f_ae6097bc
+Bytes: 155
+There is no LoadImmediate call in this current code; I'd suggest this:
+
+  Emit move to `out` before the last `Cmp`, as `Mov` might affect the status flags.
+
+2761:9-2761:96
+Thu Oct 20 12:48:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c0657a0_8bcb913c
+Bytes: 48
+Primitive::IsFloatingPointType(input->GetType())
+
+3230
+Thu Oct 20 12:48:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: fca887f5_ec230bd7
+Bytes: 152
+Maybe retain the assertions from the original code generator:
+
+  DCHECK_NE(RegisterFrom(source), temp);
+  DCHECK_NE(RegisterFrom(destination), temp);
+
+?
+
+3243:22-3243:27
+Thu Oct 20 12:48:44 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: dcf663e5_6361a2ed
+Bytes: 7
+`temp`?
+

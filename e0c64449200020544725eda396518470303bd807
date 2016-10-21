@@ -2,12 +2,33 @@ Revision: e0c64449200020544725eda396518470303bd807
 Patch-set: 4
 File: compiler/jit/jit_logger.cc
 
+113:0-113:22
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7c0657a0_ae8f8308
+Bytes: 616
+Nicolas, actually the jit dump file format and these structure definitions are not well documented in perf source code in Linux kernel. The comments and the descriptions of each field are all based on my understanding of how perf processes perf.data and jit-PID.dump files.
+
+The jit dump file format and strcture definitions can be found in perf source code:
+https://github.com/torvalds/linux/blob/master/tools/perf/util/jitdump.h
+
+Perf source code also includes an implementation of how JIT compiler should geneate such jit-PID.dump file:
+https://github.com/torvalds/linux/blob/master/tools/perf/jvmti/jvmti_agent.c
+
 119:33-119:47
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_4b035972
 Bytes: 31
 process ID of the JIT compiler?
+
+119:33-119:47
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_4b035972
+UUID: 7c0657a0_2e8dd314
+Bytes: 4
+Done
 
 120:33-120:56
 Thu Oct 20 13:39:12 2016 +0000
@@ -16,12 +37,28 @@ UUID: 7c0657a0_0bfd6149
 Bytes: 40
 Timestamp when the header was generated?
 
+120:33-120:56
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_0bfd6149
+UUID: 7c0657a0_0e8a0ffd
+Bytes: 4
+Done
+
 121:33-121:64
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_eb58cda6
 Bytes: 24
 Do you know those flags?
+
+121:33-121:64
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_eb58cda6
+UUID: fca887f5_4f5e915b
+Bytes: 40
+I added description on the flags in PS5.
 
 130:42-130:50
 Thu Oct 20 13:39:12 2016 +0000
@@ -30,12 +67,28 @@ UUID: 7c0657a0_8bf03176
 Bytes: 31
 code load = new code generated?
 
+130:42-130:50
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_8bf03176
+UUID: dcf663e5_66d89009
+Bytes: 57
+Yes. I added more comments to describe this event in PS5.
+
 131:43-131:51
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_6b061d84
 Bytes: 20
 what does that mean?
+
+131:43-131:51
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_6b061d84
+UUID: bc352f64_858da4bf
+Bytes: 52
+I added more comments to describe this event in PS5.
 
 136:34-136:38
 Thu Oct 20 13:39:12 2016 +0000
@@ -44,12 +97,29 @@ UUID: 7c0657a0_ab62d552
 Bytes: 28
 size of what? compiled code?
 
+136:34-136:38
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_ab62d552
+UUID: dcdd835f_b1fc789b
+Bytes: 98
+sizeof(PerfJitCodeLoad) + method_name.size() + compiled code size.
+I've added this in the comment.
+
 143:31-143:59
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_8b671163
 Bytes: 20
 of the JIT compiler?
+
+143:31-143:59
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_8b671163
+UUID: 5cba7338_72c536f3
+Bytes: 280
+I think it should be the thread id where the jitted code is running. Because ART JIT does compilation in compiler thread, and that thread doesn't run jitted code, we should avoid setting this thread_id_ to the tid of compiler thread, otherwise the profile result can be confusing.
 
 144:11-144:15
 Thu Oct 20 13:39:12 2016 +0000
@@ -58,6 +128,15 @@ UUID: 7c0657a0_6b4dfddd
 Bytes: 1
 ?
 
+144:11-144:15
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_6b4dfddd
+UUID: fca887f5_ef23fdd6
+Bytes: 20
+Done.
+Comment added.
+
 147:30-147:32
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -65,12 +144,28 @@ UUID: 7c0657a0_4b4a39c8
 Bytes: 10
 unique ID?
 
+147:30-147:32
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_4b4a39c8
+UUID: 7c0657a0_6eaaab5d
+Bytes: 4
+Done
+
 154:2-155:2
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_2b570570
 Bytes: 42
 Can you add PerfJitDebugEntry entries[0] ?
+
+154:2-155:2
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_2b570570
+UUID: 9c15cbc1_4caecf67
+Bytes: 5
+Done.
 
 266:0-266:99
 Thu Oct 20 13:39:12 2016 +0000
@@ -88,12 +183,28 @@ UUID: 7c0657a0_cbf62973
 Bytes: 38
 You haven't documented what this does.
 
+56:11-56:44
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_cbf62973
+UUID: 7c0657a0_ae78a337
+Bytes: 4
+Done
+
 58:77-58:84
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_ebf1ed7c
 Bytes: 12
 Linux kernel
+
+58:77-58:84
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_ebf1ed7c
+UUID: 7c0657a0_8e7ddf27
+Bytes: 4
+Done
 
 59:100-59:102
 Thu Oct 20 13:39:12 2016 +0000
@@ -102,10 +213,26 @@ UUID: 7c0657a0_0b26812b
 Bytes: 13
 line too long
 
+59:100-59:102
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_0b26812b
+UUID: 7c0657a0_6e83cbeb
+Bytes: 4
+Done
+
 70:0-71:32
 Thu Oct 20 13:39:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_abebf588
 Bytes: 24
 Make these initializers.
+
+70:0-71:32
+Fri Oct 21 15:06:43 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_abebf588
+UUID: 7c0657a0_4e8007dd
+Bytes: 4
+Done
 

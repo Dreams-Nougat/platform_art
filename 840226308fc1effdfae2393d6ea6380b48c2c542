@@ -35,6 +35,23 @@ UUID: 3c913fcf_3bd8b008
 Bytes: 338
 As far as I can tell, there is no requirement to source build/envsetup.sh before running this script for any reason other than to get ANDROID_BUILD_TOP, which is not used, so it seems strange to require build/envsetup.sh first.  The whole point to using get_build_var is so that you don't need envsetup.sh/lunch before running the script.
 
+22
+Fri Oct 21 20:15:22 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c913fcf_3bd8b008
+UUID: 3c913fcf_3b3ef0f1
+Bytes: 522
+get_build_var is not exported by envsetup.sh
+
+  aosp_master$ declare -x -F get_build_var
+  aosp_master$
+
+That is why we need to re-source envsetup.sh again in this script [even if it was already sourced prior by the user of the script].
+
+------------
+
+I think you are right we could try to look for $PWD/build/envsetup.sh and just source it, however it still needs to lunch into the right thing somehow (and maybe it's a missing step that we check that lunch was actually ran?) or the right target build won't be selected.
+
 36
 Fri Oct 21 19:39:44 2016 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>

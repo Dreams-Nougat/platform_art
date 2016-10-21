@@ -62,6 +62,26 @@ You can just set TARGET_PRODUCT and TARGET_VARIANT to build without using lunch,
 
 Checking for build/envsetup.sh is probably more reliable than checking for art/
 
+22
+Fri Oct 21 20:37:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc93c3d8_90db6262
+UUID: 5c2fd370_8795e61d
+Bytes: 508
+Does it really work that easily, lunch seems to set a bunch of stuff besides those two variables?
+
+
+    export TARGET_PRODUCT=$product
+    export TARGET_BUILD_VARIANT=$variant
+    export TARGET_BUILD_TYPE=release
+    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+    export PATH=...
+
+and so on. 
+-------
+
+that being said I noticed it sets ANDROID_HOST_OUT (and ANDROID_PRODUCT_OUT) but not ANDROID_TARGET_OUT so I could also avoid an extra call into the build by using that environment variable instead.
+
 36
 Fri Oct 21 19:39:44 2016 +0000
 Author: Colin Cross <1002751@85c56323-6fa9-3386-8a01-6480fb634889>

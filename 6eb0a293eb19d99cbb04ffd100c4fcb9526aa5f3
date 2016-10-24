@@ -16,6 +16,14 @@ UUID: 3c777f48_1a16da6f
 Bytes: 69
 Why don't you just change local_ref_cookie to be an IRTSegmentState ?
 
+124:7-124:23
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c777f48_1a16da6f
+UUID: 3c913fcf_bb6e8071
+Bytes: 140
+local_ref_cookie is. But I did not want to change the signature of the methods here, considering they are exposed to assembly/compiled code.
+
 File: runtime/indirect_reference_table.h
 
 235:13-235:22
@@ -31,6 +39,14 @@ That refers though to their size(), i.e. how many elements it contains, and not 
 
 So I suggest something like "ResizableCapacity" or anything else less misleading.
 
+235:13-235:22
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c913fcf_fe1f2180
+UUID: 3c913fcf_9b8aa4fb
+Bytes: 4
+Done
+
 236:4-236:17
 Thu Oct 20 23:14:55 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,12 +56,28 @@ Since this is an enum class perhaps "kYes", "kNo" is enough since it always will
 
 so it's a bit redundant to see "Resizable::kResizable" as opposed to "Resizable::kYes"
 
+236:4-236:17
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c777f48_5adb0263
+UUID: 3c913fcf_bb95a01d
+Bytes: 4
+Done
+
 247:35-247:44
 Thu Oct 20 23:14:55 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c913fcf_5e0f354d
 Bytes: 8
 see L235
+
+247:35-247:44
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c913fcf_5e0f354d
+UUID: 3c913fcf_db9a6c4c
+Bytes: 4
+Done
 
 332
 Thu Oct 20 23:14:55 2016 +0000
@@ -56,12 +88,30 @@ Bytes: 236
 
 I don't see why it needs to change, why not just leave the old isDebug ? 3 else 2 check?
 
+332
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c777f48_5a51c21f
+UUID: 3c913fcf_bbbcc0a5
+Bytes: 286
+I didn't see a reason to change the encoding between debug and non-debug, that sounded like an unnecessary complication.
+
+You need 3 bits to encode the serial in debug builds. Saving one in non-debug doesn't sound important, considering there are still 27 bits left for the table index.
+
 333:33-333:35
 Thu Oct 20 23:14:55 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c777f48_5a68e2cf
 Bytes: 45
 Why is it shifting 2 instead of 1 everywhere?
+
+333:33-333:35
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c777f48_5a68e2cf
+UUID: 3c913fcf_fbc64833
+Bytes: 18
+Typo. Thanks. Done
 
 341:35-341:38
 Thu Oct 20 23:14:55 2016 +0000
@@ -70,6 +120,14 @@ UUID: 3c777f48_ba8d4682
 Bytes: 24
 std::numeric_limits::max
 
+341:35-341:38
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c777f48_ba8d4682
+UUID: bc0a8fd0_4e6b13a0
+Bytes: 4
+Done
+
 348:35-348:37
 Thu Oct 20 23:14:55 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -77,12 +135,28 @@ UUID: 3c777f48_7a883e6f
 Bytes: 22
 BitSizeOf(table_index)
 
+348:35-348:37
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c777f48_7a883e6f
+UUID: bc0a8fd0_6e725793
+Bytes: 4
+Done
+
 351:39-351:41
 Thu Oct 20 23:14:55 2016 +0000
 Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3c777f48_9a85ea56
 Bytes: 22
 BitSizeOf(table_index)
+
+351:39-351:41
+Sat Oct 22 01:47:47 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c777f48_9a85ea56
+UUID: bc0a8fd0_4e19533c
+Bytes: 38
+No. That's the size of an IndirectRef.
 
 378:30-378:36
 Thu Oct 20 23:14:55 2016 +0000

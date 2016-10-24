@@ -1,0 +1,167 @@
+Revision: 995977427e7624a5fba5c7ea1fba1fa4e35ed640
+Patch-set: 3
+File: runtime/indirect_reference_table.cc
+
+131:25-131:33
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_d7d97342
+Bytes: 5
+const
+
+131:14-131:24
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18a68d9_017fca1c
+Bytes: 21
+nit: CountNullEntries
+
+142:0-143:68
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18a68d9_8173da5b
+Bytes: 38
+Very elegant and intuitive, thank you!
+
+154
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18a68d9_e1d8a609
+Bytes: 239
+I suppose it'll constantly go into this branch whenever we pop a 0-entry frame?
+
+But it won't matter because the scanning times will instantly finish (since there's only 0 entries).
+
+Probably should add a comment about this somewhere here.
+
+File: runtime/indirect_reference_table.h
+
+49
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_5761e3ec
+Bytes: 27
+Is this accurate for weaks?
+
+58
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_5788c36e
+Bytes: 168
+This implies can't call DeleteLocalRef for something created prior to a PushFrame.
+
+I think we should call out the semantics here as well as the efficiency requirements
+
+87:13-87:21
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_97d9bb85
+Bytes: 1
+?
+
+88:17-90:55
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_d7a173e3
+Bytes: 64
+Why does this matter?
+
+It says it's not a real pointer on L50-51
+
+92:70-92:71
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_97b09b2b
+Bytes: 87
+: here will probably be more clear the rest of the sentences elaborate on this sentence
+
+94:38-95:18
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_77ad07cf
+Bytes: 23
+Is this 2x still right?
+
+104
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_37fa6fcd
+Bytes: 131
+(Unrelated to your code)
+
+I don't like this, it overloads handlescope and invalid? Why don't we have -1 or 4, etc for handle scope?
+
+108:11-108:13
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_7704e7ee
+Bytes: 21
+nit align = by column
+
+115:74-115:78
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_b7f4bfdb
+Bytes: 110
+not new code but if its not too much trouble, make this into a kKindMask or similar? 
+
+   (1 << kKindBits) - 1
+
+142:67-142:71
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_f76597cb
+Bytes: 23
+bits for the top index.
+
+143:23-143:27
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_576ba39f
+Bytes: 6
+within
+
+175
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_b782ff1f
+Bytes: 62
+add a static_assert for this please. IsPowerOfTwo in bit_utils
+
+342
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_b7295f54
+Bytes: 163
+nit: use uref >> (kKindBits + kSerialBits) or (uref >> kKindBits) >> kSerialBits to avoid having to think about whether >> is left associative or right associative
+
+349:47-349:49
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_172f6b56
+Bytes: 14
+nit: magic 32s
+
+384:30-384:36
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_378d4fbe
+Bytes: 6
+modulo
+
+393:17-393:22
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: bc0a8fd0_17964bd6
+Bytes: 16
+table's capacity
+
+File: runtime/jni_internal_test.cc
+
+2321
+Mon Oct 24 18:17:11 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a18a68d9_c1248226
+Bytes: 50
+nit: can probably just add == and != to the state.
+

@@ -26,6 +26,16 @@ UUID: c1d3dce9_923a3c89
 Bytes: 4
 Why?
 
+410:19-410:38
+Mon Oct 24 20:33:51 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1d3dce9_923a3c89
+UUID: c1d3dce9_352d7aab
+Bytes: 280
+Why not? 
+
+Seriously, as an optimization is nice but not really critical, but the main reason emplacing is used here is that it avoids the inconvenient questions about copy/move semantics of the ti::Agent type (as I noted in agent.h that's one area that could be improved further)
+
 File: runtime/native/dalvik_system_VMDebug.cc
 
 507:2-511:3
@@ -34,6 +44,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1d3dce9_72e0f8e5
 Bytes: 45
 I should have asked before? Why is this here?
+
+507:2-511:3
+Mon Oct 24 20:33:51 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1d3dce9_72e0f8e5
+UUID: c1d3dce9_953b06e6
+Bytes: 55
+Good catch, removed (left over from an early iteration)
 
 File: runtime/runtime.cc
 
@@ -44,6 +62,14 @@ UUID: c1d3dce9_b2e500f2
 Bytes: 4
 Typo
 
+1318:13-1318:23
+Mon Oct 24 20:33:51 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1d3dce9_b2e500f2
+UUID: c1d3dce9_5547de6b
+Bytes: 4
+Done
+
 File: runtime/ti/agent.cc
 
 58:22-59:29
@@ -52,6 +78,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1d3dce9_95278629
 Bytes: 11
 Indent off.
+
+58:22-59:29
+Mon Oct 24 20:33:51 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1d3dce9_95278629
+UUID: c1d3dce9_1512b63b
+Bytes: 4
+Done
 
 File: runtime/ti/agent.h
 
@@ -62,6 +96,14 @@ UUID: c1d3dce9_75f8e25e
 Bytes: 135
 I do *not* think this is a good idea. Saving a few characters for less visibility. Leave them copied, or remove the copied definitions.
 
+31:0-32:54
+Mon Oct 24 20:33:51 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1d3dce9_75f8e25e
+UUID: c1d3dce9_35c9fab2
+Bytes: 127
+This is done to have a common type that can be used in the shared DoLoadHelper() method, not to save typing in the definitions.
+
 78:2-79:39
 Mon Oct 24 19:58:06 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -71,6 +113,14 @@ How is this valid? Who owns the handle?
 
 Alex: honestly, why are we trying this optimization? Why not vector<unique_ptr<Agent>>?
 
+78:2-79:39
+Mon Oct 24 20:33:51 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1d3dce9_750f82a2
+UUID: c1d3dce9_750d4218
+Bytes: 305
+Good question. Actual agents can not be copied, but when ti::Agent is used as argument wrapper it can. This is checked in the implementation of the copy assignment, but the real solution is to split into specialized types that fulfill a single role (vector<unique_ptr<Agent>> would be just a band-aid IMO)
+
 File: test/908-attach-agent/attach.h
 
 0
@@ -79,6 +129,14 @@ Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1d3dce9_1562b655
 Bytes: 34
 Needs to be moved, 908 exists now.
+
+0
+Mon Oct 24 20:33:51 2016 +0000
+Author: Leonard Mosescu <1110533@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1d3dce9_1562b655
+UUID: c1d3dce9_55f11eeb
+Bytes: 55
+I just checked the master branch and I don't see a 908?
 
 File: test/ti-agent/common_load.cc
 

@@ -9,12 +9,30 @@ UUID: bcafeeab_db53b369
 Bytes: 177
 Must, should, or ought to? The name alone is very ambiguous, and the comment does unfortunately not help much. Please be more precise what the semantics of having this flag are.
 
+2864
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_db53b369
+UUID: dcf58392_daa0f978
+Bytes: 48
+Added more comments about how this flag is used.
+
 2867:54-2867:58
 Fri Oct 14 09:49:48 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcbe0e35_23dfeafb
 Bytes: 12
 DependsOnGC.
+
+2867:54-2867:58
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcbe0e35_23dfeafb
+UUID: dcf58392_9a0311b9
+Bytes: 528
+It seems to carry a different meaning from DependsOnGC. It can be modified by suspension (not GC) and we'll have special rules about guard elimination/movement. It's a special kind of dependency. A guard needs to exist after receiver's definition, but before that receiver's devirtualized call. I would just treat it specially instead of being part of side effects.
+
+I saw HDeoptimize does CanTriggerGC. Can you explain why? HDeoptimize can trigger gc but it won't return back to the calling method so it doesn't seem to matter.
 
 File: runtime/cha.cc
 
@@ -25,12 +43,28 @@ UUID: bcafeeab_db9df35d
 Bytes: 53
 this block of code should probably be a helper method
 
+98
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_db9df35d
+UUID: dcf58392_2093c642
+Bytes: 35
+Moved to SetShouldDeoptimizeFlag().
+
 114
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_bb92274c
 Bytes: 4
 Set?
+
+114
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_bb92274c
+UUID: dcf58392_403d32da
+Bytes: 4
+Done
 
 167
 Thu Oct 13 16:33:51 2016 +0000
@@ -39,6 +73,14 @@ UUID: bcafeeab_9b976b3c
 Bytes: 18
 remove "Basically"
 
+167
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_9b976b3c
+UUID: dcf58392_403a528c
+Bytes: 4
+Done
+
 209:7-210:38
 Fri Oct 14 09:49:48 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,12 +88,31 @@ UUID: bca52e1d_4ba4c5a1
 Bytes: 123
 If it's native, it's not abstract, so you're not using the native entry point for keeping the single implementation, right?
 
+209:7-210:38
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bca52e1d_4ba4c5a1
+UUID: dcf58392_60df8e25
+Bytes: 237
+I took this part of comment out. Change the comment to:
+    // Native method's invocation overhead is already high and it
+    // cannot be inlined. It's not worthwhile to devirtualize the
+    // call which can add a deoptimization point.
+
 240
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_db1853e7
 Bytes: 33
 this loop could use some more doc
+
+240
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_db1853e7
+UUID: dcf58392_a0d9763f
+Bytes: 4
+Done
 
 File: runtime/cha.h
 
@@ -62,6 +123,14 @@ UUID: bcafeeab_5b256316
 Bytes: 110
 how about a cha_test.cc file that does some basic unit testing on its methods; you may have to mock some stuff
 
+29
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_5b256316
+UUID: c1d3dce9_6c6ed774
+Bytes: 136
+Added one that tests dependency manipulating methods. Other methods are more difficult to test and are tested in the run-test test case.
+
 31
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -69,12 +138,28 @@ UUID: dc6d8244_04997671
 Bytes: 124
 please add class-level documentation, this is a good place to describe function and locking issues (like your new cha_lock_)
 
+31
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dc6d8244_04997671
+UUID: c1d3dce9_2c78cf34
+Bytes: 4
+Done
+
 35
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bc6a8e2b_e32e12f9
 Bytes: 93
 describe what it returns in more detail, perhaps a more descriptive typedef will already help
+
+35
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc6a8e2b_e32e12f9
+UUID: dcf58392_0057aa41
+Bytes: 36
+Added more comments for the typedef.
 
 36
 Thu Oct 13 16:33:51 2016 +0000
@@ -90,12 +175,36 @@ UUID: fcc886e8_45bdcaa9
 Bytes: 8
 private?
 
+36:61-36:74
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcc886e8_45bdcaa9
+UUID: dcf58392_5df879a7
+Bytes: 68
+I left it public since I have a cha_test.cc to test this method now.
+
+36
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1c78fafe_266bd618
+UUID: dcf58392_003e8af1
+Bytes: 4
+Done
+
 39
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_fb6f8f52
 Bytes: 67
 You use returns, add, remove, and update. Use one form consistently
+
+39
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_fb6f8f52
+UUID: dcf58392_7da8d576
+Bytes: 26
+Changed returns to return.
 
 50:7-50:13
 Fri Oct 14 09:49:48 2016 +0000
@@ -111,12 +220,36 @@ UUID: bcbe0e35_63d9e213
 Bytes: 8
 Private?
 
+50:7-50:13
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cd3fe97_c7d09ef6
+UUID: dcf58392_bdcb5d5c
+Bytes: 4
+Done
+
+45:0-50:81
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcbe0e35_63d9e213
+UUID: dcf58392_5d5199d5
+Bytes: 26
+Linker needs to call this.
+
 70:18-70:64
 Fri Oct 14 09:49:48 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3cd3fe97_87c6a642
 Bytes: 214
 Add a comment why you need the pair: one is for invalidating the entrypoint of the ArtMethod, the other is for invalidating code in the stack (that is potentially not the entrypoint of its corresponding ArtMethod).
+
+70:18-70:64
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3cd3fe97_87c6a642
+UUID: dcf58392_200c6657
+Bytes: 4
+Done
 
 File: runtime/class_linker.h
 
@@ -127,12 +260,28 @@ UUID: fcc886e8_a5eabe9a
 Bytes: 1
 *
 
+674:24-674:25
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fcc886e8_a5eabe9a
+UUID: dcf58392_c3c76c2f
+Bytes: 4
+Done
+
 1191
 Thu Oct 13 16:33:51 2016 +0000
 Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcafeeab_fbfc2f57
 Bytes: 95
 this is a monster decl that could benefit from some typedefs in cha (see my comments there too)
+
+1191
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_fbfc2f57
+UUID: dcf58392_a395001b
+Bytes: 39
+Should have removed. It's in cha.h now.
 
 1188:0-1192:39
 Fri Oct 14 09:49:48 2016 +0000
@@ -141,12 +290,28 @@ UUID: bca52e1d_abc1e92e
 Bytes: 7
 Remove.
 
+1188:0-1192:39
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bca52e1d_abc1e92e
+UUID: dcf58392_03aa145b
+Bytes: 4
+Done
+
 1204:0-1204:30
 Fri Oct 14 09:49:48 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bcbe0e35_a313daca
 Bytes: 54
 Any reason this is in class linker instead of Runtime?
+
+1204:0-1204:30
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcbe0e35_a313daca
+UUID: dcf58392_23a1107b
+Bytes: 17
+Moved to Runtime.
 
 File: runtime/jit/jit_code_cache.cc
 
@@ -157,6 +322,14 @@ UUID: 9cd86ab1_4a2f93f5
 Bytes: 80
 This entry might be in the CHA data structures. You need to remove it there too.
 
+254:0-254:94
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9cd86ab1_4a2f93f5
+UUID: dcf58392_a3f7c01c
+Bytes: 4
+Done
+
 File: test/616-cha/src/Main.java
 
 70
@@ -166,6 +339,14 @@ UUID: bcafeeab_5b57a35a
 Bytes: 177
 what exactly is this testing? would this test pass if we had no cha? if so, can we make a checker test on something [probably hard]; if not, document better where what is tested
 
+70
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_5b57a35a
+UUID: dcf58392_a3efc003
+Bytes: 168
+Added more comments about what this is testing. I tried to make this pass under optimizing/jit/interpreter. Currently checker part is difficult since this is under jit.
+
 80:0-82:5
 Fri Oct 14 09:49:48 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -173,12 +354,28 @@ UUID: dcc102c4_44082e89
 Bytes: 48
 This isn't true, we do run interpret-only tests.
 
+80:0-82:5
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcc102c4_44082e89
+UUID: dcf58392_43dedc54
+Bytes: 49
+Added sIsOptimizing to distinguish various cases.
+
 155:0-158:28
 Fri Oct 14 09:49:48 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: dcc102c4_a465a246
 Bytes: 36
 I think you can get rid of this now.
+
+155:0-158:28
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcc102c4_a465a246
+UUID: dcf58392_036b34a0
+Bytes: 4
+Done
 
 182
 Thu Oct 13 16:33:51 2016 +0000
@@ -194,4 +391,20 @@ Parent: bcafeeab_9b740bf5
 UUID: bca52e1d_8bc6ad42
 Bytes: 82
 Yeah, we could have a handshake to make sure the thread is where we want it to be.
+
+182
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bca52e1d_8bc6ad42
+UUID: dcf58392_268abefc
+Bytes: 4
+Done
+
+182
+Mon Oct 24 23:45:55 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bcafeeab_9b740bf5
+UUID: dcf58392_468d4a14
+Bytes: 162
+Not really flakiness. Just opens up more opportunities to hit the scenario to be tested. I modified it and it's guaranteed to hit the scenario I want to test now.
 

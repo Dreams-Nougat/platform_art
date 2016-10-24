@@ -1,0 +1,100 @@
+Revision: 6eb0a293eb19d99cbb04ffd100c4fcb9526aa5f3
+Patch-set: 2
+File: runtime/entrypoints/quick/quick_jni_entrypoints.cc
+
+27
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_faf74e1e
+Bytes: 86
+I'd also assert that it's a trivial type, otherwise casting it to uint32_t is illegal.
+
+124:7-124:23
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_1a16da6f
+Bytes: 69
+Why don't you just change local_ref_cookie to be an IRTSegmentState ?
+
+File: runtime/indirect_reference_table.h
+
+235:13-235:22
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c913fcf_fe1f2180
+Bytes: 392
+Now that it's part of the public interface, "Resizable" is a bit misleading.
+
+Usually containers come in two types: mutable (resizeable) and immutable (fixed).
+
+That refers though to their size(), i.e. how many elements it contains, and not whether or not their capacity() can grow beyond the initial capacity
+
+So I suggest something like "ResizableCapacity" or anything else less misleading.
+
+236:4-236:17
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_5adb0263
+Bytes: 195
+Since this is an enum class perhaps "kYes", "kNo" is enough since it always will be preceded be Resizable::
+
+so it's a bit redundant to see "Resizable::kResizable" as opposed to "Resizable::kYes"
+
+247:35-247:44
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c913fcf_5e0f354d
+Bytes: 8
+see L235
+
+332
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_5a51c21f
+Bytes: 236
+3 bits makes it 24 bytes per entry instead of 16 which pushes out the size to be more than a page, also changes alignment to 8 instead of 16, etc.
+
+I don't see why it needs to change, why not just leave the old isDebug ? 3 else 2 check?
+
+333:33-333:35
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_5a68e2cf
+Bytes: 45
+Why is it shifting 2 instead of 1 everywhere?
+
+341:35-341:38
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_ba8d4682
+Bytes: 24
+std::numeric_limits::max
+
+348:35-348:37
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_7a883e6f
+Bytes: 22
+BitSizeOf(table_index)
+
+351:39-351:41
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c777f48_9a85ea56
+Bytes: 22
+BitSizeOf(table_index)
+
+378:30-378:36
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c913fcf_7e515120
+Bytes: 6
+modulo
+
+387:22-387:23
+Thu Oct 20 23:14:55 2016 +0000
+Author: Igor Murashkin <1021471@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3c913fcf_1e5a0d42
+Bytes: 8
+capacity
+

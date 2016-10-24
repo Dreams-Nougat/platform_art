@@ -9,12 +9,28 @@ UUID: 7c0657a0_6ee4eb25
 Bytes: 95
 Check empty() instead. It should not matter for an empty ArrayRef<> whether the data() is null.
 
+778:42-778:59
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_6ee4eb25
+UUID: bc352f64_c5016cb4
+Bytes: 4
+Done
+
 915:42-915:59
 Mon Oct 24 15:58:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_4ee12714
 Bytes: 5
 ditto
+
+915:42-915:59
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_4ee12714
+UUID: 3c7a1f69_b9c13b1f
+Bytes: 4
+Done
 
 1399:62-1399:79
 Mon Oct 24 15:58:19 2016 +0000
@@ -23,6 +39,14 @@ UUID: fce08714_f23fa01f
 Bytes: 5
 ditto
 
+1399:62-1399:79
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fce08714_f23fa01f
+UUID: dcf663e5_c67184c4
+Bytes: 4
+Done
+
 1672:40-1672:57
 Mon Oct 24 15:58:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +54,28 @@ UUID: 2123d89f_751e687a
 Bytes: 5
 ditto
 
+1672:40-1672:57
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2123d89f_751e687a
+UUID: bc352f64_650740c7
+Bytes: 4
+Done
+
 1678:8-1679:39
 Mon Oct 24 15:58:19 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_ee569be7
 Bytes: 303
 This sequential representation is slow to search through without the oat file (i.e. touching lots of pages if everything is quickened). I think we should aim for quick retrieval even without the oat file. Another goal (not for this CL) would be to allow quickening even those methods that we do compile.
+
+1678:8-1679:39
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_ee569be7
+UUID: 2123d89f_f55a783f
+Bytes: 204
+I agree. I left the optimization for another CL, as the only current quickening user is the JIT and we can build the basic vdex functionality without optimizing quickening representation in the vdex file.
 
 File: compiler/oat_writer.h
 
@@ -45,6 +85,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_ce0d171b
 Bytes: 40
 Add comment about WriteQuickeningInfo()?
+
+125
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_ce0d171b
+UUID: 41260cae_56bff407
+Bytes: 39
+Done (as well as the other vdex steps).
 
 File: oatdump/oatdump.cc
 
@@ -60,6 +108,14 @@ Isn't this rather weak? Shouldn't we check
 
 ? (Assuming we have access to the vdex_file_.)
 
+1034
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf663e5_063afce2
+UUID: 813d64bf_3076c8bc
+Bytes: 4
+Done
+
 File: runtime/vdex_file.h
 
 62
@@ -68,4 +124,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_4efa47ce
 Bytes: 100
 We should theoretically bump the vdex version for this. But maybe we don't want to do that just yet?
+
+62
+Mon Oct 24 17:17:28 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_4efa47ce
+UUID: 7c0657a0_ee4b3b26
+Bytes: 142
+No, as there's no real user currently of these new fields. I'll bump it as soon as .vdex encodes all info, and we change their representation.
 

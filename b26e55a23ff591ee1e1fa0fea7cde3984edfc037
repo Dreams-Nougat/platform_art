@@ -1,0 +1,161 @@
+Revision: b26e55a23ff591ee1e1fa0fea7cde3984edfc037
+Patch-set: 6
+File: runtime/art_method.h
+
+486:0-486:62
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 617f90e7_4778ce35
+Bytes: 24
+Move this before the if?
+
+File: runtime/cha.cc
+
+238:0-238:25
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1898840_c9713100
+Bytes: 44
+Should you check if the method is final too?
+
+File: runtime/cha.h
+
+33:43-33:56
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0195f44b_8cb90782
+Bytes: 12
+devirutalize
+
+39:0-42:14
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1bb48d0_d9711300
+Bytes: 68
+I'd put this at the end. We eventually want to do this for AOT code.
+
+49:60-49:61
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e191c062_abdf89be
+Bytes: 3
+the
+
+49:28-49:29
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c1cd9c7a_e28aa6a3
+Bytes: 3
+the
+
+51:45-51:46
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0195f44b_acb6c38e
+Bytes: 3
+The
+
+52:37-52:49
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e191c062_cbdcd5cc
+Bytes: 7
+depends
+
+55:3-57:33
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 817ac4f4_28300b1f
+Bytes: 117
+After a new class gets linked, if that new class is now invalidating the status of single implementation methods, ...
+
+58:54-58:59
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 817ac4f4_48253fdc
+Bytes: 4
+need
+
+58:63-59:16
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 211918c1_65f32634
+Bytes: 18
+to be invalidated.
+
+71:1-72:41
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1bb48d0_199d4bf4
+Bytes: 95
+Maybe add this comment once you implement it? That way you aviod the "some" and can be clearer.
+
+74:27-74:34
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 817ac4f4_682a03ad
+Bytes: 5
+taken
+
+79:26-79:34
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1898840_89673943
+Bytes: 10
+guaranteee
+
+83:38-83:46
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e191c062_0b741df4
+Bytes: 263
+... we need to know both the ArtMethod and the method header. If the ArtMethod has the method header as the entyrpoint, we update the entry point to the interpreter bridge. We will also deoptimize frames that are currently executing the code of the method header.
+
+87:55-87:82
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1bb48d0_99907bda
+Bytes: 25
+MehodAndMethodHeaderPair?
+
+106:0-106:41
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c184bc26_cadcc3cc
+Bytes: 14
+Add a comment.
+
+File: runtime/jit/jit_code_cache.cc
+
+254:0-255:78
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e191c062_0b9dfdf3
+Bytes: 136
+This is annoying. How about just locking the cha lock eagerly and collecting the dead pointers when iterating over th emethod_code_map_?
+
+275:0-277:72
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: a1898840_09426983
+Bytes: 134
+I wouldn't bother using arenas here. The jit code cache internal data structures are already eg, std::vector not maintained by arenas.
+
+File: runtime/oat_quick_method_header.h
+
+79:0-155:67
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 617f90e7_47ed2e9b
+Bytes: 179
+I am tempted to add a new section in the code info that will contain "interesting" individual bits. The trick of using the code size beign aligned I don't think will work for AOT.
+
+File: test/common/runtime_state.cc
+
+164:2-164:3
+Tue Oct 25 14:46:18 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c1cd9c7a_22100e74
+Bytes: 27
+Do you need the scope here?
+

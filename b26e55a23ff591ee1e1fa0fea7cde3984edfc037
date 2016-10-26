@@ -282,6 +282,14 @@ cha_lock_ is needed during class linking so I don't want code cache gc to block 
 
 Actually we don't need JitCodeCache::lock_ for real code freeing part (which may have contention on malloc lock). All we need is updating used_memory_for_code_ under JitCodeCache::lock_ in the end. I just made the change and consider this as an improvement since we moved some code out of JitCodeCache::lock_.
 
+254:0-255:78
+Wed Oct 26 08:29:39 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c8e09a_533c24f6
+UUID: 612f9071_c7c51e2a
+Bytes: 77
+No, you need the jit code cache lock as the underlying mspace is not locking.
+
 275:0-277:72
 Tue Oct 25 14:46:18 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -314,6 +322,14 @@ UUID: e1c8e09a_56041279
 Bytes: 118
 A little confused. I'm using the highest bit so it's not related to alignment?
 Also we don't do CHA for AOT code  yet.
+
+79:0-155:67
+Wed Oct 26 08:29:39 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c8e09a_56041279
+UUID: 213cb8a3_2daded68
+Bytes: 246
+Oh sorry I thought you were using the lowest bit. Still, I am also thinking about another bit for knowing if a OatQuickMethodHeader has JIT literal tables. But now that I realize code_size_ is 32bit, we probably can take a few high bits for this.
 
 File: test/common/runtime_state.cc
 

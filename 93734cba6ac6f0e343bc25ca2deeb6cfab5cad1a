@@ -9,6 +9,17 @@ UUID: a1898840_6946856e
 Bytes: 73
 maybe a byte array? reads better and don't need the extra //JitD comment.
 
+123:33-123:55
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a1898840_6946856e
+UUID: e191c062_6b2da1aa
+Bytes: 302
+I personally like current definition more. Because it is consistent with the defenition in kernel perf source code:
+https://github.com/torvalds/linux/blob/master/tools/perf/util/jitdump.h#L18
+
+However I can change if you think all magic definitions should follow the rule that we use byte array in ART.
+
 136:0-138:56
 Fri Oct 21 15:06:43 2016 +0000
 Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -26,12 +37,55 @@ Actually, could this help with code cache GC? If the compiled code gets deleted,
 
 Note that currently, we disable code cache GC under perf.
 
+136:0-138:56
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_2e3dd3da
+UUID: 7c0657a0_0e20cf5d
+Bytes: 2170
+Nicolas, if we still want to use the simple perf-PID.map approach, it's better that code cache GC is still disabled for perf.
+
+
+Now, for jit-PID.dump approach. In short, yes.
+Because this approach includes time stamp information for every event, perf report should support jit code cache GC and differenciating methods loaded to the same address. The time stamp information can help the profiler to locate the right symbol. I have experimented and confirmed this behavior with my simple jit program.
+
+
+The 'kMove' is not for recording 'code delete' event. It just helps the profiler to map samples from different code locations (due to code move) to the same symbol.
+https://github.com/torvalds/linux/blob/master/tools/perf/util/jitdump.c#L468
+For code cache GC, we don't need to report a 'code delete' event.
+
+
+===========================================
+DETAIL:
+
+So, let's assume that code cache GC happed and two jitted methods were reported in 'kLoad' events with the same code_address_ (because the first method is deleted by code cache GC). In theory, the profiler should be able to differeciate the samples for those two methods, because each sample has time stamp, and we have reported the 'kLoad' events with time stamps. The profiler should be able to tell that a sample belongs to the period of the first jitted method, or does it belong to the period of the second jitted method.
+
+I have experimented and confirmed this behavior with my simple jit program. We can do more experiments on ART JIT. 
+
+I've also checked the processed perf.data with ART jitted code information, I can see that the time stamps information are already there for PERF_RECORD_MMAP2 (jited code load) and  PERF_RECORD_SAMPLE (sample for jitted code). The first numbers in every line (5068487571183 and 5069935389516) are the time stamps.
+
+------------------------------------------
+5068487571183 0x253e0 [0x80]: PERF_RECORD_MMAP2 16753/16753: [0x7fad3ddd30(0x118) @ 0x40 08:01 84803589 1]: --xs /data/misc/trace/jitted-16753-1.so
+...
+5069935389516 0x6e770 [0x28]: PERF_RECORD_SAMPLE(IP, 0x2): 16753/16753: 0x7fad3dfe5c period: 250000 addr: 0
+------------------------------------------
+
 157:11-157:22
 Tue Oct 25 16:07:38 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0195f44b_2ca2d336
 Bytes: 70
 what does this refer to? The id of the the actual JIT-compiler thread?
+
+157:11-157:22
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0195f44b_2ca2d336
+UUID: 617f90e7_072b36b3
+Bytes: 210
+I have described in bellow comment, the pid & tid fields here tell perf which thread in which process performed the jitted code load action.
+
+In our case, it should be the process ID of the jit compiler thread.
 
 158:0-158:73
 Mon Oct 24 13:16:41 2016 +0000
@@ -40,12 +94,34 @@ UUID: 7c0657a0_0e3a0fe3
 Bytes: 89
 Odd, the jitted code will run on lots of threads. Won't this value here skew the display?
 
+158:0-158:73
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_0e3a0fe3
+UUID: 617f90e7_47628e56
+Bytes: 437
+Right. I did more investigation on the perf source code. The profiler is able to map raw samples to the correct thread running the jitted code.
+
+The 'thread_id_' here, doesn't affect this mapping.
+
+From what I've learned from perf source code, this thread_id_ field tells the profiler who (which pid & tid) performed this code load action, in our case, it should be the jit compiler thread.
+
+I'll change the code and comment accordingly.
+
 159:30-159:100
 Mon Oct 24 13:16:41 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: bc352f64_85b36437
 Bytes: 26
 Mention what ART jit does?
+
+159:30-159:100
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: bc352f64_85b36437
+UUID: 0195f44b_cc5f8f55
+Bytes: 4
+Done
 
 172:0-172:76
 Mon Oct 24 13:16:41 2016 +0000
@@ -54,6 +130,15 @@ UUID: 7c0657a0_ee457b62
 Bytes: 84
 Mention that's it's currently unused by the ART JIT. Do you plan on implementing it?
 
+172:0-172:76
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_ee457b62
+UUID: 617f90e7_67b5d285
+Bytes: 180
+Currently VIXL32 has high priority. After this CL, I will join rest of our team to help on the VIXL32 work.
+After that I can come back to implement the source line mapping feature.
+
 248:0-249:23
 Tue Oct 25 16:07:38 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -61,12 +146,34 @@ UUID: 617f90e7_a7642a3f
 Bytes: 86
 What if Open fails? does it make sense to continue with the Write? Document why if so.
 
+248:0-249:23
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 617f90e7_a7642a3f
+UUID: a1bb48d0_19baab18
+Bytes: 474
+I have warning in OpenMarkerFile(), if open fails, it will report that 'perf inject' tool will not work.
+
+For me, it still makes sense to continue to write jit-PID.dump file even when OpenMarkerFile() fails. Because even when 'perf inject' tool cannot work, developers can still use other tools to map the samples in perf.data to the information (symbol,address,code) recorded in the jit-PID.dump file, and still proceed the jitted code analylsis.
+
+I've added comments here.
+
 276:4-276:10
 Tue Oct 25 16:07:38 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 617f90e7_a78d0abf
 Bytes: 73
 What if it fails? You should log errors here and maybe stop the progress.
+
+276:4-276:10
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 617f90e7_a78d0abf
+UUID: 617f90e7_27303a1f
+Bytes: 300
+These writes happen after WriteJitDumpHeader(), I already have checks and logs there, that's why I didn't check the return results here.
+
+For such debug feature, I only want to write warning in log (to warn developer that perf profiling on jitted code may not work), I don't want to stop the process.
 
 File: compiler/jit/jit_logger.h
 
@@ -77,6 +184,14 @@ UUID: 7c0657a0_6e33cb11
 Bytes: 6
 where?
 
+65:15-65:24
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_6e33cb11
+UUID: a13988ba_a99b9d4e
+Bytes: 111
+I've added comments in PS6, which describes that the location of jit-PID.map and the generated small ELF files.
+
 66:76-66:77
 Mon Oct 24 13:16:41 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -84,10 +199,26 @@ UUID: 7c0657a0_4e300703
 Bytes: 30
 ... report. Source code can...
 
+66:76-66:77
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_4e300703
+UUID: a1dd08a2_c966f167
+Bytes: 4
+Done
+
 73:0-74:53
 Mon Oct 24 13:16:41 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 41260cae_76cf9013
 Bytes: 14
 Nit: one line.
+
+73:0-74:53
+Wed Oct 26 10:19:26 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41260cae_76cf9013
+UUID: 01c254c7_a4576274
+Bytes: 4
+Done
 

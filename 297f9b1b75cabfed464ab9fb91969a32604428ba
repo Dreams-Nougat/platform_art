@@ -11,6 +11,16 @@ Do you need this change? Doesn't
   'result = ArmInst...'
 still work?
 
+38:6-38:19
+Wed Oct 26 00:16:06 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0ec6ea30_02d27a2e
+UUID: e1c8e09a_a700d2b0
+Bytes: 154
+Still required. The subclasses return unique_ptr<subclass>, which isn't assignable to unique_ptr<superclass>.
+
+Would you like me to change the subclasses?
+
 File: runtime/arch/mips64/instruction_set_features_mips64.h
 
 65:2-65:9
@@ -20,6 +30,14 @@ UUID: eec0b617_012efa87
 Bytes: 79
 In some cases you removed the 'virtual' keyword. Should you remove it here too?
 
+65:2-65:9
+Wed Oct 26 00:16:06 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eec0b617_012efa87
+UUID: e1c8e09a_a7d9f23e
+Bytes: 99
+Good point, thanks. This class is marked FINAL, there's no reason to declare anything virtual here.
+
 File: runtime/arch/x86_64/instruction_set_features_x86_64.h
 
 32:1-35:3
@@ -28,4 +46,12 @@ Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2e6aced9_63556ddf
 Bytes: 169
 This pattern seems awkward and slightly dangerous. Perhaps it's worth introducing a helper function for converting an X86FeaturesUniquePtr to an X86_64FeaturesUniquePtr.
+
+32:1-35:3
+Wed Oct 26 00:16:06 2016 +0000
+Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2e6aced9_63556ddf
+UUID: e1c8e09a_888283e6
+Bytes: 4
+Done
 

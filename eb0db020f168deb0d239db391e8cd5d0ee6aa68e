@@ -9,10 +9,33 @@ UUID: 7c0657a0_eed9fb41
 Bytes: 163
 Is `vixl::aarch32::LeaveFlags` the equivalent of `art::arm::kCcKeep`?  If so, the current code seems correct (with respect to the current version of VIXL in AOSP).
 
+2979:0-2980:53
+Wed Oct 26 16:18:37 2016 +0000
+Author: Artem Serov <1089808@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_eed9fb41
+UUID: 617f90e7_2773da5d
+Bytes: 550
+Yes, it works correctly.
+Currently if you don't provide any LeaveFlags option for macroinstruction vixl will use instruction which doesn't touches the flags, so ADD will never transform into ADDS. This can lead to code size increase due to 16bit/32bit encodings usage
+
+On the other hand the current ART arm assembler approach leads sometimes to excessive use of flags which may lead to performance regressions.
+
+Thus we stick with current implementation; a little bit later we shall work on it as a "reach parity" task.
+
+I have rephrased the comment.
+
 3251:59-3251:64
 Mon Oct 24 17:54:34 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_cede3728
 Bytes: 186
 Maybe add a TODO (in compiler/utils/arm/assembler_arm_shared.h or in compiler/utils/arm/assembler_arm_vixl.h) to (eventuelly) replace `art::arm::SetCc` with `vixl::aarch32::FlagsUpdate`?
+
+3251:59-3251:64
+Wed Oct 26 16:18:37 2016 +0000
+Author: Artem Serov <1089808@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_cede3728
+UUID: 0195f44b_8c674743
+Bytes: 75
+Have put the comment here - it's the single place where it is used for now.
 

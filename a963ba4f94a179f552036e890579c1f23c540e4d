@@ -44,6 +44,15 @@ DependsOnGC is the equivalent of CanBeSuspended. A suspension point is a potenti
 
 Not sure about HDeoptimize being DependsOnGC. I think we can remove that dependency.
 
+2867:54-2867:58
+Thu Oct 27 21:43:12 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e191c062_6bce8115
+UUID: a1826880_f6c3c693
+Bytes: 338
+DependsOnGC really carries some dependency on moving GC which can invalidate pointers. This flag doesn't face the same dependency. A moving GC won't kill this flag's value.
+This flag's value isn't tied to heap state which is what usually side effects track. I'd rather treat it specially in its own elimination/hoisting optimization part.
+
 File: runtime/cha.cc
 
 98

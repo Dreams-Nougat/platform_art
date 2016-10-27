@@ -9,6 +9,14 @@ UUID: 612f9071_67e632fe
 Bytes: 35
 Add DCHECK_LT(adjusted_offset, 0) ?
 
+2147:21-2147:50
+Thu Oct 27 11:39:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 612f9071_67e632fe
+UUID: 612f9071_4aa5b387
+Bytes: 41
+I prefer DCHECK_LT(count_offset, offset).
+
 File: compiler/optimizing/intrinsics_arm.cc
 
 1062:4-1062:9
@@ -18,6 +26,14 @@ UUID: 612f9071_07b496d7
 Bytes: 17
 Can't you use IP?
 
+1062:4-1062:9
+Thu Oct 27 11:39:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 612f9071_07b496d7
+UUID: 612f9071_079d764f
+Bytes: 151
+We are already using IP. We really need this additional register in the `different_compression` path. I've already used some tricks to avoid the temp4.
+
 File: runtime/mirror/string-inl.h
 
 109:7-109:29
@@ -26,4 +42,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 612f9071_87a88677
 Bytes: 32
 Move this check in IsCompressed?
+
+109:7-109:29
+Thu Oct 27 11:39:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 612f9071_87a88677
+UUID: 612f9071_ea7ca72a
+Bytes: 151
+We could simply remove this if you prefer. If the string compression is disabled, `String::IsCompressed(count_)` trivially evaluates to `false` anyway.
 

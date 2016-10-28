@@ -53,6 +53,18 @@ Bytes: 338
 DependsOnGC really carries some dependency on moving GC which can invalidate pointers. This flag doesn't face the same dependency. A moving GC won't kill this flag's value.
 This flag's value isn't tied to heap state which is what usually side effects track. I'd rather treat it specially in its own elimination/hoisting optimization part.
 
+2867:54-2867:58
+Fri Oct 28 11:47:58 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a1826880_f6c3c693
+UUID: 612f9071_2da89960
+Bytes: 358
+No, DependsOnGC is also about having pointers in the middle of an object that cannot span a suspend point. so it's not just about moving GC.
+
+You can name it DependsOnSuspension if you think that's clearer. In the end I think they all share this dependency.
+
+In any case, you can put a TODO here, as the CanBeMoved will prevent any (invalid) merges/hoisting.
+
 File: runtime/cha.cc
 
 98

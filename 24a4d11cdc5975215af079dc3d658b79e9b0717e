@@ -9,3 +9,26 @@ UUID: 612f9071_edcda117
 Bytes: 150
 I think this should be outside the loop. Just change the end of the loop to `CMP tmp, #0; BNE loop_head" and you can simply move this after exit_loop.
 
+815:0-816:17
+Fri Oct 28 14:41:01 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 612f9071_edcda117
+UUID: 612f9071_4d606d19
+Bytes: 504
+We could move the CLREX instruction out of the loop (as in the ARM64 implementation), but I think this would increase code size:
+
+  Label loop_head, comparison_failed, exit_loop;
+  __ Bind(&loop_head);
+  __ ldrex(tmp, tmp_ptr);
+  __ subs(tmp, tmp, ShifterOperand(expected));
+  __ b(&comparison_failed, NE);
+  __ strex(tmp, value, tmp_ptr);
+  __ cmp(tmp, ShifterOperand(1);
+  __ b(&loop_head, EQ);
+  __ b(&exit_loop);
+  __ Bind(&comparison_failed);
+  __ crlex();
+  __ Bind(&exit_loop);
+
+What do you think?
+

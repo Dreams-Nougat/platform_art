@@ -9,3 +9,13 @@ UUID: 26d84e6c_50fc32c5
 Bytes: 66
 This can be racy soon. Prepare for the need for synchronization...
 
+115
+Tue Nov 01 00:12:09 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 26d84e6c_50fc32c5
+UUID: 26d84e6c_90ff3a8c
+Bytes: 299
+Good catch. Syncronize on h_this. Also have DCHECKS in setter for proper use (locks and only 1 set)
+
+I am not sure but I think we should maybe just immediately move this to a global lock or add a lock object to class. Locking on 'this' is not cool (although ATM it's fine due to when this gets set).
+

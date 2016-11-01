@@ -24,3 +24,17 @@ it is not common to hit this, even this test needs jack, not dx to reproduce
 
 but it is gone now
 
+38:27-38:30
+Tue Nov 01 23:53:19 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 26d84e6c_ec59fe16
+UUID: a6dd1ea2_c94c3140
+Bytes: 795
+It seems to me a deeper cause of bug like this is the way we iterate instructions. When we modify instructions, the iterator (like HInstructionIterator) isn't aware of the change of elements.
+
+std::vector::erase() for example, takes an iterator as arg and returns another iterator, thus the iterator is involved.
+
+Block iterator has the same issue since blocks can be dynamically removed/inserted during iteration.
+
+A more thorough fix could be each VisitInstruction() actually isn't HGraphVisitor::VisitInstruction() but really HInstructionIterator::VisitInstruction() to get the iterator involved. But it seems too complicated due to the existing way we code. I'm wondering if there is an easier way to notify the iterator to update its internal next_ correctly when an instruction is removed.
+

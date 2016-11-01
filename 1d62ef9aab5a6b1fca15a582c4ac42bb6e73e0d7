@@ -10,3 +10,17 @@ Bytes: 61
 BCE?
 Why didn't this case fail before? I thought it's tested.
 
+38:27-38:30
+Tue Nov 01 21:41:58 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 26d84e6c_acc776a0
+UUID: 26d84e6c_ec59fe16
+Bytes: 399
+no, I really mean DCE. Dead code elimination removes the array references, so we end up with two consecutive boundschecks entering BCE.
+
+We test something similar at BB level, and I guard against it in the dynamic/constant cases, but this was surprisingly the first time we hit this at the visit level
+
+it is not common to hit this, even this test needs jack, not dx to reproduce
+
+but it is gone now
+

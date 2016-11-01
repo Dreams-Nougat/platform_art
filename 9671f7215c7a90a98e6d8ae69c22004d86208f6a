@@ -1,0 +1,64 @@
+Revision: 9671f7215c7a90a98e6d8ae69c22004d86208f6a
+Patch-set: 2
+File: runtime/verifier/verifier_deps.cc
+
+613:22-613:48
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e64b96fb_bbe487c9
+Bytes: 127
+surprised we don't already have a helper for this. You could add one, pretty sure we have this pattern in other places as well.
+
+633:2-633:30
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 86149ad5_389f2936
+Bytes: 109
+not for this CL, but maybe we should introduce a typedef for this and use consistently across the code. wdyt?
+
+674:4-674:18
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6619660e_97df24f1
+Bytes: 14
+MutableHandle?
+
+676:14-676:24
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e64b96fb_db08739f
+Bytes: 118
+If I remember right a class with verification errors will not be marked resolved. Is this the logic that we want here?
+
+724:18-726:63
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e64b96fb_1bd49bce
+Bytes: 69
+consider adding a helper. The logging makes the logic harder to read.
+
+795:18-800:42
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e64b96fb_fb0d2fac
+Bytes: 18
+ditto for logging.
+
+846:19-846:32
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e64b96fb_bb17a7b6
+Bytes: 266
+Each of the inner methods (e.g. VerifyFields) only print the first error. I think we should be consistent and abort if one of the stages fail.
+
+Or... we could gather all of them and in a list of errors and print them at the end, which would be better for debug mode.
+
+File: runtime/verifier/verifier_deps.h
+
+110:6-110:32
+Tue Nov 01 11:32:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e64b96fb_9bdf4bf1
+Bytes: 12
+explain why.
+

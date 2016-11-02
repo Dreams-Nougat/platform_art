@@ -9,12 +9,28 @@ UUID: 4628e269_c61282c8
 Bytes: 133
 Doesn't that depend on the visit order? Meaning, you're taking the heap location of either the if or the else branch? does it matter?
 
+670:0-670:96
+Wed Nov 02 19:13:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4628e269_c61282c8
+UUID: a6dd1ea2_e3694e3b
+Bytes: 155
+We use reverse post order. A heap location is "global" so it doesn't matter. This CL tries to analyze heap location for a singleton more based on liveness.
+
 677:0-677:40
 Wed Nov 02 11:31:58 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4628e269_e6177eb5
 Bytes: 14
 Add a comment.
+
+677:0-677:40
+Wed Nov 02 19:13:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4628e269_e6177eb5
+UUID: a6dd1ea2_43365a47
+Bytes: 4
+Done
 
 679
 Wed Nov 02 15:32:14 2016 +0000
@@ -23,12 +39,28 @@ UUID: a6dd1ea2_fd78cfa6
 Bytes: 121
 can you use a for (:) iterator here which directly gives the predecessor (makes the use of i/j below less prone to error)
 
+679
+Wed Nov 02 19:13:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6dd1ea2_fd78cfa6
+UUID: a6dd1ea2_e39caef5
+Bytes: 106
+Did it for predecessors including another case below. I need the index i so kept it the same for line 668.
+
 683:10-683:59
 Wed Nov 02 11:31:58 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_abd0e9b1
 Bytes: 45
 I guess a singleton ref cannot feed in a phi?
+
+683:10-683:59
+Wed Nov 02 19:13:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_abd0e9b1
+UUID: a6dd1ea2_e3266ee8
+Bytes: 97
+That's right. It can't have any alias. No phi/select, store to heap, pass to a call as parameter.
 
 684:12-684:29
 Wed Nov 02 11:31:58 2016 +0000
@@ -37,12 +69,28 @@ UUID: e641d62c_cbc535f3
 Bytes: 2
 it
 
+684:12-684:29
+Wed Nov 02 19:13:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_cbc535f3
+UUID: a6dd1ea2_63339e24
+Bytes: 4
+Done
+
 714:2-714:64
 Wed Nov 02 11:31:58 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_ebcaf101
 Bytes: 21
 Please add a comment.
+
+714:2-714:64
+Wed Nov 02 19:13:22 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_ebcaf101
+UUID: a6dd1ea2_e37dce94
+Bytes: 83
+Added some comment and moved the two asserts on line 700 here and deleted line 699.
 
 File: test/530-checker-lse/src/Main.java
 

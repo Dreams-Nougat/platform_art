@@ -17,6 +17,14 @@ to
 
 that is visible many times in this CL?
 
+2070:2-2070:27
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_abbd490f
+UUID: a6dd1ea2_a1110972
+Bytes: 4
+Done
+
 File: runtime/mirror/object-inl.h
 
 144:2-144:51
@@ -25,6 +33,24 @@ Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c634d2c0_ca1283c8
 Bytes: 36
 Could this check be done statically?
+
+144:2-144:51
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c634d2c0_ca1283c8
+UUID: a6dd1ea2_2b185835
+Bytes: 734
+I tried but it doesn't seem to work:
+
+art/runtime/mirror/object-inl.h:145:17: error: static_assert expression is not an integral constant expression
+  static_assert(OFFSETOF_MEMBER(Object, monitor_) == 4U, "Foo");
+                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+art/runtime/base/macros.h:51:3: note: expanded from macro 'OFFSETOF_MEMBER'
+  (reinterpret_cast<uintptr_t>(&reinterpret_cast<t*>(16)->f) - static_cast<uintptr_t>(16u))  // NOLINT
+  ^
+art/runtime/mirror/object-inl.h:145:17: note: reinterpret_cast is not allowed in a constant expression
+art/runtime/base/macros.h:51:4: note: expanded from macro 'OFFSETOF_MEMBER'
+  (reinterpret_cast<uintptr_t>(&reinterpret_cast<t*>(16)->f) - static_cast<uintptr_t>(16u))  // NOLINT
 
 145:10-145:22
 Tue Nov 01 23:10:01 2016 +0000
@@ -49,12 +75,28 @@ UUID: e641d62c_ab7b89e1
 Bytes: 37
 Could you add that as a comment here?
 
+145:10-145:22
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_ab7b89e1
+UUID: a6dd1ea2_ebf000e5
+Bytes: 4
+Done
+
 147:6-147:44
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4628e269_a6a2e635
 Bytes: 170
 Maybe add a comment saying that this instruction is enough to "fool the compiler and the CPU" by having `fad` always be null, without them being able to assume that fact?
+
+147:6-147:44
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4628e269_a6a2e635
+UUID: a6dd1ea2_4b902c66
+Bytes: 4
+Done
 
 148:17-148:21
 Wed Nov 02 15:03:40 2016 +0000
@@ -70,12 +112,36 @@ UUID: e641d62c_cb78d5a7
 Bytes: 75
 Maybe replace with (*fake_address_dependency) and remove `fad` in line 143?
 
+148:17-148:21
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2625ae91_652d46f1
+UUID: a6dd1ea2_6be370ee
+Bytes: 4
+Done
+
+148:43-148:48
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_cb78d5a7
+UUID: a6dd1ea2_abae0882
+Bytes: 4
+Done
+
 149:16-149:18
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_2b52394e
 Bytes: 19
 Nit: missing space.
+
+149:16-149:18
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_2b52394e
+UUID: a6dd1ea2_4b05ccbe
+Bytes: 4
+Done
 
 150:6-150:7
 Wed Nov 02 15:03:40 2016 +0000
@@ -84,6 +150,14 @@ UUID: e641d62c_2beb193a
 Bytes: 72
 Maybe remove, as no variable/register is clobbered by the assembly code?
 
+150:6-150:7
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_2beb193a
+UUID: a6dd1ea2_4becace0
+Bytes: 4
+Done
+
 180:5-180:9
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -91,12 +165,28 @@ UUID: e641d62c_eb7d9194
 Bytes: 12
 mips/mips64?
 
+180:5-180:9
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_eb7d9194
+UUID: a6dd1ea2_eba80078
+Bytes: 4
+Done
+
 185:10-185:32
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_8b408d7d
 Bytes: 49
 Nit: Shouldn't this be "!USE_BAKER_READ_BARRIER"?
+
+185:10-185:32
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_8b408d7d
+UUID: a6dd1ea2_4b9e6c4c
+Bytes: 5
+Done.
 
 File: runtime/mirror/object.h
 
@@ -107,12 +197,28 @@ UUID: e641d62c_ab7389c8
 Bytes: 106
 Maybe add a comment saying that `*fake_address_dependency` is set to 0 after the execution of this method?
 
+97
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_ab7389c8
+UUID: a6dd1ea2_e65af79a
+Bytes: 4
+Done
+
 100:2-100:85
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_4b8ce5c2
 Bytes: 102
 Maybe mention that this overload does not offer any special mechanism to prevent load-load reordering?
+
+100:2-100:85
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_4b8ce5c2
+UUID: a6dd1ea2_464ca3e3
+Bytes: 4
+Done
 
 118:7-118:31
 Wed Nov 02 15:03:40 2016 +0000
@@ -121,6 +227,14 @@ UUID: e641d62c_ab9aa9b8
 Bytes: 62
 Maybe document this method?
 Also, maybe mark it ALWAYS_INLINE?
+
+118:7-118:31
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_ab9aa9b8
+UUID: a6dd1ea2_06410ba5
+Bytes: 4
+Done
 
 File: runtime/read_barrier-inl.h
 
@@ -131,6 +245,14 @@ UUID: e641d62c_8b9dedf4
 Bytes: 27
 Nit: fits on a single line.
 
+225:0-226:67
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_8b9dedf4
+UUID: a6dd1ea2_a630ff48
+Bytes: 4
+Done
+
 231:5-231:23
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -138,12 +260,28 @@ UUID: e641d62c_2b8f99b9
 Bytes: 110
 Maybe mention that this specific overload of mirror::Object::GetReadBarrierState() has load-acquire semantics?
 
+231:5-231:23
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_2b8f99b9
+UUID: a6dd1ea2_a6c3dff1
+Bytes: 4
+Done
+
 232:14-232:33
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 862ada5e_081d87d6
 Bytes: 27
 GetReadBarrierStateAcquire?
+
+232:14-232:33
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 862ada5e_081d87d6
+UUID: a6dd1ea2_26afef38
+Bytes: 4
+Done
 
 File: runtime/read_barrier.h
 
@@ -161,10 +299,34 @@ UUID: 2625ae91_85e5e2c9
 Bytes: 8
 prevent?
 
+93:93-93:97
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_0b92ddde
+UUID: a6dd1ea2_46682314
+Bytes: 4
+Done
+
+93:24-93:29
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2625ae91_85e5e2c9
+UUID: a6dd1ea2_a6759fe9
+Bytes: 4
+Done
+
 94:0-95:70
 Wed Nov 02 15:03:40 2016 +0000
 Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_2b687913
 Bytes: 27
 Nit: fits on a single line.
+
+94:0-95:70
+Wed Nov 02 23:32:13 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_2b687913
+UUID: a6dd1ea2_86721bfe
+Bytes: 4
+Done
 

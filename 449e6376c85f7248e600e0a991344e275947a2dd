@@ -1,6 +1,30 @@
 Revision: 449e6376c85f7248e600e0a991344e275947a2dd
 Patch-set: 2
+File: compiler/image_writer.cc
+
+2070:2-2070:27
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_abbd490f
+Bytes: 165
+Maybe say something about the change from
+
+  if (kUseBakerOrBrooksReadBarrier) // ...
+
+to
+
+  if (kUseBakerReadBarrier) // ...
+
+that is visible many times in this CL?
+
 File: runtime/mirror/object-inl.h
+
+144:2-144:51
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: c634d2c0_ca1283c8
+Bytes: 36
+Could this check be done statically?
 
 145:10-145:22
 Tue Nov 01 23:10:01 2016 +0000
@@ -24,4 +48,123 @@ Parent: a6dd1ea2_698c25c3
 UUID: e641d62c_ab7b89e1
 Bytes: 37
 Could you add that as a comment here?
+
+147:6-147:44
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4628e269_a6a2e635
+Bytes: 170
+Maybe add a comment saying that this instruction is enough to "fool the compiler and the CPU" by having `fad` always be null, without them being able to assume that fact?
+
+148:17-148:21
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2625ae91_652d46f1
+Bytes: 90
+Shouldn't this be "+r", as `result` is both written (on line  146) and read (on line 147)?
+
+148:43-148:48
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_cb78d5a7
+Bytes: 75
+Maybe replace with (*fake_address_dependency) and remove `fad` in line 143?
+
+149:16-149:18
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_2b52394e
+Bytes: 19
+Nit: missing space.
+
+150:6-150:7
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_2beb193a
+Bytes: 72
+Maybe remove, as no variable/register is clobbered by the assembly code?
+
+180:5-180:9
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_eb7d9194
+Bytes: 12
+mips/mips64?
+
+185:10-185:32
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_8b408d7d
+Bytes: 49
+Nit: Shouldn't this be "!USE_BAKER_READ_BARRIER"?
+
+File: runtime/mirror/object.h
+
+97
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_ab7389c8
+Bytes: 106
+Maybe add a comment saying that `*fake_address_dependency` is set to 0 after the execution of this method?
+
+100:2-100:85
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_4b8ce5c2
+Bytes: 102
+Maybe mention that this overload does not offer any special mechanism to prevent load-load reordering?
+
+118:7-118:31
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_ab9aa9b8
+Bytes: 62
+Maybe document this method?
+Also, maybe mark it ALWAYS_INLINE?
+
+File: runtime/read_barrier-inl.h
+
+225:0-226:67
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_8b9dedf4
+Bytes: 27
+Nit: fits on a single line.
+
+231:5-231:23
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_2b8f99b9
+Bytes: 110
+Maybe mention that this specific overload of mirror::Object::GetReadBarrierState() has load-acquire semantics?
+
+232:14-232:33
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 862ada5e_081d87d6
+Bytes: 27
+GetReadBarrierStateAcquire?
+
+File: runtime/read_barrier.h
+
+93:93-93:97
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_0b92ddde
+Bytes: 53
+"object reference load (from one of `obj`'s fields)"?
+
+93:24-93:29
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2625ae91_85e5e2c9
+Bytes: 8
+prevent?
+
+94:0-95:70
+Wed Nov 02 15:03:40 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_2b687913
+Bytes: 27
+Nit: fits on a single line.
 

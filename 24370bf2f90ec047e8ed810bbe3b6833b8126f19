@@ -9,12 +9,40 @@ UUID: e641d62c_0bdaddff
 Bytes: 135
 Note that a JValue doesn't protect references from a GC. Could you add a ScopedAssertNoThreadSuspension during the scope of the JValue?
 
+472:2-472:64
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_0bdaddff
+UUID: e641d62c_0b365d46
+Bytes: 208
+This patch set will need some more thought. ScopedAssertNoThreadSuspension blows up in various conversion paths for a range of reasons, e.g. throwing an exception requires memory, which could be a suspension.
+
+472:2-472:64
+Wed Nov 02 15:02:27 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_0b365d46
+UUID: abeec770_c1e8e23b
+Bytes: 5
+Done.
+
 977:0-977:12
 Wed Nov 02 10:04:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_2bd799d6
 Bytes: 13
 indent is off
+
+977:0-977:12
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_2bd799d6
+UUID: e641d62c_2b01596b
+Bytes: 213
+Thanks, done. Refactoring bogon. 
+
+<tl;dr>
+Somewhere in the world of intentional programming was the separation of source code storage from presentation. Just think...no more conversations about style :-)
+</tl;dr>
 
 986:0-986:12
 Wed Nov 02 10:04:03 2016 +0000
@@ -23,6 +51,14 @@ UUID: e641d62c_4bd4e5cf
 Bytes: 5
 ditto
 
+986:0-986:12
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_4bd4e5cf
+UUID: e641d62c_4bfea546
+Bytes: 4
+Done
+
 992:8-992:14
 Wed Nov 02 10:04:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -30,12 +66,41 @@ UUID: 862ada5e_689fe334
 Bytes: 31
 ditto about NoThreadSuspension.
 
+992:8-992:14
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 862ada5e_689fe334
+UUID: e641d62c_8b5a4d9a
+Bytes: 4
+Done
+
+992:8-992:14
+Wed Nov 02 15:02:27 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_8b5a4d9a
+UUID: e641d62c_0b63bdf9
+Bytes: 283
+Correction, not done.
+
+ConvertArgumentValue can allocate if boxing or throwing an exception:
+
+- if boxing, the unboxed |value| was not on a reference type. The boxed value is allocated  and returned in |value| which is okay.
+- if an exception is thrown, |value| is not touched again.
+
 1004:0-1004:12
 Wed Nov 02 10:04:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_6bd1a1de
 Bytes: 18
 indentation is off
+
+1004:0-1004:12
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_6bd1a1de
+UUID: e641d62c_6bfb6155
+Bytes: 4
+Done
 
 File: runtime/method_handles-inl.h
 
@@ -53,6 +118,14 @@ UUID: e641d62c_ab0d49ad
 Bytes: 14
 Line too long.
 
+130:0-130:110
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_ab0d49ad
+UUID: e641d62c_eb69113b
+Bytes: 4
+Done
+
 File: runtime/method_handles.cc
 
 29:0-36:58
@@ -62,12 +135,30 @@ UUID: e641d62c_eb1751b5
 Bytes: 41
 Don't we have WellKnownClasses for those?
 
+29:0-36:58
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_eb1751b5
+UUID: e641d62c_2b4cf9e2
+Bytes: 206
+ENOENT.
+
+In the first cut of this change, those were added. Having them makes some stuff easier here and elsewhere. As a starting point, I'd assumed there was a preference not to have them. Easy either way.
+
 116:9-116:36
 Wed Nov 02 10:04:03 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_0b1d7dd6
 Bytes: 20
 !IsPrimitivetype() ?
+
+116:9-116:36
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_0b1d7dd6
+UUID: e641d62c_ab4629bd
+Bytes: 4
+Done
 
 File: test/955-methodhandles-smali/smali/Main.smali
 
@@ -77,4 +168,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e641d62c_2b1a39df
 Bytes: 74
 WrongMethodTypeException (I had to think for a few seconds what it was :))
+
+233:14-233:18
+Wed Nov 02 10:44:00 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e641d62c_2b1a39df
+UUID: e641d62c_8b416daa
+Bytes: 4
+Done
 

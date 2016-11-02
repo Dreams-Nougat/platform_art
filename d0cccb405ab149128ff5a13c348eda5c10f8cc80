@@ -9,12 +9,28 @@ UUID: e64b96fb_fbd0cfb2
 Bytes: 63
 Aren't these just the PTypes() of the callsite and the callee ?
 
+38:23-39:76
+Wed Nov 02 06:07:47 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e64b96fb_fbd0cfb2
+UUID: 0628aa1a_742e08aa
+Bytes: 5
+Done.
+
 78:52-78:62
 Tue Nov 01 14:15:19 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e64b96fb_bbca4701
 Bytes: 154
 i guess you could avoid the "from" and "to" and just pass an argument index - that way we could say "ConvertJValue" performs the "ith pairwise conversion"
+
+78:52-78:62
+Wed Nov 02 06:07:47 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e64b96fb_bbca4701
+UUID: a688be73_9175dc75
+Bytes: 77
+Updated to have a helper method ConvertArgumentValue that has form suggested.
 
 File: runtime/method_handles.cc
 
@@ -25,6 +41,14 @@ UUID: e64b96fb_5be0e383
 Bytes: 166
 oh i see.. this is why we're passing the callee_type & caller_type. Is this really necessary, we could throw the WrongMethodTypeException in the caller, couldn't we ?
 
+139:6-139:74
+Wed Nov 02 06:07:47 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e64b96fb_5be0e383
+UUID: e6247649_53076438
+Bytes: 152
+Yes, it is why the callee_type & caller_type are here. This function can throw either WMTE or CCE so naive hoisting might entail some unusual semantics.
+
 205:5-211:76
 Tue Nov 01 14:15:19 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -33,4 +57,12 @@ Bytes: 197
 Are we supposed to do this even when the unboxing failed due to a NullPointerException ?
 
 Could we avoid this wart by refactoring UnboxPrimitiveForResult ? (I'm happy for that to be in a follow up)
+
+205:5-211:76
+Wed Nov 02 06:07:47 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0628aa1a_34fbb056
+UUID: 6619660e_376ad8cb
+Bytes: 87
+Yes, this is likely wrong and plainly there's no test coverage here. Will revise today.
 

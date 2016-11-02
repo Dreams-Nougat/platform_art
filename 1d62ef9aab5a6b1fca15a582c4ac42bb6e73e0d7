@@ -38,3 +38,20 @@ Block iterator has the same issue since blocks can be dynamically removed/insert
 
 A more thorough fix could be each VisitInstruction() actually isn't HGraphVisitor::VisitInstruction() but really HInstructionIterator::VisitInstruction() to get the iterator involved. But it seems too complicated due to the existing way we code. I'm wondering if there is an easier way to notify the iterator to update its internal next_ correctly when an instruction is removed.
 
+38:27-38:30
+Wed Nov 02 10:10:00 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a6dd1ea2_c94c3140
+UUID: e641d62c_6b244125
+Bytes: 306
+"It seems to me a deeper cause of bug like this is the way we iterate instructions."
+
+I agree with this. The HGraphVisitor protects from the current instruction being deleted but not the next one. Maybe we should have a different iterator for BCE that knows that even the next instruction might be deleted?
+
+40:20-40:21
+Wed Nov 02 10:10:00 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_8befad98
+Bytes: 15
+missing spaces.
+

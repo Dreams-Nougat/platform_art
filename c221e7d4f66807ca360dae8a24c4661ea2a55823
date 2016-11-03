@@ -1,0 +1,77 @@
+Revision: c221e7d4f66807ca360dae8a24c4661ea2a55823
+Patch-set: 4
+File: dex2oat/dex2oat.cc
+
+392:29-392:58
+Thu Nov 03 16:40:28 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_b1c3f826
+Bytes: 161
+What does it mean to update the passed vdex file?
+
+Does this mean you must have an existing vdex file, or does it also apply if you are creating a new vdex file?
+
+File: runtime/oat_file_assistant.cc
+
+186:0-190:3
+Thu Nov 03 16:40:28 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_51a2d483
+Bytes: 856
+I don't follow this logic.
+
+I would think it should be something like:
+
+If the the odex or oat file is up to date, then return kDexOptNeeded, because we know the compile filter must not be satisfied. Otherwise, return kUpdateVdexNeeded. So, something like:
+
+// If the oat file is up to date, a simple dex2oat without
+// updating the vdex is sufficient to fix the compilation
+// filter
+if (compilation_desired) {
+  if (oat_.IsUpToDate()) {
+    return kDex2OatNeeded;
+  }
+} else {
+  if (!oat_.IsOutOfDate()) {
+    return kDex2OatNeeded;
+  }
+}
+
+
+// If the oat file is up to date, a simple dex2oat without // updating the vdex is sufficient to fix the compilation
+// filter
+if (compilation_desired) {
+  if (odex_.IsUpToDate()) {
+    return kNoDexOptNeeded;
+  }
+} else {
+  if (!odex_.IsOutOfDate()) {
+    return kNoDexOptNeeded;
+  }
+}
+
+return kUpdateVdexNeeded;
+
+624:0-626:3
+Thu Nov 03 16:40:28 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_d1c88445
+Bytes: 164
+Depending on what --update-vdex means, why not always set --update-vdex? If update_vdex is false, you just created a new vdex file, so you have to update it anyway?
+
+630:0-632:23
+Thu Nov 03 16:40:28 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_11da0c00
+Bytes: 95
+But couldn't the vdex file become corrupted if dex2oat is killed in the process of updating it?
+
+File: runtime/oat_file_assistant.h
+
+71:48-71:52
+Thu Nov 03 16:40:28 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_2ee967d0
+Bytes: 27
+Replace 'vdex' with 'code'.
+

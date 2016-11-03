@@ -1,0 +1,15 @@
+Revision: 2767f4ba2df934fea4c50a016e2955c2cf3f6b19
+Patch-set: 5
+File: compiler/optimizing/instruction_simplifier.cc
+
+113:0-118:60
+Thu Nov 03 11:50:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: e641d62c_ce9703cf
+Bytes: 357
+OK, I see now (thanks for your example!)
+
+Seems to me this should be relative to the basic block size? How about we don't increment the count when the simplification involves merging two instructions into one?
+
+That variable was to avoid the infinite loop. If the simplification involves removing one instruction, we know we cannot fall into that situation.
+

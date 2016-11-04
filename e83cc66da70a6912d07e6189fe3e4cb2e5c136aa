@@ -23,6 +23,14 @@ UUID: 2b6bb700_75cc6876
 Bytes: 395
 I think this comment should be rephrased.  I added it in other code generators because the hidden register was set early and could have been clobbered by other operations before the call instruction at the end of VisitInvokeInterface (I think this was the source of one bug).  Here that risk is non-existent, as there is no instruction between the move to the hidden reg and the BLX instruction.
 
+1585:0-1586:71
+Fri Nov 04 16:52:32 2016 +0000
+Author: Artem Serov <1089808@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_75cc6876
+UUID: 2b6bb700_f8898d0a
+Bytes: 155
+Actually I have intentionally moved this "Mov hidden_reg" close to BLX, because it COULD happen previously that r12 was clobbered. Will remove the comment.
+
 File: compiler/optimizing/code_generator_arm_vixl.h
 
 20:0-22:22

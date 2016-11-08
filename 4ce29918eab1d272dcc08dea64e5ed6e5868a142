@@ -9,6 +9,18 @@ UUID: 2b6bb700_1b59e314
 Bytes: 309
 i'm not sure why this is necessary, can we not transform this (at the java layer) to a kInvokeStatic to the corresponding method ? The vast majority of the MethodHandles API doesn't really care about it (revealDirect is an exception, but we can fudge things there if we really care about this obscure case...)
 
+939:6-940:8
+Tue Nov 08 14:49:01 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_1b59e314
+UUID: 2b6bb700_3bd93f3e
+Bytes: 301
+The code started on the kInvokeStatic route.
+
+It went this way after noticing that other code (CallCommon) does the method switch late in execution. The advantage of this seemed to be making cracking unambiguous, MethodHandleInfo.reflectAs(). Not sure there's a good solution to this otherwise.
+
+WDYT?
+
 File: test/956-methodhandles/src/Main.java
 
 505:4-505:18
@@ -18,12 +30,28 @@ UUID: 2b6bb700_5b635bca
 Bytes: 46
 remove ? seems like left over debugging cruft.
 
+505:4-505:18
+Tue Nov 08 14:49:01 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_5b635bca
+UUID: 2b6bb700_db200b64
+Bytes: 4
+Done
+
 506
 Tue Nov 08 13:31:04 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b6bb700_fb71878d
 Bytes: 96
 style nit (here and elsewhere): Please leave a single space between the cast and the expression.
+
+506
+Tue Nov 08 14:49:01 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_fb71878d
+UUID: 2b6bb700_5b7cfb5e
+Bytes: 4
+Done
 
 507:8-507:35
 Tue Nov 08 13:31:04 2016 +0000
@@ -32,6 +60,14 @@ UUID: 2b6bb700_db6e4bad
 Bytes: 62
 any particular reason you're not just doing "value != 0.33f" ?
 
+507:8-507:35
+Tue Nov 08 14:49:01 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_db6e4bad
+UUID: 2b6bb700_fb23476d
+Bytes: 81
+Less ambiguity, "value != 0.33f" has specific rules about how conversion is done.
+
 550:11-550:19
 Tue Nov 08 13:31:04 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -39,10 +75,26 @@ UUID: 2b6bb700_3b7dbf5e
 Bytes: 13
 nit: existent
 
+550:11-550:19
+Tue Nov 08 14:49:01 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_3b7dbf5e
+UUID: 2b6bb700_7b30d7b4
+Bytes: 4
+Done
+
 572:26-572:27
 Tue Nov 08 13:31:04 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b6bb700_1b828324
 Bytes: 170
 given that you're numbering these exception messages, would it make sense to add numbers to your comment above two ? (might make it easier to match things up). Your call.
+
+572:26-572:27
+Tue Nov 08 14:49:01 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_1b828324
+UUID: 0bf9938d_6f12edca
+Bytes: 88
+Numbers removed and reporting changed from System.out.println(message) to fail(message).
 

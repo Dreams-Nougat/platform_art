@@ -9,6 +9,14 @@ UUID: 0bf9938d_0fc36929
 Bytes: 59
 DCHECK_EQ(literals->GetLength(), GetNumberOfJitLiterals());
 
+1381
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bf9938d_0fc36929
+UUID: 4b6e2b0f_59b367a0
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_arm.cc
 
 5880
@@ -17,6 +25,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b6bb700_fb07c7f5
 Bytes: 48
 DCHECK(Runtime::Current()->UseJitCompilation());
+
+5880
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_fb07c7f5
+UUID: 6b23efec_4a4273ab
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_mips.cc
 
@@ -27,6 +43,14 @@ UUID: 2b6bb700_db048bf4
 Bytes: 48
 DCHECK(Runtime::Current()->UseJitCompilation());
 
+5207
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_db048bf4
+UUID: 2b19f7c0_e8308b4a
+Bytes: 4
+Done
+
 File: compiler/optimizing/code_generator_x86.cc
 
 6220
@@ -35,6 +59,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2b6bb700_3bf3fff4
 Bytes: 48
 DCHECK(Runtime::Current()->UseJitCompilation());
+
+6220
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_3bf3fff4
+UUID: 2b19f7c0_c82dcff2
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_x86_64.cc
 
@@ -45,6 +77,14 @@ UUID: 2b6bb700_5bf23bed
 Bytes: 29
 I'd prefer a line break here.
 
+5710:26-5710:27
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_5bf23bed
+UUID: 0b12739d_4afa7704
+Bytes: 4
+Done
+
 File: runtime/jit/jit_code_cache.cc
 
 92:6-92:11
@@ -54,6 +94,14 @@ UUID: 2b6bb700_7b5e17fe
 Bytes: 11
 add comment
 
+92:6-92:11
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_7b5e17fe
+UUID: 2b6bb700_bbec2fe1
+Bytes: 4
+Done
+
 278:44-278:50
 Mon Nov 07 18:14:32 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -61,12 +109,30 @@ UUID: abc1671f_9e0fa94e
 Bytes: 100
 Why is the length stored after the literals? Is that for iterating backwards? Can you add a comment.
 
+278:44-278:50
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abc1671f_9e0fa94e
+UUID: 0b64332d_b7b44220
+Bytes: 261
+If it's stored before the literals, we won't know how to fetch it: the compiled code points to the stack map, and the table is just before that stack map. So putting the length at stack_map - 1, allows to fetch it and know where to start.
+
+I've added a comment.
+
 301:44-301:52
 Mon Nov 07 18:14:32 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: abc1671f_be0ced59
 Bytes: 79
 Add a comment that this wont be safe for class literals due to class unloading?
+
+301:44-301:52
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: abc1671f_be0ced59
+UUID: 4b6e2b0f_d9be5763
+Bytes: 4
+Done
 
 File: runtime/runtime.cc
 
@@ -76,4 +142,12 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbb69be6_1a0a9d04
 Bytes: 66
 I assume we aren't doing the two-visit approach b/32167580#10 yet.
+
+499:0-500:37
+Tue Nov 08 14:58:35 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_1a0a9d04
+UUID: 2b19f7c0_68ae5b3c
+Bytes: 37
+Not yet, I'll do this in a follow-up.
 

@@ -1,0 +1,62 @@
+Revision: d91ffbcd2ddda49d90f2aecf8f15f090afb27890
+Patch-set: 2
+File: compiler/intrinsics_list.h
+
+113:79-113:87
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b6bb700_fb3987ec
+Bytes: 23
+NPE? (On the argument.)
+
+120:62-120:88
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b6e2b0f_f9feb343
+Bytes: 96
+StringBuilder.toString() is synchronized and that means kAllSideEffects. It can also throw OOME.
+
+121:81-121:89
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b64332d_97eb0637
+Bytes: 5
+OOME?
+
+File: test/624-checker-stringops/src/Main.java
+
+25:17-25:30
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b64332d_37fb120c
+Bytes: 57
+Make more specific. (Either intrinsic: or method_name: .)
+
+64:11-64:23
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b6e2b0f_d9fbf751
+Bytes: 94
+We do not perform synchronization barrier folding, so this should definitely stay in the loop.
+
+81:11-81:23
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 6b23efec_aab16fc8
+Bytes: 265
+To pull this out of the loop, the compiler needs to conclude that it's used only in contexts where the object identity does not matter, i.e. no reference comparison, the reference does not escape and the indexOf() intrinsic does not care about the reference itself.
+
+129:14-129:26
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b6bb700_3b6e5fe5
+Bytes: 19
+No barrier folding.
+
+152:14-152:26
+Tue Nov 08 11:32:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b12739d_aa368b45
+Bytes: 180
+Killing this invoke is the same as killing unused "new Object()", i.e. it's OK but we should be very clear that we're deliberately avoiding the object allocation and possible OOME.
+

@@ -1,0 +1,82 @@
+Revision: 98a4d657374f533ae3efce3b39d9fe61e43b4a45
+Patch-set: 3
+File: /COMMIT_MSG
+
+13:0-13:15
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_ae3c0ff7
+Bytes: 17
+Remove this line?
+
+File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
+
+999:0-1001:67
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_ae532f52
+Bytes: 52
+I guess we didn't have a fast path for these before?
+
+1229:18-1229:52
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_ce8f83b6
+Bytes: 67
+Remove this part of the comment (we don't load the lock word here)?
+
+1289:4-1289:46
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_2e763ffc
+Bytes: 12
+Why is this?
+
+File: runtime/gc/heap-inl.h
+
+355:15-355:32
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_8e7bcb2e
+Bytes: 29
+How about "AllocWithNewTLAB"?
+
+File: runtime/gc/heap.cc
+
+4231:39-4231:58
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_6eebd78a
+Bytes: 62
+Do we update the current allocator when is_gc_marking changes?
+
+4242:4-4242:5
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_6e76774b
+Bytes: 91
+It seems like we should retain "*bytes_tl_bulk_allocated = new_tlab_size;" here. Should we?
+
+File: runtime/thread.cc
+
+131:52-131:53
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_7dfab304
+Bytes: 22
+Remove this backslash?
+
+134:2-134:82
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_7d2b9399
+Bytes: 179
+Pass this as an argument from SetIsGcMarking instead of reloading the is_gc_marking (as this relies on that is_gc_marking_ is updated before the call, which could be error-prone)?
+
+3139:13-3139:27
+Tue Nov 08 00:37:01 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbb69be6_fd0c035b
+Bytes: 117
+Rename this to suggest it may also update alloc entrypoints, or add a separate function for updating the entrypoints?
+

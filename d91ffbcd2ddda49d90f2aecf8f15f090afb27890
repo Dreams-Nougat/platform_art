@@ -9,6 +9,14 @@ UUID: 2b6bb700_fb3987ec
 Bytes: 23
 NPE? (On the argument.)
 
+113:79-113:87
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_fb3987ec
+UUID: cbb69be6_f4e6d8fe
+Bytes: 218
+you are right. I somehow thought that was ok and would return -1, but should have tested it. changed and added tests. this means we need to detect the no side effects a bit later, but still doable with a non-null tests
+
 120:62-120:88
 Tue Nov 08 11:32:13 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 4b6e2b0f_f9feb343
 Bytes: 96
 StringBuilder.toString() is synchronized and that means kAllSideEffects. It can also throw OOME.
 
+120:62-120:88
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b6e2b0f_f9feb343
+UUID: cbb69be6_14e42cf5
+Bytes: 132
+You mean StringBuffer, right? StringBuilder is the original unsynchronized one. But yes, this was a bit too fast through the corner.
+
 121:81-121:89
 Tue Nov 08 11:32:13 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b64332d_97eb0637
 Bytes: 5
 OOME?
+
+121:81-121:89
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b64332d_97eb0637
+UUID: cbb69be6_34c21046
+Bytes: 12
+Done on both
 
 File: test/624-checker-stringops/src/Main.java
 
@@ -32,12 +56,28 @@ UUID: 0b64332d_37fb120c
 Bytes: 57
 Make more specific. (Either intrinsic: or method_name: .)
 
+25:17-25:30
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b64332d_37fb120c
+UUID: cbb69be6_d49b9457
+Bytes: 4
+Done
+
 64:11-64:23
 Tue Nov 08 11:32:13 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4b6e2b0f_d9fbf751
 Bytes: 94
 We do not perform synchronization barrier folding, so this should definitely stay in the loop.
+
+64:11-64:23
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b6e2b0f_d9fbf751
+UUID: cbb69be6_845e47fb
+Bytes: 4
+Done
 
 81:11-81:23
 Tue Nov 08 11:32:13 2016 +0000
@@ -46,6 +86,14 @@ UUID: 6b23efec_aab16fc8
 Bytes: 265
 To pull this out of the loop, the compiler needs to conclude that it's used only in contexts where the object identity does not matter, i.e. no reference comparison, the reference does not escape and the indexOf() intrinsic does not care about the reference itself.
 
+81:11-81:23
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b23efec_aab16fc8
+UUID: cbb69be6_a4634bc9
+Bytes: 4
+Done
+
 129:14-129:26
 Tue Nov 08 11:32:13 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -53,10 +101,26 @@ UUID: 2b6bb700_3b6e5fe5
 Bytes: 19
 No barrier folding.
 
+129:14-129:26
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_3b6e5fe5
+UUID: cbb69be6_c4675fd4
+Bytes: 4
+Done
+
 152:14-152:26
 Tue Nov 08 11:32:13 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b12739d_aa368b45
 Bytes: 180
 Killing this invoke is the same as killing unused "new Object()", i.e. it's OK but we should be very clear that we're deliberately avoiding the object allocation and possible OOME.
+
+152:14-152:26
+Tue Nov 08 20:54:31 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b12739d_aa368b45
+UUID: cbb69be6_e46463d2
+Bytes: 4
+Done
 

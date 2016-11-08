@@ -34,3 +34,21 @@ UUID: 2b6bb700_3b401f7c
 Bytes: 176
 Actually I would be interested in the backtrace. Because here the temp is only used locally. So it means the move is emitted within a scope that already has taken the temp reg.
 
+1511:8-1512:58
+Tue Nov 08 11:10:13 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_3b401f7c
+UUID: 2b6bb700_3b1c9f7d
+Bytes: 838
+The relevant part of the backtrace is
+
+#3  0x0000000000da4ffe in __assert_fail ()
+#4  0x00000000005f2159 in vixl::aarch64::UseScratchRegisterScope::AcquireNextAvailable (available=...) at external/vixl/src/aarch64/macro-assembler-aarch64.cc:2875
+#5  0x000000000073a7fa in AcquireS (this=...) at external/vixl/src/aarch64/macro-assembler-aarch64.h:3316
+#6  art::arm64::CodeGeneratorARM64::MoveLocation (this=..., destination=..., source=..., dst_type=...) at art/compiler/optimizing/code_generator_arm64.cc:1331
+#7  0x0000000000738b3e in art::arm64::ParallelMoveResolverARM64::EmitMove (this=..., index=...) at art/compiler/optimizing/code_generator_arm64.cc:1033
+
+There is nothing platform-specific below that, so nothing to have a UseScratchRegisterScope.
+
+I don't really see how we could have exhausted the FP scratch register anywhere.
+

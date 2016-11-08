@@ -1,0 +1,13 @@
+Revision: 4fcd9d63018be48f399ee6e48a0dd1d487a0c5cd
+Patch-set: 9
+File: runtime/jit/jit_code_cache.cc
+
+282
+Tue Nov 08 16:25:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b6bb700_fed4d5d2
+Bytes: 243
+The way this is written, it requires sizeof(GcRoot<>) == sizeof(uint32_t).
+
+Please put the `reinterpret_cast<GcRoot<mirror::Object>*>(roots_data)` above to a local variable and do the subscripting on that variable before this reinterpret_cast.
+

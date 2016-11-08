@@ -58,6 +58,14 @@ UUID: 2b6bb700_9e668147
 Bytes: 159
 Actually, Aart is right on needing to get this flag up to date. What if we "simplify" an if on a false and drop the exit branch? Do we recompute the loop info?
 
+693:0-703:1
+Tue Nov 08 22:24:15 2016 +0000
+Author: David Sehr <1103743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b6bb700_9e668147
+UUID: cbb69be6_17218b65
+Bytes: 325
+We could indeed do that, but it's not a local property whether a loop has an exit or not.  If a loop is marked as having an exit, it could have multiple exits, so simplifying away one exit does not change the property.  It will have to be recomputed, or I would have to keep an exit count, which is fragile to unrolling, etc.
+
 File: compiler/optimizing/nodes.h
 
 728:0-728:28

@@ -66,6 +66,18 @@ UUID: cbb69be6_17218b65
 Bytes: 325
 We could indeed do that, but it's not a local property whether a loop has an exit or not.  If a loop is marked as having an exit, it could have multiple exits, so simplifying away one exit does not change the property.  It will have to be recomputed, or I would have to keep an exit count, which is fragile to unrolling, etc.
 
+693:0-703:1
+Wed Nov 09 14:08:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_17218b65
+UUID: 4b32ab88_f6c22024
+Bytes: 229
+It's the other way around I'm worried:
+- Loop initially says it has one exit
+- We do block simplification, killing the exit edge
+- We forget to run loop analysis and the loop still says it has one exit
+- We do inlining and crash.
+
 File: compiler/optimizing/nodes.h
 
 728:0-728:28

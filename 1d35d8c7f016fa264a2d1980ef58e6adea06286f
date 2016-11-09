@@ -1,5 +1,14 @@
 Revision: 1d35d8c7f016fa264a2d1980ef58e6adea06286f
 Patch-set: 4
+File: compiler/intrinsics_list.h
+
+24:0-25:69
+Wed Nov 09 14:30:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b19f7c0_087367cb
+Bytes: 30
+Please bump the image version.
+
 File: test/559-checker-irreducible-loop/smali/IrreducibleLoop.smali
 
 199:18-199:34
@@ -8,4 +17,27 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb4b5ffb_9be0abb8
 Bytes: 16
 Why this change?
+
+File: test/624-checker-stringops/src/Main.java
+
+66:6-66:60
+Wed Nov 09 14:30:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2b19f7c0_a86173f2
+Bytes: 356
+If some intrinsics were just hoisted out of the loop but not eliminated, this would still pass. We should instead
+
+  /// CHECK-NOT: InvokeVirtual intrinsic:StringIndexOf
+  /// CHECK-NOT: InvokeVirtual intrinsic:StringIndexOfAfter
+  /// CHECK-NOT: InvokeVirtual intrinsic:StringStringIndexOf
+  /// CHECK-NOT: InvokeVirtual intrinsic:StringStringIndexOfAfter
+
+88:99-88:117
+Wed Nov 09 14:30:27 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4b6e2b0f_19f8cfcb
+Bytes: 370
+Why don't we hoist the null check out of the loop? The InputsAreDefinedBeforeLoop() in LICM says that "[w]e can move an instruction that takes a loop header phi in the environment..." Why doesn't it apply here?
+
+(Though this could actually be a pessimization for implicit null checks that can be merged into the following instruction if that instruction is not hoisted.)
 

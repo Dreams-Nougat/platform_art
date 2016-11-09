@@ -100,3 +100,15 @@ bool found_first_non_hoisted_throwing_instruction_in_loop = !inner->IsLoopHeader
 
 (i.e. we only hoist out of header to preheader, never out of  loop-body proper). Hmm, maybe we need a loop optimizer.... :-)
 
+88:99-88:117
+Wed Nov 09 18:32:08 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2bd3b749_3b085f05
+UUID: eb243f49_d33ff4f4
+Bytes: 275
+I see... We would have to split the header first, so that we branch over if the body is not executed at all:
+
+  while (cond) { ... } -> if (cond) { do { ... } while (cond); }
+
+Then we can hoist certain throwing instructions out of the loop while keeping them inside the "if".
+

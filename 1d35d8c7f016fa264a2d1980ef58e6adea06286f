@@ -9,6 +9,14 @@ UUID: 2b19f7c0_087367cb
 Bytes: 30
 Please bump the image version.
 
+24:0-25:69
+Wed Nov 09 17:13:30 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b19f7c0_087367cb
+UUID: 4bad4bb0_07453c64
+Bytes: 39
+yes, see my question on Nicolas on that
+
 File: test/559-checker-irreducible-loop/smali/IrreducibleLoop.smali
 
 199:18-199:34
@@ -17,6 +25,18 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb4b5ffb_9be0abb8
 Bytes: 16
 Why this change?
+
+199:18-199:34
+Wed Nov 09 17:13:30 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb4b5ffb_9be0abb8
+UUID: 2bd3b749_5b2d5ba9
+Bytes: 251
+see my query/comment in the original CL
+
+with the original, we can remove the LoadClass  completely as dead, since it cannot throw, is not used, etc.
+
+I hope this keeps the intent, but was not completely sure. Hence my cry for help in the first CL :-)
 
 File: test/624-checker-stringops/src/Main.java
 
@@ -32,6 +52,17 @@ If some intrinsics were just hoisted out of the loop but not eliminated, this wo
   /// CHECK-NOT: InvokeVirtual intrinsic:StringStringIndexOf
   /// CHECK-NOT: InvokeVirtual intrinsic:StringStringIndexOfAfter
 
+66:6-66:60
+Wed Nov 09 17:13:30 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b19f7c0_a86173f2
+UUID: ebafdfaa_c44994a7
+Bytes: 130
+oh I meant to drop the whole part starting from loop
+(since there are no other virtuals)
+
+but your suggestion is a bit more robust
+
 88:99-88:117
 Wed Nov 09 14:30:27 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -40,4 +71,16 @@ Bytes: 370
 Why don't we hoist the null check out of the loop? The InputsAreDefinedBeforeLoop() in LICM says that "[w]e can move an instruction that takes a loop header phi in the environment..." Why doesn't it apply here?
 
 (Though this could actually be a pessimization for implicit null checks that can be merged into the following instruction if that instruction is not hoisted.)
+
+88:99-88:117
+Wed Nov 09 17:13:30 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4b6e2b0f_19f8cfcb
+UUID: 2bd3b749_3b085f05
+Bytes: 235
+LICM never tries due to:
+
+bool found_first_non_hoisted_throwing_instruction_in_loop = !inner->IsLoopHeader();
+
+(i.e. we only hoist out of header to preheader, never out of  loop-body proper). Hmm, maybe we need a loop optimizer.... :-)
 

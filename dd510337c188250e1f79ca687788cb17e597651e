@@ -9,6 +9,16 @@ UUID: 0b28b31a_d4e6fcd4
 Bytes: 484
 I'm wondering whether we should instead assign the indexes straight away, in the order that they appear in the generated code (eventually even interleaving GcRoot<String> and GcRoot<Class>). That would help reduce the number of literals as we could then split the address between the literal load and the root load (using the available offset), similar to the old kDexCacheAddress, https://android-review.googlesource.com/#/c/237670/10/compiler/optimizing/code_generator_arm.cc@5204 .
 
+7216:72-7216:92
+Wed Nov 09 14:43:54 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b28b31a_d4e6fcd4
+UUID: 2b4657f2_7dd83705
+Bytes: 372
+Interleaving is no problem, but I'd like to avoid duplicated strings/classes in the table. This means we will have to collect the HLoadClass and HLoadString during eg prepare_for_register_allocation, or LocationBuilder. Then we can assign them an index before CodeGenerator. 
+
+Thinking about it, I like the idea. I'll try and do that in a follow-up, if that's ok with you?
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 1156:26-1156:33
@@ -17,4 +27,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6b192f0e_37b978ab
 Bytes: 11
 indentation
+
+1156:26-1156:33
+Wed Nov 09 14:43:54 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6b192f0e_37b978ab
+UUID: 0b28b31a_54dbcc02
+Bytes: 4
+Done
 

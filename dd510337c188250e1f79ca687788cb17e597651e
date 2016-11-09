@@ -19,6 +19,16 @@ Interleaving is no problem, but I'd like to avoid duplicated strings/classes in 
 
 Thinking about it, I like the idea. I'll try and do that in a follow-up, if that's ok with you?
 
+7216:72-7216:92
+Wed Nov 09 14:56:31 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2b4657f2_7dd83705
+UUID: eb243f49_f3eb109a
+Bytes: 344
+OK as a follow-up.
+
+Note that you can use the GetOrCreate() to easily allocate a new index on demand. The index would need to be propagated to CodeGeneratorARM::VisitLoadString() for calculating the offset. And we can hold the actual literals in a side table indexed by `index%32` (or `index%1024` if we prefer 32-bit LDRs over extra literals).
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 1156:26-1156:33

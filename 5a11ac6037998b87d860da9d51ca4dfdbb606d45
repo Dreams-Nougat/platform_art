@@ -1,0 +1,32 @@
+Revision: 5a11ac6037998b87d860da9d51ca4dfdbb606d45
+Patch-set: 4
+File: compiler/image_writer.cc
+
+1071:0-1074:3
+Thu Nov 10 19:37:55 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b5ca306_d8e0adb9
+Bytes: 492
+Minor point: would the following code work (without assuming kClassLoader is the last in the enum)?
+
+  for (int32_t i = 0; i < image_roots_size; ++i) {
+    // image_roots[ImageHeader::kClassLoader] will be set later for app image.
+    if (i != ImageHeader::kClassLoader) {
+      CHECK(image_roots->Get(i) != nullptr);
+    }
+  }
+
+Or have 
+
+  static_assert(ImageHeader::kClassLoader + 1u == ImageHeader::kImageRootsMax,
+                "Class loader should be the last image root.");
+
+here too?
+
+1495:4-1495:40
+Thu Nov 10 19:37:55 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b5ca306_38de09c2
+Bytes: 69
+Is it the case that we always have one class loader in the app image?
+

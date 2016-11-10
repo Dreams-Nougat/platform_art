@@ -17,6 +17,20 @@ UUID: cb6cdb83_b06260c5
 Bytes: 4
 Done
 
+6443:39-6443:46
+Thu Nov 10 11:16:18 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4bf54bfd_5efc754a
+Bytes: 90
+Might as well jump directly to the slow path. (Unless you want to optimize for code size.)
+
+6459:0-6460:88
+Thu Nov 10 11:16:18 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb527fc5_03d52ecc
+Bytes: 47
+Backward branches cannot use CBZ on ARM anyway.
+
 File: compiler/optimizing/code_generator_arm64.cc
 
 3338:3-3338:16
@@ -33,6 +47,13 @@ Parent: 0b4fd308_9c1bc594
 UUID: cb6cdb83_5068c4a3
 Bytes: 4
 Done
+
+3733:20-3733:27
+Thu Nov 10 11:16:18 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0bfb53f7_9ceba59b
+Bytes: 40
+slow path (no code size excuse on arm64)
 
 File: compiler/optimizing/code_generator_x86.cc
 
@@ -65,4 +86,20 @@ Parent: 0b4fd308_5c069d3e
 UUID: cb6cdb83_d07cb463
 Bytes: 4
 Done
+
+6845:21-6845:28
+Thu Nov 10 11:16:18 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8be74356_c007fe8b
+Bytes: 69
+slow path (or optimizing for code size? JZ rel8 instead of JZ rel32?)
+
+File: compiler/optimizing/code_generator_x86_64.cc
+
+6281:21-6281:28
+Thu Nov 10 11:16:18 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cbe13b42_82585a9d
+Bytes: 40
+slow path (or optimizing for code size?)
 

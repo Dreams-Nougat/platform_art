@@ -33,6 +33,14 @@ try {
 
 That still doesn't look right. Do we guard against this case? Looks like the whole thing can't be in a try block.
 
+123
+Fri Nov 11 14:31:30 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b5ca306_e7130c3c
+UUID: 8be74356_20c98ab3
+Bytes: 307
+The "i" at the NullCheck is a constant, i.e. defined before the loop. NullCheck can be hoisted, the environment will contain that constant. (If the assignment was something more complex, say "i = (i + 3) ^ 2", we would not hoist. Simple "i += 1" falls under https://android-review.googlesource.com/301687 .)
+
 File: test/625-checker-licm-regressions/src/Main.java
 
 47

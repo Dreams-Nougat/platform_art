@@ -17,6 +17,22 @@ try {
   } while (arr.length < 10)
 } catch (Exception e) {}
 
+123
+Fri Nov 11 14:16:04 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b5ca306_87d33060
+UUID: 8b5ca306_e7130c3c
+Bytes: 307
+Actually if we have:
+i = 0;
+try {
+  do {
+      i = 1;    // even though there is no field store, following NullCheck should not be hoisted.
+  } while (arr.length < 10)
+} catch (Exception e) {}
+
+That still doesn't look right. Do we guard against this case? Looks like the whole thing can't be in a try block.
+
 File: test/625-checker-licm-regressions/src/Main.java
 
 47

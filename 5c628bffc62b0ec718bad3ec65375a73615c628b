@@ -51,3 +51,11 @@ Bytes: 221
 StaticFieldSet can't move so it won't be hoisted.
 I tried yesterday to have other patterns and it's quite difficult to allow the NullCheck to be hoisted since it's easy to introduce loop_effects that NullCheck depends on.
 
+47
+Fri Nov 11 14:19:42 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b5ca306_47c918b2
+UUID: 6bba0f39_6f3d517f
+Bytes: 229
+Non-volatile StaticFieldSet that always stores the same value and is executed at least once is a perfect candidate for hoisting if there are no other writes to memory observable by other threads. (Not by the current LICM though.)
+

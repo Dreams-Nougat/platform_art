@@ -34,7 +34,27 @@ UUID: 6beccf3c_7f6ccfe5
 Bytes: 5
 ditto
 
+File: compiler/oat_writer.h
+
+425:13-425:26
+Fri Nov 11 14:59:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb527fc5_835d9e01
+Bytes: 118
+you don't really need this extra flag. The way we do it in the driver is to test if profile_compilation_info_ is null.
+
 File: dex2oat/dex2oat.cc
+
+1487:10-1487:64
+Fri Nov 11 14:59:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb527fc5_c35396f6
+Bytes: 286
+Not sure this is working as you expect.
+
+This will reorder class_dex_indx and basically lie about what's being profiled. If then you look at this profile after it will seem that only the topN classes count.
+
+If I got the flow right I think this skewed your benchmarks by quite a margin.
 
 2272:11-2272:20
 Fri Nov 11 11:37:12 2016 +0000
@@ -42,6 +62,17 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b56f3b8_c7e640d5
 Bytes: 13
 do_dexlayout?
+
+File: dexlayout/dex_writer.cc
+
+626:0-627:36
+Fri Nov 11 14:59:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0b56f3b8_e7a81c31
+Bytes: 161
+This is problematic, since profiles relies on dex checksum. If this changes we'll need to update the profiles as well. 
+
+I added more comments in the design doc.
 
 File: runtime/jit/offline_profiling_info.h
 
@@ -54,10 +85,27 @@ Why this change? (MethodReference is just a pair of these, but I don't have any 
 
 Also, I think it should be uint32_t.
 
+66:2-66:74
+Fri Nov 11 14:59:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b56f3b8_e7eb3c9a
+UUID: 6bba0f39_0f4005ff
+Bytes: 89
+uint16_t is ok, but I prefer MethodReference here. It's shorter. Any reason to change it?
+
 92:0-95:60
 Fri Nov 11 11:37:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bf54bfd_3e59a94a
 Bytes: 60
 Update the comment by saying this is not affecting the file.
+
+96:7-96:31
+Fri Nov 11 14:59:50 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: eb527fc5_03e1ae16
+Bytes: 213
+Such a method does not have context and I doesn't fit well in the current design. I.e. profiles should not care about dexlayout.
+
+If you want to update the type ids I think you should pass a map, old_id -> new_id.
 

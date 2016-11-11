@@ -41,6 +41,14 @@ UUID: 8be74356_20c98ab3
 Bytes: 307
 The "i" at the NullCheck is a constant, i.e. defined before the loop. NullCheck can be hoisted, the environment will contain that constant. (If the assignment was something more complex, say "i = (i + 3) ^ 2", we would not hoist. Simple "i += 1" falls under https://android-review.googlesource.com/301687 .)
 
+123
+Fri Nov 11 17:30:39 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b5ca306_e7130c3c
+UUID: 8b5ca306_f27f48ca
+Bytes: 370
+I played around with those cases as well while working on both cls. When we have explicit catches that can see the local i, we don't LICM anyway due to the try boundaries. If we don't have those, so only the method throws, i is not visible, except for possible an environment, which we capture correctly. So perhaps only deopts are a concern if we ever see them in licm.
+
 File: test/625-checker-licm-regressions/src/Main.java
 
 47
@@ -74,4 +82,12 @@ Parent: 6bba0f39_6f3d517f
 UUID: 2bf2d718_808a18fd
 Bytes: 71
 Actually, it's not exactly LICM. It's something like LICM-enhanced LSE.
+
+47
+Fri Nov 11 17:30:39 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bf54bfd_fe2581c7
+UUID: 8b5ca306_b2a31055
+Bytes: 169
+Well is is a regression test. I also have some follow up tests planned in combination with the other Cl to make sure those are not messed up. Will add those when merged.
 

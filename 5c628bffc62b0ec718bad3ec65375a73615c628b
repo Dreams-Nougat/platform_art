@@ -1,5 +1,22 @@
 Revision: 5c628bffc62b0ec718bad3ec65375a73615c628b
 Patch-set: 1
+File: compiler/optimizing/licm.cc
+
+123
+Fri Nov 11 14:07:49 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8b5ca306_87d33060
+Bytes: 583
+We should also make it clear in the comment it's in the loop header only. Since other loop blocks may not be executed. Loop header also rules out that the can-throw instruction can move in front of a try boundary within the loop, since try boundary introduces additional blocks so the can-throw instruction can't be in the loop header. So it rules out something like:
+try {
+  int i = 0;
+  do {
+    try {
+      i = 1;    // even though there is no field store, following NullCheck should not be hoisted.
+    } catch(Exception e) {}
+  } while (arr.length < 10)
+} catch (Exception e) {}
+
 File: test/625-checker-licm-regressions/src/Main.java
 
 47
@@ -8,4 +25,13 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bf54bfd_fe2581c7
 Bytes: 214
 This test isn't very future-proof. The StaticFieldSet could be hoisted and then the NullCheck+ArrayLength would be hoisted as well. Maybe we should add something like "j = (j+3)^2" and change the store to "sA = j".
+
+47
+Fri Nov 11 14:07:49 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bf54bfd_fe2581c7
+UUID: 8b5ca306_47c918b2
+Bytes: 221
+StaticFieldSet can't move so it won't be hoisted.
+I tried yesterday to have other patterns and it's quite difficult to allow the NullCheck to be hoisted since it's easy to introduce loop_effects that NullCheck depends on.
 

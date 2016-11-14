@@ -29,6 +29,18 @@ DEBUGGABLE has been the name all along. You might argue you could make deoptimiz
 
 So having DEBUGGABLE in the name is desirable IMO. An other option is DEBUGGABLE_APP.
 
+110
+Mon Nov 14 21:34:01 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1023849f_b599a068
+UUID: 3045e884_fee18110
+Bytes: 921
+Yes but we already have an ENABLE_DEBUGGER flag. Having 2 extremely similar names seems confusing.
+
+How about ENABLE_FULL_DEOPT. Then it matches the style of the first 5 options, says what it's doing and doesn't add to the confusing array of options with DEBUG in the name (currently 3).
+
+Also I'd say that all of the options currently have names that describe what they do (Except for native_debuggable) and many of them are set only in groups (i.e. ENABLE_DEBUGGER is always set with ENABLE_CHECKJNI, NATIVE_DEBUGGABLE is always set with ALWAYS_JIT and GENERATE_DEBUG_INFO). This indicates to me that each option should do the minimum necessary (and be set in conjunction with others by the zygote) and should be named for what it actually DOES, not what it's FOR. Therefore I believe that an appropriate name should say that it allows deopting everything and we shouldn't mention that it is related to debuggable apps.
+
 File: runtime/runtime.h
 
 597:0-603:3

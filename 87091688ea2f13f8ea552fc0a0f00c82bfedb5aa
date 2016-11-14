@@ -11,12 +11,30 @@ Could you put how you defined app startup for getting the numbers below?
 
 Can you also add numbers for how the startup time got affected?
 
+14:37-14:48
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6beccf3c_1f5f8326
+UUID: 3045e884_01ce8c45
+Bytes: 421
+Sure, I'll add that all I did was begin a systrace for 5 sec, then click the app and let it start up with no other inputs.
+
+I tried to get app startup times, but Tim Murray says they're not that meaningful because they're dependent on so many factors that they're incredibly noisy. For instance, I'm seeing startup times on maps range from 887ms to 1642ms. This is after trying to lock all the CPUs to the same frequency.
+
 33:0-33:68
 Fri Nov 11 11:37:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b56f3b8_07bc589a
 Bytes: 60
 Remove this line (you intend to commit this version, right?)
+
+33:0-33:68
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b56f3b8_07bc589a
+UUID: 3045e884_41f6d471
+Bytes: 4
+Done
 
 File: compiler/oat_writer.cc
 
@@ -27,12 +45,28 @@ UUID: 0bfb53f7_5c375df8
 Bytes: 20
 add /* */ for these.
 
+2175:61-2175:71
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0bfb53f7_5c375df8
+UUID: 8b5ca306_8dec2750
+Bytes: 4
+Done
+
 2179:58-2179:62
 Fri Nov 11 11:37:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 6beccf3c_7f6ccfe5
 Bytes: 5
 ditto
+
+2179:58-2179:62
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6beccf3c_7f6ccfe5
+UUID: 8b5ca306_ade9eb3f
+Bytes: 4
+Done
 
 File: compiler/oat_writer.h
 
@@ -42,6 +76,14 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: eb527fc5_835d9e01
 Bytes: 118
 you don't really need this extra flag. The way we do it in the driver is to test if profile_compilation_info_ is null.
+
+425:13-425:26
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb527fc5_835d9e01
+UUID: 8b5ca306_4d212fc9
+Bytes: 4
+Done
 
 File: dex2oat/dex2oat.cc
 
@@ -56,12 +98,30 @@ This will reorder class_dex_indx and basically lie about what's being profiled. 
 
 If I got the flow right I think this skewed your benchmarks by quite a margin.
 
+1487:10-1487:64
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb527fc5_c35396f6
+UUID: 3045e884_1e470d6f
+Bytes: 414
+This reordering is necessary after dexlayout. It changes the class indexes, and this updates the profile so it has the proper indexes. Unless I'm missing something, the (in-memory) profile should refer to the same set of classes in the newly laid out dex file as it did before dexlayout.
+
+Maybe this belongs inside oat_writer so that it's clearer that the profile needs to be changed as part of the layout process.
+
 2272:11-2272:20
 Fri Nov 11 11:37:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 0b56f3b8_c7e640d5
 Bytes: 13
 do_dexlayout?
+
+2272:11-2272:20
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b56f3b8_c7e640d5
+UUID: 8b5ca306_ad3acbde
+Bytes: 4
+Done
 
 File: dexlayout/dex_writer.cc
 
@@ -73,6 +133,14 @@ Bytes: 161
 This is problematic, since profiles relies on dex checksum. If this changes we'll need to update the profiles as well. 
 
 I added more comments in the design doc.
+
+626:0-627:36
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0b56f3b8_e7a81c31
+UUID: 3045e884_9e05dd33
+Bytes: 245
+I have to recalculate the checksum or the new dex file will fail to open when the dex file verifier checks the checksum. I can update the checksum in the profile when I modify it. I need to work out if/how these changes are written back to file.
 
 File: runtime/jit/offline_profiling_info.h
 
@@ -93,12 +161,28 @@ UUID: 6bba0f39_0f4005ff
 Bytes: 89
 uint16_t is ok, but I prefer MethodReference here. It's shorter. Any reason to change it?
 
+66:2-66:74
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 6bba0f39_0f4005ff
+UUID: 8b5ca306_ed3f63f4
+Bytes: 87
+This change made it more in line with how ContainsClass is called. I'll change it back.
+
 92:0-95:60
 Fri Nov 11 11:37:12 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4bf54bfd_3e59a94a
 Bytes: 60
 Update the comment by saying this is not affecting the file.
+
+92:0-95:60
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4bf54bfd_3e59a94a
+UUID: 3045e884_ded92587
+Bytes: 4
+Done
 
 96:7-96:31
 Fri Nov 11 14:59:50 2016 +0000
@@ -108,4 +192,14 @@ Bytes: 213
 Such a method does not have context and I doesn't fit well in the current design. I.e. profiles should not care about dexlayout.
 
 If you want to update the type ids I think you should pass a map, old_id -> new_id.
+
+96:7-96:31
+Mon Nov 14 22:39:31 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: eb527fc5_03e1ae16
+UUID: 3045e884_9ecf9dba
+Bytes: 455
+I think we need to talk about what to do here. If we want the profile to be agnostic to dexlayout, then it can't modify any of the indexes. Maybe that's ok, since the bulk of the dex file is actual data, which can be shuffled around without modifying the indexes.
+
+However, any modification to the dex file changes the checksum, so dexlayout will always have some effect on the profile. I don't see a way to decouple the profile from dexlayout completely.
 

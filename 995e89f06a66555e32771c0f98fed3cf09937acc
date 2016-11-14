@@ -19,6 +19,16 @@ I honestly think that would be confusing since we already support java debuggers
 
 Honestly I don't really like the name native_debuggable either. Both are extremely unhelpful names.
 
+110
+Mon Nov 14 21:10:23 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b5ca306_4a7bd52f
+UUID: 1023849f_b599a068
+Bytes: 266
+DEBUGGABLE has been the name all along. You might argue you could make deoptimizable/debuggable different, but this isn't the path we're going: an app is either debuggable or not.
+
+So having DEBUGGABLE in the name is desirable IMO. An other option is DEBUGGABLE_APP.
+
 File: runtime/runtime.h
 
 597:0-603:3
@@ -36,6 +46,14 @@ UUID: 8b5ca306_ea6bc962
 Bytes: 51
 IsDebuggable is based on the primary oat file only.
 
+603
+Mon Nov 14 21:10:23 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b5ca306_ea6bc962
+UUID: 90177437_b9d75faa
+Bytes: 175
+That's an implementation problem. The goal of IsDebuggable it to know whether the app is debuggable, which is what looks to me you're also trying to say with IsFullyDeoptable.
+
 File: runtime/runtime_options.def
 
 124:0-124:90
@@ -52,4 +70,12 @@ Parent: d0ff2c21_9b7a4b8d
 UUID: 8b5ca306_0a71dd51
 Bytes: 63
 We cannot have this set for run-tests without adding an option.
+
+124
+Mon Nov 14 21:10:23 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8b5ca306_0a71dd51
+UUID: 1023849f_d59c1c5a
+Bytes: 43
+--debuggable is supposed to be that option.
 

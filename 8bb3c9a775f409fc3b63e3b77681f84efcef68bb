@@ -9,6 +9,14 @@ UUID: 10faa431_9dd483a6
 Bytes: 35
 You can use the zero register here.
 
+1282:0-1286:75
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10faa431_9dd483a6
+UUID: d0ff2c21_fbd26f63
+Bytes: 10
+WZR? Done.
+
 File: compiler/optimizing/inliner.cc
 
 303:30-303:73
@@ -18,12 +26,28 @@ UUID: d0ff2c21_1bb2bb99
 Bytes: 51
 I'd drop this, you're already checking it line 266.
 
+303:30-303:73
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ff2c21_1bb2bb99
+UUID: d0ff2c21_dbcfb3b9
+Bytes: 4
+Done
+
 320:26-320:83
 Mon Nov 14 09:59:34 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0ff2c21_dbb3339a
 Bytes: 63
 I'd add a "AddCHASingleImplementationDependency" on the HGraph.
+
+320:26-320:83
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ff2c21_dbb3339a
+UUID: d0ff2c21_3ba0d7d6
+Bytes: 4
+Done
 
 File: runtime/cha.h
 
@@ -34,6 +58,14 @@ UUID: b012b845_bab631b9
 Bytes: 18
 virtual table slot
 
+129:36-129:40
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b012b845_bab631b9
+UUID: d0ff2c21_dbb69323
+Bytes: 24
+changed to "vtable slot"
+
 File: runtime/jit/jit_code_cache.cc
 
 277:2-277:75
@@ -43,12 +75,36 @@ UUID: d0ff2c21_db34533d
 Bytes: 33
 I find this comment hard to read.
 
+277:2-277:75
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ff2c21_db34533d
+UUID: d0ff2c21_dbfd73c1
+Bytes: 251
+Updated to:
+  // We need to remove entries in method_headers from CHA dependency
+  // first since once we do FreeCode() below, the memory can be reused
+  // so it's possible for the same method_header to start representing different
+  // compile code.
+
 283:2-283:59
 Mon Nov 14 09:59:34 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7008401c_383ea920
 Bytes: 98
 Add a comment why you're collecting instead of deallocting directly, and why it needs to be a set.
+
+283:2-283:59
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7008401c_383ea920
+UUID: d0ff2c21_9b07ebf7
+Bytes: 304
+Added this:
+  // We use a set to first collect all method_headers whose code need to be
+  // removed. We need to free the underlying code after we remove CHA dependencies
+  // for entries in this set. And it's more efficient to iterate through
+  // the CHA dependency map just once with an unordered_set.
 
 323:0-329:1
 Mon Nov 14 09:59:34 2016 +0000
@@ -57,6 +113,14 @@ UUID: d0ff2c21_7ba3ff4e
 Bytes: 69
 This is only called by FreeMethodHeaders, right? I'd inline it there.
 
+323:0-329:1
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ff2c21_7ba3ff4e
+UUID: d0ff2c21_fb002fe3
+Bytes: 4
+Done
+
 396:2-405:5
 Mon Nov 14 09:59:34 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -64,12 +128,30 @@ UUID: d0ff2c21_5ba84329
 Bytes: 95
 Add a comment that you're checking whether assumptions made during compilation are still valid.
 
+396:2-405:5
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ff2c21_5ba84329
+UUID: d0ff2c21_7bf41fd8
+Bytes: 83
+Add:
+    // Discard the code if any single-implementation assumptions are violated.
+
 407:19-408:57
 Mon Nov 14 09:59:34 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f00270f6_fc64a93b
 Bytes: 32
 I have a hard time reading this.
+
+407:19-408:57
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f00270f6_fc64a93b
+UUID: d0ff2c21_5bf963ce
+Bytes: 110
+Changed to:
+      VLOG(jit) << "JIT discarded jitted code due to violated single-implementation assumptions.";
 
 File: runtime/jit/jit_code_cache.h
 
@@ -80,10 +162,26 @@ UUID: d0ff2c21_9b2ecbe7
 Bytes: 9
 One line?
 
+236:0-237:70
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ff2c21_9b2ecbe7
+UUID: d0ff2c21_5b128340
+Bytes: 4
+Done
+
 242:0-243:70
 Mon Nov 14 09:59:34 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0ff2c21_bb31874b
 Bytes: 9
 One line?
+
+242:0-243:70
+Mon Nov 14 17:21:24 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0ff2c21_bb31874b
+UUID: d0ff2c21_bb0aa7ff
+Bytes: 50
+Removed this method as suggested and did inlining.
 

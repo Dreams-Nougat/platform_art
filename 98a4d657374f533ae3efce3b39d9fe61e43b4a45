@@ -9,6 +9,14 @@ UUID: cbb69be6_ae3c0ff7
 Bytes: 17
 Remove this line?
 
+13:0-13:15
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_ae3c0ff7
+UUID: 3045e884_eaac0c6d
+Bytes: 4
+Done
+
 File: runtime/arch/x86_64/quick_entrypoints_x86_64.S
 
 999:0-1001:67
@@ -18,6 +26,14 @@ UUID: cbb69be6_ae532f52
 Bytes: 52
 I guess we didn't have a fast path for these before?
 
+999:0-1001:67
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_ae532f52
+UUID: 3045e884_6ae0fcb1
+Bytes: 39
+Not the resolved and initialized cases.
+
 1229:18-1229:52
 Tue Nov 08 00:37:01 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -25,12 +41,28 @@ UUID: cbb69be6_ce8f83b6
 Bytes: 67
 Remove this part of the comment (we don't load the lock word here)?
 
+1229:18-1229:52
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_ce8f83b6
+UUID: 3045e884_4ae540c0
+Bytes: 4
+Done
+
 1289:4-1289:46
 Tue Nov 08 00:37:01 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbb69be6_2e763ffc
 Bytes: 12
 Why is this?
+
+1289:4-1289:46
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_2e763ffc
+UUID: 3045e884_ea224c15
+Bytes: 121
+Because the class is passed as an argument, the to-space invariant current means the HLoadClass will do the read barrier.
 
 File: runtime/gc/heap-inl.h
 
@@ -41,6 +73,14 @@ UUID: cbb69be6_8e7bcb2e
 Bytes: 29
 How about "AllocWithNewTLAB"?
 
+355:15-355:32
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_8e7bcb2e
+UUID: 3045e884_2a2d5405
+Bytes: 4
+Done
+
 File: runtime/gc/heap.cc
 
 4231:39-4231:58
@@ -50,12 +90,28 @@ UUID: cbb69be6_6eebd78a
 Bytes: 62
 Do we update the current allocator when is_gc_marking changes?
 
+4231:39-4231:58
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_6eebd78a
+UUID: 3045e884_ca4dd0e3
+Bytes: 109
+Not currently, the dynamic check means we fall back to region space correctly instead of bump_pointer_space_.
+
 4242:4-4242:5
 Tue Nov 08 00:37:01 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbb69be6_6e76774b
 Bytes: 91
 It seems like we should retain "*bytes_tl_bulk_allocated = new_tlab_size;" here. Should we?
+
+4242:4-4242:5
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_6e76774b
+UUID: 3045e884_4a626052
+Bytes: 4
+Done
 
 File: runtime/thread.cc
 
@@ -66,6 +122,14 @@ UUID: cbb69be6_7dfab304
 Bytes: 22
 Remove this backslash?
 
+131:52-131:53
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_7dfab304
+UUID: 3045e884_2a32744e
+Bytes: 4
+Done
+
 134:2-134:82
 Tue Nov 08 00:37:01 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -73,10 +137,26 @@ UUID: cbb69be6_7d2b9399
 Bytes: 179
 Pass this as an argument from SetIsGcMarking instead of reloading the is_gc_marking (as this relies on that is_gc_marking_ is updated before the call, which could be error-prone)?
 
+134:2-134:82
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_7d2b9399
+UUID: 3045e884_0a2fb8e5
+Bytes: 4
+Done
+
 3139:13-3139:27
 Tue Nov 08 00:37:01 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: cbb69be6_fd0c035b
 Bytes: 117
 Rename this to suggest it may also update alloc entrypoints, or add a separate function for updating the entrypoints?
+
+3139:13-3139:27
+Wed Nov 16 02:01:58 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: cbb69be6_fd0c035b
+UUID: 3045e884_ea37ec3e
+Bytes: 17
+Done in other CL.
 

@@ -2,6 +2,13 @@ Revision: 9f9b1ee814c97950c0c0bd7082ba3ff7ab66f2ad
 Patch-set: 7
 File: runtime/class_linker.cc
 
+2597:21-2597:27
+Thu Nov 17 22:39:59 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50a6dcc4_788f357d
+Bytes: 38
+Could use result_ptr->DescriptorEquals
+
 2612:10-2612:39
 Thu Nov 17 22:15:18 2016 +0000
 Author: Andreas Gampe <1041833@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -10,6 +17,14 @@ Bytes: 238
 Why would we not have a class table?
 
 Mathieu says it might have been lazily created? But then you *must* create it here, or you'll throw a (wrong) LinkageError below? (And if it's because of OOM, we could get exception during exception?)
+
+2612:10-2612:39
+Thu Nov 17 22:39:59 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50a6dcc4_03d5dea0
+UUID: 50a6dcc4_c352f62a
+Bytes: 104
+Yes, can you just call InsertClassTableForClassLoader instead? That will make sure a class table exists.
 
 2624:0-2628:55
 Wed Nov 16 15:12:02 2016 +0000

@@ -103,3 +103,15 @@ Note that the ClassLoader API has the concept of "parallel capable" for this.
 
 What if it isn't a race, just something separated in time (the spec for well-behaved isn't restricting this to a race)? Does it protect calls to loadClass (and potentially underlying defineClass)? Or is it "only" in findLoadedClass?
 
+2624:0-2628:55
+Fri Nov 18 17:34:57 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50a6dcc4_bb37d23f
+UUID: 90ecd40b_b15c800b
+Bytes: 752
+Thanks for the reference, I guess I'll have to experiment if registering as parallel capable changes that behavior.
+
+This part is actually about races. I'm focused on resolving class literals from code, i.e. const-class in dalvik bytecode and whatever is the equivalent in Java bytecode. Once you get a result for that, the runtime does not need to call loadClass() again, so simply "separated in time" shall not reach this point. (We actually did call loadClass() again for multi-dex as exposed by the testMultiDex() if you drop the ClassLinker changes.)
+
+What happens when you call loadClass() directly from code is not really my concern at this time (in this CL), though we could try and intercept those calls and record the class in the ClassTable.
+

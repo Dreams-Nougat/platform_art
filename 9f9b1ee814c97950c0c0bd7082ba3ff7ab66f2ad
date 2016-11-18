@@ -11,12 +11,35 @@ Please add comments in this code about what individual if/else do.
 
 Also, please document that we trust "known_hierarchy" class loaders and we do not put all classes they link against in their ClassTable. However, the non trusted class loaders, we do.
 
+2583
+Fri Nov 18 17:06:05 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0e0b014_8c4287aa
+UUID: b0e71824_32b770b8
+Bytes: 154
+Thinking a bit more after our offline discussion, I decided not to trust the parent chain. There are many things that could be messed up using reflection.
+
 2597:21-2597:27
 Thu Nov 17 22:39:59 2016 +0000
 Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 50a6dcc4_788f357d
 Bytes: 38
 Could use result_ptr->DescriptorEquals
+
+2597:21-2597:27
+Fri Nov 18 17:06:05 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50a6dcc4_788f357d
+UUID: f0cb5092_34ce3046
+Bytes: 4
+Done
+
+2601:0-2605:55
+Fri Nov 18 17:06:05 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 30db286a_8e1ddbdf
+Bytes: 108
+RI throws NoClassDefFoundError, the message is simply the class name. I prefer the more descriptive message.
 
 2612:10-2612:39
 Thu Nov 17 22:15:18 2016 +0000
@@ -35,6 +58,14 @@ UUID: 50a6dcc4_c352f62a
 Bytes: 104
 Yes, can you just call InsertClassTableForClassLoader instead? That will make sure a class table exists.
 
+2612:10-2612:39
+Fri Nov 18 17:06:05 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50a6dcc4_c352f62a
+UUID: 90ecd40b_b1c24023
+Bytes: 39
+Done. (The perils of copy-pasted code.)
+
 2624:0-2628:55
 Wed Nov 16 15:12:02 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -49,4 +80,16 @@ Parent: 30e168e5_a1833855
 UUID: 50a6dcc4_437606f9
 Bytes: 157
 Not sure. Have you tested what the RI does? The spec only nebulously says that an implementation will protect itself against non-well-behaved classloaders...
+
+2624:0-2628:55
+Fri Nov 18 17:06:05 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50a6dcc4_437606f9
+UUID: f0cb5092_348630a5
+Bytes: 543
+The RI actually synchronizes on the class loader. As shocking as that may be, acquiring a lock on a class loader will block all other threads that try to load classes using that class loader.
+
+I didn't find any such requirement in the JLS (but maybe I didn't look long enough). I actually find it harmful that the RI does not allow loading two different classes concurrently by the same class loader, especially when there is a suggestion that classes can be loaded over the network.
+
+We should discuss whether we want to follow the RI or not.
 

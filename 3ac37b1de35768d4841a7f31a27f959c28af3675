@@ -35,3 +35,30 @@ Note that I am not doubting the fix. We here also came to the conclusion it woul
 
 But I think the description you're giving here isn't what is happening. The instruction cache may contain old data at this point, so we flush it, and that cache not doing any updates doesn't need to write back in main memory.
 
+17:0-19:30
+Mon Nov 21 15:50:08 2016 +0000
+Author: Artem Udovichenko <1083288@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0e0b014_afc895b5
+UUID: f0f990d6_6edbc0d9
+Bytes: 1405
+My thoughts were:
+1. We received several crashes described above.
+2. If pc points to "dc cvau" inside __aarch64_sync_cache_range in the JIT thread then the JIT thread crashes during flushing of caches.
+3. If error code is SEGV_ACCERR then the JIT thread tries to  write into memory which has no write permission. It also means that instruction "dc cvau" can do writes into memory. Arm documentation confirms that.
+This commit fixes this issue.
+
+> The instruction cache may contain old data at this point, so we flush it, and that cache not doing any updates doesn't need to write back in main memory.
+
+The issue happens when we flush data cache in the JIT thread.
+
+> But I think the description you're giving here isn't what is happening.
+
+
+I don't know how it works inside CPU. May be I wrong but, the issue happens on big.little architecture. As I know each core have own L1 cache and common L2 per cluster (4 cores). There is interconnect between L2 caches with support of coherency. For example JIT thread flushes caches on one cluster and this leads to write back from L1 cache into L2 cache. At this moment cache controller invalidates affected cache lines int another cluster and sends data into memory.
+I want to say again may be I wrong about CPU logic.
+
+
+>But I think the description you're giving here isn't what is happening.
+
+Probably we have different issues. Could you explain your opinion?
+

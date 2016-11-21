@@ -91,3 +91,11 @@ UUID: f0e0b014_12beac62
 Bytes: 237
 Sure, but this doesn't mention memory protection, and you might expect that implicit cache flushes (that happen all the time) do not look at page permissions. So can we conclude that all "dc" instructions do look at the page permissions?
 
+17:0-19:30
+Mon Nov 21 17:52:25 2016 +0000
+Author: David Sehr <1103743@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0e0b014_12beac62
+UUID: f0f990d6_8eb95ccf
+Bytes: 403
+I'm guessing a bit, but I believe the issue is that the invalidate instructions effectively do "writes" to shared cache levels from the perspective of other cores.  (Clearing the contents of a dirty line throws away the previous contents, and read from memory may yield different values.)  It's possibly the case that the invalidate in the nearest cache is propagated out via write operations as well...
+

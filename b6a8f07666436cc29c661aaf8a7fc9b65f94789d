@@ -9,10 +9,30 @@ UUID: f0e0b014_2f86e5a4
 Bytes: 340
 I see. I think I understand a little more about why this is called a "callsite transform". We copy the arguments exactly to the emulated call frame and then perform all argument conversions in Java. That said, I didn't see any code in the libcore change to perform argument conversions for the non var-args arguments. Did i miss something ?
 
+997:47-998:75
+Mon Nov 21 12:54:15 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0e0b014_2f86e5a4
+UUID: f0e0b014_effb3d08
+Bytes: 366
+The intent with callsite transform is to say "bypass validation and conversions for this". Otherwise, it gets rejected for incompatible method types.
+
+The code doesn't convert the non-varargs arguments in Java. As the invocation of the wrapped method handle will do the type checks and has the conversions that seemed slightly easier. Possibly less efficient though.
+
 1264:3-1267:5
 Mon Nov 21 10:49:51 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f0e0b014_cf9c01fe
 Bytes: 69
 not sure I understand this, do we understand why it's necessary now ?
+
+1264:3-1267:5
+Mon Nov 21 12:54:15 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0e0b014_cf9c01fe
+UUID: 90ecd40b_74de06cb
+Bytes: 340
+[ This is one of a few issues still pending. There are a couple of commented out tests that should pass too. ]
+
+A void method handle can have it's result cast to a type. It should be null for object types and 'zero' for other primitives. The issue observed is that null is a small unaligned integer that subsequently causes the VM to crash.
 

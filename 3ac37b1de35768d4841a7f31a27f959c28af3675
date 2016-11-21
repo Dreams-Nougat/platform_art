@@ -25,3 +25,13 @@ UUID: f0f990d6_ae90982d
 Bytes: 123
 We faced several crashes of such kind. In all cases pc points to this instruction and error code of SIGSEGV was SEGV_ACCERR
 
+17:0-19:30
+Mon Nov 21 13:00:19 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f0f990d6_ae90982d
+UUID: f0e0b014_afc895b5
+Bytes: 369
+Note that I am not doubting the fix. We here also came to the conclusion it would give us more guarantees to do the flush before the mprotect.
+
+But I think the description you're giving here isn't what is happening. The instruction cache may contain old data at this point, so we flush it, and that cache not doing any updates doesn't need to write back in main memory.
+

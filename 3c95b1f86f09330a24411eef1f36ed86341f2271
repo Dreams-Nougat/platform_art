@@ -11,3 +11,13 @@ Why don't we simply pass the VerifierDeps as an extra parameter to VerifyClass()
 
 We would need to rewrite the ParallelCompilationManager a bit to provide a worker id to Visit(), so that we can pass the right per-thread VerifierDeps.
 
+2054:10-2054:48
+Mon Nov 21 12:52:51 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 10d8e46b_90905a2e
+UUID: f0e0b014_cf940195
+Bytes: 555
+We talked about it with dbrazdil@, who started out passing it to VerifyClass. The problem is more about ClassLinker::VerifyClass, which would need to be aware of VerifierDeps, and IIRC, the VerifierDeps had to be passed to a couple of methods before hitting the verifier (not that I think it matters much here, but passing parameters is in the same performance scale as checking null for a thread entry).
+
+So we went to the way we traditionally did things: put compiler-related stuff to the callbacks. We can revisit that later if you think it's worth it.
+

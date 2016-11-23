@@ -9,12 +9,28 @@ UUID: d0100c08_13edcc45
 Bytes: 69
 add check that you can't pass both, --input-vdex and --input-vdex-fd.
 
+1129:4-1130:68
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0100c08_13edcc45
+UUID: 50ba5c38_5201126a
+Bytes: 4
+Done
+
 1274:13-1274:24
 Wed Nov 23 13:59:15 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0100c08_33560821
 Bytes: 86
 comment why you don't care or dcheck that you input_vdex_fd is not passed. Same below.
+
+1274:13-1274:24
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0100c08_33560821
+UUID: 905054f1_117f6c1a
+Bytes: 4
+Done
 
 1311:6-1311:49
 Wed Nov 23 13:59:15 2016 +0000
@@ -23,12 +39,28 @@ UUID: d0100c08_9300bc1e
 Bytes: 97
 You sure about this? In the future we might want to optimize  and pass the same descriptors here.
 
+1311:6-1311:49
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0100c08_9300bc1e
+UUID: d06c8cba_337c6823
+Bytes: 65
+Yes, that's the plan. But until then, we should have this DCHECK.
+
 1325:0-1329:11
 Wed Nov 23 13:59:15 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0100c08_33f0c81f
 Bytes: 76
 Add a comment explaining why it's ok to proceed if the vdex can't be opened.
+
+1325:0-1329:11
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0100c08_33f0c81f
+UUID: 905054f1_5189f40b
+Bytes: 4
+Done
 
 1519:84-1520:27
 Wed Nov 23 13:59:15 2016 +0000
@@ -39,6 +71,14 @@ i don't get this last part.
 
 also, double "when".
 
+1519:84-1520:27
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 50ba5c38_926ffa69
+UUID: 905054f1_91919c36
+Bytes: 4
+Done
+
 1640:7-1640:16
 Wed Nov 23 13:59:15 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -46,12 +86,34 @@ UUID: d0100c08_d329949d
 Bytes: 109
 Is this the right file for this method? Feels that it should sit next to where we actually do the quickening.
 
+1640:7-1640:16
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0100c08_d329949d
+UUID: 905054f1_b196a029
+Bytes: 317
+The quickening is in the oar_writer.cc, which looks maybe better but not great either.
+
+It's unclear how jvmti will also use quickening, and maybe the'll need that method as well, in which case, it will probably end up in runtime/ (instead of compiler/). So we're kind of in a transition state.
+
+What is your opinion?
+
 1759:19-1759:66
 Wed Nov 23 13:59:15 2016 +0000
 Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: d0100c08_b36858d4
 Bytes: 76
 Where is the test? It looks to me that unquickening is done unconditionally.
+
+1759:19-1759:66
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0100c08_b36858d4
+UUID: 103c64a3_8d6a615a
+Bytes: 93
+The comment says "in case", is that confusing?
+
+The TODO below isn't addressing your comment?
 
 1766:13-1766:23
 Wed Nov 23 13:59:15 2016 +0000
@@ -61,4 +123,12 @@ Bytes: 233
 The flow here is rather tricky to follow. I think that's mostly due to the surrounding code, handling vdex, being here and not in CompileAll.
 
 Maybe consider wrapping all this (L1757-L1770 + Unquicken) in a new CompilerDriver method?
+
+1766:13-1766:23
+Wed Nov 23 16:52:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d0100c08_d377d4af
+UUID: 103c64a3_2da32d83
+Bytes: 4
+Done
 

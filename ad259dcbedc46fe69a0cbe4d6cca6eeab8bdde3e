@@ -1,0 +1,64 @@
+Revision: ad259dcbedc46fe69a0cbe4d6cca6eeab8bdde3e
+Patch-set: 4
+File: dex2oat/dex2oat.cc
+
+1129:4-1130:68
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0100c08_13edcc45
+Bytes: 69
+add check that you can't pass both, --input-vdex and --input-vdex-fd.
+
+1274:13-1274:24
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0100c08_33560821
+Bytes: 86
+comment why you don't care or dcheck that you input_vdex_fd is not passed. Same below.
+
+1311:6-1311:49
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0100c08_9300bc1e
+Bytes: 97
+You sure about this? In the future we might want to optimize  and pass the same descriptors here.
+
+1325:0-1329:11
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0100c08_33f0c81f
+Bytes: 76
+Add a comment explaining why it's ok to proceed if the vdex can't be opened.
+
+1519:84-1520:27
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 50ba5c38_926ffa69
+Bytes: 49
+i don't get this last part.
+
+also, double "when".
+
+1640:7-1640:16
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0100c08_d329949d
+Bytes: 109
+Is this the right file for this method? Feels that it should sit next to where we actually do the quickening.
+
+1759:19-1759:66
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0100c08_b36858d4
+Bytes: 76
+Where is the test? It looks to me that unquickening is done unconditionally.
+
+1766:13-1766:23
+Wed Nov 23 13:59:15 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: d0100c08_d377d4af
+Bytes: 233
+The flow here is rather tricky to follow. I think that's mostly due to the surrounding code, handling vdex, being here and not in CompileAll.
+
+Maybe consider wrapping all this (L1757-L1770 + Unquicken) in a new CompilerDriver method?
+

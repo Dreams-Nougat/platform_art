@@ -17,6 +17,14 @@ UUID: 905054f1_d12a4441
 Bytes: 340
 Do we expect to add stuff at the end of this function (or its equivalent in the other ARM code generator)? It's true that some of the explicit Release() calls I have added are, strictly speaking, unnecessary, but there are code generator calls after them, so I have done it defensively (to make the code more robust against future changes).
 
+4925
+Thu Nov 24 16:26:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_d12a4441
+UUID: 905054f1_113ccc83
+Bytes: 95
+I agree that it is unnecessary. I'll leave it up to you to decide where you want to have these.
+
 File: test/538-checker-embed-constants/src/Main.java
 
 510:50-510:68
@@ -55,4 +63,20 @@ Bytes: 311
 Anton: Yes, this is feature of Checker, which tokenizes based on whitespace and then tries to match elements independently (though respecting their order).  To make sure that whitespace is not ignored, you can put all elements in the same regex:
 
   /// CHECK-NEXT:  {{(adds|subs)\s+r\d+, r\d+, #(4294967295|1)}}
+
+510:50-510:68
+Thu Nov 24 16:26:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_9120bc63
+UUID: 905054f1_f146681e
+Bytes: 219
+Current backend prefers T2 over T1 when possible. OTOH, <<Arg>> remains live below, so the register allocator is not going to assign the same register to both input and output of the Add. But do we want to rely on that?
+
+510:50-510:68
+Thu Nov 24 16:26:09 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_347c5e23
+UUID: 905054f1_f490162f
+Bytes: 101
+The checker splits the string on spaces before trying to match tokens, so you cannot match the space.
 

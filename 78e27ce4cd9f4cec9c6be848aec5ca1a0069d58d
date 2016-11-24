@@ -1,0 +1,30 @@
+Revision: 78e27ce4cd9f4cec9c6be848aec5ca1a0069d58d
+Patch-set: 4
+File: runtime/art_method.h
+
+249:3-250:45
+Thu Nov 24 10:24:02 2016 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 905054f1_b100601e
+Bytes: 213
+i'm not sure i understand this. this would make all var-arg native methods signature polymorphic ? Even things like this from android.util.EventLog:
+
+
+ public static native int writeEvent(int tag, Object... list);
+
+File: runtime/verifier/method_verifier.cc
+
+3018:6-3034:7
+Thu Nov 24 10:24:02 2016 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 905054f1_11f04c1f
+Bytes: 205
+we'd need something along these lines for the POLYMORPHIC case as well ? even though the this_type is always going to be java.lang.invoke.MethodHandle for now.. maybe we could even assert that's the case..
+
+3065:8-3065:97
+Thu Nov 24 10:24:02 2016 +0000
+Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 905054f1_d1f5e412
+Bytes: 115
+we need to verify that VRegH is in the right range at a lower level in the verifier (hard verifier failure if not).
+

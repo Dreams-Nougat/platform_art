@@ -12,6 +12,14 @@ i'm not sure i understand this. this would make all var-arg native methods signa
 
  public static native int writeEvent(int tag, Object... list);
 
+249:3-250:45
+Thu Nov 24 13:22:23 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_b100601e
+UUID: 905054f1_91a51cec
+Bytes: 155
+Removed. The code needs to check the modifier flags as they're part of the definition of signature polymorphic. Replaced with IsVarargs() that was missing.
+
 File: runtime/verifier/method_verifier.cc
 
 3018:6-3034:7
@@ -21,10 +29,26 @@ UUID: 905054f1_11f04c1f
 Bytes: 205
 we'd need something along these lines for the POLYMORPHIC case as well ? even though the this_type is always going to be java.lang.invoke.MethodHandle for now.. maybe we could even assert that's the case..
 
+3018:6-3034:7
+Thu Nov 24 13:22:23 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_11f04c1f
+UUID: 905054f1_71da787c
+Bytes: 121
+Thanks, missed this. Added a check in the INVOKE_POLYMORPHIC clause that receiver is null or an instance of MethodHandle.
+
 3065:8-3065:97
 Thu Nov 24 10:24:02 2016 +0000
 Author: Narayan Kamath <1014443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 905054f1_d1f5e412
 Bytes: 115
 we need to verify that VRegH is in the right range at a lower level in the verifier (hard verifier failure if not).
+
+3065:8-3065:97
+Thu Nov 24 13:22:23 2016 +0000
+Author: Orion Hodson <1071150@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_d1f5e412
+UUID: 5056dcee_0f09054f
+Bytes: 130
+Check added at the bottom of MethodVerifier::VerifyInvocationArgs before the code gets the prototype for checking parameter types.
 

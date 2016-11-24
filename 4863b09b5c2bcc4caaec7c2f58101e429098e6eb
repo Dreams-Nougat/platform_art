@@ -11,6 +11,14 @@ Is this intended? If so, it requires more comments, and maybe a change of the me
 
 I see that IsOutOfDate is only used in ReleaseFileForUse. If kOatRelocationOutOfDate requires special handling maybe is just better to inline this method and document directly there.
 
+809:9-809:32
+Thu Nov 24 14:07:29 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_f1402855
+UUID: 905054f1_716438f7
+Bytes: 116
+Renamed to 'IsUseable' and added a comment for clarity. This function will be used in more places in future changes.
+
 File: runtime/oat_file_assistant.h
 
 384:12-384:17
@@ -19,4 +27,16 @@ Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 905054f1_91419c5c
 Bytes: 118
 I think you can drop "Given" and make this function static. IMO it's obvious that you want the status of the argument.
+
+384:12-384:17
+Thu Nov 24 14:07:29 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_91419c5c
+UUID: 905054f1_d189647a
+Bytes: 405
+I would rather leave this function as is.
+
+It cannot be made static, because it refers to and may update the cached dex checksum and image info.
+
+I agree it's obvious that you want the status of the argument, but I want to use the name to explicitly distinguish this from the existing OatFileStatus and OdexFileStatus methods, which give the status for implicit oat files that you may not be able to open.
 

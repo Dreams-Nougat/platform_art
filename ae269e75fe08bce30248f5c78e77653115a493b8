@@ -46,3 +46,13 @@ The current backend generates:
 
 So, I am actually surprised that the old rule works at all - does whitespace implicitly match anything?
 
+510:50-510:68
+Thu Nov 24 16:17:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 905054f1_71c0b837
+UUID: 905054f1_347c5e23
+Bytes: 311
+Anton: Yes, this is feature of Checker, which tokenizes based on whitespace and then tries to match elements independently (though respecting their order).  To make sure that whitespace is not ignored, you can put all elements in the same regex:
+
+  /// CHECK-NEXT:  {{(adds|subs)\s+r\d+, r\d+, #(4294967295|1)}}
+

@@ -9,3 +9,23 @@ UUID: b04b9845_15511680
 Bytes: 181
 Memory leak? (Why did you remove the "TODO: Investigate why are we doing the work again for this method and try to avoid it"? Did you investigate and find out it no longer applies?)
 
+51:2-51:32
+Mon Nov 28 09:45:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b04b9845_15511680
+UUID: 4d90030a_1fdba30b
+Bytes: 323
+When you say memory leak, are you referring to the previous race?
+
+I think the race was due to JIT at the time. But we removed the use of VerifiedMethod from the JIT.
+
+I can add a:
+if (kIsDebugBuild) {
+  // Lock
+  // Check entry is null
+  // update
+  // unlock
+}
+
+if we want to be extra sure for AOT. Would you prefer that?
+

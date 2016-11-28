@@ -2,10 +2,26 @@ Revision: bd7d98bea18e868c493518e6260eb9b6320d4489
 Patch-set: 1
 File: runtime/gc/heap.cc
 
+3882:56-3882:89
+Mon Nov 28 19:33:35 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d266fad_e4e75863
+Bytes: 406
+I think we're OK with Relaxed here. This is performance critical, and IIUC, we only use the result as a hint; there is no correctness issue no matter what value we see here. Since we're not deducing anything important from the value, I don't think memory ordering is required.
+
+In either case, we can presumably end up with two concurrent calls to RequestConcurrentGC or CollectGarbageInternal. Is that OK?
+
 3899:35-3899:48
 Mon Nov 28 15:42:00 2016 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d90030a_dfba1b08
 Bytes: 96
 Probably this should be specified as a constant or parameter somewhere. I'm open to suggestions.
+
+3903:4-3903:67
+Mon Nov 28 19:33:35 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d266fad_c468dcd3
+Bytes: 141
+If we get two of these concurrently, do we correctly suppress one? That seems like a fairly important and not particularly unlikely scenario.
 

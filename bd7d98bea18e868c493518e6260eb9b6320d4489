@@ -11,6 +11,13 @@ I think we're OK with Relaxed here. This is performance critical, and IIUC, we o
 
 In either case, we can presumably end up with two concurrent calls to RequestConcurrentGC or CollectGarbageInternal. Is that OK?
 
+3888:33-3888:55
+Mon Nov 28 20:31:29 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d266fad_072c9606
+Bytes: 86
+I might change all of these to relaxed for consistency, though it doesn't matter here.
+
 3899:35-3899:48
 Mon Nov 28 15:42:00 2016 +0000
 Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -24,4 +31,15 @@ Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d266fad_c468dcd3
 Bytes: 141
 If we get two of these concurrently, do we correctly suppress one? That seems like a fairly important and not particularly unlikely scenario.
+
+3911:2-3912:37
+Mon Nov 28 20:31:29 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d266fad_a7028224
+Bytes: 880
+The down side of this design is that a client that normally manages its own native memory, and only uses Cleaners as a fallback, still regularly triggers Java GCs. I'm not sure how important that is. My a priori inclination would have been to still negate the effect of RegisterNativeAllocation here. That seems to make sense even if we otherwise keep the current design.
+
+My intuition is that we would want to do this only for explicit deallocations, not for those invoked by a Cleaner.
+
+For now, would it make sense to have RegisterNativeFree just do the decrement (probably limited to keep the value non-negative), and remove the RegisterNativeFree call from NativeAllocationRegistry? That removes an empty JNI call, and gives us a clearer path forward if this starts to matter. We'd add a NativeAllocationRegistry version that handles the "expect to deallocate natively" case.
 

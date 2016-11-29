@@ -27,3 +27,13 @@ UUID: ade97f6b_5d2eecbc
 Bytes: 172
 Hmm true, I think WaitUntilInlineCacheAccessible is not called before calling AddInvokeInfo. Are there any issues from newly allocated class loaders maybe not being marked?
 
+341:32-341:44
+Tue Nov 29 21:40:24 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_5d2eecbc
+UUID: 4d90030a_e2b748d8
+Bytes: 304
+Not calling WaitUntilInlineCacheAccessible before calling AddInvokeInfo is fine, as the only think AddInvokeInfo is doing is storing a class that is known live.
+
+No there cannot be any issue with newly allocated class loaders, as they cannot be added to the list of weak root class loaders at this point.
+

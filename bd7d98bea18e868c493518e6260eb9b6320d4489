@@ -30,6 +30,21 @@ Having skimmed the documentation for relaxed versus sequentially consistent, I a
 
 Are there guarantees that relaxed updates from one thread will eventually be visible to other threads? Is it possible each thread sees its own increments of native_bytes_allocated_ but not any increments done by other threads?
 
+3882:56-3882:89
+Tue Nov 29 18:36:31 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d90030a_42cdd4c1
+UUID: ade97f6b_9fb8ecac
+Bytes: 1061
+The short answer is that you shouldn't expect sequentially consistent to make things visible much sooner. It's mostly about ordering guarantees with respect to other updates.
+
+The detailed answers here get messy. See e.g.
+http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0062r1.html, which didn't go anywhere. Part of the issue here is that hardware vendors aren't willing to provide much in the way of guarantees, and compiler writers also hate providing guarantees.
+
+But there is a guarantee that you will see updates that "happen before" you.  And there is enough random synchronization in Java programs that that helps. It is also guaranteed that all accesses to a single location like native_bytes_allocated appear to occur in a single global order, consistent with happens-before, but not necessarily consistent with such global orders for other locations.
+
+I attempted to present some general guidelines for weakly ordered atomics in my recent CppCon talk (slides at http://schd.ws/hosted_files/cppcon2016/74/HansWeakAtomics.pdf, talk on YouTube)
+
 3888:33-3888:55
 Mon Nov 28 20:31:29 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -58,6 +73,14 @@ Parent: 2d266fad_c468dcd3
 UUID: 4d90030a_e2d18861
 Bytes: 206
 Briefly skimming the code suggests to me that we would end up running two GCs in a row in this case. I'll try writing a test case that calls RegisterNativeAllocation on multiple threads to see what happens.
+
+3903:4-3903:67
+Tue Nov 29 18:36:31 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d90030a_e2d18861
+UUID: ade97f6b_bfcbb032
+Bytes: 162
+If so, we should probably avoid that. E.g. use compare_exchange to reset native_bytes_allocated_, and trigger a GC only if you are the thread that succeeds at it.
 
 3911:2-3912:37
 Mon Nov 28 20:31:29 2016 +0000

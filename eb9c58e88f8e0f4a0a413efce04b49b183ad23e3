@@ -9,6 +9,16 @@ UUID: ade97f6b_022b5f92
 Bytes: 76
 This isn't necessary any more because the classes are now weak roots, right?
 
+819:32-819:35
+Tue Nov 29 21:07:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_022b5f92
+UUID: 4d90030a_22d9b041
+Bytes: 244
+Correct. The problem before was that the GC was concurrently visiting the profiling info, which the code below tries to delete.
+
+Now the GC doesn't visit the profiling info. Instead, it's happening in JitCodeCode::SweepJitRoots, under the lock.
+
 File: runtime/jit/profiling_info.cc
 
 43:46-43:75
@@ -17,4 +27,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ade97f6b_a20cb322
 Bytes: 35
 Why is this not necessary any more?
+
+43:46-43:75
+Tue Nov 29 21:07:37 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_a20cb322
+UUID: 4d90030a_42de342b
+Bytes: 324
+It used to be required to know which class we need to pretend to do a write barrier (see line 125), so the card mark indicates the class needs to be visited, and the profiling info needs to be visited.
+
+Now the profiling info is being handled in JitCodeCode::SweepJitRoots, so we don't need to pretend to do a write barrier.
 

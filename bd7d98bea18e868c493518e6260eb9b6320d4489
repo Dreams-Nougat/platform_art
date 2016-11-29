@@ -11,6 +11,13 @@ Mention the doc and the section describing the new implementation.
 
 File: runtime/gc/heap.cc
 
+3881
+Tue Nov 29 21:46:10 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_4248472a
+Bytes: 45
+Can you describe the new design in a comment?
+
 3882:56-3882:89
 Mon Nov 28 19:33:35 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -44,6 +51,13 @@ http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2016/p0062r1.html, which didn
 But there is a guarantee that you will see updates that "happen before" you.  And there is enough random synchronization in Java programs that that helps. It is also guaranteed that all accesses to a single location like native_bytes_allocated appear to occur in a single global order, consistent with happens-before, but not necessarily consistent with such global orders for other locations.
 
 I attempted to present some general guidelines for weakly ordered atomics in my recent CppCon talk (slides at http://schd.ws/hosted_files/cppcon2016/74/HansWeakAtomics.pdf, talk on YouTube)
+
+3885:35-3885:44
+Tue Nov 29 21:46:10 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_622a2b42
+Bytes: 34
+Why is this compared to max_free_?
 
 3888:33-3888:55
 Mon Nov 28 20:31:29 2016 +0000
@@ -106,4 +120,13 @@ For example, we could imagine a user calling RegisterNativeAllocation followed i
 If the user never relies on the GC to call RegisterNativeFree, then they don't need to use RegisterNativeAllocation or RegisterNativeFree at all. I'll take a look and see if there are any users who mostly call RegisterNativeFree explicitly, but sometimes rely on the GC to do the cleaning.
 
 I do wonder if its worth worrying about this in practice, given the limited number of users of RegisterNativeAllocation and the subtlety involved in knowing when it is appropriate to call RegisterNativeFree and when not to.
+
+File: runtime/gc/heap.h
+
+1185:17-1185:40
+Tue Nov 29 21:46:10 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_c26c57b1
+Bytes: 61
+Would native_bytes_allocated_since_last_gc_ be a better name?
 

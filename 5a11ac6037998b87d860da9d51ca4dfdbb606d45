@@ -58,6 +58,29 @@ I'm not sure. Does anyone know?
 
 I think that app image doesn't currently support class initialization.
 
+1495:4-1495:40
+Tue Nov 29 15:18:28 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3045e884_a1b6b821
+UUID: 705120f4_5671e488
+Bytes: 750
+I investigated and the conclusion is that for app image we don't execute <clinit> at all, see compiler_driver.cc, InitializeClassVisitor::Visit(),
+
+    bool can_init_static_fields =
+        manager_->GetCompiler()->GetCompilerOptions().IsBootImage() &&
+        manager_->GetCompiler()->IsImageClass(descriptor) &&
+        !StringPiece(descriptor).ends_with("$NoPreloadHolder;");
+
+We use only the EncodedStaticFieldValueIterator to process the "encoded_array_item"s indicated by "static_values_off". However, that's used only for integral values as both javac+dx and jack will generate a <clinit> even for
+
+    static Object o = null;
+
+or
+
+    static String s = "dummy";
+
+despite the availability of VALUE_NULL and VALUE_STRING types in encoded_value.
+
 File: runtime/image.h
 
 192:0-192:37

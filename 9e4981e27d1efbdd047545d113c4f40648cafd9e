@@ -13,10 +13,34 @@ And if it's in env use for an HDeoptimize, we still need to keep reference aroun
 
 Also if we cascade string buffer append, does the HasUses() test prevent the removal since the second append counts as a use of the return value of the first append?
 
+1896:15-1896:64
+Tue Nov 29 18:56:56 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_7f4ac8c6
+UUID: ade97f6b_ff2a588c
+Bytes: 679
+append() in general has many forms, but this istrinsic in particular is restricted to string arguments, so it should never be the second parameter (hence DCHECK for now).
+
+This raises the point that I was pondering over as well, should I add "all" append(T x) forms as intrinsic? It would be nice to avoid long switches with many cases in favor of something more general.
+
+If it is is an env use of DEOPT, the IsNonEscapingSingleton will return false.
+
+Lastly, a cascade of appends will indeed prevent this optimization (and correctly so). That is why I also implemented the "returns this" optimization (which in itself is beneficial, but also serves to make this use list empty)
+
 1984:14-1984:17
 Tue Nov 29 18:47:45 2016 +0000
 Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ade97f6b_3fb1e095
 Bytes: 139
 New in what sense? The newly added string buffer intrinsics? Or does 'new' mean some form of instance creation? Need a less confusing name.
+
+1984:14-1984:17
+Tue Nov 29 18:56:56 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_3fb1e095
+UUID: ade97f6b_1f573c1f
+Bytes: 161
+Ok, it was of course New in the sense of instance creation (I would never name methods "new" or "improved" or "nowWith20%MorePeanuts" :-)
+
+Will pick another name
 

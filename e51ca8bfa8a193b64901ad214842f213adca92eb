@@ -9,3 +9,13 @@ UUID: ade97f6b_bd7058fd
 Bytes: 124
 The class loader keeps the class live, you can probably just call IsMarked on the class and never do it on the class loader.
 
+341:32-341:44
+Tue Nov 29 21:26:14 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_bd7058fd
+UUID: 4d90030a_82c99c6a
+Bytes: 178
+But IsMarked will return null for newly allocated classes on CMS. So the code here will not know if the null is because the class is dead, or if it's just been allocated.
+
+Right?
+

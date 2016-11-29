@@ -32,6 +32,18 @@ UUID: ade97f6b_a2495333
 Bytes: 251
 I thought about that, but decided against it to avoid weird looping cases and excessive times spent in this method. Note that I think that in the long run, perhaps we should make escape analysis a full blown analysis pass, not a on-demand service ....
 
+1900:15-1900:31
+Tue Nov 29 21:49:54 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_a2495333
+UUID: ade97f6b_fd502024
+Bytes: 997
+HasUses() is too conservative since it includes env uses. Say there is another call after the user, it treats the reference as escaping. Env use only by Deopt should make it escaping. But I'm really worried about correctness as I said previously due to Deopt being added after the allocation removal since there is simplifying happening before bce.
+
+Moving out escape analysis actually introduces the danger already (just realized today) which didn't exist before since previously it's used only by LSE which is done after all HDeoptimize instructions are in place. So in a sense IsNonEscapingSingleton() isn't accurate before the BCE pass. If we do any form of allocation removal before adding some HDeoptimize instructions, bugs may happen.
+
+One solution is a conservative boolean for IsNonEscapingSingleton() that distinguishes whether all env uses or only Deopt env uses should make the singleton espcaping. We can be aggressive only after BCE which is the final pass that can introduce Deopt.
+
 1916:3-1916:87
 Tue Nov 29 20:45:30 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -44,6 +44,18 @@ Moving out escape analysis actually introduces the danger already (just realized
 
 One solution is a conservative boolean for IsNonEscapingSingleton() that distinguishes whether all env uses or only Deopt env uses should make the singleton espcaping. We can be aggressive only after BCE which is the final pass that can introduce Deopt.
 
+1900:15-1900:31
+Tue Nov 29 22:23:43 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_fd502024
+UUID: ade97f6b_dd1afc30
+Bytes: 542
+Talked a bit offline with Mingyao about his concerns. The boolean addition to the API would solve his concerns but also render this optimization useless since it will always fail on some env use.
+
+So the only solution is to make this simplification aware of where it runs (before or after bce). Mingyao said he needs similar tests also at one point.
+
+Both of us also voiced concern that we should document such dependences someplace. Also, bisection search will become a bit fragile, since phases are now suddenly aware of where they run.....
+
 1916:3-1916:87
 Tue Nov 29 20:45:30 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

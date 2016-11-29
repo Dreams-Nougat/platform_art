@@ -20,6 +20,16 @@ I think we're OK with Relaxed here. This is performance critical, and IIUC, we o
 
 In either case, we can presumably end up with two concurrent calls to RequestConcurrentGC or CollectGarbageInternal. Is that OK?
 
+3882:56-3882:89
+Tue Nov 29 16:46:40 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d266fad_e4e75863
+UUID: 4d90030a_42cdd4c1
+Bytes: 349
+Having skimmed the documentation for relaxed versus sequentially consistent, I agree that relaxed seems appropriate here.
+
+Are there guarantees that relaxed updates from one thread will eventually be visible to other threads? Is it possible each thread sees its own increments of native_bytes_allocated_ but not any increments done by other threads?
+
 3888:33-3888:55
 Mon Nov 28 20:31:29 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,6 +51,14 @@ UUID: 2d266fad_c468dcd3
 Bytes: 141
 If we get two of these concurrently, do we correctly suppress one? That seems like a fairly important and not particularly unlikely scenario.
 
+3903:4-3903:67
+Tue Nov 29 16:46:40 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d266fad_c468dcd3
+UUID: 4d90030a_e2d18861
+Bytes: 206
+Briefly skimming the code suggests to me that we would end up running two GCs in a row in this case. I'll try writing a test case that calls RegisterNativeAllocation on multiple threads to see what happens.
+
 3911:2-3912:37
 Mon Nov 28 20:31:29 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -51,4 +69,18 @@ The down side of this design is that a client that normally manages its own nati
 My intuition is that we would want to do this only for explicit deallocations, not for those invoked by a Cleaner.
 
 For now, would it make sense to have RegisterNativeFree just do the decrement (probably limited to keep the value non-negative), and remove the RegisterNativeFree call from NativeAllocationRegistry? That removes an empty JNI call, and gives us a clearer path forward if this starts to matter. We'd add a NativeAllocationRegistry version that handles the "expect to deallocate natively" case.
+
+3911:2-3912:37
+Tue Nov 29 16:46:40 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d266fad_a7028224
+UUID: 4d90030a_e2e8a8f7
+Bytes: 752
+I think I understand this comment and agree in principle.
+
+For example, we could imagine a user calling RegisterNativeAllocation followed immediately by a matching RegisterNativeFree in a loop. In that case there is no reason to run GC.
+
+If the user never relies on the GC to call RegisterNativeFree, then they don't need to use RegisterNativeAllocation or RegisterNativeFree at all. I'll take a look and see if there are any users who mostly call RegisterNativeFree explicitly, but sometimes rely on the GC to do the cleaning.
+
+I do wonder if its worth worrying about this in practice, given the limited number of users of RegisterNativeAllocation and the subtlety involved in knowing when it is appropriate to call RegisterNativeFree and when not to.
 

@@ -9,6 +9,14 @@ UUID: 4d90030a_2243f012
 Bytes: 16
 Why this change?
 
+1870:6-1870:24
+Tue Nov 29 20:51:00 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d90030a_2243f012
+UUID: ade97f6b_422f2750
+Bytes: 106
+Just so we don't keep resetting the flag. It is a minor improvement (extra read to avoid duplicate writes)
+
 1900:15-1900:31
 Tue Nov 29 20:45:30 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 4d90030a_4248742a
 Bytes: 61
 Why not recursively calling NoEscapeForStringBufferReference?
 
+1900:15-1900:31
+Tue Nov 29 20:51:00 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d90030a_4248742a
+UUID: ade97f6b_a2495333
+Bytes: 251
+I thought about that, but decided against it to avoid weird looping cases and excessive times spent in this method. Note that I think that in the long run, perhaps we should make escape analysis a full blown analysis pass, not a on-demand service ....
+
 1916:3-1916:87
 Tue Nov 29 20:45:30 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d90030a_023a6c87
 Bytes: 64
 Maybe add the synchronized information in the intrinsics_list.h?
+
+1916:3-1916:87
+Tue Nov 29 20:51:00 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d90030a_023a6c87
+UUID: ade97f6b_023a3f87
+Bytes: 292
+you are reading my mind. I want to propose a more general attribute list in intrinsics_list.h. seems a bit too much to do that in this cl, but I can file a bug on this, where we can also brainstorm on what other attributes we want (and make sure it can be more easily extended than right now)
 
 File: compiler/optimizing/nodes.h
 
@@ -31,4 +55,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 4d90030a_a23620a2
 Bytes: 45
 Ditto about moving this to intrinsics_list.h?
+
+4186:0-4197:3
+Tue Nov 29 20:51:00 2016 +0000
+Author: Aart Bik <1074526@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d90030a_a23620a2
+UUID: ade97f6b_e2363ba3
+Bytes: 9
+see above
 

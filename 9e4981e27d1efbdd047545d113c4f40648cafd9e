@@ -1,0 +1,22 @@
+Revision: 9e4981e27d1efbdd047545d113c4f40648cafd9e
+Patch-set: 2
+File: compiler/optimizing/instruction_simplifier.cc
+
+1896:15-1896:64
+Tue Nov 29 18:47:45 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_7f4ac8c6
+Bytes: 688
+As vmarko commented, need to check that user->InputAt(1) isn't reference. StringBuffer.append() allows a StringBuffer() to be the parameter (not always this object).
+
+And if it's in env use for an HDeoptimize, we still need to keep reference around. We also need to make sure HDeoptimize isn't created after the fact of removal. Right now lse does this and it's close to the end of optimizations. It's safe to do it in the the pass of simplifier after bce, but does it miss the loop optimization that can remove the loop?
+
+Also if we cascade string buffer append, does the HasUses() test prevent the removal since the second append counts as a use of the return value of the first append?
+
+1984:14-1984:17
+Tue Nov 29 18:47:45 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_3fb1e095
+Bytes: 139
+New in what sense? The newly added string buffer intrinsics? Or does 'new' mean some form of instance creation? Need a less confusing name.
+

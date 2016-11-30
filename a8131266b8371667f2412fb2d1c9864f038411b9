@@ -9,3 +9,11 @@ UUID: ade97f6b_c4f7bc6c
 Bytes: 551
 Good. But it seems like there's a bigger performance problem remaining here. Presumably these are really only needed at the end of the GC cycle? Can we turn these into thread_local counters and merge them at the end? As it stands, all copy operations contend for these cache lines. Immediately after a GC there could presumably be many concurrent copy operations by different mutator threads in addition to the GC thread, so it looks to me like this is asking for a lot of cache contention. That's the one operation that's more expensive than a fence.
 
+2158:6-2159:63
+Wed Nov 30 19:03:46 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_c4f7bc6c
+UUID: ade97f6b_24dc28ce
+Bytes: 168
+Copying doesn't happen too often, but it may be worth having non atomic counters for objects that the GC copies. Most of the marking / copying is done by the GC thread.
+

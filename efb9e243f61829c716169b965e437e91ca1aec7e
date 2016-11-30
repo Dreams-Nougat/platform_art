@@ -1,0 +1,24 @@
+Revision: efb9e243f61829c716169b965e437e91ca1aec7e
+Patch-set: 5
+File: compiler/optimizing/escape.h
+
+55
+Wed Nov 30 20:52:05 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_0437e4a0
+Bytes: 793
+It's worthwhile to add some comments to clarify a few things. e.g. why deopt_visible doesn't count toward escaping. Basically if it can't escape the current thread in compiled code, it can't escape the current thread in interpreter code either. And we are talking about thread-escape here.
+
+Method-escape generally means object can outlive the method (including its callees). However the escape analysis done by LSE really means escaping the current compiled method, not including its callees, since we don't do inter-procedural analysis. In a sense no_escape() really specializes some callees to allow some callees to be included. deopt_visible counts as escaping the current compiled code for LSE.
+
+Well just some observations, it would be nice to have some comments to clarify the concepts.
+
+File: compiler/optimizing/load_store_elimination.cc
+
+67:7-67:32
+Wed Nov 30 20:52:05 2016 +0000
+Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_642eb0bd
+Bytes: 152
+Escaping here means a little different from the other place which doesn't include deopt-visible. Maybe IsSingletonAndRemovable() to avoid the confusion.
+

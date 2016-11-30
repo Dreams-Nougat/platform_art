@@ -1,0 +1,20 @@
+Revision: 0e6f808aa7d0cbc104c7175765777bf742a2c403
+Patch-set: 1
+File: runtime/gc/collector/concurrent_copying.cc
+
+2148:29-2148:72
+Wed Nov 30 02:26:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d28cb81_700e8eac
+Bytes: 228
+I thought this is more about the CAS just below, right?
+
+It may also be to do with the field CAS in ConcurrentCopying::Process.  But can it really reorder because the field CAS only happens after it's pushed onto the mark stack?
+
+2155:29-2155:66
+Wed Nov 30 02:26:23 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ade97f6b_6ec8d4b3
+Bytes: 42
+Can you also change this to a relaxed CAS?
+

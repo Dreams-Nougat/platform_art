@@ -9,6 +9,14 @@ UUID: ade97f6b_50ac8e69
 Bytes: 121
 Instead of having the ThreadFenceRelease below, would it be any cheaper to turn one of these stores into a store-release?
 
+2141:0-2146:5
+Wed Nov 30 17:57:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_50ac8e69
+UUID: ade97f6b_3940d570
+Bytes: 72
+Is that sufficient? I thought that wasn't the same as an explicit fence.
+
 2148:29-2148:72
 Wed Nov 30 02:26:23 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -18,10 +26,26 @@ I thought this is more about the CAS just below, right?
 
 It may also be to do with the field CAS in ConcurrentCopying::Process.  But can it really reorder because the field CAS only happens after it's pushed onto the mark stack?
 
+2148:29-2148:72
+Wed Nov 30 17:57:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d28cb81_700e8eac
+UUID: ade97f6b_991ec189
+Bytes: 106
+I think both are possibly issues, the mark stack push does not have any fences for the GC exclusive state?
+
 2155:29-2155:66
 Wed Nov 30 02:26:23 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ade97f6b_6ec8d4b3
 Bytes: 42
 Can you also change this to a relaxed CAS?
+
+2155:29-2155:66
+Wed Nov 30 17:57:36 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_6ec8d4b3
+UUID: ade97f6b_792e5dbd
+Bytes: 4
+Done
 

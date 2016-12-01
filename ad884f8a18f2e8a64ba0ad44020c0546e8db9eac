@@ -9,6 +9,14 @@ UUID: 8dd83b0a_7196b89e
 Bytes: 34
 add a comma between 'it' and 'put'
 
+17:30-17:36
+Thu Dec 01 12:59:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_7196b89e
+UUID: 0dc44b28_cd3ca986
+Bytes: 4
+Done
+
 18:9-18:17
 Thu Dec 01 12:49:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +24,28 @@ UUID: 8dd83b0a_516854d1
 Bytes: 4
 typo
 
+18:9-18:17
+Thu Dec 01 12:59:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_516854d1
+UUID: 6db227c7_28ac4b82
+Bytes: 4
+Done
+
 22:9-22:19
 Thu Dec 01 12:49:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8dd83b0a_1172ccc3
 Bytes: 4
 typo
+
+22:9-22:19
+Thu Dec 01 12:59:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_1172ccc3
+UUID: adbc1f98_2aa67ff5
+Bytes: 4
+Done
 
 File: compiler/oat_writer.cc
 
@@ -32,12 +56,31 @@ UUID: 8dd83b0a_f1586844
 Bytes: 165
 We have the convention of updating stats as we're writing the data. And stats should not be used for calculating the vdex_size_, only for checking it in WriteCode().
 
+500:0-501:68
+Thu Dec 01 12:59:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_f1586844
+UUID: 6db227c7_c8a00f89
+Bytes: 231
+So you 'd prefer if I moved those two lines in WriteChecksumsAndHeaders, and here write:
+vdex_size_ = sizeof(VdexFile::Header) + oat_dex_files_.size() * sizeof(uint32_t);
+
+(That will repeat the same code, but maybe conventions win)
+
 2624:38-2624:49
 Thu Dec 01 12:49:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8dd83b0a_91655cf7
 Bytes: 42
 "checksum" or "dex file location checksum"
+
+2624:38-2624:49
+Thu Dec 01 12:59:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_91655cf7
+UUID: 8dd83b0a_b17bc090
+Bytes: 4
+Done
 
 File: runtime/oat_file_assistant.cc
 
@@ -48,6 +91,16 @@ UUID: 8dd83b0a_118bac71
 Bytes: 67
 Why? (Did you change this for debugging and forgot to change back?)
 
+317:4-317:14
+Thu Dec 01 12:59:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_118bac71
+UUID: adbc1f98_caba4308
+Bytes: 350
+I kept it on purpose because:
+1) The run test 628-vdex would have failed if that was an error (as the printing is not expected).
+2) It's not an expected state on the device. If we ever happen in this situation, it's good to emit a storng signal something is wrong (the developers intentionally updating apks manually probably know what they're doing)
+
 File: runtime/vdex_file.h
 
 116
@@ -56,4 +109,12 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8dd83b0a_3190309d
 Bytes: 48
 DCHECK_LT(dex_file_index, GetNumberOfDexFile());
+
+116
+Thu Dec 01 12:59:40 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_3190309d
+UUID: adbc1f98_aab10f2b
+Bytes: 4
+Done
 

@@ -18,3 +18,11 @@ UUID: adbc1f98_0ac85bb2
 Bytes: 38
 Why is that not just number_of_inputs?
 
+1377:0-1388:3
+Thu Dec 01 16:48:08 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: adbc1f98_0ac85bb2
+UUID: 4d556338_ec342ff4
+Bytes: 370
+We use num_regs to construct the shadow frame for the method being called. For the interpreter, it uses the called method code item's registers size to size it properly. For the compiler, this space is actually unused, since we only need to set up the inputs. Basically, it should be registers_size in the interpreter with code item case, and number of inputs otherwise.
+

@@ -60,3 +60,13 @@ UUID: 8dd83b0a_54b842ab
 Bytes: 72
 But why can't we use number_of_inputs for both interpreter and compiler?
 
+1377:0-1388:3
+Thu Dec 01 23:03:37 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_54b842ab
+UUID: 4d556338_cab7861f
+Bytes: 286
+Because then the shadow frame wouldn't be big enough for the interpreter. It has to reserve enough space for all the registers in the called method, not just the inputs.
+
+The compiler actually doesn't use that extra space, so I can get away with only reserving the space for the inputs.
+

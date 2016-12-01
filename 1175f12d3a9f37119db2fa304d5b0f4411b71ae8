@@ -1,5 +1,22 @@
 Revision: 1175f12d3a9f37119db2fa304d5b0f4411b71ae8
 Patch-set: 1
+File: /COMMIT_MSG
+
+9:0-9:4
+Thu Dec 01 10:48:40 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: cdc95346_eb8b913b
+Bytes: 1088
+Probably worth referring to commit 22f71d215679955372d8e24db3771fc7173dccb5, the one that added the check you're weakening.
+
+As mentioned on previous review (but too late to influence the commit):
+
+For somebody not steeped in runtime internals like myself a bit more context and the behavior if the check fails in the commit comment would be nice. A bug number would also be good, if only so later issues / discussions / knowledge have somewhere obvious to go (and rollback record, if needed)
+
+OTTOMH, there are a few classes in the wider libcore that use system properties that affect static initialization. I know you removed a few so that we can pre-initialize classes in the runtime but I don't think we've done all. It is conceivable that those system properties (or other things outside of our control / "hidden variables") could cause static initialization to fail.
+
+Given it *expected* not to fail static initialization for boot classes but it *might* happen, should we start with a warning log instead? I'll happily confess I don't know the difference between a CHECK and DCHECK.
+
 File: runtime/class_linker.cc
 
 245:0-249:3

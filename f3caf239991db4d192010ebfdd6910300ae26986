@@ -42,3 +42,13 @@ UUID: 8dd83b0a_94a0ea75
 Bytes: 89
 Sorry I don't understand this, the code before does not check compiled or not, and works.
 
+1377:0-1388:3
+Thu Dec 01 22:35:15 2016 +0000
+Author: Jeff Hao <1010108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8dd83b0a_94a0ea75
+UUID: 4d556338_4ae6d6cf
+Bytes: 408
+I moved the check up to avoid accessing the code item's fields in the case where it is compiled. It worked the old way too, but this way I improve dex file memory accesses. 
+
+This fix comes out of dexlayout measurements I was making. I saw it access parts of the dex file that should only contain compiled code, and this is the cause. It loads in 128kB just to read a code item's registers_size and ins_size.
+

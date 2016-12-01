@@ -1,0 +1,18 @@
+Revision: 1175f12d3a9f37119db2fa304d5b0f4411b71ae8
+Patch-set: 1
+File: runtime/class_linker.cc
+
+245:0-249:3
+Thu Dec 01 09:55:11 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: adbc1f98_0a1e1b8b
+Bytes: 398
+Following our discussions from last change and per chat, we cannot guarantee this, but I agree having some way for us to know about it is useful.
+
+I think using DCHECK is not in the right philosophy though, as we use DCHECK for expensive things that could have been a CHECK in the first place.
+
+If you really, really, want to abort the app, how about:
+LOG(kIsDebugBuild ? FATAL : WARNING) << ...
+
+?
+

@@ -1,6 +1,47 @@
 Revision: a01de59eef990c07df9815376cd3c675e3acd481
 Patch-set: 6
+File: runtime/handle.h
+
+64:21-64:27
+Thu Dec 01 00:57:52 2016 +0000
+Author: Daniel Colascione <1130394@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d556338_dddf5b50
+Bytes: 22
+Why not operator bool?
+
+File: runtime/mirror/array.h
+
+217:14-217:34
+Thu Dec 01 00:57:52 2016 +0000
+Author: Daniel Colascione <1130394@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d556338_1d4ef339
+Bytes: 116
+Restrict annotations? Libc memcpy has them; without them, the compiler has to make pessimistic aliasing assumptions.
+
+221:6-221:21
+Thu Dec 01 00:57:52 2016 +0000
+Author: Daniel Colascione <1130394@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d556338_3d7bf769
+Bytes: 89
+Why the lock annotation? It's just memcpy. Isn't it up to the caller to use it correctly?
+
+File: runtime/modifiers.h
+
+70:84-70:88
+Thu Dec 01 00:57:52 2016 +0000
+Author: Daniel Colascione <1130394@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d556338_fd369fa2
+Bytes: 3
+its
+
 File: runtime/openjdkjvmti/ti_redefine.cc
+
+52:3-52:58
+Thu Dec 01 00:57:52 2016 +0000
+Author: Daniel Colascione <1130394@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d556338_5dd34b1a
+Bytes: 86
+Why do we need a whole page and a whole VMA? What if we redefine thousands of classes?
 
 69:2-69:39
 Wed Nov 30 21:50:22 2016 +0000
@@ -10,6 +51,13 @@ Bytes: 168
 Sorry, should have been clearer. Please add a comment on why you need to map it read only.
 
 (The comment you added is  a repetition of the code, which isn't necessary).
+
+190
+Thu Dec 01 00:57:52 2016 +0000
+Author: Daniel Colascione <1130394@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 4d556338_00a16c78
+Bytes: 136
+I don't think this functionality should depend on ClassLoader internals. Applications can (and do!) use whatever classloaders they want.
 
 239:54-239:59
 Wed Nov 30 21:50:22 2016 +0000

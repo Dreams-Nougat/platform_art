@@ -1,0 +1,63 @@
+Revision: eb2102974b4ad07a090eb353ef10d521698adafa
+Patch-set: 2
+File: runtime/class_linker.cc
+
+1898:4-1898:25
+Sat Dec 03 01:01:04 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d159bc1_a328b697
+Bytes: 28
+Why need to avoid buffering?
+
+File: runtime/class_table-inl.h
+
+81:0-83:86
+Sat Dec 03 01:01:04 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d159bc1_230726fa
+Bytes: 132
+Do we need to do an update in Read() instead of simply delegating it to VisitRoot() just like a normal concurrently-handled GC root?
+
+File: runtime/class_table.cc
+
+35:2-35:46
+Sat Dec 03 01:01:04 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d159bc1_3e3dfded
+Bytes: 341
+Just checking if it's as intended:
+
+1. The old code used to try to find it and it checked the class references are actually equal. Now we don't. Is this okay?
+
+2. If we now just check that the given class is in the class_set, calling LookupByDescriptor would have a redundant read barrier (it->Read())? We could avoid that read barrier here?
+
+File: runtime/class_table.h
+
+45:8-45:17
+Sat Dec 03 01:01:04 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d159bc1_7eb6d58e
+Bytes: 55
+Do we have some unit tests covering TableSlot/ClassSet?
+
+54
+Sat Dec 03 01:01:04 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d159bc1_c38a8a6c
+Bytes: 92
+Is it possible to DCHECK that 'descriptor_hash' matches the descriptor hash of 'klass' here?
+
+65:13-65:17
+Sat Dec 03 01:01:04 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d159bc1_9e6aa926
+Bytes: 108
+Would changing this to "static uint32_t Hash(uint32_t)" avoid having to put "& kHashMask" in many locations?
+
+89:29-89:34
+Sat Dec 03 01:01:04 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d159bc1_e356aeeb
+Bytes: 60
+Make it clearer that this contains a GC root in the comment?
+

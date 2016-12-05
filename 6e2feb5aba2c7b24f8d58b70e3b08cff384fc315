@@ -1,0 +1,18 @@
+Revision: 6e2feb5aba2c7b24f8d58b70e3b08cff384fc315
+Patch-set: 4
+File: runtime/interpreter/mterp/arm/footer.S
+
+285:0-295:30
+Mon Dec 05 10:19:19 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d490f02_5e0bf58e
+Bytes: 168
+Remove. LDMFD {..., pc} actually returns from the function. The frame after the LDMFD, i.e. the frame at MterpProfileActive, is identical to the frame before the LDMFD.
+
+307:0-317:30
+Mon Dec 05 10:19:19 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 0d01ab89_255a8e9b
+Bytes: 106
+Remove. (Though it doesn't really matter here because we should never need CFI for a PC after this LDMFD.)
+

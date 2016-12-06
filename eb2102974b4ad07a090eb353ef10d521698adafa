@@ -34,6 +34,16 @@ UUID: 8d159bc1_605ce19b
 Bytes: 141
 The class table uses a temporary GcRoot for holding the root, the buffered root visiting would access a stale stack location for this object.
 
+1898:4-1898:25
+Tue Dec 06 18:50:40 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_605ce19b
+UUID: ad833f54_b8280198
+Bytes: 114
+Which temporary GcRoot? What function/code is this referring to?
+
+Leave a comment why buffering doesn't work here?
+
 File: runtime/class_table-inl.h
 
 81:0-83:86
@@ -50,6 +60,16 @@ Parent: 8d159bc1_230726fa
 UUID: 8d159bc1_004405b6
 Bytes: 81
 How would read know how to updated the table slot? Can you clarify what you mean?
+
+81:0-83:86
+Tue Dec 06 18:50:40 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_004405b6
+UUID: ad833f54_d89065a3
+Bytes: 390
+Is this like the normal read barrier where it has a choice between updating the field when it's triggered versus not updating and relying on the GC to update the field later? My understanding is that this code chose the former. But it could also choose the latter?
+
+IOW, if we don't do this CAS here in READ() and rely on VisitRoot() below to update the pointer later, would that also work?
 
 File: runtime/class_table.cc
 
@@ -71,6 +91,14 @@ Parent: 8d159bc1_3e3dfded
 UUID: 8d159bc1_de47016d
 Bytes: 143
 Good point, I will revert the behavior here just in case. I don't think having duplicate classes with the same descriptor should happen though.
+
+35:2-35:46
+Tue Dec 06 18:50:40 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_de47016d
+UUID: ad833f54_78cff9b9
+Bytes: 7
+Agreed.
 
 File: runtime/class_table.h
 

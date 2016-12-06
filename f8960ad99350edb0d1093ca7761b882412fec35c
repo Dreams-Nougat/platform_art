@@ -1,0 +1,61 @@
+Revision: f8960ad99350edb0d1093ca7761b882412fec35c
+Patch-set: 1
+File: /COMMIT_MSG
+
+11:0-11:4
+Tue Dec 06 15:58:01 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d04af97_c99d15f8
+Bytes: 271
+Could you also add these configurations:
+
+* ART_HEAP_POISONING=true
+* ART_USE_READ_BARRIER=true ART_HEAP_POISONING=true
+* ART_USE_READ_BARRIER=true ART_READ_BARRIER_TYPE=TABLELOOKUP
+* ART_USE_READ_BARRIER=true ART_READ_BARRIER_TYPE=TABLELOOKUP ART_HEAP_POISONING=true 
+
+?
+
+File: compiler/optimizing/code_generator_arm_vixl.cc
+
+4924:31-4924:39
+Tue Dec 06 15:58:01 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d04af97_e945718f
+Bytes: 193
+This is a bit ambiguous IMO. What about `vixl_temp`?
+
+Alternatively, maybe move the
+
+  UseScratchRegisterScope temps(GetAssembler()->GetVIXLAssembler());
+
+statement from line 4871 to line 4923?
+
+4992:33-4992:41
+Tue Dec 06 15:58:01 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d04af97_c94ab59d
+Bytes: 6
+Ditto.
+
+5134:31-5134:39
+Tue Dec 06 15:58:01 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d04af97_a94f79ab
+Bytes: 6
+Ditto.
+
+7087:29-7087:38
+Tue Dec 06 15:58:01 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 8d3afb53_a4154c28
+Bytes: 51
+Rename as `temp3` (as in the ARM64 code generator)?
+
+7175:0-7175:54
+Tue Dec 06 15:58:01 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 2d04af97_2964a927
+Bytes: 24
+Nit: indentation is off.
+

@@ -9,6 +9,14 @@ UUID: 4d0ba3a9_67f1b224
 Bytes: 7
 entries
 
+10:0-10:6
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d0ba3a9_67f1b224
+UUID: 8d159bc1_201829ed
+Bytes: 4
+Done
+
 File: runtime/class_linker.cc
 
 1898:4-1898:25
@@ -18,6 +26,14 @@ UUID: 8d159bc1_a328b697
 Bytes: 28
 Why need to avoid buffering?
 
+1898:4-1898:25
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_a328b697
+UUID: 8d159bc1_605ce19b
+Bytes: 141
+The class table uses a temporary GcRoot for holding the root, the buffered root visiting would access a stale stack location for this object.
+
 File: runtime/class_table-inl.h
 
 81:0-83:86
@@ -26,6 +42,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d159bc1_230726fa
 Bytes: 132
 Do we need to do an update in Read() instead of simply delegating it to VisitRoot() just like a normal concurrently-handled GC root?
+
+81:0-83:86
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_230726fa
+UUID: 8d159bc1_004405b6
+Bytes: 81
+How would read know how to updated the table slot? Can you clarify what you mean?
 
 File: runtime/class_table.cc
 
@@ -40,6 +64,14 @@ Just checking if it's as intended:
 
 2. If we now just check that the given class is in the class_set, calling LookupByDescriptor would have a redundant read barrier (it->Read())? We could avoid that read barrier here?
 
+35:2-35:46
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_3e3dfded
+UUID: 8d159bc1_de47016d
+Bytes: 143
+Good point, I will revert the behavior here just in case. I don't think having duplicate classes with the same descriptor should happen though.
+
 File: runtime/class_table.h
 
 45:8-45:17
@@ -49,12 +81,28 @@ UUID: 8d159bc1_7eb6d58e
 Bytes: 55
 Do we have some unit tests covering TableSlot/ClassSet?
 
+45:8-45:17
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_7eb6d58e
+UUID: 8d159bc1_007f65ca
+Bytes: 14
+Working on it.
+
 54
 Sat Dec 03 01:01:04 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d159bc1_c38a8a6c
 Bytes: 92
 Is it possible to DCHECK that 'descriptor_hash' matches the descriptor hash of 'klass' here?
+
+54
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_c38a8a6c
+UUID: 8d159bc1_20c5c9f4
+Bytes: 4
+Done
 
 65:13-65:17
 Sat Dec 03 01:01:04 2016 +0000
@@ -63,10 +111,26 @@ UUID: 8d159bc1_9e6aa926
 Bytes: 108
 Would changing this to "static uint32_t Hash(uint32_t)" avoid having to put "& kHashMask" in many locations?
 
+65:13-65:17
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_9e6aa926
+UUID: 8d159bc1_40d0bdb7
+Bytes: 4
+Done
+
 89:29-89:34
 Sat Dec 03 01:01:04 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 8d159bc1_e356aeeb
 Bytes: 60
 Make it clearer that this contains a GC root in the comment?
+
+89:29-89:34
+Tue Dec 06 02:43:39 2016 +0000
+Author: Mathieu Chartier <1015378@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 8d159bc1_e356aeeb
+UUID: 8d159bc1_60cbc10b
+Bytes: 4
+Done
 

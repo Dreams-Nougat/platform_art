@@ -25,6 +25,14 @@ UUID: 7c0657a0_2ea4b38a
 Bytes: 93
 Always false here. (And you're not actually using the constant division logic in VisitDiv().)
 
+4798:10-4798:30
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_2ea4b38a
+UUID: fa024ff6_1c2635de
+Bytes: 4
+Done
+
 File: compiler/optimizing/nodes.cc
 
 1368:0-1383:26
@@ -33,6 +41,24 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_8ecb9f3c
 Bytes: 26
 MoveBefore(cursor->next_);
+
+1368:0-1383:26
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_8ecb9f3c
+UUID: ba129745_9abb6d70
+Bytes: 840
+We cannot simply use MoveBefore for instruction scheduling.
+
+MoveBefore() can support moving an instruction to any position within the whole graph, for example it is used by LICM to hoist instruction out of loop into loop header.
+
+MoveBefore() does CanBeMoved() DCHECK before moving, but this concept is not appropriate for instruction scheduling.
+For example, HNewArray cannot be moved freely inside the whole graph (like host out of the loop) thus CanBeMoved() returns false for it; but instruction scheduling can move HNewArray inside one basic block.
+
+I’ve introduced LocalMoveAfter() function to allow moving instruction inside basic block without checking CanBeMoved(). 
+I think the CanBeMoved() and MoveBefore/After() interfaces need improve to support different optimization requirements.
+
+Please let me know your opinion on this.
 
 File: compiler/optimizing/prepare_for_register_allocation.cc
 
@@ -43,6 +69,15 @@ UUID: 7c0657a0_8ef03f76
 Bytes: 64
 This has been flagged as a bad merge in PS5 but it's still here.
 
+171:0-177:12
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_8ef03f76
+UUID: daff4b21_3b9457cf
+Bytes: 40
+Done.
+I've fixed this bad merge in PS15.
+
 File: compiler/optimizing/scheduler.cc
 
 47:42-47:43
@@ -51,6 +86,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1bcbc99_aa882f03
 Bytes: 12
 remove space
+
+47:42-47:43
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1bcbc99_aa882f03
+UUID: da182b71_b37098f4
+Bytes: 4
+Done
 
 140:0-143:15
 Mon Oct 24 21:04:59 2016 +0000
@@ -324,12 +367,29 @@ UUID: 411c4caf_a64b66c9
 Bytes: 134
 "Float"? This applies only to float division, right? (Unlike the kArm64MulFloatingPointLatency that applies to both float and double.)
 
+39:34-39:47
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 411c4caf_a64b66c9
+UUID: 9aeeb371_81c89a11
+Bytes: 4
+Done
+
 96:0-101:21
 Tue Oct 25 15:50:31 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 411c4caf_264136a7
 Bytes: 30
 I'd prefer a switch statement.
+
+96:0-101:21
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 411c4caf_264136a7
+UUID: 5af43b41_3f2687e7
+Bytes: 146
+Done.
+I also think switch makes the code look cleaner. In previous patch sets, there is a 'false' in the if ()  which looks quite confusing to me.
 
 File: compiler/optimizing/scheduler_test.cc
 
@@ -344,6 +404,17 @@ We don't need a vector here.
         add1,
         ...
     };
+
+112:2-112:47
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 617f90e7_07bc16a3
+UUID: 5af43b41_1f2bc3af
+Bytes: 338
+I'd like to keep the std::vector here, because it works really well with ReverseRange(Caintainer& c). Please see the ReverseRange() call below.
+If we define it as array here, I think the following code has to write as something like 
+ ReverseRange<HInstruction*, sizeof(block_instructions)>(block_instructions);
+which looks quite awkward.
 
 140:61-140:66
 Tue Oct 25 15:50:31 2016 +0000
@@ -366,4 +437,13 @@ Parent: 617f90e7_07e5f6c6
 UUID: a1bb48d0_39fe8ffc
 Bytes: 83
 https://android-review.googlesource.com/#/c/294269/1/runtime/base/iteration_range.h
+
+141:7-143:11
+Fri Dec 09 14:07:23 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: a1bb48d0_39fe8ffc
+UUID: 5af43b41_df3c3bf4
+Bytes: 62
+Done.
+The new helper functions make code much cleaner. Thanks!
 

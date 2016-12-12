@@ -9,12 +9,28 @@ UUID: 7c0657a0_ce9ab74c
 Bytes: 8
 schedule
 
+21:61-21:70
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_ce9ab74c
+UUID: 5af43b41_9faeb3c9
+Bytes: 4
+Done
+
 23:43-23:52
 Fri Oct 21 17:46:54 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_8e94bf1d
 Bytes: 8
 schedule
+
+23:43-23:52
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_8e94bf1d
+UUID: 5af43b41_7f0f6f1a
+Bytes: 4
+Done
 
 File: compiler/optimizing/code_generator_arm64.cc
 
@@ -102,12 +118,30 @@ UUID: 613cf0f2_3f6e4773
 Bytes: 59
 return ContainsElement(node->GetDataPredecessors(), other);
 
+140:0-143:15
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 613cf0f2_3f6e4773
+UUID: 5af43b41_624a38a2
+Bytes: 41
+Done.
+The function looks cleaner, thanks.
+
 158:0-161:15
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 41b0ccbe_06785a34
 Bytes: 60
 return ContainsElement(node->GetOtherPredecessors(), other);
+
+158:0-161:15
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41b0ccbe_06785a34
+UUID: 5af43b41_424f34b0
+Bytes: 41
+Done.
+The function looks cleaner, thanks.
 
 199:42-199:45
 Mon Oct 24 21:04:59 2016 +0000
@@ -124,6 +158,15 @@ I usually do
     separator = ",";
   }
 
+199:42-199:45
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_aba1097d
+UUID: 5af43b41_2254303e
+Bytes: 22
+Done.
+Nice suggestion.
+
 225:23-225:46
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -131,12 +174,31 @@ UUID: e1c9c045_4bbc25a4
 Bytes: 20
 Command line option?
 
+225:23-225:46
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_4bbc25a4
+UUID: 5af43b41_c262241e
+Bytes: 328
+I've put a TODO in the new patch set.
+I would like visualizer to take care of the cfg and dot graph dumps, and the command line option controls the visualizer dump.
+
+In the future, I want to move scheduling info into HInstruction, and visualizer knows how to dump scheduling dotty graph based on scheduling info in HInstruction.
+
 229:2-229:38
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e1c9c045_0bc61d36
 Bytes: 63
 I don't like static variables. Can this be supplied externally?
+
+229:2-229:38
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_0bc61d36
+UUID: 5af43b41_a25f2058
+Bytes: 55
+Done. This static variable is removed in the new patch.
 
 282:2-282:31
 Mon Oct 24 21:04:59 2016 +0000
@@ -149,12 +211,36 @@ Drop the pointer. Just
 
 instead of the `new` below.
 
+282:2-282:31
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_2bcbd93c
+UUID: 5af43b41_822c1cca
+Bytes: 53
+Done.
+There is no more new & delete in this file now.
+
 337:0-357:3
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1bcbc99_4a973326
 Bytes: 132
 This looks like it should be handled by the PopHighestPriorityNode(). (Otherwise the "random" scheduler isn't actually that random.)
+
+337:0-357:3
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1bcbc99_4a973326
+UUID: 5af43b41_422614e8
+Bytes: 331
+Done.
+Yes, I agree that this is a tuning/optimization for materialized condition instructions. I've moved it into CriticalPath selector as a heuristic/improvement on selecting the optimal node.
+
+The scheduler code is kept clean:
+Schedule(graph)
+--> Schedule(block)
+    --> Schedule(SchdulingNode)
+        --> Schedule(HInstruction)
 
 360
 Mon Oct 24 21:04:59 2016 +0000
@@ -170,6 +256,14 @@ UUID: e1c9c045_ebacf16e
 Bytes: 28
 unsupported instruction set?
 
+474:48-474:54
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_ebacf16e
+UUID: 5af43b41_222b10b0
+Bytes: 4
+Done
+
 File: compiler/optimizing/scheduler.h
 
 120:31-120:33
@@ -179,12 +273,28 @@ UUID: 7c0657a0_cec5174a
 Bytes: 43
 The figure below shows `n1` being selected.
 
+120:31-120:33
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_cec5174a
+UUID: 5af43b41_3f3a07da
+Bytes: 13
+Done. Thanks.
+
 160:0-161:61
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_eea7bba4
 Bytes: 21
 kArenaAllocScheduling
+
+160:0-161:61
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_eea7bba4
+UUID: 5af43b41_c201046f
+Bytes: 4
+Done
 
 189:2-189:14
 Mon Oct 24 21:04:59 2016 +0000
@@ -217,12 +327,29 @@ UUID: 3c7a1f69_d91437b8
 Bytes: 191
 I assume this should not be negative. So, size_t or uint32_t, the latter is preferable to keep compiler memory usage as low as possible. Same for other fields below and setters/getters above.
 
+203:2-203:5
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3c7a1f69_d91437b8
+UUID: 5af43b41_5f14ab28
+Bytes: 186
+Done.
+We used to have -1 latency in some very early patch set. Now the algorithm has changed a lot since then, the latency should not be negative. I've changed all of them into uint32_t.
+
 204:10-204:19
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_8ecf1f68
 Bytes: 10
 represents
+
+204:10-204:19
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_8ecf1f68
+UUID: 5af43b41_ff025feb
+Bytes: 4
+Done
 
 205:18-205:22
 Mon Oct 24 21:04:59 2016 +0000
@@ -231,12 +358,28 @@ UUID: 7c0657a0_6eb50bd3
 Bytes: 4
 zero
 
+205:18-205:22
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_6eb50bd3
+UUID: 5af43b41_dfff9bb5
+Bytes: 4
+Done
+
 213:60-213:61
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 41260cae_96ad8cd1
 Bytes: 31
 End the sentence with a period.
+
+213:60-213:61
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 41260cae_96ad8cd1
+UUID: 5af43b41_bf0cd71f
+Bytes: 4
+Done
 
 217:2-217:15
 Mon Oct 24 21:04:59 2016 +0000
@@ -245,6 +388,15 @@ UUID: dcf663e5_a68d6882
 Bytes: 25
 const HInstruction* const
 
+217:2-217:15
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: dcf663e5_a68d6882
+UUID: 1afac331_202b04b0
+Bytes: 233
+I have changed it to HInstruction* const, because I think once we have made the HInstruction<->SchedulingNode binding, it shouldn't change.
+But we may still do operations on HInstruction, like schedule/move it inside the basic block.
+
 235:54-235:55
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -252,12 +404,28 @@ UUID: 7c0657a0_2ebf13b5
 Bytes: 48
 I'd go with 4, 2 isn't worth the reserve() call.
 
+235:54-235:55
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_2ebf13b5
+UUID: 3afdc727_de07a53a
+Bytes: 4
+Done
+
 247:35-247:36
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 7c0657a0_0ebc4fbc
 Bytes: 21
 kArenaAllocScheduling
+
+247:35-247:36
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7c0657a0_0ebc4fbc
+UUID: 5af43b41_a2fe003f
+Bytes: 4
+Done
 
 263:2-263:16
 Mon Oct 24 21:04:59 2016 +0000
@@ -273,12 +441,28 @@ UUID: 813d64bf_b082b84b
 Bytes: 5
 const
 
+272:59-272:60
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 813d64bf_b082b84b
+UUID: 5af43b41_9f091310
+Bytes: 4
+Done
+
 274:34-274:77
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e1c9c045_4b6e6574
 Bytes: 21
 const SchedulingNode*
+
+274:34-274:77
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_4b6e6574
+UUID: 5af43b41_a284c09d
+Bytes: 4
+Done
 
 276:35-276:78
 Mon Oct 24 21:04:59 2016 +0000
@@ -287,12 +471,28 @@ UUID: e1c9c045_6b73215d
 Bytes: 5
 ditto
 
+276:35-276:78
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_6b73215d
+UUID: 5af43b41_82453c92
+Bytes: 4
+Done
+
 283
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 011c1460_17cbb63c
 Bytes: 46
 Do we really need to expose this internal map?
+
+283
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 011c1460_17cbb63c
+UUID: ba129745_7a2c19c9
+Bytes: 57
+No we don't. I've removed this function in the new patch.
 
 302:23-302:35
 Mon Oct 24 21:04:59 2016 +0000
@@ -308,6 +508,14 @@ UUID: c1bcbc99_ca81e3e3
 Bytes: 5
 const
 
+304:19-304:20
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1bcbc99_ca81e3e3
+UUID: 5af43b41_7ff64fe0
+Bytes: 4
+Done
+
 306:17-306:18
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -315,12 +523,28 @@ UUID: 813d64bf_907fb481
 Bytes: 5
 const
 
+306:17-306:18
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 813d64bf_907fb481
+UUID: 5af43b41_5ffb8bc6
+Bytes: 4
+Done
+
 324:50-324:51
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: c1bcbc99_ea7e271f
 Bytes: 8
 OVERRIDE
+
+324:50-324:51
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1bcbc99_ea7e271f
+UUID: 5af43b41_3ff0c7de
+Bytes: 4
+Done
 
 351
 Mon Oct 24 21:04:59 2016 +0000
@@ -344,6 +568,15 @@ Bytes: 96
 
 (Unless you take the alternative design above.)
 
+353
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 011c1460_d7ac1e6f
+UUID: 5af43b41_825f7c8f
+Bytes: 42
+Done.
+I agree, static should be used here.
+
 449:0-452:34
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -351,12 +584,28 @@ UUID: c1bcbc99_8a8bebff
 Bytes: 23
 Add top-level `const`s.
 
+449:0-452:34
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: c1bcbc99_8a8bebff
+UUID: 5af43b41_1ff503cf
+Bytes: 4
+Done
+
 486
 Mon Oct 24 21:04:59 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: e1c9c045_cbaa555a
 Bytes: 5
 const
+
+486
+Mon Dec 12 15:50:02 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: e1c9c045_cbaa555a
+UUID: 5af43b41_1fa3c3e6
+Bytes: 4
+Done
 
 File: compiler/optimizing/scheduler_arm64.h
 

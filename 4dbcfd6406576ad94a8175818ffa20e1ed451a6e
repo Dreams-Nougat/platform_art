@@ -1,0 +1,15 @@
+Revision: 4dbcfd6406576ad94a8175818ffa20e1ed451a6e
+Patch-set: 1
+File: /COMMIT_MSG
+
+10:6-11:8
+Mon Dec 12 21:40:07 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_02ea4cf1
+Bytes: 720
+I disagree with that statement. All our tests should be worth running in all the potential configurations we try to support.
+
+The test's info.txt states "This tests that interface initialization order is correct.", which does not imply long compilation times that could trigger the watchdog. It's a shame that as a side effect of having this test being so big, you have to disable it on some configurations. Testing on these configurations give us confidence that if someone runs in that state (eg no-image), code will still run correctly.
+
+I'm fine blacklisting it for now, but please file a bug to understand why no-image especially fails (aren't all configurations calling dex2oat on the same generated file anyway?).
+

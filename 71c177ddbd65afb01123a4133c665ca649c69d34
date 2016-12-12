@@ -1,5 +1,72 @@
 Revision: 71c177ddbd65afb01123a4133c665ca649c69d34
 Patch-set: 4
+File: /COMMIT_MSG
+
+7:11-7:24
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_2278b02e
+Bytes: 445
+Appreciate this is a WIP and I'm not the intended audience of the change. Weigh this accordingly...
+
+As usual, I'm more interested in the behavior change than the code.
+
+What's the behavior before, what's the (intended) behavior after. What are the wider implications?
+
+These are all things you know and could document in the commit. It also gives reviewers a "spec" to review against, i.e. so they can be sure you implemented what you intended.
+
+File: imgdiag/imgdiag_test.cc
+
+59:11-59:15
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_02d6ccde
+Bytes: 25
+// Return true because...
+
+File: runtime/common_runtime_test.h
+
+104:88-104:91
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_a283a0ec
+Bytes: 159
+"the boot classpath check" assumes people know what you're talking about WRT "the boot classpath check". Is it the same as the "image check" or something else?
+
+104:8-104:12
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3afdc727_de0565c4
+Bytes: 24
+By calling LoadsImage().
+
+108:15-108:25
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_82909c2e
+Bytes: 140
+Comment this too. I wouldn't know when / whether I'm supposed to override it, or what the implications are if I make it return true / false.
+
+File: runtime/dex2oat_environment_test.h
+
+97:11-97:15
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_c29d8442
+Bytes: 26
+// Return true because....
+
+File: runtime/gc/heap.cc
+
+299:55-299:66
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: facc0f55_8cb8e7a5
+Bytes: 107
+Non-zygote processes will still use the image if the BOOTCLASSPATH matches.
+
+...? I may have misunderstood.
+
 File: runtime/gc/space/image_space.cc
 
 1684
@@ -9,6 +76,14 @@ UUID: ad833f54_63389ae6
 Bytes: 156
 I think it would be useful here to say that you're ensuring that BOOTCLASSPATH and the image files have to be the same dex file locations in the same order.
 
+1684
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ad833f54_63389ae6
+UUID: 5af43b41_6295981c
+Bytes: 11
++1 and why.
+
 File: runtime/gc/space/image_space.h
 
 48
@@ -17,4 +92,11 @@ Author: David Sehr <1103743@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ad833f54_23437265
 Bytes: 194
 Contains is still a bit vague to me.  I think it would be useful here to say that you're ensuring that BOOTCLASSPATH and the image files have to be the same dex file locations in the same order.
+
+49:9-49:13
+Mon Dec 12 11:05:36 2016 +0000
+Author: Neil Fuller <1038039@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_428a9400
+Bytes: 198
+Would/should a false here be considered fatal? (I think not, from reading around). Probably something to document after the "On successful return" bit - spelling out what happens in the false case).
 

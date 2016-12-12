@@ -1,0 +1,13 @@
+Revision: 50202fa410f4e600020cfb487ea0449016498884
+Patch-set: 1
+File: compiler/optimizing/register_allocation_resolver.cc
+
+682:0-686:17
+Mon Dec 12 11:22:53 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 5af43b41_02212c13
+Bytes: 1076
+I thought about it yesterday and I realized this change is probably incorrect, or an undesirable hack at best.  I think the only reason I added it was to keep heap poisoning configurations work with this CL on x86 and x86-64, where the (Baker) read barrier status is "implicitly" stored in EFLAGS/RFLAGS, thus delaying the unpoisoning of loaded references after the gray-testing (see https://android-review.googlesource.com/#/c/261232/5/compiler/optimizing/code_generator_x86.cc).
+
+The obvious solution is to materialize the read barrier state into a register in the `HLoadReadBarrierState` instruction on x86 and x86-64 (as we already do on ARM and ARM64), meaning we can also get rid of the `HMarkReferencesImplicitRBState` instruction (and rename `HMarkReferencesExplicitRBState` to something shorter such as `HMarkReferences`).  This also seems more robust regarding evolutions of this work, where we would permit more instructions between the `HLoadReadBarrierState` and `HMarkReferences` instructions, which would alter the flags register (e.g. arithmetic instructions).
+

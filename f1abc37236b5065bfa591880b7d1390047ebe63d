@@ -1,0 +1,50 @@
+Revision: f1abc37236b5065bfa591880b7d1390047ebe63d
+Patch-set: 3
+File: compiler/optimizing/code_generator_arm64.cc
+
+690:0-702:24
+Mon Dec 12 21:02:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3a2b0780_561c96df
+Bytes: 150
+This is no different from the normal read barrier slow path case, and the only difference here is we handle two refs at a time rather than one, right?
+
+2026:9-2026:18
+Mon Dec 12 21:02:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3a2b0780_6bd1eb0e
+Bytes: 35
+What does this "Likewise" refer to?
+
+3503:17-3503:27
+Mon Dec 12 21:02:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3a2b0780_96955e1f
+Bytes: 127
+As this dependency is not visible at the HIR level, would there be any danger that the instruction scheduler may reorder those?
+
+File: compiler/optimizing/gc_optimizer.cc
+
+83:0-87:59
+Mon Dec 12 21:02:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3a2b0780_56b0168e
+Bytes: 102
+I see that this currently supports the case of two consecutive instance field gets on the same object.
+
+95:0-97:93
+Mon Dec 12 21:02:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3a2b0780_305fd22d
+Bytes: 185
+How would the load-load fake address dependency work?
+
+Maybe would it make sense to make RBState as an input to FieldGet1/2 so that the load-load dependency is visible at the HIR level?
+
+139:0-139:15
+Mon Dec 12 21:02:28 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3a2b0780_9070c6b9
+Bytes: 41
+Use bool or add a new enum for this type?
+

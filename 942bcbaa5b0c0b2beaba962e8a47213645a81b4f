@@ -34,6 +34,14 @@ UUID: da6aeb2c_a9b4f919
 Bytes: 130
 no it is just that we need to undo the work in this function to make sure everything is kosher in the jit if we fail redefinition.
 
+633
+Tue Dec 13 23:40:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: da6aeb2c_a9b4f919
+UUID: 3aca276f_76fd70f7
+Bytes: 116
+Oh I don't parse this TODO like you're now explaining it. But it just being a TODO is scary, please address it here.
+
 640:0-640:45
 Tue Dec 13 22:50:55 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -48,6 +56,25 @@ Parent: 3aca276f_b655483b
 UUID: da6aeb2c_e9aef1c9
 Bytes: 29
 Even if I paused jit threads?
+
+640
+Tue Dec 13 23:40:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: da6aeb2c_e9aef1c9
+UUID: 3aca276f_56f87408
+Bytes: 177
+That's even more guaranteed then.
+
+After a quick look, I think the only think you need is the lock. But in any case, you're only executing this when everything is stopped right?
+
+File: runtime/jit/jit_code_cache.h
+
+234:0-234:63
+Tue Dec 13 23:40:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: ba9b777b_92f11c24
+Bytes: 63
+Why this change? If not needed, please avoid unrelated changes.
 
 File: runtime/openjdkjvmti/ti_redefine.cc
 
@@ -111,6 +138,14 @@ UUID: da6aeb2c_09f50daa
 Bytes: 59
 It doesn't really need to be. We should be able to recover.
 
+177
+Tue Dec 13 23:40:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: da6aeb2c_09f50daa
+UUID: 3aca276f_16fefcf7
+Bytes: 120
+Sure, but that's a state we should not be in. If we're in that state we've messed up our setup, hence a CHECK or DCHECK.
+
 178:0-179:61
 Tue Dec 13 22:50:55 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -125,4 +160,12 @@ Parent: 3aca276f_5626b4e7
 UUID: da6aeb2c_893d7d81
 Bytes: 116
 not really. I could see allowing redefinition of intrinsics without allowing there to be obsolete ones on the stack.
+
+179
+Tue Dec 13 23:40:42 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: da6aeb2c_893d7d81
+UUID: 3aca276f_3603f82c
+Bytes: 61
+Ah indeed. I bet all our current intrinsics are leaf methods.
 

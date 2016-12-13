@@ -9,6 +9,16 @@ UUID: 3a2b0780_561c96df
 Bytes: 150
 This is no different from the normal read barrier slow path case, and the only difference here is we handle two refs at a time rather than one, right?
 
+690:0-702:24
+Tue Dec 13 15:47:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a2b0780_561c96df
+UUID: 9a179337_bc0ced1f
+Bytes: 284
+That is correct.  I expanded the comment about this.
+
+I was thinking about merging these classes (`ReadBarrierMarkSlowPathARM64` and `ReadBarrierMarkTwoReferencesSlowPathARM64`) into a more generic one as part of some refactoring effort (in a later CL).  Would that make sense to you?
+
 2026:9-2026:18
 Mon Dec 12 21:02:28 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -16,12 +26,30 @@ UUID: 3a2b0780_6bd1eb0e
 Bytes: 35
 What does this "Likewise" refer to?
 
+2026:9-2026:18
+Tue Dec 13 15:47:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a2b0780_6bd1eb0e
+UUID: da182b71_b67086f4
+Bytes: 56
+I think it is a stray comment; thanks for catching this!
+
 3503:17-3503:27
 Mon Dec 12 21:02:28 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3a2b0780_96955e1f
 Bytes: 127
 As this dependency is not visible at the HIR level, would there be any danger that the instruction scheduler may reorder those?
+
+3503:17-3503:27
+Tue Dec 13 15:47:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a2b0780_96955e1f
+UUID: 9aeeb371_c487d0a1
+Bytes: 364
+Yes, unfortunately.  Note that I made sure those instructions would not be moved (e.g. by GVN) via the `CanBeMoved` method.   Also, I have extended the GraphChecker to catch erroneous reordering of these instruction.
+
+I don't know if it is possible to an create artificial (though explicit) dependency between two HIR instructions outside of the input/output flow.
 
 File: compiler/optimizing/gc_optimizer.cc
 
@@ -32,6 +60,14 @@ UUID: 3a2b0780_56b0168e
 Bytes: 102
 I see that this currently supports the case of two consecutive instance field gets on the same object.
 
+83:0-87:59
+Tue Dec 13 15:47:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a2b0780_56b0168e
+UUID: 5af43b41_25e1dab4
+Bytes: 96
+Yes, I wanted to start with a simple pattern, and then extended from that base in follow-up CLs.
+
 95:0-97:93
 Mon Dec 12 21:02:28 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -41,10 +77,119 @@ How would the load-load fake address dependency work?
 
 Maybe would it make sense to make RBState as an input to FieldGet1/2 so that the load-load dependency is visible at the HIR level?
 
+95:0-97:93
+Tue Dec 13 15:47:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a2b0780_305fd22d
+UUID: 5af43b41_e5d2d2e8
+Bytes: 5092
+If you look at the generated code (e.g. in test/628-checker-read-barrier-merging/src/Main.java), the sequence is basically the same:
+
+  /// CHECK: <<Obj:l\d+>>     ParameterValue
+  /// CHECK: <<RBState:i\d+>> LoadReadBarrierState [<<Obj>>]
+  /// CHECK:                    ldr r0, [r1, #4]
+  /// CHECK:                    add r1, r0, lsr #32
+  /// CHECK: <<Field1:l\d+>>  InstanceFieldGet [<<Obj>>] field_name:Main.o1 generates_own_read_barrier:false
+  /// CHECK:                    ldr r2, [r1, #8]
+  /// CHECK: <<Field2:l\d+>>  InstanceFieldGet [<<Obj>>] field_name:Main.o2 generates_own_read_barrier:false
+  /// CHECK:                    ldr r1, [r1, #12]
+  /// CHECK:                  MarkReferencesExplicitRBState [<<RBState>>,<<Field1>>,<<Field2>>]
+  /// CHECK:                    lsrs r0, #29
+  /// CHECK:                    bcs
+  /// CHECK: disasm           ReadBarrierMarkTwoReferencesSlowPathARM
+  /// CHECK:                    ldr lr, [tr, #{{\d+}}] ; pReadBarrierMarkReg02
+  /// CHECK:                    blx lr
+  /// CHECK:                    ldr lr, [tr, #{{\d+}}] ; pReadBarrierMarkReg01
+  /// CHECK:                    blx lr
+  /// CHECK:                    b
+
+The fake dependency is preserved because we make sure that the order between the LoadReadBarrierState, InstanceFieldGet's and MarkReferencesExplicitRBState instructions is preserved throughout the compilation.  I guess I could add `RBState` as a dependency of the InstanceFieldGet instructions (even though RBState is technically not used by these instructions); this would require some changes in the InstanceFieldGet class itself, or the introduction of a new instruction taking two inputs.
+
+
+Ideally, we would like to have multiple outputs and be able to express this pattern as:
+
+  (RBState, ObjPlusFakeDep):          LoadReadBarrierState [Obj]
+                                          ldr r0, [r1, #4]
+                                          add r1, r0, lsr #32
+  FieldGet1:                          InstanceFieldGet [ObjWithFakeDep] field_name:Field1
+                                          ldr r2, [r1, #8]
+  FieldGet2:                          InstanceFieldGet [ObjWithFakeDep] field_name:Field2
+                                          ldr r1, [r1, #12]
+  (MarkedFieldGet1, MarkedFieldGet2): MarkReferencesExplicitRBState [RBState, FieldGet1, FieldGet2]
+                                          lsrs r0, #29
+                                          bcs slowpath
+                                        done:
+  
+  [...]
+  
+  ReadBarrierMarkTwoReferencesSlowPathARM (generated by MarkReferencesExplicitRBState)
+                                        slowpath:
+                                          ldr lr, [tr, #pReadBarrierMarkReg02Offset]
+                                          blx lr
+                                          ldr lr, [tr, #pReadBarrierMarkReg01Offset] 
+                                          blx lr
+                                          b done
+
+with these locations:
+
+  Obj: r1
+  RBState: r0
+  ObjPlusFakeDep: r1
+  FieldGet1: r2
+  FieldGet2: r1
+  MarkedFieldGet1: r2
+  MarkedFieldGet2: r1
+
+Uses of `FieldGet1` and `FieldGet2` would become uses of `MarkedFieldGet1` and `MarkedFieldGet2` (resp.) in the rest of the code, to preserve the from-space invariant.
+
+This would require some changes in the register allocator though.
+
+
+I was also considering the idea of lowering instructions a bit more, so as to match the generated assembly code a bit more closely.  Maybe something like:
+
+  RBState:                            LoadReadBarrierState [Obj]
+                                          ldr r0, [r1, #4]
+  ObjPlusFakeDep:                     FakeDependency [RBState]
+                                          add r1, r0, lsr #32
+  FieldGet1:                          InstanceFieldGet [ObjWithFakeDep] field_name:Field1
+                                          ldr r2, [r1, #8]
+  FieldGet2:                          InstanceFieldGet [ObjWithFakeDep] field_name:Field2
+                                          ldr r1, [r1, #12]
+  UnusedRBState:                      TestReadBarrierState [RBState]
+                                          lsrs r0, #29
+                                          bcs slowpath
+                                        done:
+  MarkedFieldGet1:                    MarkReferenceExplicitRBState [UnusedRBState, FieldGet1]
+                                        <nop>
+  MarkedFieldGet2:                    MarkReferenceExplicitRBState [UnusedRBState, FieldGet2]
+                                        <nop>
+  
+  [...]
+  
+  ReadBarrierMarkTwoReferencesSlowPathARM (generated by TestReadBarrierState)
+                                        slowpath:
+                                          ldr lr, [tr, #pReadBarrierMarkReg02Offset]
+                                          blx lr
+                                          ldr lr, [tr, #pReadBarrierMarkReg01Offset] 
+                                          blx lr
+                                          b done
+
+with the same locations as above, plus this one:
+
+  UnusedRBState: r0
+
 139:0-139:15
 Mon Dec 12 21:02:28 2016 +0000
 Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3a2b0780_9070c6b9
 Bytes: 41
 Use bool or add a new enum for this type?
+
+139:0-139:15
+Tue Dec 13 15:47:34 2016 +0000
+Author: Roland Levillain <1052644@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3a2b0780_9070c6b9
+UUID: 5af43b41_e5b1b291
+Bytes: 48
+I added an enum in PS5 and rewrote related code.
 

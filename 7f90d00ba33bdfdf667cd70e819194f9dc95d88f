@@ -9,3 +9,13 @@ UUID: da6aeb2c_32fb0ec8
 Bytes: 315
 It's surprising to me that this suffices. Presumably the caller needs to be able to dereference the pointer contained in the pair? How is it guaranteed that it sees correct values for the pointer target? Does the pointer actually point to statically allocated objects? Is there some other synchronization mechanism?
 
+233:29-233:49
+Wed Dec 14 11:59:03 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: da6aeb2c_32fb0ec8
+UUID: 5aa6fbc4_cfe3fd18
+Bytes: 319
+The status of a class is (Java) volatile, so status updates are StoreSequentiallyConsistent(). The field cache is populated only with fields of resolved classes and these fields are linked before we set the status to kStatusResolved. Is that enough?
+
+(Note: This is historical behavior, I'm not changing anything here.)
+

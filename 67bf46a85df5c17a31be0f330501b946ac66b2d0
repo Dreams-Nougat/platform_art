@@ -9,12 +9,28 @@ UUID: 3aca276f_96084cde
 Bytes: 50
 Why this change? Please keep the DCHECK as before.
 
+398
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_96084cde
+UUID: da6aeb2c_afe954fe
+Bytes: 100
+We do need to handle proxy methods here due to interpreter. I did realize this was redundant though.
+
 406:0-406:49
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_b60548c5
 Bytes: 5
 ditto
+
+406
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_b60548c5
+UUID: da6aeb2c_cfe6902b
+Bytes: 10
+see above.
 
 File: runtime/instrumentation.cc
 
@@ -25,12 +41,28 @@ UUID: 3aca276f_f60fc0e0
 Bytes: 33
 Comments please on the rationale.
 
+574
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_f60fc0e0
+UUID: da6aeb2c_4f146029
+Bytes: 4
+Done
+
 597:0-597:80
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_d612c407
 Bytes: 56
 Please add a comment, this doesn't look straightforward.
+
+597
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_d612c407
+UUID: da6aeb2c_6ff03ce0
+Bytes: 4
+Done
 
 File: runtime/jit/jit_code_cache.cc
 
@@ -45,12 +77,28 @@ You're removing references of old_method in the jit_code_cache in the code below
 
 If it's about failing to redefine and now needing to call MoveObsoleteMethod with the reverse in old/new method, then why not doing it?
 
+629
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_f6d7c04d
+UUID: da6aeb2c_8fa3b8e4
+Bytes: 139
+Expanded. I'm saying that one needs to fill the old_method with new data since the ArtMethod thinks it's in the JitCodeCache but it is not.
+
 638:0-640:49
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_96b76c1e
 Bytes: 67
 Also add a DCHECK that there's no inline use of this profling info.
+
+640
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_96b76c1e
+UUID: da6aeb2c_cfb4d01b
+Bytes: 4
+Done
 
 1086:0-1089:26
 Wed Dec 14 13:15:06 2016 +0000
@@ -61,6 +109,14 @@ ditto about unrelated change
 
 (I think there's a fine line to do some cleanup in unrelated changes, especially when the cleanup is just local to a method, but this CL is big enough that avoiding noise is desired for reviewers).
 
+1089
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_36a938c8
+UUID: da6aeb2c_efb18c28
+Bytes: 4
+Done
+
 File: runtime/jit/jit_code_cache.h
 
 219:0-221:54
@@ -69,6 +125,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_36e138e7
 Bytes: 69
 Comment please, also explaining what old_method is and new_method is.
+
+221
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_36e138e7
+UUID: da6aeb2c_0fafc8c7
+Bytes: 4
+Done
 
 File: runtime/jit/profiling_info.h
 
@@ -79,6 +143,14 @@ UUID: 1ac72367_d562bc1d
 Bytes: 143
 Add a comment "not const as JVMTI introduces obsolete methods that we implement by creating new ArtMethod. See JitCodeCache::MoveObsoleteMethod
 
+130
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ac72367_d562bc1d
+UUID: da6aeb2c_2fa484ef
+Bytes: 4
+Done
+
 File: runtime/openjdkjvmti/ti_redefine.cc
 
 75:31-75:38
@@ -88,12 +160,30 @@ UUID: 3aca276f_f6e6e0f8
 Bytes: 13
 /* context */
 
+75
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_f6e6e0f8
+UUID: da6aeb2c_cfcdb0c5
+Bytes: 4
+Done
+
 84:0-84:55
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_56d6b411
 Bytes: 36
 This should be addressed in this CL.
+
+84
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_56d6b411
+UUID: da6aeb2c_0f66e801
+Bytes: 167
+Fine. Removed.
+
+I'll make this later and for now just LOG(FATAL) if we fail this. (Which is fine b/c almost every failure state has been replaced with check failures.)
 
 90:31-90:38
 Wed Dec 14 13:15:06 2016 +0000
@@ -102,12 +192,28 @@ UUID: 3aca276f_76dbb038
 Bytes: 13
 /* context */
 
+90
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_76dbb038
+UUID: da6aeb2c_2f92c4a6
+Bytes: 3
+Ack
+
 95:38-96:67
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_96ef6cd1
 Bytes: 18
 Do only one query?
+
+96
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_96ef6cd1
+UUID: da6aeb2c_4f970096
+Bytes: 3
+Ack
 
 97:8-97:30
 Wed Dec 14 13:15:06 2016 +0000
@@ -116,12 +222,28 @@ UUID: 3aca276f_b6ec68dd
 Bytes: 11
 old_method?
 
+97
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_b6ec68dd
+UUID: da6aeb2c_6f8cbc8b
+Bytes: 3
+Ack
+
 100:0-101:38
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_d6e9e4cb
 Bytes: 60
 Change this to: "We are restoring the obsolete method...." ?
+
+101
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_d6e9e4cb
+UUID: da6aeb2c_8f91f8a0
+Bytes: 3
+Ack
 
 152:0-152:42
 Wed Dec 14 13:15:06 2016 +0000
@@ -130,12 +252,28 @@ UUID: 3aca276f_5619545f
 Bytes: 118
 Isn't it the other way around? You need to check if the previous method you visited in VisitFrame is a runtime method.
 
+152
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_5619545f
+UUID: da6aeb2c_2fdc8432
+Bytes: 4
+Done
+
 171:0-179:7
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_761e504a
 Bytes: 105
 This seems kind of lost if we want to support it. Could you move that when we compute obsolete_methods_ ?
+
+179
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_761e504a
+UUID: da6aeb2c_ef7fcc7b
+Bytes: 4
+Done
 
 188:31-188:56
 Wed Dec 14 13:15:06 2016 +0000
@@ -144,12 +282,28 @@ UUID: 3aca276f_96020ceb
 Bytes: 49
 This needs to be the class loader's linear alloc.
 
+188
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_96020ceb
+UUID: da6aeb2c_efe98ccb
+Bytes: 4
+Done
+
 197:0-197:33
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_b6ff08b6
 Bytes: 7
 Remove.
+
+197
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_b6ff08b6
+UUID: da6aeb2c_2fbd640b
+Bytes: 4
+Done
 
 201:8-201:12
 Wed Dec 14 13:15:06 2016 +0000
@@ -158,12 +312,28 @@ UUID: 3aca276f_d60c8421
 Bytes: 8
 jit::Jit
 
+201
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_d60c8421
+UUID: da6aeb2c_4fc2a098
+Bytes: 4
+Done
+
 213:0-213:72
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_f609800e
 Bytes: 70
 Odd TODO. Aren't you using the instrumentation for deopting elsewhere?
+
+213
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_f609800e
+UUID: da6aeb2c_ef68acd0
+Bytes: 4
+Done
 
 482:2-482:14
 Wed Dec 14 15:58:26 2016 +0000
@@ -172,6 +342,14 @@ UUID: 5aa6fbc4_d2cf2242
 Bytes: 20
 Redefiner* const r ?
 
+482
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa6fbc4_d2cf2242
+UUID: da6aeb2c_8f32d8b5
+Bytes: 4
+Done
+
 486:2-486:24
 Wed Dec 14 15:58:26 2016 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -179,12 +357,28 @@ UUID: fa940f52_efcc3d50
 Bytes: 30
 std::string* const error_msg ?
 
+486
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa940f52_efcc3d50
+UUID: da6aeb2c_af16b40c
+Bytes: 32
+We change this to return values.
+
 517:40-517:69
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_16235c71
 Bytes: 54
 Needs to be in a handle given what you're doing below.
+
+517
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_16235c71
+UUID: da6aeb2c_0f6ee81a
+Bytes: 79
+This function can only be called after all threads are suspended so we're fine.
 
 518:2-518:55
 Wed Dec 14 13:15:06 2016 +0000
@@ -195,12 +389,28 @@ Needs to be in a handle given what you're doing below.
 
 Alternatively, add a ScopedAssertNoThreadSuspension.
 
+518
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_f6826020
+UUID: da6aeb2c_2f6ba4d2
+Bytes: 4
+Done
+
 520:0-520:30
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_d685642b
 Bytes: 7
 Remove?
+
+520
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_d685642b
+UUID: da6aeb2c_ef4d0c8c
+Bytes: 4
+Done
 
 547:4-547:53
 Wed Dec 14 13:15:06 2016 +0000
@@ -209,12 +419,28 @@ UUID: 3aca276f_3628584b
 Bytes: 29
 Drop, I think it is the best.
 
+547
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_3628584b
+UUID: da6aeb2c_cf505023
+Bytes: 4
+Done
+
 565:0-565:99
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_562dd459
 Bytes: 63
 Please file a bug, assign it to Mingyao, and reference it here.
+
+565
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_562dd459
+UUID: da6aeb2c_af53142d
+Bytes: 4
+Done
 
 621:0-621:44
 Wed Dec 14 13:15:06 2016 +0000
@@ -223,12 +449,28 @@ UUID: 3aca276f_96168c0d
 Bytes: 99
 Please address this one, it sounds easy. Call the deopt once you've successfully updated the stack?
 
+621
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_96168c0d
+UUID: da6aeb2c_8f3f38c8
+Bytes: 4
+Done
+
 622:26-622:53
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_7632d0b8
 Bytes: 59
 Isn't everyone suspended? There can't be leaf methods then.
+
+622
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_7632d0b8
+UUID: da6aeb2c_4f454066
+Bytes: 21
+made comment clearer.
 
 624:0-624:93
 Wed Dec 14 13:15:06 2016 +0000
@@ -237,12 +479,30 @@ UUID: 3aca276f_b613881c
 Bytes: 76
 Huh? Having all threads suspended, I would think the deopt is deterministic.
 
+624
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_b613881c
+UUID: da6aeb2c_af8dd4c6
+Bytes: 39
+We would unsuspend before trying again.
+
 645:4-645:54
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_36ccd87b
 Bytes: 60
 Don't you have it with SuspendAll? Please address or remove.
+
+645
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_36ccd87b
+UUID: da6aeb2c_0f850899
+Bytes: 212
+I meant scope to make sure that all appropriate cleanup is done in all error cases, and release the suspendall and transition back to runnable.
+
+Honestly this CL is large enough. I'll do this in later cleanup cls
 
 653:2-658:39
 Wed Dec 14 13:15:06 2016 +0000
@@ -251,12 +511,28 @@ UUID: 3aca276f_16c7dc59
 Bytes: 35
 Isn't this whole block out of date?
 
+658
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_16c7dc59
+UUID: da6aeb2c_0f3428ee
+Bytes: 7
+Changed
+
 662:13-662:17
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_56d1540e
 Bytes: 44
 the release? What's a more reasonable place?
+
+662
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_56d1540e
+UUID: da6aeb2c_2f456490
+Bytes: 25
+Not sure. Hence the TODO.
 
 710:0-710:34
 Wed Dec 14 13:15:06 2016 +0000
@@ -265,12 +541,30 @@ UUID: 3aca276f_76d65009
 Bytes: 7
 Remove?
 
+710
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_76d65009
+UUID: da6aeb2c_6f4f5cb0
+Bytes: 121
+This is work we need to do.
+
+I just moved it before the CHECKS they are refering to so I wouldn't forget what they meant.
+
 715:0-715:34
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_96ba0cbe
 Bytes: 7
 Remove?
+
+715
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_96ba0cbe
+UUID: da6aeb2c_8f549840
+Bytes: 9
+See above
 
 737:6-737:52
 Wed Dec 14 13:15:06 2016 +0000
@@ -281,6 +575,14 @@ Don't bother allocating the profiling info. It will be allocated when the method
 
 And then you don't need to "wait until now" (see line 734).
 
+737
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_f61d0029
+UUID: da6aeb2c_ef36ecf7
+Bytes: 4
+Done
+
 File: runtime/openjdkjvmti/ti_redefine.h
 
 180:4-180:25
@@ -289,6 +591,16 @@ Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5aa6fbc4_92d59ad4
 Bytes: 100
 nit: I find UNIMPLEMENTED(FATAL) even more obvious (especially with the function name being printed)
+
+180
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa6fbc4_92d59ad4
+UUID: da6aeb2c_4f28e04b
+Bytes: 50
+Removed.
+
+I'm not even sure what I added that for.
 
 File: runtime/stack.cc
 
@@ -299,6 +611,14 @@ UUID: 3aca276f_5644f419
 Bytes: 31
 CHECK(!IsInlinedFrame()) << ...
 
+631
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_5644f419
+UUID: da6aeb2c_af2cf4ad
+Bytes: 4
+Done
+
 873:20-873:52
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -307,6 +627,14 @@ Bytes: 155
 Comment please, this looks like a left-over workaround.
 
 If that's because the instrumentation stack may have obsolete methods, then you need to handle it.
+
+873
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_164a7c29
+UUID: da6aeb2c_02287ff4
+Bytes: 94
+By moving the deopt after the stack walk we actually don't need this anymore so it's now gone.
 
 File: runtime/stack.h
 
@@ -317,6 +645,14 @@ UUID: 3aca276f_364f783a
 Bytes: 73
 You don't need this change (anymore?). Please keep it local to WalkStack.
 
+849
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_364f783a
+UUID: da6aeb2c_62ee9399
+Bytes: 4
+Done
+
 File: test/914-hello-obsolescence/run
 
 1:0-44:32
@@ -325,6 +661,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_7649f030
 Bytes: 67
 Please move this to run-test, and add to run-test a --jvmti option.
+
+44
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_7649f030
+UUID: da6aeb2c_ef37cc9a
+Bytes: 35
+I'll do this in a testing follow-up
 
 File: test/916-obsolete-jit/src/Transform.java
 
@@ -335,6 +679,14 @@ UUID: 3aca276f_963dac81
 Bytes: 24
 Reference Mingyao's bug.
 
+40
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_963dac81
+UUID: da6aeb2c_efeb4c31
+Bytes: 72
+This can also be removed once/if you get rid of HCurrentMethod but done.
+
 File: test/common/stack_inspect.cc
 
 86:2-86:5
@@ -344,6 +696,14 @@ UUID: 3aca276f_f6342099
 Bytes: 5
 const
 
+86
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_f6342099
+UUID: da6aeb2c_ef142c66
+Bytes: 4
+Done
+
 93:0-95:3
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -351,12 +711,28 @@ UUID: 3aca276f_d637249b
 Bytes: 31
 Remove (or DHCECK if you want).
 
+95
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_d637249b
+UUID: da6aeb2c_2ffe44f8
+Bytes: 125
+This is so that we can still use this function even in tests running on the RI. In that case it will just always return true.
+
 97:31-97:48
 Wed Dec 14 15:58:26 2016 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: fa940f52_cf2a21ef
 Bytes: 12
 soa.Self() ?
+
+97
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: fa940f52_cf2a21ef
+UUID: da6aeb2c_0f834826
+Bytes: 4
+Done
 
 File: test/ti-agent/common_helper.cc
 
@@ -367,10 +743,26 @@ UUID: 3aca276f_16f51caa
 Bytes: 31
 You porbably want to drop that?
 
+110
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_16f51caa
+UUID: da6aeb2c_0f37c80c
+Bytes: 60
+It doesn't actually change the output of the tests but done.
+
 114:0-116:18
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3aca276f_36fa189b
 Bytes: 5
 ditto
+
+116
+Wed Dec 14 17:35:15 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_36fa189b
+UUID: da6aeb2c_2f172470
+Bytes: 4
+Done
 

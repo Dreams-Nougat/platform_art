@@ -19,3 +19,17 @@ The status of a class is (Java) volatile, so status updates are StoreSequentiall
 
 (Note: This is historical behavior, I'm not changing anything here.)
 
+233:29-233:49
+Wed Dec 14 20:03:01 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5aa6fbc4_cfe3fd18
+UUID: da6aeb2c_5b709eb8
+Bytes: 1100
+Are the reading threads guaranteed to read the class status and see it as resolved before dereferencing the pointer contained here?
+
+In general, there should be a "happens before" chain from the store of the data to the load by another thread. That's generally established by the storing thread performing a release/seq_cst atomic store after the data store, and the reading thread performing an acquire/seq_cst atomic load of the same atomic before the data load. (A lock release and acquire of the same lock can take the place of the atomic.)
+
+If this relationship is established by using the class status as the atomic, then we indeed could get away with relaxed here.
+
+(This is complicated by the fact that we sometimes, somewhat optimistically, rely on data dependencies instead of the acquire load on the reader side. This is dubious in C++ code, but works about 99% of the time when the compiler does nothing surprising. We should perhaps discuss all of this in a group meeting, so that we're all on the same page. Especially since the reasoning here also involves the ART compiler in places.)
+

@@ -20,3 +20,12 @@ Document why this is here (instead of lower). I don't actually understand why yo
 
 (Overall this is racy, and probably requires adding some locking)
 
+203:4-205:5
+Wed Dec 14 03:10:27 2016 +0000
+Author: Tao Wu <1071888@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: da6aeb2c_7ddb9738
+UUID: da6aeb2c_bd9eef4c
+Bytes: 420
+I think in case we know we should shutdown, we want to return as early as possible?  if we don't return here, we could do connect/write  in follow up code. Although it doesn't hurt. But I think it's better not to run unuseful code? BTW, if shutting_down_ is false here,  then control_sock_ will be set to shutdown by inside Shutdown() function so  ReceiveClientFd won't really block.
+Add some comments and hope it helps.
+

@@ -42,6 +42,14 @@ UUID: 3aca276f_76fd70f7
 Bytes: 116
 Oh I don't parse this TODO like you're now explaining it. But it just being a TODO is scary, please address it here.
 
+633
+Wed Dec 14 00:08:30 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_76fd70f7
+UUID: da6aeb2c_8c3d8b81
+Bytes: 207
+Doing this would involve adding a status bit (which we are rapidly running out of) and checking it everywhere. I don't want to make this cl even larger so I'm going to leave it as a (slightly expanded) TODO.
+
 640:0-640:45
 Tue Dec 13 22:50:55 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -67,6 +75,14 @@ That's even more guaranteed then.
 
 After a quick look, I think the only think you need is the lock. But in any case, you're only executing this when everything is stopped right?
 
+640
+Wed Dec 14 00:08:30 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_56f87408
+UUID: da6aeb2c_0cf51baa
+Bytes: 71
+I'm assuming you mean it's guaranteed that the checks will always pass.
+
 File: runtime/jit/jit_code_cache.h
 
 234:0-234:63
@@ -75,6 +91,14 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ba9b777b_92f11c24
 Bytes: 63
 Why this change? If not needed, please avoid unrelated changes.
+
+234
+Wed Dec 14 00:08:30 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ba9b777b_92f11c24
+UUID: da6aeb2c_ec827f20
+Bytes: 63
+It seems I removed the Check that used it while locked so done.
 
 File: runtime/openjdkjvmti/ti_redefine.cc
 
@@ -146,6 +170,14 @@ UUID: 3aca276f_16fefcf7
 Bytes: 120
 Sure, but that's a state we should not be in. If we're in that state we've messed up our setup, hence a CHECK or DCHECK.
 
+177
+Wed Dec 14 00:08:30 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_16fefcf7
+UUID: da6aeb2c_acb7a7d4
+Bytes: 4
+Done
+
 178:0-179:61
 Tue Dec 13 22:50:55 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -168,4 +200,14 @@ Parent: da6aeb2c_893d7d81
 UUID: 3aca276f_3603f82c
 Bytes: 61
 Ah indeed. I bet all our current intrinsics are leaf methods.
+
+179
+Wed Dec 14 00:08:30 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aca276f_3603f82c
+UUID: da6aeb2c_8cbaebbd
+Bytes: 319
+AFAIK they are. We also might want to disallow obsoleting them since they are all (or mostly) implemented by hand assembly. I don't really want to have to laboriously validate all of them.
+
+Anyway it's likely moot since I don't believe any of the intrinisics have any suspend points in them so they cannot be obsoleted.
 

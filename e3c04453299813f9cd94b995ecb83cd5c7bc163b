@@ -35,3 +35,19 @@ UUID: 7aa1ffa9_102c44c8
 Bytes: 79
 Why is it so wrong for a compiler to assume that you have the write permission?
 
+440:6-440:35
+Wed Dec 14 18:35:19 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7aa1ffa9_102c44c8
+UUID: da6aeb2c_e539ad01
+Bytes: 798
+This is all well beyond any standard, so "wrong" is too strong. But it breaks code that I would expect to work, at least if is_lock_free() is true. Do you know if it does?
+
+If I use atomics in a shared memory segment to communicate with another process, it's perfectly reasonable to map the segment read-only, and read from atomics.
+
+Having is_lock_free return true and read-only accesses cause cache contention also seems really questionable.
+
+With this implementation, it's also not at all clear what you can possibly do if some joker uses a load on a 16-bit volatile atomic. Generating a store really seems to be against the rules.
+
+Let me start an external email discussion on this issue. This is an ABI (and maybe API) issue, so I think it's really ARM's (and maybe WG21s) job to resolve this.
+

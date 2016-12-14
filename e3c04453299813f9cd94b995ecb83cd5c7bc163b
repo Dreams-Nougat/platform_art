@@ -17,3 +17,13 @@ UUID: 0d5d2bd4_e5bc96a0
 Bytes: 198
 In future, when normal 16-byte atomics are supported by the standard library, this workaround should go away. There is no reason why we should have 2 different ways to performing the same operation.
 
+440:6-440:35
+Wed Dec 14 01:33:22 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 0d5d2bd4_e5bc96a0
+UUID: da6aeb2c_f2b5f6ab
+Bytes: 450
+I remain nervous about relying on the fact the the compiler is broken to ensure that this doesn't get mixed with conventional atomic accesses.
+
+If you really want to avoid locks here, then I'm not sure this "workaround" can ever go away. I would personally not want a compiler to use this implementation implicitly, since it requires that loads have write permission. The "fixed" compiler may well use an underlying lock table (as it already should).
+

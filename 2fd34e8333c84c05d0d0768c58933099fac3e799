@@ -1,0 +1,150 @@
+Revision: 2fd34e8333c84c05d0d0768c58933099fac3e799
+Patch-set: 3
+File: compiler/optimizing/cha_guard_optimization.cc
+
+21:0-24:27
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_99a31f84
+Bytes: 188
+Add that, as a consequence, we decided not to rely on other passes to remove them (such as GVN or instruction simplifier).
+
+Also say which of the three optimization puts you in that state.
+
+57:2-57:46
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_d9cf5742
+Bytes: 14
+Add a comment.
+
+99:2-99:37
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_d99d9742
+Bytes: 66
+How can we generalize this (eg a phi taking only HParameterValues)
+
+114:0-121:3
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_19e2afbc
+Bytes: 60
+Please add a comment on the compile-time cost of doing this.
+
+122
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_19bb8fa8
+Bytes: 79
+Add a comment "At this point dominator is the block where receiver is defined."
+
+123:34-123:43
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_39c04b1e
+Bytes: 12
+`dominator`.
+
+127:7-127:47
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_59c5072d
+Bytes: 18
+flag is defined ..
+
+131:7-131:42
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_79cac33f
+Bytes: 7
+Remove.
+
+152
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_99aebf64
+Bytes: 38
+Add comments (like the other methods).
+
+156:4-156:56
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_d9b837a7
+Bytes: 19
+Move this line 166?
+
+155:0-157:53
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_f9b5f3ab
+Bytes: 66
+Simplify with if (loop_info != nullptr && loop_info->IsDefined...)
+
+158:20-158:32
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_b9ab7b53
+Bytes: 7
+compare
+
+163:6-163:69
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_59dc2701
+Bytes: 47
+Add a comment where you advance it (and why 2).
+
+172:6-173:84
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_79e1e3b3
+Bytes: 65
+Add a comment why you can't reuse the existing deopt instruction.
+
+173:0-173:8
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_39e76bcd
+Bytes: 13
+2 more spaces
+
+175:6-175:38
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_99d5dfd4
+Bytes: 23
+Isn't that always true?
+
+190:2-194:3
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_b9d29be7
+Bytes: 128
+This is going to create an artificial range for the null value. I think you should make HShouldDeoptimizeFlag take 1 or 0 input.
+
+File: compiler/optimizing/nodes.h
+
+2909:0-2909:62
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_f9cc1350
+Bytes: 48
+Drop, and add a comment why SideEffects is None?
+
+2917:40-2917:41
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_39120bce
+Bytes: 103
+Add: "Therefore, we pretend this guard cannot be moved to avoid other optimizations trying to move it".
+
+File: compiler/optimizing/optimizing_compiler.cc
+
+779:58-779:89
+Wed Dec 14 14:16:49 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 3aca276f_364a18a1
+Bytes: 7
+Remove.
+

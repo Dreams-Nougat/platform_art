@@ -108,6 +108,19 @@ UUID: 5a199b0d_773db0ec
 Bytes: 36
 Please bring back those two dchecks.
 
+640
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_773db0ec
+UUID: da6aeb2c_521073fe
+Bytes: 249
+The IsInUseByCompiler() function does both of these and checks if there are inlines
+
+  bool IsInUseByCompiler() const {
+    return IsMethodBeingCompiled(/*osr*/ true) || IsMethodBeingCompiled(/*osr*/ false) ||
+        (current_inline_uses_ > 0);
+  }
+
 1086:0-1089:26
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -200,6 +213,14 @@ Parent: da6aeb2c_0f66e801
 UUID: 5a199b0d_d72b5cb0
 Bytes: 4
 sgtm
+
+84
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_d72b5cb0
+UUID: da6aeb2c_cd784632
+Bytes: 3
+Ack
 
 90:31-90:38
 Wed Dec 14 13:15:06 2016 +0000
@@ -404,6 +425,16 @@ UUID: 5a199b0d_578e6cc2
 Bytes: 113
 All threads being suspended doesn't mean no GC (especially since you're doing work here *in the current thread*).
 
+517
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_578e6cc2
+UUID: da6aeb2c_edaee264
+Bytes: 186
++Mathieuc@ gave me the impression that SuspendAll meant that there wouldn't be any GC.
+
+All allocation done here is just from linearallocs. Is there any possibility that GC could happen?
+
 518:2-518:55
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -521,6 +552,14 @@ Can we deopt a method that is branching from the suspend? I think we'll always g
 
 Nevertheless, the deopt thing needs to be fixed, so I don't think it's worth outsmarting it.
 
+624
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_f749c0ac
+UUID: da6aeb2c_edd502d3
+Bytes: 58
+Agreed. This is just speculation. Removed in the unrevert.
+
 645:4-645:54
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -575,6 +614,14 @@ Parent: da6aeb2c_2f456490
 UUID: 5a199b0d_974e44b2
 Bytes: 86
 It's not just you reading that code, it's also others. Such things need to be clearer.
+
+662
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_974e44b2
+UUID: da6aeb2c_2dd0fade
+Bytes: 30
+Expanded somewhat in unrevert.
 
 710:0-710:34
 Wed Dec 14 13:15:06 2016 +0000
@@ -686,6 +733,14 @@ UUID: 5a199b0d_57598c75
 Bytes: 5
 Good.
 
+873
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_57598c75
+UUID: da6aeb2c_2d2b9af4
+Bytes: 3
+Ack
+
 File: runtime/stack.h
 
 848:1-849:38
@@ -777,6 +832,14 @@ UUID: 5a199b0d_17631424
 Bytes: 26
 Then please add a comment.
 
+95
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_17631424
+UUID: da6aeb2c_0d05fe7a
+Bytes: 103
+Done in un-revert. This method/struct was what was causing flakiness anyway so it is largely rewritten.
+
 97:31-97:48
 Wed Dec 14 15:58:26 2016 +0000
 Author: Sebastien Hertz <1029223@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -816,6 +879,14 @@ Parent: da6aeb2c_0f37c80c
 UUID: 5a199b0d_37609814
 Bytes: 100
 It will once you manage to get those tests run on actual devices. The logcat will be polluted by it.
+
+110
+Thu Dec 15 19:20:17 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5a199b0d_37609814
+UUID: da6aeb2c_8d648e60
+Bytes: 22
+Ack. Its been removed.
 
 114:0-116:18
 Wed Dec 14 13:15:06 2016 +0000

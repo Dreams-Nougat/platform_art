@@ -9,6 +9,14 @@ UUID: 5ad35b96_075c7634
 Bytes: 151
 It's all temporary, as getting rid of the current_method is one solution from multiple others. I think it's more instrumentation that needs revisiting.
 
+884
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5ad35b96_075c7634
+UUID: 7a51fff3_2ad1535e
+Bytes: 132
+I agree instrumentation needs revisiting but if we can avoid throwing away perfectly good compiled code I don't see why we wouldn't.
+
 885:1-885:43
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -17,6 +25,14 @@ Bytes: 164
 Just to be clear: b/33630159 is a workaround until we properly support deopt of runtime callers.
 
 So all in all, I'd just drop the reference of current_method here.
+
+885
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: daa58b1c_ab99e90c
+UUID: 7a51fff3_cac1a794
+Bytes: 301
+Really. I'd been under the impression that b/33630159 (Ensure current_method cannot be held in a register across suspend points) was the ideal solution. After all then you get to have the JITTed obsolete code for as long as you need it. This would be good for things like long-running loops and so on.
 
 File: runtime/jit/jit_code_cache.cc
 
@@ -31,12 +47,30 @@ Two things that I realize are missing with regards to the JIT:
 
 2) In theory You need to update CHA data structures for obsolete methods. The good news is that CHA only does inlining, which is disabled for debuggable apps. So please add a DCHECK somewhere we don't do CHA for debuggable apps.
 
+629
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: faa88ff5_ecaaeb22
+UUID: 7a51fff3_4ace97c1
+Bytes: 17
+1) done
+
+2) Done.
+
 640:39-643:75
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: faa88ff5_8ca52755
 Bytes: 159
 See my comment in the initial change that is sort of done atomically, so I wouldn't bother with making this a TODO. I'd expand the comment about the atomicity.
+
+643
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: faa88ff5_8ca52755
+UUID: 7a51fff3_aaad4386
+Bytes: 25
+see my reply in other cl.
 
 File: runtime/openjdkjvmti/ti_redefine.cc
 
@@ -47,12 +81,28 @@ UUID: 1ac9e3ea_e5aaf622
 Bytes: 9
 error_msg
 
+79
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ac9e3ea_e5aaf622
+UUID: 7a51fff3_ff90eb9c
+Bytes: 4
+Done
+
 118:9-118:13
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: daa58b1c_eb93f1e6
 Bytes: 19
 Say what "this" is.
+
+118
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: daa58b1c_eb93f1e6
+UUID: 7a51fff3_5f80174a
+Bytes: 4
+Done
 
 158:27-158:77
 Fri Dec 16 15:09:43 2016 +0000
@@ -61,12 +111,28 @@ UUID: 1ac9e3ea_c5affa30
 Bytes: 169
 Move this to JitCodeCache::MoveObsoleteMethod. Otherwise, you're not handling the profiling info. Also, who knows if the JIT is going to cache more things in the future.
 
+158
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1ac9e3ea_c5affa30
+UUID: 7a51fff3_ff270bc7
+Bytes: 4
+Done
+
 159:63-160:33
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9ab4f348_51c2b442
 Bytes: 67
 Drop (and note that MoveObsoleteMethod doesn't update entrypoints).
+
+160
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ab4f348_51c2b442
+UUID: 7a51fff3_5f3737f4
+Bytes: 4
+Done
 
 163:8-163:93
 Fri Dec 16 15:09:43 2016 +0000
@@ -75,12 +141,28 @@ UUID: daa58b1c_0b8bddb1
 Bytes: 64
 This looks misplaced. Move it just after line 153? Or just drop?
 
+163
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: daa58b1c_0b8bddb1
+UUID: 7a51fff3_7f34fbee
+Bytes: 4
+Done
+
 170:4-170:21
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1aa00309_4d35f991
 Bytes: 29
 Move this in the constructor.
+
+170
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1aa00309_4d35f991
+UUID: 7a51fff3_df3967e6
+Bytes: 4
+Done
 
 256:2-256:48
 Fri Dec 16 15:09:43 2016 +0000
@@ -89,12 +171,28 @@ UUID: 7ab57f43_306568c8
 Bytes: 8
 Say why.
 
+256
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7ab57f43_306568c8
+UUID: 7a51fff3_ff3e2bcb
+Bytes: 4
+Done
+
 467:0-474:1
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 5ad35b96_6769f2d2
 Bytes: 66
 Isn't that only used line 481? I'd inline it there to not pollute.
+
+474
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5ad35b96_6769f2d2
+UUID: 7a51fff3_bf6f43db
+Bytes: 4
+Done
 
 476:0-476:72
 Fri Dec 16 15:09:43 2016 +0000
@@ -110,12 +208,37 @@ UUID: daa58b1c_6b88a1b3
 Bytes: 31
 FindAndAllocateObsoleteMethods?
 
+476
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: daa58b1c_6b88a1b3
+UUID: 7a51fff3_ff79cba4
+Bytes: 11
+Done & done
+
 502:16-502:37
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 9ab4f348_91b25ce0
 Bytes: 36
 Add a comment what this method does.
+
+502
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ab4f348_91b25ce0
+UUID: 7a51fff3_df8b2772
+Bytes: 4
+Done
+
+686
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 7a51fff3_7fe95b39
+Bytes: 81
+NGeoffray mentioned that the method might still be in the code cache here.
+
+done.
 
 File: runtime/openjdkjvmti/ti_redefine.h
 
@@ -126,6 +249,16 @@ UUID: 9ab4f348_71c53849
 Bytes: 29
 I don't understand this TODO.
 
+132
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ab4f348_71c53849
+UUID: 7a51fff3_457a0828
+Bytes: 111
+removed.
+
+It might have been useful to let this return failure (for example due to runtime methods in the way).
+
 File: runtime/stack.cc
 
 617:0-621:1
@@ -135,6 +268,14 @@ UUID: 3aa30717_4e605315
 Bytes: 66
 Inline this back where it was, you don't need this change anymore.
 
+621
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aa30717_4e605315
+UUID: 7a51fff3_859b104c
+Bytes: 4
+Done
+
 795
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -142,12 +283,28 @@ UUID: faa88ff5_ccaf2f31
 Bytes: 90
 Revert the change (looking at the left in gerrit, that means make this uint32_t line 797).
 
+795
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: faa88ff5_ccaf2f31
+UUID: 7a51fff3_a5bad4a1
+Bytes: 4
+Done
+
 859:0-859:83
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: daa58b1c_4b85e597
 Bytes: 23
 No need to change this.
+
+859
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: daa58b1c_4b85e597
+UUID: 7a51fff3_e5c4dc33
+Bytes: 4
+Done
 
 File: test/916-obsolete-jit/src/Main.java
 
@@ -158,6 +315,14 @@ UUID: 9ab4f348_d1ace487
 Bytes: 118
 You should use ensureJitCompiled early on in the test, and then you are guaranteed to enter doTest with them compiled.
 
+149
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 9ab4f348_d1ace487
+UUID: 7a51fff3_fa7476ad
+Bytes: 94
+I tried that and it doesn't actually ensure that the stack is in the right state in all cases.
+
 File: test/916-obsolete-jit/src/Transform.java
 
 32:12-32:18
@@ -167,6 +332,14 @@ UUID: 3aa30717_ae2bb7b0
 Bytes: 7
 Revisit
 
+32
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3aa30717_ae2bb7b0
+UUID: 7a51fff3_c54a78c8
+Bytes: 4
+Done
+
 33:11-33:26
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -174,10 +347,26 @@ UUID: faa88ff5_2cb5137e
 Bytes: 7
 once...
 
+33
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: faa88ff5_2cb5137e
+UUID: 7a51fff3_05b0008e
+Bytes: 4
+Done
+
 35:12-35:16
 Fri Dec 16 15:09:43 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 1aa00309_cd03a9c0
 Bytes: 14
 What's "this"?
+
+35
+Fri Dec 16 21:11:33 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1aa00309_cd03a9c0
+UUID: 7a51fff3_45b20897
+Bytes: 4
+Done
 

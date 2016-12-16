@@ -37,6 +37,16 @@ So far so good?
 
 Given that a) and b) are done sort of atomically (by having all threads suspended), the part I don't understand is why are you saying old_method cannot be used anymore.
 
+631
+Fri Dec 16 17:49:50 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5ad35b96_e74e82b2
+UUID: 7a51fff3_1ff20f27
+Bytes: 470
+Okay so the thing is this function only does (a). Once (b) is finished everything is fine but that doesn't happen until we call 'UpdateClass' later in the redefinition procedure. We need to be sure to cleanup if we return between the end of this function and calling updateClass successfully. 
+
+In many places it is useful for debugging to mark even temporarily invalid objects in order to ease debugging in case they ever escape. That is what this TODO is referring to.
+
 File: runtime/openjdkjvmti/ti_redefine.cc
 
 685:0-688:5
@@ -45,4 +55,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: daa58b1c_6b026174
 Bytes: 200
 This made me think about another problem: the jit code cache may already have a profiling info and compiled code (and osr) for this method. And I couldn't find a place where you discard those entries.
+
+688
+Fri Dec 16 17:49:50 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: daa58b1c_6b026174
+UUID: 7a51fff3_1f404f73
+Bytes: 32
+I'll look at this in the revert.
 

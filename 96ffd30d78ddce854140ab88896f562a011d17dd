@@ -34,6 +34,14 @@ UUID: 7a51fff3_cac1a794
 Bytes: 301
 Really. I'd been under the impression that b/33630159 (Ensure current_method cannot be held in a register across suspend points) was the ideal solution. After all then you get to have the JITTed obsolete code for as long as you need it. This would be good for things like long-running loops and so on.
 
+885
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7a51fff3_cac1a794
+UUID: 17237e9f_5596cc2b
+Bytes: 119
+As soon as we want to inline in debuggable code, this won't work. Which is the reason I say b/33630159 is a workaround.
+
 File: runtime/jit/jit_code_cache.cc
 
 629
@@ -322,6 +330,14 @@ Parent: 9ab4f348_d1ace487
 UUID: 7a51fff3_fa7476ad
 Bytes: 94
 I tried that and it doesn't actually ensure that the stack is in the right state in all cases.
+
+149
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7a51fff3_fa7476ad
+UUID: d7180671_d362f42f
+Bytes: 163
+What state then? If you do ensureJitCompiled early on, then say_hi_method and do_call_method will be guaranteed to be compiled code. Isn't that the state you want?
 
 File: test/916-obsolete-jit/src/Transform.java
 

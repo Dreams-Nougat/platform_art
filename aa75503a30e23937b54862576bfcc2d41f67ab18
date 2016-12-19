@@ -16,6 +16,35 @@ UUID: b73712da_52fa7452
 Bytes: 11
 extra space
 
+430:83-430:85
+Mon Dec 19 14:32:52 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b73712da_52fa7452
+UUID: 1728de81_2d166dc2
+Bytes: 4
+Done
+
+429:12-430:80
+Mon Dec 19 14:32:52 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 1728de81_0dc97148
+UUID: 5742564d_0f1ba5e8
+Bytes: 813
+yea, in compiler driver, L2211. I added a note.
+
+      // It is *very* problematic if there are verification errors in the boot classpath. For example,
+      // we rely on things working OK without verification when the decryption dialog is brought up.
+      // So abort in a debug build if we find this violated.
+      if (kIsDebugBuild) {
+        // TODO(narayan): Remove this special case for signature polymorphic
+        // invokes once verifier support is fully implemented.
+        if (manager_->GetCompiler()->GetCompilerOptions().IsBootImage() &&
+            !android::base::StartsWith(descriptor, "Ljava/lang/invoke/")) {
+          DCHECK(klass->IsVerified()) << "Boot classpath class " << klass->PrettyClass()
+              << " failed to fully verify: state= " << klass->GetStatus();
+        }
+      }
+
 File: test/706-jit-skip-compilation/smali/errclass.smali
 
 24:3-24:18
@@ -25,12 +54,28 @@ UUID: 5742564d_efad0169
 Bytes: 59
 Add a comment that this is the instruction that will throw.
 
+24:3-24:18
+Mon Dec 19 14:32:52 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 5742564d_efad0169
+UUID: 5742564d_ef1f41d1
+Bytes: 4
+Done
+
 25:0-27:12
 Mon Dec 19 12:10:07 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 17237e9f_35c47032
 Bytes: 23
 Do you still need this?
+
+25:0-27:12
+Mon Dec 19 14:32:52 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17237e9f_35c47032
+UUID: 773d9abc_b034f839
+Bytes: 156
+technically no, but I think it does a better job explaining the issue. And without the fix this actually causes the test to fail. So call it double testing.
 
 File: test/706-jit-skip-compilation/src/Main.java
 
@@ -42,12 +87,28 @@ Bytes: 56
 I'd avoid the golden file and do:
 if (... != 0) throw...
 
+26:0-27:58
+Mon Dec 19 14:32:52 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 372b2280_6e910f32
+UUID: b73712da_32c370f5
+Bytes: 4
+Done
+
 49:0-49:58
 Mon Dec 19 12:10:07 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 773d9abc_90cd744b
 Bytes: 5
 ditto
+
+49:0-49:58
+Mon Dec 19 14:32:52 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 773d9abc_90cd744b
+UUID: 17237e9f_f51f18d1
+Bytes: 4
+Done
 
 File: test/common/runtime_state.cc
 
@@ -57,4 +118,12 @@ Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 3726c2ad_969b4c4b
 Bytes: 14
 Add a comment.
+
+196:0-198:3
+Mon Dec 19 14:32:52 2016 +0000
+Author: Calin Juravle <1022077@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 3726c2ad_969b4c4b
+UUID: b73712da_12c86c0b
+Bytes: 4
+Done
 

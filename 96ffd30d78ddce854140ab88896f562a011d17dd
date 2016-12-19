@@ -50,6 +50,14 @@ UUID: 7a51fff3_a8346138
 Bytes: 204
 The current plan is and has always been to disallow all inlining when method redefinition is enabled. If we allow inlining we will need to find every place the method was inlined and invalidate that code.
 
+885
+Mon Dec 19 16:03:13 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7a51fff3_a8346138
+UUID: 5742564d_0f4605c3
+Bytes: 103
+Yes. I'm saying having current_method is not the fundamental fix you're looking for. It's a workaround.
+
 File: runtime/jit/jit_code_cache.cc
 
 629
@@ -354,6 +362,14 @@ Parent: d7180671_d362f42f
 UUID: 7a51fff3_e8a02946
 Bytes: 124
 We need to ensure there are no runtime methods right around the redefined methods. ensureJitCompiled doesn't guarantee that.
+
+149
+Mon Dec 19 16:03:13 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7a51fff3_e8a02946
+UUID: 1728de81_cd8b69ae
+Bytes: 147
+OK, I still think you could ensure you don't have runtime method in these problematic places, but as this is temporary anyway, no need to sweat it.
 
 File: test/916-obsolete-jit/src/Transform.java
 

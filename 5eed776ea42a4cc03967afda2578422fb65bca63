@@ -1,0 +1,50 @@
+Revision: 5eed776ea42a4cc03967afda2578422fb65bca63
+Patch-set: 6
+File: runtime/jit/jit_code_cache.cc
+
+185:0-188:60
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f71b4a68_94cd844b
+Bytes: 20
+You don't need this.
+
+646:0-647:47
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 773d9abc_104624c3
+Bytes: 188
+Add a note that all threads must be suspended for calling this method safely. (Don't we have a DCHECK we could use?)
+
+Also, that the compiled code for method must not be in the call stack.
+
+660:0-667:3
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 973ccec1_d1d304ed
+Bytes: 55
+Also call FreeCode (And ScopedCodeCacheWrite line 660).
+
+668:0-671:3
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 973ccec1_b1d080e1
+Bytes: 19
+Also call FreeCode.
+
+682:0-685:3
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 17237e9f_151bb4e8
+Bytes: 81
+Drop this check, you still need to deal with the profiling info, and the osr map.
+
+File: runtime/openjdkjvmti/ti_redefine.cc
+
+257:48-258:56
+Mon Dec 19 14:00:29 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: 1728de81_8d268129
+Bytes: 75
+since the JIT might concurrently compile a method we are going to redefine.
+

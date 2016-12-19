@@ -463,6 +463,20 @@ REQUIRES(Locks::mutator_lock_) doesn't guarantee no suspension, and allows alloc
 
 "Also this entire function is NoThreadSuspension": is that by doing ScopedAssertNoThreadSuspension? Then ok, but I'd be more confident if you add another Scope here (and the TODO line 614 is a bit scary knowing that this conversation is arguing about guarantees).
 
+517
+Mon Dec 19 18:51:08 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f71b4a68_948224e9
+UUID: 7a51fff3_4b492f31
+Bytes: 574
+> REQUIRES(Locks::mutator_lock_) doesn't guarantee no suspension, and allows allocation.
+
++Mathieuc@ said to me that it doesn't allow allocation since if we allowed java allocation we might suspension while holding the mutator_lock_ exclusive and could deadlock.
+
+Also I agree that 614 is scary. I am pretty sure it is fine but it is rather worrisome and something it would be good to get rid of.
+
+Also I don't think it has anything to do with this stuff here since this is after the suspendAll and all the references are in Handles across that suspend so we should be fine.
+
 518:2-518:55
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -47,6 +47,14 @@ Okay so the thing is this function only does (a). Once (b) is finished everythin
 
 In many places it is useful for debugging to mark even temporarily invalid objects in order to ease debugging in case they ever escape. That is what this TODO is referring to.
 
+631
+Mon Dec 19 11:21:31 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7a51fff3_1ff20f27
+UUID: 773d9abc_b08518f5
+Bytes: 208
+I see. So here's my suggestion: add a boolean flag to ScopedSuspendJit, which, once you're sure you're done, you set to true. Then when the ScopedSuspendJit calls its destructor, DCHECK that the flag is true.
+
 File: runtime/openjdkjvmti/ti_redefine.cc
 
 685:0-688:5

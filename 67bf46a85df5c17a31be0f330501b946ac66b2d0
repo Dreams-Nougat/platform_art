@@ -453,6 +453,16 @@ UUID: 7a51fff3_df25e7da
 Bytes: 119
 I mean this is marked in the header as REQUIRES(Locks::mutator_lock_). Also this entire function is NoThreadSuspension.
 
+517
+Mon Dec 19 11:21:31 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 7a51fff3_df25e7da
+UUID: f71b4a68_948224e9
+Bytes: 351
+REQUIRES(Locks::mutator_lock_) doesn't guarantee no suspension, and allows allocation.
+
+"Also this entire function is NoThreadSuspension": is that by doing ScopedAssertNoThreadSuspension? Then ok, but I'd be more confident if you add another Scope here (and the TODO line 614 is a bit scary knowing that this conversation is arguing about guarantees).
+
 518:2-518:55
 Wed Dec 14 13:15:06 2016 +0000
 Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -42,6 +42,14 @@ UUID: 17237e9f_5596cc2b
 Bytes: 119
 As soon as we want to inline in debuggable code, this won't work. Which is the reason I say b/33630159 is a workaround.
 
+885
+Mon Dec 19 15:28:04 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17237e9f_5596cc2b
+UUID: 7a51fff3_a8346138
+Bytes: 204
+The current plan is and has always been to disallow all inlining when method redefinition is enabled. If we allow inlining we will need to find every place the method was inlined and invalidate that code.
+
 File: runtime/jit/jit_code_cache.cc
 
 629
@@ -338,6 +346,14 @@ Parent: 7a51fff3_fa7476ad
 UUID: d7180671_d362f42f
 Bytes: 163
 What state then? If you do ensureJitCompiled early on, then say_hi_method and do_call_method will be guaranteed to be compiled code. Isn't that the state you want?
+
+149
+Mon Dec 19 15:28:04 2016 +0000
+Author: Alex Light <1047769@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: d7180671_d362f42f
+UUID: 7a51fff3_e8a02946
+Bytes: 124
+We need to ensure there are no runtime methods right around the redefined methods. ensureJitCompiled doesn't guarantee that.
 
 File: test/916-obsolete-jit/src/Transform.java
 

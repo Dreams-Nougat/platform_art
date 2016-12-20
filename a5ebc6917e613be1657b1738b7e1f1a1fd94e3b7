@@ -47,6 +47,21 @@ UUID: 17237e9f_35d0f00b
 Bytes: 33
 Which ones would you like to see?
 
+11
+Tue Dec 20 12:48:43 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17237e9f_35d0f00b
+UUID: 17237e9f_1890892a
+Bytes: 481
+Something that calls a boot image method that calls another boot image method. For example, calling String.codePointAt(0) with the 0 hidden, preventing the elimination of the bound checks and inlining the String.codePointAt():
+
+  public static void $noinline$codePointAtLoop(String s, int index, int count) {
+    if (doThrow) { throw new Error(); }  // Prevent inlining.
+    for (int i = 0; i < count; ++i) {
+      s.codePointAt(index);  // Not inlined, may throw SIOOBE.
+    }
+  }
+
 File: compiler/optimizing/sharpening.cc
 
 92

@@ -9,6 +9,14 @@ UUID: f7a50a83_fa8ca659
 Bytes: 45
 Is that native debuggable or java debuggable?
 
+21:32-21:46
+Tue Dec 20 22:41:57 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7a50a83_fa8ca659
+UUID: 17237e9f_d8cc51c9
+Bytes: 42
+java debuggable, I've updated the message.
+
 File: runtime/class_linker.cc
 
 2855:17-2855:25
@@ -18,6 +26,14 @@ UUID: f7a50a83_e415ef03
 Bytes: 12
 blocking by?
 
+2855:17-2855:25
+Tue Dec 20 22:41:57 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7a50a83_e415ef03
+UUID: 17237e9f_f8cf0dbb
+Bytes: 120
+This is saying that JIT-at-first-use is a blocking operation for each first call of a method. Rephrased, is that better?
+
 File: runtime/runtime.cc
 
 1011
@@ -26,4 +42,12 @@ Author: Mingyao Yang <1043514@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: f7a50a83_1a52e22a
 Bytes: 80
 Guess the runtime hasn't been started yet. What's the purpose of this call here?
+
+1011
+Tue Dec 20 22:41:57 2016 +0000
+Author: Nicolas Geoffray <1038443@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: f7a50a83_1a52e22a
+UUID: 17237e9f_18cbe9b2
+Bytes: 228
+To set is_java_debuggable_ to true, which will ensure only JITted code will be picked up. I could do it once the boot image is loaded which will be consistent with the post Zygote fork's SetJavaDebuggable. Would you prefer that?
 

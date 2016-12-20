@@ -673,6 +673,23 @@ UUID: 17237e9f_352230bc
 Bytes: 99
 Are you saying that the template argument deduction for the array overload of ReverseRange() fails?
 
+112:2-112:47
+Tue Dec 20 11:46:15 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17237e9f_352230bc
+UUID: b73712da_d2fe64b9
+Bytes: 640
+Yes. I tried to write it as array:
+HInstruction* block_instruction[] = { /* ... */ };
+and use ReverseRange(block_instructions) in the following. The build fails with this message:
+
+ error: no matching function for call to 'ReverseRange'.
+ note: in instantiation of function template specialization 'art::ReverseRange<art::HInstruction *, 7>' requested here.
+ art/runtime/base/iteration_range.h: note: candidate template ignored: could not match 'T [size]' against   'IterationRange<art::HInstruction **>'
+inline auto ReverseRange(T (&array)[size]) {
+
+The ReverseRange() for array input looks OK to me, I don't know why the deduction failed.
+
 140:61-140:66
 Tue Oct 25 15:50:31 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

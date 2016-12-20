@@ -690,6 +690,24 @@ inline auto ReverseRange(T (&array)[size]) {
 
 The ReverseRange() for array input looks OK to me, I don't know why the deduction failed.
 
+112:2-112:47
+Tue Dec 20 17:45:15 2016 +0000
+Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: b73712da_d2fe64b9
+UUID: 17237e9f_f85dcd32
+Bytes: 436
+The first deduction was OK. But the ReverseRange() for arrays tries to call the ReverseRange() for containers and that fails.
+
+  art/runtime/base/iteration_range.h:58:13:
+  note: candidate function
+  [with Container = art::IterationRange<art::HInstruction **>]
+  not viable: expects an l-value for 1st argument
+
+Do you mind changing the "&" to "&&"?
+
+  template <typename Container>
+  inline auto ReverseRange(Container&& c) {  //< HERE
+
 140:61-140:66
 Tue Oct 25 15:50:31 2016 +0000
 Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>

@@ -9,6 +9,18 @@ UUID: 17237e9f_353b50de
 Bytes: 33
 See API comments on PS4 and PS12.
 
+351:26-352:78
+Tue Dec 20 11:46:15 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17237e9f_353b50de
+UUID: 17237e9f_35c6b0ac
+Bytes: 699
+Yes I noticed the discussion in PS4 and PS12, and I agree that current interface forces the selector to go through the whole list of candidates.
+
+But currently I want to keep it this way, because:
+- Due to the data & side-effect dependencies, the candidates list is usually a limited subset of instructions inside one basic block. They are a small number.
+- According to perf profiling, the biggest overhead of scheduler comes from the map between SchedulingNode and HInstruction (e.g. building dependency graph from HInstruction), not the selector. This is where I want to optimize the most. My next step is to try moving the scheduling information into HInstruction and eleminate the map overhead.
+
 389:1-389:2
 Thu Dec 15 14:17:36 2016 +0000
 Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
@@ -22,6 +34,14 @@ Author: Vladimir Marko <1018108@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 17237e9f_954b4475
 Bytes: 6
 const?
+
+444:2-444:33
+Tue Dec 20 11:46:15 2016 +0000
+Author: Xueliang Zhong <1096678@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17237e9f_954b4475
+UUID: 17237e9f_55c12c92
+Bytes: 91
+The SetOnlyOptimizeLoopBlocks() function allows setting this member, so it cannot be const.
 
 File: compiler/optimizing/scheduler_arm64.h
 

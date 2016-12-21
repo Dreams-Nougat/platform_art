@@ -9,6 +9,14 @@ UUID: 4d90030a_02a90c58
 Bytes: 66
 Mention the doc and the section describing the new implementation.
 
+9:0-11:65
+Wed Dec 21 14:36:10 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 4d90030a_02a90c58
+UUID: 17237e9f_9b37f30c
+Bytes: 4
+Done
+
 File: runtime/gc/heap.cc
 
 3881
@@ -17,6 +25,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ade97f6b_4248472a
 Bytes: 45
 Can you describe the new design in a comment?
+
+3881
+Wed Dec 21 14:36:10 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_4248472a
+UUID: 17237e9f_5b1b9b99
+Bytes: 77
+I can try. Is this okay? Would it be better to put a link to the doc I wrote?
 
 3882:56-3882:89
 Mon Nov 28 19:33:35 2016 +0000
@@ -59,12 +75,28 @@ UUID: ade97f6b_622a2b42
 Bytes: 34
 Why is this compared to max_free_?
 
+3885:35-3885:44
+Wed Dec 21 14:36:10 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_622a2b42
+UUID: 17237e9f_986c9922
+Bytes: 460
+The previous implementation incremented the native gc watermark by at most max_free_. This is intended to match that increment, using the assumption that the increase in the native gc watermark would exceed max_free_ based solely on the target utilization and the typical amount of memory used by an Android application. Using max_free_ instead of the target utilization means we don't have to keep track of the current number of registered native allocations.
+
 3888:33-3888:55
 Mon Nov 28 20:31:29 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: 2d266fad_072c9606
 Bytes: 86
 I might change all of these to relaxed for consistency, though it doesn't matter here.
+
+3888
+Wed Dec 21 14:36:10 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 2d266fad_072c9606
+UUID: 17237e9f_d8545140
+Bytes: 4
+Done
 
 3899:35-3899:48
 Mon Nov 28 15:42:00 2016 +0000
@@ -95,6 +127,14 @@ Parent: 4d90030a_e2d18861
 UUID: ade97f6b_bfcbb032
 Bytes: 162
 If so, we should probably avoid that. E.g. use compare_exchange to reset native_bytes_allocated_, and trigger a GC only if you are the thread that succeeds at it.
+
+3903
+Wed Dec 21 14:36:10 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_bfcbb032
+UUID: 17237e9f_b861951c
+Bytes: 4
+Done
 
 3911:2-3912:37
 Mon Nov 28 20:31:29 2016 +0000
@@ -129,4 +169,14 @@ Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
 UUID: ade97f6b_c26c57b1
 Bytes: 61
 Would native_bytes_allocated_since_last_gc_ be a better name?
+
+1185:17-1185:40
+Wed Dec 21 14:36:10 2016 +0000
+Author: Richard Uhler <1057373@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: ade97f6b_c26c57b1
+UUID: 17237e9f_7872dd04
+Bytes: 145
+"since_last_gc" is slightly misleading, because it isn't reset by normal GC (perhaps it should be?).
+
+How about "recent_native_bytes_allocated_"?
 

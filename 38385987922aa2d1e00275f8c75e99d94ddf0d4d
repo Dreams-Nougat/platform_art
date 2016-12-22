@@ -1,0 +1,11 @@
+Revision: 38385987922aa2d1e00275f8c75e99d94ddf0d4d
+Patch-set: 3
+File: runtime/gc/heap.cc
+
+3863:4-3863:84
+Thu Dec 22 18:55:58 2016 +0000
+Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
+UUID: f7a50a83_12d14de4
+Bytes: 567
+I think there are weird schedules for which this ends up kicking the can down the road indefinitely. At least theoretically, another thread can always get in and increment recent_native_bytes_allocated_ before the CAS, and then this thread can come back in and increment before the other thread's CAS succeeds. Granted, this will probably never happen, but I've seen enough strange accidental lock-step behavior that I would guard against it, by putting a loop here to ensure that either the CAS succeeded, or another thread reset it and it's now below the threshold.
+

@@ -115,6 +115,18 @@ UUID: 17237e9f_1ec99148
 Bytes: 363
 We don't have to use the same max_free_ for both the Java and Native heaps. What do you think about having constants kNativeAllocationGcWatermark and kNativeAllocationBlockingGcWatermark instead? If we do use separate parameters for the native and java heaps, is it important to add command line options to control them, or is it okay to hardcode values for them?
 
+3885:35-3885:44
+Thu Dec 22 18:52:17 2016 +0000
+Author: Hiroshi Yamauchi <1022530@85c56323-6fa9-3386-8a01-6480fb634889>
+Parent: 17237e9f_1ec99148
+UUID: f7a50a83_6f61beba
+Bytes: 674
+I don't have an objection to using max_free_ as in PS2. We just need to explain that in a comment. And if we need to in the future, we could try tuning it.
+
+Code-searching by "heapmaxfree" indicates that there are some device types that override the HeapMaxFree values. So, if we add options for native max free, we may want to allow the "native max free" to be overridden there as well.
+
+It seems to make sense to me to either, use max_free_ for native allocations and add a comment that it happens to use the same max free for managed and native, or add separate options for the "native max free" and add overrides for the devices. The former may be easier, but up to you.
+
 3888:33-3888:55
 Mon Nov 28 20:31:29 2016 +0000
 Author: Hans Boehm <1042828@85c56323-6fa9-3386-8a01-6480fb634889>
